@@ -1,7 +1,10 @@
 <script setup>
-import {FwbButton, FwbModal} from "flowbite-vue";
+import { FwbButton, FwbModal } from "flowbite-vue";
+import {ref} from "vue";
+import {CWM_API} from "@/services/axios";
 
-const emit = defineEmits(['closeModal']);
+const emit = defineEmits(['closeModal', 'confirmed']);
+const sending = ref(false)
 
 const props = defineProps({
   open: {
@@ -11,57 +14,53 @@ const props = defineProps({
   },
   mainGuest: {
     type: Object,
-    required: true
+    required: false,
   }
 })
 const closeModal = () => {
   emit('closeModal');
 }
 
+const sendConfirmation = async () => {
+  sending.value = true;
+
+  try {
+    const response = await CWM_API.post(`rsvp/confirm`, {
+      mainGuest: props.mainGuest,
+    });
+
+    if (response.status >= 200 && response.status < 300) {
+      emit('confirmed');
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
 </script>
 
 <template>
   <fwb-modal
+      class="dark"
       persistent
       v-if="open"
       @close="closeModal"
   >
     <template #body>
-      <h1 class="text-gray-700 font-bold text-2xl text-center">RSVP</h1>
-      <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400 lora-font">
-        for the Quince of
-      </p>
-      <h1 class="text-gray-700 font-bold text-2xl text-center">Vanessa Rodriguez</h1>
-
-      <hr class="mt-5 mb-5">
-
-      <p class="text-gray-700 text-4xl text-center beauty-font">
-        The Details
-      </p>
-
-      <p class="text-gray-700 text-4xl text-center lora-font">
-        Friday, August 2, 2024 <br>
-        5:00 pm
-      </p>
-
-      <p class="text-gray-700 mt-6 text-4xl text-center beauty-font">
-        Ceremony and Reception
-      </p>
-      <p class="text-gray-700 text-4xl text-center lora-font">
-        Chapel of Our Saviour <br>
-        8 4th St, Colorado Springs, CO 80906
-      </p>
-
-      <hr class="mt-5 mb-5">
-
+      <div>
+        <p>
+          {{ $t('rsvpModal.text') }}
+        </p>
+      </div>
     </template>
     <template #footer>
       <div class="flex justify-between">
         <fwb-button @click="closeModal" color="alternative">
-          Decline
+          {{ $t('rsvpModal.cancelButton') }}
         </fwb-button>
-        <fwb-button @click="closeModal" color="green">
-          I accept
+        <fwb-button @click="sendConfirmation" color="red">
+          {{ $t('rsvpModal.acceptButton') }}
         </fwb-button>
       </div>
     </template>

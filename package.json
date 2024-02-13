@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
+    "prod": "vite build --mode prod",
     "test:unit": "vitest",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
@@ -20,6 +21,7 @@
     "pinia": "^2.1.7",
     "vue": "^3.3.4",
     "vue-final-modal": "^4.5.3",
+    "vue-i18n": "^9.9.1",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {

@@ -49,41 +49,55 @@ const changeToEn = () => {
 </script>
 
 <template>
-  <div class="translate-page">
-    <p @click="changeLanguage()">{{ selectedLanguage }}</p>
-  </div>
-  <div class="welcome-container">
-    <div class="save-texts">
-      <h1 class="save-title glow">{{ title }}</h1>
-
-      <h1 class="save-sub glow">{{ subTitle }}</h1>
-
-      <h1 class="save-name glow">{{ celebration }}</h1>
+  <div class="home-container">
+    <div class="translate-page">
+      <p @click="changeLanguage()">{{ selectedLanguage }}</p>
     </div>
+    <div class="welcome-container">
+      <div class="save-texts">
+        <h1 class="save-title glow">{{ title }}</h1>
+
+        <h1 class="save-sub glow">{{ subTitle }}</h1>
+
+        <h1 class="save-name glow">{{ celebration }}</h1>
+      </div>
 
 
-    <div class="save-calendar">
-      <p class="save-date">{{ date }}</p>
+      <div class="save-calendar">
+        <p class="save-date">{{ date }}</p>
 
-      <p class="save-date">{{ formalInvitation }}</p>
-      <add-to-calendar-button
-          name="Vanessa's Quince Celebration"
-          options="'Apple','Google', 'iCal', 'Microsoft365', 'MicrosoftTeams', 'Outlook.com', 'Yahoo'"
-          location="Miami, FL"
-          startDate="2024-08-02"
-          endDate="2024-08-02"
-          startTime="18:00"
-          endTime="23:59"
-          timeZone="America/New_York"
-          listStyle="dropup-static"
-          :label="(selectedLanguage === 'ES') ? 'Add to calendar' : 'Adicionar al calendario'"
-      >
-      </add-to-calendar-button>
+        <p class="save-date">{{ formalInvitation }}</p>
+        <add-to-calendar-button
+            name="Vanessa's Quince Celebration"
+            options="'Apple','Google', 'iCal', 'Microsoft365', 'MicrosoftTeams', 'Outlook.com', 'Yahoo'"
+            location="Miami, FL"
+            startDate="2024-08-02"
+            endDate="2024-08-02"
+            startTime="18:00"
+            endTime="23:59"
+            timeZone="America/New_York"
+            listStyle="dropup-static"
+            :label="(selectedLanguage === 'ES') ? 'Add to calendar' : 'Adicionar al calendario'"
+        >
+        </add-to-calendar-button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.home-container {
+  background-image: url("../assets/images/background.jpg");
+  background-position: center;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  transition:
+      color 0.5s,
+      background-color 0.5s;
+}
+
 .translate-page {
   display: flex;
   justify-content: end;
@@ -101,7 +115,7 @@ const changeToEn = () => {
 }
 
 .welcome-container {
-  height: 85vh;
+  height: 97vh;
   display: flex;
   flex-direction: column;
   align-items: center;
