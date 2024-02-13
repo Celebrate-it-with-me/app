@@ -6,6 +6,8 @@ import PiniaLogger from "pinia-logger";
 import {createVfm} from "vue-final-modal";
 // Import Router
 import router from '@/router/index.ts';
+// Import Locales
+import i18n from '../locales/i18n';
 
 // Register Plugin Function
 export function registerPlugin(app) {
@@ -24,6 +26,7 @@ export function registerPlugin(app) {
 
     // Use Vue Final Modal, Router and Pinia middleware in Vue App
     app
+        .use(i18n)
         .use(createVfm())
         .use(router)
         .use(pinia);
