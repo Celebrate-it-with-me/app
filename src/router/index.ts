@@ -8,12 +8,18 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        title: 'Celebrate it with me'
+      }
     },
     {
       path: '/rsvp/vanessar',
       name: 'rsvp',
-      component: RSVP
+      component: RSVP,
+      meta: {
+        title: 'Celebrate it with me | RSVP'
+      }
     },
     {
       path: '/about',
@@ -24,6 +30,11 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  document.tite = to.meta.title
+  next()
 })
 
 export default router
