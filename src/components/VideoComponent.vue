@@ -1,7 +1,7 @@
 <!-- VideoBackgroundPage.vue -->
 <template>
   <div class="video-background-page">
-    <video ref="myVideo" autoplay muted class="video-background">
+    <video ref="myVideo" autoplay muted playsinline class="video-background">
       <source src="../../public/videos/beauty.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>

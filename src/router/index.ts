@@ -8,16 +8,25 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        title: 'Home'
+      }
     },
     {
       path: '/rsvp/vanessar',
       name: 'rsvp',
-      component: RSVP
+      component: RSVP,
+      meta: {
+        title: 'RSVP'
+      }
     },
     {
       path: '/about',
       name: 'about',
+      meta: {
+        title: 'About Us'
+      },
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -25,5 +34,10 @@ const router = createRouter({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  document.title = `Celebrate it with me - ${to.meta?.title}` || 'CWM'
+  next();
+});
 
 export default router
