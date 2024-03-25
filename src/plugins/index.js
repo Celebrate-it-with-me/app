@@ -9,6 +9,8 @@ import router from '@/router/index.ts';
 // Import Locales
 import i18n from '../locales/i18n';
 
+import Notifications from '@kyvg/vue3-notification'
+
 // Register Plugin Function
 export function registerPlugin(app) {
     // Create a new instance of Pinia
@@ -29,7 +31,8 @@ export function registerPlugin(app) {
         .use(i18n)
         .use(createVfm())
         .use(router)
-        .use(pinia);
+        .use(pinia)
+        .use(Notifications);
 
     // Fetch cookie for sanctum from API
     fetch(`${import.meta.env.VITE_API_URL}sanctum/csrf-cookie`)

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import ChangeLocale from "@/components/locale/ChangeLocale.vue";
+import { Notifications } from "@kyvg/vue3-notification";
 </script>
 
 <template>
@@ -11,6 +12,7 @@ import ChangeLocale from "@/components/locale/ChangeLocale.vue";
 
   <RouterView />
   <change-locale />
+  <notifications />
 </template>
 
 <style scoped>
