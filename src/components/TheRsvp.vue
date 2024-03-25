@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import {computed, ref, watch} from 'vue';
 import {
   FwbA,
   FwbButton, FwbCheckbox,
@@ -125,12 +125,6 @@ const showModal = () => {
     </div>
     <div class="show-main-guest" v-if="mainGuest">
       <template v-if="!confirmed">
-        <div class="title">
-          <h1 class="text-gold font-bold text-2xl text-center"></h1>
-
-          <hr class="mt-5 mb-5">
-        </div>
-
         <div class="details">
           <p class="text-white text-4xl text-center beauty-font main-title">
             Vanessa Rodriguez
@@ -153,8 +147,13 @@ const showModal = () => {
           <p class="text-white text-4xl text-center beauty-font main-second-title" >
             {{ $t('ceremony') }}
           </p>
+
           <p class="text-white text-4xl text-center lora-font">
             {{ $t('ceremonyPlace') }} <br>
+          </p>
+
+          <p class="text-white text-4xl text-center lora-font">
+            {{ $t('reservedMessage1') }} {{ mainGuest.party_members.length + 1 }} {{ $t('reservedMessage2') }}<br>
           </p>
 
           <hr class="mt-5 mb-5">
@@ -214,7 +213,7 @@ const showModal = () => {
       </template>
       <template v-else>
         <div class="confirmation">
-          <p class="beauty-font main-second-title">Thanks for your confirmation!</p>
+          <p class="beauty-font main-second-title">{{ $t('thanksMessage') }}</p>
         </div>
       </template>
     </div>
@@ -228,6 +227,9 @@ const showModal = () => {
 </template>
 
 <style scoped>
+.details {
+  margin-top: 135px;
+}
 .code-input {
   display: flex;
   flex-direction: column;
