@@ -24,11 +24,14 @@ const messages = {
             cancelButton: 'Cancel'
         },
         invalidAccessCode: 'Invalid Access Code',
-        serverErrorAccessCode: 'Access code already used, please contact us if you need to change your selection'
+        serverErrorAccessCode: 'Access code already used, please contact us if you need to change your selection',
+        thanksMessage: 'Thanks for your confirmation!',
+        reservedMessage1: 'We have reserved',
+        reservedMessage2: 'seats in your honor'
     },
 
     es: {
-        accessCodePlaceholder: 'Entre su codigo de acceso',
+        accessCodePlaceholder: 'Codigo de acceso',
         accessCodeSendButton: 'Enviar',
         celebration: 'Quinces\' Celebration',
         celebrationDate: 'Viernes, 2 de agosto de 2024',
@@ -50,7 +53,10 @@ const messages = {
             cancelButton: 'Cancelar'
         },
         invalidAccessCode: 'Codigo de Acceso invalido',
-        serverErrorAccessCode: 'Ya este codigo se uso, por favor contactenos si necesita cambiar su seleccion'
+        serverErrorAccessCode: 'Ya este codigo se uso, por favor contactenos si necesita cambiar su seleccion',
+        thanksMessage: 'Gracias por su confirmacion!',
+        reservedMessage1: 'Hemos reservado',
+        reservedMessage2: 'sillas en tu honor'
     }
 }
 
