@@ -45,8 +45,7 @@ const setActiveImage = (id = null) => {
   if (!id) {
     activeImage.value = images.value[0];
   } else {
-    let imageTemp = null;
-    imageTemp = images.value.find((img) => img.id === id)
+    let imageTemp = images.value.find((img) => img.id === id)
 
     if (imageTemp) {
       activeImage.value = imageTemp
@@ -88,7 +87,7 @@ const setActiveImage = (id = null) => {
 
 .active-image {
   padding: 12px;
-  flex: 75%;
+  height: 78%;
   margin-bottom: 10px;
   img {
     width: 100%;
@@ -104,6 +103,10 @@ const setActiveImage = (id = null) => {
 
 .carousel-container{
   padding: 12px;
+  height: 18%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .splide__slide {
