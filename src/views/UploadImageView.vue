@@ -20,6 +20,15 @@ watch(selectedImages, (newValue) => {
 
 const previewImages = (newValue) => {
   if (newValue && newValue.length) {
+    if (newValue.length > 5) {
+      newValue.length = 5;
+      showNotification(
+          "You can select up to 5 images at a time. Additional images have been removed.",
+          'Notice',
+          'warning'
+      );
+    }
+
     for(let i = 0; i < newValue.length; i++) {
       let file = newValue[i];
       let fileName = file.name;
@@ -58,6 +67,15 @@ const deleteImage = (index) => {
 }
 
 const uploadImages = async () => {
+  if (selectedImages.value.length > 5) {
+    showNotification(
+        "You can upload up to 5 images at a time.",
+        'Error',
+        'error'
+    );
+    return;
+  }
+
   let formData = new FormData();
 
   selectedImages.value.forEach((image, index) => {
@@ -104,7 +122,7 @@ const uploadImages = async () => {
     <div class="upload-container">
       <div class="upload">
         <label for="" class="upload-label">
-          Upload Images
+          Upload up to 5 Images at a time.
         </label>
         <fwb-file-input
             v-model="selectedImages"
