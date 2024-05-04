@@ -87,14 +87,15 @@ const setActiveImage = (id = null) => {
 
 .active-image {
   padding: 12px;
-  height: 78%;
+  flex: 75%;
   margin-bottom: 10px;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(1.10) contrast(1.20) saturate(1.30);
-  }
+}
+
+.active-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(1.10) contrast(1.20) saturate(1.30);
 }
 
 .thumbnail-slider {
@@ -103,10 +104,6 @@ const setActiveImage = (id = null) => {
 
 .carousel-container{
   padding: 12px;
-  height: 18%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .splide__slide {
