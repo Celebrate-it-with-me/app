@@ -2,13 +2,14 @@
 import {FwbButton, FwbFileInput} from "flowbite-vue";
 import {ref, watch} from "vue";
 import {CWM_API} from "@/services/axios";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {useNotification} from "@kyvg/vue3-notification";
 
 const selectedImages = ref([]);
 const imageSource = ref([]);
 const invalidFiles = ref([]);
 const route = useRoute();
+const router = useRouter();
 const uploading = ref(false);
 const { notify } = useNotification();
 
@@ -115,12 +116,21 @@ const uploadImages = async () => {
   }
 
 }
+
+const goBack = () => {
+  router.push(`/images/${name.value}`);
+}
+
+const viewGallery = () => {
+  router.push(`/view-gallery/${name.value}`);
+}
 </script>
 
 <template>
   <main class="images-main">
     <div class="upload-container">
-      <div class="upload">
+      <div class="centering-wrapper">
+        <div class="upload">
         <label for="" class="upload-label">
           Upload up to 5 Images at a time.
         </label>
@@ -166,6 +176,24 @@ const uploadImages = async () => {
           @click="uploadImages()"
         >
           Upload Images
+        </fwb-button>
+      </div>
+      </div>
+      <div class="go-back">
+        <fwb-button
+          size="sm"
+          gradient="red-yellow"
+          @click="goBack()"
+        >
+          Go Back
+        </fwb-button>
+        <fwb-button
+          class="ml-2"
+          size="sm"
+          gradient="red-yellow"
+          @click="viewGallery()"
+        >
+          View Gallery
         </fwb-button>
       </div>
     </div>
@@ -217,9 +245,25 @@ const uploadImages = async () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.centering-wrapper {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .upload {
   width: 65%;
+}
+
+.go-back {
+  align-self: center;
+  margin-top: auto;
+  margin-bottom: 10px;
 }
 </style>
