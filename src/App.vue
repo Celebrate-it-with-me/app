@@ -5,14 +5,17 @@ import { Notifications } from "@kyvg/vue3-notification";
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-    </div>
-  </header>
+  <div class="dark">
+    <header>
+      <div class="wrapper">
+      </div>
+    </header>
 
-  <RouterView />
-  <change-locale />
-  <notifications />
+    <RouterView />
+    <change-locale />
+    <notifications />
+  </div>
+
 </template>
 
 <style scoped>
