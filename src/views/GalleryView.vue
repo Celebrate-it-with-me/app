@@ -4,6 +4,7 @@ import {CWM_API} from "@/services/axios";
 import {useRoute} from "vue-router";
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/splide/dist/css/splide.min.css';
+import {FwbAlert} from "flowbite-vue";
 
 
 const route = useRoute();
@@ -21,6 +22,9 @@ const options = ref({
 
 onMounted(() => {
   getGalleryImages();
+  setInterval(() => {
+    getGalleryImages();
+  }, 30 * 1000)
 });
 
 const getGalleryImages = async () => {
@@ -56,7 +60,12 @@ const setActiveImage = (id = null) => {
 </script>
 
 <template>
-  <div class="gallery-wrapper">
+  <div v-if="!images.length" class="alert-container">
+    <fwb-alert icon type="warning">
+      There is no images yet! Wait just a little bit :).
+    </fwb-alert>
+  </div>
+  <div class="gallery-wrapper" v-else>
     <div v-if="activeImage" class="active-image">
       <img :src="activeImage.url" alt="activeImage.title">
     </div>
@@ -86,6 +95,7 @@ const setActiveImage = (id = null) => {
 }
 
 .active-image {
+  height: 75%;
   padding: 12px;
   flex: 75%;
   margin-bottom: 10px;
@@ -115,5 +125,9 @@ const setActiveImage = (id = null) => {
 .splide__track {
   /* Adding Padding inside the carousel. Adjust as per need */
   padding: 15px;
+}
+
+.alert-container {
+  padding: 25px;
 }
 </style>
