@@ -24,7 +24,7 @@ onMounted(() => {
   getGalleryImages();
   setInterval(() => {
     getGalleryImages();
-  }, 30 * 1000)
+  }, 90 * 1000)
 });
 
 const getGalleryImages = async () => {

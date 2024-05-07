@@ -143,18 +143,23 @@ const showModal = () => {
 
 
         <div class="guests">
+          <div class="sub-details">
+            <p class="text-white text-4xl text-center beauty-font main-second-title" >
+              {{ $t('ceremonyPlace') }}
+            </p>
 
-          <p class="text-white text-4xl text-center beauty-font main-second-title" >
-            {{ $t('ceremony') }}
-          </p>
+            <p class="text-white text-4xl text-center lora-font">
+              {{ $t('ceremonyAddress1') }} <br>
+            </p>
 
-          <p class="text-white text-4xl text-center lora-font">
-            {{ $t('ceremonyPlace') }} <br>
-          </p>
+            <p class="text-white text-4xl text-center lora-font">
+              {{ $t('ceremonyAddress2') }} <br>
+            </p>
 
-          <p class="text-white text-4xl text-center lora-font">
-            {{ $t('reservedMessage1') }} {{ mainGuest.party_members.length + 1 }} {{ $t('reservedMessage2') }}<br>
-          </p>
+            <p class="text-white text-4xl text-center lora-font">
+              {{ $t('reservedMessage1') }} {{ mainGuest.party_members.length + 1 }} {{ $t('reservedMessage2') }}<br>
+            </p>
+          </div>
 
           <hr class="mt-5 mb-5">
           <fwb-table class="dark">
@@ -210,6 +215,9 @@ const showModal = () => {
             </fwb-button>
           </div>
         </div>
+        <div class="reservation-color">
+          {{ $t('colorReservation') }}
+        </div>
       </template>
       <template v-else>
         <div class="confirmation">
@@ -228,8 +236,16 @@ const showModal = () => {
 
 <style scoped>
 .details {
-  margin-top: 135px;
+  width: 90%;
+  background-color: rgba(55 65 81 / 40%);
+  padding: 25px 20px 5px 20px;
 }
+
+.sub-details {
+  background-color: rgba(55 65 81 / 40%);
+  padding: 25px 20px 5px 20px;
+}
+
 .code-input {
   display: flex;
   flex-direction: column;
@@ -281,7 +297,7 @@ const showModal = () => {
 .show-main-guest {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding: 10px 0;
 }
@@ -333,5 +349,10 @@ const showModal = () => {
   );
   color:transparent;
   -webkit-background-clip:text;
+}
+
+.reservation-color {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.51);
 }
 </style>
