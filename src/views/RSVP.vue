@@ -2,6 +2,7 @@
 import TheRsvp from "@/components/TheRsvp.vue";
 import VideoComponent from "@/components/VideoComponent.vue";
 import {ref} from "vue";
+import {FwbAlert} from "flowbite-vue";
 
 const showVideo = ref(true);
 
@@ -17,7 +18,13 @@ const handleVideoEnded = () => {
         v-if="showVideo"
         @video-ended="handleVideoEnded"
     />
-    <TheRsvp v-else/>
+    <div v-else class="alert-container">
+      <fwb-alert type="warning">
+        {{ $t('confirmationMessage') }}
+      </fwb-alert>
+    </div>
+
+    <TheRsvp v-if="false"/>
   </main>
 </template>
 
@@ -29,4 +36,9 @@ const handleVideoEnded = () => {
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
+
+.alert-container {
+  padding: 10px;
+}
+
 </style>
