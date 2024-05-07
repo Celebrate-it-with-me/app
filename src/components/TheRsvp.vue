@@ -12,12 +12,14 @@ import {
 } from "flowbite-vue";
 import { CWM_API } from '@/services/axios.js'
 import RsvpModal from "@/components/RsvpModal.vue";
+import PhoneConfirmationModal from "@/components/PhoneConfirmationModal.vue";
 
 const rsvpCode = ref("")
 const rsvpError = ref('')
 const rsvpErrorMessage = ref(false)
 const rsvpServerErrorMessage = ref(false)
 const showRsvpModal = ref(false)
+const showPhoneConfirmationModal = ref(false)
 const mainGuest = ref(null)
 const confirmed = ref(false)
 
@@ -89,6 +91,15 @@ const processCode = async () => {
 const showModal = () => {
   showRsvpModal.value = true;
 }
+
+const showPhoneModal = () => {
+  showPhoneConfirmationModal.value = true
+}
+
+const handleCloseConfirmationModal = () => {
+  showPhoneConfirmationModal.value = false
+}
+
 </script>
 
 <template>
@@ -209,7 +220,7 @@ const showModal = () => {
             <fwb-button
                 class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 text-sm
                   px-5 py-2.5 text-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                @click="showModal"
+                @click="showPhoneModal"
             >
               {{ $t('guestTable.button') }}
             </fwb-button>
@@ -225,6 +236,12 @@ const showModal = () => {
         </div>
       </template>
     </div>
+    <PhoneConfirmationModal
+      :open="showPhoneConfirmationModal"
+      :main-guest="mainGuest"
+      @close-modal="handleCloseConfirmationModal"
+      @confirmed="handlePhoneConfirmedModal"
+    />
     <RsvpModal
       :open="showRsvpModal"
       :main-guest="mainGuest"

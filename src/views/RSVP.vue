@@ -17,6 +17,8 @@ const handleVideoEnded = () => {
         v-if="showVideo"
         @video-ended="handleVideoEnded"
     />
+
+
     <TheRsvp v-else/>
   </main>
 </template>

@@ -21,7 +21,7 @@ const messages = {
             text: `If you are sure of your selection please confirm,
                    if not please close this dialog and
                    fix your selection and then click in confirm.`,
-            acceptButton: 'Submit',
+            acceptButton: 'Next',
             cancelButton: 'Cancel'
         },
         invalidAccessCode: 'Invalid Access Code',
