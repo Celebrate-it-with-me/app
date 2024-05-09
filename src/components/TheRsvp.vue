@@ -11,14 +11,12 @@ import {
   FwbTableRow
 } from "flowbite-vue";
 import { CWM_API } from '@/services/axios.js'
-import RsvpModal from "@/components/RsvpModal.vue";
 import PhoneConfirmationModal from "@/components/PhoneConfirmationModal.vue";
 
 const rsvpCode = ref("")
 const rsvpError = ref('')
 const rsvpErrorMessage = ref(false)
 const rsvpServerErrorMessage = ref(false)
-const showRsvpModal = ref(false)
 const showPhoneConfirmationModal = ref(false)
 const mainGuest = ref(null)
 const confirmed = ref(false)
@@ -52,12 +50,8 @@ const resetInputRsvpError = () => {
   rsvpError.value = false
 }
 
-const handleCloseModal = () => {
-  showRsvpModal.value = false;
-}
-
 const handleConfirmed = () => {
-  showRsvpModal.value = false;
+  showPhoneConfirmationModal.value = false;
   confirmed.value = true;
 }
 
@@ -86,10 +80,6 @@ const processCode = async () => {
   } catch (err) {
     console.log(err);
   }
-}
-
-const showModal = () => {
-  showRsvpModal.value = true;
 }
 
 const showPhoneModal = () => {
@@ -240,12 +230,6 @@ const handleCloseConfirmationModal = () => {
       :open="showPhoneConfirmationModal"
       :main-guest="mainGuest"
       @close-modal="handleCloseConfirmationModal"
-      @confirmed="handlePhoneConfirmedModal"
-    />
-    <RsvpModal
-      :open="showRsvpModal"
-      :main-guest="mainGuest"
-      @close-modal="handleCloseModal"
       @confirmed="handleConfirmed"
     />
   </div>

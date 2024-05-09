@@ -30,25 +30,20 @@ watch(
   }
 )
 
-watch(stepSelected, (newValue, oldValue) => {
-  if (newValue === 2 && oldValue === 1) {
-    updateConfirmPhoneNumber();
-  }
-})
+const closeModal = () => {
+  emit('closeModal');
+}
 
-const updateConfirmPhoneNumber = async () => {
-  const response = await CWM_API.post('rsvp/updateConfirmPhone', {
-    phoneNumber: phoneNumber.value,
-    mainGuestId: props.mainGuest.id
-  })
-
-  if (response.status < 200 || response.status > 300) {
-    confirmationError.value = true;
+const nextStep = () => {
+  if (stepSelected.value < 3) {
+    stepSelected.value = stepSelected.value + 1;
   }
 }
 
-const closeModal = () => {
-  emit('closeModal');
+const backStep = () => {
+  if (stepSelected.value > 1) {
+    stepSelected.value = stepSelected.value - 1;
+  }
 }
 
 const sendConfirmation = async () => {
@@ -57,6 +52,7 @@ const sendConfirmation = async () => {
   try {
     const response = await CWM_API.post(`rsvp/confirm`, {
       mainGuest: props.mainGuest,
+      phoneConfirmed: phoneNumber.value
     });
 
     if (response.status >= 200 && response.status < 300) {
@@ -66,15 +62,6 @@ const sendConfirmation = async () => {
     console.log(err);
   }
 }
-
-const nextStep = () => {
-  stepSelected.value = stepSelected.value + 1;
-}
-
-const submitPhoneConfirmation = () => {
-
-}
-
 </script>
 
 <template>
@@ -90,7 +77,7 @@ const submitPhoneConfirmation = () => {
           Please confirm or update your phone number.
         </p>
 
-        <form @submit.prevent="submitPhoneConfirmation">
+        <form>
 
           <fwb-input
             class="focus:border-red-300 focus:outline-none focus:ring-4 focus:ring-red-300"
@@ -116,13 +103,41 @@ const submitPhoneConfirmation = () => {
             label="'Add to calendar'"
         />
       </div>
+      <div v-if="stepSelected === 3">
+        <p>
+          {{ $t('rsvpModal.text') }}
+        </p>
+      </div>
     </template>
     <template #footer>
       <div class="flex justify-between">
-        <fwb-button @click="closeModal" color="alternative">
+        <fwb-button
+          @click="closeModal"
+          color="alternative"
+          v-if="stepSelected === 1"
+        >
           {{ $t('rsvpModal.cancelButton') }}
         </fwb-button>
-        <fwb-button @click="nextStep" color="red">
+        <fwb-button
+          @click="backStep"
+          color="alternative"
+          v-else
+        >
+          {{ $t('rsvpModal.backButton') }}
+        </fwb-button>
+
+        <fwb-button
+          @click="nextStep"
+          color="red"
+          v-if="stepSelected !== 3"
+        >
+          {{ $t('rsvpModal.nextButton') }}
+        </fwb-button>
+        <fwb-button
+          @click="sendConfirmation"
+          color="red"
+          v-else
+        >
           {{ $t('rsvpModal.acceptButton') }}
         </fwb-button>
       </div>
