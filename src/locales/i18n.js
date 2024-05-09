@@ -2,6 +2,7 @@ import { createI18n } from 'vue-i18n'
 
 const messages = {
     en: {
+        confirmationMessage: `The confirmation page will be available in two weeks and The deadline to confirm is July 2,24. Thank you`,
         accessCodePlaceholder: 'Enter your access code',
         accessCodeSendButton: 'Submit',
         celebration: 'Quinces\' Celebration',
@@ -35,6 +36,7 @@ const messages = {
     },
 
     es: {
+        confirmationMessage: `La pagina de confirmación estará disponible en dos semanas y la fecha limite para confirmar es Julio2,24. Gracias`,
         accessCodePlaceholder: 'Codigo de acceso',
         accessCodeSendButton: 'Enviar',
         celebration: 'Quinces\' Celebration',
