@@ -18,13 +18,8 @@ const handleVideoEnded = () => {
         v-if="showVideo"
         @video-ended="handleVideoEnded"
     />
-    <div v-else class="alert-container">
-      <fwb-alert type="warning">
-        {{ $t('confirmationMessage') }}
-      </fwb-alert>
-    </div>
 
-    <TheRsvp v-if="false"/>
+    <TheRsvp v-else/>
   </main>
 </template>
 

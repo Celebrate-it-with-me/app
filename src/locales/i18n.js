@@ -22,8 +22,10 @@ const messages = {
             text: `If you are sure of your selection please confirm,
                    if not please close this dialog and
                    fix your selection and then click in confirm.`,
-            acceptButton: 'Submit',
-            cancelButton: 'Cancel'
+            nextButton: 'Next',
+            acceptButton: 'Confirm',
+            cancelButton: 'Cancel',
+            backButton: 'Back'
         },
         invalidAccessCode: 'Invalid Access Code',
         serverErrorAccessCode: 'Access code already used, please contact us if you need to change your selection',
@@ -54,8 +56,10 @@ const messages = {
             text: `Si esta seguro de su seleccion, presione
                    confirmar, sino cierre esta ventana, y 
                    arregle su seleccion`,
+            nextButton: 'Siguiente',
             acceptButton: 'Enviar',
-            cancelButton: 'Cancelar'
+            cancelButton: 'Cancelar',
+            backButton: 'Previo'
         },
         invalidAccessCode: 'Codigo de Acceso invalido',
         serverErrorAccessCode: 'Ya este codigo se uso, por favor contactenos si necesita cambiar su seleccion',
