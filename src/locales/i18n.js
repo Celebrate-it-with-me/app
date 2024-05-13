@@ -32,7 +32,10 @@ const messages = {
         thanksMessage: 'Thanks for your confirmation!',
         reservedMessage1: 'We have reserved',
         reservedMessage2: 'seats in your honor',
-        colorReservation: 'Colors Gold and Champagne are reserved for our Quinceañera.'
+        colorReservation: 'Colors Gold and Champagne are reserved for our Quinceañera.',
+        dressCodeSentence: `We kindly request all attendees to adhere to a formal dress 
+                code for the event, which should typically consist of a suit and tie for men, 
+                and  evening gown for women.`
     },
 
     es: {
@@ -66,7 +69,10 @@ const messages = {
         thanksMessage: 'Gracias por su confirmacion!',
         reservedMessage1: 'Hemos reservado',
         reservedMessage2: 'sillas en tu honor',
-        colorReservation: 'El color dorado y champagne esta reservado para la quiceañera.'
+        colorReservation: 'El color dorado y champagne esta reservado para la quiceañera.',
+        dressCodeSentence: `Solicitamos amablemente a todos los asistentes que respeten un código 
+            de vestimenta formal para el evento, que normalmente debe consistir en traje y corbata 
+            para los hombres y traje de noche para las mujeres.`
     }
 }
 

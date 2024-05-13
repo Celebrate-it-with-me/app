@@ -35,7 +35,7 @@ const closeModal = () => {
 }
 
 const nextStep = () => {
-  if (stepSelected.value < 3) {
+  if (stepSelected.value < 4) {
     stepSelected.value = stepSelected.value + 1;
   }
 }
@@ -72,13 +72,21 @@ const sendConfirmation = async () => {
       @close="closeModal"
   >
     <template #body>
-      <div class="update-phone" v-if="stepSelected === 1">
+      <div class="color-reservation" v-if="stepSelected === 1">
+        <p>
+          {{ $t('dressCodeSentence') }}
+        </p>
+        <p>
+          {{ $t('colorReservation') }}
+        </p>
+      </div>
+
+      <div class="update-phone" v-if="stepSelected === 2">
         <p>
           Please confirm or update your phone number.
         </p>
 
         <form>
-
           <fwb-input
             class="focus:border-red-300 focus:outline-none focus:ring-4 focus:ring-red-300"
             v-model="phoneNumber"
@@ -87,7 +95,7 @@ const sendConfirmation = async () => {
 
         </form>
       </div>
-      <div class="setup-calendar" v-if="stepSelected === 2">
+      <div class="setup-calendar" v-if="stepSelected === 3">
         <p>Please add this event to your calendar</p>
 
         <add-to-calendar-button
@@ -103,7 +111,7 @@ const sendConfirmation = async () => {
             label="'Add to calendar'"
         />
       </div>
-      <div v-if="stepSelected === 3">
+      <div v-if="stepSelected === 4">
         <p>
           {{ $t('rsvpModal.text') }}
         </p>
@@ -129,7 +137,7 @@ const sendConfirmation = async () => {
         <fwb-button
           @click="nextStep"
           color="red"
-          v-if="stepSelected !== 3"
+          v-if="stepSelected !== 4"
         >
           {{ $t('rsvpModal.nextButton') }}
         </fwb-button>
