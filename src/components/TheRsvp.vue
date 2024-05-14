@@ -216,9 +216,6 @@ const handleCloseConfirmationModal = () => {
             </fwb-button>
           </div>
         </div>
-        <div class="reservation-color">
-          {{ $t('colorReservation') }}
-        </div>
       </template>
       <template v-else>
         <div class="confirmation">
