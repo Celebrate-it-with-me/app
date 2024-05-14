@@ -70,7 +70,7 @@ const messages = {
         reservedMessage1: 'Hemos reservado',
         reservedMessage2: 'sillas en tu honor',
         colorReservation: 'Se reserva el color dorado y champagne para la quinceañera.',
-        dressCodeSentence: `Codigo de verstir: Elegante.`,
+        dressCodeSentence: `Codigo de vestir: Elegante.`,
         phoneConfirmationLabel: `Por favor confirme o actualice su numero de telefono.`,
         addToCalendarLabel: `Por favor adicione este evento a su calendario`
     }
