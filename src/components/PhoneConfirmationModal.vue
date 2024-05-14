@@ -83,20 +83,19 @@ const sendConfirmation = async () => {
 
       <div class="update-phone" v-if="stepSelected === 2">
         <p>
-          Please confirm or update your phone number.
+          {{ $t('phoneConfirmationLabel') }}
         </p>
 
         <form>
           <fwb-input
             class="focus:border-red-300 focus:outline-none focus:ring-4 focus:ring-red-300"
             v-model="phoneNumber"
-            label="Phone Number"
           />
 
         </form>
       </div>
       <div class="setup-calendar" v-if="stepSelected === 3">
-        <p>Please add this event to your calendar</p>
+        <p>{{ $t('addToCalendarLabel') }}</p>
 
         <add-to-calendar-button
             name="Vanessa's Quince Celebration"
