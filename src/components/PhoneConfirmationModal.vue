@@ -76,6 +76,7 @@ const sendConfirmation = async () => {
         <p>
           {{ $t('dressCodeSentence') }}
         </p>
+        <br />
         <p>
           {{ $t('colorReservation') }}
         </p>
