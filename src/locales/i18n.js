@@ -19,9 +19,9 @@ const messages = {
             button: 'Next',
         },
         rsvpModal: {
-            text: `If you are sure of your selection please confirm,
-                   if not please close this dialog and
-                   fix your selection and then click in confirm.`,
+            text: `To complete your selection please click on CONFIRM,
+                   otherwise go back and update the information, and
+                   proceed to CONFIRM immediately.`,
             nextButton: 'Next',
             acceptButton: 'Confirm',
             cancelButton: 'Cancel',
@@ -56,11 +56,11 @@ const messages = {
             button: 'Siguiente'
         },
         rsvpModal: {
-            text: `Si esta seguro de su seleccion, presione
-                   confirmar, sino cierre esta ventana, y 
-                   arregle su seleccion`,
+            text: `Para completar su selección, haga clic en CONFIRMAR,
+                   de lo contrario, regrese y actualice la información y
+                   proceda a CONFIRMAR inmediatamente.`,
             nextButton: 'Siguiente',
-            acceptButton: 'Enviar',
+            acceptButton: 'CONFIRMAR',
             cancelButton: 'Cancelar',
             backButton: 'Atras'
         },
