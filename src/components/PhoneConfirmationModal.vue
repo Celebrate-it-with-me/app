@@ -1,6 +1,6 @@
 <script setup>
 import {FwbButton, FwbInput, FwbModal} from "flowbite-vue";
-import {onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {CWM_API} from "@/services/axios";
 import 'add-to-calendar-button';
 
@@ -30,6 +30,67 @@ watch(
   }
 )
 
+watch(() => props.open, (newValue) => {
+  if (newValue) {
+    if (isAllNo.value) {
+      stepSelected.value = 4;
+    } else {
+      stepSelected.value = 1;
+    }
+  }
+})
+
+const noMainGuestButMember = computed(() => {
+  if (props.mainGuest.confirmed === 'yes') {
+    return false;
+  }
+
+  let memberYes = false;
+  props.mainGuest.party_members.forEach((member) => {
+    if (member.confirmed === 'yes') {
+      memberYes = true;
+    }
+  });
+
+  return memberYes;
+});
+
+const showCancelButton = computed(() => {
+  if (isAllNo) {
+    return true;
+  }
+
+  return stepSelected.value === 1;
+});
+
+const showBackButton = computed(() => {
+  if (isAllNo) {
+    return false;
+  }
+
+  return stepSelected.value !== 1;
+});
+
+const isAllNo = computed(() => {
+  if (props.mainGuest.confirmed !== 'no') {
+    return false;
+  }
+
+  if (props.mainGuest.party_members.length === 0) {
+    return true;
+  }
+
+  let allNo = true;
+
+  props.mainGuest.party_members.forEach((member) => {
+    if (member.confirmed === 'yes') {
+      allNo = false;
+    }
+  });
+
+  return allNo;
+})
+
 const closeModal = () => {
   emit('closeModal');
 }
@@ -52,7 +113,9 @@ const sendConfirmation = async () => {
   try {
     const response = await CWM_API.post(`rsvp/confirm`, {
       mainGuest: props.mainGuest,
-      phoneConfirmed: phoneNumber.value
+      phoneConfirmed: phoneNumber.value,
+      noMainGuestButMember: noMainGuestButMember.value,
+      isAllNo: isAllNo.value
     });
 
     if (response.status >= 200 && response.status < 300) {
@@ -83,7 +146,10 @@ const sendConfirmation = async () => {
       </div>
 
       <div class="update-phone" v-if="stepSelected === 2">
-        <p>
+        <p v-if="noMainGuestButMember">
+          {{ $t('phoneConfirmationLabelMember') }}
+        </p>
+        <p v-else>
           {{ $t('phoneConfirmationLabel') }}
         </p>
 
@@ -122,14 +188,14 @@ const sendConfirmation = async () => {
         <fwb-button
           @click="closeModal"
           color="alternative"
-          v-if="stepSelected === 1"
+          v-if="showCancelButton"
         >
           {{ $t('rsvpModal.cancelButton') }}
         </fwb-button>
         <fwb-button
           @click="backStep"
           color="alternative"
-          v-else
+          v-if="showBackButton"
         >
           {{ $t('rsvpModal.backButton') }}
         </fwb-button>
