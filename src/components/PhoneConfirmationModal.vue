@@ -103,7 +103,7 @@ const sendConfirmation = async () => {
             options="'Apple','Google', 'iCal', 'Microsoft365', 'MicrosoftTeams', 'Outlook.com', 'Yahoo'"
             location="Miami, FL"
             startDate="2024-08-02"
-            endDate="2024-08-03"
+            endDate="2024-08-02"
             startTime="18:40"
             endTime="24:59"
             timeZone="America/New_York"
