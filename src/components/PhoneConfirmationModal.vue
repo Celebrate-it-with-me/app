@@ -105,7 +105,7 @@ const sendConfirmation = async () => {
             startDate="2024-08-02"
             endDate="2024-08-03"
             startTime="18:40"
-            endTime="1:00"
+            endTime="24:59"
             timeZone="America/New_York"
             listStyle="dropdown-static"
             label="'Add to calendar'"
