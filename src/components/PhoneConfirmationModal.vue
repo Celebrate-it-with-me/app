@@ -170,7 +170,7 @@ const sendConfirmation = async () => {
             location="Miami, FL"
             startDate="2024-08-02"
             endDate="2024-08-03"
-            startTime="18:40"
+            startTime="18:30"
             endTime="01:00"
             timeZone="America/New_York"
             listStyle="dropdown-static"
