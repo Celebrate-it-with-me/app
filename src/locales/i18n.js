@@ -73,7 +73,7 @@ const messages = {
         colorReservation: 'Se reserva el color dorado y champagne para la quinceañera.',
         dressCodeSentence: `Codigo de vestir: Elegante.`,
         phoneConfirmationLabel: `Por favor confirme o actualice su numero de telefono.`,
-        phoneConfirmationLabelMember: `Por favor Actualice el número de teléfono del huésped confirmado.`,
+        phoneConfirmationLabelMember: `Por favor Actualice el número de teléfono del invitado confirmado.`,
         addToCalendarLabel: `Por favor adicione este evento a su calendario`
     }
 }
