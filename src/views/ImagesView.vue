@@ -22,12 +22,20 @@ const uploadImageLink = computed(() => {
     <div class="action-buttons-container">
       <div class="action-buttons">
         <router-link :to="viewGalleryLink">
-          <fwb-button size="sm" gradient="red-yellow">
+          <fwb-button
+              size="sm"
+              class="image-btn"
+          >
             View Gallery
           </fwb-button>
         </router-link>
         <router-link :to="uploadImageLink">
-          <fwb-button size="sm" gradient="red-yellow">Upload Images</fwb-button>
+          <fwb-button
+            size="sm"
+            class="image-btn"
+          >
+            Upload Images
+          </fwb-button>
         </router-link>
       </div>
     </div>
@@ -36,8 +44,13 @@ const uploadImageLink = computed(() => {
 
 <style scoped>
 .images-main {
-  background: url("../../public/images/bg1.jpg") no-repeat -250px center;
+  background: url("../../public/images/bg4.webp") no-repeat center;
   background-size: cover;
+
+  @media(max-width: 600px) {
+    background: url("../../public/images/bg4.webp") no-repeat -360px center;
+    background-size: cover;
+  }
 }
 .action-buttons-container {
   display: flex;
@@ -59,5 +72,12 @@ const uploadImageLink = computed(() => {
 
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+
+.image-btn{
+  background: url("../../public/images/img.png");
+  width: 125px;
+  height: 50px;
+  border: none;
 }
 </style>

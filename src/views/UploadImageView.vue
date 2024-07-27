@@ -170,7 +170,7 @@ const viewGallery = () => {
 
         <fwb-button
           size="sm"
-          gradient="red-yellow"
+          class="image-button"
           v-if="selectedImages.length"
           :loading="uploading"
           @click="uploadImages()"
@@ -182,15 +182,14 @@ const viewGallery = () => {
       <div class="go-back">
         <fwb-button
           size="sm"
-          gradient="red-yellow"
+          class="image-button"
           @click="goBack()"
         >
           Go Back
         </fwb-button>
         <fwb-button
-          class="ml-2"
+          class="image-button ml-2"
           size="sm"
-          gradient="red-yellow"
           @click="viewGallery()"
         >
           View Gallery
@@ -206,8 +205,13 @@ const viewGallery = () => {
 }
 
 .images-main {
-  background: url("../../public/images/bg1.jpg") no-repeat -250px center;
+  background: url("../../public/images/bg4.webp") no-repeat center;
   background-size: cover;
+
+  @media(max-width: 600px) {
+    background: url("../../public/images/bg4.webp") no-repeat -360px center;
+    background-size: cover;
+  }
 }
 
 .error-message {
@@ -265,5 +269,12 @@ const viewGallery = () => {
   align-self: center;
   margin-top: auto;
   margin-bottom: 10px;
+}
+
+.image-button{
+  background: url("../../public/images/img.png");
+  width: 125px;
+  height: 50px;
+  border: none;
 }
 </style>
