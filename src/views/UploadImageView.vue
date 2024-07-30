@@ -270,7 +270,7 @@ const viewGallery = () => {
 .go-back {
   align-self: center;
   margin-top: auto;
-  margin-bottom: 10px;
+  margin-bottom: 50px;
   height: 60px;
 }
 
