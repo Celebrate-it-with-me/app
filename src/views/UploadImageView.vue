@@ -245,7 +245,7 @@ const viewGallery = () => {
 
 .upload-container {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -262,13 +262,16 @@ const viewGallery = () => {
 }
 
 .upload {
-  width: 65%;
+  width: 75%;
+  max-height: calc(100vh - 70px);
+  overflow: auto;
 }
 
 .go-back {
   align-self: center;
   margin-top: auto;
   margin-bottom: 10px;
+  height: 60px;
 }
 
 .image-button{
