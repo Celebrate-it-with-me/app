@@ -5,14 +5,13 @@ import { Notifications } from "@kyvg/vue3-notification";
 </script>
 
 <template>
-  <div class="dark">
+  <div class="dark bg-gray-900 min-h-screen">
     <header>
       <div class="wrapper">
       </div>
     </header>
 
     <RouterView />
-    <change-locale />
     <notifications />
   </div>
 
