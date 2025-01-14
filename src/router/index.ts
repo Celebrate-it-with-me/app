@@ -1,21 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import RSVP from "@/views/RSVP.vue";
-import ImagesView from '@/views/ImagesView.vue';
-import GalleryView from "@/views/GalleryView.vue";
-import UploadImageView from "@/views/UploadImageView.vue";
+import { nonAuthRoutes }  from "@/router/nonAuthRoutes.js";
+import NonAuthenticatedLayout from '@/views/layouts/NonAuthenticatedLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-      meta: {
-        title: 'Home'
-      }
-    },
+      path: '',
+      name: 'Non Authenticated',
+      component: NonAuthenticatedLayout,
+      children: [
+        ...nonAuthRoutes
+      ]
+    }
+  ],
+  /*routes: [
     {
       path: '/rsvp/vanessar',
       name: 'rsvp',
@@ -59,7 +58,7 @@ const router = createRouter({
         title: 'Upload Image'
       }
     }
-  ]
+  ]*/
 })
 
 router.beforeEach((to, from, next) => {
