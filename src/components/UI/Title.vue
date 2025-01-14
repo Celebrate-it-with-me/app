@@ -15,7 +15,7 @@
 
 <template>
   <component
-    is="level"
+    :is="level"
     :class="classes"
     v-bind="$attrs"
   >
