@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LandingHeaderNav from '@/components/Landing/LandingHeaderNav.vue'
 import LandingHeroSection from '@/components/Landing/LandingHeroSection.vue'
+
 </script>
 
 <template>
