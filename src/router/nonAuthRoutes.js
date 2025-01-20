@@ -1,5 +1,6 @@
 import SignUpView from '../views/SignUpView.vue'
 import HomeView from '@/views/HomeView.vue'
+import SignInView from '@/views/SignInView.vue'
 
 const nonAuthRoutes = [
   {
@@ -14,6 +15,14 @@ const nonAuthRoutes = [
     path: '/sign-up',
     name: 'sign-up',
     component: SignUpView,
+    meta: {
+      title: 'Sign up'
+    }
+  },
+  {
+    path: '/sign-in',
+    name: 'sign-in',
+    component: SignInView,
     meta: {
       title: 'Sign up'
     }

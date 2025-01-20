@@ -1,20 +1,17 @@
 <script setup>
 import { Form } from 'vee-validate'
-import TextField from '@/components/UI/form/TextField.vue'
 import { computed, reactive, ref, watch } from 'vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import PasswordField from '@/components/UI/form/PasswordField.vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { useUserStore } from '@/stores/useUserStore'
+import { detect } from 'detect-browser'
 
-const registrationComplete = ref(false)
 const backendError = ref(false)
 const backendErrorMessage = ref("")
 const userStore = useUserStore()
 const localState = reactive({
-  firstName: '',
-  lastName: '',
   email: '',
   password: '',
   sending: false
@@ -23,8 +20,6 @@ const localState = reactive({
 const registerValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      firstName: zod.string().min(1, {message: 'First Name is required'}),
-      lastName: zod.string().min(1, {message: 'Last Name is required'}),
       email: zod.string().email({message: 'Email is required'}),
       password: zod.string({message: 'Password is required'}).min(8, {message: 'Password must have at least 8 characters long'})
     })
@@ -34,11 +29,13 @@ const registerValidationSchema = computed(() => {
 const onSubmit = async () => {
   try {
     localState.sending = true
+    const browser = detect()
+    const device = browser ? `${browser.name} ${browser.version}` : 'unknown'
 
-    const response = await userStore.register(localState)
+    const response = await userStore.login({...localState, device})
 
     if (response.status >= 200 && response.status < 300) {
-      registrationComplete.value = true
+      console.log(response)
     } else {
       backendError.value = true
       backendErrorMessage.value = response.response?.data?.message ?? "Oops, something went wrong!"
@@ -60,9 +57,8 @@ const onInvalidSubmit = (errors) => {
 
 <template>
   <div class="sign-up-form w-1/2 bg-gray-800 rounded p-10">
-    <h3 class="font-semibold text-xl mb-10 text-white">Let's Start!</h3>
+    <h3 class="font-semibold text-xl mb-10 text-white">Login to Reconnect!</h3>
     <Form
-      v-if="!registrationComplete"
       :validation-schema="registerValidationSchema"
       @submit="onSubmit"
       @invalid-submit="onInvalidSubmit"
@@ -74,32 +70,6 @@ const onInvalidSubmit = (errors) => {
         <p>
           {{ backendErrorMessage }}
         </p>
-      </div>
-
-      <div class="mb-4">
-        <TextField
-          :placeholder="'Enter your first name'"
-          name="firstName"
-          v-model="localState.firstName"
-          show-error
-          :label="'First Name'"
-          :class-label="'block text-gray-300 font-medium mb-2'"
-          :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
-                       py-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-        ></TextField>
-      </div>
-
-      <div class="mb-4">
-        <TextField
-          :placeholder="'Enter your last name'"
-          name="lastName"
-          v-model="localState.lastName"
-          show-error
-          :label="'Last Name'"
-          :class-label="'block text-gray-300 font-medium mb-2'"
-          :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
-                       py-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-        ></TextField>
       </div>
 
       <!-- Email -->
@@ -145,20 +115,5 @@ const onInvalidSubmit = (errors) => {
         </button>
       </div>
     </Form>
-    <div
-      v-else
-    >
-      <p
-        class="text-sm font-normal text-white"
-      >
-        Thank you for your registration, now you can continue to
-        <router-link
-          :to="'login'"
-          class="text-yellow-300"
-        >
-          Login
-        </router-link>
-      </p>
-    </div>
   </div>
 </template>
