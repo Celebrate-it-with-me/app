@@ -122,4 +122,16 @@ const handleFieldBlur = (e) => {
     </span>
   </div>
 </template>
+<style scoped>
+.has-error {
+  @apply text-red-500;
 
+  label {
+    @apply text-red-500;
+  }
+
+  input {
+    @apply border border-red-500;
+  }
+}
+</style>

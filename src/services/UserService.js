@@ -13,15 +13,18 @@ class UserService {
   }
 
 
-  async register({ name, email, password }) {
+  async register({ firstName, lastName, email, password }) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
     }).then(
       async () => await CWM_API.post('register', {
-        name,
+        firstName,
+        lastName,
         email,
         password
       })
     )
   }
 }
+
+export default new UserService()
