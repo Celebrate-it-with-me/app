@@ -6,7 +6,9 @@ import EmailField from '@/components/UI/form/EmailField.vue'
 import PasswordField from '@/components/UI/form/PasswordField.vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
+import { useUserStore } from '@/stores/useUserStore'
 
+const userStore = useUserStore()
 const localState = reactive({
   firstName: '',
   lastName: '',
@@ -30,7 +32,9 @@ const onSubmit = async () => {
   try {
     localState.sending = true
 
-    // Request to register the new user in cwm
+    const response = await userStore.register(localState)
+
+    console.log(response)
 
   } catch(e) {
     console.log('Ops Something happens!', e)
@@ -56,8 +60,9 @@ const onInvalidSubmit = (errors) => {
       <div class="mb-4">
         <TextField
           :placeholder="'Enter your first name'"
-          :name="'firstName'"
+          name="firstName"
           v-model="localState.firstName"
+          show-error
           :label="'First Name'"
           :class-label="'block text-gray-300 font-medium mb-2'"
           :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
@@ -68,8 +73,9 @@ const onInvalidSubmit = (errors) => {
       <div class="mb-4">
         <TextField
           :placeholder="'Enter your last name'"
-          :name="'lastName'"
+          name="lastName"
           v-model="localState.lastName"
+          show-error
           :label="'Last Name'"
           :class-label="'block text-gray-300 font-medium mb-2'"
           :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
@@ -85,6 +91,7 @@ const onInvalidSubmit = (errors) => {
           label="Email"
           :class-label="'block text-gray-300 font-medium mb-2'"
           v-model="localState.email"
+          show-error
           required
           :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4 py-2
                     focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
@@ -100,6 +107,7 @@ const onInvalidSubmit = (errors) => {
           label="Password"
           :class-label="'block text-gray-300 font-medium mb-2'"
           v-model="localState.password"
+          show-error
           required
           :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4 py-2
                     focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
@@ -120,7 +128,3 @@ const onInvalidSubmit = (errors) => {
     </Form>
   </div>
 </template>
-
-<style scoped>
-
-</style>
