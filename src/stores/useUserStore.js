@@ -10,8 +10,8 @@ export const useUserStore = defineStore('user', {
   }),
   persist: true,
   actions: {
-    async login({ email, password }){
-      return await UserService.register({email, password})
+    async login({ email, password, device }){
+      return await UserService.login({email, password, device})
     },
 
     async register({ firstName, lastName, email, password }){
