@@ -160,5 +160,17 @@ const onInvalidSubmit = (errors) => {
         </router-link>
       </p>
     </div>
+    <div class="flex flex-row justify-end">
+      <p class="text-white text-sm font-thin mt-2">
+        Already have an account?
+        <router-link
+          :to="'sign-in'"
+          tag="a"
+          class="text-yellow-300"
+        >
+          Click here to login!
+        </router-link>
+      </p>
+    </div>
   </div>
 </template>

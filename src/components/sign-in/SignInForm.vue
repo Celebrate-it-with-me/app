@@ -111,8 +111,20 @@ const onInvalidSubmit = (errors) => {
           class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg
                     focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-400"
         >
-          Register
+          Login
         </button>
+      </div>
+      <div class="flex flex-row justify-end">
+        <p class="text-sm text-white font-thin mt-2">
+          Don't have an account?
+          <router-link
+            :to="'sign-up'"
+            tag="a"
+            class="text-yellow-300"
+          >
+            Click here to sign up!
+          </router-link>
+        </p>
       </div>
     </Form>
   </div>
