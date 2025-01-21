@@ -144,6 +144,18 @@ const onInvalidSubmit = (errors) => {
           Register
         </button>
       </div>
+      <div class="flex flex-row justify-end">
+        <p class="text-white text-sm font-thin mt-2">
+          Already have an account?
+          <router-link
+            :to="'sign-in'"
+            tag="a"
+            class="text-yellow-300"
+          >
+            Click here to login!
+          </router-link>
+        </p>
+      </div>
     </Form>
     <div
       v-else
@@ -153,7 +165,7 @@ const onInvalidSubmit = (errors) => {
       >
         Thank you for your registration, now you can continue to
         <router-link
-          :to="'login'"
+          :to="'sign-in'"
           class="text-yellow-300"
         >
           Login

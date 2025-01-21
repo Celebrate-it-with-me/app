@@ -1,12 +1,12 @@
-import { defineStore } from 'pinia'
+import { defineStore, getActivePinia } from 'pinia'
 import UserService from '../services/UserService'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    isAuthenticated: false,
     name: '',
     email: '',
     userId: '',
+    token: null
   }),
   persist: true,
   actions: {
@@ -16,6 +16,26 @@ export const useUserStore = defineStore('user', {
 
     async register({ firstName, lastName, email, password }){
       return await UserService.register({ firstName, lastName, email, password})
+    },
+
+    initUserData({ name, email, userId, token }) {
+      this.name = name
+      this.email = email
+      this.userId = userId
+      this.token = token
+    },
+
+    async logOut() {
+      const response = await UserService.logOut()
+
+      if (response.status === 200) {
+        getActivePinia()._s.forEach((store) => store.$reset())
+      }
+    }
+  },
+  getters: {
+    isAuthenticated(state) {
+      return state.token != null
     }
   }
 })

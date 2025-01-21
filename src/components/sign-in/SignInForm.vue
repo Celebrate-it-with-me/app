@@ -7,10 +7,12 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { useUserStore } from '@/stores/useUserStore'
 import { detect } from 'detect-browser'
+import { useRouter } from 'vue-router'
 
 const backendError = ref(false)
 const backendErrorMessage = ref("")
 const userStore = useUserStore()
+const router = useRouter()
 const localState = reactive({
   email: '',
   password: '',
@@ -35,7 +37,16 @@ const onSubmit = async () => {
     const response = await userStore.login({...localState, device})
 
     if (response.status >= 200 && response.status < 300) {
-      console.log(response)
+      const result = response.data ?? {}
+      userStore.initUserData(
+        {
+          name: result?.user?.name ?? '',
+          email: result?.user?.email ?? '',
+          userId: result?.user?.id ?? '',
+          token: result?.token ?? ''
+        })
+
+      router.push("dashboard")
     } else {
       backendError.value = true
       backendErrorMessage.value = response.response?.data?.message ?? "Oops, something went wrong!"
@@ -111,8 +122,20 @@ const onInvalidSubmit = (errors) => {
           class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg
                     focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-400"
         >
-          Register
+          Login
         </button>
+      </div>
+      <div class="flex flex-row justify-end">
+        <p class="text-sm text-white font-thin mt-2">
+          Don't have an account?
+          <router-link
+            :to="'sign-up'"
+            tag="a"
+            class="text-yellow-300"
+          >
+            Click here to sign up!
+          </router-link>
+        </p>
       </div>
     </Form>
   </div>
