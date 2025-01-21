@@ -7,10 +7,12 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { useUserStore } from '@/stores/useUserStore'
 import { detect } from 'detect-browser'
+import { useRouter } from 'vue-router'
 
 const backendError = ref(false)
 const backendErrorMessage = ref("")
 const userStore = useUserStore()
+const router = useRouter()
 const localState = reactive({
   email: '',
   password: '',
@@ -35,7 +37,16 @@ const onSubmit = async () => {
     const response = await userStore.login({...localState, device})
 
     if (response.status >= 200 && response.status < 300) {
-      console.log(response)
+      const result = response.data ?? {}
+      userStore.initUserData(
+        {
+          name: result?.user?.name ?? '',
+          email: result?.user?.email ?? '',
+          userId: result?.user?.id ?? '',
+          token: result?.token ?? ''
+        })
+
+      router.push("dashboard")
     } else {
       backendError.value = true
       backendErrorMessage.value = response.response?.data?.message ?? "Oops, something went wrong!"

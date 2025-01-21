@@ -26,6 +26,10 @@ class UserService {
       })
     )
   }
+
+  async logOut() {
+    return await CWM_API.post('logout')
+  }
 }
 
 export default new UserService()
