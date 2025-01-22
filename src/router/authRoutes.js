@@ -1,6 +1,7 @@
 import DashboardView from '../views/DashboardView.vue'
+import EventsView from '../views/EventsView.vue'
 
-export const authRoutes = [
+const authRoutes = [
   {
     path: '/dashboard',
     name: 'dashboard',
@@ -8,5 +9,16 @@ export const authRoutes = [
     meta: {
       title: 'Events Dashboard'
     }
+  },
+  {
+    path: '/dashboard/events',
+    name: 'events',
+    component: EventsView,
+    meta: {
+      title: 'My Events'
+    }
   }
 ]
+
+
+export { authRoutes }

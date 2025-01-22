@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { nonAuthRoutes }  from "@/router/nonAuthRoutes.js";
+import { authRoutes } from "@/router/authRoutes";
 import NonAuthenticatedLayout from '@/views/layouts/NonAuthenticatedLayout.vue'
+import AuthenticatedLayout from '@/views/layouts/AuthenticatedLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,6 +13,14 @@ const router = createRouter({
       component: NonAuthenticatedLayout,
       children: [
         ...nonAuthRoutes
+      ]
+    },
+    {
+      path: '',
+      name: 'Authenticated Layout',
+      component: AuthenticatedLayout,
+      children: [
+        ...authRoutes
       ]
     }
   ],
