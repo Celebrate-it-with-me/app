@@ -4,11 +4,10 @@ import { useField } from 'vee-validate'
 
 const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur'])
 const props = defineProps({
-  placeholder: { type: String, default: 'Search' },
+  placeholder: { type: String, default: 'Description' },
   label: { type: String },
   classLabel: { type: String, default: ' ' },
   classInput: { type: String, default: 'classinput' },
-  type: { type: String, default: 'text' },
   name: { type: String },
   modelValue: { type: String, default: '' },
   isReadonly: { type: Boolean, default: false },
@@ -27,7 +26,6 @@ const props = defineProps({
   }
 })
 
-const types = ref(props.type)
 const name = toRef(props, 'name')
 
 const {
@@ -76,18 +74,18 @@ const handleFieldBlur = (e) => {
       :class="horizontal ? 'flex-1' : ''"
       class="relative w-full mt-1"
     >
-      <input
-        :id="name"
-        :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
-        :disabled="disabled"
-        :name="name"
-        :placeholder="placeholder"
-        :readonly="isReadonly"
-        :type="types"
-        :value="modelValue"
-        @blur="handleFieldBlur"
-        @input="handleChange"
-      />
+       <textarea
+         id="message"
+         rows="5"
+         :class="`${classInput}  input-control w-full block focus:outline-none `"
+         :disabled="disabled"
+         :name="name"
+         :placeholder="placeholder"
+         :readonly="isReadonly"
+         :value="modelValue"
+         @blur="handleFieldBlur"
+         @input="handleChange"
+       />
     </div>
 
     <span
