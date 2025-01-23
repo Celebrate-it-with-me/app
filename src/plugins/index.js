@@ -8,6 +8,7 @@ import {createVfm} from "vue-final-modal";
 import router from '@/router/index.ts';
 // Import Locales
 import i18n from '../locales/i18n';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 import Notifications from '@kyvg/vue3-notification'
 
@@ -17,23 +18,26 @@ export function registerPlugin(app) {
     const pinia = createPinia();
 
     // Use Pinia Logger
-    pinia.use(
+    /*pinia.use(
         PiniaLogger({
             // Expand Logs by default
             expanded: true,
             // Disable Logger for Production Environment
             disabled: import.meta.env.PROD
         })
-    );
+    );*/
+
+    // pinia.use(piniaPluginPersistedstate);
+
+  console.log('Hydrated state:', localStorage.getItem('user'));
 
     // Use Vue Final Modal, Router and Pinia middleware in Vue App
     app
-        .use(i18n)
-        .use(createVfm())
+        //.use(i18n)
+        //.use(createVfm())
         .use(router)
-        .use(pinia)
+        .use(pinia.use(piniaPluginPersistedstate))
         .use(Notifications);
 
-    // Fetch cookie for sanctum from API
-    fetch(`${import.meta.env.VITE_API_URL}sanctum/csrf-cookie`)
+
 }

@@ -4,10 +4,12 @@ import TextAreaField from '@/components/UI/form/TextAreaField.vue'
 import TextField from '@/components/UI/form/TextField.vue'
 import SelectField from '@/components/UI/form/SelectField.vue'
 import { Form } from 'vee-validate'
-import { computed, reactive, watch } from 'vue'
+import { computed, onMounted, reactive, watch } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { EVENT_STATUSES as statuses, EVENT_VISIBILITIES as visibilities } from '@/constants/constants'
+import { useEventsStore } from '@/stores/useEventsStore'
+import { useUserStore } from '@/stores/useUserStore'
 
 const emit = defineEmits(['cancelCreate'])
 const eventState = reactive({
@@ -16,7 +18,15 @@ const eventState = reactive({
   eventDate: '',
   status: 'draft',
   customUrlSlug: '',
-  visibility: 'private'
+  visibility: 'private',
+  processing: false
+})
+
+const userStore = useUserStore()
+const eventStore = useEventsStore()
+
+onMounted(() => {
+  console.log('checking token', userStore.token)
 })
 
 const eventValidationSchema = computed(() => {
@@ -38,8 +48,8 @@ const eventValidationSchema = computed(() => {
           },
           { message: "Event Date cannot be in the past" }
         ),
-      eventStatus: zod.string().refine((value) => statuses.map((status) => status.value).includes(value)),
-      eventVisibility: zod.string().refine((value) => visibilities.map((visibility) => visibility.value).includes(value)),
+      status: zod.string().refine((value) => statuses.map((status) => status.value).includes(value)),
+      visibility: zod.string().refine((value) => visibilities.map((visibility) => visibility.value).includes(value)),
     })
   )
 })
@@ -59,6 +69,23 @@ const cancelCreateEvent = () => {
   emit('cancelCreate')
 }
 
+const onSubmit = async () => {
+  try {
+    eventState.processing = true
+
+    const response = await eventStore.createEvent(eventState)
+
+    console.log('Login from create event', response)
+  } catch (e) {
+    console.log(e)
+  } finally {
+    eventState.processing = false
+  }
+}
+
+const onInvalidSubmit = (err) => {
+  console.log(err)
+}
 
 watch(() => eventState.eventName, () => {
   initUrlSlug()
@@ -70,6 +97,8 @@ watch(() => eventState.eventName, () => {
   <Form
     class="flex flex-row gap-x-2 flex-wrap"
     :validation-schema="eventValidationSchema"
+    @submit="onSubmit"
+    @invalid-submit="onInvalidSubmit"
   >
     <div
       class="w-[49%]"

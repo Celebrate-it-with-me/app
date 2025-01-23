@@ -8,7 +8,15 @@ export const useUserStore = defineStore('user', {
     userId: '',
     token: null
   }),
-  persist: true,
+  persist: {
+    enabled: true, // Enable persistence explicitly
+    strategies: [
+      {
+        key: 'user-store', // Custom key to use in localStorage
+        storage: localStorage, // Use localStorage explicitly (or sessionStorage if needed)
+      },
+    ],
+  },
   actions: {
     async login({ email, password, device }){
       return await UserService.login({email, password, device})
@@ -29,6 +37,7 @@ export const useUserStore = defineStore('user', {
       const response = await UserService.logOut()
 
       if (response.status === 200) {
+        console.log('is here. really')
         getActivePinia()._s.forEach((store) => store.$reset())
       }
     }
