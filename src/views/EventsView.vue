@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import Events from '@/components/authenticated/events/events.vue'
+import Events from '@/components/authenticated/events/Events.vue'
 </script>
 
 <template>

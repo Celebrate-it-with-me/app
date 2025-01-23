@@ -76,7 +76,7 @@ const handleFieldBlur = (e) => {
     >
        <textarea
          id="message"
-         rows="5"
+         rows="4"
          :class="`${classInput}  input-control w-full block focus:outline-none `"
          :disabled="disabled"
          :name="name"
