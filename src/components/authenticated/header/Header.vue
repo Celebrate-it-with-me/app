@@ -1,4 +1,45 @@
-<script setup lang="ts">
+<script setup>
+import { onBeforeUnmount, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
+const isProfileOpen = ref(false)
+const router = useRouter()
+
+const toggleProfileMenuOpen = () => {
+  isProfileOpen.value = !isProfileOpen.value
+}
+
+const handleClickOutside = (event) => {
+  const menu = document.querySelector('.profile-menu')
+
+  if (!menu || !menu.contains(event.target)) {
+    closeProfileMenu()
+  }
+}
+
+const closeProfileMenu = () => {
+  isProfileOpen.value = false
+  document.removeEventListener('click', handleClickOutside)
+}
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
+
+watch(isProfileOpen, (value) => {
+  if (value) {
+    setTimeout(() => {
+      document.addEventListener('click', handleClickOutside)
+    })
+  }
+}, {
+  immediate: true
+})
+
+const logoutUser = async () => {
+  return await router.push('/logout')
+}
+
 
 </script>
 
@@ -13,14 +54,71 @@
         <li>
           <router-link
             :to="'/dashboard/events'"
-            tag="a"
             class="hover:text-yellow-300 transition-colors duration-500"
           >
             Events
           </router-link>
         </li>
         <li><a href="#" class="hover:text-yellow-300 transition-colors duration-500">Calendar</a></li>
-        <li><a href="#" class="hover:text-yellow-300 transition-colors duration-500">Profile</a></li>
+        <li class="relative">
+          <!-- Profile Button -->
+          <button
+            class="hover:text-yellow-300 transition-colors duration-500 flex items-center"
+            @click="toggleProfileMenuOpen"
+          >
+            Profile
+            <svg
+              class="w-4 h-4 ml-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div
+            v-show="isProfileOpen"
+            @click="closeProfileMenu"
+            class="absolute right-0 mt-2 w-40 bg-white text-black dark:bg-gray-800 dark:text-white
+                   shadow-md rounded-lg z-50 profile-menu"
+          >
+            <ul>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-lg"
+                >
+                  Settings
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  Account
+                </a>
+              </li>
+              <li>
+                <span
+                  @click="logoutUser"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-lg"
+                >
+                  Logout
+                </span>
+              </li>
+            </ul>
+          </div>
+        </li>
+
       </ul>
       <button class="md:hidden">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -3,6 +3,8 @@ import { useUserStore } from '@/stores/useUserStore'
 
 const CWM_API = axios.create({
     baseURL: import.meta.env.VITE_API_URL + 'api/v1/app',
+    withCredentials: true,
+    withXSRFToken: true,
     headers: {
         Accept: 'application/json'
     }
