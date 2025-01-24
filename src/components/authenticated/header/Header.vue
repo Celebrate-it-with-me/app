@@ -1,7 +1,9 @@
 <script setup>
 import { onBeforeUnmount, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const isProfileOpen = ref(false)
+const router = useRouter()
 
 const toggleProfileMenuOpen = () => {
   isProfileOpen.value = !isProfileOpen.value
@@ -33,6 +35,11 @@ watch(isProfileOpen, (value) => {
 }, {
   immediate: true
 })
+
+const logoutUser = async () => {
+  return await router.push('/logout')
+}
+
 
 </script>
 
@@ -101,12 +108,12 @@ watch(isProfileOpen, (value) => {
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
+                <span
+                  @click="logoutUser"
                   class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-lg"
                 >
                   Logout
-                </a>
+                </span>
               </li>
             </ul>
           </div>
