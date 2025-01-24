@@ -1,19 +1,34 @@
 <script setup>
-import { PlusIcon } from '@heroicons/vue/16/solid'
 import Alert from '@/components/UI/alerts/Alert.vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import CreateEvent from '@/components/authenticated/events/CreateEvent.vue'
+import MyEvents from '@/components/authenticated/events/MyEvents.vue'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 // Data
 const showAddEventView = ref(false)
+const eventsStore = useEventsStore()
 
-const showAddEvent = () => {
+const handleCreateEvent = () => {
   showAddEventView.value = true
 }
 
 const handleCancelCreate = () => {
   showAddEventView.value = false
 }
+
+const eventMessage = computed(() => {
+  if (!eventsStore.events.length) {
+    return "You don't have any event yet, please click in 'Add new event' to start"
+  }
+
+  if (!eventsStore.currentEvent) {
+    return "Please select one event to work on it!"
+  }
+
+  return ''
+})
+
 
 </script>
 
@@ -25,24 +40,16 @@ const handleCancelCreate = () => {
     <section
       class="my-events-container flex flex-row gap-x-4 mt-10 border-2 border-gray-200/10 p-10 rounded-md min-h-[300px] h-full"
     >
-      <div class="events-lists w-[30%]">
-        <div class="add__new-event">
-          <p
-            class="text-yellow-100/40 transition-colors duration-500 hover:text-yellow-300/75 flex flex-row gap-x-1 justify-start items-center cursor-pointer"
-            @click="showAddEvent"
-          >
-            <PlusIcon class="h-6 w-6" />
-            Add New Event
-          </p>
-        </div>
-      </div>
+      <MyEvents
+        @create-event="handleCreateEvent"
+      />
 
       <div class="event-handle w-[70%]">
         <Alert
           alert-type="info"
           v-if="!showAddEventView"
         >
-          You don't have any event yet!
+          {{ eventMessage }}
         </Alert>
 
         <div class="w-full">

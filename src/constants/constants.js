@@ -10,3 +10,5 @@ export const EVENT_VISIBILITIES = [
   { value: 'private', text: 'Private' },
   { value: 'restricted', text: 'Restricted' }
 ]
+
+export const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong, please try again later!'

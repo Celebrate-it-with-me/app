@@ -11,6 +11,10 @@ class EventsService {
       customUrlSlug
     })
   }
+
+  async getMyEvents() {
+    return CWM_API.get(`event`)
+  }
 }
 
 export default new EventsService()
