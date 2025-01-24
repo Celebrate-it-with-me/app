@@ -1,12 +1,10 @@
 <script setup>
-import { CheckIcon, PlusIcon } from '@heroicons/vue/16/solid'
+import { PlusIcon } from '@heroicons/vue/16/solid'
 import { useEventsStore } from '@/stores/useEventsStore'
 import EventLi from '@/components/authenticated/events/EventLi.vue'
 
 const emit = defineEmits(['createEvent'])
 const eventsStore = useEventsStore()
-
-
 
 const showAddEvent = () => {
   emit('createEvent')
@@ -15,7 +13,7 @@ const showAddEvent = () => {
 </script>
 
 <template>
-  <div class="events-lists w-[30%]">
+  <div class="events-lists w-[30%]  border-r border-gray-700 pr-6">
     <div class="my-events">
       <ul>
         <EventLi

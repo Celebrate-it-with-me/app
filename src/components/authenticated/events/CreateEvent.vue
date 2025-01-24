@@ -14,6 +14,7 @@ import {
 } from '@/constants/constants'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useUserStore } from '@/stores/useUserStore'
+import { XMarkIcon } from '@heroicons/vue/16/solid'
 
 const emit = defineEmits(['cancelCreate'])
 const eventState = reactive({
@@ -113,113 +114,122 @@ watch(
 </script>
 
 <template>
-  <Form
-    class="flex flex-row gap-x-2 flex-wrap"
-    :validation-schema="eventValidationSchema"
-    @submit="onSubmit"
-    @invalid-submit="onInvalidSubmit"
-  >
-    <div
-      v-if="eventErrors"
-      class="w-full"
-    >
-      <p class="text-lg text-red-800 dark:text-red-400 font-semibold mb-4">
-        {{ eventErrors }}
-      </p>
-    </div>
-    <div class="w-[49%]">
-      <TextField
-        v-model="eventState.eventName"
-        name="eventName"
-        :label="'Event Name'"
-        show-error
-        placeholder="Party Time"
-        :class-label="'block text-gray-300 font-medium mb-2'"
-        :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
-                       py-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-      />
-    </div>
-    <div class="w-[49%]">
-      <DateField
-        v-model="eventState.eventDate"
-        name="eventDate"
-        :label="'Event Date'"
-        show-error
-        placeholder="Select the event Date"
-        :class-label="'block text-gray-300 font-medium mb-2'"
-        :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
-                       py-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-      />
-    </div>
-
-    <div class="w-[100%] mt-4">
-      <TextAreaField
-        v-model="eventState.eventDescription"
-        name="eventDescription"
-        placeholder="Description"
-        label="Event Description"
-        show-error
-        :class-label="'block text-gray-300 font-medium mb-2'"
-        :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
-                       py-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-      />
-    </div>
-
-    <div class="w-[49%] mt-4">
-      <SelectField
-        label="Event Status"
-        name="status"
-        v-model="eventState.status"
-        :items="statuses"
-        show-error
-        :class-label="'block text-gray-300 font-medium mb-2'"
-        :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
-                       py-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-      />
-    </div>
-
-    <div class="w-[49%] mt-4">
-      <SelectField
-        label="Event Visibility"
-        name="visibility"
-        v-model="eventState.visibility"
-        :items="visibilities"
-        show-error
-        :class-label="'block text-gray-300 font-medium mb-2'"
-        :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
-                       py-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-      />
-    </div>
-
-    <div class="w-[49%] mt-4">
-      <TextField
-        v-model="eventState.customUrlSlug"
-        disabled
-        name="customUrlSlug"
-        :label="'Web Url Slug - ReadOnly'"
-        placeholder="slug-for-event-web"
-        :class-label="'block text-gray-300 font-medium mb-2'"
-        :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4
-                       py-2 focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-      />
-    </div>
-
-    <div class="w-full mt-5 flex flex-row gap-x-5 justify-end">
-      <button
-        type="button"
-        class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-400"
+  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md">
+    <!-- Header Section -->
+    <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
+      <h3 class="text-lg font-semibold">Create or Edit Event Details</h3>
+      <XMarkIcon
+        class="h-6 w-6 cursor-pointer"
         @click="cancelCreateEvent"
-      >
-        Cancel
-      </button>
-      <button
-        type="submit"
-        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-400"
-      >
-        Register
-      </button>
+      ></XMarkIcon>
     </div>
-  </Form>
+
+    <!-- Event Details Form -->
+    <Form
+      :validation-schema="eventValidationSchema"
+      @submit="onSubmit"
+      @invalid-submit="onInvalidSubmit"
+    >
+      <!-- Error Section -->
+      <div v-if="eventErrors" class="w-full mb-4">
+        <p class="text-red-500 font-semibold">
+          {{ eventErrors }}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-6">
+        <!-- Event Name -->
+        <div>
+          <TextField
+            v-model="eventState.eventName"
+            label="Event Name"
+            name="eventName"
+            show-error
+            placeholder="Enter the event name"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
+        <!-- Event Date -->
+        <div>
+          <DateField
+            v-model="eventState.eventDate"
+            label="Event Date"
+            name="eventDate"
+            show-error
+            placeholder="MM/DD/YYYY"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
+        <!-- Event Description -->
+        <div class="col-span-2">
+          <TextAreaField
+            v-model="eventState.eventDescription"
+            label="Event Description"
+            name="eventDescription"
+            show-error
+            placeholder="Tell us more about the event..."
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
+        <!-- Event Status -->
+        <div>
+          <SelectField
+            label="Status"
+            name="status"
+            show-error
+            v-model="eventState.status"
+            :items="statuses"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
+        <!-- Event Visibility -->
+        <div>
+          <SelectField
+            label="Visibility"
+            name="visibility"
+            show-error
+            v-model="eventState.visibility"
+            :items="visibilities"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
+        <!-- Custom URL Slug -->
+        <div>
+          <p class="text-gray-400 text-sm mb-1">Web URL Slug</p>
+          <TextField
+            v-model="eventState.customUrlSlug"
+            disabled
+            name="customUrlSlug"
+            placeholder="Generated automatically"
+            :class-input="`w-full bg-gray-900 text-gray-500 border-none px-2 py-1 rounded-md`"
+          />
+        </div>
+      </div>
+
+      <!-- Form Buttons -->
+      <div class="mt-6 flex justify-end items-center gap-4">
+        <button
+          type="button"
+          @click="cancelCreateEvent"
+          class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+        >
+          Save Event
+        </button>
+      </div>
+    </Form>
+  </div>
 </template>
+
 
 <style scoped></style>

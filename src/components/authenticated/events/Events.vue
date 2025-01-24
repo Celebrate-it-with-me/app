@@ -4,12 +4,14 @@ import { computed, ref } from 'vue'
 import CreateEvent from '@/components/authenticated/events/CreateEvent.vue'
 import MyEvents from '@/components/authenticated/events/MyEvents.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
+import ShowEvent from '@/components/authenticated/events/ShowEvent.vue'
 
 // Data
 const showAddEventView = ref(false)
 const eventsStore = useEventsStore()
 
 const handleCreateEvent = () => {
+  eventsStore.currentEvent = null
   showAddEventView.value = true
 }
 
@@ -45,19 +47,27 @@ const eventMessage = computed(() => {
       />
 
       <div class="event-handle w-[70%]">
+        <ShowEvent
+          v-if="eventsStore.currentEvent"
+        />
+
+        <div
+          v-else-if="showAddEventView"
+          class="w-full"
+        >
+          <CreateEvent
+            @cancel-create="handleCancelCreate"
+          />
+        </div>
+
         <Alert
           alert-type="info"
-          v-if="!showAddEventView"
+          v-else
         >
           {{ eventMessage }}
         </Alert>
 
-        <div class="w-full">
-          <CreateEvent
-            v-if="showAddEventView"
-            @cancel-create="handleCancelCreate"
-          />
-        </div>
+
       </div>
     </section>
   </section>
