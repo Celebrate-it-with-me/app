@@ -6,7 +6,7 @@ import { useEventsStore } from '@/stores/useEventsStore'
 const eventsStore = useEventsStore()
 
 onMounted(async () => {
-  await eventsStore.getMyEvents()
+  await eventsStore.initEvents()
 })
 </script>
 

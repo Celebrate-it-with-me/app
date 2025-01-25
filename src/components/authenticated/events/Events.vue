@@ -5,6 +5,7 @@ import CreateEvent from '@/components/authenticated/events/CreateEvent.vue'
 import MyEvents from '@/components/authenticated/events/MyEvents.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import ShowEvent from '@/components/authenticated/events/ShowEvent.vue'
+import WelcomeBack from '@/components/welcome-back/WelcomeBack.vue'
 
 // Data
 const showAddEventView = ref(false)
@@ -36,6 +37,8 @@ const eventMessage = computed(() => {
 
 <template>
   <section class="my-events">
+    <WelcomeBack />
+
     <div class="flex flex-row justify-end">
       <h2 class="text-white text-2xl font-semibold">Events</h2>
     </div>
