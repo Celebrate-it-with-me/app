@@ -4,7 +4,7 @@ import EventsService from '../services/EventsService'
 export const useEventsStore = defineStore('eventsStore', {
   state: () => ({
     events: [],
-    currentEvent: null
+    currentEvent: null,
   }),
   actions: {
     setEvents(events) {

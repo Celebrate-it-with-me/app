@@ -1,7 +1,11 @@
 <script setup>
 import { useEventsStore } from '@/stores/useEventsStore'
+import ToggleField from '@/components/UI/form/ToggleField.vue'
+import { useSTDStore } from '@/stores/useSTDStore'
 
 const eventStore = useEventsStore()
+const stdStore = useSTDStore()
+
 
 </script>
 
@@ -53,6 +57,14 @@ const eventStore = useEventsStore()
         >
           {{ eventStore.currentEvent.visibility }}
         </span>
+      </div>
+
+      <div class="flex justify-between items-center">
+        <span class="font-semibold">Save the Date:</span>
+        <ToggleField
+          name="activeSTD"
+          v-model="stdStore.activeSTD"
+        />
       </div>
     </div>
   </div>

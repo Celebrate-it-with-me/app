@@ -20,7 +20,7 @@ export const useUserStore = defineStore('user', {
     email: '',
     userId: '',
     token: null,
-    lastLogin: null
+    lastLogin: null,
   }),
   persist: {
     enabled: true, // Enable persistence explicitly
