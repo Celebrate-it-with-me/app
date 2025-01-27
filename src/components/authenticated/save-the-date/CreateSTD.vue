@@ -1,14 +1,16 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import TextField from '@/components/UI/form/TextField.vue'
 import { Form } from 'vee-validate'
 import ToggleField from '@/components/UI/form/ToggleField.vue'
 import UploadImageField from '@/components/UI/form/UploadImageField.vue'
-import { ColorPicker } from "vue-color-kit";
 import "vue-color-kit/dist/vue-color-kit.css";
+import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
+import debounce from 'lodash.debounce'
 
+const emit = defineEmits(['updatedStd'])
 const stdState = reactive({
   stdTitle: '',
   stdSubTitle: '',
@@ -18,8 +20,6 @@ const stdState = reactive({
   useAddToCalendar: false,
   isEnabled: false
 })
-
-const color = ref('#59c7f9')
 
 const stdErrors = ref()
 
@@ -43,37 +43,28 @@ const stdValidationSchema = computed(() => {
   )
 })
 
-const onSubmit = async () => {}
+const onSubmit = async () => {
+
+}
 
 const onInvalidSubmit = (errors) => {
   console.log(errors)
 }
 
-const changeColor = (color) => {
-  const { r, g, b, a } = color.rgba
-  stdState.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`
-}
+const debounceEmit = debounce((value) => {
+  emit('updatedStd', value)
+  console.log('emitting')
+}, 300)
 
-const openSucker = (isOpen) => {
-  if (isOpen) {
-    // ... canvas be created
-    // this.suckerCanvas = canvas
-    // this.suckerArea = [x1, y1, x2, y2]
-  } else {
-    // this.suckerCanvas && this.suckerCanvas.remove
+watch(() => stdState, (value) => {
+  if (value) {
+    debounceEmit(value)
   }
-}
-
-const inputFocus = (event) => {
-  // this will get triggered on input field (hex and rgba) get focus
-  // prop value will be FocusEvent object associated with the input
-}
-
-const inputBlur = (event) => {
-  // this  will get triggeredon input field (hex and rgba) get out of focus (blur event)
-  // prop value will be FocusEvent object associated with the input
-}
-
+},
+  {
+    immediate: true,
+    deep: true
+  })
 
 </script>
 
@@ -123,12 +114,22 @@ const inputBlur = (event) => {
         </div>
 
         <div>
-          <label for="colorPicker">Background Color</label>
-          <input
-            type="text"
-            v-colorpicker="{type: 'component'}"
-            class="w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
+          <ColorPickerField
+            label="Background Color"
+            classLabel="text-lg font-medium"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            name="color"
+            v-model="stdState.backgroundColor"
+            :colorpicker-options="{
+              type: 'component',
+              showPalette: true,
+              showSelectionPalette: true,
+              preferredFormat: 'hex'
+            }"
+            :showError="true"
+          />
+
+
         </div>
 
         <!-- STD Image -->
@@ -140,21 +141,21 @@ const inputBlur = (event) => {
           />
         </div>
 
-        <!-- Use Add to Calendar -->
-        <div class="col-span-2">
-          <ToggleField
-            label="Use Add To Calendar"
-            name="useAddToCalendar"
-            v-model="stdState.useAddToCalendar"
-          />
-        </div>
-
         <!-- Use CountDown -->
         <div class="col-span-2">
           <ToggleField
             label="Use Countdown"
             name="useCountdown"
             v-model="stdState.useCountdown"
+          />
+        </div>
+
+        <!-- Use Add to Calendar -->
+        <div class="col-span-2">
+          <ToggleField
+            label="Use Add To Calendar"
+            name="useAddToCalendar"
+            v-model="stdState.useAddToCalendar"
           />
         </div>
 
@@ -174,7 +175,7 @@ const inputBlur = (event) => {
           type="submit"
           class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
         >
-          Create STD
+          Save STD
         </button>
       </div>
     </Form>

@@ -1,7 +1,13 @@
 <script setup>
 import CreateSTD from '@/components/authenticated/save-the-date/CreateSTD.vue'
 import STDPreview from '@/components/authenticated/save-the-date/STDPreview.vue'
+import { ref } from 'vue'
 
+const stdConfig = ref(null)
+
+const handleUpdateStd = (newConfig) => {
+  stdConfig.value = newConfig
+}
 
 </script>
 
@@ -13,9 +19,13 @@ import STDPreview from '@/components/authenticated/save-the-date/STDPreview.vue'
     <section
       class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[300px] h-full"
     >
-      <CreateSTD />
+      <CreateSTD
+        @updated-std="handleUpdateStd"
+      />
 
-      <STDPreview />
+      <STDPreview
+        :std-config="stdConfig"
+      />
 
     </section>
   </section>
