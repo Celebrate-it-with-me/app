@@ -1,0 +1,185 @@
+<script setup>
+import { computed, reactive, ref, watch } from 'vue'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as zod from 'zod'
+import TextField from '@/components/UI/form/TextField.vue'
+import { Form } from 'vee-validate'
+import ToggleField from '@/components/UI/form/ToggleField.vue'
+import UploadImageField from '@/components/UI/form/UploadImageField.vue'
+import "vue-color-kit/dist/vue-color-kit.css";
+import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
+import debounce from 'lodash.debounce'
+
+const emit = defineEmits(['updatedStd'])
+const stdState = reactive({
+  stdTitle: '',
+  stdSubTitle: '',
+  backgroundColor: '',
+  image: null,
+  useCountdown: false,
+  useAddToCalendar: false,
+  isEnabled: false
+})
+
+const stdErrors = ref()
+
+const stdValidationSchema = computed(() => {
+  return toTypedSchema(
+    zod.object({
+      stdTitle: zod.string().min(1, { message: 'Message is required' }),
+      stdSubTitle: zod.string().optional(),
+      backgroundColor: zod.string().optional(),
+      image: zod
+        .instanceof(File)
+        .optional()
+        .refine(
+          (file) => !file || ['image/jpeg', 'image/png', 'image/gif'].includes(file.type),
+          { message: 'Image must be a valid image file (jpg, png, gif)' }
+        ),
+      useCountdown: zod.boolean({ required_error: '"useCountdown" must be a boolean' }),
+      useAddToCalendar: zod.boolean({ required_error: '"useAddToCalendar" must be a boolean' }),
+      isEnabled: zod.boolean({ required_error: '"isEnabled" must be a boolean' }),
+    })
+  )
+})
+
+const onSubmit = async () => {
+
+}
+
+const onInvalidSubmit = (errors) => {
+  console.log(errors)
+}
+
+const debounceEmit = debounce((value) => {
+  emit('updatedStd', value)
+  console.log('emitting')
+}, 300)
+
+watch(() => stdState, (value) => {
+  if (value) {
+    debounceEmit(value)
+  }
+},
+  {
+    immediate: true,
+    deep: true
+  })
+
+</script>
+
+<template>
+  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-[30%]">
+    <!-- Header Section -->
+    <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
+      <h3 class="text-lg font-semibold">Create Save the Date</h3>
+    </div>
+
+    <!-- Event Details Form -->
+    <Form
+      :validation-schema="stdValidationSchema"
+      @submit="onSubmit"
+      @invalid-submit="onInvalidSubmit"
+    >
+      <!-- Error Section -->
+      <div v-if="stdErrors" class="w-full mb-4">
+        <p class="text-red-500 font-semibold">
+          {{ stdErrors }}
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <!-- STD Title -->
+        <div>
+          <TextField
+            v-model="stdState.stdTitle"
+            label="Title"
+            name="stdTitle"
+            show-error
+            placeholder="Save the Date Title"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
+        <!-- STD Title -->
+        <div>
+          <TextField
+            v-model="stdState.stdSubTitle"
+            label="Sub Title"
+            name="stdSubTitle"
+            show-error
+            placeholder="Save the Date sub title"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
+        <div>
+          <ColorPickerField
+            label="Background Color"
+            classLabel="text-lg font-medium"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            name="color"
+            v-model="stdState.backgroundColor"
+            :colorpicker-options="{
+              type: 'component',
+              showPalette: true,
+              showSelectionPalette: true,
+              preferredFormat: 'hex'
+            }"
+            :showError="true"
+          />
+
+
+        </div>
+
+        <!-- STD Image -->
+        <div>
+          <UploadImageField
+            v-model="stdState.image"
+            name="image"
+            label="Background Image"
+          />
+        </div>
+
+        <!-- Use CountDown -->
+        <div class="col-span-2">
+          <ToggleField
+            label="Use Countdown"
+            name="useCountdown"
+            v-model="stdState.useCountdown"
+          />
+        </div>
+
+        <!-- Use Add to Calendar -->
+        <div class="col-span-2">
+          <ToggleField
+            label="Use Add To Calendar"
+            name="useAddToCalendar"
+            v-model="stdState.useAddToCalendar"
+          />
+        </div>
+
+        <!-- Is Enabled -->
+        <div class="col-span-2">
+          <ToggleField
+            label="Is Enabled"
+            name="isEnabled"
+            v-model="stdState.isEnabled"
+          />
+        </div>
+      </div>
+
+      <!-- Form Buttons -->
+      <div class="mt-6 flex justify-end items-center gap-4">
+        <button
+          type="submit"
+          class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+        >
+          Save STD
+        </button>
+      </div>
+    </Form>
+  </div>
+</template>
+
+<style scoped></style>

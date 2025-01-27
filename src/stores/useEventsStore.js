@@ -4,7 +4,7 @@ import EventsService from '../services/EventsService'
 export const useEventsStore = defineStore('eventsStore', {
   state: () => ({
     events: [],
-    currentEvent: null
+    currentEvent: null,
   }),
   actions: {
     setEvents(events) {
@@ -20,7 +20,7 @@ export const useEventsStore = defineStore('eventsStore', {
       return await EventsService.create({ eventName, eventDate, eventDescription, status, visibility, customUrlSlug })
     },
 
-    async getMyEvents() {
+    async initEvents() {
       const response = await EventsService.getMyEvents()
 
       if (response) {

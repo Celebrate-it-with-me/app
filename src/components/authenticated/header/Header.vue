@@ -110,7 +110,8 @@ const logoutUser = async () => {
               <li>
                 <span
                   @click="logoutUser"
-                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-lg"
+                  class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700
+                         rounded-b-lg cursor-pointer border-t border-gray-700"
                 >
                   Logout
                 </span>
