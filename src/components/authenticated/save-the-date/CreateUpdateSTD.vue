@@ -20,6 +20,7 @@ const stdState = reactive({
   image: null,
   useCountdown: false,
   useAddToCalendar: false,
+  isEnabled: false
 })
 const stdStore = useSTDStore()
 const stdErrors = ref()
@@ -43,6 +44,7 @@ const stdValidationSchema = computed(() => {
         ),
       useCountdown: zod.boolean({ required_error: '"useCountdown" must be a boolean' }).optional(),
       useAddToCalendar: zod.boolean({ required_error: '"useAddToCalendar" must be a boolean' }).optional(),
+      isEnabled: zod.boolean({ required_error: '"useAddToCalendar" must be a boolean' }).optional(),
     })
   )
 })
@@ -54,6 +56,7 @@ onMounted(() => {
     stdState.backgroundColor = stdStore.backgroundColor
     stdState.useCountdown = stdStore.useCountdown
     stdState.useAddToCalendar = stdStore.useAddToCalendar
+    stdState.isEnabled = stdStore.isEnabled
 
     if (stdStore.image) {
       stdState.image = stdStore.image;
@@ -87,7 +90,7 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = () => {
   stdErrors.value = 'Oops something when wrong, please try again later'
 }
 
@@ -112,7 +115,7 @@ watch(() => stdState, (value) => {
   <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-[30%]">
     <!-- Header Section -->
     <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
-      <h3 class="text-lg font-semibold">Create Save the Date</h3>
+      <h3 class="text-lg font-semibold">Save the Date</h3>
     </div>
 
     <!-- Event Details Form -->
@@ -212,6 +215,14 @@ watch(() => stdState, (value) => {
             label="Use Add To Calendar"
             name="useAddToCalendar"
             v-model="stdState.useAddToCalendar"
+          />
+        </div>
+
+        <div class="col-span-2">
+          <ToggleField
+            label="Is Enabled"
+            name="isEnabled"
+            v-model="stdState.isEnabled"
           />
         </div>
 

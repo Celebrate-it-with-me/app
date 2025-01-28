@@ -1,6 +1,5 @@
 <script setup>
 import Alert from '@/components/UI/alerts/Alert.vue'
-import WelcomeBack from '@/components/welcome-back/WelcomeBack.vue'
 import CreateEvent from '@/components/authenticated/events/CreateEvent.vue'
 import ShowEvent from '@/components/authenticated/events/ShowEvent.vue'
 import MyEventsList from '@/components/authenticated/events/MyEventsList.vue'
@@ -36,11 +35,7 @@ const eventMessage = computed(() => {
 
 <template>
   <section class="my-events">
-    <WelcomeBack />
 
-    <div class="flex flex-row justify-end">
-      <h2 class="text-white text-2xl font-semibold">Events</h2>
-    </div>
     <section
       class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[300px] h-full"
     >

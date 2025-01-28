@@ -14,10 +14,12 @@ const handleUpdateStd = (newConfig) => {
 }
 
 onMounted(() => {
+  console.log('std mounted')
   loadSaveTheDate()
 })
 
 const loadSaveTheDate = async () => {
+  stdStore.cleanStd()
   try {
     loading.value = true
     const response = await stdStore.getEventStd()
@@ -37,10 +39,7 @@ const loadSaveTheDate = async () => {
 </script>
 
 <template>
-  <section class="event-std mt-10">
-    <div class="flex flex-row justify-end">
-      <h2 class="text-white text-2xl font-semibold">Save The Date</h2>
-    </div>
+  <section class="event-std">
     <section
       class="my-events-container mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[300px] h-full"
     >

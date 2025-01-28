@@ -30,8 +30,20 @@ export const useSTDStore = defineStore('stdStore', {
       }
     },
 
+    cleanStd() {
+        this.id = null
+        this.hasPreviousStd = false
+        this.stdTitle = ''
+        this.stdSubTitle = ''
+        this.backgroundColor = ''
+        this.image = null
+        this.useCountdown = false
+        this.useAddToCalendar = false
+        this.isEnabled = false
+    },
 
-    async createSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar }) {
+
+    async createSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar, isEnabled }) {
       const eventsStore = useEventsStore()
 
       return await STDService.createSTD({
@@ -42,11 +54,11 @@ export const useSTDStore = defineStore('stdStore', {
         image,
         useCountdown,
         useAddToCalendar,
-        isEnabled: this.isEnabled
+        isEnabled
       })
     },
 
-    async updateSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar }) {
+    async updateSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar, isEnabled }) {
       return await STDService.updateSTD({
         stdId: this.id,
         stdTitle,
@@ -55,7 +67,7 @@ export const useSTDStore = defineStore('stdStore', {
         image,
         useCountdown,
         useAddToCalendar,
-        isEnabled: this.isEnabled
+        isEnabled
       })
     },
 
