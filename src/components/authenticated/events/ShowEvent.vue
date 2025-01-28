@@ -63,7 +63,7 @@ const stdStore = useSTDStore()
         <span class="font-semibold">Save the Date:</span>
         <ToggleField
           name="activeSTD"
-          v-model="stdStore.activeSTD"
+          v-model="stdStore.isEnabled"
         />
       </div>
     </div>
