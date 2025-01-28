@@ -6,10 +6,9 @@ import { computed } from 'vue'
 import { useSTDStore } from '@/stores/useSTDStore'
 
 const eventStore = useEventsStore()
-const stdStore = useSTDStore()
 
-const showSaveTheDate = computed(() =>  {
-  return !!(eventStore.currentEvent && stdStore.isEnabled);
+const showSaveTheDate = computed(() => {
+  return eventStore?.currentEvent?.saveTheDate
 })
 
 </script>

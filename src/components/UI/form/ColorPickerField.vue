@@ -32,6 +32,7 @@ const props = defineProps({
 
 // Manage field state using vee-validate
 const name = toRef(props, 'name')
+const selectedColor = ref(props.modelValue)
 const {
   value: inputValue,
   errorMessage,
@@ -43,7 +44,13 @@ const {
 })
 
 // Update prop-dependent internal value when modelValue changes
-watch(() => props.modelValue, setValue)
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    selectedColor.value = newValue
+    setValue(newValue)
+  }
+)
 
 // Update parent when internal value changes
 const handleInputChange = (val) => {
@@ -64,6 +71,7 @@ const handleFieldBlur = (e) => {
 
 // Track direct color-picker updates
 const handleColorPickerChange = (newColor) => {
+  selectedColor.value = newColor
   emit('update:modelValue', newColor)
   if (newColor) {
     emit('resetErrors')
@@ -86,10 +94,7 @@ const handleColorPickerChange = (newColor) => {
     </label>
 
     <!-- Input Wrapper -->
-    <div
-      :class="horizontal ? 'flex-1' : ''"
-      class="relative w-full mt-1"
-    >
+    <div :class="horizontal ? 'flex-1' : ''" class="relative w-full mt-1">
       <input
         type="text"
         :id="name"
@@ -99,7 +104,10 @@ const handleColorPickerChange = (newColor) => {
         :placeholder="placeholder"
         :readonly="isReadonly"
         :value="modelValue"
-        v-colorpicker="colorPickerOptions"
+        v-colorpicker="{
+          ...colorPickerOptions,
+          color: selectedColor
+        }"
         @blur="handleFieldBlur"
         @input="(e) => handleInputChange(e.target.value)"
         @change="handleColorPickerChange($event.target.value)"
@@ -109,9 +117,11 @@ const handleColorPickerChange = (newColor) => {
     <!-- Error/Validation/Description Messages -->
     <span
       v-if="showErrorMessage"
-      :class="msgTooltip
-        ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
-        : 'text-danger-500 block text-sm'"
+      :class="
+        msgTooltip
+          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+          : 'text-danger-500 block text-sm'
+      "
       class="mt-2"
     >
       {{ errorMessage }}
@@ -119,18 +129,17 @@ const handleColorPickerChange = (newColor) => {
 
     <span
       v-if="validate"
-      :class="msgTooltip
-        ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
-        : 'text-success-500 block text-sm'"
+      :class="
+        msgTooltip
+          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
+          : 'text-success-500 block text-sm'
+      "
       class="mt-2"
     >
       {{ validate }}
     </span>
 
-    <span
-      v-if="description"
-      class="block text-secondary-500 font-light leading-4 text-xs mt-2"
-    >
+    <span v-if="description" class="block text-secondary-500 font-light leading-4 text-xs mt-2">
       {{ description }}
     </span>
   </div>
