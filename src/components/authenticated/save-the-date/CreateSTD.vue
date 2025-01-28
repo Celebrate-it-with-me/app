@@ -9,6 +9,7 @@ import UploadImageField from '@/components/UI/form/UploadImageField.vue'
 import "vue-color-kit/dist/vue-color-kit.css";
 import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
 import debounce from 'lodash.debounce'
+import { useSTDStore } from '@/stores/useSTDStore'
 
 const emit = defineEmits(['updatedStd'])
 const stdState = reactive({
@@ -18,9 +19,8 @@ const stdState = reactive({
   image: null,
   useCountdown: false,
   useAddToCalendar: false,
-  isEnabled: false
 })
-
+const stdStore = useSTDStore()
 const stdErrors = ref()
 
 const stdValidationSchema = computed(() => {
@@ -36,19 +36,34 @@ const stdValidationSchema = computed(() => {
           (file) => !file || ['image/jpeg', 'image/png', 'image/gif'].includes(file.type),
           { message: 'Image must be a valid image file (jpg, png, gif)' }
         ),
-      useCountdown: zod.boolean({ required_error: '"useCountdown" must be a boolean' }),
-      useAddToCalendar: zod.boolean({ required_error: '"useAddToCalendar" must be a boolean' }),
-      isEnabled: zod.boolean({ required_error: '"isEnabled" must be a boolean' }),
+      useCountdown: zod.boolean({ required_error: '"useCountdown" must be a boolean' }).optional(),
+      useAddToCalendar: zod.boolean({ required_error: '"useAddToCalendar" must be a boolean' }).optional(),
     })
   )
 })
 
 const onSubmit = async () => {
+  try {
+    stdState.sending = true
 
+    const response = await stdStore.createSTD(stdState)
+
+    if (response.status >= 200 && response.status < 300) {
+      console.log(response)
+
+    } else {
+      console.log('Oops something when wrong, please try again later', response)
+      stdErrors.value = 'Oops something when wrong, please try again later'
+    }
+  } catch(e) {
+    console.log(e)
+  } finally {
+    stdState.sending = false
+  }
 }
 
 const onInvalidSubmit = (errors) => {
-  console.log(errors)
+  stdErrors.value = 'Oops something when wrong, please try again later'
 }
 
 const debounceEmit = debounce((value) => {
@@ -159,14 +174,6 @@ watch(() => stdState, (value) => {
           />
         </div>
 
-        <!-- Is Enabled -->
-        <div class="col-span-2">
-          <ToggleField
-            label="Is Enabled"
-            name="isEnabled"
-            v-model="stdState.isEnabled"
-          />
-        </div>
       </div>
 
       <!-- Form Buttons -->
