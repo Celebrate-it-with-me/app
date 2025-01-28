@@ -4,20 +4,38 @@ import { useEventsStore } from './useEventsStore'
 
 export const useSTDStore = defineStore('stdStore', {
   state: () => ({
+    id: null,
     stdTitle: '',
     stdSubTitle: '',
     backgroundColor: '',
     image: null,
-    useCountDown: false,
+    useCountdown: false,
     useAddToCalendar: false,
-    isEnabled: false
+    isEnabled: false,
+    hasPreviousStd: false
   }),
   actions: {
+    initStd(legacyStd) {
+      console.log(legacyStd)
+      if (Object.keys(legacyStd).length) {
+        this.id = legacyStd.id
+        this.hasPreviousStd = true
+        this.stdTitle = legacyStd.stdTitle || ''
+        this.stdSubTitle = legacyStd.stdSubTitle || ''
+        this.backgroundColor = legacyStd.backgroundColor || ''
+        this.image = legacyStd.imageUrl || null
+        this.useCountdown = !!legacyStd.useCountdown
+        this.useAddToCalendar = !!legacyStd.useAddToCalendar
+        this.isEnabled = !!legacyStd.isEnabled
+      }
+    },
+
+
     async createSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar }) {
       const eventsStore = useEventsStore()
 
       return await STDService.createSTD({
-        eventId: eventsStore?.currentEvent.id,
+        eventId: eventsStore?.currentEvent?.id,
         stdTitle,
         stdSubTitle,
         backgroundColor,
@@ -25,6 +43,27 @@ export const useSTDStore = defineStore('stdStore', {
         useCountdown,
         useAddToCalendar,
         isEnabled: this.isEnabled
+      })
+    },
+
+    async updateSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar }) {
+      return await STDService.updateSTD({
+        stdId: this.id,
+        stdTitle,
+        stdSubTitle,
+        backgroundColor,
+        image,
+        useCountdown,
+        useAddToCalendar,
+        isEnabled: this.isEnabled
+      })
+    },
+
+    async getEventStd() {
+      const eventStore = useEventsStore()
+
+      return await STDService.getEventSTD({
+        eventId: eventStore?.currentEvent?.id
       })
     }
   }

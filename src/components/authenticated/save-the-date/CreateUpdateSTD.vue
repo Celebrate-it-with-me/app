@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import TextField from '@/components/UI/form/TextField.vue'
@@ -12,6 +12,7 @@ import debounce from 'lodash.debounce'
 import { useSTDStore } from '@/stores/useSTDStore'
 
 const emit = defineEmits(['updatedStd'])
+
 const stdState = reactive({
   stdTitle: '',
   stdSubTitle: '',
@@ -22,6 +23,10 @@ const stdState = reactive({
 })
 const stdStore = useSTDStore()
 const stdErrors = ref()
+
+const isUpdate = computed(() => {
+  return !!stdStore.hasPreviousStd;
+})
 
 const stdValidationSchema = computed(() => {
   return toTypedSchema(
@@ -42,11 +47,31 @@ const stdValidationSchema = computed(() => {
   )
 })
 
+onMounted(() => {
+  if (stdStore.hasPreviousStd) {
+    stdState.stdTitle = stdStore.stdTitle
+    stdState.stdSubTitle = stdStore.stdSubTitle
+    stdState.backgroundColor = stdStore.backgroundColor
+    stdState.useCountdown = stdStore.useCountdown
+    stdState.useAddToCalendar = stdStore.useAddToCalendar
+
+    if (stdStore.image) {
+      stdState.image = stdStore.image;
+    }
+
+  }
+})
+
 const onSubmit = async () => {
   try {
     stdState.sending = true
+    let response
 
-    const response = await stdStore.createSTD(stdState)
+    if (isUpdate.value) {
+      response = await stdStore.updateSTD(stdState)
+    } else {
+      response = await stdStore.createSTD(stdState)
+    }
 
     if (response.status >= 200 && response.status < 300) {
       console.log(response)
@@ -79,7 +104,7 @@ watch(() => stdState, (value) => {
   {
     immediate: true,
     deep: true
-  })
+})
 
 </script>
 
@@ -136,20 +161,36 @@ watch(() => stdState, (value) => {
             name="color"
             v-model="stdState.backgroundColor"
             :colorpicker-options="{
-              type: 'component',
-              showPalette: true,
-              showSelectionPalette: true,
-              preferredFormat: 'hex'
-            }"
+                type: 'component',
+                showPalette: true,
+                showSelectionPalette: true,
+                preferredFormat: 'hex',
+                showInitial: true,
+              }"
             :showError="true"
           />
-
-
         </div>
 
         <!-- STD Image -->
         <div>
+          <div v-if="typeof stdState.image === 'string'" class="mb-4">
+            <img
+              :src="stdState.image"
+              alt="Uploaded Image Preview"
+              class="w-full h-40 object-cover rounded-md"
+            />
+            <button
+              type="button"
+              @click="stdState.image = null"
+              class="mt-2 text-sm text-blue-500 hover:underline"
+            >
+              Clear Image
+            </button>
+
+          </div>
+
           <UploadImageField
+            v-if="!stdState.image || typeof stdState.image !== 'string'"
             v-model="stdState.image"
             name="image"
             label="Background Image"
@@ -179,10 +220,18 @@ watch(() => stdState, (value) => {
       <!-- Form Buttons -->
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
+          v-if="!isUpdate"
           type="submit"
           class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
         >
           Save STD
+        </button>
+        <button
+          v-else
+          type="submit"
+          class="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+        >
+          Update STD
         </button>
       </div>
     </Form>
