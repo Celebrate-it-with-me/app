@@ -7,7 +7,8 @@ const currentTabs = [
   { id: 2, label: 'Guests', route: '/dashboard/guests', selected: true },
   { id: 3, label: 'Save the Date', route: '/dashboard/save-the-date', selected: false },
   { id: 4, label: 'RSVP', route: '/dashboard/events/rsvp', selected: false },
-  { id: 5, label: 'Gallery', route: '/dashboard/events/gallery', selected: false }
+  { id: 5, label: 'Gallery', route: '/dashboard/events/gallery', selected: false },
+  { id: 7, label: 'Analytics', route: '/dashboard/events/gallery', selected: false }
 ]
 
 </script>
