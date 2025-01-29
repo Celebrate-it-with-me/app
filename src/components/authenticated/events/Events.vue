@@ -1,24 +1,23 @@
 <script setup>
-import MyEvents from '@/components/authenticated/events/MyEvents.vue'
-import SaveTheDate from '@/components/authenticated/save-the-date/SaveTheDate.vue'
-import { useEventsStore } from '@/stores/useEventsStore'
-import { computed } from 'vue'
-import { useSTDStore } from '@/stores/useSTDStore'
+import CWMTabs from '@/components/UI/tabs/CWMTabs.vue'
+import WelcomeBack from '@/components/welcome-back/WelcomeBack.vue'
 
-const eventStore = useEventsStore()
-
-const showSaveTheDate = computed(() => {
-  return eventStore?.currentEvent?.saveTheDate
-})
+const currentTabs = [
+  { id: 1, label: 'Events', route: '/dashboard/events', selected: true },
+  { id: 2, label: 'Guests', route: '/dashboard/guests', selected: true },
+  { id: 3, label: 'Save the Date', route: '/dashboard/save-the-date', selected: false },
+  { id: 4, label: 'RSVP', route: '/dashboard/events/rsvp', selected: false },
+  { id: 5, label: 'Gallery', route: '/dashboard/events/gallery', selected: false }
+]
 
 </script>
 
 <template>
   <div class="container pb-10">
-    <MyEvents />
+    <WelcomeBack />
 
-    <SaveTheDate
-      v-if="showSaveTheDate"
+    <CWMTabs
+      :tabs=currentTabs
     />
   </div>
 </template>
