@@ -46,6 +46,10 @@ const handleRemoveCompanion = (companion) => {
 
 const goBack = () => {
   showCompanyList.value = false
+
+  companions.value = []
+  noNamedCompanionQty.value = 1
+  companionType.value = null
   step.value = 1
 }
 
@@ -68,16 +72,12 @@ watch(companionType, () => {
     <h4 class="flex flex-row justify-between items center text-xl font-semibold mb-4">
       <span>Companions </span>
 
-      <a
-        v-if="step !== 1"
-        class="text-sm underline cursor-pointer"
-        @click="goBack"
-      >Cancel</a>
+      <a v-if="step !== 1" class="text-sm underline cursor-pointer" @click="goBack">Cancel</a>
     </h4>
 
     <div class="w-full flex flex-row gap-10">
       <div class="w-1/2">
-        <div class="mb-4" v-if="!companions.length && step === 1">
+        <div class="mb-4" v-if="step === 1">
           <p class="text-gray-400 text-sm">No companions added yet.</p>
 
           <button
@@ -103,9 +103,7 @@ watch(companionType, () => {
           </div>
 
           <div v-if="companionType === 'named'">
-            <NamedCompanion
-              @companion-send="handleNamedCompanion"
-            />
+            <NamedCompanion @companion-send="handleNamedCompanion" />
           </div>
         </div>
       </div>
@@ -119,7 +117,6 @@ watch(companionType, () => {
         />
       </div>
     </div>
-
   </div>
 </template>
 
