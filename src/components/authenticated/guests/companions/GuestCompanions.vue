@@ -5,6 +5,8 @@ import NoNamedCompanion from '@/components/authenticated/guests/companions/NoNam
 import NamedCompanion from '@/components/authenticated/guests/companions/NamedCompanion.vue'
 import GuestCompanionList from '@/components/authenticated/guests/companions/GuestCompanionList.vue'
 
+const emit = defineEmits(['updated:companions'])
+
 const step = ref(1)
 const companionType = ref(null)
 const noNamedCompanionQty = ref(1)
@@ -62,8 +64,25 @@ const handleRemoveQty = () => {
   resetQty.value = true
 }
 
+const emitCompanions = () => {
+  emit('updated:companions', {
+    companionType: companionType.value,
+    companionQty: noNamedCompanionQty.value,
+    companionList: companions.value
+  })
+}
+
 watch(companionType, () => {
   showCompanyList.value = false
+  emitCompanions()
+})
+
+watch(noNamedCompanionQty, () => {
+  emitCompanions()
+})
+
+watch(companions, () => {
+  emitCompanions()
 })
 </script>
 
