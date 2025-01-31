@@ -6,43 +6,64 @@ import TextField from '@/components/UI/form/TextField.vue'
 import { Form } from 'vee-validate'
 import 'vue-color-kit/dist/vue-color-kit.css'
 import GuestCompanions from '@/components/authenticated/guests/companions/GuestCompanions.vue'
+import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
+import { useEventsStore } from '@/stores/useEventsStore'
+import GuestsService from '@/services/GuestsService'
 
 const emit = defineEmits(['updatedGuest'])
-
 const stdState = reactive({
-  eventId: null,
   firstName: '',
   lastName: '',
   email: '',
   phoneNumber: null
 })
 
+const loading = ref(false)
 const guestsErrors = ref()
+const companions = ref({
+  companionType: null,
+  companionQty: 0,
+  companionList: []
+})
+const eventStore = useEventsStore()
 
 const guestsValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      stdTitle: zod.string().min(1, { message: 'Message is required' }),
-      stdSubTitle: zod.string().optional(),
-      backgroundColor: zod.string().optional(),
-      image: zod
-        .instanceof(File)
-        .optional()
-        .refine((file) => !file || ['image/jpeg', 'image/png', 'image/gif'].includes(file.type), {
-          message: 'Image must be a valid image file (jpg, png, gif)'
-        }),
-      useCountdown: zod.boolean({ required_error: '"useCountdown" must be a boolean' }).optional(),
-      useAddToCalendar: zod
-        .boolean({ required_error: '"useAddToCalendar" must be a boolean' })
-        .optional(),
-      isEnabled: zod.boolean({ required_error: '"useAddToCalendar" must be a boolean' }).optional()
+      firstName: zod.string().min(1, { required_error: 'First Name is required.' }),
+      lastName: zod.string().min(1, { required_error: 'Last Name is required.' }),
+      email: zod.string().email('Invalid email address').or(zod.literal('')).optional(),
+      phoneNumber: zod.string().optional()
     })
   )
 })
 
-onMounted(() => {})
+const handleCompanions = (values) => {
+  companions.value = { ...companions.value, ...values }
+}
 
-const onSubmit = async () => {}
+const onSubmit = async () => {
+  try {
+    loading.value = true
+
+    const response = await GuestsService.create({
+      ...stdState,
+      eventId: eventStore.currentEvent.id,
+      ...companions.value
+    })
+
+    if (response) {
+      console.log(response)
+    } else {
+      console.error('There is some errors', response)
+    }
+
+  } catch(error) {
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
+}
 
 const onInvalidSubmit = () => {
   guestsErrors.value = 'Oops something when wrong, please try again later'
@@ -51,12 +72,10 @@ const onInvalidSubmit = () => {
 
 <template>
   <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-full ">
-    <!-- Header Section -->
     <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
       <h3 class="text-lg font-semibold">Add Guest</h3>
     </div>
 
-    <!-- Event Details Form -->
     <Form
       :validation-schema="guestsValidationSchema"
       @submit="onSubmit"
@@ -123,19 +142,19 @@ const onInvalidSubmit = () => {
         </div>
       </div>
 
-      <GuestCompanions />
+      <GuestCompanions
+        @updated:companions="handleCompanions"
+      />
 
-      <!-- Form Buttons -->
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
           type="submit"
-          class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+          class="flex items-center gap-x-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
         >
-          Save Guest
+          <CWMLoading :size="'h-6 w-6'" />
+          <span>Save Guest</span>
         </button>
       </div>
     </Form>
   </div>
 </template>
-
-<style scoped></style>

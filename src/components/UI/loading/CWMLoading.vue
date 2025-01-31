@@ -13,15 +13,19 @@ const props = defineProps({
   loaderFill: {
     type: String,
     default: ''
+  },
+  size: {
+    type: String,
+    default: 'w-10 h-10'
   }
 })
 
 const reactiveLoaderFill = computed(() => {
   if (props.loaderFill) {
-    return props.loaderFill
+    return `${props.loaderFill} ${props.size}`
   }
 
-  return 'fill-blue-600'
+  return `fill-blue-600 ${props.size}`
 })
 
 </script>

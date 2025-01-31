@@ -5,6 +5,8 @@ import NoNamedCompanion from '@/components/authenticated/guests/companions/NoNam
 import NamedCompanion from '@/components/authenticated/guests/companions/NamedCompanion.vue'
 import GuestCompanionList from '@/components/authenticated/guests/companions/GuestCompanionList.vue'
 
+const emit = defineEmits(['updated:companions'])
+
 const step = ref(1)
 const companionType = ref(null)
 const noNamedCompanionQty = ref(1)
@@ -46,6 +48,10 @@ const handleRemoveCompanion = (companion) => {
 
 const goBack = () => {
   showCompanyList.value = false
+
+  companions.value = []
+  noNamedCompanionQty.value = 1
+  companionType.value = null
   step.value = 1
 }
 
@@ -58,8 +64,25 @@ const handleRemoveQty = () => {
   resetQty.value = true
 }
 
+const emitCompanions = () => {
+  emit('updated:companions', {
+    companionType: companionType.value,
+    companionQty: noNamedCompanionQty.value,
+    companionList: companions.value
+  })
+}
+
 watch(companionType, () => {
   showCompanyList.value = false
+  emitCompanions()
+})
+
+watch(noNamedCompanionQty, () => {
+  emitCompanions()
+})
+
+watch(companions, () => {
+  emitCompanions()
 })
 </script>
 
@@ -68,16 +91,12 @@ watch(companionType, () => {
     <h4 class="flex flex-row justify-between items center text-xl font-semibold mb-4">
       <span>Companions </span>
 
-      <a
-        v-if="step !== 1"
-        class="text-sm underline cursor-pointer"
-        @click="goBack"
-      >Cancel</a>
+      <a v-if="step !== 1" class="text-sm underline cursor-pointer" @click="goBack">Cancel</a>
     </h4>
 
     <div class="w-full flex flex-row gap-10">
       <div class="w-1/2">
-        <div class="mb-4" v-if="!companions.length && step === 1">
+        <div class="mb-4" v-if="step === 1">
           <p class="text-gray-400 text-sm">No companions added yet.</p>
 
           <button
@@ -103,9 +122,7 @@ watch(companionType, () => {
           </div>
 
           <div v-if="companionType === 'named'">
-            <NamedCompanion
-              @companion-send="handleNamedCompanion"
-            />
+            <NamedCompanion @companion-send="handleNamedCompanion" />
           </div>
         </div>
       </div>
@@ -119,7 +136,6 @@ watch(companionType, () => {
         />
       </div>
     </div>
-
   </div>
 </template>
 
