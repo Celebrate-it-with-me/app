@@ -16,7 +16,7 @@ const props = defineProps({
   perPageOptions: {
     type: Array,
     required: false,
-    default: () => [10, 20, 50, 100, 'All']
+    default: () => [5, 10, 20, 50, 100]
   }
 })
 

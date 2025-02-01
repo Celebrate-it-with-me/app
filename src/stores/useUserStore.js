@@ -1,6 +1,7 @@
 import { defineStore, getActivePinia } from 'pinia'
 import UserService from '../services/UserService'
 import { format } from "date-fns";
+import { useEventsStore } from './useEventsStore'
 
 // Function to format the logout time
 function formatLogoutTime(logoutTime) {
@@ -21,13 +22,14 @@ export const useUserStore = defineStore('user', {
     userId: '',
     token: null,
     lastLogin: null,
+    currentEventId: null,
   }),
   persist: {
-    enabled: true, // Enable persistence explicitly
+    enabled: true,
     strategies: [
       {
-        key: 'user-store', // Custom key to use in localStorage
-        storage: localStorage, // Use localStorage explicitly (or sessionStorage if needed)
+        key: 'user-store',
+        storage: localStorage,
       },
     ],
   },
@@ -55,6 +57,16 @@ export const useUserStore = defineStore('user', {
         console.log('is here. really')
         getActivePinia()._s.forEach((store) => store.$reset())
       }
+    },
+
+    async initUserState() {
+      const eventsStore = useEventsStore()
+      //const guestStore = useGuestsStore()
+
+      await eventsStore.initEvents(this.currentEventId)
+      /*await guestStore.initGuests({
+        eventId: this.currentEventId
+      })*/
     }
   },
   getters: {

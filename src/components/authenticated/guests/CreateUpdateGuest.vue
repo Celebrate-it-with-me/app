@@ -42,10 +42,6 @@ const guestsValidationSchema = computed(() => {
   )
 })
 
-const handleCompanions = (values) => {
-  companions.value = { ...companions.value, ...values }
-}
-
 const onSubmit = async (values, { resetForm }) => {
   try {
     loading.value = true

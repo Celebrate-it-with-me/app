@@ -4,7 +4,12 @@ import { useUserStore } from '../stores/useUserStore'
 import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.vue'
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
-import EventGuestList from '../components/authenticated/guests/EventGuestList.vue'
+import CWMRsvp from '../components/authenticated/rsvp/CWMRsvp.vue'
+import CWMGallery from '../components/authenticated/gallery/CWMGallery.vue'
+import CWMSeatAccommodation from '../components/authenticated/seat-accommodation/CWMSeatAccommodation.vue'
+import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
+import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
+import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue'
 
 const authRoutes = [
   {
@@ -45,6 +50,54 @@ const authRoutes = [
         component: SaveTheDate,
         meta: {
           title: 'Save the date'
+        }
+      },
+      {
+        path: 'rsvp',
+        name: 'rsvp',
+        component: CWMRsvp,
+        meta: {
+          title: 'RSVP Creator'
+        }
+      },
+      {
+        path: 'gallery',
+        name: 'gallery',
+        component: CWMGallery,
+        meta: {
+          title: 'Art Gallery'
+        }
+      },
+      {
+        path: 'seats-accommodation',
+        name: 'seats-accommodation',
+        component: CWMSeatAccommodation,
+        meta: {
+          title: 'Seat Accommodation'
+        }
+      },
+      {
+        path: 'preview',
+        name: 'preview',
+        component: CWMPreview,
+        meta: {
+          title: 'Event Previous'
+        }
+      },
+      {
+        path: 'budget',
+        name: 'budget',
+        component: CWMBudget,
+        meta: {
+          title: 'Event Previous'
+        }
+      },
+      {
+        path: 'analytics',
+        name: 'analytics',
+        component: CWMAnalytics,
+        meta: {
+          title: 'Event Previous'
         }
       }
     ]

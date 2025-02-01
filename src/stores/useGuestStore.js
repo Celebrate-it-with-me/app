@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
+import GuestsService from '../services/GuestsService'
+import { useUserStore } from './useUserStore'
 
 export const useGuestsStore = defineStore('guests', {
   state: () => ({
     guests: [],
     currentGuest: null
   }),
-
   actions: {
     addGuest(guest) {
       this.guests.push(guest)
@@ -36,6 +37,16 @@ export const useGuestsStore = defineStore('guests', {
 
     clearGuests() {
       this.guests = []
+    },
+
+    async loadGuests({ perPage = 5, pageSelected = 1 }){
+      const userStore = useUserStore()
+
+      return await GuestsService.getMyEventGuests({
+        eventId: userStore.currentEventId,
+        perPage,
+        pageSelected
+      })
     }
   }
 })
