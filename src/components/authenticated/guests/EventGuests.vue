@@ -1,6 +1,11 @@
-<script setup lang="ts">
-
+<script setup >
 import CreateUpdateGuest from '@/components/authenticated/guests/CreateUpdateGuest.vue'
+import EventGuestList from '@/components/authenticated/guests/EventGuestList.vue'
+import { ref } from 'vue'
+
+const activeView = ref('list')
+
+
 </script>
 
 <template>
@@ -8,7 +13,9 @@ import CreateUpdateGuest from '@/components/authenticated/guests/CreateUpdateGue
     <div
       class="my-events-container mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[300px] h-full"
     >
-      <CreateUpdateGuest />
+      <EventGuestList v-if="activeView === 'list'" />
+
+      <CreateUpdateGuest v-else-if="activeView === 'create-update'" />
     </div>
   </section>
 </template>
