@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { Notifications } from "@kyvg/vue3-notification";
+import CWMNotification from '@/components/UI/cwmNotification/CWMNotification.vue'
 </script>
 
 <template>
   <RouterView />
-  <notifications />
+  <CWMNotification />
 </template>
 
 

@@ -4,6 +4,7 @@ import { useUserStore } from '../stores/useUserStore'
 import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.vue'
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
+import EventGuestList from '../components/authenticated/guests/EventGuestList.vue'
 
 const authRoutes = [
   {
@@ -36,7 +37,7 @@ const authRoutes = [
         component: EventGuests,
         meta: {
           title: 'Events Guests'
-        }
+        },
       },
       {
         path: 'save-the-date',

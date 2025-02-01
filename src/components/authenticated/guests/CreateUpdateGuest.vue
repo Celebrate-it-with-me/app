@@ -9,6 +9,7 @@ import GuestCompanions from '@/components/authenticated/guests/companions/GuestC
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import GuestsService from '@/services/GuestsService'
+import { useNotification } from '@/stores/useNotification'
 
 const emit = defineEmits(['updatedGuest'])
 const stdState = reactive({
@@ -17,6 +18,7 @@ const stdState = reactive({
   email: '',
   phoneNumber: null
 })
+const forceStep = ref(false)
 
 const loading = ref(false)
 const guestsErrors = ref()
@@ -25,15 +27,17 @@ const companions = ref({
   companionQty: 0,
   companionList: []
 })
+
 const eventStore = useEventsStore()
+const notificationStr = useNotification()
 
 const guestsValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       firstName: zod.string().min(1, { required_error: 'First Name is required.' }),
       lastName: zod.string().min(1, { required_error: 'Last Name is required.' }),
-      email: zod.string().email('Invalid email address').or(zod.literal('')).optional(),
-      phoneNumber: zod.string().optional()
+      email: zod.string().email('Invalid email address').or(zod.literal('')).nullable(),
+      phoneNumber: zod.string().nullable()
     })
   )
 })
@@ -42,7 +46,7 @@ const handleCompanions = (values) => {
   companions.value = { ...companions.value, ...values }
 }
 
-const onSubmit = async () => {
+const onSubmit = async (values, { resetForm }) => {
   try {
     loading.value = true
 
@@ -52,8 +56,13 @@ const onSubmit = async () => {
       ...companions.value
     })
 
-    if (response) {
-      console.log(response)
+    if (response.status >= 200 && response.status < 300) {
+      notificationStr.addNotification({
+        type: 'success',
+        message: 'Event guest added successfully!'
+      })
+
+      clearForm(resetForm)
     } else {
       console.error('There is some errors', response)
     }
@@ -65,9 +74,37 @@ const onSubmit = async () => {
   }
 }
 
+const clearForm = (resetForm) => {
+  stdState.firstName = ''
+  stdState.lastName = ''
+  stdState.email = ''
+  stdState.phoneNumber = null
+
+  companions.value = []
+  forceStep.value = true
+
+  resetForm({
+    values: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: ''
+    },
+    touched: {
+      firstName: false,
+      lastName: false,
+      email: false,
+      phoneNumber: false
+    }
+  })
+}
+
 const onInvalidSubmit = () => {
   guestsErrors.value = 'Oops something when wrong, please try again later'
 }
+
+const backToGuestList = () => {}
+
 </script>
 
 <template>
@@ -143,15 +180,28 @@ const onInvalidSubmit = () => {
       </div>
 
       <GuestCompanions
-        @updated:companions="handleCompanions"
+        :force-step="forceStep"
+        v-model="companions"
       />
 
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
-          type="submit"
-          class="flex items-center gap-x-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+          type="button"
+          class="text-yellow-300 hover:text-yellow-500 underline"
+          @click="backToGuestList"
         >
-          <CWMLoading :size="'h-6 w-6'" />
+          Back to Guest List
+        </button>
+        <button
+          type="submit"
+          class="flex items-center gap-x-2 text-white text-sm font-medium py-2 px-6 rounded-md"
+          :class="{'bg-blue-500 hover:bg-blue-600': !loading, 'bg-gray-700 hover:bg-gray-600': loading }"
+          :disabled="loading"
+        >
+          <CWMLoading
+            v-if="loading"
+            :size="'h-6 w-6'"
+          />
           <span>Save Guest</span>
         </button>
       </div>

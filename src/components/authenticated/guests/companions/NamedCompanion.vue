@@ -25,8 +25,6 @@ const namedValidationSchema = computed(() => {
   )
 })
 
-
-
 const onNamedValidationSubmit = (values, { resetForm }) => {
   emit('companionSend', {...companion})
 

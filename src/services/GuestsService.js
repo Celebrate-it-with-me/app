@@ -21,6 +21,15 @@ class GuestsService {
       companionList
     })
   }
+
+  async getMyEventGuests({ eventId, perPage, pageSelected }) {
+    return CWM_API.get(`event/${eventId}/guest`, {
+      params: {
+        perPage,
+        pageSelected
+      }
+    })
+  }
 }
 
 export default new GuestsService()

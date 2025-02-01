@@ -1,12 +1,28 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, watchEffect } from 'vue'
 import SetCompanionType from '@/components/authenticated/guests/companions/SetCompanionType.vue'
 import NoNamedCompanion from '@/components/authenticated/guests/companions/NoNamedCompanion.vue'
 import NamedCompanion from '@/components/authenticated/guests/companions/NamedCompanion.vue'
 import GuestCompanionList from '@/components/authenticated/guests/companions/GuestCompanionList.vue'
 
-const emit = defineEmits(['updated:companions'])
+// Emit to handle v-model
+const emit = defineEmits(['update:modelValue'])
 
+// Props for v-model
+const props = defineProps({
+  modelValue: {
+    type: Object,
+    default() {
+      return {}
+    }
+  },
+  forceStep: {
+    type: Boolean,
+    default: false
+  }
+})
+
+// Local reactive state
 const step = ref(1)
 const companionType = ref(null)
 const noNamedCompanionQty = ref(1)
@@ -14,74 +30,63 @@ const companions = ref([])
 const showCompanyList = ref(false)
 const resetQty = ref(false)
 
-const addCompanion = () => {
-  step.value += 1
-}
-
-const handleCompanionQty = () => {
-  showCompanyList.value = true
-}
-
-const handleNamedCompanion = (companion) => {
-  companions.value.push(companion)
-  showCompanyList.value = true
-}
-
+// Functions
+const addCompanion = () => { step.value += 1 }
+const handleCompanionQty = () => { showCompanyList.value = true }
+const handleNamedCompanion = (companion) => { companions.value.push(companion); showCompanyList.value = true }
 const handleRemoveCompanion = (companion) => {
-  if (companions.value.length) {
-    companions.value = companions.value.filter((existingCompanion) => {
-      if (companion.email && existingCompanion.email) {
-        return existingCompanion.email !== companion.email
-      } else {
-        return (
-          existingCompanion.firstName !== companion.firstName ||
-          existingCompanion.lastName !== companion.lastName
-        )
-      }
-    })
+  companions.value = companions.value.filter((existingCompanion) => {
+    return companion.email
+      ? existingCompanion.email !== companion.email
+      : existingCompanion.firstName !== companion.firstName || existingCompanion.lastName !== companion.lastName
+  })
 
-    if (!companions.value.length) {
-      showCompanyList.value = false
-    }
-  }
+  if (!companions.value.length) showCompanyList.value = false
 }
-
 const goBack = () => {
   showCompanyList.value = false
-
   companions.value = []
   noNamedCompanionQty.value = 1
   companionType.value = null
   step.value = 1
+  emitCompanions()
 }
 
-const handleRestartReset = () => {
-  resetQty.value = false
-}
+const handleRestartReset = () => { resetQty.value = false }
+const handleRemoveQty = () => { showCompanyList.value = false; resetQty.value = true }
 
-const handleRemoveQty = () => {
-  showCompanyList.value = false
-  resetQty.value = true
-}
-
+// Emit data to parent
 const emitCompanions = () => {
-  emit('updated:companions', {
+  emit('update:modelValue', {
     companionType: companionType.value,
     companionQty: noNamedCompanionQty.value,
     companionList: companions.value
   })
 }
 
-watch(companionType, () => {
-  showCompanyList.value = false
-  emitCompanions()
+// Sync local state with props
+const setLocalVars = (value) => {
+  companionType.value = value.companionType ?? null
+  noNamedCompanionQty.value = value.companionQty ?? 0
+  companions.value = value.companionList ?? []
+}
+
+// Watch props and sync local vars
+watch(() => props.modelValue, (newValue) => {
+  if (newValue && typeof newValue === 'object') {
+    setLocalVars(newValue)
+  }
 })
 
-watch(noNamedCompanionQty, () => {
-  emitCompanions()
+watch(() => props.forceStep, (newValue) => {
+  if (newValue) {
+    step.value = 1
+    showCompanyList.value = false
+  }
 })
 
-watch(companions, () => {
+// Emit updates whenever local state changes
+watchEffect(() => {
   emitCompanions()
 })
 </script>
@@ -89,8 +94,7 @@ watch(companions, () => {
 <template>
   <div class="flex flex-col gap-x-2 gap-6 pt-5 w-full">
     <h4 class="flex flex-row justify-between items center text-xl font-semibold mb-4">
-      <span>Companions </span>
-
+      <span>Companions</span>
       <a v-if="step !== 1" class="text-sm underline cursor-pointer" @click="goBack">Cancel</a>
     </h4>
 
@@ -98,29 +102,16 @@ watch(companions, () => {
       <div class="w-1/2">
         <div class="mb-4" v-if="step === 1">
           <p class="text-gray-400 text-sm">No companions added yet.</p>
-
-          <button
-            v-if="step === 1"
-            type="button"
-            class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-md mt-2"
-            @click="addCompanion"
-          >
+          <button class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-md mt-2" @click="addCompanion">
             Add Companion
           </button>
         </div>
 
         <div v-else-if="step === 2">
           <SetCompanionType v-model="companionType" />
-
           <div v-if="companionType === 'no-named'" class="no-named-section">
-            <NoNamedCompanion
-              v-model="noNamedCompanionQty"
-              :reset-qty="resetQty"
-              @set-companions-qty="handleCompanionQty"
-              @restart-reset="handleRestartReset"
-            />
+            <NoNamedCompanion v-model="noNamedCompanionQty" :reset-qty="resetQty" @set-companions-qty="handleCompanionQty" @restart-reset="handleRestartReset" />
           </div>
-
           <div v-if="companionType === 'named'">
             <NamedCompanion @companion-send="handleNamedCompanion" />
           </div>
@@ -138,5 +129,3 @@ watch(companions, () => {
     </div>
   </div>
 </template>
-
-<style scoped></style>
