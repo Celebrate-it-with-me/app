@@ -10,6 +10,7 @@ import CWMSeatAccommodation from '../components/authenticated/seat-accommodation
 import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
 import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
 import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue'
+import CWMSuggestMusic from '../components/suggest-music/CWMSuggestMusic.vue'
 
 const authRoutes = [
   {
@@ -17,7 +18,7 @@ const authRoutes = [
     name: 'dashboard',
     component: DashboardView,
     meta: {
-      title: 'Events Dashboard'
+      title: 'CwmEvents Dashboard'
     }
   },
   {
@@ -25,7 +26,7 @@ const authRoutes = [
     name: 'events',
     component: EventsView,
     meta: {
-      title: 'My Events'
+      title: 'My CwmEvents'
     },
     children: [
       {
@@ -41,7 +42,7 @@ const authRoutes = [
         name: 'event-guests',
         component: EventGuests,
         meta: {
-          title: 'Events Guests'
+          title: 'CwmEvents Guests'
         },
       },
       {
@@ -90,6 +91,14 @@ const authRoutes = [
         component: CWMBudget,
         meta: {
           title: 'Event Previous'
+        }
+      },
+      {
+        path: 'suggest-music',
+        name: 'suggest-music',
+        component: CWMSuggestMusic,
+        meta: {
+          title: 'Suggest Music'
         }
       },
       {

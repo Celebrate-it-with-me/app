@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import GuestsService from '../services/GuestsService'
 import { useUserStore } from './useUserStore'
 
-export const useGuestsStore = defineStore('guests', {
+export const useGuestsStore = defineStore('guestsStore', {
   state: () => ({
     guests: [],
     currentGuest: null

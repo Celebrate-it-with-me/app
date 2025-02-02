@@ -3,7 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import CWMPagination from '@/components/UI/pagination/CWMPagination.vue'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
-import { useNotification } from '@/stores/useNotification'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useGuestsStore } from '@/stores/useGuestStore'
 
 const eventGuests = ref([])
@@ -12,7 +12,7 @@ const loading = ref(false)
 const pageSelected = ref(1)
 const totalItems = ref(0)
 const eventStore = useEventsStore()
-const notificationStore = useNotification()
+const notificationStore = useNotificationStore()
 const guestStore = useGuestsStore()
 
 onMounted(() => {
@@ -28,7 +28,6 @@ const loadEventGuests = async () => {
     loading.value = true
 
     const response = await guestStore.loadGuests({
-      /*eventId: eventStore.currentEvent.id,*/
       perPage: perPage.value,
       pageSelected: pageSelected.value
     })

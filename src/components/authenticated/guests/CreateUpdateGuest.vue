@@ -9,7 +9,7 @@ import GuestCompanions from '@/components/authenticated/guests/companions/GuestC
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import GuestsService from '@/services/GuestsService'
-import { useNotification } from '@/stores/useNotification'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const emit = defineEmits(['updatedGuest'])
 const stdState = reactive({
@@ -29,7 +29,7 @@ const companions = ref({
 })
 
 const eventStore = useEventsStore()
-const notificationStr = useNotification()
+const notificationStr = useNotificationStore()
 
 const guestsValidationSchema = computed(() => {
   return toTypedSchema(

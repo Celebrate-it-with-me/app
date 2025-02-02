@@ -1,11 +1,11 @@
 <script setup>
-import { useNotification } from '@/stores/useNotification'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 import { computed } from 'vue'
 import SuccessIcon from '@/components/UI/cwmNotification/notification-icons/SuccessIcon.vue'
 import WarningIcon from '@/components/UI/cwmNotification/notification-icons/WarningIcon.vue'
 import ErrorIcon from '@/components/UI/cwmNotification/notification-icons/ErrorIcon.vue'
 
-const notificationStore = useNotification()
+const notificationStore = useNotificationStore()
 
 const notifications = computed(() => notificationStore.notifications)
 

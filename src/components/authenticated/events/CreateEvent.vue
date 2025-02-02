@@ -4,7 +4,7 @@ import TextAreaField from '@/components/UI/form/TextAreaField.vue'
 import TextField from '@/components/UI/form/TextField.vue'
 import SelectField from '@/components/UI/form/SelectField.vue'
 import { Form } from 'vee-validate'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import {
@@ -13,8 +13,8 @@ import {
   EVENT_VISIBILITIES as visibilities
 } from '@/constants/constants'
 import { useEventsStore } from '@/stores/useEventsStore'
-import { useUserStore } from '@/stores/useUserStore'
-import { XMarkIcon } from '@heroicons/vue/16/solid'
+import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const emit = defineEmits(['cancelCreate'])
 const eventState = reactive({
@@ -27,13 +27,8 @@ const eventState = reactive({
   processing: false
 })
 const eventErrors = ref()
-
-const userStore = useUserStore()
+const notificationStore = useNotificationStore()
 const eventStore = useEventsStore()
-
-onMounted(() => {
-  console.log('checking token', userStore.token)
-})
 
 const eventValidationSchema = computed(() => {
   return toTypedSchema(
@@ -81,13 +76,19 @@ const cancelCreateEvent = () => {
   emit('cancelCreate')
 }
 
-const onSubmit = async () => {
+const onSubmit = async (fields, { resetForm }) => {
   try {
     eventState.processing = true
 
     const result = await eventStore.createEvent(eventState)
     if (result.status >= 200 && result.status < 300) {
-      // process event added.
+      notificationStore.addNotification({
+        type: 'success',
+        message: 'Event created successfully!'
+      })
+      cleanForm(resetForm)
+
+      await eventStore.initEvents(result.data.data.id)
     } else {
       const { data } = result.response ?? {}
       eventErrors.value = data.message ?? DEFAULT_ERROR_MESSAGE
@@ -98,6 +99,37 @@ const onSubmit = async () => {
   } finally {
     eventState.processing = false
   }
+}
+
+const cleanForm = (resetForm) => {
+  eventState.eventName = ''
+  eventState.eventDescription = ''
+  eventState.eventDate = ''
+  eventState.status = 'draft'
+  eventState.customUrlSlug = ''
+  eventState.visibility = 'private'
+  eventState.processing = false
+
+  resetForm({
+    values: {
+      eventName: '',
+      eventDescription: '',
+      eventDate: '',
+      status: 'draft',
+      customUrlSlug: '',
+      visibility: 'private',
+      processing: false
+    },
+    touched: {
+      eventName: false,
+      eventDescription: false,
+      eventDate: false,
+      status: false,
+      customUrlSlug: false,
+      visibility: false,
+      processing: false
+    }
+  })
 }
 
 const onInvalidSubmit = (err) => {
@@ -118,10 +150,6 @@ watch(
     <!-- Header Section -->
     <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
       <h3 class="text-lg font-semibold">Create or Edit Event Details</h3>
-      <XMarkIcon
-        class="h-6 w-6 cursor-pointer"
-        @click="cancelCreateEvent"
-      ></XMarkIcon>
     </div>
 
     <!-- Event Details Form -->
@@ -222,9 +250,15 @@ watch(
         </button>
         <button
           type="submit"
-          class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+          class="text-white text-sm font-medium py-2 px-6 rounded-md"
+          :class="eventState.processing
+            ? 'bg-gray-500 hover:bg-gray-600 cursor-not-allowed'
+            : 'bg-blue-500 hover:bg-blue-600 cursor-pointer' "
+          :disabled="eventState.processing"
         >
-          Save Event
+          <CWMLoading  v-if="eventState.processing" />
+          <span v-if="eventState.processing">Saving...</span>
+          <span v-else>Save Event</span>
         </button>
       </div>
     </Form>
