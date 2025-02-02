@@ -8,6 +8,7 @@ const currentTabs = [
   { id: 3, label: 'Save the Date', route: '/dashboard/save-the-date', selected: false },
   { id: 4, label: 'RSVP', route: '/dashboard/rsvp', selected: false },
   { id: 5, label: 'Gallery', route: '/dashboard/gallery', selected: false },
+  { id: 5, label: 'Music', route: '/dashboard/suggest-music', selected: false },
   { id: 8, label: 'Seats Accommodation', route: '/dashboard/seats-accommodation', selected: false },
   { id: 6, label: 'Preview', route: '/dashboard/preview', selected: false },
   { id: 7, label: 'Budget', route: '/dashboard/budget', selected: false },

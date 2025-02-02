@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
-import Events from '@/components/authenticated/events/Events.vue'
+import CwmEvents from '@/components/authenticated/events/CWMEvents.vue'
 </script>
 
 <template>
-  <Events />
+  <CwmEvents />
 </template>
 
 <style scoped>
