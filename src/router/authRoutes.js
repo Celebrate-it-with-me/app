@@ -10,7 +10,7 @@ import CWMSeatAccommodation from '../components/authenticated/seat-accommodation
 import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
 import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
 import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue'
-import CWMSuggestMusic from '../components/suggest-music/CWMSuggestMusic.vue'
+import CWMSuggestMusic from '../components/authenticated/suggest-music/CWMSuggestMusic.vue'
 
 const authRoutes = [
   {

@@ -5,6 +5,9 @@ import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useGuestsStore } from '@/stores/useGuestStore'
+import CWMAlert from '@/components/UI/alerts/CWMAlert.vue'
+
+const emit = defineEmits(['showAddGuest'])
 
 const eventGuests = ref([])
 const perPage = ref(5)
@@ -58,6 +61,10 @@ const handleUpdatePerPage = (value) => {
   guestStore.perPage = value
 }
 
+const showAddGuestView = () => {
+  emit('showAddGuest')
+}
+
 watch(pageSelected, () => {
   loadEventGuests()
 })
@@ -74,19 +81,43 @@ watch(perPage, () => {
       <CWMLoading />
     </div>
 
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-      <caption
-        class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800"
+    <div
+      class="flex w-full justify-end"
+    >
+      <button
+        class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+        @click="showAddGuestView"
       >
-        Guest List
-        <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-          This is the guest list for your event **{{ eventTitle }}**. To see more information,
-          click on **more info**, to view companions, click on **companions**, and to edit a value,
-          click on the value you want to edit.
+        Add Guest
+      </button>
+    </div>
 
-        </p>
-      </caption>
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <div
+      class="mt-5"
+      v-if="!loading"
+    >
+      <CWMAlert
+        type="info"
+        v-if="!eventGuests.length"
+      >
+        There is not guests for this event yet!
+      </CWMAlert>
+      <table
+        v-else
+        class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mt-5"
+      >
+        <caption
+          class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800"
+        >
+          Guest List
+          <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+            This is the guest list for your event **{{ eventTitle }}**. To see more information,
+            click on **more info**, to view companions, click on **companions**, and to edit a value,
+            click on the value you want to edit.
+
+          </p>
+        </caption>
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
           <th scope="col" class="px-6 py-3">Guest Name</th>
           <th scope="col" class="px-6 py-3">Email</th>
@@ -96,8 +127,8 @@ watch(perPage, () => {
             <span class="sr-only">Edit</span>
           </th>
         </tr>
-      </thead>
-      <tbody>
+        </thead>
+        <tbody>
         <tr
           v-for="guest in eventGuests"
           :key="guest.id"
@@ -133,14 +164,17 @@ watch(perPage, () => {
           </td>
           <td class="px-6 py-4 text-right">
             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-              >more info</a
+            >more info</a
             >
           </td>
         </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
+
   </div>
   <CWMPagination
+    v-if="eventGuests.length"
     v-model="pageSelected"
     :total-items="totalItems"
     @update:per-page="handleUpdatePerPage"

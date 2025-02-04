@@ -154,7 +154,7 @@ onMounted(() => {
   position: relative;
   padding-bottom: 56.25%; /* Ratio for 16:9 */
 }
-.aspect-w-16 .aspect-h-9 {
+.aspect-w-16 {
   position: absolute;
   top: 0;
   left: 0;
