@@ -20,9 +20,6 @@ export const useSongsStore = defineStore('songStore', {
     }
   },
   getters: {
-    getters: {
-      songCount: (state) => state.selectedSongs.length,
-    },
-
-  }
+      songCount: () => this.selectedSongs.length,
+  },
 })

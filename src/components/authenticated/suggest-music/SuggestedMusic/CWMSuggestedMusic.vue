@@ -1,11 +1,12 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import debounce from 'lodash.debounce'
 import { HandThumbUpIcon } from '@heroicons/vue/16/solid'
 import { HandThumbDownIcon } from '@heroicons/vue/16/solid'
 import { useSongsStore } from '@/stores/useSongsStore'
 import SongsService from '@/services/SongsService'
 import { useEventsStore } from '@/stores/useEventsStore'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const props = defineProps({
   title: {
@@ -45,6 +46,8 @@ const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID
 const client_secret = import.meta.env.VITE_SPOTIFY_CLIEN_SECRET
 const songsStore = useSongsStore()
 const eventStore = useEventsStore()
+const loading = ref(false)
+const notification = useNotificationStore()
 
 let skipFetch = false
 
@@ -64,6 +67,32 @@ const secondaryColorComputed = computed(() => {
   return {backgroundColor: props.secondaryColor}
 })
 
+onMounted(() => {
+  getSuggestedSongs()
+})
+
+
+const getSuggestedSongs = async () => {
+  try {
+    loading.value = true
+
+    const response = await SongsService.getSuggestedSongs(eventStore?.currentEvent?.id)
+
+    if (response.status === 200) {
+      songsStore.selectedSongs = response?.data?.data ?? []
+    } else {
+      notification.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!'
+      })
+    }
+
+  } catch(e) {
+    console.log(e)
+  } finally {
+    loading.value = false
+  }
+}
 
 async function getToken() {
   const base64Credentials = btoa(`${client_id}:${client_secret}`);
@@ -98,7 +127,7 @@ const fetchSuggestions = debounce(async () => {
       const result = await searchSongs(access_token, searchQuery.value);
 
       suggestions.value = result.tracks.items.map((track) => ({
-        id: track.id,
+        platformId: track.id,
         title: track.name,
         artist: track.artists.map((artist) => artist.name).join(', '),
         album: track.album.name || 'Unknown Album',
@@ -126,18 +155,34 @@ const selectSuggestion = (song) => {
   }, 300)
 }
 
-const removeSong = (song) => {
-  songsStore.removeSong(song.id)
+const removeSong = async (song) => {
+  try {
+    const response = await SongsService.deleteSong(eventStore.currentEvent.id, song.id)
+
+    if (response.status === 200) {
+      songsStore.removeSong(song.id)
+      notification.addNotification({
+        message: "Song removed successfully!"
+      })
+    } else {
+      notification.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!'
+      })
+    }
+
+  } catch (e) {
+    console.log(error)
+  }
 }
 
 const saveSelectedSong = async (song) => {
-  songsStore.addSong(song)
   if (props.mode === 'creator') return;
 
   try {
     const response = await SongsService.create({
       eventId: eventStore?.currentEvent?.id ?? 0,
-      spotifyId: song.id,
+      platformId: song.platformId,
       title: song.title,
       artist: song.artist,
       album: song.album,
@@ -145,9 +190,15 @@ const saveSelectedSong = async (song) => {
     })
 
     if (response.status >= 200 && response.status < 300) {
-      console.log('success', response)
+      songsStore.addSong(response?.data?.data ?? {})
+      notification.addNotification({
+        message: 'Song added successfully'
+      })
     } else {
-      console.log('error', response)
+      notification.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!'
+      })
     }
 
   } catch (e) {
@@ -234,8 +285,8 @@ watch(searchQuery, () => fetchSuggestions(), { immediate: true })
             v-if="usePreview"
           >
             <iframe
-              v-if="song.id"
-              :src="`https://open.spotify.com/embed/track/${song.id}`"
+              v-if="song.platformId"
+              :src="`https://open.spotify.com/embed/track/${song.platformId}`"
               width="100%"
               height="80"
               class="rounded-md"
