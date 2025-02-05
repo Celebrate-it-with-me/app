@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import TextField from '@/components/UI/form/TextField.vue'
@@ -9,9 +9,9 @@ import GuestCompanions from '@/components/authenticated/guests/companions/GuestC
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import GuestsService from '@/services/GuestsService'
-import { useNotification } from '@/stores/useNotification'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
-const emit = defineEmits(['updatedGuest'])
+const emit = defineEmits(['updatedGuest', 'showGuestList'])
 const stdState = reactive({
   firstName: '',
   lastName: '',
@@ -29,7 +29,7 @@ const companions = ref({
 })
 
 const eventStore = useEventsStore()
-const notificationStr = useNotification()
+const notificationStr = useNotificationStore()
 
 const guestsValidationSchema = computed(() => {
   return toTypedSchema(
@@ -99,7 +99,9 @@ const onInvalidSubmit = () => {
   guestsErrors.value = 'Oops something when wrong, please try again later'
 }
 
-const backToGuestList = () => {}
+const backToGuestList = () => {
+  emit('showGuestList')
+}
 
 </script>
 

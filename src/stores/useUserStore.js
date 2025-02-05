@@ -15,7 +15,7 @@ const formattedTime = formatLogoutTime(logoutTimeString);
 console.log(`Logout time: ${formattedTime}`);
 // Output: "Logout time: January 25, 2025 at 6:19 AM"
 
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore('userStore', {
   state: () => ({
     name: '',
     email: '',

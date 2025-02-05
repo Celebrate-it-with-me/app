@@ -1,5 +1,5 @@
 <script setup>
-import Alert from '@/components/UI/alerts/Alert.vue'
+import CwmAlert from '@/components/UI/alerts/CWMAlert.vue'
 import CreateEvent from '@/components/authenticated/events/CreateEvent.vue'
 import ShowEvent from '@/components/authenticated/events/ShowEvent.vue'
 import MyEventsList from '@/components/authenticated/events/MyEventsList.vue'
@@ -57,12 +57,12 @@ const eventMessage = computed(() => {
           />
         </div>
 
-        <Alert
+        <CwmAlert
           alert-type="info"
           v-else
         >
           {{ eventMessage }}
-        </Alert>
+        </CwmAlert>
       </div>
     </section>
   </section>
