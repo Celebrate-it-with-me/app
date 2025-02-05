@@ -3,6 +3,9 @@ import { computed, ref, watch } from 'vue'
 import debounce from 'lodash.debounce'
 import { HandThumbUpIcon } from '@heroicons/vue/16/solid'
 import { HandThumbDownIcon } from '@heroicons/vue/16/solid'
+import { useSongsStore } from '@/stores/useSongsStore'
+import SongsService from '@/services/SongsService'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 const props = defineProps({
   title: {
@@ -28,14 +31,20 @@ const props = defineProps({
   useVoteSystem: {
     type: Boolean,
     required: true
+  },
+  mode: {
+    type: String,
+    default: 'normal',
+    validator: (value) => ['normal', 'creator'].includes(value)
   }
 })
 
 const searchQuery = ref('')
 const suggestions = ref([])
-const selectedSongs = ref([])
-const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-const client_secret = import.meta.env.VITE_SPOTIFY_CLIEN_SECRET;
+const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID
+const client_secret = import.meta.env.VITE_SPOTIFY_CLIEN_SECRET
+const songsStore = useSongsStore()
+const eventStore = useEventsStore()
 
 let skipFetch = false
 
@@ -74,7 +83,7 @@ async function getToken() {
 }
 
 async function searchSongs(access_token, query) {
-  const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=10`, {
+  const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`, {
     method: 'GET',
     headers: { 'Authorization': 'Bearer ' + access_token },
   });
@@ -94,7 +103,6 @@ const fetchSuggestions = debounce(async () => {
         artist: track.artists.map((artist) => artist.name).join(', '),
         album: track.album.name || 'Unknown Album',
         thumbnailUrl: track.album.images[0]?.url || 'https://via.placeholder.com/48',
-        previewUrl: track.previewUrl || null
       }));
     } catch (error) {
       console.error('Error fetching suggestions:', error);
@@ -109,9 +117,8 @@ const fetchSuggestions = debounce(async () => {
 const selectSuggestion = (song) => {
   skipFetch = true
 
-  selectedSongs.value.push(song)
   saveSelectedSong(song)
-  searchQuery.value = []
+  searchQuery.value = ''
   suggestions.value = []
 
   setTimeout(() => {
@@ -119,8 +126,33 @@ const selectSuggestion = (song) => {
   }, 300)
 }
 
-const saveSelectedSong = (song) => {
+const removeSong = (song) => {
+  songsStore.removeSong(song.id)
+}
 
+const saveSelectedSong = async (song) => {
+  songsStore.addSong(song)
+  if (props.mode === 'creator') return;
+
+  try {
+    const response = await SongsService.create({
+      eventId: eventStore?.currentEvent?.id ?? 0,
+      spotifyId: song.id,
+      title: song.title,
+      artist: song.artist,
+      album: song.album,
+      thumbnailUrl: song.thumbnailUrl,
+    })
+
+    if (response.status >= 200 && response.status < 300) {
+      console.log('success', response)
+    } else {
+      console.log('error', response)
+    }
+
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 watch(searchQuery, () => fetchSuggestions(), { immediate: true })
@@ -173,10 +205,10 @@ watch(searchQuery, () => fetchSuggestions(), { immediate: true })
         </ul>
       </div>
     </div>
-    <div v-if="selectedSongs.length > 0" class="mt-2 w-[90%]">
+    <div v-if="songsStore.selectedSongs.length > 0" class="mt-2 w-[90%]">
       <ul>
         <li
-          v-for="(song, index) in selectedSongs"
+          v-for="(song, index) in songsStore.selectedSongs"
           :key="index"
           class="p-4 rounded-md flex justify-between items-center mt-2 space-x-6 transition hover:bg-gray-700"
           :style="mainColorComputed"
@@ -224,6 +256,17 @@ watch(searchQuery, () => fetchSuggestions(), { immediate: true })
               <HandThumbDownIcon class="h-5 w-5 text-white hover:text-red-500" />
             </button>
           </div>
+
+          <button
+            @click="removeSong(song)"
+            class="rounded-full bg-transparent text-red-500 hover:text-red-700"
+            title="Remove song"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
         </li>
       </ul>
     </div>
