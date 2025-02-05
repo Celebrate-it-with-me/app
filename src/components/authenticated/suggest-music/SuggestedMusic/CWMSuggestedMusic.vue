@@ -88,6 +88,7 @@ const getSuggestedSongs = async () => {
     />
 
     <SongList
+      :mode="mode"
       :main-color="mainColor"
       :use-preview="usePreview"
       :use-vote-system="useVoteSystem"

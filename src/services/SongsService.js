@@ -18,6 +18,12 @@ class SongsService {
   async deleteSong(eventId, songId) {
     return CWM_API.delete(`suggest-music/${songId}`)
   }
+
+  async voteSong({ songId, direction }) {
+    return CWM_API.post(`suggest-music/${songId}/vote`, {
+      direction: direction
+    })
+  }
 }
 
 export default new SongsService()
