@@ -1,8 +1,35 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import debounce from 'lodash.debounce'
-import { FaceSmileIcon } from '@heroicons/vue/16/solid'
-import { FaceFrownIcon } from '@heroicons/vue/16/solid'
+import { HandThumbUpIcon } from '@heroicons/vue/16/solid'
+import { HandThumbDownIcon } from '@heroicons/vue/16/solid'
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  },
+  subTitle: {
+    type: String,
+    default: ''
+  },
+  mainColor: {
+    type: String,
+    required: true
+  },
+  secondaryColor: {
+    type: String,
+    required: true
+  },
+  usePreview: {
+    type: Boolean,
+    required: true
+  },
+  useVoteSystem: {
+    type: Boolean,
+    required: true
+  }
+})
 
 const searchQuery = ref('')
 const suggestions = ref([])
@@ -10,16 +37,24 @@ const selectedSongs = ref([])
 const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 const client_secret = import.meta.env.VITE_SPOTIFY_CLIEN_SECRET;
 
-
 let skipFetch = false
 
-const mockData = [
-  { title: 'Imagine', artist: 'John Lennon', genre: 'Rock', thumbnailUrl: 'https://via.placeholder.com/48' },
-  { title: 'Billie Jean', artist: 'Michael Jackson', genre: 'Pop', thumbnailUrl: 'https://via.placeholder.com/48' },
-  { title: 'Hey Jude', artist: 'The Beatles', genre: 'Rock', thumbnailUrl: 'https://via.placeholder.com/48' },
-  { title: 'Bohemian Rhapsody', artist: 'Queen', genre: 'Rock', thumbnailUrl: 'https://via.placeholder.com/48' },
-  { title: 'Shake It Off', artist: 'Taylor Swift', genre: 'Pop', thumbnailUrl: 'https://via.placeholder.com/48' },
-]
+const mainColorComputed = computed(() => {
+  if (!props.mainColor) {
+    return {backgroundColor: 'transparent' }
+  }
+
+  return {backgroundColor: props.mainColor}
+});
+
+const secondaryColorComputed = computed(() => {
+  if (!props.secondaryColor) {
+    return {backgroundColor: 'transparent' }
+  }
+
+  return {backgroundColor: props.secondaryColor}
+})
+
 
 async function getToken() {
   const base64Credentials = btoa(`${client_id}:${client_secret}`);
@@ -47,8 +82,6 @@ async function searchSongs(access_token, query) {
   return await response.json();
 }
 
-
-
 const fetchSuggestions = debounce(async () => {
   if (searchQuery.value && !skipFetch) {
     try {
@@ -59,16 +92,16 @@ const fetchSuggestions = debounce(async () => {
         id: track.id,
         title: track.name,
         artist: track.artists.map((artist) => artist.name).join(', '),
-        genre: track.album.album_type,
+        album: track.album.name || 'Unknown Album',
         thumbnailUrl: track.album.images[0]?.url || 'https://via.placeholder.com/48',
         previewUrl: track.previewUrl || null
       }));
     } catch (error) {
       console.error('Error fetching suggestions:', error);
-      suggestions.value = []; // Clear suggestions on error
+      suggestions.value = [];
     }
   } else {
-    suggestions.value = []; // Clear suggestions when input is empty
+    suggestions.value = [];
   }
 
 }, 300)
@@ -76,8 +109,9 @@ const fetchSuggestions = debounce(async () => {
 const selectSuggestion = (song) => {
   skipFetch = true
 
-  searchQuery.value = []
   selectedSongs.value.push(song)
+  saveSelectedSong(song)
+  searchQuery.value = []
   suggestions.value = []
 
   setTimeout(() => {
@@ -85,38 +119,43 @@ const selectSuggestion = (song) => {
   }, 300)
 }
 
-watch(searchQuery, () => fetchSuggestions(), { immediate: true })
+const saveSelectedSong = (song) => {
 
+}
+
+watch(searchQuery, () => fetchSuggestions(), { immediate: true })
 </script>
 
 <template>
   <div
-    class="w-full"
+    class="event-handle w-[70%] rounded-lg border-4 border-gray-900 dark:border-gray-800 flex flex-col items-center"
   >
-    <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-[50%] relative">
+    <h1 class="text-2xl font-semibold mt-5">{{ title }}</h1>
+    <h4 class="text-md font-extralight">{{ subTitle }}</h4>
+    <div
+      :class="`text-white mt-5 p-6 rounded-lg shadow-md w-[90%] relative`"
+      :style="mainColorComputed"
+    >
       <div class="relative">
         <input
           v-model="searchQuery"
           @input="fetchSuggestions"
           type="text"
-          class="w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none
-               focus:ring-2 focus:ring-blue-400 input-control w-full block
-               focus:outline-none h-[40px]"
+          class="w-full text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 input-control w-full block focus:outline-none h-[40px]"
+          :style="secondaryColorComputed"
           placeholder="Search for a song..."
         />
       </div>
 
       <div
         v-if="suggestions.length"
-        class="absolute top-full left-0 mt-2 w-full rounded-lg divide-y divide-gray-600 shadow-md
-        overflow-hidden bg-gray-700 z-50"
+        class="absolute top-full left-0 mt-2 p-6 w-full rounded-lg divide-y divide-gray-600 shadow-md overflow-hidden bg-gray-700 z-50"
       >
         <ul class="block">
           <li
             v-for="(song, index) in suggestions"
             :key="index"
-            class="p-2 flex justify-between items-center rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer
-                  transition mt-2"
+            class="p-2 flex justify-between items-center rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer transition mt-2"
             @click="selectSuggestion(song)"
           >
             <img
@@ -128,57 +167,62 @@ watch(searchQuery, () => fetchSuggestions(), { immediate: true })
             <!-- Song details -->
             <div class="ml-4 flex flex-col justify-end items-end">
               <p class="text-sm font-medium text-white">{{ song.title }}</p>
-              <p class="text-sm text-gray-400">
-                {{ song.artist }} - {{ song.genre }}</p>
+              <p class="text-sm text-gray-400">{{ song.artist }} - {{ song.album }}</p>
             </div>
           </li>
         </ul>
       </div>
     </div>
-    <div
-      v-if="selectedSongs.length > 0"
-      class="w-[50%]"
-    >
-      <ul class="block">
+    <div v-if="selectedSongs.length > 0" class="mt-2 w-[90%]">
+      <ul>
         <li
           v-for="(song, index) in selectedSongs"
           :key="index"
-          class="p-2 flex justify-between items-center rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer
-                  transition mt-2"
+          class="p-4 rounded-md flex justify-between items-center mt-2 space-x-6 transition hover:bg-gray-700"
+          :style="mainColorComputed"
         >
-          <img
-            v-if="!song.id"
-            :src="song.thumbnailUrl"
-            alt="Album Art"
-            class="w-12 h-12 rounded-lg object-cover"
-          />
-
-          <!-- Song details -->
-          <div class="ml-4 flex flex-col justify-end items-center"
-            v-if="!song.id"
+          <template
+            v-if="!usePreview"
           >
-            <p class="text-sm font-medium text-white">{{ song.title }}</p>
-            <p class="text-sm text-gray-400">
-              {{ song.artist }} - {{ song.genre }}</p>
-          </div>
+            <img
+              :src="song.thumbnailUrl || 'https://via.placeholder.com/64'"
+              alt="Album Art"
+              class="w-16 h-16 rounded-md object-cover"
+            />
 
-          <!-- Spotify Embed -->
-          <div class="ml-4">
+            <div class="flex-1">
+              <h3 class="text-md font-medium text-white">{{ song.title }}</h3>
+              <p class="text-sm text-gray-400">
+                {{ song.artist }} <span v-if="song.album">- {{ song.album }}</span>
+              </p>
+            </div>
+          </template>
+
+          <div class="w-[450px]"
+            v-if="usePreview"
+          >
             <iframe
               v-if="song.id"
               :src="`https://open.spotify.com/embed/track/${song.id}`"
-              width="400"
+              width="100%"
               height="80"
+              class="rounded-md"
               allowtransparency="true"
               allow="encrypted-media"
             ></iframe>
-            <p v-else class="text-sm text-gray-400">No Preview Available</p>
+            <p v-else class="text-sm text-gray-500">No Spotify Preview Available</p>
           </div>
 
-
-          <div class="ml-4 flex gap-x-2">
-            <FaceSmileIcon class="h-6 w-6 cursor-pointer"/>
-            <FaceFrownIcon class="h-6 w-6 cursor-pointer" />
+          <!-- Voting Buttons -->
+          <div
+            v-if="useVoteSystem"
+            class="flex items-center space-x-4">
+            <button @click="voteSong(song, 'up')" class="rounded-full">
+              <HandThumbUpIcon class="h-5 w-5 text-white hover:text-green-500" />
+            </button>
+            <button @click="voteSong(song, 'down')" class="rounded-full">
+              <HandThumbDownIcon class="h-5 w-5 text-white hover:text-red-500" />
+            </button>
           </div>
         </li>
       </ul>
@@ -186,6 +230,4 @@ watch(searchQuery, () => fetchSuggestions(), { immediate: true })
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
