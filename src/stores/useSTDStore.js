@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import STDService from '../services/STDService'
 import { useEventsStore } from './useEventsStore'
+import { useUserStore } from './useUserStore'
 
 export const useSTDStore = defineStore('stdStore', {
   state: () => ({
@@ -72,10 +73,10 @@ export const useSTDStore = defineStore('stdStore', {
     },
 
     async getEventStd() {
-      const eventStore = useEventsStore()
+      const userStore = useUserStore()
 
       return await STDService.getEventSTD({
-        eventId: eventStore?.currentEvent?.id
+        eventId: userStore.currentEventId
       })
     }
   }

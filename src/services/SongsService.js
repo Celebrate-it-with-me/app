@@ -24,6 +24,58 @@ class SongsService {
       direction: direction
     })
   }
+
+  async saveSuggestedConfig({
+                              useSuggestedMusic,
+                              title,
+                              subTitle,
+                              usePreview,
+                              mainColor,
+                              secondaryColor,
+                              useVoteSystem,
+                              searchLimit,
+                              eventId
+  }){
+    return CWM_API.post(`event/${eventId}/suggest-music-config`,{
+      useSuggestedMusic,
+      title,
+      subTitle,
+      usePreview,
+      mainColor,
+      secondaryColor,
+      useVoteSystem,
+      searchLimit,
+      eventId
+    })
+  }
+
+  async updateSuggestedConfig({
+                                id,
+                                useSuggestedMusic,
+                                title,
+                                subTitle,
+                                usePreview,
+                                mainColor,
+                                secondaryColor,
+                                useVoteSystem,
+                                searchLimit,
+                              }) {
+    return CWM_API.put(`suggest-music-config/${id}`,{
+      useSuggestedMusic,
+      title,
+      subTitle,
+      usePreview,
+      mainColor,
+      secondaryColor,
+      useVoteSystem,
+      searchLimit,
+    })
+  }
+
+  async getSuggestedConfig(eventId){
+    return CWM_API.get(`event/${eventId}/suggest-music-config`)
+  }
+
 }
 
 export default new SongsService()

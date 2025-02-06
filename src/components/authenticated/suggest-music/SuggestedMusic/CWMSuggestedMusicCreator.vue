@@ -3,20 +3,35 @@ import ToggleField from '@/components/UI/form/ToggleField.vue'
 import { Form } from 'vee-validate'
 import TextField from '@/components/UI/form/TextField.vue'
 import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
+import NumberField from '@/components/UI/form/NumberField.vue'
+import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
+import SongsService from '@/services/SongsService'
+import { useNotificationStore } from '@/stores/useNotificationStore'
+import { useEventsStore } from '@/stores/useEventsStore'
+import { useUserStore } from '@/stores/useUserStore'
 
 const emit = defineEmits(['update:updatedState'])
 
+const musicErrors = ref()
+const notification = useNotificationStore()
+const eventStore = useEventsStore()
+const wasSaved = ref(false)
+const loading = ref(false)
+const userStore = useUserStore()
+
 const musicLocalState = reactive({
+  id: null,
   useSuggestedMusic: false,
   title: 'Music Suggestions',
   subTitle: 'Please send us you preferred music',
   usePreview: false,
   mainColor: '#1f2937',
   secondaryColor: '#111827',
-  useVoteSystem: true
+  useVoteSystem: true,
+  searchLimit: 10
 })
 
 const musicValidationSchema = computed(() => {
@@ -32,15 +47,113 @@ const musicValidationSchema = computed(() => {
       secondaryColor: zod.string()
         .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid hex color code')
         .optional(),
-      useVoteSystem: zod.boolean().default(false)
+      useVoteSystem: zod.boolean().default(false),
+      searchLimit: zod
+        .number()
+        .nonnegative('Search limit must be a positive number')
+        .optional(),
     })
   )
 })
 
-const musicErrors = ref()
+onMounted(() => {
+  getSelectedMusicConfig()
+})
 
-const onSubmit = () => {
-  console.log('on submit')
+const getSelectedMusicConfig = async () => {
+  try {
+    const response = await SongsService.getSuggestedConfig(userStore.currentEventId)
+
+    if (response.status === 200 && response?.data?.data) {
+      const { data } = response
+
+      musicLocalState.id = data?.data?.id
+      musicLocalState.useSuggestedMusic = !!data?.data?.useSuggestedMusic ?? false
+      musicLocalState.title = data?.data?.title ?? ''
+      musicLocalState.subTitle = data?.data?.subTitle ?? ''
+      musicLocalState.mainColor = data?.data?.mainColor ?? '#1f2937'
+      musicLocalState.secondaryColor = data?.data?.secondaryColor ?? '#111827'
+      musicLocalState.searchLimit = data?.data?.searchLimit ?? 10
+      musicLocalState.usePreview = !!data?.data?.usePreview ?? false
+      musicLocalState.useVoteSystem = !!data?.data?.useVoteSystem ?? false
+
+      wasSaved.value = true
+    } else {
+      wasSaved.value = false
+    }
+
+  } catch(e) {
+    console.log(e)
+  }
+}
+
+const saveSuggestedMusicConfig = async () => {
+  try {
+    loading.value = true
+
+    const response = await SongsService.saveSuggestedConfig({
+      ...musicLocalState,
+      eventId: eventStore.currentEvent.id
+    })
+
+    if (response.status >= 200 && response.status < 300) {
+      notification.addNotification({
+        type: 'success',
+        message: 'Configuration Saved successfully!'
+      })
+
+      wasSaved.value = true
+    } else {
+      console.log(response)
+      notification.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!'
+      })
+    }
+
+  } catch (e) {
+    console.log(e)
+  } finally {
+    loading.value = false
+  }
+}
+
+const updateSuggestedMusicConfig = async () => {
+  try {
+    loading.value = true
+
+    const response = await SongsService.updateSuggestedConfig({
+      ...musicLocalState,
+    })
+
+    if (response.status >= 200 && response.status < 300) {
+      notification.addNotification({
+        type: 'success',
+        message: 'Configuration Updated successfully!'
+      })
+
+      wasSaved.value = true
+    } else {
+      console.log(response)
+      notification.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!'
+      })
+    }
+
+  } catch (e) {
+    console.log(e)
+  } finally {
+    loading.value = false
+  }
+}
+
+const onSubmit = async () => {
+  if (!wasSaved.value) {
+    return saveSuggestedMusicConfig()
+  }
+
+  return updateSuggestedMusicConfig()
 }
 
 const onInvalidSubmit = (error) => {
@@ -142,6 +255,17 @@ watch(
         </div>
 
         <div>
+          <NumberField
+            v-model="musicLocalState.searchLimit"
+            label="Search Limit:"
+            name="searchLimit"
+            show-error
+            placeholder="Max result quantity"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
+        <div>
           <ToggleField
             name="usePreview"
             label="Use Music Preview"
@@ -163,9 +287,24 @@ watch(
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
           type="submit"
-          class="bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+          class="w-full  text-white text-sm font-medium py-2 px-6 rounded-md"
+          :class="loading
+            ? 'bg-gray-500 hover:bg-gray-600'
+            : 'bg-yellow-500 hover:bg-yellow-600'"
+          :disabled="loading"
         >
-          Save Suggested Music Component
+          <CWMLoading
+            v-if="loading"
+          />
+          <span v-if="loading">Saving Config...</span>
+          <span v-else>
+            <span v-if="!wasSaved">
+              Save Suggested Music Component
+            </span>
+            <span v-else>
+              Update Suggested Music Component
+            </span>
+          </span>
         </button>
       </div>
     </Form>

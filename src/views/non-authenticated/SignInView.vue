@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SignIn from '@/components/sign-in/SignIn.vue'
+import SignIn from '@/components/non-authenticated/sign-in/SignIn.vue'
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Title from '@/components/UI/Title.vue'
-import SignUpForm from '@/components/sign-up/SignUpForm.vue'
+import SignUpForm from '@/components/non-authenticated/sign-up/SignUpForm.vue'
+import SignInForm from '@/components/non-authenticated/sign-in/SignInForm.vue'
 </script>
 
 <template>
@@ -18,11 +19,11 @@ import SignUpForm from '@/components/sign-up/SignUpForm.vue'
           :level="'h4'"
           :classes="'text-lg md:text-xl text-gray-500 mb-8'"
         >
-          Sign up to create, explore, and join unforgettable events. Let's make every moment special!
+          Log in to reconnect, discover new experiences, and make every moment unforgettable. Welcome back!
         </Title>
       </div>
 
-      <SignUpForm />
+      <SignInForm />
 
     </div>
   </section>
