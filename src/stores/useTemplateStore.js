@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import TemplateService from '../services/TemplateService'
 
 export const useTemplateStore = defineStore('templateStore', {
   state: () => ({
@@ -6,8 +7,8 @@ export const useTemplateStore = defineStore('templateStore', {
     guest: {}
   }),
   actions: {
-    getEventData() {
-
+    async getEventData({ eventId, guestCode }) {
+      return await TemplateService.getEventData({ eventId, guestCode })
     }
   }
 })
