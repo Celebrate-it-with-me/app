@@ -27,7 +27,7 @@ const handleUpdatedMusic = (newValue) => {
         <CWMSuggestedMusic
           v-if="suggestedMusic.useSuggestedMusic"
 
-          :mode="'normal'"
+          :mode="'creator'"
           :title="suggestedMusic.title"
           :sub-title="suggestedMusic.subTitle"
           :main-color="suggestedMusic.mainColor"

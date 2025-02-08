@@ -10,6 +10,7 @@ import "vue-color-kit/dist/vue-color-kit.css";
 import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
 import debounce from 'lodash.debounce'
 import { useSTDStore } from '@/stores/useSTDStore'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 const emit = defineEmits(['updatedStd'])
 
@@ -24,6 +25,7 @@ const stdState = reactive({
 })
 const stdStore = useSTDStore()
 const stdErrors = ref()
+const eventStore = useEventsStore()
 
 const isUpdate = computed(() => {
   return !!stdStore.hasPreviousStd;
@@ -50,8 +52,10 @@ const stdValidationSchema = computed(() => {
 })
 
 onMounted(() => {
+  stdState.stdTitle = eventStore?.currentEvent?.eventName ?? ''
+
   if (stdStore.hasPreviousStd) {
-    stdState.stdTitle = stdStore.stdTitle
+    stdState.stdTitle = stdStore.stdTitle ?? eventStore.currentEvent.name
     stdState.stdSubTitle = stdStore.stdSubTitle
     stdState.backgroundColor = stdStore.backgroundColor
     stdState.useCountdown = stdStore.useCountdown

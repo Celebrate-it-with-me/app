@@ -1,5 +1,5 @@
-import DashboardView from '../views/DashboardView.vue'
-import EventsView from '../views/EventsView.vue'
+import DashboardView from '../views/authenticated/DashboardView.vue'
+import EventsView from '../views/authenticated/EventsView.vue'
 import { useUserStore } from '../stores/useUserStore'
 import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.vue'
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
