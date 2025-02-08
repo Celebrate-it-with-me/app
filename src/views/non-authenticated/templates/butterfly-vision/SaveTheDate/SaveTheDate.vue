@@ -29,7 +29,7 @@ const generalStyles = computed(() => {
 <template>
   <div
     v-if="saveTheDate?.isEnabled"
-    class="save-the-date w-full h-full flex flex-col justify-center items-center p-20 h-screen"
+    class="save-the-date w-full h-full flex flex-col justify-center items-center p-20 h-screen mt-10"
     :style="generalStyles"
   >
     <h2 class="text-6xl font-gvibes font-bold gap-10 gradient-text" v-if="saveTheDate.stdTitle">

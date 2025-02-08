@@ -34,15 +34,17 @@ const handleMoveToTop = () => {
 
       <HeroSection />
 
-      <SaveTheDate class="mt-10"/>
+      <SaveTheDate />
+
+<!--      <SweetMemories />-->
     </main>
   </div>
 
   <button
     id="scrollToTopBtn"
     v-if="showScrollBtn"
-    class="fixed w-10 h-10 bottom-5 right-5 bg-rose-200 border border-rose-600 text-white text-lg text-bold
-            rounded-full shadow-lg hover:bg-rose-600 focus:outline-none hidden"
+    class="fixed w-10 h-10 bottom-5 right-5 bg-pink-300 border border-pink-400/50 text-white text-lg text-bold
+            rounded-full shadow-lg hover:bg-pink-500/50 focus:outline-none"
     @click="handleMoveToTop"
   >
     ↑
