@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue'
 import HeaderNav from '@/views/non-authenticated/templates/butterfly-vision/HeaderNav.vue'
 import HeroSection from '@/views/non-authenticated/templates/butterfly-vision/HeroSection.vue'
 import SaveTheDate from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDate.vue'
+import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
 
 const templateStore = useTemplateStore()
 const showScrollBtn = ref(false)
@@ -36,7 +37,7 @@ const handleMoveToTop = () => {
 
       <SaveTheDate />
 
-<!--      <SweetMemories />-->
+      <SweetMemories />
     </main>
   </div>
 

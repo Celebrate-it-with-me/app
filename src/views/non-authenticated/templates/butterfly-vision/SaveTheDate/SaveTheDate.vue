@@ -1,18 +1,14 @@
 <script setup>
 import { useTemplateStore } from '@/stores/useTemplateStore'
 import { computed } from 'vue'
-import STDCountDown from '@/components/authenticated/save-the-date/STDCountDown.vue'
 import SaveTheDateCountDown from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateCountDown.vue'
-import STDAddToCalendar from '@/components/authenticated/save-the-date/STDAddToCalendar.vue'
-import SaveTheDateAddToCalendar
-  from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateAddToCalendar.vue'
+import SaveTheDateAddToCalendar from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateAddToCalendar.vue'
 
 const templateStore = useTemplateStore()
 
 const saveTheDate = computed(() => {
   return templateStore.event?.saveTheDate
 })
-
 
 const generalStyles = computed(() => {
   let styles = {}
@@ -29,7 +25,7 @@ const generalStyles = computed(() => {
 <template>
   <div
     v-if="saveTheDate?.isEnabled"
-    class="save-the-date w-full h-full flex flex-col justify-center items-center p-20 h-screen mt-10"
+    class="save-the-date w-full flex flex-col justify-center items-center p-20 h-screen mt-10"
     :style="generalStyles"
   >
     <h2 class="text-6xl font-gvibes font-bold gap-10 gradient-text" v-if="saveTheDate.stdTitle">
@@ -61,19 +57,16 @@ const generalStyles = computed(() => {
       />
     </div>
 
-    <div
-      v-if="saveTheDate?.useAddToCalendar"
-      class="std-addToCalendar mt-10"
-    >
+    <div v-if="saveTheDate?.useAddToCalendar" class="std-addToCalendar mt-10">
       <SaveTheDateAddToCalendar
         :button-style="{
-        bgColor: 'transparent',
-        fontColor: '#8e57bd',
-        hoverColor: '#8e57bd',
-        fontFamily: '',
-        borderRadius: '8px',
-        borderColor: '#8e57bd'
-      }"
+          bgColor: 'transparent',
+          fontColor: '#8e57bd',
+          hoverColor: '#8e57bd',
+          fontFamily: '',
+          borderRadius: '8px',
+          borderColor: '#8e57bd'
+        }"
       />
     </div>
   </div>
