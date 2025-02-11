@@ -1,18 +1,23 @@
 import { CWM_API } from './axios'
 
 class SongsService {
-  async create({ eventId, platformId, title, artist, album, thumbnailUrl }) {
+  async create({ eventId, platformId, title, artist, album, thumbnailUrl, accessCode }) {
     return CWM_API.post(`event/${eventId}/suggest-music`, {
       platformId,
       title,
       artist,
       album,
       thumbnailUrl,
+      accessCode
     })
   }
 
-  async getSuggestedSongs(eventId) {
-    return CWM_API.get(`event/${eventId}/suggest-music`)
+  async getSuggestedSongs(eventId, pageSelected) {
+    return CWM_API.get(`event/${eventId}/suggest-music`, {
+      params: {
+        pageSelected
+      }
+    })
   }
 
   async deleteSong(eventId, songId) {

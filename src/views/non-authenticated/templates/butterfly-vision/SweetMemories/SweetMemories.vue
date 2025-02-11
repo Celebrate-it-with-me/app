@@ -4,15 +4,17 @@ import { computed } from 'vue'
 import SweetMemoriesGallery
   from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemoriesGallery.vue'
 
-const templateStore = useTemplateStore()
-
 const sweetMemories = computed(() => {
   return {
-    backgroundColor: '#f3a40a',
+    backgroundColor: '#ffe2b1',
     isEnabled: true,
     title: 'Sweet Memories',
     subTitle: 'Little Moments, Big Memories',
     memoriesPhotos: [
+      {
+        image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+      },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
         thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
@@ -49,7 +51,7 @@ const generalStyles = computed(() => {
 <template>
   <div
     v-if="sweetMemories?.isEnabled"
-    class="save-the-date w-full h-full flex flex-col justify-evenly items-center p-20 h-screen"
+    class="sweet-memories w-full h-full flex flex-col justify-evenly items-center p-20 h-screen"
     :style="generalStyles"
   >
     <div class="sweet-titles">
@@ -71,6 +73,14 @@ const generalStyles = computed(() => {
 </template>
 
 <style scoped>
+.sweet-memories {
+  background-repeat: repeat;
+  background-size: auto;
+  background-blend-mode: overlay;
+  padding: 20px;
+}
+
+
 .moments-title::before {
   position: absolute;
   left: 50%;

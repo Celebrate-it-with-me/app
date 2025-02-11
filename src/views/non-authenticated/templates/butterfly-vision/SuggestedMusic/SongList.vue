@@ -19,11 +19,14 @@ defineProps({
     type: String,
     required: true,
     validator: (value) => ['creator', 'normal'].includes(value)
+  },
+  event: {
+    type: Object,
+    required: true
   }
 })
 
 const songsStore = useSongsStore()
-
 
 </script>
 
