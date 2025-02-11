@@ -3,8 +3,8 @@ import { ref, watch } from 'vue'
 import { useSongsStore } from '@/stores/useSongsStore'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import SongSearchInput from '@/views/non-authenticated/templates/butterfly-vision/suggested-music/SongSearchInput.vue'
-import SongList from '@/views/non-authenticated/templates/butterfly-vision/suggested-music/SongList.vue'
+import SongSearchInput from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SongSearchInput.vue'
+import SongList from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SongList.vue'
 import CWMSimplePagination from '@/components/UI/pagination/CWMSimplePagination.vue'
 
 const props = defineProps({

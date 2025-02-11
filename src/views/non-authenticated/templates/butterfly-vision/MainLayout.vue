@@ -4,7 +4,7 @@ import HeaderNav from '@/views/non-authenticated/templates/butterfly-vision/Head
 import HeroSection from '@/views/non-authenticated/templates/butterfly-vision/HeroSection.vue'
 import SaveTheDate from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDate.vue'
 import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
-import SuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/suggested-music/SuggestedMusic.vue'
+import SuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SuggestedMusic.vue'
 
 const showScrollBtn = ref(false)
 

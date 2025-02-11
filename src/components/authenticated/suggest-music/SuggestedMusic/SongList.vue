@@ -1,6 +1,6 @@
 <script setup>
 import { useSongsStore } from '@/stores/useSongsStore'
-import SongListItem from '@/views/non-authenticated/templates/butterfly-vision/suggested-music/SongListItem.vue'
+import SongListItem from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SongListItem.vue'
 
 defineProps({
   mainColor: {
