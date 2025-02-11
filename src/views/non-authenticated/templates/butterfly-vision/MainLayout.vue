@@ -1,12 +1,11 @@
 <script setup>
-import { useTemplateStore } from '@/stores/useTemplateStore'
 import { onMounted, ref } from 'vue'
 import HeaderNav from '@/views/non-authenticated/templates/butterfly-vision/HeaderNav.vue'
 import HeroSection from '@/views/non-authenticated/templates/butterfly-vision/HeroSection.vue'
 import SaveTheDate from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDate.vue'
 import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
+import SuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/suggested-music/SuggestedMusic.vue'
 
-const templateStore = useTemplateStore()
 const showScrollBtn = ref(false)
 
 onMounted(() => {
@@ -38,6 +37,8 @@ const handleMoveToTop = () => {
       <SaveTheDate />
 
       <SweetMemories />
+
+      <SuggestedMusic />
     </main>
   </div>
 

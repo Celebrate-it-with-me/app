@@ -3,7 +3,7 @@ import { useSongsStore } from '@/stores/useSongsStore'
 import { computed } from 'vue'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useTemplateStore } from '@/stores/useTemplateStore'
 
 const props = defineProps({
   mainColor: {
@@ -30,8 +30,8 @@ const props = defineProps({
 })
 
 const songsStore = useSongsStore()
-const eventStore = useEventsStore()
 const notification = useNotificationStore()
+const templateStore = useTemplateStore()
 
 const mainColorComputed = computed(() => {
   if (!props.mainColor) {
@@ -43,7 +43,7 @@ const mainColorComputed = computed(() => {
 
 const removeSong = async (song) => {
   try {
-    const response = await SongsService.deleteSong(eventStore.currentEvent.id, song.id)
+    const response = await SongsService.deleteSong(templateStore.event?.id, song.id)
 
     if (response.status === 200) {
       songsStore.removeSong(song.id)
@@ -66,7 +66,7 @@ const removeSong = async (song) => {
 
 <template>
   <li
-    class="rounded-xl flex justify-between items-center mt-2 space-x-6 transition hover:bg-gray-700"
+    class="relative rounded-xl flex justify-between items-center mt-2 space-x-6 transition hover:bg-gray-700"
     :style="mainColorComputed"
   >
     <template
@@ -86,8 +86,9 @@ const removeSong = async (song) => {
       </div>
     </template>
 
+
     <iframe
-      v-if="usePreview && song.platformId"
+      v-if="song.platformId"
       :src="`https://open.spotify.com/embed/track/${song.platformId}`"
       width="100%"
       height="80"
@@ -96,9 +97,46 @@ const removeSong = async (song) => {
       allow="encrypted-media"
     ></iframe>
 
+
+    <div
+      class="remove-button"
+    >
+      <button
+        @click="removeSong(song)"
+        class="rounded-full bg-transparent text-red-500 hover:text-red-700"
+        title="Remove song"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-6 w-6"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+
   </li>
 </template>
 
 <style scoped>
+.remove-button {
+  display: none;
+  position: absolute;
+  top: -15px;
+  right: -20px;
+}
+
+li:hover .remove-button {
+  display: block;
+}
 
 </style>
