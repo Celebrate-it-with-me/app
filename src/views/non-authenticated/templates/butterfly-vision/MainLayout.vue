@@ -5,10 +5,12 @@ import HeroSection from '@/views/non-authenticated/templates/butterfly-vision/He
 import SaveTheDate from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDate.vue'
 import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
 import SuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SuggestedMusic.vue'
+import RSVP from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVP.vue'
 
 const showScrollBtn = ref(false)
 
 onMounted(() => {
+  document.body.classList.remove("dark")
   showHideScrollButton()
 })
 
@@ -39,6 +41,8 @@ const handleMoveToTop = () => {
       <SweetMemories />
 
       <SuggestedMusic />
+
+      <RSVP />
     </main>
   </div>
 

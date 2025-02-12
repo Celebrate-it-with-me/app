@@ -1,17 +1,33 @@
 <script setup>
 
+import { reactive } from 'vue'
+import RSVPTitles from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVPTitles.vue'
+import CWMRSVPComponent from '@/views/non-authenticated/templates/butterfly-vision/RSVP/CWMRSVPComponent.vue'
+
+const rsvpConfig = reactive({
+  isEnabled: true,
+  backgroundColor: 'transparent',
+  title: 'R S V P',
+  subTitle: 'Confirme su asistencia y la de sus acompañantes',
+  formTitle: 'Asistiras?'
+})
+
 </script>
 
 <template>
   <div
-    class="event-handle w-[70%] rounded-lg flex flex-col items-center"
+    v-if="rsvpConfig?.isEnabled"
+    class="suggested-music w-full flex flex-col justify-between items-center pt-5 pr-20 pl-20 pb-20 h-screen"
+    :style="{backgroundColor: rsvpConfig.backgroundColor}"
   >
-    <h2 class="text-6xl font-gvibes font-bold gap-10 gradient-text">
-      {{ title }}
-    </h2>
-    <h4 class="music-subtitle relative text-2xl font-normal text-gray-600/70 text-center moments-title">
-      {{ subTitle }}
-    </h4>
+    <RSVPTitles
+      :title="rsvpConfig.title"
+      :sub-title="rsvpConfig.subTitle"
+    />
+
+    <CWMRSVPComponent
+      :form-title="rsvpConfig.formTitle"
+    />
   </div>
 </template>
 
