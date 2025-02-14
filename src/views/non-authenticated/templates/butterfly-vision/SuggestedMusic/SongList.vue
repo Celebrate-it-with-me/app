@@ -41,6 +41,7 @@ const songsStore = useSongsStore()
         :useVoteSystem="useVoteSystem"
         :song="song"
         :mode="mode"
+        @refresh-songs-list=""
       />
     </ul>
   </div>

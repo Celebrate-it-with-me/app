@@ -9,7 +9,13 @@ const rsvpConfig = reactive({
   backgroundColor: 'transparent',
   title: 'R S V P',
   subTitle: 'Confirme su asistencia y la de sus acompañantes',
-  formTitle: 'Asistiras?'
+  formTitle: 'Asistiras?',
+  rsvpExtraBox: {
+    isEnabled: true,
+    title: 'Mis Quince',
+    description: `My Quinceañera is on September 27, 2025, and I’d be delighted to celebrate with you!
+                  Come ready to dance, smile, and enjoy the party. Please confirm by September 20, 2025.`
+  }
 })
 
 </script>
@@ -27,6 +33,7 @@ const rsvpConfig = reactive({
 
     <CWMRSVPComponent
       :form-title="rsvpConfig.formTitle"
+      :rsvp-extra-box="rsvpConfig.rsvpExtraBox"
     />
   </div>
 </template>

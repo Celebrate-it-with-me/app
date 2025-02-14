@@ -5,6 +5,7 @@ import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useTemplateStore } from '@/stores/useTemplateStore'
 
+const emit = defineEmits(['refreshSongsList'])
 const props = defineProps({
   mainColor: {
     type: String,
@@ -50,6 +51,7 @@ const removeSong = async (song) => {
       notification.addNotification({
         message: "Song removed successfully!"
       })
+      // Todo we need to move the songLists to the store
     } else {
       notification.addNotification({
         type: 'error',
@@ -100,6 +102,7 @@ const removeSong = async (song) => {
 
     <div
       class="remove-button"
+      v-if="song.suggestedBy === templateStore.guest.id"
     >
       <button
         @click="removeSong(song)"
