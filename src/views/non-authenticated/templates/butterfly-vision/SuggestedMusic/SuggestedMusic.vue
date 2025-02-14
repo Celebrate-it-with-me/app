@@ -4,13 +4,12 @@ import CWMSuggestedMusic
 import { computed } from 'vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
 
-
 const templateStore = useTemplateStore()
 
 const suggestedMusic = computed(() => {
   return {
     isEnabled: true,
-    backgroundColor: '#8b14a3',
+    backgroundColor: '#fff',
     title: 'Sugerencias de Canciones',
     subTitle: 'Envienos sus canciones preferidas para usarlas en el evento',
     mainColor: '#f3a40a',
@@ -20,12 +19,15 @@ const suggestedMusic = computed(() => {
   }
 })
 
+
+
 </script>
 
 <template>
   <div
     v-if="suggestedMusic?.isEnabled"
-    class="sweet-memories w-full h-full flex flex-col justify-start items-center p-20 h-screen"
+    class="suggested-music w-full flex flex-col justify-start items-center p-20 h-screen"
+    :style="{backgroundColor: suggestedMusic.backgroundColor}"
   >
     <CWMSuggestedMusic
       :mode="'normal'"
@@ -39,7 +41,3 @@ const suggestedMusic = computed(() => {
     />
   </div>
 </template>
-
-<style scoped>
-
-</style>

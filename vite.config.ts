@@ -13,6 +13,11 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  build: {
+    commonjsOptions: {
+      esmExternals: true
+    }
+  },
   compilerOptions: {
     isCustomElement: (tag) => tag.startsWith('add-')
   },
