@@ -19,7 +19,8 @@ const props = defineProps({
   isReadonly: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   description: { type: String, default: '' },
-  showError: { type: Boolean, default: false }
+  showError: { type: Boolean, default: false },
+  showIcon: { type: Boolean, default: true }
 })
 
 const name = toRef(props, 'name')
@@ -56,7 +57,7 @@ const handleFieldBlur = (e) => {
 </script>
 
 <template>
-  <div class="max-w-sm">
+  <div>
     <!-- Label -->
     <label
       v-if="label"
@@ -71,6 +72,7 @@ const handleFieldBlur = (e) => {
     <div class="relative">
       <!-- Icon -->
       <div
+        v-if="showIcon"
         class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none"
       >
         <svg
@@ -89,7 +91,7 @@ const handleFieldBlur = (e) => {
       <!-- Input Field -->
       <input
         :id="name"
-        :class="classInput"
+        :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
         :disabled="disabled"
         :readonly="isReadonly"
         :name="name"

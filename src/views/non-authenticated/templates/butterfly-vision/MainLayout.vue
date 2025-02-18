@@ -43,6 +43,8 @@ const handleMoveToTop = () => {
       <SuggestedMusic />
 
       <RSVP />
+
+      <DressCode />
     </main>
   </div>
 

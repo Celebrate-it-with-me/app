@@ -7,7 +7,6 @@ import TextField from '@/components/UI/form/TextField.vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import SelectField from '@/components/UI/form/SelectField.vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
-import CWMCompanionsModal from '@/views/non-authenticated/templates/butterfly-vision/RSVP/CWMCompanionsModal.vue'
 
 const templateStore = useTemplateStore()
 const { guest } = templateStore
@@ -19,13 +18,6 @@ const guests = [
   { value: 4, text: '04'},
   { value: 5, text: '05'},
   { value: 6, text: '06'},
-]
-const mealsAvailable = [
-  { value: 'chicken_soup', text: 'Chicken Soup'},
-  { value: 'motton_kabab', text: 'Motton Kabab'},
-  { value: 'chicken_BBQ', text: 'Chicken BBQ'},
-  { value: 'mix_salad', text: 'Mix Salad'},
-  { value: 'beef_ribs', text: 'Beef Ribs'},
 ]
 
 const showCompanionsModal = ref(false)
@@ -212,11 +204,6 @@ const openCompanionsModal = () => {
       class="px-10 py-4 border-2 rounded-lg  font-bold transition-colors duration-500"
     >RSVP
     </button>
-
-    <CWMCompanionsModal
-      :show="showCompanionsModal"
-      @close="showCompanionsModal = false"
-    />
 
   </Form>
 </template>

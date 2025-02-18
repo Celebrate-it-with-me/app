@@ -1,8 +1,10 @@
 <script setup>
 
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import RSVPTitles from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVPTitles.vue'
 import CWMRSVPComponent from '@/views/non-authenticated/templates/butterfly-vision/RSVP/CWMRSVPComponent.vue'
+import { useTemplateStore } from '@/stores/useTemplateStore'
+import CWMRSVPConfirmed from '@/views/non-authenticated/templates/butterfly-vision/RSVP/CWMRSVPConfirmed.vue'
 
 const rsvpConfig = reactive({
   isEnabled: true,
@@ -18,12 +20,18 @@ const rsvpConfig = reactive({
   }
 })
 
+const templateStore = useTemplateStore()
+
+const rsvpCompleted = computed(() => {
+  return templateStore.guest?.rsvpCompleted ?? false
+})
+
 </script>
 
 <template>
   <div
     v-if="rsvpConfig?.isEnabled"
-    class="suggested-music w-full flex flex-col justify-between items-center pt-5 pr-20 pl-20 pb-20 h-screen"
+    class="suggested-music w-full flex flex-col justify-evenly items-center pt-5 pr-20 pl-20 pb-20 h-screen"
     :style="{backgroundColor: rsvpConfig.backgroundColor}"
   >
     <RSVPTitles
@@ -32,12 +40,10 @@ const rsvpConfig = reactive({
     />
 
     <CWMRSVPComponent
+      v-if="!rsvpCompleted"
       :form-title="rsvpConfig.formTitle"
       :rsvp-extra-box="rsvpConfig.rsvpExtraBox"
     />
+    <CWMRSVPConfirmed v-else />
   </div>
 </template>
-
-<style scoped>
-
-</style>
