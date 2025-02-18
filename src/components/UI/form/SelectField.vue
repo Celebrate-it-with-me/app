@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, toRef, watch } from 'vue';
+import { computed, toRef, watch } from 'vue';
 import { useField } from 'vee-validate';
 
 // Emits and props
@@ -103,8 +103,16 @@ const handleFieldBlur = (e) => {
 </template>
 
 <style scoped>
-.has-error label {
-  color: rgb(241 89 92 / var(--tw-text-opacity));
+.has-error {
+  @apply text-red-500;
+
+  label {
+    @apply text-red-500;
+  }
+
+  input {
+    @apply border-b border-red-500;
+  }
 }
 
 .fromGroup {

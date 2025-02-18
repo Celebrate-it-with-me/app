@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, toRef, watch } from 'vue'
 import { useField } from 'vee-validate'
 
 const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur'])
@@ -127,7 +127,7 @@ const handleFieldBlur = (e) => {
   }
 
   input {
-    @apply border border-red-500;
+    @apply border-b border-red-500;
   }
 }
 </style>

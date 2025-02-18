@@ -5,8 +5,6 @@ import {useRoute} from "vue-router";
 import { Splide, SplideSlide } from '@splidejs/vue-splide';
 import '@splidejs/splide/dist/css/splide.min.css';
 import {FwbAlert} from "flowbite-vue";
-
-
 const route = useRoute();
 
 const images = ref([]);
