@@ -1,5 +1,4 @@
 <script setup>
-import { useTemplateStore } from '@/stores/useTemplateStore'
 import { computed } from 'vue'
 import SweetMemoriesGallery
   from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemoriesGallery.vue'
