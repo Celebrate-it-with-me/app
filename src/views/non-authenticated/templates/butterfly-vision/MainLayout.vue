@@ -6,6 +6,11 @@ import SaveTheDate from '@/views/non-authenticated/templates/butterfly-vision/Sa
 import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
 import SuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SuggestedMusic.vue'
 import RSVP from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVP.vue'
+import DressCode from '@/views/non-authenticated/templates/butterfly-vision/DressCode/DressCode.vue'
+import BackgroundMusic from '@/views/non-authenticated/templates/butterfly-vision/BackgroundMusic/BackgroundMusic.vue'
+import ContactAndComments
+  from '@/views/non-authenticated/templates/butterfly-vision/ContactAndComments/ContactAndComments.vue'
+import EventFooter from '@/views/non-authenticated/templates/butterfly-vision/EventFooter/EventFooter.vue'
 
 const showScrollBtn = ref(false)
 
@@ -45,6 +50,12 @@ const handleMoveToTop = () => {
       <RSVP />
 
       <DressCode />
+
+      <BackgroundMusic />
+
+      <ContactAndComments />
+
+      <EventFooter />
     </main>
   </div>
 
