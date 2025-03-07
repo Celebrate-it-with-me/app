@@ -23,6 +23,16 @@ export const useEventsStore = defineStore('eventsStore', {
       return await EventsService.create({ eventName, eventDate, eventDescription, status, visibility, customUrlSlug })
     },
 
+    async filterEvents(query) {
+      const response = await EventsService.filterEvents(query)
+
+      if (response.status === 200) {
+        const { data } = response
+
+        this.setEvents(data.data ?? [])
+      }
+    },
+
     async initEvents(eventId) {
       const response = await EventsService.getMyEvents()
 

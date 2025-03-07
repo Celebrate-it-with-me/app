@@ -37,7 +37,7 @@ const eventMessage = computed(() => {
   <section class="my-events">
 
     <section
-      class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[300px] h-full"
+      class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[600px] h-full"
     >
       <MyEventsList
         @create-event="handleCreateEvent"

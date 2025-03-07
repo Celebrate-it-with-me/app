@@ -15,6 +15,14 @@ class EventsService {
   async getMyEvents() {
     return CWM_API.get(`event` )
   }
+
+  async filterEvents(query) {
+    return CWM_API.get(`event/filters`, {
+      params: {
+        query
+      }
+    })
+  }
 }
 
 export default new EventsService()

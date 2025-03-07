@@ -37,9 +37,9 @@ const {
   handleChange,
   setValue,
   meta
-} = useField(name, {
-  initialValue: props.modelValue
-})
+} = useField(name)
+
+setValue(props.modelValue)
 
 watch(() => props.modelValue, setValue)
 

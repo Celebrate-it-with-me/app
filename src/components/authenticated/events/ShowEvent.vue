@@ -6,7 +6,7 @@ const eventStore = useEventsStore()
 </script>
 
 <template>
-  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md">
+  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md min-h-[550px]">
     <!-- Header with Event Details and Status Badge -->
     <div class="flex items-center justify-between border-b border-gray-700 pb-4 mb-6">
       <h3 class="text-lg font-semibold">Event Details</h3>
