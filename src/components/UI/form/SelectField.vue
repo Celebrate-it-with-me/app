@@ -76,7 +76,7 @@ const handleFieldBlur = (e) => {
       v-model="inputValue"
       :id="name"
       :disabled="disabled"
-      :class="props.classInput"
+      :class="`${classInput} w-full block focus:outline-none h-[38px] mt-1`"
       @blur="handleFieldBlur"
     >
       <option

@@ -1,14 +1,39 @@
 import { CWM_API } from './axios'
 
 class EventsService {
-  async create({ eventName, eventDescription, eventDate, status, visibility, customUrlSlug }) {
+  async create({
+                 eventName,
+                 eventDescription,
+                 startDate,
+                 endDate,
+                 status,
+                 visibility,
+                 customUrlSlug,
+                 saveTheDate,
+                 rsvp,
+                 gallery,
+                 music,
+                 seatsAccommodation,
+                 preview,
+                 eventBudget,
+                 analytics
+  }) {
     return CWM_API.post(`event`, {
       eventName,
       eventDescription,
-      eventDate,
+      startDate,
+      endDate,
       status,
       visibility,
-      customUrlSlug
+      customUrlSlug,
+      saveTheDate,
+      rsvp,
+      gallery,
+      music,
+      seatsAccommodation,
+      preview,
+      eventBudget,
+      analytics
     })
   }
 
@@ -22,6 +47,10 @@ class EventsService {
         query
       }
     })
+  }
+
+  async removeCurrentEvent(currentEventId) {
+    return CWM_API.delete(`event/${currentEventId}`)
   }
 }
 
