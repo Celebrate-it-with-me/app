@@ -37,9 +37,9 @@ const {
   handleChange,
   setValue,
   meta
-} = useField(name, {
-  initialValue: props.modelValue
-})
+} = useField(name)
+
+setValue(props.modelValue)
 
 watch(() => props.modelValue, setValue)
 
@@ -130,7 +130,7 @@ const handleFieldBlur = (e) => {
   }
 
   input {
-    @apply border border-red-500;
+    @apply border-b border-red-500;
   }
 }
 </style>

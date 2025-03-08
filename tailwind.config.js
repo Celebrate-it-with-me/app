@@ -16,6 +16,12 @@ module.exports = {
   theme: {
     extend: {},
   },
+  safelist: [
+    {
+      pattern: /^bg-\[(.+)\]$/, // Safelists arbitrary background colors: e.g. bg-[#ac1818]
+    },
+  ],
+
   plugins: [
     require('flowbite/plugin')
   ],

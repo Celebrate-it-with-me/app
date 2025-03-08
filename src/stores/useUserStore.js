@@ -1,19 +1,35 @@
 import { defineStore, getActivePinia } from 'pinia'
 import UserService from '../services/UserService'
+import { format } from "date-fns";
+import { useEventsStore } from './useEventsStore'
 
-export const useUserStore = defineStore('user', {
+// Function to format the logout time
+function formatLogoutTime(logoutTime) {
+  return format(new Date(logoutTime), "MMMM dd, yyyy 'at' h:mm a");
+}
+
+// Example Usage
+const logoutTimeString = "2025-01-25 06:19:30";
+const formattedTime = formatLogoutTime(logoutTimeString);
+
+console.log(`Logout time: ${formattedTime}`);
+// Output: "Logout time: January 25, 2025 at 6:19 AM"
+
+export const useUserStore = defineStore('userStore', {
   state: () => ({
     name: '',
     email: '',
     userId: '',
-    token: null
+    token: null,
+    lastLogin: null,
+    currentEventId: null,
   }),
   persist: {
-    enabled: true, // Enable persistence explicitly
+    enabled: true,
     strategies: [
       {
-        key: 'user-store', // Custom key to use in localStorage
-        storage: localStorage, // Use localStorage explicitly (or sessionStorage if needed)
+        key: 'user-store',
+        storage: localStorage,
       },
     ],
   },
@@ -26,11 +42,12 @@ export const useUserStore = defineStore('user', {
       return await UserService.register({ firstName, lastName, email, password})
     },
 
-    initUserData({ name, email, userId, token }) {
+    initUserData({ name, email, userId, token, lastLogin }) {
       this.name = name
       this.email = email
       this.userId = userId
       this.token = token
+      this.lastLogin = lastLogin
     },
 
     async logOut() {
@@ -40,11 +57,28 @@ export const useUserStore = defineStore('user', {
         console.log('is here. really')
         getActivePinia()._s.forEach((store) => store.$reset())
       }
+    },
+
+    async initUserState() {
+      const eventsStore = useEventsStore()
+      //const guestStore = useGuestsStore()
+
+      await eventsStore.initEvents(this.currentEventId)
+      /*await guestStore.initGuests({
+        eventId: this.currentEventId
+      })*/
     }
   },
   getters: {
     isAuthenticated(state) {
       return state.token != null
+    },
+    lastLoginDate() {
+      if (!this.lastLogin) {
+        return ''
+      }
+
+      return format(new Date(this.lastLogin.login_time), "MMMM dd, yyyy 'at' h:mm a")
     }
   }
 })

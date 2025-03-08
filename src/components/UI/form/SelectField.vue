@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, toRef, watch } from 'vue';
+import { computed, toRef, watch } from 'vue';
 import { useField } from 'vee-validate';
 
 // Emits and props
@@ -8,6 +8,7 @@ const props = defineProps({
   label: { type: String },
   classLabel: { type: String, default: ' ' },
   classInput: { type: String, default: 'classinput' },
+  optionsClass: { type: String, default: ' ' },
   name: { type: String, required: true }, // Required field name for validation
   modelValue: { type: [String, Number], default: '' }, // Model bound via v-model
   hasIcon: { type: Boolean, default: false },
@@ -75,13 +76,14 @@ const handleFieldBlur = (e) => {
       v-model="inputValue"
       :id="name"
       :disabled="disabled"
-      class="bg-gray-50 input-control mt-1 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      :class="props.classInput"
       @blur="handleFieldBlur"
     >
       <option
         v-for="item in items"
         :value="item.value"
         :key="item.value"
+        :class="props.optionsClass"
       >
         {{ item.text }}
       </option>
@@ -101,8 +103,16 @@ const handleFieldBlur = (e) => {
 </template>
 
 <style scoped>
-.has-error label {
-  color: rgb(241 89 92 / var(--tw-text-opacity));
+.has-error {
+  @apply text-red-500;
+
+  label {
+    @apply text-red-500;
+  }
+
+  input {
+    @apply border-b border-red-500;
+  }
 }
 
 .fromGroup {

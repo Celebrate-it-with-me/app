@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { nonAuthRoutes }  from "@/router/nonAuthRoutes.js";
-import { authRoutes } from "@/router/authRoutes";
+import { nonAuthRoutes }  from "@/router/nonAuthRoutes"
+import { authRoutes } from "@/router/authRoutes"
+import { eventsRoutes } from "@/router/eventsRoutes"
 import NonAuthenticatedLayout from '@/views/layouts/NonAuthenticatedLayout.vue'
 import AuthenticatedLayout from '@/views/layouts/AuthenticatedLayout.vue'
 
@@ -22,53 +23,15 @@ const router = createRouter({
       children: [
         ...authRoutes
       ]
+    },
+    {
+      path: '',
+      name: 'Event Pages Routes',
+      children: [
+        ...eventsRoutes
+      ]
     }
   ],
-  /*routes: [
-    {
-      path: '/rsvp/vanessar',
-      name: 'rsvp',
-      component: RSVP,
-      meta: {
-        title: 'RSVP'
-      }
-    },
-    {
-      path: '/about',
-      name: 'about',
-      meta: {
-        title: 'About Us'
-      },
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    },
-    {
-      path: '/images/:name',
-      name: 'Images',
-      component: ImagesView,
-      meta: {
-        title: 'Image View'
-      }
-    },
-    {
-      path: '/view-gallery/:name',
-      name: 'View Gallery',
-      component: GalleryView,
-      meta: {
-        title: 'Image Gallery'
-      }
-    },
-    {
-      path: '/upload-image/:name',
-      name: 'Upload Image',
-      component: UploadImageView,
-      meta: {
-        title: 'Upload Image'
-      }
-    }
-  ]*/
 })
 
 router.beforeEach((to, from, next) => {

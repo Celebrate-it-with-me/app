@@ -1,17 +1,20 @@
 import { defineStore } from 'pinia'
 import EventsService from '../services/EventsService'
+import { useUserStore } from './useUserStore'
 
 export const useEventsStore = defineStore('eventsStore', {
   state: () => ({
     events: [],
-    currentEvent: null
+    currentEvent: null,
   }),
   actions: {
     setEvents(events) {
       this.events = events
     },
     selectEvent(eventId) {
+      const userStore = useUserStore()
       this.currentEvent = this.events.find((event) => event.id === eventId)
+      userStore.currentEventId = eventId
     },
     addEvent(event) {
       this.events.push(event)
@@ -20,13 +23,24 @@ export const useEventsStore = defineStore('eventsStore', {
       return await EventsService.create({ eventName, eventDate, eventDescription, status, visibility, customUrlSlug })
     },
 
-    async getMyEvents() {
+    async filterEvents(query) {
+      const response = await EventsService.filterEvents(query)
+
+      if (response.status === 200) {
+        const { data } = response
+
+        this.setEvents(data.data ?? [])
+      }
+    },
+
+    async initEvents(eventId) {
       const response = await EventsService.getMyEvents()
 
-      if (response) {
+      if (response.status === 200) {
         const { data } = response
 
        this.setEvents(data.data ?? [])
+       this.selectEvent(eventId)
       }
     }
   },

@@ -1,42 +1,71 @@
 <script setup>
-import { PlusIcon } from '@heroicons/vue/16/solid'
+import CwmAlert from '@/components/UI/alerts/CWMAlert.vue'
+import CreateEvent from '@/components/authenticated/events/CreateEvent.vue'
+import ShowEvent from '@/components/authenticated/events/ShowEvent.vue'
+import MyEventsList from '@/components/authenticated/events/MyEventsList.vue'
+import { computed, ref } from 'vue'
 import { useEventsStore } from '@/stores/useEventsStore'
-import EventLi from '@/components/authenticated/events/EventLi.vue'
 
-const emit = defineEmits(['createEvent'])
+// Data
+const showAddEventView = ref(false)
 const eventsStore = useEventsStore()
 
-const showAddEvent = () => {
-  emit('createEvent')
+const handleCreateEvent = () => {
+  eventsStore.currentEvent = null
+  showAddEventView.value = true
 }
+
+const handleCancelCreate = () => {
+  showAddEventView.value = false
+}
+
+const eventMessage = computed(() => {
+  if (!eventsStore.events.length) {
+    return "You don't have any event yet, please click in 'Add new event' to start"
+  }
+
+  if (!eventsStore.currentEvent) {
+    return "Please select one event to work on it!"
+  }
+
+  return ''
+})
 
 </script>
 
 <template>
-  <div class="events-lists w-[30%]  border-r border-gray-700 pr-6">
-    <div class="my-events">
-      <ul>
-        <EventLi
-          v-for="activeEvent in eventsStore.activeEvents"
-          :active-event="activeEvent"
-          :key="activeEvent.id"
+  <section class="my-events">
+
+    <section
+      class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[600px] h-full"
+    >
+      <MyEventsList
+        @create-event="handleCreateEvent"
+      />
+
+      <div class="event-handle w-[70%]">
+        <ShowEvent
+          v-if="eventsStore.currentEvent"
         />
-      </ul>
-    </div>
 
-    <div class="add__new-event">
-      <p
-        class="text-yellow-100/40 transition-colors duration-500 hover:text-yellow-300/75 flex flex-row gap-x-1 justify-start items-center cursor-pointer"
-        @click="showAddEvent"
-      >
-        <PlusIcon class="h-6 w-6" />
-        Add New Event
-      </p>
-    </div>
-  </div>
+        <div
+          v-else-if="showAddEventView"
+          class="w-full"
+        >
+          <CreateEvent
+            @cancel-create="handleCancelCreate"
+          />
+        </div>
 
-
-
+        <CwmAlert
+          alert-type="info"
+          v-else
+        >
+          {{ eventMessage }}
+        </CwmAlert>
+      </div>
+    </section>
+  </section>
 </template>
 
 <style scoped>

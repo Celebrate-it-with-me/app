@@ -1,6 +1,6 @@
-import SignUpView from '../views/SignUpView.vue'
+import SignUpView from '../views/non-authenticated/SignUpView.vue'
 import HomeView from '@/views/HomeView.vue'
-import SignInView from '@/views/SignInView.vue'
+import SignInView from '@/views/non-authenticated/SignInView.vue'
 
 const nonAuthRoutes = [
   {
