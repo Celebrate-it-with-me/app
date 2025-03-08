@@ -1,7 +1,22 @@
 <script setup>
 import { useEventsStore } from '@/stores/useEventsStore'
+import { computed, ref } from 'vue'
+import DeleteEventModal from '@/components/UI/Modal/DeleteEventModal.vue'
 
 const eventStore = useEventsStore()
+const showConfirmDelete = ref(false)
+
+const currentEventFeature = computed(() => {
+  return eventStore.currentEvent.eventFeature ?? null
+})
+
+const showConfirmDeleteModal = () => {
+  showConfirmDelete.value = true
+}
+
+const handleCloseDelete = () => {
+  showConfirmDelete.value = false
+}
 
 </script>
 
@@ -14,7 +29,7 @@ const eventStore = useEventsStore()
         class="px-3 py-1 text-xs font-bold rounded-full"
         :class="{
           'bg-blue-500 text-white': eventStore.currentEvent.status === 'published',
-          'bg-gray-600 text-white': eventStore.currentEvent.status === 'draft',
+          'bg-gray-600 text-white': eventStore.currentEvent.status === 'draft'
         }"
       >
         {{ eventStore.currentEvent.status }}
@@ -31,8 +46,13 @@ const eventStore = useEventsStore()
 
       <!-- Event Date -->
       <div class="flex justify-between">
-        <span class="font-semibold">Event Date:</span>
-        <span class="font-light">{{ eventStore.currentEvent.eventDate }}</span>
+        <span class="font-semibold">Start Date:</span>
+        <span class="font-light">{{ eventStore.currentEvent.startDate }}</span>
+      </div>
+
+      <div class="flex justify-between">
+        <span class="font-semibold">End Date:</span>
+        <span class="font-light">{{ eventStore.currentEvent.endDate }}</span>
       </div>
 
       <!-- Event Description -->
@@ -48,14 +68,86 @@ const eventStore = useEventsStore()
           class="inline-block px-3 py-1 text-xs font-medium rounded-md"
           :class="{
             'bg-green-500 text-white': eventStore.currentEvent.visibility === 'public',
-            'bg-yellow-500 text-black': eventStore.currentEvent.visibility === 'private',
+            'bg-yellow-500 text-black': eventStore.currentEvent.visibility === 'private'
           }"
         >
           {{ eventStore.currentEvent.visibility }}
         </span>
       </div>
+
+      <div class="mt-5 border-b border-gray-700 mb-5"></div>
+
+      <h3 class="text-lg font-semibold">Event Features</h3>
+
+      <div class="grid grid-cols-2 gap-6 mt-5">
+        <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.saveTheDate">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Save the Date
+        </p>
+
+        <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.rsvp">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          RSVP
+        </p>
+
+        <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.gallery">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Gallery
+        </p>
+
+        <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.music">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Music
+        </p>
+
+        <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.seatsAccommodation">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Seats Accommodation
+        </p>
+
+        <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.preview">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Page Event Preview
+        </p>
+
+        <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.budget">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Event Budget
+        </p>
+
+        <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.analytics">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Event Analytics
+        </p>
+      </div>
+
+      <div class="mt-6 flex justify-end items-center gap-4">
+        <button
+          type="button"
+          class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+        >
+          Edit
+        </button>
+        <button
+          type="submit"
+          class="text-white text-sm font-medium py-2 px-6 rounded-md bg-red-500 hover:bg-red-600 cursor-pointer"
+          @click="showConfirmDeleteModal"
+        >
+          Delete
+        </button>
+      </div>
+      <DeleteEventModal
+        :open="showConfirmDelete"
+        @close-modal="handleCloseDelete"
+      />
     </div>
   </div>
 </template>
-
-<style scoped></style>

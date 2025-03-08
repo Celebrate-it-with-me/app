@@ -28,7 +28,7 @@ watch(eventName, changeEventNameSearch)
 </script>
 
 <template>
-  <div class="events-lists w-[25%] bg-gray-800 rounded-lg p-6 flex flex-col justify-between pr-6">
+  <div class="events-lists w-[30%] bg-gray-800 rounded-lg p-6 flex flex-col justify-between pr-6">
     <div class="my-events w-full">
       <div class="mb-5">
         <TextField

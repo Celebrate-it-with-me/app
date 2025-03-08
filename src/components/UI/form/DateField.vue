@@ -19,6 +19,7 @@ const props = defineProps({
   msgTooltip: { type: Boolean, default: false },
   description: { type: String },
   showError: { type: Boolean, default: false },
+  alsoTime: { type: Boolean, default: false },
   options: {
     type: Object,
     default: () => ({
@@ -30,6 +31,28 @@ const props = defineProps({
 
 const name = toRef(props, 'name')
 
+// Function to format Date objects into MM/DD/YYYY HH:mm if alsoTime is enabled
+const formatDateToString = (date) => {
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    return ''
+  }
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const year = date.getFullYear()
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return props.alsoTime ? `${month}/${day}/${year} ${hours}:${minutes}` : `${month}/${day}/${year}`
+}
+
+// Function to parse a MM/DD/YYYY HH:mm string back into a Date object
+const parseStringToDate = (dateStr) => {
+  const [datePart, timePart] = dateStr.split(' ')
+  const [month, day, year] = datePart.split('/').map(Number)
+  const [hours, minutes] = (timePart || '00:00').split(':').map(Number)
+  return new Date(year, month - 1, day, hours, minutes)
+}
+
+// Use vee-validate field bindings
 const {
   value: inputValue,
   errorMessage,
@@ -37,18 +60,51 @@ const {
   setValue,
   meta
 } = useField(name, {
-  initialValue: props.modelValue
+  initialValue:
+    props.modelValue instanceof Date && !isNaN(props.modelValue.getTime())
+      ? formatDateToString(props.modelValue) // Convert Date to string if needed
+      : props.modelValue
 })
 
-// Watch for props changes and emit v-model updates
-watch(() => props.modelValue, setValue)
+// Flag to prevent circular updates
+let isSyncing = false
+
+// Watch for changes to props.modelValue and update inputValue if needed
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (!isSyncing) {
+      const formattedValue =
+        newValue instanceof Date && !isNaN(newValue.getTime())
+          ? formatDateToString(newValue) // Format Date to string if needed
+          : newValue
+      if (formattedValue !== inputValue.value) {
+        isSyncing = true
+        setValue(formattedValue)
+        isSyncing = false
+      }
+    }
+  }
+)
+
+// Watch for changes to inputValue and emit up if needed
 watch(inputValue, (val) => {
-  emit('update:modelValue', val)
-  if (val) {
-    emit('resetErrors')
+  if (!isSyncing) {
+    isSyncing = true
+    emit('update:modelValue', val) // Emit formatted string
+    if (val) {
+      emit('resetErrors') // Reset errors only if there’s a valid value
+    }
+    isSyncing = false
   }
 })
 
+// Computed property for dynamic date formats (MM/DD/YYYY or MM/DD/YYYY HH:mm)
+const dateFormat = computed(() =>
+  props.alsoTime ? 'MM/dd/yyyy HH:mm' : 'MM/dd/yyyy'
+)
+
+// Error handling and dynamic class logic
 const showErrorMessage = computed(() => {
   return props.showError && errorMessage.value && meta.touched
 })
@@ -56,7 +112,6 @@ const showErrorMessage = computed(() => {
 const inputClasses = computed(() => {
   return `${props.classInput} input-control w-full block focus:outline-none h-[40px]`
 })
-
 </script>
 
 <template>
@@ -84,13 +139,15 @@ const inputClasses = computed(() => {
         :placeholder="placeholder"
         :id="name"
         :dark="true"
-        format="MM/dd/yyyy"
-        model-type="MM/dd/yyyy"
-        :enable-time-picker="false"
-        week-start="0"
-        auto-apply
-        @blur="handleBlur"
+        :format="dateFormat"
+        :enable-time-picker="alsoTime"
+        :week-start="0"
+        :enable-seconds="false"
+        :disabled="disabled"
+        :readonly="isReadonly"
         :ui="{ input: inputClasses }"
+        :parse="(str) => parseStringToDate(str)"
+        @blur="handleBlur"
       />
     </div>
 
@@ -99,8 +156,8 @@ const inputClasses = computed(() => {
       v-if="showErrorMessage"
       :class="
         msgTooltip
-          ? ' inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
-          : ' text-danger-500 block text-sm'
+          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+          : 'text-danger-500 block text-sm'
       "
       class="mt-2"
     >
@@ -130,7 +187,7 @@ const inputClasses = computed(() => {
 
 <style scoped>
 .has-error {
-  color: #e3342f; /* Adjust the red color according to your needs */
+  color: #e3342f; /* Adjust the red color here */
 }
 .has-error label {
   color: #e3342f;

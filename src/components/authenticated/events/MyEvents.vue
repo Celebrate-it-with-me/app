@@ -9,6 +9,7 @@ import { useEventsStore } from '@/stores/useEventsStore'
 // Data
 const showAddEventView = ref(false)
 const eventsStore = useEventsStore()
+const createOrEdit = ref('create')
 
 const handleCreateEvent = () => {
   eventsStore.currentEvent = null
@@ -37,7 +38,7 @@ const eventMessage = computed(() => {
   <section class="my-events">
 
     <section
-      class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[600px] h-full"
+      class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-5 rounded-md min-h-[600px] h-full"
     >
       <MyEventsList
         @create-event="handleCreateEvent"
@@ -54,6 +55,7 @@ const eventMessage = computed(() => {
         >
           <CreateEvent
             @cancel-create="handleCancelCreate"
+            :mode="createOrEdit"
           />
         </div>
 
