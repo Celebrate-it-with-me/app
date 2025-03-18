@@ -24,6 +24,43 @@ export const useEventsStore = defineStore('eventsStore', {
       return await EventsService.removeCurrentEvent(this.currentEvent.id)
     },
 
+    async editEvent({
+                      eventName,
+                      startDate,
+                      endDate,
+                      eventDescription,
+                      status,
+                      visibility,
+                      customUrlSlug,
+                      saveTheDate,
+                      rsvp,
+                      gallery,
+                      music,
+                      seatsAccommodation,
+                      preview,
+                      eventBudget,
+                      analytics
+                    }){
+      return await EventsService.edit({
+        eventId: this.currentEvent.id,
+        eventName,
+        startDate,
+        endDate,
+        eventDescription,
+        status,
+        visibility,
+        customUrlSlug,
+        saveTheDate,
+        rsvp,
+        gallery,
+        music,
+        seatsAccommodation,
+        preview,
+        eventBudget,
+        analytics
+      })
+    },
+
     async createEvent({
                         eventName,
                         startDate,

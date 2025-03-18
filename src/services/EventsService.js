@@ -37,6 +37,43 @@ class EventsService {
     })
   }
 
+  async edit({
+               eventId,
+               eventName,
+               eventDescription,
+               startDate,
+               endDate,
+               status,
+               visibility,
+               customUrlSlug,
+               saveTheDate,
+               rsvp,
+               gallery,
+               music,
+               seatsAccommodation,
+               preview,
+               eventBudget,
+               analytics
+             }) {
+    return CWM_API.put(`event/${eventId}`, {
+      eventName,
+      eventDescription,
+      startDate,
+      endDate,
+      status,
+      visibility,
+      customUrlSlug,
+      saveTheDate,
+      rsvp,
+      gallery,
+      music,
+      seatsAccommodation,
+      preview,
+      eventBudget,
+      analytics
+    })
+  }
+
   async getMyEvents() {
     return CWM_API.get(`event` )
   }

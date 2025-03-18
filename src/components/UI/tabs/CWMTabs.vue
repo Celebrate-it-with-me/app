@@ -20,6 +20,43 @@ const currentTabs = computed(() => {
       isDisabled = true
     }
 
+    if (eventStore.currentEvent) {
+      if (tab.id === 3) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.saveTheDate ?? false
+      }
+
+      if (tab.id === 4) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.rsvp ?? false
+      }
+
+      if (tab.id === 5) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.gallery ?? false
+      }
+
+      if (tab.id === 6) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.music ?? false
+      }
+
+      if (tab.id === 7) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.preview ?? false
+      }
+
+      if (tab.id === 8) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.budget ?? false
+      }
+
+      if (tab.id === 9) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.seatsAccommodation ?? false
+      }
+
+      if (tab.id === 10) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.analytics ?? false
+      }
+
+    }
+
+
+
     return {
       disabled: isDisabled,
       ...tab
