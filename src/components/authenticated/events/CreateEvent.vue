@@ -4,7 +4,7 @@ import TextAreaField from '@/components/UI/form/TextAreaField.vue'
 import TextField from '@/components/UI/form/TextField.vue'
 import SelectField from '@/components/UI/form/SelectField.vue'
 import { Form } from 'vee-validate'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import {
@@ -131,6 +131,35 @@ const eventValidationSchema = computed(() => {
   )
 })
 
+const capitalizedMode = computed(() => {
+  return props.mode.charAt(0).toUpperCase() + props.mode.slice(1)
+})
+
+onMounted(() => {
+  if (props.mode === 'edit') {
+    initializeValues()
+  }
+})
+
+const initializeValues = () => {
+    eventState.eventName = eventStore.currentEvent.eventName
+    eventState.eventDescription = eventStore.currentEvent.eventDescription
+    eventState.status = eventStore.currentEvent.status
+    eventState.startDate = eventStore.currentEvent.startDate
+    eventState.endDate = eventStore.currentEvent.endDate
+    eventState.customUrlSlug = eventStore.currentEvent.customUrlSlug
+    eventState.visibility = eventStore.currentEvent.visibility
+    eventState.processing = false
+    eventState.saveTheDate = !!eventStore.currentEvent?.eventFeature?.saveTheDate ?? false
+    eventState.rsvp = !!eventStore.currentEvent?.eventFeature?.rsvp ?? false
+    eventState.gallery = !!eventStore.currentEvent?.eventFeature?.gallery ?? false
+    eventState.music = !!eventStore.currentEvent?.eventFeature?.music ?? false
+    eventState.seatsAccommodation = !!eventStore.currentEvent?.eventFeature?.seatsAccommodation ?? false
+    eventState.preview = !!eventStore.currentEvent?.eventFeature?.preview ?? false
+    eventState.eventBudget = !!eventStore.currentEvent?.eventFeature?.budget ?? false
+    eventState.analytics = !!eventStore.currentEvent?.eventFeature?.analytics ?? false
+}
+
 const initUrlSlug = () => {
   eventState.customUrlSlug = eventState.eventName
     .toString()
@@ -146,17 +175,27 @@ const cancelCreateEvent = () => {
   emit('cancelCreate')
 }
 
+const createOrEditEvent = async () => {
+  if (props.mode === 'edit') {
+    return await eventStore.editEvent(eventState)
+  }
+
+  return await eventStore.createEvent(eventState)
+}
+
 const onSubmit = async (fields, { resetForm }) => {
   try {
     eventState.processing = true
 
-    const result = await eventStore.createEvent(eventState)
+    const result = await createOrEditEvent()
+
     if (result.status >= 200 && result.status < 300) {
       notificationStore.addNotification({
         type: 'success',
-        message: 'Event created successfully!'
+        message: 'Event processed successfully!'
       })
-      cleanForm(resetForm)
+
+      //cleanForm(resetForm)
 
       await eventStore.initEvents(result.data.data.id)
     } else {
@@ -223,7 +262,8 @@ watch(
     <!-- Header Section -->
     <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
       <h3 class="text-lg font-semibold">
-        <span v-if="mode === 'create'">Create Event</span>
+        <span v-if="mode === 'create'">
+          {{ capitalizedMode }} Event</span>
         <span v-else>Edit Event</span>
       </h3>
     </div>

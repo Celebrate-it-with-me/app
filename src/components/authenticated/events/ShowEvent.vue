@@ -3,6 +3,7 @@ import { useEventsStore } from '@/stores/useEventsStore'
 import { computed, ref } from 'vue'
 import DeleteEventModal from '@/components/UI/Modal/DeleteEventModal.vue'
 
+const emit = defineEmits(['editEvent'])
 const eventStore = useEventsStore()
 const showConfirmDelete = ref(false)
 
@@ -16,6 +17,10 @@ const showConfirmDeleteModal = () => {
 
 const handleCloseDelete = () => {
   showConfirmDelete.value = false
+}
+
+const editCurrentEvent = () => {
+  emit('editEvent')
 }
 
 </script>
@@ -133,6 +138,7 @@ const handleCloseDelete = () => {
         <button
           type="button"
           class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+          @click="editCurrentEvent"
         >
           Edit
         </button>
