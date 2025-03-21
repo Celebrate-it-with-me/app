@@ -144,8 +144,11 @@ watch(() => guestStore.perPage, () => {
           </td>
           <td class="px-6 py-4">
             <span v-if="guest.companionType === 'no_companion' ">
-              <span class="bg-red-300 text-white text-xs font-medium me-2 px-2.5 py-0.5
-                          rounded-full dark:bg-red-500/50 dark:text-white">
+              <span
+                class="bg-red-300 text-white text-xs font-medium me-2 px-2.5 py-0.5
+                          rounded-full dark:bg-red-500/50 dark:text-white cursor-pointer"
+                  @click="showCompanionsList(guest)"
+              >
                 No companions
               </span>
             </span>
