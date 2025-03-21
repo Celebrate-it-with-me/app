@@ -30,6 +30,11 @@ class GuestsService {
       }
     })
   }
+
+  async removeCompanion(companionId) {
+    return CWM_API.delete(`companion/${companionId}`, {})
+  }
+
 }
 
 export default new GuestsService()

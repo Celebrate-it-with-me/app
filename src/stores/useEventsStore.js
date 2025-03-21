@@ -19,8 +19,82 @@ export const useEventsStore = defineStore('eventsStore', {
     addEvent(event) {
       this.events.push(event)
     },
-    async createEvent({ eventName, eventDate, eventDescription, status, visibility, customUrlSlug }) {
-      return await EventsService.create({ eventName, eventDate, eventDescription, status, visibility, customUrlSlug })
+
+    async removeCurrentEvent() {
+      return await EventsService.removeCurrentEvent(this.currentEvent.id)
+    },
+
+    async editEvent({
+                      eventName,
+                      startDate,
+                      endDate,
+                      eventDescription,
+                      status,
+                      visibility,
+                      customUrlSlug,
+                      saveTheDate,
+                      rsvp,
+                      gallery,
+                      music,
+                      seatsAccommodation,
+                      preview,
+                      eventBudget,
+                      analytics
+                    }){
+      return await EventsService.edit({
+        eventId: this.currentEvent.id,
+        eventName,
+        startDate,
+        endDate,
+        eventDescription,
+        status,
+        visibility,
+        customUrlSlug,
+        saveTheDate,
+        rsvp,
+        gallery,
+        music,
+        seatsAccommodation,
+        preview,
+        eventBudget,
+        analytics
+      })
+    },
+
+    async createEvent({
+                        eventName,
+                        startDate,
+                        endDate,
+                        eventDescription,
+                        status,
+                        visibility,
+                        customUrlSlug,
+                        saveTheDate,
+                        rsvp,
+                        gallery,
+                        music,
+                        seatsAccommodation,
+                        preview,
+                        eventBudget,
+                        analytics
+    }) {
+      return await EventsService.create({
+        eventName,
+        startDate,
+        endDate,
+        eventDescription,
+        status,
+        visibility,
+        customUrlSlug,
+        saveTheDate,
+        rsvp,
+        gallery,
+        music,
+        seatsAccommodation,
+        preview,
+        eventBudget,
+        analytics
+      })
     },
 
     async filterEvents(query) {
@@ -33,14 +107,16 @@ export const useEventsStore = defineStore('eventsStore', {
       }
     },
 
-    async initEvents(eventId) {
+    async initEvents(eventId = null) {
       const response = await EventsService.getMyEvents()
 
       if (response.status === 200) {
         const { data } = response
 
        this.setEvents(data.data ?? [])
-       this.selectEvent(eventId)
+        if (eventId) {
+          this.selectEvent(eventId)
+        }
       }
     }
   },

@@ -7,17 +7,27 @@ import { computed, ref } from 'vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 
 // Data
-const showAddEventView = ref(false)
+const activeView = ref('none')
+
 const eventsStore = useEventsStore()
 
 const handleCreateEvent = () => {
   eventsStore.currentEvent = null
-  showAddEventView.value = true
+  activeView.value = 'create'
 }
 
 const handleCancelCreate = () => {
-  showAddEventView.value = false
+  activeView.value = 'none'
 }
+
+const handleEditEvent = () => {
+  activeView.value = 'edit'
+}
+
+const handleShowEvent = () => {
+  activeView.value = 'showEvent'
+}
+
 
 const eventMessage = computed(() => {
   if (!eventsStore.events.length) {
@@ -37,31 +47,34 @@ const eventMessage = computed(() => {
   <section class="my-events">
 
     <section
-      class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[600px] h-full"
+      class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-5 rounded-md min-h-[600px] h-full"
     >
       <MyEventsList
         @create-event="handleCreateEvent"
+        @selected-event="handleShowEvent"
       />
 
       <div class="event-handle w-[70%]">
         <ShowEvent
-          v-if="eventsStore.currentEvent"
+          v-if="activeView === 'showEvent'"
+          @edit-event="handleEditEvent"
         />
 
         <div
-          v-else-if="showAddEventView"
+          v-else-if="['create', 'edit'].includes(activeView)"
           class="w-full"
         >
           <CreateEvent
+            :mode="activeView"
             @cancel-create="handleCancelCreate"
           />
         </div>
 
         <CwmAlert
           alert-type="info"
-          v-else
+          v-else-if="activeView === 'none'"
         >
-          {{ eventMessage }}
+          {{ eventMessage.length ? eventMessage : 'There is no event selected'}}
         </CwmAlert>
       </div>
     </section>

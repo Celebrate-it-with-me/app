@@ -7,12 +7,9 @@ import TextField from '@/components/UI/form/TextField.vue'
 import { ref, watch } from 'vue'
 import debounce from 'lodash.debounce'
 
-const emit = defineEmits(['createEvent'])
+const emit = defineEmits(['createEvent', 'selectedEvent'])
 const eventsStore = useEventsStore()
 const eventName = ref('')
-
-
-
 
 const showAddEvent = () => {
   emit('createEvent')
@@ -22,13 +19,17 @@ const changeEventNameSearch = debounce((query) => {
   eventsStore.filterEvents(query)
 })
 
+const eventSelected = () => {
+  emit('selectedEvent')
+}
+
 watch(eventName, changeEventNameSearch)
 
 
 </script>
 
 <template>
-  <div class="events-lists w-[25%] bg-gray-800 rounded-lg p-6 flex flex-col justify-between pr-6">
+  <div class="events-lists w-[30%] bg-gray-800 rounded-lg p-6 flex flex-col justify-between pr-6">
     <div class="my-events w-full">
       <div class="mb-5">
         <TextField
@@ -45,6 +46,7 @@ watch(eventName, changeEventNameSearch)
           v-for="activeEvent in eventsStore.activeEvents"
           :active-event="activeEvent"
           :key="activeEvent.id"
+          @click="eventSelected"
         />
       </ul>
     </div>
