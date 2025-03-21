@@ -72,6 +72,25 @@ export const useGuestsStore = defineStore('guestsStore', {
       }
 
       return false
+    },
+
+    async updateCompanionType(companionType) {
+      return await GuestsService.updateCompanionType(this.currentGuest.id, companionType)
+    },
+
+    async updateCompanionQty(companionQty) {
+      return await GuestsService.updateCompanionQty(this.currentGuest.id, companionQty)
+    },
+
+    async createCompanion({ phoneNumber, firstName, lastName, email }) {
+      return await GuestsService.createCompanion({
+        guestId: this.currentGuest.id,
+        phoneNumber,
+        firstName,
+        lastName,
+        email,
+      })
     }
+
   }
 })

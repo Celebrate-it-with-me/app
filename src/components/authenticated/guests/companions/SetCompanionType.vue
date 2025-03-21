@@ -12,7 +12,6 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 const companionType = ref(null)
 
-
 onMounted(() => {
   companionType.value = props.modelValue
 })
