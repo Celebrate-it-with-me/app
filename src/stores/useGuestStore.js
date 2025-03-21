@@ -5,6 +5,9 @@ import { useUserStore } from './useUserStore'
 export const useGuestsStore = defineStore('guestsStore', {
   state: () => ({
     guests: [],
+    totalItems: 0,
+    pageSelected: 1,
+    perPage: 5,
     currentGuest: null
   }),
   actions: {
@@ -39,14 +42,36 @@ export const useGuestsStore = defineStore('guestsStore', {
       this.guests = []
     },
 
-    async loadGuests({ perPage = 5, pageSelected = 1 }){
+    setGuests(guests) {
+      this.guests = guests
+    },
+
+    updateCurrentGuest() {
+      if (this.currentGuest !== null) {
+        const guestToUpdate = this.guests.find((guest) => guest.id === this.currentGuest.id)
+        if (guestToUpdate) {
+          this.currentGuest = { ...guestToUpdate }
+        }
+      }
+    },
+
+    async loadGuests(){
       const userStore = useUserStore()
 
-      return await GuestsService.getMyEventGuests({
+      const response =  await GuestsService.getMyEventGuests({
         eventId: userStore.currentEventId,
-        perPage,
-        pageSelected
+        perPage: this.perPage,
+        pageSelected: this.pageSelected
       })
+
+      if (response.status === 200) {
+        this.guests = response.data?.data ?? []
+        this.totalItems = response.data?.meta?.total ?? 0
+        this.pageSelected = response.data?.meta?.current_page ?? 1
+        return true
+      }
+
+      return false
     }
   }
 })

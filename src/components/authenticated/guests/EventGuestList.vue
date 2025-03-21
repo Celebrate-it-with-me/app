@@ -9,17 +9,11 @@ import CWMAlert from '@/components/UI/alerts/CWMAlert.vue'
 import CompanionListModal from '@/components/UI/Modal/CompanionListModal.vue'
 
 const emit = defineEmits(['showAddGuest'])
-
-const eventGuests = ref([])
-const perPage = ref(5)
 const loading = ref(false)
-const pageSelected = ref(1)
-const totalItems = ref(0)
 const eventStore = useEventsStore()
 const notificationStore = useNotificationStore()
 const guestStore = useGuestsStore()
 const companionsModal = ref(false)
-const selectedGuest = ref(null)
 
 
 onMounted(() => {
@@ -33,17 +27,8 @@ const eventTitle = computed(() => {
 const loadEventGuests = async () => {
   try {
     loading.value = true
-
-    const response = await guestStore.loadGuests({
-      perPage: perPage.value,
-      pageSelected: pageSelected.value
-    })
-
-    if (response.status === 200) {
-      eventGuests.value = response.data?.data ?? []
-      totalItems.value = response.data?.meta?.total ?? 0
-      pageSelected.value = response.data?.meta?.current_page ?? 1
-
+    const response = await guestStore.loadGuests()
+    if (response) {
       notificationStore.addNotification({
         type: 'success',
         message: 'Guests loaded successfully!'
@@ -70,15 +55,15 @@ const showAddGuestView = () => {
 }
 
 const showCompanionsList = (guest) => {
-  selectedGuest.value = guest
+  guestStore.currentGuest = guest
   companionsModal.value = true
 }
 
-watch(pageSelected, () => {
+watch(() => guestStore.pageSelected, () => {
   loadEventGuests()
 })
 
-watch(perPage, () => {
+watch(() => guestStore.perPage, () => {
   loadEventGuests()
 })
 
@@ -107,7 +92,7 @@ watch(perPage, () => {
     >
       <CWMAlert
         type="info"
-        v-if="!eventGuests.length"
+        v-if="!guestStore.guests.length"
       >
         There is not guests for this event yet!
       </CWMAlert>
@@ -139,7 +124,7 @@ watch(perPage, () => {
         </thead>
         <tbody>
         <tr
-          v-for="guest in eventGuests"
+          v-for="guest in guestStore.guests"
           :key="guest.id"
           class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200"
         >
@@ -186,12 +171,12 @@ watch(perPage, () => {
     <CompanionListModal
       :open="companionsModal"
       @close-modal="companionsModal = false"
-    ></CompanionListModal>
+    />
   </div>
   <CWMPagination
-    v-if="eventGuests.length"
-    v-model="pageSelected"
-    :total-items="totalItems"
+    v-if="guestStore.guests.length"
+    v-model="guestStore.pageSelected"
+    :total-items="guestStore.totalItems"
     @update:per-page="handleUpdatePerPage"
   />
 </template>
