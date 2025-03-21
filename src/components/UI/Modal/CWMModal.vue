@@ -6,6 +6,26 @@ defineProps({
   showModal: {
     type: Boolean,
     default: false
+  },
+  size: {
+    type: String,
+    required: false,
+    default: 'lg',
+    validator: (val) => {
+      return [
+        'xs',
+        'sm',
+        'md',
+        'lg',
+        'xl',
+        '2xl',
+        '3xl',
+        '4xl',
+        '5xl',
+        '6xl',
+        '7xl'
+      ].indexOf(val) !== -1
+    }
   }
 })
 
@@ -15,7 +35,12 @@ const closeModal = () => {
 </script>
 
 <template>
-  <fwb-modal v-if="showModal" @close="closeModal" class="light">
+  <fwb-modal
+    v-if="showModal"
+    :size="size"
+    @close="closeModal"
+    class="light"
+  >
     <template #header>
       <slot name="header">
         <div class="flex items-center text-lg text-gray-500 dark:text-gray-400">
