@@ -6,6 +6,7 @@ import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useGuestsStore } from '@/stores/useGuestStore'
 import CWMAlert from '@/components/UI/alerts/CWMAlert.vue'
+import CompanionListModal from '@/components/UI/Modal/CompanionListModal.vue'
 
 const emit = defineEmits(['showAddGuest'])
 
@@ -17,6 +18,9 @@ const totalItems = ref(0)
 const eventStore = useEventsStore()
 const notificationStore = useNotificationStore()
 const guestStore = useGuestsStore()
+const companionsModal = ref(false)
+const selectedGuest = ref(null)
+
 
 onMounted(() => {
   loadEventGuests()
@@ -63,6 +67,11 @@ const handleUpdatePerPage = (value) => {
 
 const showAddGuestView = () => {
   emit('showAddGuest')
+}
+
+const showCompanionsList = (guest) => {
+  selectedGuest.value = guest
+  companionsModal.value = true
 }
 
 watch(pageSelected, () => {
@@ -156,8 +165,11 @@ watch(perPage, () => {
               </span>
             </span>
             <span v-else>
-              <span class="bg-yellow-300 text-white text-xs font-medium me-2 px-2.5 py-0.5
-                          rounded-full dark:bg-yellow-600 dark:text-white">
+              <span
+                class="bg-yellow-300 text-white text-xs font-medium me-2 px-2.5 py-0.5
+                          rounded-full dark:bg-yellow-600 dark:text-white cursor-pointer"
+                @click="showCompanionsList(guest)"
+              >
                 {{ guest.companionQty }}
               </span>
             </span>
@@ -171,7 +183,10 @@ watch(perPage, () => {
         </tbody>
       </table>
     </div>
-
+    <CompanionListModal
+      :open="companionsModal"
+      @close-modal="companionsModal = false"
+    ></CompanionListModal>
   </div>
   <CWMPagination
     v-if="eventGuests.length"
