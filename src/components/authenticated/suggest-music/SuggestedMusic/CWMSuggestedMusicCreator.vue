@@ -24,7 +24,6 @@ const userStore = useUserStore()
 
 const musicLocalState = reactive({
   id: null,
-  useSuggestedMusic: false,
   title: 'Music Suggestions',
   subTitle: 'Please send us you preferred music',
   usePreview: false,
@@ -37,7 +36,6 @@ const musicLocalState = reactive({
 const musicValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      useSuggestedMusic: zod.boolean().default(false),
       title: zod.string().optional(),
       subTitle: zod.string().optional(),
       usePreview: zod.boolean().default(false),
@@ -178,11 +176,6 @@ watch(
     <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
       <h3 class="text-lg font-semibold flex flex-row justify-between items-center space-x-4">
         <span>Suggested Music</span>
-        <ToggleField
-          name="useSuggestedMusic"
-          label=""
-          v-model="musicLocalState.useSuggestedMusic"
-        />
       </h3>
     </div>
 
