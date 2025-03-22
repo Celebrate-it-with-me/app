@@ -110,6 +110,12 @@ const editCurrentEvent = () => {
         </p>
 
         <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.backgroundMusic">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Background Music
+        </p>
+
+        <p class="font-thin">
           <span class="font-semibold" v-if="currentEventFeature?.seatsAccommodation">ON</span>
           <span class="font-semibold" v-else>OFF</span>
           Seats Accommodation

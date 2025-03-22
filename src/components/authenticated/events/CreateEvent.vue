@@ -41,6 +41,7 @@ const eventState = reactive({
   rsvp: false,
   gallery: false,
   music: false,
+  backgroundMusic: false,
   seatsAccommodation: false,
   preview: false,
   eventBudget: false,
@@ -154,6 +155,7 @@ const initializeValues = () => {
     eventState.rsvp = !!eventStore.currentEvent?.eventFeature?.rsvp ?? false
     eventState.gallery = !!eventStore.currentEvent?.eventFeature?.gallery ?? false
     eventState.music = !!eventStore.currentEvent?.eventFeature?.music ?? false
+    eventState.backgroundMusic = !!eventStore.currentEvent?.eventFeature?.backgroundMusic ?? false
     eventState.seatsAccommodation = !!eventStore.currentEvent?.eventFeature?.seatsAccommodation ?? false
     eventState.preview = !!eventStore.currentEvent?.eventFeature?.preview ?? false
     eventState.eventBudget = !!eventStore.currentEvent?.eventFeature?.budget ?? false
@@ -380,6 +382,8 @@ watch(
         <ToggleField label="Gallery" name="gallery" v-model="eventState.gallery" />
 
         <ToggleField label="Music" name="music" v-model="eventState.music" />
+
+        <ToggleField label="Background Music" name="backgroundMusic" v-model="eventState.backgroundMusic" />
 
         <ToggleField
           label="Seats Accommodation"
