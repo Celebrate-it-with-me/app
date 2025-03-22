@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { Form } from 'vee-validate'
 import TextField from '@/components/UI/form/TextField.vue'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -46,16 +46,45 @@ const companionValidationSchema = computed(() => {
   )
 })
 
-const onSubmit = async () => {
-  try {
-    companionState.loading = true
+onMounted(() => {
+  if (props.mode.toLowerCase() === 'update') {
+    initCompanion()
+  }
+})
 
-    const response = await guestStore.createCompanion({
+const initCompanion = () => {
+  companionState.firstName = props.companion.firstName
+  companionState.lastName = props.companion.lastName
+  companionState.email = props.companion.email
+  companionState.phoneNumber = props.companion.phoneNumber
+  companionState.loading = false
+}
+
+const handleRequest = async () => {
+  if (props.mode.toLowerCase() === 'update') {
+    return await guestStore.updateCompanion({
+      companionId: props.companion.id,
       firstName: companionState.firstName,
       lastName: companionState.lastName,
       phoneNumber: companionState.phoneNumber,
       email: companionState.email,
     })
+  }
+
+  return await guestStore.createCompanion({
+    firstName: companionState.firstName,
+    lastName: companionState.lastName,
+    phoneNumber: companionState.phoneNumber,
+    email: companionState.email,
+  })
+}
+
+
+const onSubmit = async () => {
+  try {
+    companionState.loading = true
+
+    const response = await handleRequest()
 
     if (response.status >= 200 && response.status < 300) {
       await guestStore.loadGuests()
@@ -72,8 +101,6 @@ const onSubmit = async () => {
         message: 'Oops something went wrong!'
       })
     }
-
-
   } catch (error) {
     console.error(error)
   } finally {

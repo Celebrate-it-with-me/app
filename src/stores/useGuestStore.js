@@ -8,7 +8,8 @@ export const useGuestsStore = defineStore('guestsStore', {
     totalItems: 0,
     pageSelected: 1,
     perPage: 5,
-    currentGuest: null
+    currentGuest: null,
+    searchValue: '',
   }),
   actions: {
     addGuest(guest) {
@@ -61,7 +62,8 @@ export const useGuestsStore = defineStore('guestsStore', {
       const response =  await GuestsService.getMyEventGuests({
         eventId: userStore.currentEventId,
         perPage: this.perPage,
-        pageSelected: this.pageSelected
+        pageSelected: this.pageSelected,
+        searchValue: this.searchValue
       })
 
       if (response.status === 200) {
@@ -90,7 +92,10 @@ export const useGuestsStore = defineStore('guestsStore', {
         lastName,
         email,
       })
-    }
+    },
 
+    async updateCompanion({ companionId, firstName, lastName, phoneNumber,email }) {
+      return GuestsService.updateCompanion({ companionId, firstName, lastName, phoneNumber,email })
+    }
   }
 })
