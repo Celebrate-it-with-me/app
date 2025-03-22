@@ -2,7 +2,7 @@ import EventPublicView from '../views/non-authenticated/EventPublicView.vue'
 
 const eventsRoutes = [
   {
-    path: '/event/:eventId/:eventSlug/guest/:guestCode',
+    path: '/event/:eventId/guest/:guestCode',
     name: 'Event Public Page',
     component: EventPublicView,
     meta: {

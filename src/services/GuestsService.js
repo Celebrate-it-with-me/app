@@ -22,11 +22,12 @@ class GuestsService {
     })
   }
 
-  async getMyEventGuests({ eventId, perPage, pageSelected }) {
+  async getMyEventGuests({ eventId, perPage, pageSelected, searchValue }) {
     return CWM_API.get(`event/${eventId}/guest`, {
       params: {
         perPage,
-        pageSelected
+        pageSelected,
+        searchValue
       }
     })
   }
@@ -49,6 +50,15 @@ class GuestsService {
 
   async createCompanion({ guestId, firstName, lastName, email, phoneNumber }) {
     return CWM_API.post(`guest/${guestId}/companion`, {
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+    })
+  }
+
+  async updateCompanion({ companionId, firstName, lastName, phoneNumber,email }) {
+    return CWM_API.put(`companion/${companionId}`, {
       firstName,
       lastName,
       email,

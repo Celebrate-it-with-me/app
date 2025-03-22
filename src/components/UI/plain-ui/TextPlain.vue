@@ -28,7 +28,7 @@ const handleInput = (event) => {
 </script>
 
 <template>
-  <div class="flex flex-col mb-4">
+  <div class="flex flex-col">
     <!-- Label -->
     <label
       :for="id"
