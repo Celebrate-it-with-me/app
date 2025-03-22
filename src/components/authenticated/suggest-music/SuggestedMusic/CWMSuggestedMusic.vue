@@ -1,37 +1,12 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useSongsStore } from '@/stores/useSongsStore'
-import SongsService from '@/services/SongsService'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import SongSearchInput from '@/components/authenticated/suggest-music/SuggestedMusic/SongSearchInput.vue'
 import SongList from '@/components/authenticated/suggest-music/SuggestedMusic/SongList.vue'
+import { useUserStore } from '@/stores/useUserStore'
 
 defineProps({
-  title: {
-    type: String,
-    default: ''
-  },
-  subTitle: {
-    type: String,
-    default: ''
-  },
-  mainColor: {
-    type: String,
-    required: true
-  },
-  secondaryColor: {
-    type: String,
-    required: true
-  },
-  usePreview: {
-    type: Boolean,
-    required: true
-  },
-  useVoteSystem: {
-    type: Boolean,
-    required: true
-  },
   mode: {
     type: String,
     default: 'normal',
@@ -39,8 +14,8 @@ defineProps({
   }
 })
 
-const songsStore = useSongsStore()
-const eventStore = useEventsStore()
+const suggestedMusicStore = useSuggestedMusicStore()
+const userStore = useUserStore()
 const loading = ref(false)
 const notification = useNotificationStore()
 
@@ -54,10 +29,14 @@ const getSuggestedSongs = async () => {
   try {
     loading.value = true
 
-    const response = await SongsService.getSuggestedSongs(eventStore?.currentEvent?.id)
+    const response = await suggestedMusicStore.getSuggestedSongs(userStore.currentEventId)
 
     if (response.status === 200) {
-      songsStore.selectedSongs = response?.data?.data ?? []
+      suggestedMusicStore.selectedSongs = response?.data?.data ?? []
+      notification.addNotification({
+        type: 'success',
+        message: 'Suggested music loaded successfully!'
+      })
     } else {
       notification.addNotification({
         type: 'error',
@@ -78,20 +57,20 @@ const getSuggestedSongs = async () => {
   <div
     class="event-handle w-[70%] rounded-lg border-4 border-gray-900 dark:border-gray-800 flex flex-col items-center"
   >
-    <h1 class="text-2xl font-semibold mt-5">{{ title }}</h1>
-    <h4 class="text-md font-extralight">{{ subTitle }}</h4>
+    <h1 class="text-2xl font-semibold mt-5">{{ suggestedMusicStore.config.title }}</h1>
+    <h4 class="text-md font-extralight">{{ suggestedMusicStore.config.subTitle }}</h4>
 
     <SongSearchInput
-      :main-color="mainColor"
-      :secondary-color="secondaryColor"
+      :main-color="suggestedMusicStore.config.mainColor"
+      :secondary-color="suggestedMusicStore.config.secondaryColor"
       :mode="mode"
     />
 
     <SongList
       :mode="mode"
-      :main-color="mainColor"
-      :use-preview="usePreview"
-      :use-vote-system="useVoteSystem"
+      :main-color="suggestedMusicStore.config.mainColor"
+      :use-preview="suggestedMusicStore.config.usePreview"
+      :use-vote-system="suggestedMusicStore.config.useVoteSystem"
     />
   </div>
 </template>

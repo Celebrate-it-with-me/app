@@ -3,35 +3,22 @@ import ToggleField from '@/components/UI/form/ToggleField.vue'
 import { Form } from 'vee-validate'
 import TextField from '@/components/UI/form/TextField.vue'
 import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import NumberField from '@/components/UI/form/NumberField.vue'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { useUserStore } from '@/stores/useUserStore'
-
-const emit = defineEmits(['update:updatedState'])
 
 const musicErrors = ref()
 const notification = useNotificationStore()
-const eventStore = useEventsStore()
 const wasSaved = ref(false)
 const loading = ref(false)
 const userStore = useUserStore()
-
-const musicLocalState = reactive({
-  id: null,
-  title: 'Music Suggestions',
-  subTitle: 'Please send us you preferred music',
-  usePreview: false,
-  mainColor: '#1f2937',
-  secondaryColor: '#111827',
-  useVoteSystem: true,
-  searchLimit: 10
-})
+const suggestedMusicStore = useSuggestedMusicStore()
 
 const musicValidationSchema = computed(() => {
   return toTypedSchema(
@@ -39,19 +26,21 @@ const musicValidationSchema = computed(() => {
       title: zod.string().optional(),
       subTitle: zod.string().optional(),
       usePreview: zod.boolean().default(false),
-      mainColor: zod.string()
+      mainColor: zod
+        .string()
         .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid hex color code')
         .optional(),
-      secondaryColor: zod.string()
+      secondaryColor: zod
+        .string()
         .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, 'Invalid hex color code')
         .optional(),
       useVoteSystem: zod.boolean().default(false),
-      searchLimit: zod
-        .number()
-        .nonnegative('Search limit must be a positive number')
-        .optional(),
+      searchLimit: zod.number().nonnegative('Search limit must be a positive number').optional()
     })
   )
+})
+const currentEventId = computed(() => {
+  return userStore.currentEventId ?? null
 })
 
 onMounted(() => {
@@ -60,27 +49,25 @@ onMounted(() => {
 
 const getSelectedMusicConfig = async () => {
   try {
-    const response = await SongsService.getSuggestedConfig(userStore.currentEventId)
+    const response = await SongsService.getSuggestedConfig(currentEventId.value)
 
     if (response.status === 200 && response?.data?.data) {
       const { data } = response
-
-      musicLocalState.id = data?.data?.id
-      musicLocalState.useSuggestedMusic = !!data?.data?.useSuggestedMusic ?? false
-      musicLocalState.title = data?.data?.title ?? ''
-      musicLocalState.subTitle = data?.data?.subTitle ?? ''
-      musicLocalState.mainColor = data?.data?.mainColor ?? '#1f2937'
-      musicLocalState.secondaryColor = data?.data?.secondaryColor ?? '#111827'
-      musicLocalState.searchLimit = data?.data?.searchLimit ?? 10
-      musicLocalState.usePreview = !!data?.data?.usePreview ?? false
-      musicLocalState.useVoteSystem = !!data?.data?.useVoteSystem ?? false
+      suggestedMusicStore.config.id = data?.data?.id
+      suggestedMusicStore.config.useSuggestedMusic = !!data?.data?.useSuggestedMusic ?? false
+      suggestedMusicStore.config.title = data?.data?.title ?? ''
+      suggestedMusicStore.config.subTitle = data?.data?.subTitle ?? ''
+      suggestedMusicStore.config.mainColor = data?.data?.mainColor ?? '#1f2937'
+      suggestedMusicStore.config.secondaryColor = data?.data?.secondaryColor ?? '#111827'
+      suggestedMusicStore.config.searchLimit = data?.data?.searchLimit ?? 10
+      suggestedMusicStore.config.usePreview = !!data?.data?.usePreview ?? false
+      suggestedMusicStore.config.useVoteSystem = !!data?.data?.useVoteSystem ?? false
 
       wasSaved.value = true
     } else {
       wasSaved.value = false
     }
-
-  } catch(e) {
+  } catch (e) {
     console.log(e)
   }
 }
@@ -89,10 +76,7 @@ const saveSuggestedMusicConfig = async () => {
   try {
     loading.value = true
 
-    const response = await SongsService.saveSuggestedConfig({
-      ...musicLocalState,
-      eventId: eventStore.currentEvent.id
-    })
+    const response = await suggestedMusicStore.saveSuggestedConfig({eventId: currentEventId.value})
 
     if (response.status >= 200 && response.status < 300) {
       notification.addNotification({
@@ -108,7 +92,6 @@ const saveSuggestedMusicConfig = async () => {
         message: 'Oops something went wrong!'
       })
     }
-
   } catch (e) {
     console.log(e)
   } finally {
@@ -120,9 +103,7 @@ const updateSuggestedMusicConfig = async () => {
   try {
     loading.value = true
 
-    const response = await SongsService.updateSuggestedConfig({
-      ...musicLocalState,
-    })
+    const response = await suggestedMusicStore.updateSuggestedConfig()
 
     if (response.status >= 200 && response.status < 300) {
       notification.addNotification({
@@ -138,7 +119,6 @@ const updateSuggestedMusicConfig = async () => {
         message: 'Oops something went wrong!'
       })
     }
-
   } catch (e) {
     console.log(e)
   } finally {
@@ -157,13 +137,6 @@ const onSubmit = async () => {
 const onInvalidSubmit = (error) => {
   console.error(error)
 }
-
-watch(
-  musicLocalState,
-  (newValue) => {
-  emit('update:updatedState', newValue)
-}, { deep: true })
-
 </script>
 
 <template>
@@ -173,11 +146,11 @@ watch(
       @submit="onSubmit"
       @invalid-submit="onInvalidSubmit"
     >
-    <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
-      <h3 class="text-lg font-semibold flex flex-row justify-between items-center space-x-4">
-        <span>Suggested Music</span>
-      </h3>
-    </div>
+      <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold flex flex-row justify-between items-center space-x-4">
+          <span>Suggested Music</span>
+        </h3>
+      </div>
 
       <!-- Error Section -->
       <div v-if="musicErrors" class="w-full mb-4">
@@ -190,7 +163,7 @@ watch(
         <!-- STD Title -->
         <div>
           <TextField
-            v-model="musicLocalState.title"
+            v-model="suggestedMusicStore.config.title"
             label="Title:"
             name="title"
             show-error
@@ -202,7 +175,7 @@ watch(
         <!-- STD Title -->
         <div>
           <TextField
-            v-model="musicLocalState.subTitle"
+            v-model="suggestedMusicStore.config.subTitle"
             label="Sub Title:"
             name="subTitle"
             show-error
@@ -217,14 +190,14 @@ watch(
             classLabel="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             name="color"
-            v-model="musicLocalState.mainColor"
+            v-model="suggestedMusicStore.config.mainColor"
             :colorpicker-options="{
-                type: 'component',
-                showPalette: true,
-                showSelectionPalette: true,
-                preferredFormat: 'hex',
-                showInitial: true,
-              }"
+              type: 'component',
+              showPalette: true,
+              showSelectionPalette: true,
+              preferredFormat: 'hex',
+              showInitial: true
+            }"
             :showError="true"
           />
         </div>
@@ -235,21 +208,21 @@ watch(
             classLabel="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             name="color"
-            v-model="musicLocalState.secondaryColor"
+            v-model="suggestedMusicStore.config.secondaryColor"
             :colorpicker-options="{
-                type: 'component',
-                showPalette: true,
-                showSelectionPalette: true,
-                preferredFormat: 'hex',
-                showInitial: true,
-              }"
+              type: 'component',
+              showPalette: true,
+              showSelectionPalette: true,
+              preferredFormat: 'hex',
+              showInitial: true
+            }"
             :showError="true"
           />
         </div>
 
         <div>
           <NumberField
-            v-model="musicLocalState.searchLimit"
+            v-model="suggestedMusicStore.config.searchLimit"
             label="Search Limit:"
             name="searchLimit"
             show-error
@@ -262,7 +235,7 @@ watch(
           <ToggleField
             name="usePreview"
             label="Use Music Preview"
-            v-model="musicLocalState.usePreview"
+            v-model="suggestedMusicStore.config.usePreview"
           />
         </div>
 
@@ -270,41 +243,29 @@ watch(
           <ToggleField
             name="useVoteSystem"
             label="Use Vote System"
-            v-model="musicLocalState.useVoteSystem"
+            v-model="suggestedMusicStore.config.useVoteSystem"
           />
         </div>
-
       </div>
 
       <!-- Form Buttons -->
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
           type="submit"
-          class="w-full  text-white text-sm font-medium py-2 px-6 rounded-md"
-          :class="loading
-            ? 'bg-gray-500 hover:bg-gray-600'
-            : 'bg-yellow-500 hover:bg-yellow-600'"
+          class="w-full text-white text-sm font-medium py-2 px-6 rounded-md"
+          :class="loading ? 'bg-gray-500 hover:bg-gray-600' : 'bg-yellow-500 hover:bg-yellow-600'"
           :disabled="loading"
         >
-          <CWMLoading
-            v-if="loading"
-          />
+          <CWMLoading v-if="loading" />
           <span v-if="loading">Saving Config...</span>
           <span v-else>
-            <span v-if="!wasSaved">
-              Save Suggested Music Component
-            </span>
-            <span v-else>
-              Update Suggested Music Component
-            </span>
+            <span v-if="!wasSaved"> Save Suggested Music Component </span>
+            <span v-else> Update Suggested Music Component </span>
           </span>
         </button>
       </div>
     </Form>
-
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

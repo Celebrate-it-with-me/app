@@ -1,11 +1,10 @@
 <script setup>
-import { useSongsStore } from '@/stores/useSongsStore'
+import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { computed } from 'vue'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useTemplateStore } from '@/stores/useTemplateStore'
 
-const emit = defineEmits(['refreshSongsList'])
 const props = defineProps({
   mainColor: {
     type: String,
@@ -30,7 +29,7 @@ const props = defineProps({
   }
 })
 
-const songsStore = useSongsStore()
+const songsStore = useSuggestedMusicStore()
 const notification = useNotificationStore()
 const templateStore = useTemplateStore()
 

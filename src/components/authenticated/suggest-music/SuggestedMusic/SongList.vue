@@ -1,5 +1,5 @@
 <script setup>
-import { useSongsStore } from '@/stores/useSongsStore'
+import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import SongListItem from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SongListItem.vue'
 
 defineProps({
@@ -22,7 +22,7 @@ defineProps({
   }
 })
 
-const songsStore = useSongsStore()
+const songsStore = useSuggestedMusicStore()
 
 
 </script>
