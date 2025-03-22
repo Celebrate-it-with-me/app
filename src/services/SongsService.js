@@ -12,7 +12,8 @@ class SongsService {
     })
   }
 
-  async getSuggestedSongs(eventId, pageSelected) {
+  async getSuggestedSongs(eventId, pageSelected = 1){
+    console.log('getSuggestedSongs', eventId, pageSelected)
     return CWM_API.get(`event/${eventId}/suggest-music`, {
       params: {
         pageSelected
@@ -41,7 +42,7 @@ class SongsService {
                               searchLimit,
                               eventId
   }){
-    return CWM_API.post(`event/${eventId}/suggest-music-config`,{
+    return await CWM_API.post(`event/${eventId}/suggest-music-config`,{
       useSuggestedMusic,
       title,
       subTitle,
@@ -56,7 +57,6 @@ class SongsService {
 
   async updateSuggestedConfig({
                                 id,
-                                useSuggestedMusic,
                                 title,
                                 subTitle,
                                 usePreview,
@@ -65,8 +65,8 @@ class SongsService {
                                 useVoteSystem,
                                 searchLimit,
                               }) {
-    return CWM_API.put(`suggest-music-config/${id}`,{
-      useSuggestedMusic,
+    console.log('checking id', id)
+    return await CWM_API.put(`suggest-music-config/${id}`,{
       title,
       subTitle,
       usePreview,

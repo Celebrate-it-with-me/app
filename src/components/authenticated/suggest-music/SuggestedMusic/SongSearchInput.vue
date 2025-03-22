@@ -1,11 +1,10 @@
 <script setup>
-
 import { computed, ref } from 'vue'
 import debounce from 'lodash.debounce'
-import SongsService from '@/services/SongsService'
-import { useSongsStore } from '@/stores/useSongsStore'
+import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import SpotifyService from '@/services/SpotifyService'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 const props = defineProps({
   mainColor: {
@@ -16,32 +15,33 @@ const props = defineProps({
     type: String,
     required: true
   },
-  event: {
-    type: Object,
+  mode: {
+    type: String,
     required: true
   }
 })
 
-const songsStore = useSongsStore()
+const suggestedMusicStore = useSuggestedMusicStore()
 const notification = useNotificationStore()
 const searchQuery = ref('')
 const suggestions = ref([])
 let skipFetch = false
+const eventStore = useEventsStore()
 
 const mainColorComputed = computed(() => {
   if (!props.mainColor) {
-    return {backgroundColor: 'transparent' }
+    return { backgroundColor: 'transparent' }
   }
 
-  return {backgroundColor: props.mainColor}
-});
+  return { backgroundColor: props.mainColor }
+})
 
 const secondaryColorComputed = computed(() => {
   if (!props.secondaryColor) {
-    return {backgroundColor: 'transparent' }
+    return { backgroundColor: 'transparent' }
   }
 
-  return {backgroundColor: props.secondaryColor}
+  return { backgroundColor: props.secondaryColor }
 })
 
 const selectSuggestion = (song) => {
@@ -57,20 +57,21 @@ const selectSuggestion = (song) => {
 }
 
 const saveSelectedSong = async (song) => {
-  if (props.mode === 'creator') return;
+  if (props.mode === 'creator') return
 
   try {
-    const response = await SongsService.create({
-      eventId: props.event?.id ?? 0,
+    const response = await suggestedMusicStore.addNewSong({
+      eventId: eventStore.currentEvent.id,
       platformId: song.platformId,
       title: song.title,
       artist: song.artist,
       album: song.album,
       thumbnailUrl: song.thumbnailUrl,
+      accessCode: 'organizer'
     })
 
     if (response.status >= 200 && response.status < 300) {
-      songsStore.addSong(response?.data?.data ?? {})
+      suggestedMusicStore.addSong(response?.data?.data ?? {})
       notification.addNotification({
         message: 'Song added successfully'
       })
@@ -80,7 +81,6 @@ const saveSelectedSong = async (song) => {
         message: 'Oops something went wrong!'
       })
     }
-
   } catch (e) {
     console.log(e)
   }
@@ -89,26 +89,23 @@ const saveSelectedSong = async (song) => {
 const fetchSuggestions = debounce(async () => {
   if (searchQuery.value && !skipFetch) {
     try {
-      const result = await SpotifyService.searchSongs(searchQuery.value);
+      const result = await SpotifyService.searchSongs(searchQuery.value)
 
       suggestions.value = result.tracks.items.map((track) => ({
         platformId: track.id,
         title: track.name,
         artist: track.artists.map((artist) => artist.name).join(', '),
         album: track.album.name || 'Unknown Album',
-        thumbnailUrl: track.album.images[0]?.url || 'https://via.placeholder.com/48',
-      }));
+        thumbnailUrl: track.album.images[0]?.url || 'https://via.placeholder.com/48'
+      }))
     } catch (error) {
-      console.error('Error fetching suggestions:', error);
-      suggestions.value = [];
+      console.error('Error fetching suggestions:', error)
+      suggestions.value = []
     }
   } else {
-    suggestions.value = [];
+    suggestions.value = []
   }
-
 }, 300)
-
-
 </script>
 
 <template>
@@ -138,11 +135,7 @@ const fetchSuggestions = debounce(async () => {
           class="p-2 flex justify-between items-center rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer transition mt-2"
           @click="selectSuggestion(song)"
         >
-          <img
-            :src="song.thumbnailUrl"
-            alt="Album Art"
-            class="w-12 h-12 rounded-lg object-cover"
-          />
+          <img :src="song.thumbnailUrl" alt="Album Art" class="w-12 h-12 rounded-lg object-cover" />
 
           <!-- Song details -->
           <div class="ml-4 flex flex-col justify-end items-end">
@@ -155,6 +148,4 @@ const fetchSuggestions = debounce(async () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

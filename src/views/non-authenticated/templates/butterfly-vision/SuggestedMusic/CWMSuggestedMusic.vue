@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useSongsStore } from '@/stores/useSongsStore'
+import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import SongSearchInput from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SongSearchInput.vue'
@@ -43,7 +43,7 @@ const props = defineProps({
   }
 })
 
-const songsStore = useSongsStore()
+const songsStore = useSuggestedMusicStore()
 const loading = ref(false)
 const notification = useNotificationStore()
 const totalItems = ref(0)
