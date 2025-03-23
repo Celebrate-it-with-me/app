@@ -1,0 +1,137 @@
+<script setup>
+import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
+import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
+import { Form } from 'vee-validate'
+import ToggleField from '@/components/UI/form/ToggleField.vue'
+import { computed, ref } from 'vue'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as zod from 'zod'
+import SelectField from '@/components/UI/form/SelectField.vue'
+import { AUTOPLAY_ICON_SIZES as iconSizes, AUTOPLAY_ICON_POSITIONS as iconPositions } from '@/constants/constants'
+import { useBackgroundMusicStore } from '@/stores/useBackgroundMusicStore'
+import UploadAudioField from '@/components/UI/form/UploadAudioField.vue'
+
+const bgMusicErrors = ref()
+const bgMusicValidationSchema = computed(() => {
+  return toTypedSchema(
+    zod.object({
+      iconSize: zod.enum(['20px', '25px', '30px', '35px', '40px']),
+      iconPosition: zod.enum(['top-left', 'top-right', 'bottom-right', 'bottom-left']),
+      iconColor: zod.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex color format'),
+      autoplay: zod.boolean(),
+      songUrl:zod.string().url('Invalid URL format'),
+    })
+  )
+})
+
+const backgroundMusicStore = useBackgroundMusicStore()
+const loading = ref(false)
+
+const onSubmit = () => {
+  console.log('onSubmit')
+}
+
+const onInvalidSubmit = () => {
+  console.log('onInvalidSubmit')
+}
+</script>
+
+<template>
+  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-[40%]">
+    <Form
+      :validation-schema="bgMusicValidationSchema"
+      @submit="onSubmit"
+      @invalid-submit="onInvalidSubmit"
+    >
+      <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
+        <h3 class="text-lg font-semibold flex flex-row justify-between items-center space-x-4">
+          <span>Background Music</span>
+        </h3>
+      </div>
+
+      <!-- Error Section -->
+      <div v-if="bgMusicErrors" class="w-full mb-4">
+        <p class="text-red-500 font-semibold">
+          {{ bgMusicErrors }}
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-6">
+        <!-- STD Title -->
+        <div>
+          <SelectField
+            name="iconSize"
+            label="Icon Size"
+            v-model="backgroundMusicStore.iconSize"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :items="iconSizes"
+          />
+        </div>
+
+        <!-- STD Title -->
+        <div>
+          <SelectField
+            name="iconPosition"
+            label="Icon position"
+            v-model="backgroundMusicStore.iconPosition"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :items="iconPositions"
+          />
+        </div>
+
+        <div>
+          <ColorPickerField
+            label="Autoplay Color"
+            classLabel="text-lg font-medium"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            name="color"
+            v-model="backgroundMusicStore.iconColor"
+            :colorpicker-options="{
+              type: 'component',
+              showPalette: true,
+              showSelectionPalette: true,
+              preferredFormat: 'hex',
+              showInitial: true
+            }"
+            :showError="true"
+          />
+        </div>
+
+        <div>
+          <ToggleField
+            name="autoplay"
+            label="Background Music Autoplay"
+            v-model="backgroundMusicStore.autoplay"
+          />
+        </div>
+
+        <div>
+          <UploadAudioField
+            name="songFile"
+            label="Background Music"
+            v-model="backgroundMusicStore.songFile"
+          />
+        </div>
+      </div>
+
+      <!-- Form Buttons -->
+      <div class="mt-6 flex justify-end items-center gap-4">
+        <button
+          type="submit"
+          class="w-full text-white text-sm font-medium py-2 px-6 rounded-md"
+          :class="loading ? 'bg-gray-500 hover:bg-gray-600' : 'bg-yellow-500 hover:bg-yellow-600'"
+          :disabled="loading"
+        >
+          <CWMLoading v-if="loading" />
+          <span v-if="loading">Saving Config...</span>
+          <span v-else>
+            <span v-if="true"> Create </span>
+            <span v-else> Update </span>
+          </span>
+        </button>
+      </div>
+    </Form>
+  </div>
+</template>
+
+<style scoped></style>

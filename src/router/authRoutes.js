@@ -11,6 +11,7 @@ import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
 import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
 import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue'
 import CWMSuggestMusic from '../components/authenticated/suggest-music/CWMSuggestMusic.vue'
+import CWMBackgroundMusic from '../components/authenticated/background-music/CWMBackgroundMusic.vue'
 
 const authRoutes = [
   {
@@ -99,6 +100,14 @@ const authRoutes = [
         component: CWMSuggestMusic,
         meta: {
           title: 'Suggest Music'
+        }
+      },
+      {
+        path: 'background-music',
+        name: 'background-music',
+        component: CWMBackgroundMusic,
+        meta: {
+          title: 'Background Music'
         }
       },
       {
