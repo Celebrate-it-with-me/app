@@ -55,14 +55,22 @@ onUnmounted(() => {
 })
 
 const initAudioInstance = () => {
-  const audioSrc = URL.createObjectURL(backgroundMusicStore.songFile)
-  audio = new Audio(audioSrc)
+  let audioSrc = ''
+  if (backgroundMusicStore.songFile instanceof File) {
+    audioSrc = URL.createObjectURL(backgroundMusicStore.songFile)
+  } else {
+    audioSrc = backgroundMusicStore.songFile
+  }
 
-  audio.loop = true
-  audio.volume = 0.5
-  isPlaying.value = false
-  isPlaying.value = true
-  audio.play()
+  if (audioSrc) {
+    audio = new Audio(audioSrc)
+
+    audio.loop = true
+    audio.volume = 0.5
+    isPlaying.value = false
+    isPlaying.value = true
+    audio.play()
+  }
 }
 
 const destroyAudioInstance = () => {

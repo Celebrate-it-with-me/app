@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import BackgroundMusic from '@/components/authenticated/background-music/BackgroundMusic/BackgroundMusic.vue'
 </script>
 
