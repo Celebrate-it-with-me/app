@@ -10,6 +10,7 @@ import SelectField from '@/components/UI/form/SelectField.vue'
 import { AUTOPLAY_ICON_SIZES as iconSizes, AUTOPLAY_ICON_POSITIONS as iconPositions } from '@/constants/constants'
 import { useBackgroundMusicStore } from '@/stores/useBackgroundMusicStore'
 import UploadAudioField from '@/components/UI/form/UploadAudioField.vue'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 const bgMusicErrors = ref()
 const bgMusicValidationSchema = computed(() => {
@@ -19,20 +20,40 @@ const bgMusicValidationSchema = computed(() => {
       iconPosition: zod.enum(['top-left', 'top-right', 'bottom-right', 'bottom-left']),
       iconColor: zod.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex color format'),
       autoplay: zod.boolean(),
-      songUrl:zod.string().url('Invalid URL format'),
+      songFile: zod.any().refine((file) => file instanceof File, {
+        message: 'File is not valid',
+        path: ['songFile']
+      }),
     })
   )
 })
 
+const eventStore = useEventsStore()
 const backgroundMusicStore = useBackgroundMusicStore()
 const loading = ref(false)
 
-const onSubmit = () => {
-  console.log('onSubmit')
+const onSubmit = async () => {
+  try {
+    loading.value = true
+
+    const response = await backgroundMusicStore.addBackgroundMusic(eventStore.currentEvent.id)
+
+    if (response.status >= 200 && response.status < 300 ) {
+      console.log(response)
+    } else {
+      console.log(response)
+    }
+
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
 }
 
-const onInvalidSubmit = () => {
-  console.log('onInvalidSubmit')
+const onInvalidSubmit = (errors) => {
+  console.log(backgroundMusicStore.autoplay)
+  console.log('onInvalidSubmit', errors)
 }
 </script>
 
@@ -57,6 +78,13 @@ const onInvalidSubmit = () => {
       </div>
 
       <div class="flex flex-col gap-6">
+        <div>
+          <UploadAudioField
+            name="songFile"
+            label="Background Music"
+            v-model="backgroundMusicStore.songFile"
+          />
+        </div>
         <!-- STD Title -->
         <div>
           <SelectField
@@ -81,10 +109,10 @@ const onInvalidSubmit = () => {
 
         <div>
           <ColorPickerField
-            label="Autoplay Color"
+            label="Icon Color"
             classLabel="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
-            name="color"
+            name="iconColor"
             v-model="backgroundMusicStore.iconColor"
             :colorpicker-options="{
               type: 'component',
@@ -102,14 +130,6 @@ const onInvalidSubmit = () => {
             name="autoplay"
             label="Background Music Autoplay"
             v-model="backgroundMusicStore.autoplay"
-          />
-        </div>
-
-        <div>
-          <UploadAudioField
-            name="songFile"
-            label="Background Music"
-            v-model="backgroundMusicStore.songFile"
           />
         </div>
       </div>
