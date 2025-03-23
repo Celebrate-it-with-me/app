@@ -1,6 +1,6 @@
 <script setup>
 import { useField } from 'vee-validate';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue'
 
 const emit = defineEmits(['update:modelValue', 'resetErrors']);
 const props = defineProps({
@@ -15,6 +15,14 @@ const { value, errorMessage, setValue } = useField(props.name, {
   initialValue: props.modelValue,
 });
 
+const localValue = ref(null);
+
+onMounted(() => {
+  if (props.modelValue) {
+    localValue.value = props.modelValue;
+  }
+})
+
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -24,8 +32,6 @@ watch(
     }
   }
 );
-
-const localValue = ref(props.modelValue);
 
 watch(localValue, (val) => {
   emit('update:modelValue', val);

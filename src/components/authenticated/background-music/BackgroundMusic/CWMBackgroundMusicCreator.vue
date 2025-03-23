@@ -7,10 +7,14 @@ import { computed, ref } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import SelectField from '@/components/UI/form/SelectField.vue'
-import { AUTOPLAY_ICON_SIZES as iconSizes, AUTOPLAY_ICON_POSITIONS as iconPositions } from '@/constants/constants'
+import {
+  AUTOPLAY_ICON_SIZES as iconSizes,
+  AUTOPLAY_ICON_POSITIONS as iconPositions
+} from '@/constants/constants'
 import { useBackgroundMusicStore } from '@/stores/useBackgroundMusicStore'
 import UploadAudioField from '@/components/UI/form/UploadAudioField.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const bgMusicErrors = ref()
 const bgMusicValidationSchema = computed(() => {
@@ -20,10 +24,10 @@ const bgMusicValidationSchema = computed(() => {
       iconPosition: zod.enum(['top-left', 'top-right', 'bottom-right', 'bottom-left']),
       iconColor: zod.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex color format'),
       autoplay: zod.boolean(),
-      songFile: zod.any().refine((file) => file instanceof File, {
+      songFile: zod.any().refine((file) => typeof file === 'string' || file instanceof File, {
         message: 'File is not valid',
         path: ['songFile']
-      }),
+      })
     })
   )
 })
@@ -31,19 +35,32 @@ const bgMusicValidationSchema = computed(() => {
 const eventStore = useEventsStore()
 const backgroundMusicStore = useBackgroundMusicStore()
 const loading = ref(false)
+const notificationStore = useNotificationStore()
+
+const handleRequest = async () => {
+  if (backgroundMusicStore.mode === 'create') {
+    return await backgroundMusicStore.addBackgroundMusic(eventStore.currentEvent.id)
+  }
+
+  return await backgroundMusicStore.editBackgroundMusic()
+}
 
 const onSubmit = async () => {
   try {
     loading.value = true
+    const response = await handleRequest()
 
-    const response = await backgroundMusicStore.addBackgroundMusic(eventStore.currentEvent.id)
-
-    if (response.status >= 200 && response.status < 300 ) {
-      console.log(response)
+    if (response.status >= 200 && response.status < 300) {
+      notificationStore.addNotification({
+        type: 'success',
+        message: 'Background music was successfully processed.!'
+      })
     } else {
-      console.log(response)
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'Oops! Something went wrong!'
+      })
     }
-
   } catch (error) {
     console.error(error)
   } finally {
@@ -79,6 +96,7 @@ const onInvalidSubmit = (errors) => {
 
       <div class="flex flex-col gap-6">
         <div>
+
           <UploadAudioField
             name="songFile"
             label="Background Music"
@@ -145,7 +163,7 @@ const onInvalidSubmit = (errors) => {
           <CWMLoading v-if="loading" />
           <span v-if="loading">Saving Config...</span>
           <span v-else>
-            <span v-if="true"> Create </span>
+            <span v-if="backgroundMusicStore.mode === 'create'"> Create </span>
             <span v-else> Update </span>
           </span>
         </button>
