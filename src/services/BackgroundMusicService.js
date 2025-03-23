@@ -9,44 +9,7 @@ class BackgroundMusicService {
                  autoplay,
                  songFile
                }) {
-    return CWM_API.post(`event/${eventId}/background-music`, this.prepareFormData({
-      iconSize,
-      iconColor,
-      iconPosition,
-      autoplay,
-      songFile
-    }), {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-  }
 
-  async update({
-                 eventId,
-                 iconSize,
-                 iconColor,
-                 iconPosition,
-                 autoplay,
-                 songFile
-               }) {
-
-    return CWM_API.post(`event/${eventId}/background-music`, this.prepareFormData(
-      {
-        iconSize,
-        iconColor,
-        iconPosition,
-        autoplay,
-        songFile
-      }
-    ), {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-  }
-
-  prepareFormData({ iconSize, iconColor, iconPosition, autoplay, songFile }) {
     const formData =  new FormData()
 
     formData.append('iconSize', iconSize)
@@ -55,7 +18,35 @@ class BackgroundMusicService {
     formData.append('autoplay', autoplay)
     formData.append('songFile', songFile)
 
-    return formData
+    return CWM_API.post(`event/${eventId}/background-music`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  async update({
+                 backgroundMusicId,
+                 iconSize,
+                 iconColor,
+                 iconPosition,
+                 autoplay,
+                 songFile
+               }) {
+
+    const formData =  new FormData()
+
+    formData.append('iconSize', iconSize)
+    formData.append('iconColor', iconColor)
+    formData.append('iconPosition', iconPosition)
+    formData.append('autoplay', autoplay)
+    formData.append('songFile', songFile)
+
+    return CWM_API.post(`background-music/${backgroundMusicId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
 
   async load({ eventId }){

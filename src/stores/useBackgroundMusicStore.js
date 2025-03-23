@@ -27,8 +27,9 @@ export const useBackgroundMusicStore = defineStore('backgroundMusicStore', {
       return await BackgroundMusicService.load({eventId})
     },
 
-    async editBackgroundMusic(eventId){
+    async editBackgroundMusic(){
       const options = {
+        backgroundMusicId: this.id,
         iconSize: this.iconSize,
         iconPosition: this.iconPosition,
         iconColor: this.iconColor,
@@ -36,7 +37,7 @@ export const useBackgroundMusicStore = defineStore('backgroundMusicStore', {
         songFile: this.songFile
       }
 
-      return BackgroundMusicService.update({ eventId, ...options })
+      return BackgroundMusicService.update({ ...options })
     }
   },
   getters: {}

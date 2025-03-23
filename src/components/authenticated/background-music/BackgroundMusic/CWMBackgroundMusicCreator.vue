@@ -24,7 +24,7 @@ const bgMusicValidationSchema = computed(() => {
       iconPosition: zod.enum(['top-left', 'top-right', 'bottom-right', 'bottom-left']),
       iconColor: zod.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex color format'),
       autoplay: zod.boolean(),
-      songFile: zod.any().refine((file) => file instanceof File, {
+      songFile: zod.any().refine((file) => typeof file === 'string' || file instanceof File, {
         message: 'File is not valid',
         path: ['songFile']
       })
@@ -37,33 +37,12 @@ const backgroundMusicStore = useBackgroundMusicStore()
 const loading = ref(false)
 const notificationStore = useNotificationStore()
 
-const isSongFileAnURL = computed(() => {
-  if (!backgroundMusicStore.songFile) {
-    return false
-  }
-
-  if (backgroundMusicStore.songFile instanceof File) {
-    return false
-  }
-
-  if (typeof backgroundMusicStore.songFile === 'string') {
-    try {
-      const url = new URL(backgroundMusicStore.songFile)
-      return true
-    } catch (error) {
-      return false
-    }
-  }
-
-  return false
-})
-
 const handleRequest = async () => {
   if (backgroundMusicStore.mode === 'create') {
     return await backgroundMusicStore.addBackgroundMusic(eventStore.currentEvent.id)
   }
 
-  return await backgroundMusicStore.editBackgroundMusic(eventStore.currentEvent.id)
+  return await backgroundMusicStore.editBackgroundMusic()
 }
 
 const onSubmit = async () => {
@@ -74,7 +53,7 @@ const onSubmit = async () => {
     if (response.status >= 200 && response.status < 300) {
       notificationStore.addNotification({
         type: 'success',
-        message: 'Background music was successfully created.!'
+        message: 'Background music was successfully processed.!'
       })
     } else {
       notificationStore.addNotification({
@@ -117,13 +96,6 @@ const onInvalidSubmit = (errors) => {
 
       <div class="flex flex-col gap-6">
         <div>
-
-          <audio
-            controls
-            v-if="isSongFileAnURL"
-            :src="backgroundMusicStore.songFile"
-            class="w-full h-12 bg-gray-200 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          ></audio>
 
           <UploadAudioField
             name="songFile"

@@ -37,14 +37,14 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, toRef } from 'vue'
+import { ref, computed, watch, toRef, onMounted } from 'vue'
 import { useField } from 'vee-validate'
 
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
   label: String,
   name: { required: true },
-  modelValue: { type: File, default: null },
+  modelValue: { type: [File, String], default: null },
   isReadonly: Boolean,
   disabled: Boolean,
   validate: String,
@@ -60,10 +60,12 @@ const fileInput = ref(null)
 const {
   value: inputValue,
   errorMessage,
-  meta
+  meta,
+  setValue
 } = useField(toRef(props, 'name'), {
   initialValue: props.modelValue
 })
+
 
 watch(
   () => props.modelValue,
@@ -73,6 +75,13 @@ watch(
     }
   }
 )
+
+onMounted(() => {
+  if (typeof props.modelValue === 'string') {
+    previewUrl.value = props.modelValue
+    setValue(props.modelValue)
+  }
+})
 
 watch(inputValue, (val) => {
   emit('update:modelValue', val)
