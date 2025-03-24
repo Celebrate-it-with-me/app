@@ -57,6 +57,10 @@ const currentTabs = computed(() => {
         isDisabled = !eventStore.currentEvent?.eventFeature?.backgroundMusic ?? false
       }
 
+      if (tab.id === 12) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.eventComments ?? false
+      }
+
     }
 
     return {

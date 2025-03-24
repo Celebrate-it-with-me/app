@@ -10,6 +10,7 @@ const currentTabs = [
   { id: 5, label: 'Gallery', route: '/dashboard/gallery', selected: false },
   { id: 6, label: 'Suggested Music', route: '/dashboard/suggest-music', selected: false },
   { id: 11, label: 'Background Music', route: '/dashboard/background-music', selected: false },
+  { id: 12, label: 'Event Comments', route: '/dashboard/event-comments', selected: false },
   { id: 9, label: 'Seats Accommodation', route: '/dashboard/seats-accommodation', selected: false },
   { id: 7, label: 'Preview', route: '/dashboard/preview', selected: false },
   { id: 8, label: 'Budget', route: '/dashboard/budget', selected: false },
