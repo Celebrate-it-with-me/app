@@ -116,6 +116,12 @@ const editCurrentEvent = () => {
         </p>
 
         <p class="font-thin">
+          <span class="font-semibold" v-if="currentEventFeature?.eventComments">ON</span>
+          <span class="font-semibold" v-else>OFF</span>
+          Event Comments
+        </p>
+
+        <p class="font-thin">
           <span class="font-semibold" v-if="currentEventFeature?.seatsAccommodation">ON</span>
           <span class="font-semibold" v-else>OFF</span>
           Seats Accommodation
