@@ -15,11 +15,15 @@ export const useEventCommentsStore = defineStore('eventComments', {
     mode: 'create'
   }),
   actions: {
-    createCommentsConfig(eventId) {
-      return EventCommentsService.createCommentsConfig({
+    async createCommentsConfig(eventId) {
+      return await EventCommentsService.createCommentsConfig({
         eventId,
         ...this.config,
       })
+    },
+
+    async loadCommentsConfig(eventId) {
+      return await EventCommentsService.loadCommentConfig({eventId})
     }
   },
   getters: {}

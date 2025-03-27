@@ -10,13 +10,17 @@ class EventCommentsService {
                  maxComments
                }) {
 
-    return CWM_API.post(`event/${eventId}/comments-config`, {
+    return await CWM_API.post(`event/${eventId}/comments-config`, {
       title,
       subTitle,
       backgroundColor,
       commentsTitle,
       maxComments
     })
+  }
+
+  async loadCommentConfig({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/comments-config`)
   }
 }
 

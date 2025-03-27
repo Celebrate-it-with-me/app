@@ -2,7 +2,7 @@
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
 import { Form } from 'vee-validate'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import TextField from '@/components/UI/form/TextField.vue'
@@ -10,6 +10,7 @@ import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
 import NumberField from '@/components/UI/form/NumberField.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
+import { useUserStore } from '@/stores/useUserStore'
 
 const commentsErrors = ref()
 const mode = ref('create')
@@ -26,13 +27,56 @@ const eventCommentsValidationSchema = computed(() => {
 })
 
 const loading = ref(false)
-const eventsStore = useEventsStore()
-const eventCommentsStore = useEventCommentsStore()
 const notificationStore = useNotificationStore()
+const userStore = useUserStore()
+const eventCommentsStore = useEventCommentsStore()
+
+onMounted(() => {
+  initEventsCommentsConfig()
+})
+
+const initEventsCommentsConfig = async () => {
+  try {
+    loading.value = true
+
+    const response = await eventCommentsStore.loadCommentsConfig(userStore.currentEventId)
+    console.log('checking response', response)
+    if (response.status === 200) {
+      const { title, subTitle, backgroundColor, commentsTitle, maxComments } = response.data.data ?? {}
+
+      console.log('checking response', response.data.data)
+
+      eventCommentsStore.config.title = title
+      eventCommentsStore.config.subTitle = subTitle
+      eventCommentsStore.config.commentsTitle = commentsTitle
+      eventCommentsStore.config.backgroundColor = backgroundColor
+      eventCommentsStore.config.maxComments = maxComments
+
+      notificationStore.addNotification({
+        type: 'success',
+        message: 'Comments config successfully saved!'
+      })
+
+      mode.value = 'update'
+    } else {
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!'
+      })
+
+      mode.value = 'create'
+    }
+
+  } catch (error) {
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
+}
 
 const onSubmit = async () => {
   try {
-    const response = await eventCommentsStore.createCommentsConfig(eventsStore.currentEvent.id)
+    const response = await eventCommentsStore.createCommentsConfig(userStore.currentEventId)
 
     if (response.status >= 200 && response.status < 300) {
       const { title, subTitle, backgroundColor, commentsTitle, maxComments } = response.data.data ?? {}
