@@ -8,7 +8,6 @@ import * as zod from 'zod'
 import TextField from '@/components/UI/form/TextField.vue'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
 import NumberField from '@/components/UI/form/NumberField.vue'
-import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useUserStore } from '@/stores/useUserStore'
 
@@ -21,6 +20,8 @@ const eventCommentsValidationSchema = computed(() => {
       subTitle: zod.string(),
       backgroundColor: zod.string(),
       commentsTitle: zod.string(),
+      buttonColor: zod.string(),
+      buttonText: zod.string(),
       maxComments: zod.number()
     })
   )
@@ -36,15 +37,22 @@ onMounted(() => {
 })
 
 
-
-
 const initEventsCommentsConfig = async () => {
   try {
     loading.value = true
 
     const response = await eventCommentsStore.loadCommentsConfig(userStore.currentEventId)
     if (response.status === 200) {
-      const { title, subTitle, backgroundColor, commentsTitle, maxComments, id } = response.data.data ?? {}
+      const {
+        title,
+        subTitle,
+        backgroundColor,
+        commentsTitle,
+        maxComments,
+        id,
+        buttonColor,
+        buttonText
+      } = response.data.data ?? {}
 
       console.log('checking response', response.data.data)
 
@@ -53,6 +61,8 @@ const initEventsCommentsConfig = async () => {
       eventCommentsStore.config.subTitle = subTitle
       eventCommentsStore.config.commentsTitle = commentsTitle
       eventCommentsStore.config.backgroundColor = backgroundColor
+      eventCommentsStore.config.buttonColor = buttonColor
+      eventCommentsStore.config.buttonText = buttonText
       eventCommentsStore.config.maxComments = maxComments
 
       notificationStore.addNotification({
@@ -87,16 +97,28 @@ const handleRequest = async () => {
 
 const onSubmit = async () => {
   try {
+    console.log('submit clicked')
     const response = await handleRequest()
 
     if (response.status >= 200 && response.status < 300) {
-      const { title, subTitle, backgroundColor, commentsTitle, maxComments, id } = response.data.data ?? {}
+      const {
+        title,
+        subTitle,
+        backgroundColor,
+        commentsTitle,
+        maxComments,
+        id,
+        buttonColor,
+        buttonText
+      } = response.data.data ?? {}
 
       eventCommentsStore.config.id = id
       eventCommentsStore.config.title = title
       eventCommentsStore.config.subTitle = subTitle
       eventCommentsStore.config.commentsTitle = commentsTitle
       eventCommentsStore.config.backgroundColor = backgroundColor
+      eventCommentsStore.config.buttonColor = buttonColor
+      eventCommentsStore.config.buttonText = buttonText
       eventCommentsStore.config.maxComments = maxComments
 
 
@@ -198,6 +220,37 @@ const onInvalidSubmit = (errors) => {
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
           />
         </div>
+
+        <div>
+          <ColorPickerField
+            label="Button Color"
+            classLabel="text-lg font-medium"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            name="buttonColor"
+            v-model="eventCommentsStore.config.buttonColor"
+            :colorpicker-options="{
+              type: 'component',
+              showPalette: true,
+              showSelectionPalette: true,
+              preferredFormat: 'hex',
+              showInitial: true
+            }"
+            :showError="true"
+          />
+        </div>
+
+
+        <div>
+          <TextField
+            name="buttonText"
+            label="Button Text"
+            v-model="eventCommentsStore.config.buttonText"
+            show-error
+            placeholder="Button Text"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          />
+        </div>
+
 
         <div>
           <NumberField

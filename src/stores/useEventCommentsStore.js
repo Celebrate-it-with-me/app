@@ -9,6 +9,8 @@ export const useEventCommentsStore = defineStore('eventComments', {
       subTitle: '',
       backgroundColor: '#fff',
       commentsTitle: '',
+      buttonColor: '#fff',
+      buttonText: '',
       maxComments: 3
     },
     eventComments: [],
