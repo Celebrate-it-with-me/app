@@ -3,8 +3,8 @@ import EventCommentsService from '../services/EventCommentsService'
 
 export const useEventCommentsStore = defineStore('eventComments', {
   state: () => ({
-    id: null,
     config: {
+      id: null,
       title: '',
       subTitle: '',
       backgroundColor: '#fff',
@@ -24,6 +24,13 @@ export const useEventCommentsStore = defineStore('eventComments', {
 
     async loadCommentsConfig(eventId) {
       return await EventCommentsService.loadCommentConfig({eventId})
+    },
+
+    async updateCommentsConfig(eventId) {
+      return await EventCommentsService.updateCommentsConfig({
+        eventId,
+        ...this.config,
+      })
     }
   },
   getters: {}

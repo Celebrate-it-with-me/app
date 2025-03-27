@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
 
 const comments = reactive([
@@ -11,6 +11,12 @@ const newComment = ref({
 })
 
 const commentStore = useEventCommentsStore()
+
+
+const bgColorComputed = computed(() => {
+  return { backgroundColor: commentStore.config.backgroundColor }
+})
+
 
 // Function to add a new comment
 const addComment = () => {
@@ -33,7 +39,8 @@ const addComment = () => {
 
 <template>
   <section
-    class="guest-comments w-full h-screen flex flex-col bg-gray-100 p-6 overflow-hidden"
+    class="w-full h-screen flex flex-col p-6 overflow-hidden"
+    :style="bgColorComputed"
   >
     <!-- Title -->
     <div class="comment-header text-center pb-4 flex-shrink-0">
@@ -69,14 +76,14 @@ const addComment = () => {
 
       <!-- Display Comments -->
       <div class="previous-comments w-full max-w-3xl mx-auto">
-        <h3 class="text-4xl font-bold text-gray-800 mb-6">Comentarios Anteriores</h3>
+        <h3 class="text-4xl font-bold text-gray-800 mb-6">{{ commentStore.config.commentsTitle }}</h3>
         <div class="comments-list flex flex-col gap-4">
           <div
             v-for="comment in comments"
             :key="comment.id"
             class="comment-item p-4 border border-gray-200 bg-white shadow rounded-lg"
           >
-            <p class="text-lg font-bold">{{ comment.author }}</p>
+            <p class="text-sm font-extralight">{{ comment.author }}</p>
             <p class="text-gray-600">{{ comment.message }}</p>
           </div>
         </div>
