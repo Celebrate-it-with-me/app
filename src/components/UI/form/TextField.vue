@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useField } from 'vee-validate'
 
 const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur'])
@@ -41,7 +41,9 @@ const {
 
 setValue(props.modelValue)
 
-watch(() => props.modelValue, setValue)
+watch(() => props.modelValue, (newValue) => {
+  setValue(newValue)
+})
 
 watch(inputValue, (val) => {
   emit('update:modelValue', val)

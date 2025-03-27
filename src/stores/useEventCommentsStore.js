@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import EventCommentsService from '../services/EventCommentsService'
 
 export const useEventCommentsStore = defineStore('eventComments', {
   state: () => ({
@@ -6,15 +7,20 @@ export const useEventCommentsStore = defineStore('eventComments', {
     config: {
       title: '',
       subTitle: '',
-      backgroundColor: 'transparent',
+      backgroundColor: '#fff',
       commentsTitle: '',
-      maxComments: 5
+      maxComments: 3
     },
     eventComments: [],
     mode: 'create'
   }),
   actions: {
-
+    createCommentsConfig(eventId) {
+      return EventCommentsService.createCommentsConfig({
+        eventId,
+        ...this.config,
+      })
+    }
   },
   getters: {}
 })

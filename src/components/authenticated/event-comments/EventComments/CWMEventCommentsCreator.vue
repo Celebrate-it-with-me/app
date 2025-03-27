@@ -2,37 +2,67 @@
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
 import { Form } from 'vee-validate'
-import ToggleField from '@/components/UI/form/ToggleField.vue'
 import { computed, ref } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
-import SelectField from '@/components/UI/form/SelectField.vue'
-import {
-  AUTOPLAY_ICON_SIZES as iconSizes,
-  AUTOPLAY_ICON_POSITIONS as iconPositions
-} from '@/constants/constants'
 import TextField from '@/components/UI/form/TextField.vue'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
 import NumberField from '@/components/UI/form/NumberField.vue'
+import { useEventsStore } from '@/stores/useEventsStore'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const commentsErrors = ref()
+const mode = ref('create')
 const eventCommentsValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       title: zod.string(),
-      subtitle: zod.string(),
+      subTitle: zod.string(),
       backgroundColor: zod.string(),
       commentsTitle: zod.string(),
-      maxList: zod.number(),
+      maxComments: zod.number()
     })
   )
 })
 
 const loading = ref(false)
+const eventsStore = useEventsStore()
 const eventCommentsStore = useEventCommentsStore()
+const notificationStore = useNotificationStore()
 
 const onSubmit = async () => {
- console.log('submit forms')
+  try {
+    const response = await eventCommentsStore.createCommentsConfig(eventsStore.currentEvent.id)
+
+    if (response.status >= 200 && response.status < 300) {
+      const { title, subTitle, backgroundColor, commentsTitle, maxComments } = response.data.data ?? {}
+
+      eventCommentsStore.config.title = title
+      eventCommentsStore.config.subTitle = subTitle
+      eventCommentsStore.config.commentsTitle = commentsTitle
+      eventCommentsStore.config.backgroundColor = backgroundColor
+      eventCommentsStore.config.maxComments = maxComments
+
+
+      notificationStore.addNotification({
+        type: 'success',
+        message: 'Comments config successfully saved!'
+      })
+
+      mode.value = 'update'
+    } else {
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!'
+      })
+    }
+
+
+  } catch (err) {
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
 }
 
 const onInvalidSubmit = (errors) => {
@@ -41,7 +71,7 @@ const onInvalidSubmit = (errors) => {
 </script>
 
 <template>
-  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-[40%]">
+  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-[30%]">
     <Form
       :validation-schema="eventCommentsValidationSchema"
       @submit="onSubmit"
@@ -74,9 +104,9 @@ const onInvalidSubmit = (errors) => {
         <!-- STD Title -->
         <div>
           <TextField
-            name="subtitle"
-            label="SubTitle"
-            v-model="eventCommentsStore.config.subtitle"
+            name="subTitle"
+            label="Sub Title"
+            v-model="eventCommentsStore.config.subTitle"
             show-error
             placeholder="Comments Section Subtitle Title"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
@@ -89,22 +119,22 @@ const onInvalidSubmit = (errors) => {
             label="Background Color"
             classLabel="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
-            name="color"
+            name="backgroundColor"
             v-model="eventCommentsStore.config.backgroundColor"
             :colorpicker-options="{
-                type: 'component',
-                showPalette: true,
-                showSelectionPalette: true,
-                preferredFormat: 'hex',
-                showInitial: true,
-              }"
+              type: 'component',
+              showPalette: true,
+              showSelectionPalette: true,
+              preferredFormat: 'hex',
+              showInitial: true
+            }"
             :showError="true"
           />
         </div>
 
         <div>
           <TextField
-            name="title"
+            name="commentsTitle"
             label="Title"
             v-model="eventCommentsStore.config.commentsTitle"
             show-error
@@ -136,7 +166,7 @@ const onInvalidSubmit = (errors) => {
           <CWMLoading v-if="loading" />
           <span v-if="loading">Saving Config...</span>
           <span v-else>
-            <span v-if="eventCommentsStore.mode === 'create'"> Create </span>
+            <span v-if="mode === 'create'"> Create </span>
             <span v-else> Update </span>
           </span>
         </button>

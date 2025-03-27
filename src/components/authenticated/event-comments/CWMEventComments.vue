@@ -1,5 +1,6 @@
 <script setup>
 import CWMEventCommentsCreator from '@/components/authenticated/event-comments/EventComments/CWMEventCommentsCreator.vue'
+import CWMEventCommentsShow from '@/components/authenticated/event-comments/EventComments/CWMEventCommentsShow.vue'
 </script>
 
 <template>
@@ -12,6 +13,7 @@ import CWMEventCommentsCreator from '@/components/authenticated/event-comments/E
       >
         <CWMEventCommentsCreator />
 
+        <CWMEventCommentsShow />
       </div>
     </div>
   </section>
