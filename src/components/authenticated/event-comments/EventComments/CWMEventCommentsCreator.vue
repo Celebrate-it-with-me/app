@@ -35,17 +35,20 @@ onMounted(() => {
   initEventsCommentsConfig()
 })
 
+
+
+
 const initEventsCommentsConfig = async () => {
   try {
     loading.value = true
 
     const response = await eventCommentsStore.loadCommentsConfig(userStore.currentEventId)
-    console.log('checking response', response)
     if (response.status === 200) {
-      const { title, subTitle, backgroundColor, commentsTitle, maxComments } = response.data.data ?? {}
+      const { title, subTitle, backgroundColor, commentsTitle, maxComments, id } = response.data.data ?? {}
 
       console.log('checking response', response.data.data)
 
+      eventCommentsStore.config.id = id
       eventCommentsStore.config.title = title
       eventCommentsStore.config.subTitle = subTitle
       eventCommentsStore.config.commentsTitle = commentsTitle
@@ -74,13 +77,22 @@ const initEventsCommentsConfig = async () => {
   }
 }
 
+const handleRequest = async () => {
+  if (mode.value === 'create') {
+    return await eventCommentsStore.createCommentsConfig(userStore.currentEventId)
+  }
+
+  return await eventCommentsStore.updateCommentsConfig(userStore.currentEventId)
+}
+
 const onSubmit = async () => {
   try {
-    const response = await eventCommentsStore.createCommentsConfig(userStore.currentEventId)
+    const response = await handleRequest()
 
     if (response.status >= 200 && response.status < 300) {
-      const { title, subTitle, backgroundColor, commentsTitle, maxComments } = response.data.data ?? {}
+      const { title, subTitle, backgroundColor, commentsTitle, maxComments, id } = response.data.data ?? {}
 
+      eventCommentsStore.config.id = id
       eventCommentsStore.config.title = title
       eventCommentsStore.config.subTitle = subTitle
       eventCommentsStore.config.commentsTitle = commentsTitle

@@ -22,6 +22,24 @@ class EventCommentsService {
   async loadCommentConfig({ eventId }) {
     return await CWM_API.get(`event/${eventId}/comments-config`)
   }
+
+  async updateCommentsConfig({
+                               eventId,
+                               id,
+                               title,
+                               subTitle,
+                               backgroundColor,
+                               commentsTitle,
+                               maxComments
+                             }){
+    return await CWM_API.put(`event/${eventId}/comments-config/${id}`, {
+      title,
+      subTitle,
+      backgroundColor,
+      commentsTitle,
+      maxComments
+    })
+  }
 }
 
 export default new EventCommentsService()
