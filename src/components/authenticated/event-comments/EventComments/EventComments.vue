@@ -2,21 +2,21 @@
 import { computed, reactive, ref } from 'vue'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
 
-const comments = reactive([
-  { id: 1, author: 'Test User', message: '¡This is an example comment' },
-])
+const comments = reactive([{ id: 1, author: 'Test User', message: '¡This is an example comment' }])
 const newComment = ref({
   author: '',
-  message: '',
+  message: ''
 })
 
 const commentStore = useEventCommentsStore()
-
 
 const bgColorComputed = computed(() => {
   return { backgroundColor: commentStore.config.backgroundColor }
 })
 
+const buttonColorComputed = computed(() => {
+  return { backgroundColor: commentStore.config.buttonColor }
+})
 
 // Function to add a new comment
 const addComment = () => {
@@ -28,7 +28,7 @@ const addComment = () => {
   comments.push({
     id: comments.length + 1,
     author: newComment.value.author,
-    message: newComment.value.message,
+    message: newComment.value.message
   })
 
   // Reset form
@@ -38,10 +38,7 @@ const addComment = () => {
 </script>
 
 <template>
-  <section
-    class="w-full h-screen flex flex-col p-6 overflow-hidden"
-    :style="bgColorComputed"
-  >
+  <section class="w-full h-screen flex flex-col p-6 overflow-hidden" :style="bgColorComputed">
     <!-- Title -->
     <div class="comment-header text-center pb-4 flex-shrink-0">
       <h2 class="text-6xl font-gvibes font-bold text-gray-800">{{ commentStore.config.title }}</h2>
@@ -51,9 +48,7 @@ const addComment = () => {
     </div>
 
     <!-- Scrollable Content Section -->
-    <div
-      class="flex-grow overflow-y-auto flex flex-col gap-6"
-    >
+    <div class="flex-grow overflow-y-auto flex flex-col gap-6">
       <!-- Leave a Comment Form -->
       <form
         class="comment-form w-full max-w-2xl bg-white shadow p-6 rounded-lg flex flex-col gap-4 mx-auto"
@@ -69,14 +64,17 @@ const addComment = () => {
         <button
           type="submit"
           class="bg-pink-500 text-white p-3 rounded-lg font-bold hover:bg-pink-600 transition"
+          :style="buttonColorComputed"
         >
-          Enviar Comentario
+          {{ commentStore.config.buttonText }}
         </button>
       </form>
 
       <!-- Display Comments -->
       <div class="previous-comments w-full max-w-3xl mx-auto">
-        <h3 class="text-4xl font-bold text-gray-800 mb-6">{{ commentStore.config.commentsTitle }}</h3>
+        <h3 class="text-4xl font-bold text-gray-800 mb-6">
+          {{ commentStore.config.commentsTitle }}
+        </h3>
         <div class="comments-list flex flex-col gap-4">
           <div
             v-for="comment in comments"
@@ -102,7 +100,9 @@ const addComment = () => {
 }
 
 .comment-item {
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .comment-item:hover {
@@ -116,7 +116,6 @@ const addComment = () => {
   justify-content: center;
   text-decoration: none;
 }
-
 
 /* Custom Scrollbar Styles */
 .flex-grow {
@@ -146,6 +145,4 @@ const addComment = () => {
 .flex-grow::-webkit-scrollbar-thumb:active {
   background: #be185d; /* Even darker pink when active (dragging) */
 }
-
-
 </style>

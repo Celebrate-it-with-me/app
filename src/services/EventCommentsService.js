@@ -2,12 +2,14 @@ import { CWM_API } from './axios'
 
 class EventCommentsService {
   async createCommentsConfig({
-                 eventId,
-                 title,
-                 subTitle,
-                 backgroundColor,
-                 commentsTitle,
-                 maxComments
+                               eventId,
+                               title,
+                               subTitle,
+                               backgroundColor,
+                               commentsTitle,
+                               buttonColor,
+                               buttonText,
+                               maxComments
                }) {
 
     return await CWM_API.post(`event/${eventId}/comments-config`, {
@@ -15,6 +17,8 @@ class EventCommentsService {
       subTitle,
       backgroundColor,
       commentsTitle,
+      buttonColor,
+      buttonText,
       maxComments
     })
   }
@@ -30,6 +34,8 @@ class EventCommentsService {
                                subTitle,
                                backgroundColor,
                                commentsTitle,
+                               buttonColor,
+                               buttonText,
                                maxComments
                              }){
     return await CWM_API.put(`event/${eventId}/comments-config/${id}`, {
@@ -37,6 +43,8 @@ class EventCommentsService {
       subTitle,
       backgroundColor,
       commentsTitle,
+      buttonColor,
+      buttonText,
       maxComments
     })
   }
