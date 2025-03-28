@@ -22,6 +22,9 @@ export default defineConfig({
     isCustomElement: (tag) => tag.startsWith('add-')
   },
   server: {
+    allowedHosts: [
+      "dev.app.cwm.com"
+    ],
     host: true,
     port: 8080,
     strictPort: true,

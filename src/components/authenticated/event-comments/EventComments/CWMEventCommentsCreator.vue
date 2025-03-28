@@ -36,7 +36,6 @@ onMounted(() => {
   initEventsCommentsConfig()
 })
 
-
 const initEventsCommentsConfig = async () => {
   try {
     loading.value = true
