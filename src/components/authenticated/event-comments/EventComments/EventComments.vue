@@ -46,7 +46,7 @@ onMounted(() => {
   loadComments()
 })
 
-const loadComments = async () => {
+const loadComments = async (updatePage = true) => {
   try {
     loadingComments.value = true
 
@@ -59,7 +59,9 @@ const loadComments = async () => {
         message: 'Comment successfully loaded.!'
       })
 
-      page.value +=1
+      if (updatePage) {
+        page.value +=1
+      }
       totalItems.value = response.data?.meta?.total ?? 10
     } else {
       notificationStore.addNotification({
@@ -77,7 +79,6 @@ const loadComments = async () => {
 
 const onLoadMore = async () => {
   try {
-    console.log('Infinite scroll check', canLoadMore.value)
     if (canLoadMore.value) {
       loadingMore.value = true
       const response = await commentStore.loadMoreComments(userStore.currentEventId, page.value)
@@ -116,7 +117,7 @@ const addComment = async () => {
     })
 
     if (response.status >= 200 && response.status < 300) {
-      await loadComments()
+      await loadComments(false)
       commentStore.currentComment.comment = ''
       notificationStore.addNotification({
         type: 'success',
