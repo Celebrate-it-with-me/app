@@ -17,6 +17,7 @@ const props = defineProps({
   msgTooltip: { type: Boolean, default: false },
   description: { type: String },
   showError: { type: Boolean, default: false },
+  rows: { type: Number, default: 3 },
   options: {
     type: Object,
     default: () => ({
@@ -76,7 +77,7 @@ const handleFieldBlur = (e) => {
     >
        <textarea
          id="message"
-         rows="4"
+         :rows="rows"
          :class="`${classInput}  input-control w-full block focus:outline-none `"
          :disabled="disabled"
          :name="name"

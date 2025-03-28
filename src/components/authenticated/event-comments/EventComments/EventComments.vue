@@ -1,14 +1,38 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
+import { toTypedSchema } from '@vee-validate/zod'
+import * as zod from 'zod'
+import { Form } from 'vee-validate'
+import TextAreaField from '@/components/UI/form/TextAreaField.vue'
+import { useUserStore } from '@/stores/useUserStore'
+import { useNotificationStore } from '@/stores/useNotificationStore'
+import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
+import { vInfiniteScroll } from '@vueuse/components'
 
-const comments = reactive([{ id: 1, author: 'Test User', message: '¡This is an example comment' }])
-const newComment = ref({
-  author: '',
-  message: ''
+const props = defineProps({
+  origin: {
+    type: String,
+    required: false,
+    default: 'admin',
+  }
 })
 
+const page = ref(1)
+const eventCommentValidationSchema = computed(() => {
+  return toTypedSchema(
+    zod.object({
+      comment: zod.string(),
+    })
+  )
+})
+const userStore = useUserStore()
 const commentStore = useEventCommentsStore()
+const creatingComment = ref(false)
+const notificationStore = useNotificationStore()
+const loadingComments = ref(false)
+const loadingMore = ref(false)
+const totalItems = ref(0)
 
 const bgColorComputed = computed(() => {
   return { backgroundColor: commentStore.config.backgroundColor }
@@ -18,22 +42,102 @@ const buttonColorComputed = computed(() => {
   return { backgroundColor: commentStore.config.buttonColor }
 })
 
-// Function to add a new comment
-const addComment = () => {
-  if (!newComment.value.author || !newComment.value.message) {
-    alert('Por favor, completa ambos campos antes de enviar.')
-    return
+onMounted(() => {
+  loadComments()
+})
+
+const loadComments = async () => {
+  try {
+    loadingComments.value = true
+
+    const response = await commentStore.loadComments(userStore.currentEventId)
+
+    if (response.status === 200) {
+      commentStore.eventComments = response.data?.data ?? []
+      notificationStore.addNotification({
+        type: 'success',
+        message: 'Comment successfully loaded.!'
+      })
+
+      page.value +=1
+      totalItems.value = response.data?.meta?.total ?? 10
+    } else {
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!.'
+      })
+    }
+
+  } catch (e) {
+    console.log(e)
+  } finally {
+    loadingComments.value = false
   }
+}
 
-  comments.push({
-    id: comments.length + 1,
-    author: newComment.value.author,
-    message: newComment.value.message
-  })
+const onLoadMore = async () => {
+  try {
+    console.log('Infinite scroll check', canLoadMore.value)
+    if (canLoadMore.value) {
+      loadingMore.value = true
+      const response = await commentStore.loadMoreComments(userStore.currentEventId, page.value)
 
-  // Reset form
-  newComment.value.author = ''
-  newComment.value.message = ''
+      if (response.status === 200) {
+        commentStore.eventComments = [...commentStore.eventComments, ...response.data?.data ?? []]
+        page.value +=1
+      } else {
+        notificationStore.addNotification({
+          type: 'error',
+          message: 'Oops something went wrong!.'
+        });
+
+      }
+    }
+  } catch (e) {
+    console.error(e)
+  } finally {
+    loadingMore.value = false
+  }
+}
+
+const canLoadMore = computed(() => {
+  return !loadingMore.value && commentStore.eventComments.length < totalItems.value
+})
+
+
+const addComment = async () => {
+  try {
+    creatingComment.value = true
+
+    const response = await commentStore.addComment({
+      eventId: userStore.currentEventId,
+      userId: userStore.userId,
+      origin: props.origin,
+    })
+
+    if (response.status >= 200 && response.status < 300) {
+      await loadComments()
+      commentStore.currentComment.comment = ''
+      notificationStore.addNotification({
+        type: 'success',
+        message: 'Comment successfully added.!'
+      })
+    } else {
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'Oops something went wrong!.'
+      })
+    }
+
+  } catch (error) {
+    console.error(error)
+  } finally {
+    creatingComment.value = false
+  }
+}
+
+const onInvalidSubmit = (error) => {
+  console.log('error', error)
 }
 </script>
 
@@ -47,42 +151,61 @@ const addComment = () => {
       </p>
     </div>
 
-    <!-- Scrollable Content Section -->
-    <div class="flex-grow overflow-y-auto flex flex-col gap-6">
-      <!-- Leave a Comment Form -->
-      <form
+    <div class="flex flex-col gap-6">
+      <Form
+        :validation-schema="eventCommentValidationSchema"
         class="comment-form w-full max-w-2xl bg-white shadow p-6 rounded-lg flex flex-col gap-4 mx-auto"
-        @submit.prevent="addComment"
+        @submit="addComment"
+        @invalid-submit="onInvalidSubmit"
       >
-        <textarea
-          v-model="newComment.message"
-          rows="2"
+        <TextAreaField
+          v-model="commentStore.currentComment.comment"
+          name="comment"
           placeholder="Escribe tu comentario aquí..."
-          class="p-3 border border-gray-300 rounded-lg focus:ring focus:ring-pink-300 resize-none"
-        ></textarea>
-        <!-- Submit Button -->
+          show-error
+          :class-input="`p-3 border text-gray-500 border-gray-300 rounded-lg focus:ring focus:ring-pink-300 resize-none`"
+          :rows="2"
+        />
         <button
           type="submit"
           class="bg-pink-500 text-white p-3 rounded-lg font-bold hover:bg-pink-600 transition"
           :style="buttonColorComputed"
+          :disabled="creatingComment"
         >
-          {{ commentStore.config.buttonText }}
-        </button>
-      </form>
-
-      <!-- Display Comments -->
-      <div class="previous-comments w-full max-w-3xl mx-auto">
-        <h3 class="text-4xl font-bold text-gray-800 mb-6">
-          {{ commentStore.config.commentsTitle }}
-        </h3>
-        <div class="comments-list flex flex-col gap-4">
-          <div
-            v-for="comment in comments"
-            :key="comment.id"
-            class="comment-item p-4 border border-gray-200 bg-white shadow rounded-lg"
+          <CWMLoading
+            v-if="creatingComment"
+          ></CWMLoading>
+          <span
+            v-else
           >
-            <p class="text-sm font-extralight">{{ comment.author }}</p>
-            <p class="text-gray-600">{{ comment.message }}</p>
+            {{ commentStore.config.buttonText }}
+          </span>
+        </button>
+      </Form>
+
+      <div class="comments-container">
+        <div
+          v-if="commentStore.eventComments.length > 0"
+          class="previous-comments w-full max-w-3xl mx-auto"
+        >
+          <h3 class="text-4xl font-bold text-gray-800 mb-6">
+            {{ commentStore.config.commentsTitle }}
+          </h3>
+          <div
+            v-infinite-scroll="onLoadMore"
+            class="comments-list flex flex-col gap-4 flex-grow overflow-y-auto"
+          >
+            <div
+              v-for="comment in commentStore.eventComments"
+              :key="comment.id"
+              class="comment-item p-4 border border-gray-200 bg-white shadow rounded-lg"
+            >
+              <div class="text-sm font-extralight flex items-center justify-between">
+                <p class="text-gray-500">{{ comment.author }}</p>
+                <p class="text-xs text-gray-400">{{ comment.createdAt }}</p>
+              </div>
+              <p class="text-gray-600 mt-2">{{ comment.comment }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -91,10 +214,6 @@ const addComment = () => {
 </template>
 
 <style scoped>
-.guest-comments {
-  background-color: #fffbe7;
-}
-
 .comment-form {
   margin-bottom: 2rem;
 }
@@ -117,32 +236,33 @@ const addComment = () => {
   text-decoration: none;
 }
 
-/* Custom Scrollbar Styles */
+.comments-list {
+  max-height: 385px;
+}
+
 .flex-grow {
-  /* Apply smooth scrolling for a better experience */
   scroll-behavior: smooth;
 }
 
-/* Scrollbar Styling */
 .flex-grow::-webkit-scrollbar {
-  width: 8px; /* Set scrollbar width */
+  width: 8px;
 }
 
 .flex-grow::-webkit-scrollbar-track {
-  background: #e5e5e5; /* Light gray background for the track */
-  border-radius: 8px; /* Rounded corners for the track */
+  background: #e5e5e5;
+  border-radius: 8px;
 }
 
 .flex-grow::-webkit-scrollbar-thumb {
-  background: #f1b1d1; /* Pink color for the scrollbar thumb */
-  border-radius: 8px; /* Round the scrollbar's thumb */
+  background: #f1b1d1;
+  border-radius: 8px;
 }
 
 .flex-grow::-webkit-scrollbar-thumb:hover {
-  background: #db2777; /* Slightly darker pink on hover */
+  background: #db2777;
 }
 
 .flex-grow::-webkit-scrollbar-thumb:active {
-  background: #be185d; /* Even darker pink when active (dragging) */
+  background: #be185d;
 }
 </style>

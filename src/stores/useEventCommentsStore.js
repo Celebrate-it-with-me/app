@@ -14,6 +14,11 @@ export const useEventCommentsStore = defineStore('eventComments', {
       maxComments: 3
     },
     eventComments: [],
+    currentComment: {
+      id: null,
+      comment: null,
+      author: null,
+    },
     mode: 'create'
   }),
   actions: {
@@ -33,6 +38,18 @@ export const useEventCommentsStore = defineStore('eventComments', {
         eventId,
         ...this.config,
       })
+    },
+
+    async addComment({ eventId, userId, origin }) {
+      return EventCommentsService.addComment({ eventId, userId, origin, ...this.currentComment })
+    },
+
+    async loadComments(eventId) {
+      return EventCommentsService.loadComments(eventId)
+    },
+
+    async loadMoreComments(eventId, page) {
+      return EventCommentsService.loadMoreComments(eventId, page)
     }
   },
   getters: {}
