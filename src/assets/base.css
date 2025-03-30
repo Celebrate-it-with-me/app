@@ -28,6 +28,12 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  --rose: #a377e8;
+  --rose-light: #f3eaff;
+  --rose-extra-light: #F3EAFFFF;
+  --rose-dark: #7e5bb7;
+  --rose-darken: #2a016c;
 }
 
 /* semantic color variables for this project */
@@ -123,3 +129,29 @@ body {
 .vue-notification-wrapper {
   margin-top: 10px !important;
 }
+
+.text-gold {
+  color: #d3ab67;
+
+  &:hover {
+    color: #a67004;
+  }
+}
+
+
+.text-rose {
+  color: var(--rose);
+}
+
+.text-rose-light {
+  color: var(--rose-light);
+}
+
+.text-rose-dark {
+  color: var(--rose-dark);
+}
+
+.text-rose-darken {
+  color: var(--rose-darken);
+}
+
