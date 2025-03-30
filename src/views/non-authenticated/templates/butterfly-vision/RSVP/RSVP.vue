@@ -31,7 +31,7 @@ const rsvpCompleted = computed(() => {
 <template>
   <div
     v-if="rsvpConfig?.isEnabled"
-    class="suggested-music w-full flex flex-col justify-evenly items-center pt-5 pr-20 pl-20 pb-20 h-screen"
+    class="w-full flex flex-col justify-evenly items-center pt-5 h-screen"
     :style="{backgroundColor: rsvpConfig.backgroundColor}"
   >
     <RSVPTitles

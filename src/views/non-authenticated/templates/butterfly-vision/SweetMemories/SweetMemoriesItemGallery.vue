@@ -15,7 +15,11 @@ const thumb = computed(() => props.galleryItem.thumb)
 </script>
 
 <template>
-  <a key="image1" :href="imageUrl">
+  <a
+    key="image1"
+    :href="imageUrl"
+    class="w-[150px] h-[150px]"
+  >
     <img
       :src="thumb"
       alt="Thumbnail 1"
