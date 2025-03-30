@@ -65,10 +65,8 @@ watch(() => mainGuestState.confirmed, () => {
 </script>
 
 <template>
-  <div class="main__guest-container w-full h-full flex flex-col items-center">
-    <h2 class="text-2xl font-bold mb-6">Enter your information</h2>
-
-    <div class="w-[80%] form-container overflow-x-auto shadow-md sm:rounded-lg p-10">
+  <div class="main__guest-container w-full flex flex-col items-center">
+    <div class="form-container w-full max-w-4xl mx-auto shadow-md sm:rounded-lg p-4 md:p-10">
       <Form
         :validation-schema="mainGuestValidationSchema"
         @submit="onSubmit"

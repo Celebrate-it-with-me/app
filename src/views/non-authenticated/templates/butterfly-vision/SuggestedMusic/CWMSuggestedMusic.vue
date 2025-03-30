@@ -94,7 +94,7 @@ watch(
 
 <template>
   <div
-    class="event-handle w-[70%] rounded-lg flex flex-col items-center"
+    class="event-handle w-[90%] md:w-[70%] rounded-lg flex flex-col items-center"
   >
     <h2 class="text-6xl font-gvibes font-bold gap-10 gradient-text">
       {{ title }}

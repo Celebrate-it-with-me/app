@@ -13,9 +13,10 @@ import EventFooter from '@/views/non-authenticated/templates/butterfly-vision/Ev
 import { templateRef } from '@vueuse/core'
 import SeparadorSection from '@/views/non-authenticated/templates/butterfly-vision/SeparadorSection.vue'
 import CWMItinerario from '@/views/non-authenticated/templates/butterfly-vision/Itinerario/CWMItinerario.vue'
+import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
 
 const showScrollBtn = ref(false)
-const videoReproduced = ref(true)
+const videoReproduced = ref(false)
 const showButterflyLogo = ref(true)
 const videoInstance = templateRef('videoRef')
 
@@ -83,7 +84,37 @@ const handleMoveToTop = () => {
 
       <CWMItinerario />
 
+      <SeparadorSection>
+        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
+        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+      </SeparadorSection>
+
       <SweetMemories />
+
+      <SeparadorSection>
+        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
+        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+      </SeparadorSection>
+
+      <RSVP />
+
+      <SeparadorSection>
+        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
+        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+      </SeparadorSection>
+
+      <SuggestedMusic />
+
+      <SeparadorSection>
+        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
+        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+      </SeparadorSection>
+
+      <BackgroundMusic />
+
+      <EventComments />
+
+      <EventFooter />
 
     </main>
   </div>

@@ -5,7 +5,7 @@ import SweetMemoriesGallery
 
 const sweetMemories = computed(() => {
   return {
-    backgroundColor: '#ffe2b1',
+    backgroundColor: 'rgb(231, 217, 251)',
     isEnabled: true,
     title: 'Sweet Memories',
     subTitle: 'Little Moments, Big Memories',
