@@ -64,7 +64,7 @@ const commentsTitle = computed(() => {
     return commentStore?.config?.title ?? ''
   }
 
-  return templateStore.event?.commentsConfig.title ?? ''
+  return templateStore.event?.commentsConfig?.title ?? ''
 })
 const commentsSubtitle = computed(() => {
   if (props.origin === 'admin') {

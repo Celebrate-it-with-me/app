@@ -3,9 +3,9 @@ import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useBackgroundMusicStore } from '@/stores/useBackgroundMusicStore'
 
 const props = defineProps({
-  mode: {
+  origin: {
     type: String,
-    default: 'creator'
+    default: 'admin'
   }
 })
 
@@ -14,7 +14,7 @@ const isPlaying = ref(null)
 let audio = null
 
 const containerClasses = computed(() => {
-  if (props.mode === 'creator') {
+  if (props.origin === 'admin') {
     return `w-full h-full m-2 flex ${buildPositions()}`
   }
 
@@ -22,7 +22,7 @@ const containerClasses = computed(() => {
 })
 
 const buttonClasses = computed(() => {
-  if (props.mode === 'creator') {
+  if (props.origin === 'admin') {
     return `flex items-center justify-center rounded-full text-white hover:opacity-80
             transition-opacity`
   }
@@ -32,7 +32,7 @@ const buttonClasses = computed(() => {
 })
 
 const buttonStyles = computed(() => {
-  if (props.mode === 'creator') {
+  if (props.origin === 'admin') {
     return `width: ${backgroundMusicStore.iconSize};
             height: ${backgroundMusicStore.iconSize};
             background-color: ${backgroundMusicStore.iconColor};`
