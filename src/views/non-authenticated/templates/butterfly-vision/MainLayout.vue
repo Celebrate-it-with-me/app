@@ -6,17 +6,15 @@ import SaveTheDate from '@/views/non-authenticated/templates/butterfly-vision/Sa
 import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
 import SuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SuggestedMusic.vue'
 import RSVP from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVP.vue'
-import DressCode from '@/views/non-authenticated/templates/butterfly-vision/DressCode/DressCode.vue'
 import BackgroundMusic from '@/views/non-authenticated/templates/butterfly-vision/BackgroundMusic/BackgroundMusic.vue'
-import ContactAndComments from '@/views/non-authenticated/templates/butterfly-vision/ContactAndComments/ContactAndComments.vue'
 import EventFooter from '@/views/non-authenticated/templates/butterfly-vision/EventFooter/EventFooter.vue'
 import { templateRef } from '@vueuse/core'
-import SeparadorSection from '@/views/non-authenticated/templates/butterfly-vision/SeparadorSection.vue'
+import SeparatorSection from '@/views/non-authenticated/templates/butterfly-vision/SeparatorSection.vue'
 import CWMItinerario from '@/views/non-authenticated/templates/butterfly-vision/Itinerario/CWMItinerario.vue'
 import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
 
 const showScrollBtn = ref(false)
-const videoReproduced = ref(false)
+const videoReproduced = ref(true)
 const showButterflyLogo = ref(true)
 const videoInstance = templateRef('videoRef')
 
@@ -70,49 +68,51 @@ const handleMoveToTop = () => {
 
       <HeroSection />
 
-      <SeparadorSection>
+      <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
-      </SeparadorSection>
+      </SeparatorSection>
 
       <SaveTheDate />
 
-      <SeparadorSection>
+      <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
-      </SeparadorSection>
+      </SeparatorSection>
 
       <CWMItinerario />
 
-      <SeparadorSection>
+      <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
-      </SeparadorSection>
+      </SeparatorSection>
 
       <SweetMemories />
 
-      <SeparadorSection>
+      <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
-      </SeparadorSection>
+      </SeparatorSection>
 
       <RSVP />
 
-      <SeparadorSection>
+      <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
-      </SeparadorSection>
+      </SeparatorSection>
 
       <SuggestedMusic />
 
-      <SeparadorSection>
+      <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
-      </SeparadorSection>
+      </SeparatorSection>
 
       <BackgroundMusic />
 
-      <EventComments />
+      <EventComments
+        origin="event"
+      />
 
       <EventFooter />
 
