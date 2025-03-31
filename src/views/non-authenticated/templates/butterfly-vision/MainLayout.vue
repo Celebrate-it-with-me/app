@@ -6,12 +6,12 @@ import SaveTheDate from '@/views/non-authenticated/templates/butterfly-vision/Sa
 import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
 import SuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SuggestedMusic.vue'
 import RSVP from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVP.vue'
-import BackgroundMusic from '@/views/non-authenticated/templates/butterfly-vision/BackgroundMusic/BackgroundMusic.vue'
 import EventFooter from '@/views/non-authenticated/templates/butterfly-vision/EventFooter/EventFooter.vue'
 import { templateRef } from '@vueuse/core'
 import SeparatorSection from '@/views/non-authenticated/templates/butterfly-vision/SeparatorSection.vue'
 import CWMItinerario from '@/views/non-authenticated/templates/butterfly-vision/Itinerario/CWMItinerario.vue'
 import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
+import BackgroundMusic from '@/components/authenticated/background-music/BackgroundMusic/BackgroundMusic.vue'
 
 const showScrollBtn = ref(false)
 const videoReproduced = ref(true)

@@ -28,7 +28,6 @@ onMounted(() => {
   observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       isH2TitleInView.value = entry.isIntersecting
-      console.log(isH2TitleInView.value)
     })
   })
 
@@ -65,7 +64,6 @@ onUnmounted(() => {
       <h3
         class="text-2xl font-normal text-gray-600/70"
         v-if="saveTheDate.stdSubTitle"
-        :style="{transform: `translateY(${scrollYModifier}px)`}"
       >
         {{ saveTheDate.stdSubTitle }}
       </h3>
@@ -73,7 +71,6 @@ onUnmounted(() => {
       <div
         v-if="saveTheDate?.useCountdown"
         class="std-countdown mt-10"
-        :style="{transform: `translateX(${-scrollYModifier * 0.5}px)`}"
       >
         <SaveTheDateCountDown
           :numbers="{
@@ -98,7 +95,6 @@ onUnmounted(() => {
       <div
         v-if="saveTheDate?.useAddToCalendar"
         class="std-addToCalendar mt-10"
-        :style="{transform: `translateX(${scrollYModifier * 0.3}px)`}"
       >
         <SaveTheDateAddToCalendar
           :button-style="{
