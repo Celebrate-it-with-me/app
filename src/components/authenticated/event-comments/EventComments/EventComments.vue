@@ -9,6 +9,7 @@ import { useUserStore } from '@/stores/useUserStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { vInfiniteScroll } from '@vueuse/components'
+import { useTemplateStore } from '@/stores/useTemplateStore'
 
 const props = defineProps({
   origin: {
@@ -28,6 +29,7 @@ const eventCommentValidationSchema = computed(() => {
 })
 const userStore = useUserStore()
 const commentStore = useEventCommentsStore()
+const templateStore = useTemplateStore()
 const creatingComment = ref(false)
 const notificationStore = useNotificationStore()
 const loadingComments = ref(false)
@@ -35,11 +37,41 @@ const loadingMore = ref(false)
 const totalItems = ref(0)
 
 const bgColorComputed = computed(() => {
-  return { backgroundColor: commentStore.config.backgroundColor }
+  if (props.origin === 'admin') {
+    return { backgroundColor: commentStore?.config?.backgroundColor ?? '' }
+  }
+
+  return { backgroundColor: templateStore?.event?.commentsConfig?.backgroundColor ?? '' }
+})
+const buttonColorComputed = computed(() => {
+  if (props.origin === 'admin') {
+    return { backgroundColor: commentStore?.config?.buttonColor ?? '' }
+  }
+
+  return { backgroundColor: templateStore?.event?.commentsConfig?.buttonColor ?? '' }
 })
 
-const buttonColorComputed = computed(() => {
-  return { backgroundColor: commentStore.config.buttonColor }
+const buttonTextComputed = computed(() => {
+  if (props.origin === 'admin') {
+    return commentStore?.config?.buttonText ?? ''
+  }
+
+  return templateStore?.event?.commentsConfig?.buttonText ?? ''
+})
+
+const commentsTitle = computed(() => {
+  if (props.origin === 'admin') {
+    return commentStore?.config?.title ?? ''
+  }
+
+  return templateStore.event?.commentsConfig.title ?? ''
+})
+const commentsSubtitle = computed(() => {
+  if (props.origin === 'admin') {
+    return commentStore?.config?.subTitle ?? ''
+  }
+
+  return templateStore?.event?.commentsConfig?.subTitle ?? ''
 })
 
 onMounted(() => {
@@ -54,10 +86,14 @@ const loadComments = async (updatePage = true) => {
 
     if (response.status === 200) {
       commentStore.eventComments = response.data?.data ?? []
-      notificationStore.addNotification({
-        type: 'success',
-        message: 'Comment successfully loaded.!'
-      })
+
+      if (props.origin === 'admin') {
+        notificationStore.addNotification({
+          type: 'success',
+          message: 'Comment successfully loaded.!'
+        })
+      }
+
 
       if (updatePage) {
         page.value +=1
@@ -105,6 +141,14 @@ const canLoadMore = computed(() => {
   return !loadingMore.value && commentStore.eventComments.length < totalItems.value
 })
 
+const computedUserId = computed(() => {
+  if (props.origin === 'admin') {
+    return userStore.userId
+  }
+
+  return templateStore.guest.id
+})
+
 
 const addComment = async () => {
   try {
@@ -112,17 +156,19 @@ const addComment = async () => {
 
     const response = await commentStore.addComment({
       eventId: userStore.currentEventId,
-      userId: userStore.userId,
+      userId: computedUserId.value,
       origin: props.origin,
     })
 
     if (response.status >= 200 && response.status < 300) {
       await loadComments(false)
       commentStore.currentComment.comment = ''
-      notificationStore.addNotification({
-        type: 'success',
-        message: 'Comment successfully added.!'
-      })
+      if (props.origin === 'admin') {
+        notificationStore.addNotification({
+          type: 'success',
+          message: 'Comment successfully added.!'
+        })
+      }
     } else {
       notificationStore.addNotification({
         type: 'error',
@@ -143,12 +189,12 @@ const onInvalidSubmit = (error) => {
 </script>
 
 <template>
-  <section class="w-full h-screen flex flex-col p-6 overflow-hidden" :style="bgColorComputed">
+  <section class="w-full h-full flex flex-col p-6 overflow-hidden" :style="bgColorComputed">
     <!-- Title -->
     <div class="comment-header text-center pb-4 flex-shrink-0">
-      <h2 class="text-6xl font-gvibes font-bold text-gray-800">{{ commentStore.config.title }}</h2>
+      <h2 class="text-6xl font-gvibes font-bold text-gray-800">{{ commentsTitle }}</h2>
       <p class="text-lg text-gray-600 mt-2">
-        {{ commentStore.config.subTitle }}
+        {{ commentsSubtitle }}
       </p>
     </div>
 
@@ -179,7 +225,7 @@ const onInvalidSubmit = (error) => {
           <span
             v-else
           >
-            {{ commentStore.config.buttonText }}
+            {{ buttonTextComputed }}
           </span>
         </button>
       </Form>
@@ -187,11 +233,8 @@ const onInvalidSubmit = (error) => {
       <div class="comments-container">
         <div
           v-if="commentStore.eventComments.length > 0"
-          class="previous-comments w-full max-w-3xl mx-auto"
+          class="previous-comments w-full max-w-4xl mx-auto"
         >
-          <h3 class="text-4xl font-bold text-gray-800 mb-6">
-            {{ commentStore.config.commentsTitle }}
-          </h3>
           <div
             v-infinite-scroll="onLoadMore"
             class="comments-list flex flex-col gap-4 flex-grow overflow-y-auto"
@@ -199,7 +242,7 @@ const onInvalidSubmit = (error) => {
             <div
               v-for="comment in commentStore.eventComments"
               :key="comment.id"
-              class="comment-item p-4 border border-gray-200 bg-white shadow rounded-lg"
+              class="comment-item p-4 border border-gray-200 bg-white shadow rounded-lg mr-1"
             >
               <div class="text-sm font-extralight flex items-center justify-between">
                 <p class="text-gray-500">{{ comment.author }}</p>
