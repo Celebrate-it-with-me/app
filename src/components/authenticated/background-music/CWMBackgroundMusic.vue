@@ -6,45 +6,7 @@ import { useBackgroundMusicStore } from '@/stores/useBackgroundMusicStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useUserStore } from '@/stores/useUserStore'
 
-const loading = ref()
-const userStore = useUserStore()
-const backgroundMusicStore = useBackgroundMusicStore()
-const notificationStore = useNotificationStore()
 
-onMounted(() => {
-  loadBackgroundMusic()
-})
-
-const loadBackgroundMusic = async () => {
-  try {
-    loading.value = true
-
-    const response = await backgroundMusicStore.loadBackgroundMusic(userStore.currentEventId)
-    if (response.status !== 200) {
-      notificationStore.addNotification({
-        type: 'error',
-        message: 'Background music failed.',
-      })
-    } else {
-      backgroundMusicStore.id = response.data.data.id
-      backgroundMusicStore.iconSize = response.data.data.iconSize
-      backgroundMusicStore.iconPosition = response.data.data.iconPosition
-      backgroundMusicStore.iconColor = response.data.data.iconColor
-      backgroundMusicStore.songFile = response.data.data.songUrl
-      backgroundMusicStore.autoplay = response.data?.data?.autoplay ?? false
-      backgroundMusicStore.mode = 'edit'
-
-      notificationStore.addNotification({
-        type: 'success',
-        message: 'Background music loaded successfully.',
-      })
-    }
-  } catch (err) {
-    console.log(err)
-  } finally {
-    loading.value = false
-  }
-}
 
 </script>
 

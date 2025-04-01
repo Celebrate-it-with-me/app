@@ -49,6 +49,7 @@ const generalStyles = computed(() => {
 
 <template>
   <div
+    id="sectionSweetMemories"
     v-if="sweetMemories?.isEnabled"
     class="sweet-memories w-full h-full flex flex-col justify-evenly items-center p-20 h-screen"
     :style="generalStyles"

@@ -30,7 +30,13 @@ import CWMHamburger from '@/views/non-authenticated/templates/butterfly-vision/S
             <a href="#sectionHome">HOME</a>
           </li>
           <li class="cursor-pointer text-rose transition-colors duration-300">
-            <a href="#sectionGallery">GALLERY</a>
+            <a href="#sectionSTD">SAVE THE DATE</a>
+          </li>
+          <li class="cursor-pointer text-rose transition-colors duration-300">
+            <a href="#sectionItinerario">ITINERARIO</a>
+          </li>
+          <li class="cursor-pointer text-rose transition-colors duration-300">
+            <a href="#sectionSweetMemories">SWEET MEMORIES</a>
           </li>
         </ul>
       </nav>
@@ -43,7 +49,13 @@ import CWMHamburger from '@/views/non-authenticated/templates/butterfly-vision/S
             <a href="#sectionRSVP">RSVP</a>
           </li>
           <li class="cursor-pointer text-rose transition-colors duration-300">
-            <a href="#sectionEvent">EVENT</a>
+            <a href="#sectionSong">CANCIONES</a>
+          </li>
+          <li class="cursor-pointer text-rose transition-colors duration-300">
+            <a href="#sectionComments">COMENTARIOS</a>
+          </li>
+          <li class="cursor-pointer text-rose transition-colors duration-300">
+            <a href="#sectionContact">CONTACTO</a>
           </li>
         </ul>
       </nav>

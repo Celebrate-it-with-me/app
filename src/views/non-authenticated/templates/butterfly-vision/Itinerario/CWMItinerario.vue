@@ -3,7 +3,10 @@
 </script>
 
 <template>
-  <div class="itinerario-container bg-gray-200 mx-auto flex justify-center w-full h-screen min-h-screen bg-pink-300 p-8">
+  <div
+    id="sectionItinerario"
+    class="itinerario-container bg-gray-200 mx-auto flex justify-center w-full h-screen min-h-screen bg-pink-300 p-8"
+  >
     <div class="timeline-container relative w-full md:w-1/2 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg">
       <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
       <div class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border" style="left: 50%"></div>

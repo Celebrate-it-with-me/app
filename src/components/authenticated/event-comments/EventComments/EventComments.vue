@@ -189,7 +189,11 @@ const onInvalidSubmit = (error) => {
 </script>
 
 <template>
-  <section class="w-full h-full flex flex-col p-6 overflow-hidden" :style="bgColorComputed">
+  <section
+    id="sectionComments"
+    class="w-full h-full flex flex-col p-6 overflow-hidden"
+    :style="bgColorComputed"
+  >
     <!-- Title -->
     <div class="comment-header text-center pb-4 flex-shrink-0">
       <h2 class="text-6xl font-gvibes font-bold text-gray-800">{{ commentsTitle }}</h2>

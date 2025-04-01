@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useBackgroundMusicStore } from '@/stores/useBackgroundMusicStore'
+import { useUserStore } from '@/stores/useUserStore'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const props = defineProps({
   origin: {
@@ -9,6 +11,9 @@ const props = defineProps({
   }
 })
 
+const loading = ref()
+const userStore = useUserStore()
+const notificationStore = useNotificationStore()
 const backgroundMusicStore = useBackgroundMusicStore()
 const isPlaying = ref(null)
 let audio = null
@@ -41,11 +46,47 @@ const buttonStyles = computed(() => {
   return ''
 })
 
-onMounted(() => {
-  if (backgroundMusicStore.autoplay && backgroundMusicStore.songFile !== null) {
-    initAudioInstance()
-  }
+onMounted(async () => {
+  await loadBackgroundMusic()
 })
+
+const loadBackgroundMusic = async () => {
+  try {
+    loading.value = true
+
+    const response = await backgroundMusicStore.loadBackgroundMusic(userStore.currentEventId)
+    if (response.status !== 200) {
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'Background music failed.',
+      })
+    } else {
+      backgroundMusicStore.id = response.data.data.id
+      backgroundMusicStore.iconSize = response.data.data.iconSize
+      backgroundMusicStore.iconPosition = response.data.data.iconPosition
+      backgroundMusicStore.iconColor = response.data.data.iconColor
+      backgroundMusicStore.songFile = response.data.data.songUrl
+      backgroundMusicStore.autoplay = response.data?.data?.autoplay ?? false
+      backgroundMusicStore.mode = 'edit'
+
+      if (props.origin === 'admin') {
+        notificationStore.addNotification({
+          type: 'success',
+          message: 'Background music loaded successfully.',
+        })
+      } else {
+        if (backgroundMusicStore.autoplay && backgroundMusicStore.songFile !== null) {
+          initAudioInstance()
+        }
+      }
+
+    }
+  } catch (err) {
+    console.log(err)
+  } finally {
+    loading.value = false
+  }
+}
 
 onUnmounted(() => {
   if (audio != null) {
@@ -55,29 +96,33 @@ onUnmounted(() => {
 })
 
 const initAudioInstance = () => {
-  let audioSrc = ''
-  if (backgroundMusicStore.songFile instanceof File) {
-    audioSrc = URL.createObjectURL(backgroundMusicStore.songFile)
+  if (audio != null) {
+    destroyAudioInstance()
   } else {
-    audioSrc = backgroundMusicStore.songFile
-  }
+    let audioSrc = ''
+    if (backgroundMusicStore.songFile instanceof File) {
+      audioSrc = URL.createObjectURL(backgroundMusicStore.songFile)
+    } else {
+      audioSrc = backgroundMusicStore.songFile
+    }
 
-  if (audioSrc) {
-    audio = new Audio(audioSrc)
+    if (audioSrc) {
+      audio = new Audio(audioSrc)
 
-    audio.loop = true
-    audio.volume = 0.5
-    isPlaying.value = false
-    isPlaying.value = true
-    audio.play()
+      audio.loop = true
+      audio.volume = 0.005
+      isPlaying.value = false
+      isPlaying.value = true
+      audio.play()
+    }
   }
 }
 
 const destroyAudioInstance = () => {
     if (audio != null) {
-      audio.pause() // Stop the playback
-      audio.src = '' // Clear the audio source
-      audio = null // Dereference for garbage collection
+      audio.pause()
+      audio.src = ''
+      audio = null
     }
 }
 
@@ -119,7 +164,7 @@ watch(
 </script>
 
 <template>
-  <div :class="containerClasses">
+  <div class="background__music-component" :class="containerClasses">
     <button
       v-if="backgroundMusicStore.songFile"
       :class="buttonClasses"

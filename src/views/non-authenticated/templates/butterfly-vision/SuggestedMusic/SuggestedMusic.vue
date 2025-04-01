@@ -25,6 +25,7 @@ const suggestedMusic = computed(() => {
 
 <template>
   <div
+    id="sectionSong"
     v-if="suggestedMusic?.isEnabled"
     class="suggested-music w-full flex flex-col justify-start items-center h-full mb-5"
     :style="{backgroundColor: suggestedMusic.backgroundColor}"
