@@ -12,23 +12,28 @@ const sweetMemories = computed(() => {
     memoriesPhotos: [
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image one'
       },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image two'
       },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image three'
       },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image four',
       },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image five',
       },
     ]
   }
