@@ -19,6 +19,7 @@ const showButterflyLogo = ref(true)
 const videoInstance = templateRef('videoRef')
 
 onMounted(() => {
+  console.log('main layout')
   document.body.classList.remove('dark')
   showHideScrollButton()
 })
@@ -48,19 +49,30 @@ const handleMoveToTop = () => {
 
 <template>
   <div class="bg-red-50/10 font-jost h-full min-h-screen">
-    <div class="intro-section relative" v-if="!videoReproduced">
-      <video
-        ref="videoRef"
-        class="w-full h-screen object-cover"
-        muted
-        @ended="handleVideoEnd"
-      >
-        <source src="@/assets/videos/Render_1.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      <div v-if="showButterflyLogo" class="logo-butterfly" @click="startTheVideo">
-        <img src="@/assets/images/img/butterfly.png" alt="Butterfly logo" />
+    <div class="relative" v-if="!videoReproduced">
+      <div class="intro__section-mobile">
+        <video
+          ref="videoRef"
+          class="w-full h-screen object-cover"
+          muted
+          @ended="handleVideoEnd"
+          @click="startTheVideo"
+        >
+          <source src="../../../../assets/videos/mobile_intro.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="intro__section-desktop">
+        <video
+          ref="videoRef"
+          class="w-full h-screen object-cover"
+          muted
+          @ended="handleVideoEnd"
+          @click="startTheVideo"
+        >
+          <source src="../../../../assets/videos/desktop_intro.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
     </div>
     <main v-else class="">
@@ -108,7 +120,10 @@ const handleMoveToTop = () => {
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
       </SeparatorSection>
 
-      <BackgroundMusic />
+      // Check double play in prod
+<!--      <BackgroundMusic
+        origin="event"
+      />-->
 
       <EventComments
         origin="event"
@@ -179,4 +194,18 @@ body {
 section {
   scroll-margin-top: 80px;
 }
+
+.intro__section-desktop {
+  display: none;
+}
+
+@media screen and (min-width: 768px ) {
+  .intro__section-mobile {
+    display: none;
+  }
+  .intro__section-desktop {
+    display: flex;
+  }
+}
+
 </style>

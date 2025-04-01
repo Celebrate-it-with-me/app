@@ -45,6 +45,7 @@ onUnmounted(() => {
 
 <template>
   <div
+    id="sectionSTD"
     v-if="saveTheDate?.isEnabled"
     class="parallax-container"
     :style="generalStyles"

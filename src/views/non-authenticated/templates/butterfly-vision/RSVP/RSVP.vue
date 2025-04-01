@@ -30,6 +30,7 @@ const rsvpCompleted = computed(() => {
 
 <template>
   <div
+    id="sectionRSVP"
     v-if="rsvpConfig?.isEnabled"
     class="w-full flex flex-col justify-evenly items-center pt-5 h-screen"
     :style="{backgroundColor: rsvpConfig.backgroundColor}"

@@ -44,11 +44,17 @@ const getEventData = async (eventId, guestCode) => {
 </script>
 
 <template>
-  <CWMLoadingPage
-    v-if="loading"
-  />
-
-  <MainLayout v-if="!loading && templateStore.event" />
+  <Suspense >
+    <template #default>
+      <MainLayout
+        v-if="!loading"
+        :key="templateStore.event?.id"
+      />
+    </template>
+    <template #fallback>
+      <CWMLoadingPage v-if="loading" />
+    </template>
+  </Suspense>
 </template>
 
 <style scoped>
