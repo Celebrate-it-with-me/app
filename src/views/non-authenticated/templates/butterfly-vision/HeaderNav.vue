@@ -15,17 +15,19 @@ const currentHash = computed(() => {
 
 <template>
   <header
-    class="header__nav-mobile md:hidden flex items-center justify-end fixed top-[25px] left-[-25px] w-full z-50"
+    class="header__nav-mobile lg:hidden flex items-center justify-end fixed top-[25px]
+          left-[-25px] w-full z-50"
   >
     <div
-      class="hamburger-container p-2 border border-rose-200 rounded-lg flex items-center justify-center bg-rose-100/30 focus:outline-none"
+      class="hamburger-container p-2 border border-rose-200 rounded-lg flex items-center
+       justify-center bg-rose-100/30 focus:outline-none"
     >
       <CWMHamburger color="#800080" width="24" height="24" />
     </div>
   </header>
   <header
     id="page-header"
-    class="hidden md:flex flex items-center justify-center py-2 fixed top-0 left-0 w-full shadow-md bg-white z-50"
+    class="hidden lg:flex flex items-center justify-center py-2 fixed top-0 left-0 w-full shadow-md bg-white z-50"
   >
     <div class="header-navigation flex items-center gap-x-4 font-Jost">
       <nav class="">
@@ -102,6 +104,12 @@ const currentHash = computed(() => {
 
 .cursor-pointer.active {
   color: #6207ac;
+}
+
+@media screen and (max-width: 1093px) {
+  .header-navigation {
+    font-size: 13px;
+  }
 }
 
 </style>
