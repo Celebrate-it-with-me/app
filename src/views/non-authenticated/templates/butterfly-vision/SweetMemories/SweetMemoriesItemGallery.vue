@@ -18,7 +18,7 @@ const thumb = computed(() => props.galleryItem.thumb)
   <a
     key="image1"
     :href="imageUrl"
-    class="w-[150px] h-[150px]"
+    class="image_container w-[150px] h-[150px]"
   >
     <img
       :src="thumb"
@@ -29,5 +29,17 @@ const thumb = computed(() => props.galleryItem.thumb)
 </template>
 
 <style scoped>
+.image_container{
+  width: 150px;
+  height: 150px;
+}
+
+@media screen and (min-width: 768px) {
+  .image_container{
+    width: 250px;
+    height: 250px;
+  }
+}
+
 
 </style>

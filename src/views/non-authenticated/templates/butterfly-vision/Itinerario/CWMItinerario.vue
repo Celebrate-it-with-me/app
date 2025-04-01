@@ -86,6 +86,14 @@
   position: relative;
 }
 
+@media screen and (min-width: 768px) {
+  .itinerario-container {
+    background-size: 100% auto;
+    background-position: 0 0 ;
+  }
+
+}
+
 .gold-metallic-animated {
   background: linear-gradient(
     45deg,

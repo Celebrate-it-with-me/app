@@ -191,7 +191,7 @@ const onInvalidSubmit = (error) => {
 <template>
   <section
     id="sectionComments"
-    class="w-full h-full flex flex-col p-6 overflow-hidden"
+    class="w-full h-full min-h-screen flex flex-col p-6 overflow-hidden pt-20"
     :style="bgColorComputed"
   >
     <!-- Title -->
