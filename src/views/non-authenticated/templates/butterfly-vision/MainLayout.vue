@@ -17,11 +17,31 @@ const showScrollBtn = ref(false)
 const videoReproduced = ref(true)
 const showButterflyLogo = ref(true)
 const videoInstance = templateRef('videoRef')
+const mainSections = ref([])
 
 onMounted(() => {
-  console.log('main layout')
   document.body.classList.remove('dark')
   showHideScrollButton()
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.intersectionRatio > 0.5) {
+        entry.target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        })
+      }
+    })
+  }, {
+    threshold: 0.5,
+    rootMargin: '0px'
+  })
+
+  const sections = document.querySelectorAll('.main-section')
+  sections.forEach(section => {
+    observer.observe(section)
+  })
+
 })
 
 const startTheVideo = () => {
@@ -78,42 +98,42 @@ const handleMoveToTop = () => {
     <main v-else class="">
       <HeaderNav />
 
-      <HeroSection />
+      <HeroSection class="main-section" />
 
       <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
       </SeparatorSection>
 
-      <SaveTheDate />
+      <SaveTheDate class="main-section" />
 
       <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
       </SeparatorSection>
 
-      <CWMItinerario />
+      <CWMItinerario class="main-section" />
 
       <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
       </SeparatorSection>
 
-      <SweetMemories />
+      <SweetMemories class="main-section" />
 
       <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
       </SeparatorSection>
 
-      <RSVP />
+      <RSVP class="main-section" />
 
       <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
       </SeparatorSection>
 
-      <SuggestedMusic />
+      <SuggestedMusic class="main-section" />
 
       <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
@@ -127,6 +147,7 @@ const handleMoveToTop = () => {
 
       <EventComments
         origin="event"
+        class="main-section"
       />
 
       <EventFooter />
@@ -207,5 +228,21 @@ section {
     display: flex;
   }
 }
+
+.main-section {
+  min-height: 100vh;
+  scroll-snap-align: start;
+}
+
+main {
+  scroll-snap-type: y proximity;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+section {
+  scroll-margin-top: 80px;
+}
+
 
 </style>

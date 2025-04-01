@@ -191,7 +191,7 @@ const onInvalidSubmit = (error) => {
 <template>
   <section
     id="sectionComments"
-    class="w-full h-full min-h-screen flex flex-col p-6 overflow-hidden pt-20"
+    class="w-full h-full min-h-screen flex flex-col p-6 overflow-hidden md:pt-20 pb-20"
     :style="bgColorComputed"
   >
     <!-- Title -->
@@ -286,6 +286,10 @@ const onInvalidSubmit = (error) => {
 
 .comments-list {
   max-height: 385px;
+
+  @media screen and (max-width: 1024px) {
+    max-height: 285px;
+  }
 }
 
 .flex-grow {

@@ -45,7 +45,7 @@ const changePage = (page) => {
 </script>
 
 <template>
-<div class="pagination-container w-[90%] flex flex-row justify-between mt-5">
+<div class="pagination-container w-[90%] flex flex-row justify-between mt-1">
   <div
     class="previous-section font-normal flex flex-row items-center gap-x-2"
     :class="currentPage === 1

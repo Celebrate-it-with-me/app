@@ -27,8 +27,8 @@ const suggestedMusic = computed(() => {
   <div
     id="sectionSong"
     v-if="suggestedMusic?.isEnabled"
-    class="suggested-music w-full flex flex-col justify-start items-center h-full min-h-screen mb-5
-          pt-20"
+    class="suggested-music w-full flex flex-col justify-start items-center h-full min-h-screen mb-20
+          md:pt-20"
     :style="{backgroundColor: suggestedMusic.backgroundColor}"
   >
     <CWMSuggestedMusic
