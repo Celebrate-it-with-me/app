@@ -14,54 +14,22 @@ const currentYear = computed(() => new Date().getFullYear())
   >
     <!-- Event Details -->
     <div class="event-details text-center">
-      <h3 class="text-2xl font-gvibes font-bold">
-        {{ templateStore.event?.eventName ?? '' }}
-      </h3>
+      <h3 class="text-2xl font-gvibes font-bold">Melissa Quinces</h3>
     </div>
 
-    <!-- Navigation Links -->
-    <nav class="footer-nav flex flex-wrap justify-center gap-6">
-      <a href="#save-the-date" class="footer-link text-gray-300 hover:text-pink-300 transition"
-        >Save The Date</a
-      >
-      <a href="#sweet-memories" class="footer-link text-gray-300 hover:text-pink-300 transition"
-        >Recuerdos</a
-      >
-      <a href="#rsvp" class="footer-link text-gray-300 hover:text-pink-300 transition">RSVP</a>
-      <a href="#dress-code" class="footer-link text-gray-300 hover:text-pink-300 transition"
-        >Código de Vestimenta</a
-      >
-      <a href="#comments" class="footer-link text-gray-300 hover:text-pink-300 transition"
-        >Comentarios</a
-      >
-    </nav>
-
-    <!-- Social Media Links (Optional) -->
-    <div class="social-media-links flex gap-4">
-      <a
-        href="https://facebook.com/quinceanera"
-        target="_blank"
-        class="text-gray-300 hover:text-blue-400 transition text-xl"
-        aria-label="Visita nuestro Facebook"
-      >
-        <i class="fab fa-facebook"></i>
-      </a>
-      <a
-        href="https://instagram.com/quinceanera"
-        target="_blank"
-        class="text-gray-300 hover:text-pink-400 transition text-xl"
-        aria-label="Visita nuestro Instagram"
-      >
-        <i class="fab fa-instagram"></i>
-      </a>
-      <a
-        href="https://wa.me/5211234567890"
-        target="_blank"
-        class="text-gray-300 hover:text-green-400 transition text-xl"
-        aria-label="Enviar mensaje en WhatsApp"
-      >
-        <i class="fab fa-whatsapp"></i>
-      </a>
+    <!-- Disclosures Section -->
+    <div class="footer-disclosures text-sm text-gray-400 text-center">
+      <p>This website and its materials are provided for personal, non-commercial use only.</p>
+      <p>
+        All content, images, and trademarks are property of their respective owners. No part of this
+        site may be reproduced or distributed without permission.
+      </p>
+      <p>
+        For any inquiries, contact us at
+        <a href="mailto:info@melissaquinces.com" class="text-blue-400 hover:underline">
+          info@melissaquinces.com </a
+        >.
+      </p>
     </div>
 
     <!-- Footer Bottom Note -->

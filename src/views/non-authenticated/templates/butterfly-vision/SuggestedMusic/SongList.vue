@@ -31,7 +31,7 @@ const songsStore = useSuggestedMusicStore()
 </script>
 
 <template>
-  <div v-if="songsStore.selectedSongs.length > 0" class="mt-2 w-[90%]">
+  <div v-if="songsStore.selectedSongs.length > 0" class="h-full mt-2 w-[90%]">
     <ul>
       <SongListItem
         v-for="song in songsStore.selectedSongs"
@@ -41,7 +41,6 @@ const songsStore = useSuggestedMusicStore()
         :useVoteSystem="useVoteSystem"
         :song="song"
         :mode="mode"
-        @refresh-songs-list=""
       />
     </ul>
   </div>

@@ -30,7 +30,7 @@ const haveCompanions = computed(() => {
           <p
             class="text-5xl font-bold leading-tight leading-tight text-rose
                  font-gvibes animate__animated animate__bounceInLeft"
-          >Melisa Rodriguez</p>
+          >Melissa Rodriguez</p>
           <p class="text-2xl font-semibold underline text-rose-dark animate-fadeIn
                   animate__animated animate__bounceInRight">09/27/2025</p>
         </div>
