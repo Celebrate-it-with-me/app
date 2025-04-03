@@ -28,17 +28,17 @@ const haveCompanions = computed(() => {
       >
         <div class="top-hero flex flex-col items-center justify-center w-full">
           <p
-            class="text-5xl font-bold leading-tight leading-tight text-rose
-                 font-gvibes animate__animated animate__bounceInLeft"
+            class="text-5xl font-bold leading-tight leading-tight text-purple-middle
+                 font-gvibes animate__animated animate__bounceInLeft mt-2"
           >Melissa Rodriguez</p>
-          <p class="text-2xl font-semibold underline text-rose-dark animate-fadeIn
-                  animate__animated animate__bounceInRight">09/27/2025</p>
+          <p class="text-2xl font-semibold text-purple-middle animate-fadeIn
+                  animate__animated animate__bounceInRight">09.27.2025</p>
         </div>
 
         <div class="bottom-hero w-full flex flex-col items-center justify-center w-full
-                    animate__animated animate__bounce bg-pink-300/35 p-10"
+                    animate__animated animate__bounce bg-white bg-opacity-50 p-10"
         >
-          <p class="text-2xl font-normal text-rose-darken font-gvibes">
+          <p class="text-2xl font-normal text-purple-middle font-gvibes">
             <span v-if="haveCompanions">
               Es nuestro Placer Invitarlos
             </span>
@@ -48,11 +48,11 @@ const haveCompanions = computed(() => {
 
           </p>
           <div class="guest-section">
-            <h4 class="text-lg text-gray-900" >
+            <h4 class="text-lg text-dark-blue" >
               {{ guest.firstName }} {{ guest.lastName }}
             </h4>
             <ul
-              class="ml-4 text-gray-900 text-sm"
+              class="ml-4 text-dark-blue text-sm"
               v-if="haveCompanions"
             >
               <li
