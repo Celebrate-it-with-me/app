@@ -54,7 +54,7 @@ onUnmounted(() => {
     >
       <h2
         ref="h2TitleRef"
-        class="text-6xl font-gvibes font-bold gap-10 glow-gold-text text-center"
+        class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center"
         :class="{ 'animate__animated animate__fadeInDown': isH2TitleInView }"
         v-if="saveTheDate.stdTitle"
       >
@@ -62,7 +62,7 @@ onUnmounted(() => {
       </h2>
 
       <h3
-        class="text-2xl font-normal glow-gold-text"
+        class="text-2xl font-normal text-dark-blue"
         v-if="saveTheDate.stdSubTitle"
       >
         {{ saveTheDate.stdSubTitle }}
@@ -75,7 +75,7 @@ onUnmounted(() => {
         <SaveTheDateCountDown
           :numbers="{
           font: 'jost',
-          color: '#FFA500',
+          color: '#111827',
           size: '3rem',
           style: 'italic',
           weight: '300',
@@ -83,7 +83,7 @@ onUnmounted(() => {
         }"
           :text="{
           font: 'Great Vibes, cursive',
-          color: '#FFA500',
+          color: '#111827',
           size: '1.25rem',
           style: 'normal',
           weight: '',
@@ -99,11 +99,11 @@ onUnmounted(() => {
         <SaveTheDateAddToCalendar
           :button-style="{
           bgColor: 'transparent',
-          fontColor: '#FFA500',
-          hoverColor: '#FFA500',
+          fontColor: '#111827',
+          hoverColor: '#111827',
           fontFamily: '',
           borderRadius: '8px',
-          borderColor: '#FFA500'
+          borderColor: '#111827'
         }"
         />
       </div>
