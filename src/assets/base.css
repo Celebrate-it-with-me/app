@@ -34,6 +34,14 @@
   --rose-extra-light: #F3EAFFFF;
   --rose-dark: #7e5bb7;
   --rose-darken: #2a016c;
+
+  /**
+    Melissa Colors
+     */
+  --color-dark-blue: #111827;
+  --color-middle-purple: #754e9e;
+  --color-middle-purple-light: #baa7fb;
+
 }
 
 /* semantic color variables for this project */
@@ -62,7 +70,7 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
-  }
+}
 }
 
 .glow-red {
@@ -153,5 +161,13 @@ body {
 
 .text-rose-darken {
   color: var(--rose-darken);
+}
+
+.text-dark-blue {
+  color: var(--color-dark-blue);
+}
+
+.text-purple-middle {
+  color: var(--color-middle-purple);
 }
 

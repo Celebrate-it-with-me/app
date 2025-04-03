@@ -47,15 +47,14 @@ onUnmounted(() => {
   <div
     id="sectionSTD"
     v-if="saveTheDate?.isEnabled"
-    class="parallax-container"
-    :style="generalStyles"
+    class="parallax-container bg-[#baa7fb]"
   >
     <div
-      class="save-the-date w-full flex flex-col justify-center items-center p-5 h-screen"
+      class="save-the-date w-full p-5 h-screen"
     >
       <h2
         ref="h2TitleRef"
-        class="text-6xl font-gvibes font-bold gap-10 gradient-text"
+        class="text-6xl font-gvibes font-bold gap-10 glow-gold-text text-center"
         :class="{ 'animate__animated animate__fadeInDown': isH2TitleInView }"
         v-if="saveTheDate.stdTitle"
       >
@@ -63,7 +62,7 @@ onUnmounted(() => {
       </h2>
 
       <h3
-        class="text-2xl font-normal text-gray-600/70"
+        class="text-2xl font-normal glow-gold-text"
         v-if="saveTheDate.stdSubTitle"
       >
         {{ saveTheDate.stdSubTitle }}
@@ -76,7 +75,7 @@ onUnmounted(() => {
         <SaveTheDateCountDown
           :numbers="{
           font: 'jost',
-          color: '#8e57bd',
+          color: '#FFA500',
           size: '3rem',
           style: 'italic',
           weight: '300',
@@ -84,7 +83,7 @@ onUnmounted(() => {
         }"
           :text="{
           font: 'Great Vibes, cursive',
-          color: 'black',
+          color: '#FFA500',
           size: '1.25rem',
           style: 'normal',
           weight: '',
@@ -100,11 +99,11 @@ onUnmounted(() => {
         <SaveTheDateAddToCalendar
           :button-style="{
           bgColor: 'transparent',
-          fontColor: '#8e57bd',
-          hoverColor: '#8e57bd',
+          fontColor: '#FFA500',
+          hoverColor: '#FFA500',
           fontFamily: '',
           borderRadius: '8px',
-          borderColor: '#8e57bd'
+          borderColor: '#FFA500'
         }"
         />
       </div>
@@ -122,6 +121,7 @@ onUnmounted(() => {
   height: 100%;
   width: 100%;
   position: relative;
+
 }
 
 .save-the-date {
@@ -133,17 +133,29 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+
+  background-image: url('@/assets/images/SaveTheDate/savethedate_bg_5_2.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  width: 100%;
+
 }
 
 .font-gvibes {
   font-family: 'Great Vibes', sans-serif;
 }
 
-.gradient-text {
-  background-image: linear-gradient(to right, #8e57bd, #dba3ff, #f9d865);
-  -webkit-background-clip: text;
-  color: transparent;
-  overflow: visible;
+.glow-gold-text {
+  color: #FFD700; /* Gold */
+  text-shadow:
+    0 0 5px #FFD700,
+    0 0 10px #FFA500,
+    0 0 20px #FFD700,
+    0 0 40px #FF8C00;
+  font-weight: bold;
+  letter-spacing: 1px;
   text-align: center;
 }
 

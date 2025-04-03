@@ -49,7 +49,7 @@ const handleClick = (hash) => {
           class="border-rose-100 bg-white bg-opacity-95 md:bg-white border-y dark:bg-gray-800 dark:border-gray-600 w-[96%] flex items-center justify-center rounded-md flex-col h-full"
         >
           <div
-            class="flex-1 px-4 py-5 mx-auto text-[#5300dd] dark:text-white text-center flex items-center justify-center"
+            class="flex-1 px-4 py-5 mx-auto text-[#744d9d] dark:text-white text-center flex items-center justify-center"
           >
             <ul class="space-y-2">
               <li>
