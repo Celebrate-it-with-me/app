@@ -60,12 +60,12 @@ const generalStyles = computed(() => {
     :style="generalStyles"
   >
     <div class="sweet-titles">
-      <h2 class="text-6xl font-gvibes font-bold gap-10 gradient-text" v-if="sweetMemories.title">
+      <h2 class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center" v-if="sweetMemories.title">
         {{ sweetMemories.title }}
       </h2>
 
       <h4
-        class="relative text-2xl font-normal text-gray-600/70 text-center moments-title"
+        class="relative text-2xl font-normal text-dark-blue text-center moments-title"
       >
         {{ sweetMemories.subTitle }}
       </h4>

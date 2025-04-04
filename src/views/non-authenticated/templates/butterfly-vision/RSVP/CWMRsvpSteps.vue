@@ -22,11 +22,11 @@ const handleStep = (newStep) => {
 
 <template>
     <div>
-      <div class="mt-6">
+      <div class="mt-6 bg-white w-full md:w-3/4 ld:w-1/2 flex items-center justify-center">
         <div
           v-if="activeStep"
         >
-          <div class="container mx-auto px-4">
+          <div class="container mx-auto">
             <template v-if="activeStep === 1">
               <MainGuestStep
                 @go-to-next="handleStep(activeStep + 1)"
