@@ -54,7 +54,7 @@ onUnmounted(() => {
     >
       <h2
         ref="h2TitleRef"
-        class="text-6xl font-gvibes font-bold gap-10 glow-gold-text text-center"
+        class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center z-10"
         :class="{ 'animate__animated animate__fadeInDown': isH2TitleInView }"
         v-if="saveTheDate.stdTitle"
       >
@@ -62,7 +62,7 @@ onUnmounted(() => {
       </h2>
 
       <h3
-        class="text-2xl font-normal glow-gold-text"
+        class="text-2xl font-normal text-dark-blue z-10"
         v-if="saveTheDate.stdSubTitle"
       >
         {{ saveTheDate.stdSubTitle }}
@@ -70,12 +70,12 @@ onUnmounted(() => {
 
       <div
         v-if="saveTheDate?.useCountdown"
-        class="std-countdown mt-10"
+        class="std-countdown mt-10  z-10"
       >
         <SaveTheDateCountDown
           :numbers="{
           font: 'jost',
-          color: '#FFA500',
+          color: '#111827',
           size: '3rem',
           style: 'italic',
           weight: '300',
@@ -83,7 +83,7 @@ onUnmounted(() => {
         }"
           :text="{
           font: 'Great Vibes, cursive',
-          color: '#FFA500',
+          color: '#111827',
           size: '1.25rem',
           style: 'normal',
           weight: '',
@@ -94,16 +94,16 @@ onUnmounted(() => {
 
       <div
         v-if="saveTheDate?.useAddToCalendar"
-        class="std-addToCalendar mt-10"
+        class="std-addToCalendar mt-10 z-10"
       >
         <SaveTheDateAddToCalendar
           :button-style="{
           bgColor: 'transparent',
-          fontColor: '#FFA500',
-          hoverColor: '#FFA500',
+          fontColor: '#111827',
+          hoverColor: '#111827',
           fontFamily: '',
           borderRadius: '8px',
-          borderColor: '#FFA500'
+          borderColor: '#111827'
         }"
         />
       </div>
@@ -127,21 +127,30 @@ onUnmounted(() => {
 .save-the-date {
   position: relative;
   padding: 2rem;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  width: 100%;
+}
 
-  background-image: url('@/assets/images/SaveTheDate/savethedate_bg_5_2.png');
+.save-the-date::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(rgba(186, 167, 251, 0.8), rgba(186, 167, 251, 0.8)),
+  url('@/assets/images/SaveTheDate/savethedate_bg_5_2.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
-  width: 100%;
-
 }
+
+
 
 .font-gvibes {
   font-family: 'Great Vibes', sans-serif;

@@ -1,7 +1,8 @@
 <script setup>
-import MargaritaGIF from '@/assets/images/Itinerario/margarita.gif'
+import MargaritaGif from '@/assets/images/Itinerario/margarita.gif'
 import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
 import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
+import DanceGif from '@/assets/images/Itinerario/dance.gif'
 
 
 </script>
@@ -24,7 +25,7 @@ import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
         <div class="mb-8 flex justify-between items-center w-full right-timeline">
           <div class="order-1 w-5/12 flex justify-center items-center">
             <img
-              :src="MargaritaGIF"
+              :src="MargaritaGif"
               alt="Margarita"
               class="w-1/2 h-auto rounded-lg"
             />
@@ -82,7 +83,13 @@ import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
 
         <!-- left timeline -->
         <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
-          <div class="order-1 w-5/12"></div>
+          <div class="order-1 w-5/12 flex justify-center items-center">
+            <img
+              :src="DanceGif"
+              alt="Margarita"
+              class="w-1/2 h-auto rounded-lg"
+            />
+          </div>
           <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
             <h1 class="mx-auto text-white font-semibold text-lg">4</h1>
           </div>
