@@ -12,6 +12,7 @@ import SeparatorSection from '@/views/non-authenticated/templates/butterfly-visi
 import CWMItinerario from '@/views/non-authenticated/templates/butterfly-vision/Itinerario/CWMItinerario.vue'
 import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
 import BackgroundMusic from '@/components/authenticated/background-music/BackgroundMusic/BackgroundMusic.vue'
+import SwipeLeftIcon from '@/views/non-authenticated/templates/butterfly-vision/SwipeLeftIcon/SwipeLeftIcon.vue'
 
 const showScrollBtn = ref(false)
 const videoReproduced = ref(true)
@@ -149,6 +150,8 @@ const handleMoveToTop = () => {
         origin="event"
         class="main-section"
       />
+
+      <SwipeLeftIcon />
 
       <EventFooter />
 

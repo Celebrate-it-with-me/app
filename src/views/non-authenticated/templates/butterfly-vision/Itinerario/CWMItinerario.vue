@@ -3,6 +3,7 @@ import MargaritaGif from '@/assets/images/Itinerario/margarita.gif'
 import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
 import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
 import DanceGif from '@/assets/images/Itinerario/dance.gif'
+import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 
 
 </script>
@@ -10,7 +11,8 @@ import DanceGif from '@/assets/images/Itinerario/dance.gif'
 <template>
   <div
     id="sectionItinerario"
-    class="itinerario-container bg-gray-200 mx-auto flex justify-center w-full h-screen min-h-screen bg-pink-300 p-8"
+    class="itinerario-container bg-gray-200 mx-auto flex justify-center w-full h-screen min-h-screen
+           bg-pink-300 p-2 md:p-8"
   >
     <div
       class="timeline-container relative w-full md:w-1/2 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
@@ -102,7 +104,13 @@ import DanceGif from '@/assets/images/Itinerario/dance.gif'
         </div>
 
         <div class="mb-8 flex justify-between items-center w-full right-timeline">
-          <div class="order-1 w-5/12"></div>
+          <div class="order-1 w-5/12 flex justify-center items-center">
+            <img
+              :src="DanceFloor"
+              alt="Dance Floor"
+              class="w-1/2 h-auto rounded-lg"
+            />
+          </div>
           <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
             <h1 class="mx-auto font-semibold text-lg text-white">5</h1>
           </div>
