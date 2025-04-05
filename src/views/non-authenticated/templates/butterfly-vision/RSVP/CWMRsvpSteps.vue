@@ -21,12 +21,13 @@ const handleStep = (newStep) => {
 </script>
 
 <template>
-  <div class="mt-6  w-full md:w-3/4 ld:w-1/2 flex items-center justify-center">
-    <div
-      v-if="activeStep"
-      class="bg-white"
-    >
-      <div class="container mx-auto">
+  <div
+    class="mt-6 w-full md:w-3/4 ld:w-1/2 flex items-center justify-center"
+  >
+      <div
+        class="container mx-auto bg-white"
+        v-if="activeStep"
+      >
         <template v-if="activeStep === 1">
           <MainGuestStep
             @go-to-next="handleStep(activeStep + 1)"
@@ -45,7 +46,6 @@ const handleStep = (newStep) => {
           />
         </template>
       </div>
-    </div>
     <div v-else>
       <p
         class="text-gray-600"
