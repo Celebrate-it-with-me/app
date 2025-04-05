@@ -27,7 +27,6 @@ const handleNext = () => {
     v-if="companionType === 'no-companions'"
   />
 
-
   <NamedCompanions
     v-if="companionType === 'named'"
     @go-to-previous="handlePrevious"

@@ -57,7 +57,6 @@ const handleFieldBlur = (e) => {
 
 <template>
   <div class="form-group">
-    <!-- Label -->
     <label
       v-if="label"
       :for="name"
@@ -66,7 +65,6 @@ const handleFieldBlur = (e) => {
       {{ label }}
     </label>
 
-    <!-- Radio Group -->
     <fieldset class="flex flex-row gap-4">
       <legend class="sr-only">{{ label }}</legend>
       <div
@@ -74,33 +72,36 @@ const handleFieldBlur = (e) => {
         :key="option.value"
         class="flex items-center space-x-3"
       >
-        <input
-          type="radio"
-          :id="`${name}-${option.value}`"
-          :name="name"
-          :value="option.value"
-          :checked="inputValue === option.value"
-          @blur="handleFieldBlur"
-          @change="handleChange"
-          class="hidden peer"
-        />
-        <span
-          class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center peer-checked:border-purple-400 peer-checked:bg-purple-400"
-        >
-          <span
-            class="w-2.5 h-2.5 bg-purple-600 rounded-full hidden peer-checked:block"
-          ></span>
-        </span>
         <label
           :for="`${name}-${option.value}`"
-          class="cursor-pointer text-gray-600"
+          class="cursor-pointer text-dark-blue flex items-center space-x-3"
         >
-          {{ option.label }}
+          <div class="relative">
+            <input
+              type="radio"
+              :id="`${name}-${option.value}`"
+              :name="name"
+              :value="option.value"
+              :checked="inputValue === option.value"
+              @blur="handleFieldBlur"
+              @change="handleChange"
+              class="opacity-0 absolute w-5 h-5 cursor-pointer"
+            />
+            <span
+              class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center"
+              :class="{ 'border-purple-400 bg-purple-400': inputValue === option.value }"
+            >
+              <span
+                class="w-2.5 h-2.5 bg-purple-600 rounded-full"
+                :class="{ 'hidden': inputValue !== option.value }"
+              ></span>
+            </span>
+          </div>
+          <span>{{ option.label }}</span>
         </label>
       </div>
     </fieldset>
 
-    <!-- Error Message -->
     <p
       v-if="showErrorMessage"
       class="text-red-500 text-sm mt-2"
@@ -108,7 +109,6 @@ const handleFieldBlur = (e) => {
       {{ errorMessage }}
     </p>
 
-    <!-- Description -->
     <p
       v-if="description"
       class="text-gray-500 text-sm mt-1"

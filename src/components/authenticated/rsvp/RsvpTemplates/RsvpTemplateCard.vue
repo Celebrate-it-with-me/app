@@ -21,7 +21,6 @@ const useThisTemplate = () => {
 <template>
   <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
     <a href="#">
-      <img class="rounded-t-lg" src="../../../../assets/images/rsvp/btfRsvp.JPG" alt="" />
     </a>
     <div class="p-5">
       <a href="#">

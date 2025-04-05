@@ -196,8 +196,8 @@ const onInvalidSubmit = (error) => {
   >
     <!-- Title -->
     <div class="comment-header text-center pb-4 flex-shrink-0">
-      <h2 class="text-6xl font-gvibes font-bold text-gray-800">{{ commentsTitle }}</h2>
-      <p class="text-lg text-gray-600 mt-2">
+      <h2 class="text-6xl font-gvibes font-bold text-purple-middle">{{ commentsTitle }}</h2>
+      <p class="text-lg text-dark-blue mt-2">
         {{ commentsSubtitle }}
       </p>
     </div>

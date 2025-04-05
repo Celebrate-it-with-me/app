@@ -59,10 +59,7 @@ const handleFieldBlur = (e) => {
 </script>
 
 <template>
-  <div
-    :class="`${showErrorMessage ? 'has-error' : ''}  ${horizontal ? 'flex' : ''}  ${validate ? 'is-valid' : ''} `"
-    class="fromGroup relative"
-  >
+  <div class="email__field-container">
     <label
       v-if="label"
       :class="`${classLabel} ${horizontal ? 'flex-0 mr-6 md:w-[100px] w-[60px] break-words' : ''}  ltr:inline-block rtl:block input-label`"
@@ -71,51 +68,56 @@ const handleFieldBlur = (e) => {
       {{ label }}
     </label>
     <div
-      :class="horizontal ? 'flex-1' : ''"
-      class="relative w-full mt-1"
+      :class="`${showErrorMessage ? 'has-error' : ''}  ${horizontal ? 'flex' : ''}  ${validate ? 'is-valid' : ''} `"
+      class="fromGroup relative"
     >
-      <input
-        :id="name"
-        :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
-        :disabled="disabled"
-        :name="name"
-        :placeholder="placeholder"
-        :readonly="isReadonly"
-        type="email"
-        :value="modelValue"
-        @blur="handleFieldBlur"
-        @input="handleChange"
-      />
-    </div>
+      <div
+        :class="horizontal ? 'flex-1' : ''"
+        class="relative w-full mt-2"
+      >
+        <input
+          :id="name"
+          :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
+          :disabled="disabled"
+          :name="name"
+          :placeholder="placeholder"
+          :readonly="isReadonly"
+          type="email"
+          :value="modelValue"
+          @blur="handleFieldBlur"
+          @input="handleChange"
+        />
+      </div>
 
-    <span
-      v-if="showErrorMessage"
-      :class="
+      <span
+        v-if="showErrorMessage"
+        :class="
         msgTooltip
           ? ' inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
           : ' text-danger-500 block text-sm'
       "
-      class="mt-2"
-    >
+        class="mt-2"
+      >
       {{ errorMessage }}
     </span>
-    <span
-      v-if="validate"
-      :class="
+      <span
+        v-if="validate"
+        :class="
         msgTooltip
           ? ' inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
           : ' text-success-500 block text-sm'
       "
-      class="mt-2"
-    >
+        class="mt-2"
+      >
       {{ validate }}
     </span>
-    <span
-      v-if="description"
-      class="block text-secondary-500 font-light leading-4 text-xs mt-2"
-    >
+      <span
+        v-if="description"
+        class="block text-secondary-500 font-light leading-4 text-xs mt-2"
+      >
       {{ description }}
     </span>
+    </div>
   </div>
 </template>
 <style scoped>
