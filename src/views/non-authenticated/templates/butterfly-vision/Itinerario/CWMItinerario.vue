@@ -139,7 +139,15 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 @media screen and (min-width: 768px) {
   .itinerario-container {
     background-size: 100% auto;
-    background-position: 0 0;
+    background-position: center;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .itinerario-container {
+    background-image: url('@/assets/images/img/itinerario_bg_large.jpg');
+    background-size: cover;
+    background-position: center;
   }
 }
 

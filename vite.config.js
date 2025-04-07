@@ -4,7 +4,11 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({
+      compilerOptions: {
+        isCustomElement: (tag) => tag.startsWith('add-')
+      },
+    }),
   ],
   resolve: {
     alias: {
@@ -15,9 +19,6 @@ export default defineConfig({
     commonjsOptions: {
       esmExternals: true
     }
-  },
-  compilerOptions: {
-    isCustomElement: (tag) => tag.startsWith('add-')
   },
   server: {
     allowedHosts: [
