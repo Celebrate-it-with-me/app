@@ -38,6 +38,7 @@ const submit = async () => {
     <h2 class="text-2xl font-semibold mb-6 pt-4 text-dark-blue">Confirm your Information</h2>
 
     <div
+      v-if="templateStore.guest.confirmed === 'yes'"
       class="w-full flex flex-col md:flex-row justify-between text-dark-blue"
     >
       <!-- Guest Info -->
@@ -54,7 +55,6 @@ const submit = async () => {
 
       <!-- Companions Info -->
       <div
-        v-if="templateStore.guest.confirmed === 'yes'"
         class="w-full md:w-[50%] p-6"
       >
         <h3 class="text-xl font-semibold mb-4 border-b pb-2">Companions List:</h3>
@@ -78,17 +78,18 @@ const submit = async () => {
 
         </div>
       </div>
-      <div v-else class="mb-8 w-[60%]">
-        <div class="alert-container bg-amber-50 border-l-4 border-amber-500 px-6 py-4 rounded-lg shadow-sm">
-          <p class="text-amber-700">
-            You have indicated that you are not attending. Therefore, we will assume that none of
-            your companions will be attending either. If this is not the case, please contact
-            the event organizer to request a new invitation with one of your companions as the
-            main guest.
-          </p>
-        </div>
+    </div>
+    <div
+      v-else
+      class="mb-8 w-full md:w-[60%] space-y-2 p-6">
+      <div class="alert-container bg-amber-50 border-l-4 border-amber-500 px-6 py-4 rounded-lg shadow-sm">
+        <p class="text-amber-700">
+          You have indicated that you are not attending. Therefore, we will assume that none of
+          your companions will be attending either. If this is not the case, please contact
+          the event organizer to request a new invitation with one of your companions as the
+          main guest.
+        </p>
       </div>
-
     </div>
 
     <!-- Buttons -->
