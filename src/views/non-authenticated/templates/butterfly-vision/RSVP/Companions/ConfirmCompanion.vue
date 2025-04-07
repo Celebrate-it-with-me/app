@@ -68,7 +68,10 @@ const onInvalidSubmit = (errors) => {
 </script>
 
 <template>
-  <div class="relative w-full overflow-x-auto shadow-md sm:rounded-lg p-4 md:p-10">
+  <div class="relative w-full overflow-x-auto border-b pb-2 p-4 md:p-10">
+    <div class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl">
+      <h3>Companions</h3>
+    </div>
     <Form
       :validation-schema="companionValidationSchema"
       @submit="onSubmit"

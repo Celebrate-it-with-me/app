@@ -35,76 +35,52 @@ const submit = async () => {
 
 <template>
   <div class="w-full flex flex-col items-center">
-    <h2 class="text-2xl font-bold mb-6">Confirm Your Information</h2>
+    <h2 class="text-2xl font-semibold mb-6 pt-4 text-dark-blue">Confirm your Information</h2>
 
     <div
-      class="w-full flex flex-row justify-between"
+      class="w-full flex flex-col md:flex-row justify-between text-dark-blue"
     >
       <!-- Guest Info -->
-      <div class="mb-8">
-        <h3 class="text-2xl font-semibold mb-4">Guest Information:</h3>
-        <div>
-          <p><strong>Name:</strong> {{ guestInfo?.firstName }} {{ guestInfo?.lastName }}</p>
-          <p><strong>Email:</strong> {{ guestInfo?.email ?? 'N/A' }}</p>
-          <p><strong>Phone:</strong> {{ guestInfo?.phoneNumber ?? 'N/A' }}</p>
-          <p><strong>Meal Selected:</strong> {{ guestInfo?.mealPreference ?? 'N/A' }}</p>
-          <p><strong>Attending:</strong> {{ guestInfo?.confirmed ?? 'N/A' }}</p>
+      <div class="w-full md:w-[50%] p-6">
+        <h3 class="text-xl font-semibold mb-4 border-b pb-2">Main Guest Information:</h3>
+        <div class="space-y-2">
+          <p class="flex items-center"><span class="font-semibold w-24">Name:</span> {{ guestInfo?.firstName }} {{ guestInfo?.lastName }}</p>
+          <p class="flex items-center"><span class="font-semibold w-24">Email:</span> {{ guestInfo?.email ?? 'N/A' }}</p>
+          <p class="flex items-center"><span class="font-semibold w-24">Phone:</span> {{ guestInfo?.phoneNumber ?? 'N/A' }}</p>
+          <p class="flex items-center"><span class="font-semibold w-24">Attending:</span> {{ guestInfo?.confirmed ?? 'N/A' }}</p>
         </div>
       </div>
+
 
       <!-- Companions Info -->
       <div
         v-if="templateStore.guest.confirmed === 'yes'"
-        class="mb-8 w-[80%]"
+        class="w-full md:w-[50%] p-6"
       >
-        <h3 class="text-2xl font-semibold mb-4">Companions Information:</h3>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead
-              class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-            >
-            <tr>
-              <th scope="col" class="px-6 py-3">Name</th>
-              <th scope="col" class="px-6 py-3">Email</th>
-              <th scope="col" class="px-6 py-3">Phone</th>
-              <th scope="col" class="px-6 py-3">Meal</th>
-              <th scope="col" class="px-6 py-3">Will Attend?</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr
+        <h3 class="text-xl font-semibold mb-4 border-b pb-2">Companions List:</h3>
+        <div class="relative overflow-x-auto">
+          <ul class="space-y-2">
+            <li
               v-for="companion in companions"
               :key="companion.id"
-              class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-700 border-b"
+              class="bg-white"
             >
-              <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <p class="flex items-center mb-1">
+                <span class="font-semibold w-24">Name:</span>
                 {{ companion.firstName ?? 'N/A' }} {{ companion.lastName ?? '' }}
-              </td>
-              <td class="px-6 py-4">
-                {{ companion.email ?? 'N/A' }}
-              </td>
-              <td class="px-6 py-4">
-                {{ companion.phoneNumber ?? 'N/A' }}
-              </td>
-              <td class="px-6 py-4">
-                {{ companion.mealPreference ?? 'N/A' }}
-              </td>
-              <td class="px-6 py-4">
+              </p>
+              <p class="flex items-center">
+                <span class="font-semibold w-24">Attending:</span>
                 {{ companion.confirmed ?? 'N/A' }}
-              </td>
-            </tr>
-            </tbody>
-          </table>
+              </p>
+            </li>
+          </ul>
+
         </div>
       </div>
-      <div
-        v-else
-        class="mb-8 w-[60%]"
-      >
-        <div
-          class="alert-container border border-[#f3a40a] px-10 py-5 rounded-lg"
-        >
-          <p class="">
+      <div v-else class="mb-8 w-[60%]">
+        <div class="alert-container bg-amber-50 border-l-4 border-amber-500 px-6 py-4 rounded-lg shadow-sm">
+          <p class="text-amber-700">
             You have indicated that you are not attending. Therefore, we will assume that none of
             your companions will be attending either. If this is not the case, please contact
             the event organizer to request a new invitation with one of your companions as the
@@ -112,12 +88,13 @@ const submit = async () => {
           </p>
         </div>
       </div>
+
     </div>
 
     <!-- Buttons -->
-    <div class="w-full flex flex-row justify-end mt-10 gap-x-5">
+    <div class="w-full my-2 flex flex-row justify-end mt-10 gap-x-2">
       <button
-        class="px-6 py-2 border-2 font-bold"
+        class="px-6 py-2 border-2 font-bold mr-2"
         style="font-family: inherit; color: #9a929e; background-color: transparent; border-color: #9a929e; border-radius: 8px;"
         @click="goBack"
       >
@@ -125,7 +102,7 @@ const submit = async () => {
       </button>
 
       <button
-        class="px-6 py-2 border-2 font-bold"
+        class="px-6 py-2 border-2 font-bold mr-2"
         style="font-family: inherit; color: #dba3ff; background-color: transparent; border-color: #dba3ff; border-radius: 8px;"
         @click="submit"
       >
