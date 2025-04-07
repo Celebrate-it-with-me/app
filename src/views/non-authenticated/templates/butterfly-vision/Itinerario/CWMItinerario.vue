@@ -15,7 +15,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
            bg-pink-300 p-2 md:p-8"
   >
     <div
-      class="timeline-container relative w-full md:w-1/2 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
+      class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
     >
       <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
       <div
@@ -29,7 +29,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
             <img
               :src="MargaritaGif"
               alt="Margarita"
-              class="w-1/2 h-auto rounded-lg"
+              class="h-auto rounded-lg w-24 h-24"
             />
           </div>
           <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
@@ -49,7 +49,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
             <img
               :src="CeremonyGif"
               alt="Margarita"
-              class="w-1/2 h-auto rounded-lg"
+              class="w-24 h-24 h-auto rounded-lg"
             />
           </div>
           <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
@@ -69,7 +69,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
             <img
               :src="FoodGif"
               alt="Margarita"
-              class="w-1/2 h-auto rounded-lg"
+              class="w-24 h-24 h-auto rounded-lg"
             />
           </div>
           <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
@@ -89,7 +89,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
             <img
               :src="DanceGif"
               alt="Margarita"
-              class="w-1/2 h-auto rounded-lg"
+              class="w-24 h-24 h-auto rounded-lg"
             />
           </div>
           <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
@@ -108,7 +108,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
             <img
               :src="DanceFloor"
               alt="Dance Floor"
-              class="w-1/2 h-auto rounded-lg"
+              class="w-24 h-24 h-auto rounded-lg"
             />
           </div>
           <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
