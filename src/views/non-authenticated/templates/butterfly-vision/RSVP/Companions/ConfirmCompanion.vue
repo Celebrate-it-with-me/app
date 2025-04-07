@@ -1,6 +1,5 @@
 <script setup>
 import { Form } from 'vee-validate'
-import SelectField from '@/components/UI/form/SelectField.vue'
 import TextField from '@/components/UI/form/TextField.vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import { computed, onMounted, reactive } from 'vue'
@@ -26,7 +25,6 @@ const localCompanion = reactive({
   lastName: '',
   email: '',
   phoneNumber: '',
-  mealPreference: '',
   confirmed: 'yes'
 })
 
@@ -37,8 +35,7 @@ onMounted(() => {
     localCompanion.lastName = props.currentCompanion?.lastName ?? ''
     localCompanion.email = props.currentCompanion?.email ?? ''
     localCompanion.phoneNumber = props.currentCompanion?.phoneNumber ?? ''
-    localCompanion.mealPreference = props.currentCompanion?.mealPreference ?? ''
-    localCompanion.attendingConfirm = props.currentCompanion?.attendingConfirm ?? 'yes'
+    localCompanion.confirmed = props.currentCompanion?.confirmed ?? 'yes'
   }
 })
 
@@ -55,7 +52,7 @@ const companionValidationSchema = computed(() => {
         .regex(/^[0-9\s]*$/, { message: 'Phone Number must be numeric' })
         .optional(),
       confirmed: zod
-        .enum(['yes', 'no'], { required_error: 'Please select a confirmation option' })
+        .enum(['yes', 'no'], { message: 'Please select a confirmation option' })
     })
   )
 })
