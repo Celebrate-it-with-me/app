@@ -6,14 +6,12 @@ import TextField from '@/components/UI/form/TextField.vue'
 import { Form } from 'vee-validate'
 import "vue-color-kit/dist/vue-color-kit.css";
 import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
-import debounce from 'lodash.debounce'
 import NumberField from '@/components/UI/form/NumberField.vue'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
 import { useUserStore } from '@/stores/useUserStore'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
-const emit = defineEmits(['updateSM'])
 
 const currentUserStore = useUserStore()
 const sweetMemoriesStore = useSweetMemoriesStore()
@@ -104,12 +102,10 @@ const onInvalidSubmit = (errors) => {
 
 <template>
   <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-[30%]">
-    <!-- Header Section -->
     <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
       <h3 class="text-lg font-semibold">Sweet Memories Config</h3>
     </div>
 
-    <!-- Event Details Form -->
     <Form
       :validation-schema="validationSchema"
       @submit="onSubmit"
