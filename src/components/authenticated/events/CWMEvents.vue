@@ -7,7 +7,7 @@ const currentTabs = [
   { id: 2, label: 'Guests', route: '/dashboard/guests', selected: false },
   { id: 3, label: 'Save the Date', route: '/dashboard/save-the-date', selected: false },
   { id: 4, label: 'RSVP', route: '/dashboard/rsvp', selected: false },
-  { id: 5, label: 'Gallery', route: '/dashboard/gallery', selected: false },
+  { id: 5, label: 'Sweet Memories', route: '/dashboard/sweet-memories', selected: false },
   { id: 6, label: 'Suggested Music', route: '/dashboard/suggest-music', selected: false },
   { id: 11, label: 'Background Music', route: '/dashboard/background-music', selected: false },
   { id: 12, label: 'Event Comments', route: '/dashboard/event-comments', selected: false },

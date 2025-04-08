@@ -5,7 +5,7 @@ import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.v
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
 import CWMRsvp from '../components/authenticated/rsvp/CWMRsvp.vue'
-import CWMGallery from '../components/authenticated/gallery/CWMGallery.vue'
+import CwmSweetMemories from '@/components/authenticated/sweet-memories/CWMSweetMemories.vue'
 import CWMSeatAccommodation from '../components/authenticated/seat-accommodation/CWMSeatAccommodation.vue'
 import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
 import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
@@ -64,11 +64,11 @@ const authRoutes = [
         }
       },
       {
-        path: 'gallery',
-        name: 'gallery',
-        component: CWMGallery,
+        path: 'sweet-memories',
+        name: 'sweet-memories',
+        component: CwmSweetMemories,
         meta: {
-          title: 'Art Gallery'
+          title: 'Sweet Memories'
         }
       },
       {
