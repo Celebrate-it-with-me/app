@@ -16,7 +16,7 @@ import { useNotificationStore } from '@/stores/useNotificationStore'
 const currentUserStore = useUserStore()
 const sweetMemoriesStore = useSweetMemoriesStore()
 const sweetMemoriesErrors = ref(null)
-const isUpdate = ref(null)
+const mode = ref('create')
 const loading = ref(false)
 const notificationStore = useNotificationStore()
 
@@ -45,10 +45,18 @@ const initSweetMemoriesConfig = async () => {
       sweetMemoriesStore.config.subTitle = subTitle
       sweetMemoriesStore.config.backgroundColor = backgroundColor
       sweetMemoriesStore.config.maxPictures = maxPictures
-      isUpdate.value = true
+      mode.value = 'update'
     }
   } catch (error) {
     sweetMemoriesErrors.value = error.response?.data?.message ?? 'Something went wrong'
+  }
+}
+
+const handleRequest = () => {
+  if (mode.value === 'create') {
+    return sweetMemoriesStore.createSweetMemoriesConfig(currentUserStore.currentEventId)
+  } else if (mode.value === 'update') {
+    return sweetMemoriesStore.updateSweetMemoriesConfig(currentUserStore.currentEventId)
   }
 }
 
@@ -56,7 +64,7 @@ const onSubmit = async () => {
   try {
     loading.value = true
 
-    const response = await sweetMemoriesStore.createSweetMemoriesConfig(currentUserStore.currentEventId)
+    const response = await handleRequest()
 
     console.log('checking response', response)
     if (response.status >= 200 && response.status < 300) {
@@ -177,7 +185,7 @@ const onInvalidSubmit = (errors) => {
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
           :disabled="loading"
-          v-if="!isUpdate"
+          v-if="mode === 'create'"
           type="submit"
           class="w-full bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium py-2 px-6 rounded-md"
         >

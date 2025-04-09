@@ -37,6 +37,14 @@
         </div>
       </div>
     </div>
+    <!-- Error Messages -->
+    <div
+      v-if="errorMessage"
+      class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 mb-4"
+    >
+      {{ errorMessage }}
+    </div>
+
     <!-- Drag & Drop Zone -->
     <div
       @dragover.prevent="handleDragOver"
@@ -93,14 +101,6 @@
       >
         Save Images
       </button>
-    </div>
-
-    <!-- Error Messages -->
-    <div
-      v-if="errorMessage"
-      class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700"
-    >
-      {{ errorMessage }}
     </div>
   </div>
 </template>

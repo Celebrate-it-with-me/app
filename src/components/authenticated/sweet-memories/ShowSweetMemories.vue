@@ -36,8 +36,6 @@ const handleUploadImages = async (files) => {
   } catch (error) {
     console.error('Error uploading images:', error)
   }
-
-
 }
 
 
@@ -50,7 +48,7 @@ const handleUploadImages = async (files) => {
   >
     <ImageUpload
       :max-file-size="5 * 1024 * 1024"
-      :max-files="5"
+      :max-files="sweetMemoriesStore?.config?.maxPictures ?? 2"
       @files-selected="handleFilesSelected"
       @file-removed="handleFileRemoved"
       @upload-images="handleUploadImages"
