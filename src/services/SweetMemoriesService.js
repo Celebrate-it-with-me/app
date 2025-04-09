@@ -57,6 +57,18 @@ class SweetMemoriesService {
       }
     })
   }
+
+  async uploadSweetMemoriesImages(files, eventId) {
+    const formData = new FormData()
+    files.forEach(file => {
+      formData.append('files', file)
+    })
+    return await CWM_API.post(`event/${eventId}/sweet-memories-images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
 }
 
 export default new SweetMemoriesService()

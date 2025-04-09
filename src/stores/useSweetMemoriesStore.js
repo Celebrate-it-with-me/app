@@ -38,6 +38,14 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
       })
     },
 
+    async uploadSweetMemoriesImages(files, eventId){
+      const formData = new FormData()
+      files.forEach(file => {
+        formData.append('files', file)
+      })
+      return await SweetMemoriesService.uploadSweetMemoriesImages(formData, eventId)
+    },
+
     async addComment({ eventId, userId, origin }) {
       return EventCommentsService.addComment({ eventId, userId, origin, ...this.currentComment })
     },
