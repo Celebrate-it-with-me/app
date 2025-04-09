@@ -1,6 +1,12 @@
 <script setup>
 import ImageUpload from '@/components/authenticated/sweet-memories/ImageUpload.vue'
+import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
+import { useUserStore } from '@/stores/useUserStore'
 
+const sweetMemoriesStore = useSweetMemoriesStore()
+const currentUserStore = useUserStore()
+
+// Mr
 const handleFilesSelected = (files) => {
   // Handle the selected files
   console.log('Selected files:', files)
@@ -9,6 +15,29 @@ const handleFilesSelected = (files) => {
 const handleFileRemoved = (file) => {
   // Handle removed file
   console.log('Removed file:', file)
+}
+
+const handleUploadImages = async (files) => {
+  // Handle the upload images
+  console.log('Upload images:', files)
+  try {
+
+    const response = await sweetMemoriesStore.uploadSweetMemoriesImages(
+      files,
+      currentUserStore.currentEventId
+    )
+
+    if (response.status >= 200 && response.status < 300) {
+      console.log('Images uploaded successfully:', response.data)
+    } else {
+      console.error('Error uploading images:', response)
+    }
+
+  } catch (error) {
+    console.error('Error uploading images:', error)
+  }
+
+
 }
 
 
@@ -24,6 +53,7 @@ const handleFileRemoved = (file) => {
       :max-files="5"
       @files-selected="handleFilesSelected"
       @file-removed="handleFileRemoved"
+      @upload-images="handleUploadImages"
     />
   </div>
 </template>

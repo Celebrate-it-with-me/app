@@ -85,6 +85,16 @@
       </div>
     </div>
 
+    <div class="mt-4">
+      <button
+        v-if="showUploadButton"
+        class="w-full bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+        @click="uploadImages"
+      >
+        Save Images
+      </button>
+    </div>
+
     <!-- Error Messages -->
     <div
       v-if="errorMessage"
@@ -96,8 +106,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
+//Emits and Props
+const emit = defineEmits(['filesSelected', 'fileRemoved', 'uploadImages'])
 const props = defineProps({
   maxFileSize: {
     type: Number,
@@ -109,13 +121,18 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['files-selected', 'file-removed'])
-
+// Data
 const fileInput = ref(null)
 const isDragging = ref(false)
 const previews = ref([])
 const errorMessage = ref('')
 
+// Computed Properties
+const showUploadButton = computed(() => {
+  return previews.value.length > 0
+})
+
+// Methods
 const handleDragOver = (event) => {
   isDragging.value = true
 }
@@ -167,7 +184,7 @@ const handleFiles = (files) => {
   })
 
   // Emit selected files
-  emit('files-selected', files)
+  emit('filesSelected', files)
 }
 
 const handleDrop = (event) => {
@@ -200,4 +217,9 @@ const formatFileSize = (bytes) => {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
+
+const uploadImages = () => {
+  emit('uploadImages', previews.value)
+}
+
 </script>
