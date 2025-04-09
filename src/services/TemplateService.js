@@ -6,7 +6,6 @@ class TemplateService {
   }
 
   async saveRsvp({eventId, guest}) {
-    console.log('checking guest', guest)
     return CWM_API.post(`template/event/${eventId}/save-rsvp`, {
       guest
     })

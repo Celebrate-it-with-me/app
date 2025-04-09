@@ -54,22 +54,6 @@ const handleCurrentTemplate = (templateId) => {
 </script>
 
 <template>
-  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <div
-      class="w-full flex flex-col text-lg font-semibold p-5 text-gray-900 bg-white dark:text-white dark:bg-gray-800"
-    >
-      <h2 class="m-2">RSVP Templates</h2>
-      <div class="w-full flex flex-row gap-x-4 flex-wrap">
-        <RsvpTemplateCard
-          class="w-[30%]"
-          v-for="template in RSVP_TEMPLATES"
-          :key="template.id"
-          :card-template="template"
-          @template-selected="handleCurrentTemplate"
-        />
-      </div>
-    </div>
-  </div>
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
     <div
       class="w-full flex flex-col text-lg font-semibold p-5 text-gray-900 bg-white dark:text-white dark:bg-gray-800"

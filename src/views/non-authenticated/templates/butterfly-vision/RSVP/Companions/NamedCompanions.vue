@@ -31,8 +31,7 @@ const handleCompanionConfirmed = (companion) => {
       comp.lastName = companion.lastName
       comp.email = companion.email
       comp.phoneNumber = companion.phoneNumber
-      comp.confirmed = companion.attendingConfirm
-      comp.mealPreference = companion.mealPreference
+      comp.confirmed = companion.confirmed
     }
   })
 
@@ -55,9 +54,9 @@ const handleCompanionConfirmed = (companion) => {
     />
   </div>
 
-  <div class="w-full flex flex-row justify-end mt-10 gap-x-5">
+  <div class="w-full flex flex-row justify-end my-2 gap-x-2">
     <button
-      class="px-6 py-2 border-2 font-bold"
+      class="px-6 py-2 border-2 font-bold mr-2"
       style="font-family: inherit; color: #9a929e; background-color: transparent; border-color: #9a929e; border-radius: 8px;"
       @click="goToPrevious()"
     >
@@ -66,7 +65,7 @@ const handleCompanionConfirmed = (companion) => {
 
     <button
       v-if="readyForNext"
-      class="px-6 py-2 border-2 font-bold"
+      class="px-6 py-2 border-2 font-bold mr-2"
       style="font-family: inherit; color: #dba3ff; background-color: transparent; border-color: #dba3ff; border-radius: 8px;"
       @click="goToNext()"
     >

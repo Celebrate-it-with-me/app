@@ -5,30 +5,35 @@ import SweetMemoriesGallery
 
 const sweetMemories = computed(() => {
   return {
-    backgroundColor: '#ffe2b1',
+    backgroundColor: 'rgb(231, 217, 251)',
     isEnabled: true,
     title: 'Sweet Memories',
     subTitle: 'Little Moments, Big Memories',
     memoriesPhotos: [
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image one'
       },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image two'
       },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image three'
       },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image four',
       },
       {
         image: 'http://dev.api.cwm.com/storage/images/sweet-memories/images/1234123.jpg',
-        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg'
+        thumb: 'http://dev.api.cwm.com/storage/images/sweet-memories/thumbnails/1234123_thumb.jpg',
+        title: 'Image five',
       },
     ]
   }
@@ -49,17 +54,18 @@ const generalStyles = computed(() => {
 
 <template>
   <div
+    id="sectionSweetMemories"
     v-if="sweetMemories?.isEnabled"
     class="sweet-memories w-full h-full flex flex-col justify-evenly items-center p-20 h-screen"
     :style="generalStyles"
   >
     <div class="sweet-titles">
-      <h2 class="text-6xl font-gvibes font-bold gap-10 gradient-text" v-if="sweetMemories.title">
+      <h2 class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center" v-if="sweetMemories.title">
         {{ sweetMemories.title }}
       </h2>
 
       <h4
-        class="relative text-2xl font-normal text-gray-600/70 text-center moments-title"
+        class="relative text-2xl font-normal text-dark-blue text-center moments-title"
       >
         {{ sweetMemories.subTitle }}
       </h4>

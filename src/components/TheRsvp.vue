@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {computed, ref, watch} from 'vue';
+import {ref, watch} from 'vue';
 import {
-  FwbA,
-  FwbButton, FwbCheckbox,
+  FwbButton,
   FwbInput, FwbRadio,
   FwbTable,
   FwbTableBody,
@@ -14,7 +13,7 @@ import { CWM_API } from '@/services/axios.js'
 import PhoneConfirmationModal from "@/components/PhoneConfirmationModal.vue";
 
 const rsvpCode = ref("")
-const rsvpError = ref('')
+const rsvpError = ref(false)
 const rsvpErrorMessage = ref(false)
 const rsvpServerErrorMessage = ref(false)
 const showPhoneConfirmationModal = ref(false)
@@ -33,7 +32,7 @@ watch(rsvpCode, (newValue) => {
 
 watch(mainGuest, (newValue) => {
   if (newValue) {
-    let guests = newValue.party_members;
+    let guests = newValue?.party_members;
 
     if (typeof guests === "string") {
       mainGuest.value.party_members = JSON.parse(guests);

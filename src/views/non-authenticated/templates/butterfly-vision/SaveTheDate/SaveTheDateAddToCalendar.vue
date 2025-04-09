@@ -13,7 +13,7 @@ const props = defineProps({
 const isHovered = ref(false)
 
 const config = {
-  label: 'My Event',
+  label: "Melissa Quince's",
   name: "[Reminder] Melissa Quince`s Birthday",
   description: "Melissa Quince`s Birthday Party",
   startDate: "2025-01-07",

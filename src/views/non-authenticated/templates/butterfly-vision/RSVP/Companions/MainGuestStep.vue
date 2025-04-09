@@ -31,7 +31,6 @@ const mainGuestValidationSchema = computed(() => {
         .string()
         .regex(/^[0-9]*$/, { message: 'Phone Number must be numeric' })
         .optional(),
-      mealPreference: zod.number().min(1, { message: 'Meal Preference is required' }),
       confirmed: zod.enum(['yes', 'no'], { required_error: 'Please select a confirmation option' })
     })
   )
@@ -65,10 +64,11 @@ watch(() => mainGuestState.confirmed, () => {
 </script>
 
 <template>
-  <div class="main__guest-container w-full h-full flex flex-col items-center">
-    <h2 class="text-2xl font-bold mb-6">Enter your information</h2>
-
-    <div class="w-[80%] form-container overflow-x-auto shadow-md sm:rounded-lg p-10">
+  <div class="main__guest-container w-full flex flex-col items-center">
+    <div class="form-container w-full shadow-md sm:rounded-lg p-4 md:p-10">
+      <div class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl">
+        <h3>Main Guest</h3>
+      </div>
       <Form
         :validation-schema="mainGuestValidationSchema"
         @submit="onSubmit"
@@ -86,17 +86,19 @@ watch(() => mainGuestState.confirmed, () => {
               :show-error="true"
               label="First Name"
               placeholder=" "
-              class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
+              class-input="block py-2.5 px-0 w-full text-md text-dark-blue bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
                dark:focus:border-[#dba3ff] focus:outline-none focus:ring-0 focus:border-[#dba3ff] peer"
-              class-label="peer-focus:font-medium absolute text-lg ml-2 text-[#dba3ff] dark:text-gray-400
-               duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
-               peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
-               peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
-               peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              class-label="peer-focus:font-medium absolute text-xl mb-2 text-[#754e9e] font-semibold
+                           duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
+                           peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
+                           peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
+                           peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
             />
           </div>
+        </div>
 
+        <div class="first-row flex flex-row gap-x-5">
           <div class="relative z-0 w-full mb-5 group">
             <TextField
               v-model="mainGuestState.lastName"
@@ -107,10 +109,10 @@ watch(() => mainGuestState.confirmed, () => {
               :show-error="true"
               label="Last Name"
               placeholder=" "
-              class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
+              class-input="block py-2.5 px-0 w-full text-md text-dark-blue bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-900
                dark:focus:border-rose-400 focus:outline-none focus:ring-0 focus:border-rose-400 peer"
-              class-label="peer-focus:font-medium absolute text-lg ml-2 text-[#dba3ff] dark:text-gray-400
+              class-label="peer-focus:font-medium absolute text-xl text-[#754e9e] font-semibold
                duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
                peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
                peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
@@ -128,17 +130,19 @@ watch(() => mainGuestState.confirmed, () => {
               :show-error="true"
               label="Email"
               placeholder="Email"
-              class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
+              class-input="block py-2.5 px-0 w-full text-md text-dark-blue bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
                dark:focus:border-rose-400 focus:outline-none focus:ring-0 focus:border-[#dba3ff] peer"
-              class-label="peer-focus:font-medium absolute text-lg ml-2 text-[#dba3ff] dark:text-gray-400
+              class-label="peer-focus:font-medium absolute text-xl text-[#754e9e] font-semibold
                duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
                peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
                peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
                peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
             />
           </div>
+        </div>
 
+        <div class="second-row flex flex-row gap-x-5">
           <div class="relative z-0 w-full mb-5 group">
             <TextField
               v-model="mainGuestState.phoneNumber"
@@ -148,10 +152,10 @@ watch(() => mainGuestState.confirmed, () => {
               :show-error="true"
               label="Phone Number"
               placeholder=" "
-              class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
+              class-input="block py-2.5 px-0 w-full text-md text-dark-blue bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
                dark:focus:border-rose-400 focus:outline-none focus:ring-0 focus:border-[#dba3ff] peer"
-              class-label="peer-focus:font-medium absolute text-lg ml-2 text-[#dba3ff] dark:text-gray-400
+              class-label="peer-focus:font-medium absolute text-xl text-[#754e9e] font-semibold
                duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
                peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
                peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
@@ -161,22 +165,7 @@ watch(() => mainGuestState.confirmed, () => {
         </div>
 
         <div class="third-row flex flex-row items-center gap-x-5">
-          <div class="relative w-1/2 z-0 mb-5 group">
-            <SelectField
-              name="mealPreference"
-              v-model="mainGuestState.mealPreference"
-              :items="templateStore.meals"
-              label="Meal Preference"
-              :show-error="true"
-              class-label="text-[#dba3ff]"
-              class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
-                     border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
-                     dark:focus:border-rose-400 focus:outline-none focus:ring-0
-                     focus:border-[#dba3ff] peer"
-              options-class="text-gray-900"
-            />
-          </div>
-          <div class="relative z-0 mb-2 group w-1/2">
+          <div class="relative z-0 mb-2 group">
             <ConfirmationField
               name="confirmed"
               v-model="mainGuestState.confirmed"

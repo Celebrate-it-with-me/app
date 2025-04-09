@@ -40,7 +40,6 @@ const removeCompanion = async () => {
 
   } catch (error) {
     console.error(error)
-    // show error notification
   } finally {
     removing.value = false
   }
@@ -48,7 +47,7 @@ const removeCompanion = async () => {
 </script>
 
 <template>
-  <div class="remove-companion-template">
+  <div class="remove-companion-template w-full">
     <p>You are about to remove a companion. Are you sure you want to proceed?</p>
     <div
       class="w-full flex justify-end"

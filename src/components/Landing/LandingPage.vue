@@ -5,7 +5,7 @@ import LandingHeroSection from '@/components/Landing/LandingHeroSection.vue'
 </script>
 
 <template>
-  <section class="container mx-auto px-40 pt-5 pb-20">
+  <section class="container mx-auto pt-5 pb-20">
     <LandingHeaderNav />
 
     <LandingHeroSection />

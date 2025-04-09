@@ -30,7 +30,7 @@ const currentTabs = computed(() => {
       }
 
       if (tab.id === 5) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.gallery ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.sweetMemories ?? false
       }
 
       if (tab.id === 6) {
@@ -53,9 +53,15 @@ const currentTabs = computed(() => {
         isDisabled = !eventStore.currentEvent?.eventFeature?.analytics ?? false
       }
 
+      if (tab.id === 11) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.backgroundMusic ?? false
+      }
+
+      if (tab.id === 12) {
+        isDisabled = !eventStore.currentEvent?.eventFeature?.eventComments ?? false
+      }
+
     }
-
-
 
     return {
       disabled: isDisabled,

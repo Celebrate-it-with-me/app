@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useField } from 'vee-validate'
 
 const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur'])
@@ -41,7 +41,9 @@ const {
 
 setValue(props.modelValue)
 
-watch(() => props.modelValue, setValue)
+watch(() => props.modelValue, (newValue) => {
+  setValue(newValue)
+})
 
 watch(inputValue, (val) => {
   emit('update:modelValue', val)
@@ -61,10 +63,7 @@ const handleFieldBlur = (e) => {
 </script>
 
 <template>
-  <div
-    :class="`${showErrorMessage ? 'has-error' : ''}  ${horizontal ? 'flex' : ''}  ${validate ? 'is-valid' : ''} `"
-    class="fromGroup relative"
-  >
+  <div class="text-field-container">
     <label
       v-if="label"
       :class="`${classLabel} ${horizontal ? 'flex-0 mr-6 md:w-[100px] w-[60px] break-words' : ''}  ltr:inline-block rtl:block input-label`"
@@ -73,51 +72,57 @@ const handleFieldBlur = (e) => {
       {{ label }}
     </label>
     <div
-      :class="horizontal ? 'flex-1' : ''"
-      class="relative w-full mt-1"
+      :class="`${showErrorMessage ? 'has-error' : ''}  ${horizontal ? 'flex' : ''}  ${validate ? 'is-valid' : ''} `"
+      class="fromGroup relative"
     >
-      <input
-        :id="name"
-        :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
-        :disabled="disabled"
-        :name="name"
-        :placeholder="placeholder"
-        :readonly="isReadonly"
-        :type="types"
-        :value="modelValue"
-        @blur="handleFieldBlur"
-        @input="handleChange"
-      />
-    </div>
 
-    <span
-      v-if="showErrorMessage"
-      :class="
+      <div
+        :class="horizontal ? 'flex-1' : ''"
+        class="relative w-full mt-2"
+      >
+        <input
+          :id="name"
+          :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
+          :disabled="disabled"
+          :name="name"
+          :placeholder="placeholder"
+          :readonly="isReadonly"
+          :type="types"
+          :value="modelValue"
+          @blur="handleFieldBlur"
+          @input="handleChange"
+        />
+      </div>
+
+      <span
+        v-if="showErrorMessage"
+        :class="
         msgTooltip
           ? ' inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
           : ' text-danger-500 block text-sm'
       "
-      class="mt-2"
-    >
+        class="mt-2"
+      >
       {{ errorMessage }}
-    </span>
-    <span
-      v-if="validate"
-      :class="
+      </span>
+      <span
+        v-if="validate"
+        :class="
         msgTooltip
           ? ' inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
           : ' text-success-500 block text-sm'
       "
-      class="mt-2"
-    >
-      {{ validate }}
-    </span>
-    <span
-      v-if="description"
-      class="block text-secondary-500 font-light leading-4 text-xs mt-2"
-    >
-      {{ description }}
-    </span>
+        class="mt-2"
+      >
+        {{ validate }}
+      </span>
+      <span
+        v-if="description"
+        class="block text-secondary-500 font-light leading-4 text-xs mt-2"
+      >
+        {{ description }}
+      </span>
+    </div>
   </div>
 </template>
 

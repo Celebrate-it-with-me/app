@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useSongsStore } from '@/stores/useSongsStore'
+import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import SongSearchInput from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SongSearchInput.vue'
@@ -43,7 +43,7 @@ const props = defineProps({
   }
 })
 
-const songsStore = useSongsStore()
+const songsStore = useSuggestedMusicStore()
 const loading = ref(false)
 const notification = useNotificationStore()
 const totalItems = ref(0)
@@ -94,12 +94,12 @@ watch(
 
 <template>
   <div
-    class="event-handle w-[70%] rounded-lg flex flex-col items-center"
+    class="event-handle w-[90%] md:w-[70%] rounded-lg flex flex-col items-center"
   >
-    <h2 class="text-6xl font-gvibes font-bold gap-10 gradient-text">
+    <h2 class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center">
       {{ title }}
     </h2>
-    <h4 class="music-subtitle relative text-2xl font-normal text-gray-600/70 text-center moments-title">
+    <h4 class="music-subtitle relative text-2xl font-normal text-dark-blue text-center moments-title">
       {{ subTitle }}
     </h4>
 

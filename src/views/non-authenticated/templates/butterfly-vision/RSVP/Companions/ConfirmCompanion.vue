@@ -1,6 +1,5 @@
 <script setup>
 import { Form } from 'vee-validate'
-import SelectField from '@/components/UI/form/SelectField.vue'
 import TextField from '@/components/UI/form/TextField.vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import { computed, onMounted, reactive } from 'vue'
@@ -26,7 +25,6 @@ const localCompanion = reactive({
   lastName: '',
   email: '',
   phoneNumber: '',
-  mealPreference: '',
   confirmed: 'yes'
 })
 
@@ -37,8 +35,7 @@ onMounted(() => {
     localCompanion.lastName = props.currentCompanion?.lastName ?? ''
     localCompanion.email = props.currentCompanion?.email ?? ''
     localCompanion.phoneNumber = props.currentCompanion?.phoneNumber ?? ''
-    localCompanion.mealPreference = props.currentCompanion?.mealPreference ?? ''
-    localCompanion.attendingConfirm = props.currentCompanion?.attendingConfirm ?? 'yes'
+    localCompanion.confirmed = props.currentCompanion?.confirmed ?? 'yes'
   }
 })
 
@@ -54,11 +51,8 @@ const companionValidationSchema = computed(() => {
         .string()
         .regex(/^[0-9\s]*$/, { message: 'Phone Number must be numeric' })
         .optional(),
-      mealPreference: zod
-        .number()
-        .min(1, { message: 'Meal Preference is required' }),
       confirmed: zod
-        .enum(['yes', 'no'], { required_error: 'Please select a confirmation option' })
+        .enum(['yes', 'no'], { message: 'Please select a confirmation option' })
     })
   )
 })
@@ -74,7 +68,10 @@ const onInvalidSubmit = (errors) => {
 </script>
 
 <template>
-  <div class="w-[70%] relative overflow-x-auto shadow-md sm:rounded-lg p-10">
+  <div class="relative w-full overflow-x-auto border-b pb-2 p-4 md:p-10">
+    <div class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl">
+      <h3>Companions</h3>
+    </div>
     <Form
       :validation-schema="companionValidationSchema"
       @submit="onSubmit"
@@ -93,14 +90,16 @@ const onInvalidSubmit = (errors) => {
             class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
                dark:focus:border-[#dba3ff] focus:outline-none focus:ring-0 focus:border-[#dba3ff] peer"
-            class-label="peer-focus:font-medium absolute text-lg ml-2 text-[#dba3ff] dark:text-gray-400
+            class-label="peer-focus:font-medium absolute text-lg text-[#754e9e] font-semibold
                duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
                peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
                peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
                peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
           />
         </div>
+      </div>
 
+      <div class="first-row flex flex-row gap-x-5">
         <div class="relative z-0 w-full mb-5 group">
           <TextField
             v-model="localCompanion.lastName"
@@ -113,7 +112,7 @@ const onInvalidSubmit = (errors) => {
             class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-900
                dark:focus:border-rose-400 focus:outline-none focus:ring-0 focus:border-[#dba3ff] peer"
-            class-label="peer-focus:font-medium absolute text-lg ml-2 text-[#dba3ff] dark:text-gray-400
+            class-label="peer-focus:font-medium absolute text-lg text-[#754e9e] font-semibold
                duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
                peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
                peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
@@ -134,14 +133,16 @@ const onInvalidSubmit = (errors) => {
             class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
              border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
              dark:focus:border-rose-400 focus:outline-none focus:ring-0 focus:border-[#dba3ff] peer"
-            class-label="peer-focus:font-medium absolute text-lg ml-2 text-[#dba3ff] dark:text-gray-400
+            class-label="peer-focus:font-medium absolute text-lg text-[#754e9e] font-semibold
              duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
              peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
              peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
              peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
           />
         </div>
+      </div>
 
+      <div class="second-row flex flex-row gap-x-5">
         <div class="relative z-0 w-full mb-5 group">
           <TextField
             v-model="localCompanion.phoneNumber"
@@ -154,7 +155,7 @@ const onInvalidSubmit = (errors) => {
             class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
              border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
              dark:focus:border-rose-400 focus:outline-none focus:ring-0 focus:border-[#dba3ff] peer"
-            class-label="peer-focus:font-medium absolute text-lg ml-2 text-[#dba3ff] dark:text-gray-400
+            class-label="peer-focus:font-medium absolute text-lg text-[#754e9e] font-semibold
              duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
              peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
              peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
@@ -164,21 +165,6 @@ const onInvalidSubmit = (errors) => {
       </div>
 
       <div class="third-row flex flex-row items-center gap-x-5">
-        <div class="relative w-1/2 z-0 mb-5 group">
-          <SelectField
-            name="mealPreference"
-            v-model="localCompanion.mealPreference"
-            :items="templateStore.meals"
-            label="Meal Preference"
-            :show-error="true"
-            class-label="text-[#dba3ff]"
-            class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
-                     border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
-                     dark:focus:border-rose-400 focus:outline-none focus:ring-0
-                     focus:border-[#dba3ff] peer"
-            options-class="text-gray-900"
-          />
-        </div>
         <div class="relative z-0 mb-2 group w-1/2">
           <ConfirmationField
             name="confirmed"

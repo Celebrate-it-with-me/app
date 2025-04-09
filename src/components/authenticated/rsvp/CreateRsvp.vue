@@ -31,12 +31,7 @@ const rsvpState = reactive({
         </div>
 
         <div>
-          <TextAreaField
-            label="Description"
-            v-model="rsvpState.description"
-            show-error
-
-          />
+          
         </div>
       </Form>
     </div>

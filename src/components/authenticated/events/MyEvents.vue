@@ -3,13 +3,17 @@ import CwmAlert from '@/components/UI/alerts/CWMAlert.vue'
 import CreateEvent from '@/components/authenticated/events/CreateEvent.vue'
 import ShowEvent from '@/components/authenticated/events/ShowEvent.vue'
 import MyEventsList from '@/components/authenticated/events/MyEventsList.vue'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 
 // Data
 const activeView = ref('none')
-
 const eventsStore = useEventsStore()
+
+onMounted(() => {
+  handleCancelCreate()
+})
+
 
 const handleCreateEvent = () => {
   eventsStore.currentEvent = null
@@ -17,7 +21,11 @@ const handleCreateEvent = () => {
 }
 
 const handleCancelCreate = () => {
-  activeView.value = 'none'
+  if (eventsStore.currentEvent) {
+    activeView.value = 'showEvent'
+  } else {
+    activeView.value = 'none'
+  }
 }
 
 const handleEditEvent = () => {

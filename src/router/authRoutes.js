@@ -5,12 +5,14 @@ import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.v
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
 import CWMRsvp from '../components/authenticated/rsvp/CWMRsvp.vue'
-import CWMGallery from '../components/authenticated/gallery/CWMGallery.vue'
+import CwmSweetMemories from '@/components/authenticated/sweet-memories/CWMSweetMemories.vue'
 import CWMSeatAccommodation from '../components/authenticated/seat-accommodation/CWMSeatAccommodation.vue'
 import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
 import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
 import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue'
 import CWMSuggestMusic from '../components/authenticated/suggest-music/CWMSuggestMusic.vue'
+import CWMBackgroundMusic from '../components/authenticated/background-music/CWMBackgroundMusic.vue'
+import CWMEventComments from '../components/authenticated/event-comments/CWMEventComments.vue'
 
 const authRoutes = [
   {
@@ -62,11 +64,11 @@ const authRoutes = [
         }
       },
       {
-        path: 'gallery',
-        name: 'gallery',
-        component: CWMGallery,
+        path: 'sweet-memories',
+        name: 'sweet-memories',
+        component: CwmSweetMemories,
         meta: {
-          title: 'Art Gallery'
+          title: 'Sweet Memories'
         }
       },
       {
@@ -99,6 +101,22 @@ const authRoutes = [
         component: CWMSuggestMusic,
         meta: {
           title: 'Suggest Music'
+        }
+      },
+      {
+        path: 'background-music',
+        name: 'background-music',
+        component: CWMBackgroundMusic,
+        meta: {
+          title: 'Background Music'
+        }
+      },
+      {
+        path: 'event-comments',
+        name: 'event-comments',
+        component: CWMEventComments,
+        meta: {
+          title: 'Background Music'
         }
       },
       {

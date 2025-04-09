@@ -36,7 +36,7 @@ const onBeforeSlide = () => {
   :settings="{ speed: 500, plugins: plugins }"
   @onInit="onInit"
   @onBeforeSlide="onBeforeSlide"
-  class="sweet-memories-content flex items-center justify-between gap-16 mt-10"
+  class="sweet-memories-content flex flex-wrap items-center justify-center gap-6"
 >
   <SweetMemoriesItemGallery
     v-for="(item, index) in memories"

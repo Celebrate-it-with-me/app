@@ -1,5 +1,5 @@
 <script setup>
-import { useSongsStore } from '@/stores/useSongsStore'
+import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { computed } from 'vue'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
@@ -29,7 +29,7 @@ const props = defineProps({
   }
 })
 
-const songsStore = useSongsStore()
+const songsStore = useSuggestedMusicStore()
 const eventStore = useEventsStore()
 const notification = useNotificationStore()
 

@@ -16,9 +16,8 @@ defineProps({
 
 <template>
 <section
-  class="rsvp-section rounded-xl mt-5 mb-5 overflow-hidden w-full min-h-[680px]"
+  class="rsvp-section px-2 mt-5 mb-5 overflow-hidden w-full min-h-[500px] flex justify-center items-center"
 >
-
   <CwmRsvpSteps />
 </section>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, toRef, watch } from 'vue'
+import { computed, onMounted, ref, toRef, watch } from 'vue'
 import { useField } from 'vee-validate'
 
 // Emit events for parent reactivity
@@ -42,6 +42,14 @@ const {
 } = useField(name, {
   initialValue: props.modelValue
 })
+
+
+onMounted(() => {
+  if (props.modelValue) {
+    setValue(props.modelValue)
+  }
+})
+
 
 // Update prop-dependent internal value when modelValue changes
 watch(
