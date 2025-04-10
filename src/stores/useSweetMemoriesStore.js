@@ -50,7 +50,34 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
     },
 
     async loadSweetMemoriesImages(eventId){
-      return await SweetMemoriesService.loadSweetMemoriesImages(eventId)
+      try {
+        const response = await SweetMemoriesService.loadSweetMemoriesImages(eventId)
+
+        if (response.status === 200) {
+          const images = response.data.data ?? []
+
+          this.memoriesImages = images.map((image) => ({
+            id: image.id,
+            url: image.imagePath,
+            name: image.imageOriginalName ?? '',
+            size: image.imageSize,
+            file: null,
+            isExisting: true
+
+          }))
+
+          this.mode = 'update'
+          return { success: true, images: this.memoriesImages }
+        } else {
+          this.mode = 'create'
+          this.memoriesImages = []
+          return { success: false, error: response }
+        }
+      } catch (error) {
+        this.mode = 'create'
+        console.error('Error loading sweet memories event images:', error)
+        return { success: false, error }
+      }
     },
 
     async removeSweetMemoriesImage(eventId, fileId) {
