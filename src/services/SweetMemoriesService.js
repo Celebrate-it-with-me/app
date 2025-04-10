@@ -59,14 +59,55 @@ class SweetMemoriesService {
   }
 
   async uploadSweetMemoriesImages(files, eventId) {
-    const formData = new FormData()
-    files.forEach(file => {
-      formData.append('files', file)
-    })
-    return await CWM_API.post(`event/${eventId}/sweet-memories-images`, formData, {
+    const genericFormData = this.prepareFormData(files)
+
+    return await CWM_API.post(`event/${eventId}/sweet-memories-images`, genericFormData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
+    })
+  }
+
+  async updateSweetMemoriesImages({
+                                    eventId,
+                                    files
+                                  }){
+
+    console.log('in update sweetMemoriesImages in service', files)
+
+    const genericFormData = this.prepareFormData(files)
+    genericFormData.append('_method', 'PUT')
+
+    return await CWM_API.post(`event/${eventId}/sweet-memories-images`, genericFormData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  async loadSweetMemoriesImages(eventId) {
+    return await CWM_API.get(`event/${eventId}/sweet-memories-images`)
+  }
+
+  prepareFormData(files) {
+    const formData = new FormData()
+
+    files.forEach((file, index) => {
+      formData.append(`files[${index}]`, file.file)
+      formData.append(`metadata[${index}][name]`, file.name)
+      formData.append(`metadata[${index}][size]`, file.size)
+    })
+
+    return formData
+  }
+
+  async removeSweetMemoriesImage(eventId, fileId) {
+    return await CWM_API.delete(`event/${eventId}/sweet-memories-images/${fileId}`)
+  }
+
+  async updateImageName(imageId, name) {
+    return await CWM_API.patch(`sweet-memories-images/${imageId}`, {
+      name
     })
   }
 }

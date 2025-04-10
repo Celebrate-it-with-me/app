@@ -4,37 +4,14 @@
     <div v-if="previews.length > 0" class="mb-6">
       <h3 class="text-lg font-semibold mb-3 text-gray-700">Preview</h3>
       <div class="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-4">
-        <div
+        <ImageBox
           v-for="(preview, index) in previews"
           :key="index"
-          class="relative group rounded-lg overflow-hidden"
-        >
-          <img
-            :src="preview.url"
-            class="w-full h-24 object-cover"
-            :alt="`Preview ${index + 1}`"
-          />
+          :index="index"
+          :preview="preview"
 
-          <!-- Overlay with Remove Button -->
-          <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <button
-              @click="removeImage(index)"
-              class="bg-red-500 text-white px-3 py-1 rounded-full text-sm hover:bg-red-600 transition-colors"
-            >
-              Remove
-            </button>
-          </div>
-
-          <!-- File Name -->
-          <p class="text-sm text-gray-600 mt-1 truncate">
-            {{ preview.name }}
-          </p>
-
-          <!-- File Size -->
-          <p class="text-xs text-gray-500">
-            {{ formatFileSize(preview.size) }}
-          </p>
-        </div>
+          @file-removed="removeImage"
+        />
       </div>
     </div>
     <!-- Error Messages -->
@@ -95,21 +72,31 @@
 
     <div class="mt-4">
       <button
+        :disabled="!updatedNeeded"
         v-if="showUploadButton"
         class="w-full bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium py-2 px-6 rounded-md"
-        @click="uploadImages"
+        :class="{
+          'opacity-50 cursor-not-allowed': !updatedNeeded
+        }"
+        @click="handleRequest"
       >
-        Save Images
+        <span v-if="mode === 'create'">
+          Save Images
+        </span>
+        <span v-else>
+          Update Images
+        </span>
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import ImageBox from '@/components/authenticated/sweet-memories/ImageBox.vue'
 
 //Emits and Props
-const emit = defineEmits(['filesSelected', 'fileRemoved', 'uploadImages'])
+const emit = defineEmits(['filesSelected', 'fileRemoved', 'uploadImages', 'updateImages'])
 const props = defineProps({
   maxFileSize: {
     type: Number,
@@ -118,6 +105,14 @@ const props = defineProps({
   maxFiles: {
     type: Number,
     default: 10
+  },
+  initialFiles: {
+    type: Array,
+    default: () => []
+  },
+  mode: {
+    type: String,
+    default: 'create'
   }
 })
 
@@ -132,12 +127,27 @@ const showUploadButton = computed(() => {
   return previews.value.length > 0
 })
 
+const updatedNeeded = computed(() => {
+  if (props.mode === 'create') {
+    return false
+  }
+
+  return previews.value.some((image) => !image.isExisting)
+})
+
+onMounted(() => {
+  if (props.initialFiles.length > 0) {
+    previews.value = props.initialFiles
+  }
+})
+
+
 // Methods
-const handleDragOver = (event) => {
+const handleDragOver = () => {
   isDragging.value = true
 }
 
-const handleDragLeave = (event) => {
+const handleDragLeave = () => {
   isDragging.value = false
 }
 
@@ -155,6 +165,12 @@ const validateFile = (file) => {
   }
 
   return true
+}
+
+const removeImage = (index) => {
+  const removedFile = previews.value[index]
+  previews.value.splice(index, 1)
+  emit('file-removed', removedFile)
 }
 
 const handleFiles = (files) => {
@@ -175,7 +191,8 @@ const handleFiles = (files) => {
           url: e.target.result,
           name: file.name,
           size: file.size,
-          file: file
+          file: file,
+          isExisting: false
         })
       }
 
@@ -202,24 +219,26 @@ const triggerFileInput = () => {
   fileInput.value.click()
 }
 
-const removeImage = (index) => {
-  const removedFile = previews.value[index]
-  previews.value.splice(index, 1)
-  emit('file-removed', removedFile)
-}
-
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes'
-
-  const k = 1024
-  const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+const handleRequest = () => {
+  if (props.mode === 'create') {
+    return uploadImages()
+  }
+  return updateImages()
 }
 
 const uploadImages = () => {
   emit('uploadImages', previews.value)
 }
+
+const updateImages = () => {
+  emit('updateImages', previews.value.filter((img) => !img.isExisting))
+}
+
+watch(() => props.initialFiles, (newValue) => {
+  previews.value = newValue
+}, {
+  deep: true,
+  immediate: true
+})
 
 </script>

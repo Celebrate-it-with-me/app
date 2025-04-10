@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import EventCommentsService from '../services/EventCommentsService'
 import SweetMemoriesService from '@/services/SweetMemoriesService'
 
 export const useSweetMemoriesStore = defineStore('sweetMemories', {
@@ -11,7 +10,7 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
       backgroundColor: '#fff',
       maxPictures: 5
     },
-    memories: [],
+    memoriesImages: [],
     memory: {
       id: null,
       picture: null,
@@ -39,24 +38,29 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
     },
 
     async uploadSweetMemoriesImages(files, eventId){
-      const formData = new FormData()
-      files.forEach(file => {
-        formData.append('files', file)
+      return await SweetMemoriesService.uploadSweetMemoriesImages(files, eventId)
+    },
+
+    async updateSweetMemoriesImages(eventId, files) {
+      console.log('in sweet memories store', files)
+      return await SweetMemoriesService.updateSweetMemoriesImages({
+        eventId,
+        files,
       })
-      return await SweetMemoriesService.uploadSweetMemoriesImages(formData, eventId)
     },
 
-    async addComment({ eventId, userId, origin }) {
-      return EventCommentsService.addComment({ eventId, userId, origin, ...this.currentComment })
+    async loadSweetMemoriesImages(eventId){
+      return await SweetMemoriesService.loadSweetMemoriesImages(eventId)
     },
 
-    async loadComments(eventId) {
-      return EventCommentsService.loadComments(eventId)
+    async removeSweetMemoriesImage(eventId, fileId) {
+      return await SweetMemoriesService.removeSweetMemoriesImage(eventId, fileId)
     },
 
-    async loadMoreComments(eventId, page) {
-      return EventCommentsService.loadMoreComments(eventId, page)
+    async updateImageName(imageId, name) {
+      return await SweetMemoriesService.updateImageName(imageId, name)
     }
+
   },
   getters: {}
 })
