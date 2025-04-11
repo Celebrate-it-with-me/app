@@ -2,7 +2,8 @@
 import ImageUpload from '@/components/authenticated/sweet-memories/ImageUpload.vue'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
 import { useUserStore } from '@/stores/useUserStore'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
+import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
 
 const sweetMemoriesStore = useSweetMemoriesStore()
 const currentUserStore = useUserStore()
@@ -97,7 +98,16 @@ const handleUpdateImages = async (files) => {
       @upload-images="handleUploadImages"
       @update-images="handleUpdateImages"
     />
+
+    <div class="sweet__memories-previous mt-6">
+      <SweetMemories
+        :mode="'create'"
+      />
+    </div>
   </div>
+
+
+
 </template>
 
 <style scoped></style>
