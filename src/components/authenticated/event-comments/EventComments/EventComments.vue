@@ -162,7 +162,7 @@ const addComment = async () => {
     creatingComment.value = true
 
     const response = await commentStore.addComment({
-      eventId: userStore.currentEventId,
+      eventId: userEventId.value,
       userId: computedUserId.value,
       origin: props.origin,
     })
