@@ -6,7 +6,7 @@ import { useTemplateStore } from '@/stores/useTemplateStore'
 import MainLayout from '@/views/non-authenticated/templates/butterfly-vision/MainLayout.vue'
 
 const route = useRoute()
-const loading = ref(false)
+const loading = ref(true)
 const templateStore = useTemplateStore()
 
 
@@ -24,13 +24,6 @@ const getEventData = async (eventId, guestCode) => {
       const { event, mainGuest } = response.data.data ?? {}
 
       templateStore.event = event
-      templateStore.event.mealsAvailable = [
-        { value: 1, text: 'Chicken Soup' },
-        { value: 2, text: 'Motton Kabab' },
-        { value: 3, text: 'Chicken BBQ' },
-        { value: 4, text: 'Mix Salad' },
-        { value: 5, text: 'Beef Ribs' }
-      ]
       templateStore.guest = mainGuest
     }
 

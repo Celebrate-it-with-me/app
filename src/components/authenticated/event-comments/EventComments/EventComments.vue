@@ -31,8 +31,8 @@ const userStore = useUserStore()
 const commentStore = useEventCommentsStore()
 const templateStore = useTemplateStore()
 const creatingComment = ref(false)
-const notificationStore = useNotificationStore()
 const loadingComments = ref(false)
+const notificationStore = useNotificationStore()
 const loadingMore = ref(false)
 const totalItems = ref(0)
 
@@ -50,7 +50,6 @@ const buttonColorComputed = computed(() => {
 
   return { backgroundColor: templateStore?.event?.commentsConfig?.buttonColor ?? '' }
 })
-
 const buttonTextComputed = computed(() => {
   if (props.origin === 'admin') {
     return commentStore?.config?.buttonText ?? ''
@@ -58,7 +57,6 @@ const buttonTextComputed = computed(() => {
 
   return templateStore?.event?.commentsConfig?.buttonText ?? ''
 })
-
 const commentsTitle = computed(() => {
   if (props.origin === 'admin') {
     return commentStore?.config?.title ?? ''
@@ -74,6 +72,15 @@ const commentsSubtitle = computed(() => {
   return templateStore?.event?.commentsConfig?.subTitle ?? ''
 })
 
+const userEventId = computed(() => {
+  if (props.origin === 'admin') {
+    return userStore.currentEventId
+  }
+
+  return templateStore.event.id
+})
+
+
 onMounted(() => {
   loadComments()
 })
@@ -82,7 +89,7 @@ const loadComments = async (updatePage = true) => {
   try {
     loadingComments.value = true
 
-    const response = await commentStore.loadComments(userStore.currentEventId)
+    const response = await commentStore.loadComments(userEventId.value)
 
     if (response.status === 200) {
       commentStore.eventComments = response.data?.data ?? []
@@ -117,7 +124,7 @@ const onLoadMore = async () => {
   try {
     if (canLoadMore.value) {
       loadingMore.value = true
-      const response = await commentStore.loadMoreComments(userStore.currentEventId, page.value)
+      const response = await commentStore.loadMoreComments(userEventId.value, page.value)
 
       if (response.status === 200) {
         commentStore.eventComments = [...commentStore.eventComments, ...response.data?.data ?? []]
