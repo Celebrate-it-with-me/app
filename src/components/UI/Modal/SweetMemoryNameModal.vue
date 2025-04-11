@@ -6,6 +6,7 @@ import TextField from '@/components/UI/form/TextField.vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
+import { useUserStore } from '@/stores/useUserStore'
 
 const emit = defineEmits(['closeModal', 'nameUpdated'])
 const props = defineProps({
@@ -31,6 +32,7 @@ const loading = ref(false)
 const showModal = ref(props.open)
 const name = ref(props.imageFile.name)
 const sweetMemoriesStore = useSweetMemoriesStore()
+const currentUserStore = useUserStore()
 
 const handleClose = () => {
   emit('closeModal')
@@ -43,7 +45,7 @@ const updateName = async () => {
     const response = await sweetMemoriesStore.updateImageName(props.imageFile.id, name.value)
 
     if (response.status === 200) {
-      // I need to move images to the store
+      await sweetMemoriesStore.loadSweetMemoriesImages(currentUserStore.currentEventId)
       handleClose()
     } else {
       console.error(response)

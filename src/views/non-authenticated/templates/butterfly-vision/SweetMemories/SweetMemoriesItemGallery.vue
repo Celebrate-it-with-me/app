@@ -1,28 +1,23 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
-const props = defineProps({
+defineProps({
   galleryItem: {
     type: Object,
     required: true
   }
 })
 
-const imageUrl = computed(() => props.galleryItem.image)
-
-const thumb = computed(() => props.galleryItem.thumb)
-
 </script>
 
 <template>
   <a
     key="image1"
-    :href="imageUrl"
+    :href="galleryItem.image"
     class="image_container w-[150px] h-[150px]"
+    :data-sub-html="galleryItem.subHtml"
   >
     <img
-      :src="thumb"
-      alt="Thumbnail 1"
+      :src="galleryItem.thumb"
+      :alt="galleryItem.title"
       class="rounded"
     />
   </a>

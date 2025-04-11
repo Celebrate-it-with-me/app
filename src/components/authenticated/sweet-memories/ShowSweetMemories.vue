@@ -2,20 +2,18 @@
 import ImageUpload from '@/components/authenticated/sweet-memories/ImageUpload.vue'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
 import { useUserStore } from '@/stores/useUserStore'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
+import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemories.vue'
 
 const sweetMemoriesStore = useSweetMemoriesStore()
 const currentUserStore = useUserStore()
-const mode = ref('create')
 
 onMounted(() => {
-  // Load the sweet memories configuration when the component is mounted
   loadSweetMemoriesEventImages()
 })
 
 // Methods
 const handleFilesSelected = (files) => {
-  // Handle the selected files
   console.log('Selected files:', files)
 }
 
@@ -43,10 +41,7 @@ const removeImage = async (fileId) => {
   }
 }
 
-
 const handleUploadImages = async (files) => {
-  // Handle the upload images
-  console.log('Upload images:', files)
   try {
     const response = await sweetMemoriesStore.uploadSweetMemoriesImages(
       files,
@@ -64,32 +59,9 @@ const handleUploadImages = async (files) => {
 }
 
 const loadSweetMemoriesEventImages = async () => {
-  // Load the sweet memories event images
-  try {
-    const response = await sweetMemoriesStore.loadSweetMemoriesImages(
-      currentUserStore.currentEventId
-    )
-
-    if (response.status === 200) {
-      const images = response.data.data ?? []
-
-      sweetMemoriesStore.memoriesImages = images.map((image) => ({
-        id: image.id,
-        url: image.imagePath,
-        name: image.imageOriginalName ?? '',
-        size: image.imageSize,
-        file: null,
-        isExisting: true
-      }))
-
-      mode.value = 'update'
-    } else {
-      mode.value = 'create'
-      console.error('Error loading sweet memories event images:', response)
-    }
-  } catch (error) {
-    mode.value = 'create'
-    console.error('Error loading sweet memories event images:', error)
+  const result = await sweetMemoriesStore.loadSweetMemoriesImages(currentUserStore.currentEventId)
+  if (!result.status) {
+    console.error('Error loading sweet memories images:', result)
   }
 }
 
@@ -120,13 +92,22 @@ const handleUpdateImages = async (files) => {
       :max-file-size="5 * 1024 * 1024"
       :max-files="sweetMemoriesStore?.config?.maxPictures ?? 2"
       :initial-files="sweetMemoriesStore?.memoriesImages ?? []"
-      :mode="mode"
+      :mode="sweetMemoriesStore.mode"
       @files-selected="handleFilesSelected"
       @file-removed="handleFileRemoved"
       @upload-images="handleUploadImages"
       @update-images="handleUpdateImages"
     />
+
+    <div class="sweet__memories-previous mt-6">
+      <SweetMemories
+        :mode="'create'"
+      />
+    </div>
   </div>
+
+
+
 </template>
 
 <style scoped></style>
