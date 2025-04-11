@@ -6,7 +6,8 @@ const CWM_API = axios.create({
     withCredentials: true,
     withXSRFToken: true,
     headers: {
-        Accept: 'application/json'
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
     }
 })
 
