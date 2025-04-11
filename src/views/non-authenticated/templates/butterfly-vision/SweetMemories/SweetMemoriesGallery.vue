@@ -29,19 +29,40 @@ const onBeforeSlide = () => {
   console.log('calling before slide');
 }
 
+
+const gallerySettings = {
+  speed: 500,
+  plugins: plugins,
+  thumbnail: true,
+  showThumbByDefault: true,
+  allowMediaOverlap: false,
+  toggleThumb: true,
+  licenseKey: 'your-license-key',
+  download: false,
+  counter: true,
+  subHtmlSelectorRelative: true,
+  appendSubHtmlTo: '.lg-item',
+  mousewheel: true
+}
+
+
+
 </script>
 
 <template>
-<LightGallery
-  :settings="{ speed: 500, plugins: plugins }"
-  @onInit="onInit"
-  @onBeforeSlide="onBeforeSlide"
-  class="sweet-memories-content flex flex-wrap items-center justify-center gap-6"
->
-  <SweetMemoriesItemGallery
-    v-for="(item, index) in memories"
-    :gallery-item="item"
-    :key="index"
-  />
-</LightGallery>
+<div class="gallery-container">
+  <LightGallery
+    :settings="gallerySettings"
+    @onInit="onInit"
+    @onBeforeSlide="onBeforeSlide"
+    class="sweet-memories-content flex flex-wrap items-center justify-center gap-6"
+  >
+    <SweetMemoriesItemGallery
+      v-for="(item, index) in memories"
+      :gallery-item="item"
+      :key="index"
+    />
+  </LightGallery>
+</div>
+
 </template>

@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import EventCommentsService from '../services/EventCommentsService'
 import SweetMemoriesService from '@/services/SweetMemoriesService'
 
 export const useSweetMemoriesStore = defineStore('sweetMemories', {
@@ -11,7 +10,7 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
       backgroundColor: '#fff',
       maxPictures: 5
     },
-    memories: [],
+    memoriesImages: [],
     memory: {
       id: null,
       picture: null,
@@ -38,17 +37,57 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
       })
     },
 
-    async addComment({ eventId, userId, origin }) {
-      return EventCommentsService.addComment({ eventId, userId, origin, ...this.currentComment })
+    async uploadSweetMemoriesImages(files, eventId){
+      return await SweetMemoriesService.uploadSweetMemoriesImages(files, eventId)
     },
 
-    async loadComments(eventId) {
-      return EventCommentsService.loadComments(eventId)
+    async updateSweetMemoriesImages(eventId, files) {
+      console.log('in sweet memories store', files)
+      return await SweetMemoriesService.updateSweetMemoriesImages({
+        eventId,
+        files,
+      })
     },
 
-    async loadMoreComments(eventId, page) {
-      return EventCommentsService.loadMoreComments(eventId, page)
+    async loadSweetMemoriesImages(eventId){
+      try {
+        const response = await SweetMemoriesService.loadSweetMemoriesImages(eventId)
+
+        if (response.status === 200) {
+          const images = response.data.data ?? []
+
+          this.memoriesImages = images.map((image) => ({
+            id: image.id,
+            url: image.imagePath,
+            name: image.imageOriginalName ?? '',
+            size: image.imageSize,
+            file: null,
+            isExisting: true
+
+          }))
+
+          this.mode = 'update'
+          return { success: true, images: this.memoriesImages }
+        } else {
+          this.mode = 'create'
+          this.memoriesImages = []
+          return { success: false, error: response }
+        }
+      } catch (error) {
+        this.mode = 'create'
+        console.error('Error loading sweet memories event images:', error)
+        return { success: false, error }
+      }
+    },
+
+    async removeSweetMemoriesImage(eventId, fileId) {
+      return await SweetMemoriesService.removeSweetMemoriesImage(eventId, fileId)
+    },
+
+    async updateImageName(imageId, name) {
+      return await SweetMemoriesService.updateImageName(imageId, name)
     }
+
   },
   getters: {}
 })

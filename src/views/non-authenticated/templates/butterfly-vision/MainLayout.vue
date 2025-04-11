@@ -11,14 +11,12 @@ import { templateRef } from '@vueuse/core'
 import SeparatorSection from '@/views/non-authenticated/templates/butterfly-vision/SeparatorSection.vue'
 import CWMItinerario from '@/views/non-authenticated/templates/butterfly-vision/Itinerario/CWMItinerario.vue'
 import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
-import BackgroundMusic from '@/components/authenticated/background-music/BackgroundMusic/BackgroundMusic.vue'
 import SwipeLeftIcon from '@/views/non-authenticated/templates/butterfly-vision/SwipeLeftIcon/SwipeLeftIcon.vue'
 
 const showScrollBtn = ref(false)
 const videoReproduced = ref(true)
 const showButterflyLogo = ref(true)
 const videoInstance = templateRef('videoRef')
-const mainSections = ref([])
 
 onMounted(() => {
   document.body.classList.remove('dark')
@@ -120,7 +118,10 @@ const handleMoveToTop = () => {
         mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
       </SeparatorSection>
 
-      <SweetMemories class="main-section" />
+      <SweetMemories
+        class="main-section"
+        :mode="'presentation'"
+      />
 
       <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
