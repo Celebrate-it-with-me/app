@@ -66,7 +66,7 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
 
           }))
 
-          this.mode = 'update'
+          this.mode = (this.memoriesImages.length > 0) ? 'update' : 'create'
           return { success: true, images: this.memoriesImages }
         } else {
           this.mode = 'create'
