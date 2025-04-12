@@ -2,55 +2,68 @@ import axios from 'axios';
 import { useUserStore } from '@/stores/useUserStore'
 
 const CWM_API = axios.create({
-    baseURL: import.meta.env.VITE_API_URL + 'api/v1/app',
-    withCredentials: true,
-    withXSRFToken: true,
-    headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-    }
-})
+  baseURL: import.meta.env.VITE_API_URL + 'api/v1/app',
+  withCredentials: true,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  }
+});
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
 
 CWM_API.interceptors.request.use(
   (config) => {
-      const userStore = useUserStore();
-      // Todo check pinia is not persisting the userStore
-      // Attach the token to the Authorization header if it exists
-      if (userStore.token) {
-          config.headers.Authorization = `Bearer ${userStore.token}`;
-      }
+    const userStore = useUserStore();
 
-      return config; // Return the modified config
+    const token = getCookie('XSRF-TOKEN');
+    if (token) {
+      config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+    }
+
+    if (userStore.token) {
+      config.headers.Authorization = `Bearer ${userStore.token}`;
+    }
+
+    return config;
   },
   (error) => {
-      // Always reject the promise on request error
-      return Promise.reject(error);
+    return Promise.reject(error);
   }
 );
 
 CWM_API.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    (error) => {
-        return onError(error);
-    }
-)
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return onError(error);
+  }
+);
 
 const onError = (error) => {
-    if (error.response.status === 401) {
-        console.log(error.message);
+  if (error.response) {
+    switch (error.response.status) {
+      case 401:
+        console.log('Unauthorized:', error.message);
+        break;
+      case 403:
+        console.log('Forbidden:', error.message);
+        break;
+      case 404:
+        console.log('Not Found:', error.message);
+        break;
+      case 419:
+        console.log('CSRF Token Mismatch:', error.message);
+        // Podrías intentar refrescar el token aquí
+        break;
     }
-
-    if (error.response.status === 403) {
-        console.log(error.message);
-    }
-
-    if (error.response.status === 404) {
-        console.log(error.message);
-    }
-
-    return error;
-}
+  }
+  return Promise.reject(error); // Es mejor rechazar la promesa para que el error se propague
+};
 
 export { CWM_API }
