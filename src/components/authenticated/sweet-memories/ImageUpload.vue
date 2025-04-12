@@ -129,7 +129,7 @@ const showUploadButton = computed(() => {
 
 const updatedNeeded = computed(() => {
   if (props.mode === 'create') {
-    return false
+    return true
   }
 
   return previews.value.some((image) => !image.isExisting)
