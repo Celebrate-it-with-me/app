@@ -4,7 +4,6 @@ import { ref } from 'vue'
 import CreateUpdateSweetMemoriesConfig
   from '@/components/authenticated/sweet-memories/CreateUpdateSweetMemoriesConfig.vue'
 import ShowSweetMemories from '@/components/authenticated/sweet-memories/ShowSweetMemories.vue'
-
 const loading = ref(false)
 </script>
 
