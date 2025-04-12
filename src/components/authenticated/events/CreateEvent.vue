@@ -39,7 +39,7 @@ const eventState = reactive({
   processing: false,
   saveTheDate: false,
   rsvp: false,
-  gallery: false,
+  sweetMemories: false,
   music: false,
   backgroundMusic: false,
   eventComments: false,
@@ -154,7 +154,7 @@ const initializeValues = () => {
     eventState.processing = false
     eventState.saveTheDate = !!eventStore.currentEvent?.eventFeature?.saveTheDate ?? false
     eventState.rsvp = !!eventStore.currentEvent?.eventFeature?.rsvp ?? false
-    eventState.gallery = !!eventStore.currentEvent?.eventFeature?.gallery ?? false
+    eventState.sweetMemories = !!eventStore.currentEvent?.eventFeature?.sweetMemories ?? false
     eventState.music = !!eventStore.currentEvent?.eventFeature?.music ?? false
     eventState.backgroundMusic = !!eventStore.currentEvent?.eventFeature?.backgroundMusic ?? false
     eventState.eventComments = !!eventStore.currentEvent?.eventFeature?.eventComments ?? false
@@ -381,7 +381,7 @@ watch(
 
         <ToggleField label="RSVP" name="rsvp" v-model="eventState.rsvp" />
 
-        <ToggleField label="Gallery" name="gallery" v-model="eventState.gallery" />
+        <ToggleField label="Sweet Memories" name="sweetMemories" v-model="eventState.sweetMemories" />
 
         <ToggleField label="Music" name="music" v-model="eventState.music" />
 
