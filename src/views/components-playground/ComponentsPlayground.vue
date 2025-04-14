@@ -177,6 +177,155 @@
       </div>
     </section>
 
+    <section class="mb-10">
+      <h2 class="text-xl font-bold mb-4">Pagination</h2>
+
+      <div class="flex flex-col items-start gap-4">
+        <CPagination v-model:currentPage="currentPage" :totalPages="totalPages" />
+
+        <p class="text-sm">
+          Current Page: <span class="font-semibold text-primary">{{ currentPage }}</span>
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-xl font-bold mb-4">Avatars</h2>
+
+      <div class="flex items-center gap-6">
+        <CAvatar src="https://randomuser.me/api/portraits/men/32.jpg" size="sm" />
+        <CAvatar src="https://randomuser.me/api/portraits/men/32.jpg" size="md" />
+        <CAvatar src="https://randomuser.me/api/portraits/men/32.jpg" size="lg" bordered />
+
+        <CAvatar name="Henry Carmenate" size="sm" />
+        <CAvatar name="Henry Carmenate" size="md" />
+        <CAvatar name="Henry Carmenate" size="lg" bordered />
+
+        <CAvatar size="lg" />
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-xl font-bold mb-4">Inputs</h2>
+
+      <div class="space-y-6 max-w-md">
+        <!-- Input básico -->
+        <CInput v-model="inputName" label="Name" placeholder="Enter your name" />
+
+        <!-- Input con ícono -->
+        <CInput v-model="inputEmail" label="Email" placeholder="email@example.com" type="email">
+          <template #icon>
+            <Mail class="w-4 h-4 text-gray-400 dark:text-gray-300" />
+          </template>
+        </CInput>
+
+        <!-- Input con error -->
+        <CInput v-model="inputWithError" label="Username" placeholder="your_username" error="Username is required" />
+
+        <!-- Input con success visual -->
+        <CInput v-model="inputName" label="Validated" placeholder="Looks good" success />
+      </div>
+    </section>
+
+    <section class="mb-10 max-w-md">
+      <h2 class="text-xl font-bold mb-4">Vee-Validate + Zod</h2>
+
+      <form @submit.prevent="onSubmit" class="space-y-6">
+        <!-- Name Field -->
+        <Field name="name" v-slot="{ field, errorMessage }">
+          <CInput
+            v-bind="field"
+            label="Name"
+            placeholder="Your name"
+            :error="errorMessage"
+          />
+        </Field>
+
+        <!-- Email Field -->
+        <Field name="email" v-slot="{ field, errorMessage }">
+          <CInput
+            v-bind="field"
+            label="Email"
+            placeholder="you@example.com"
+            type="email"
+            :error="errorMessage"
+          />
+        </Field>
+
+        <button type="submit" class="mt-4 px-4 py-2 bg-primary text-white rounded-xl">
+          Submit
+        </button>
+      </form>
+    </section>
+
+    <section class="mb-10 max-w-md">
+      <h2 class="text-xl font-bold mb-4">Textarea</h2>
+      <CTextarea
+        v-model="message"
+        label="Message"
+        placeholder="Type your message here..."
+      />
+    </section>
+
+    <section class="mb-10 max-w-md">
+      <h2 class="text-xl font-bold mb-4">Select</h2>
+      <div class="w-full">
+        <label for="custom-select" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+          Choose an option
+        </label>
+        <select
+          id="custom-select"
+          v-model="selected"
+          class="w-full bg-transparent border-b px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary focus:ring-0"
+        >
+          <option disabled value="">Select an option</option>
+          <option v-for="(option, index) in options" :key="index" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+        <p class="mt-2 text-sm text-gray-500">Selected: {{ selected }}</p>
+      </div>
+    </section>
+
+    <section class="mb-10 max-w-md">
+      <h2 class="text-xl font-bold mb-4">Checkbox</h2>
+      <CCheckbox
+        v-model="accepted"
+        label="I accept the terms and conditions"
+      />
+      <p class="mt-2 text-sm text-gray-500">Accepted: {{ accepted }}</p>
+    </section>
+
+    <section class="mb-10 max-w-md">
+      <h2 class="text-xl font-bold mb-4">Radio Buttons</h2>
+      <div class="space-y-2 space-x-4">
+        <CRadio
+          v-model="selectedOption"
+          name="options"
+          value="option1"
+          label="Option 1"
+        />
+        <CRadio
+          v-model="selectedOption"
+          name="options"
+          value="option2"
+          label="Option 2"
+        />
+        <CRadio
+          v-model="selectedOption"
+          name="options"
+          value="option3"
+          label="Option 3"
+        />
+      </div>
+      <p class="mt-2 text-sm text-gray-500">Selected: {{ selectedOption }}</p>
+    </section>
+
+    <section class="mb-10 max-w-md">
+      <h2 class="text-xl font-bold mb-4">Toggle Example</h2>
+      <CToggle v-model="isFeatureEnabled" label="Enable feature" />
+    </section>
+
   </div>
 </template>
 
@@ -188,8 +337,47 @@ import CCard from '@/components/UI/cards/CCard.vue'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
 import CBadge from '@/components/UI/badges/CBadge.vue'
 import { Info, CheckCircle2, AlertTriangle, XCircle } from 'lucide-vue-next'
+import CPagination from '@/components/UI/pagination/CPagination.vue'
+import CAvatar from '@/components/UI/avatar/CAvatar.vue'
+import { Mail } from 'lucide-vue-next'
+import { useForm, Field } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import { z } from 'zod'
+import CInput from '@/components/UI/form2/CInput.vue'
+import CTextarea from '@/components/UI/form2/CTextarea.vue'
+import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
+import CRadio from '@/components/UI/form2/CRadio.vue'
+import CToggle from '@/components/UI/form2/CToggle.vue'
 
+const schema = toTypedSchema(z.object({
+  email: z.string().email('Invalid email address'),
+  name: z.string().min(1, 'Name is required'),
+}))
+
+const { handleSubmit, errors } = useForm({
+  validationSchema: schema
+})
+
+const onSubmit = handleSubmit(values => {
+  console.log('Submitted values:', values)
+})
+
+const inputName = ref('')
+const inputEmail = ref('')
+const inputWithError = ref('')
 const isDark = ref(false)
+const currentPage = ref(1)
+const totalPages = 5
+const message = ref('')
+const selected = ref('')
+const options = [
+  { label: 'Option 1', value: 'option-1' },
+  { label: 'Option 2', value: 'option-2' },
+  { label: 'Option 3', value: 'option-3' }
+]
+const accepted = ref(false)
+const selectedOption = ref('option1')
+const isFeatureEnabled = ref(false)
 
 const toggleDark = () => {
   isDark.value = !isDark.value

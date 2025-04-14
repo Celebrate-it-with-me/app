@@ -1,6 +1,6 @@
-import SignUpView from '../views/non-authenticated/SignUpView.vue'
-import HomeView from '@/views/HomeView.vue'
-import SignInView from '@/views/non-authenticated/SignInView.vue'
+import HomeView from '@/views/external/HomeView.vue'
+import SignUpView from '@/views/external/SignUpView.vue'
+import SignInView from '@/views/external/SignInView.vue'
 
 const nonAuthRoutes = [
   {
