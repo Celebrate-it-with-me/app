@@ -13,6 +13,7 @@
       <slot name="subtitle" />
       <slot name="content" />
       <slot name="cta" />
+      <slot />
     </div>
   </div>
 </template>
@@ -34,7 +35,7 @@ const variantClass = computed(() => {
     default: '',
     testimonial: 'text-left',
     pricing: 'text-center bg-white dark:bg-gray-800',
-    gallery: 'p-0 shadow-none',
+    gallery: 'p-0 shadow-xl',
     feature: 'text-left border border-gray-200 dark:border-gray-700'
   }[props.variant] || ''
 })
