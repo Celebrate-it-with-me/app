@@ -2,9 +2,9 @@
   <CNavbar
     :logo="'Celebrateitwithme'"
     :links="links"
-    loginLink="#login"
+    loginLink="sign-in"
     ctaText="Get Started"
-    ctaHref="#get-started"
+    ctaHref="sign-up"
   />
 </template>
 

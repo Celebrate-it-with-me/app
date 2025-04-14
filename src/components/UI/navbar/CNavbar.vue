@@ -13,10 +13,23 @@
       </nav>
       <div class="flex items-center gap-4">
         <slot name="extra">
-          <a v-if="loginLink" :href="loginLink" class="text-sm text-gray-600 dark:text-gray-300 hover:text-primary">Login</a>
-          <a v-if="ctaText && ctaHref" :href="ctaHref" class="px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-primary to-secondary text-white shadow-glow">
-            {{ ctaText }}
-          </a>
+          <RouterLink
+            v-if="loginLink"
+            :to="`/${loginLink}`"
+          >
+            <a
+              class="text-sm text-gray-600 dark:text-gray-300 hover:text-primary"
+            >Login</a>
+          </RouterLink>
+
+          <RouterLink
+            v-if="ctaText && ctaHref"
+            :to="`/${ctaHref}`"
+          >
+            <a
+              class="px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-primary to-secondary text-white shadow-glow"
+            >{{ ctaText }}</a>
+          </RouterLink>
         </slot>
       </div>
     </div>
