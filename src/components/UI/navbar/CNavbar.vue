@@ -39,7 +39,7 @@
 <script setup>
 const props = defineProps({
   logo: {
-    type: String,
+    type: [String, Object],
     default: 'Celebrateitwithme'
   },
   links: {

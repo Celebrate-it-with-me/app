@@ -2,10 +2,7 @@
   <footer class="bg-gray-900 text-gray-300 pt-section px-4">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 pb-10">
       <div>
-        <h2 class="text-white text-xl font-bold mb-3">🎉 Celebrateitwithme</h2>
-        <p class="text-sm">
-          Making special moments unforgettable with powerful event planning tools.
-        </p>
+        <img :src="LogoFooter" alt="Celebrate it with me logo footer">
       </div>
 
       <div>
@@ -44,6 +41,12 @@
       </div>
     </div>
 
+    <div class="flex flex-row justify-center items-center mb-2">
+      <p class="text-xs font-extralight">
+        Making special moments unforgettable with powerful event planning tools.
+      </p>
+    </div>
+
     <hr class="border-gray-700 mb-6" />
 
     <div class="text-center text-sm text-gray-500 pb-6">
@@ -54,4 +57,5 @@
 
 <script setup>
 import { Mail, Phone, Instagram, Facebook, Twitter } from 'lucide-vue-next'
+import LogoFooter from '@/assets/images/commons/logo_top_secondary2.png'
 </script>
