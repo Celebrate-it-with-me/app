@@ -26,6 +26,14 @@ class UserService {
     )
   }
 
+  async confirmEmail(confirmUrl) {
+    return await CWM_API.get('sanctum/csrf-cookie', {
+      baseURL: import.meta.env.VITE_API_URL
+    }).then(
+      async () => await CWM_API.post(confirmUrl)
+    )
+  }
+
   async logOut() {
     return await CWM_API.post('logout')
   }

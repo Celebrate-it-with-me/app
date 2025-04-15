@@ -42,6 +42,10 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.register({ name, email, password})
     },
 
+    async confirmEmail(confirmUrl) {
+      return await UserService.confirmEmail(confirmUrl)
+    },
+
     initUserData({ name, email, userId, token, lastLogin }) {
       this.name = name
       this.email = email
