@@ -26,7 +26,7 @@
         :placeholder="placeholder"
         :disabled="disabled"
         @blur="handleFieldBlur"
-        class="pl-1 w-full bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-thin"
+        class="pl-1 w-full bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-extralight"
       />
     </div>
     <p
