@@ -45,7 +45,10 @@
           <CCheckbox
             label="Remember me"
           />
-          <a href="#" class="text-primary hover:underline">Forgot password?</a>
+
+          <router-link to="/forgot-password">
+            <span class="text-primary hover:underline">Forgot password?</span>
+          </router-link>
         </div>
 
         <CButton full type="submit">Sign In</CButton>
@@ -53,7 +56,9 @@
 
       <p class="mt-6 text-center text-sm text-text-light">
         Don't have an account?
-        <a href="/signup" class="text-primary font-medium hover:underline">Create one</a>
+        <router-link to="/sign-up">
+          <span class="text-primary font-medium hover:underline">Create one</span>
+        </router-link>
       </p>
     </CCard>
   </section>
