@@ -4,9 +4,12 @@
     loginLink="sign-in"
     ctaText="Get Started"
     ctaHref="sign-up"
+    @update-active-status="handleUpdateActiveStatus"
   >
     <template #logo>
-      <img :src="LogoImage" alt="Celebrate it with me logo" class="w-48 auto">
+      <router-link to="/">
+        <img :src="LogoImage" alt="Celebrate it with me logo" class="w-48 auto">
+      </router-link>
     </template>
   </CNavbar>
 </template>
@@ -17,10 +20,17 @@ import { ref } from 'vue'
 import LogoImage from '@/assets/images/commons/logo_primary.png'
 
 const links = ref([
-  { label: 'Features', href: '#features' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'Gallery', href: '#gallery' },
-  { label: 'Testimonials', href: '#testimonials' },
+  { label: 'Features', href: '#features', isActive: false },
+  { label: 'Pricing', href: '#pricing', isActive: false },
+  { label: 'Gallery', href: '#gallery', isActive: false },
+  { label: 'Testimonials', href: '#testimonials', isActive: false },
 ])
+
+
+const handleUpdateActiveStatus = (activeLink) => {
+  links.value.forEach(link => {
+    link.isActive = link.href === activeLink.href
+  })
+}
 
 </script>
