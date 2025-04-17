@@ -1,6 +1,6 @@
 import DashboardView from '../views/authenticated/DashboardView.vue'
 import EventsView from '../views/authenticated/EventsView.vue'
-import { useUserStore } from '../stores/useUserStore'
+import { useUserStore } from '@/stores/useUserStore'
 import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.vue'
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
@@ -13,6 +13,7 @@ import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue
 import CWMSuggestMusic from '../components/authenticated/suggest-music/CWMSuggestMusic.vue'
 import CWMBackgroundMusic from '../components/authenticated/background-music/CWMBackgroundMusic.vue'
 import CWMEventComments from '../components/authenticated/event-comments/CWMEventComments.vue'
+import ComponentsPlayground from '@/views/components-playground/ComponentsPlayground.vue'
 
 const authRoutes = [
   {
@@ -125,6 +126,14 @@ const authRoutes = [
         component: CWMAnalytics,
         meta: {
           title: 'Event Previous'
+        }
+      },
+      {
+        path: 'playground',
+        name: 'playground',
+        component: ComponentsPlayground,
+        meta: {
+          title: 'Components Playground'
         }
       }
     ]

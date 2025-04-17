@@ -38,8 +38,24 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.login({email, password, device})
     },
 
-    async register({ firstName, lastName, email, password }){
-      return await UserService.register({ firstName, lastName, email, password})
+    async register({ name, email, password }){
+      return await UserService.register({ name, email, password})
+    },
+
+    async confirmEmail(confirmUrl) {
+      return await UserService.confirmEmail(confirmUrl)
+    },
+
+    async sendResetPasswordLink(form) {
+      return await UserService.sendResetPasswordLink(form)
+    },
+
+    async checkResetLink(confirmUrl) {
+      return await UserService.checkResetLink(confirmUrl)
+    },
+
+    async changePassword({email, password, passwordConfirmation}) {
+      return await UserService.changePassword({email, password, passwordConfirmation})
     },
 
     initUserData({ name, email, userId, token, lastLogin }) {

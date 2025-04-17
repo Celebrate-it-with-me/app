@@ -1,6 +1,7 @@
-import SignUpView from '../views/non-authenticated/SignUpView.vue'
-import HomeView from '@/views/HomeView.vue'
-import SignInView from '@/views/non-authenticated/SignInView.vue'
+import HomeView from '@/views/external/HomeView.vue'
+import SignUpView from '@/views/external/SignUpView.vue'
+import SignInView from '@/views/external/SignInView.vue'
+import ConfirmEmailView from '@/views/external/ConfirmEmailView.vue'
 
 const nonAuthRoutes = [
   {
@@ -20,13 +21,21 @@ const nonAuthRoutes = [
     }
   },
   {
+    path: '/confirm-email',
+    name: 'confirm-email',
+    component: ConfirmEmailView,
+    meta: {
+      title: 'Confirm Email'
+    }
+  },
+  {
     path: '/sign-in',
     name: 'sign-in',
     component: SignInView,
     meta: {
       title: 'Sign up'
     }
-  }
+  },
 ]
 
 export { nonAuthRoutes }
