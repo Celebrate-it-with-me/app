@@ -41,9 +41,6 @@ const router = createRouter({
         ...eventsRoutes
       ]
     },
-    {
-
-    }
   ],
 })
 

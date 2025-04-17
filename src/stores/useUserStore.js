@@ -46,6 +46,18 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.confirmEmail(confirmUrl)
     },
 
+    async sendResetPasswordLink(form) {
+      return await UserService.sendResetPasswordLink(form)
+    },
+
+    async checkResetLink(confirmUrl) {
+      return await UserService.checkResetLink(confirmUrl)
+    },
+
+    async changePassword({email, password, passwordConfirmation}) {
+      return await UserService.changePassword({email, password, passwordConfirmation})
+    },
+
     initUserData({ name, email, userId, token, lastLogin }) {
       this.name = name
       this.email = email

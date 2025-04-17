@@ -48,7 +48,6 @@ const confirmEmail = async () => {
   try {
     const confirmUrl = decodeURIComponent(route.query.confirm)
 
-    console.log('checkin url', confirmUrl)
     if (!confirmUrl) {
       loading.value = false
       return

@@ -34,6 +34,34 @@ class UserService {
     )
   }
 
+  async sendResetPasswordLink(form) {
+    return await CWM_API.get('sanctum/csrf-cookie', {
+      baseURL: import.meta.env.VITE_API_URL
+    }).then(
+      async () => await CWM_API.post('forgot-password', form)
+    )
+  }
+
+  async checkResetLink(confirmUrl) {
+    return await CWM_API.get('sanctum/csrf-cookie', {
+      baseURL: import.meta.env.VITE_API_URL
+    }).then(
+      async () => await CWM_API.post(confirmUrl)
+    )
+  }
+
+  async changePassword({email, password, passwordConfirmation}) {
+    return await CWM_API.get('sanctum/csrf-cookie', {
+      baseURL: import.meta.env.VITE_API_URL
+    }).then(
+      async () => await CWM_API.post('reset-password', {
+        email,
+        password,
+        password_confirmation: passwordConfirmation
+      })
+    )
+  }
+
   async logOut() {
     return await CWM_API.post('logout')
   }
