@@ -25,7 +25,12 @@ const loadEvents = async () => {
       const result = response.data?.data ?? {}
       eventsStore.initUserEventsData(result)
 
-      triggerEventsModal()
+      console.log('checking just login', userStore.justLogin)
+      if (userStore.justLogin === true) {
+        console.log('entre')
+        triggerEventsModal()
+        userStore.justLogin = false
+      }
     } else {
       // Todo we need to handle the edge cases
       console.log('Error loading events')

@@ -18,7 +18,7 @@
             <template #content>
               <p class="text-sm text-text-light">{{ activeEvent.eventDescription }}</p>
               <p class="text-xs text-gray-400 mt-1">
-                {{ activeEvent?.startDate ? formatDate(activeEvent?.startDate) : '' }} - {{ activeEvent?.endDate ? formatDate(activeEvent?.endDate) : '' }}
+                {{ `${activeEvent?.startDate} - ${activeEvent?.endDate}` }}
               </p>
             </template>
             <template #cta>
@@ -26,7 +26,7 @@
             </template>
           </CCard>
         </div>
-        <div class="v-else">
+        <div v-else>
           <CAlert variant="info" >
             <template #message>
               There is no active event. Please select an event to continue or create a new one.
@@ -62,23 +62,24 @@
             </div>
           </CCard>
         </div>
-
-        <div class="grid grid-cols-1 gap-4 mt-2">
-          <CCard variant="feature" >
-            <div class="card__event-container flex flex-row justify-between items-center gap-2">
-              <div class="title__and-description">
-                <CHeading :level="5" weight="bold" color="text-text">
-                  Create new Event
-                </CHeading>
-              </div>
-
-              <div class="cta__button">
-                <CButton variant="gradient" @click="createNewEvent">Create</CButton>
-              </div>
-            </div>
-          </CCard>
-        </div>
       </div>
+
+      <div class="grid grid-cols-1 gap-4 mt-2">
+        <CCard variant="feature" >
+          <div class="card__event-container flex flex-row justify-between items-center gap-2">
+            <div class="title__and-description">
+              <CHeading :level="5" weight="bold" color="text-text">
+                Create new Event
+              </CHeading>
+            </div>
+
+            <div class="cta__button">
+              <CButton variant="gradient" @click="createNewEvent">Create</CButton>
+            </div>
+          </div>
+        </CCard>
+      </div>
+
     </div>
 
     <template #footer>
@@ -94,7 +95,6 @@ import { computed, ref } from 'vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import CCard from '@/components/UI/cards/CCard.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
-import { formatDate } from 'date-fns'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
 
 const emit = defineEmits(['update:modelValue'])

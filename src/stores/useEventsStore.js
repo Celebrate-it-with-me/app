@@ -9,7 +9,9 @@ export const useEventsStore = defineStore('eventsStore', {
   }),
   actions: {
     async setActiveEvent(event) {
+      const userStore = useUserStore()
       this.activeEvent = event
+      userStore.activeEvent = event.id
 
       await this.updateActiveEvent(event)
     },
@@ -19,8 +21,8 @@ export const useEventsStore = defineStore('eventsStore', {
     },
 
     initUserEventsData(result) {
-      this.events = result.events
-      this.activeEvent = result.activeEvent
+      this.events = result?.events
+      this.activeEvent = result?.last_active_event
     },
 
     setEvents(events) {

@@ -23,7 +23,7 @@ export const useUserStore = defineStore('userStore', {
     token: null,
     lastLogin: null,
     activeEvent: null,
-    currentEventId: null,
+    justLogin: false,
   }),
   persist: {
     enabled: true,
@@ -59,13 +59,14 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.changePassword({email, password, passwordConfirmation})
     },
 
-    initUserData({ name, email, userId, token, lastLogin, activeEvent }) {
+    initUserData({ name, email, userId, token, lastLogin, activeEvent, justLogin }) {
       this.name = name
       this.email = email
       this.userId = userId
       this.token = token
       this.lastLogin = lastLogin
       this.activeEvent = activeEvent
+      this.justLogin = justLogin
     },
 
     async initUserEvents() {
