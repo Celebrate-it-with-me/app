@@ -34,8 +34,8 @@ export const useUserStore = defineStore('userStore', {
     ],
   },
   actions: {
-    async login({ email, password, device }){
-      return await UserService.login({email, password, device})
+    async login({ email, password, remember, device }){
+      return await UserService.login({email, password, remember, device})
     },
 
     async register({ name, email, password }){
