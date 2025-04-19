@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { useUserStore } from '@/stores/useUserStore'
+import { useRouter } from 'vue-router'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const CWM_API = axios.create({
   baseURL: import.meta.env.VITE_API_URL + 'api/v1/app',
@@ -40,16 +42,16 @@ CWM_API.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
-    return onError(error);
+  async (error) => {
+    return await onError(error);
   }
 );
 
-const onError = (error) => {
+const onError = async (error) => {
   if (error.response) {
     switch (error.response.status) {
       case 401:
-        console.log('Unauthorized:', error.message);
+        await handleUnauthorized()
         break;
       case 403:
         console.log('Forbidden:', error.message);
@@ -59,11 +61,25 @@ const onError = (error) => {
         break;
       case 419:
         console.log('CSRF Token Mismatch:', error.message);
-        // Podrías intentar refrescar el token aquí
         break;
     }
   }
-  return Promise.reject(error); // Es mejor rechazar la promesa para que el error se propague
+  return Promise.reject(error);
 };
+
+const handleUnauthorized = async () => {
+  const router = useRouter()
+  const userStore = useUserStore()
+  const notificationStore = useNotificationStore()
+
+  notificationStore.addNotification({
+    type: 'error',
+    message: 'Session expired. Please log in again.',
+  })
+
+  await userStore.logOut()
+
+  await router.push({ name: 'sign-in' })
+}
 
 export { CWM_API }
