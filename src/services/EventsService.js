@@ -94,6 +94,12 @@ class EventsService {
     })
   }
 
+  async updateActiveEvent(event) {
+    return CWM_API.patch(`event/activeEvent`, {
+      eventId: event.id
+    })
+  }
+
   async removeCurrentEvent(currentEventId) {
     return CWM_API.delete(`event/${currentEventId}`)
   }

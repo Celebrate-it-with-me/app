@@ -5,23 +5,38 @@ import { useUserStore } from './useUserStore'
 export const useEventsStore = defineStore('eventsStore', {
   state: () => ({
     events: [],
-    currentEvent: null,
+    activeEvent: null,
   }),
   actions: {
+    async setActiveEvent(event) {
+      this.activeEvent = event
+
+      await this.updateActiveEvent(event)
+    },
+
+    async updateActiveEvent(event) {
+      return await EventsService.updateActiveEvent(event)
+    },
+
+    initUserEventsData(result) {
+      this.events = result.events
+      this.activeEvent = result.activeEvent
+    },
+
     setEvents(events) {
       this.events = events
     },
     selectEvent(eventId) {
       const userStore = useUserStore()
-      this.currentEvent = this.events.find((event) => event.id === eventId)
-      userStore.currentEventId = eventId
+      this.activeEvent = this.events.find((event) => event.id === eventId)
+      userStore.activeEventId = eventId
     },
     addEvent(event) {
       this.events.push(event)
     },
 
-    async removeCurrentEvent() {
-      return await EventsService.removeCurrentEvent(this.currentEvent.id)
+    async removeactiveEvent() {
+      return await EventsService.removeactiveEvent(this.activeEvent.id)
     },
 
     async editEvent({
@@ -44,7 +59,7 @@ export const useEventsStore = defineStore('eventsStore', {
                       analytics
                     }){
       return await EventsService.edit({
-        eventId: this.currentEvent.id,
+        eventId: this.activeEvent.id,
         eventName,
         startDate,
         endDate,

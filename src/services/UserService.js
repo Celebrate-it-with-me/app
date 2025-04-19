@@ -63,6 +63,10 @@ class UserService {
     )
   }
 
+  async getUserEvents() {
+    return await CWM_API.get('events')
+  }
+
   async logOut() {
     return await CWM_API.post('logout')
   }
