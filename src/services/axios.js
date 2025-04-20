@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useUserStore } from '@/stores/useUserStore'
-import { useRouter } from 'vue-router'
+import router from '@/router'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const CWM_API = axios.create({
@@ -68,14 +68,9 @@ const onError = async (error) => {
 };
 
 const handleUnauthorized = async () => {
-  const router = useRouter()
   const userStore = useUserStore()
   const notificationStore = useNotificationStore()
-
-  notificationStore.addNotification({
-    type: 'error',
-    message: 'Session expired. Please log in again.',
-  })
+  console.log('here qwe 123')
 
   await userStore.logOut()
 

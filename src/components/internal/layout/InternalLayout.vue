@@ -6,11 +6,13 @@ import { onMounted, ref } from 'vue'
 import CEventsModal from '@/components/UI/modals/CEventsModal.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const userStore = useUserStore()
 const eventsStore = useEventsStore()
 const showEventsModal = ref(false)
 const loading = ref(false)
+const notificationStore = useNotificationStore()
 
 onMounted(() => {
   loadEvents()
@@ -25,7 +27,6 @@ const loadEvents = async () => {
       const result = response.data?.data ?? {}
       eventsStore.initUserEventsData(result)
 
-      console.log('checking just login', userStore.justLogin)
       if (userStore.justLogin === true) {
         console.log('entre')
         triggerEventsModal()
@@ -34,10 +35,24 @@ const loadEvents = async () => {
     } else {
       // Todo we need to handle the edge cases
       console.log('Error loading events')
+      if (response.status === 401) {
+        notificationStore.addNotification({
+          type: 'error',
+          message: 'Session expired. Please log in again.',
+        })
+      }
+
     }
 
   } catch (e) {
-    console.log(e)
+    console.log('aqui error', e.response.status)
+    if (e.response.status === 401) {
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'Session expired. Please log in again.',
+      })
+    }
+
   } finally {
     loading.value = false
   }

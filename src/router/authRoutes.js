@@ -1,6 +1,6 @@
 import DashboardView from '../views/authenticated/DashboardView.vue'
-import EventsView from '../views/authenticated/EventsView.vue'
 import { useUserStore } from '@/stores/useUserStore'
+import EventsView from '@/views/internal/events/EventsView.vue'
 import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.vue'
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
@@ -14,6 +14,7 @@ import CWMSuggestMusic from '../components/authenticated/suggest-music/CWMSugges
 import CWMBackgroundMusic from '../components/authenticated/background-music/CWMBackgroundMusic.vue'
 import CWMEventComments from '../components/authenticated/event-comments/CWMEventComments.vue'
 import ComponentsPlayground from '@/views/components-playground/ComponentsPlayground.vue'
+import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
 
 const authRoutes = [
   {
@@ -25,13 +26,22 @@ const authRoutes = [
     }
   },
   {
-    path: '/dashboard',
+    path: '/dashboard/events',
     name: 'events',
     component: EventsView,
     meta: {
       title: 'My CwmEvents'
     },
-    children: [
+  },
+  {
+    path: '/dashboard/events/create',
+    name: 'create-events',
+    component: CreateEventsView,
+    meta: {
+      title: 'Create Event'
+    },
+  },
+    /*children: [
       {
         path: 'events',
         name: 'event-handle',
@@ -135,9 +145,16 @@ const authRoutes = [
         meta: {
           title: 'Components Playground'
         }
+      },
+      {
+        path: 'events',
+        name: 'events',
+        component: EventsView,
+        meta: {
+          title: 'My Events'
+        }
       }
-    ]
-  },
+    ]*/
   {
     path: '/logout',
     name: 'logout',

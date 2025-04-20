@@ -1,14 +1,14 @@
 export const EVENT_STATUSES = [
-  { value: 'draft', text: 'Draft' },
-  { value: 'published', text: 'Published' },
-  { value: 'archived', text: 'Archived' },
-  { value: 'canceled', text: 'Canceled' },
+  { value: 'draft', label: 'Draft' },
+  { value: 'published', label: 'Published' },
+  { value: 'archived', label: 'Archived' },
+  { value: 'canceled', label: 'Canceled' },
 ]
 
 export const EVENT_VISIBILITIES = [
-  { value: 'public', text: 'Public' },
-  { value: 'private', text: 'Private' },
-  { value: 'restricted', text: 'Restricted' }
+  { value: 'public', label: 'Public' },
+  { value: 'private', label: 'Private' },
+  { value: 'restricted', label: 'Restricted' }
 ]
 
 export const AUTOPLAY_ICON_SIZES = [

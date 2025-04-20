@@ -74,12 +74,7 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async logOut() {
-      const response = await UserService.logOut()
-
-      if (response.status === 200) {
-        console.log('is here. really')
         getActivePinia()._s.forEach((store) => store.$reset())
-      }
     },
 
     async initUserState() {
