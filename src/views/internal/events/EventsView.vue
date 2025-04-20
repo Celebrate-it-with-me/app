@@ -9,18 +9,10 @@
 
     <div v-if="activeEvent" class="mb-8">
       <CHeading :level="5" class="mb-2 text-primary">Active Event</CHeading>
-      <CCard variant="feature">
-        <template #title>{{ activeEvent.eventName }}</template>
-        <template #content>
-          <p class="text-sm text-text-light">{{ activeEvent.eventDescription }}</p>
-          <p class="text-xs text-gray-400 mt-1">
-            {{ formatDate(activeEvent.startDate) }} – {{ formatDate(activeEvent.endDate) }}
-          </p>
-        </template>
-        <template #cta>
-          <CButton @click="goToDashboard">Go to Dashboard</CButton>
-        </template>
-      </CCard>
+
+      <ActiveEventCard
+        :active-event="activeEvent"
+      />
     </div>
 
     <div>
@@ -29,22 +21,12 @@
         v-if="otherEvents.length > 0"
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        <CCard
+        <OtherEventCard
           v-for="event in otherEvents"
           :key="event.id"
-          variant="feature"
-        >
-          <template #title>{{ event.eventName }}</template>
-          <template #content>
-            <p class="text-sm text-text-light line-clamp-3">{{ event.eventDescription }}</p>
-            <p class="text-xs text-gray-400 mt-1">
-              {{ event.startDate }} – {{ event.endDate }}
-            </p>
-          </template>
-          <template #cta>
-            <CButton variant="outline" @click="switchToEvent(event)">Switch</CButton>
-          </template>
-        </CCard>
+          :event="event"
+          @switch-event="switchToEvent"
+        />
       </div>
       <div v-else class="col-span-1">
         <CAlert variant="info">
@@ -60,11 +42,12 @@
 <script setup>
 import { computed } from 'vue'
 import { useEventsStore } from '@/stores/useEventsStore'
-import CCard from '@/components/UI/cards/CCard.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import { useRouter } from 'vue-router'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
+import OtherEventCard from '@/views/internal/events/OtherEventCard.vue'
+import ActiveEventCard from '@/views/internal/events/ActiveEventCard.vue'
 
 const eventsStore = useEventsStore()
 const router = useRouter()
@@ -74,24 +57,17 @@ const otherEvents = computed(() =>
   eventsStore.events.filter(e => e.id !== eventsStore.activeEvent?.id)
 )
 
-function switchToEvent(event) {
-  // eventsStore.setCurrentEvent(event)
-  router.push('/dashboard')
+const switchToEvent = async (event) => {
+  try {
+    await eventsStore.setActiveEvent(event)
+
+  } catch (error) {
+    console.error('Error switching event:', error)
+  }
 }
 
 function createNewEvent() {
-  router.push('/dashboard/events/create')
+  router.push('/events/create')
 }
 
-function goToDashboard() {
-  router.push('/dashboard')
-}
-
-function formatDate(date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  })
-}
 </script>

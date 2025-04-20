@@ -15,11 +15,8 @@
         </p>
       </div>
 
-      <!-- Form and Tips -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <!-- Form Left -->
         <div class="lg:col-span-2 space-y-10">
-          <!-- Basic Info -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="md:col-span-2">
               <CInput
@@ -43,7 +40,6 @@
             </div>
           </div>
 
-          <!-- Dates & Visibility -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <CDate
               v-model="eventState.startDate"
@@ -124,7 +120,6 @@
           </div>
         </div>
 
-        <!-- Feature Help -->
         <div class="hidden lg:block bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white self-stretch h-full">
           <h4 class="text-lg font-semibold mb-4 text-primary dark:text-pink-300">
             Feature Settings
@@ -138,7 +133,6 @@
         </div>
       </div>
 
-      <!-- Form Actions -->
       <div class="mt-10 flex justify-end gap-4">
         <CButton variant="outline" @click="cancelCreateEvent">Cancel</CButton>
         <CButton type="submit" :disabled="eventState.processing">
@@ -174,15 +168,8 @@ import { useNotificationStore } from '@/stores/useNotificationStore'
 import { EVENT_STATUSES as statuses, EVENT_VISIBILITIES as visibilities, DEFAULT_ERROR_MESSAGE } from '@/constants/constants'
 import { Calendar, Music, Waves, ImageIcon } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
+import { useRoute, useRouter } from 'vue-router'
 
-
-const props = defineProps({
-  mode: {
-    type: String,
-    default: 'create',
-    validator: (value) => ['create', 'edit'].includes(value),
-  }
-})
 const emit = defineEmits(['cancelCreate'])
 
 const eventState = reactive({
@@ -216,6 +203,9 @@ const eventStore = useEventsStore()
 const userStore = useUserStore()
 const notificationStore = useNotificationStore()
 const eventErrors = ref('')
+const router = useRouter()
+const route = useRoute()
+const mode = ref('create')
 
 const eventValidationSchema = computed(() => {
   return toTypedSchema(
@@ -232,19 +222,50 @@ const eventValidationSchema = computed(() => {
   )
 })
 
-onMounted(() => {
-  if (props.mode === 'edit') {
-    const current = eventStore.activeEvent
-    Object.assign(eventState, {
-      ...current,
-      ...current.eventFeature
-    })
+onMounted(async () => {
+  if (route.name === 'edit-event') {
+    mode.value = 'edit'
+    const routeId = route.params.id?.toString()
+    const activeId = eventStore.activeEvent?.id?.toString()
+
+    if (!routeId || routeId !== activeId) {
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'You can only edit the currently active event.'
+      })
+      await router.push('/dashboard')
+    } else {
+      const current = eventStore.activeEvent
+      Object.assign(eventState, {
+        ...current,
+        ...current.eventFeature
+      })
+
+      normalizeBooleans(eventState, [
+        'saveTheDate',
+        'rsvp',
+        'sweetMemories',
+        'music',
+        'backgroundMusic',
+        'eventComments',
+        'seatsAccommodation',
+        'preview',
+        'eventBudget',
+        'analytics'
+      ])
+    }
   }
 })
 
+const normalizeBooleans = (obj, keys) => {
+  keys.forEach((key) => {
+    obj[key] = !!obj[key]
+  })
+}
+
 const cancelCreateEvent = () => emit('cancelCreate')
 
-const createOrEditEvent = () => props.mode === 'edit'
+const createOrEditEvent = () => mode.value === 'edit'
   ? eventStore.editEvent(eventState)
   : eventStore.createEvent(eventState)
 
@@ -263,6 +284,8 @@ const onSubmit = async () => {
       if (userUpdated.status >= 200 && userUpdated.status < 300) {
         const result = userUpdated.data?.data ?? {}
         eventStore.initUserEventsData(result)
+
+        await router.push('/dashboard/events')
       } else {
         console.log('Error loading events')
         if (userUpdated.status === 401) {
@@ -272,15 +295,11 @@ const onSubmit = async () => {
           })
         }
       }
-
-
-      // await eventStore.initEvents(result.data.data.id)
     } else {
-      console.log('here 1')
       eventErrors.value = result.response?.data?.message ?? DEFAULT_ERROR_MESSAGE
     }
-  } catch {
-    console.log('here 2')
+  } catch (error){
+    console.log('checking errors', error)
     eventErrors.value = DEFAULT_ERROR_MESSAGE
   } finally {
     eventState.processing = false
@@ -288,6 +307,7 @@ const onSubmit = async () => {
 }
 
 const onInvalidSubmit = (e) => {
+  console.log('invalid form', e)
   eventErrors.value = Object.values(e.errors)[0] || DEFAULT_ERROR_MESSAGE
 }
 </script>

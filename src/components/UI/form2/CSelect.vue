@@ -11,11 +11,8 @@
     <div
       :class="[
         'flex items-center gap-2 w-full border-b transition focus-within:border-b-2 mb-4',
-        disabled ? 'opacity-50 cursor-not-allowed' : '',
-        showErrorMessage ? 'border-red-500 focus-within:border-red-500'
-                         : (meta.valid && meta.touched)
-                             ? 'border-green-500 focus-within:border-green-500'
-                             : 'border-primary focus-within:border-primary'
+        borderColorClass,
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
       ]"
     >
       <select
@@ -82,6 +79,12 @@ watch(inputValue, (val) => {
 })
 
 const showErrorMessage = computed(() => props.showError && errorMessage.value && meta.touched)
+
+const borderColorClass = computed(() => {
+  if (showErrorMessage.value) return 'border-red-500 focus-within:border-red-500'
+  if (meta.valid && inputValue.value) return 'border-green-500 focus-within:border-green-500'
+  return 'border-primary focus-within:border-primary'
+})
 
 const handleFieldBlur = (e) => {
   emit('update:blur', e.target.value)

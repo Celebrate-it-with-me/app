@@ -15,6 +15,7 @@ import CWMBackgroundMusic from '../components/authenticated/background-music/CWM
 import CWMEventComments from '../components/authenticated/event-comments/CWMEventComments.vue'
 import ComponentsPlayground from '@/views/components-playground/ComponentsPlayground.vue'
 import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 const authRoutes = [
   {
@@ -41,7 +42,15 @@ const authRoutes = [
       title: 'Create Event'
     },
   },
-    /*children: [
+  {
+    path: '/dashboard/events/edit/:id',
+    name: 'edit-event',
+    component: CreateEventsView,
+    meta: {
+      title: 'Edit Event'
+    },
+  },
+      /*children: [
       {
         path: 'events',
         name: 'event-handle',
