@@ -1,4 +1,5 @@
 import { CWM_API } from './axios'
+import { format } from 'date-fns'
 
 class EventsService {
   async create({
@@ -23,8 +24,8 @@ class EventsService {
     return CWM_API.post(`event`, {
       eventName,
       eventDescription,
-      startDate,
-      endDate,
+      startDate: format(new Date(startDate), 'MM/dd/yyyy HH:mm'),
+      endDate: format(new Date(endDate), 'MM/dd/yyyy HH:mm'),
       status,
       visibility,
       customUrlSlug,
@@ -91,6 +92,12 @@ class EventsService {
       params: {
         query
       }
+    })
+  }
+
+  async updateActiveEvent(event) {
+    return CWM_API.patch(`event/activeEvent`, {
+      eventId: event.id
     })
   }
 

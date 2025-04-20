@@ -2,6 +2,67 @@
 import InternalSidebar from '@/components/internal/layout/InternalSidebar.vue'
 import HeaderBar from '@/components/internal/layout/InternalHeaderBar.vue'
 import InternalFooter from '@/components/internal/layout/InternalFooter.vue'
+import { onMounted, ref } from 'vue'
+import CEventsModal from '@/components/UI/modals/CEventsModal.vue'
+import { useUserStore } from '@/stores/useUserStore'
+import { useEventsStore } from '@/stores/useEventsStore'
+import { useNotificationStore } from '@/stores/useNotificationStore'
+
+const userStore = useUserStore()
+const eventsStore = useEventsStore()
+const showEventsModal = ref(false)
+const loading = ref(false)
+const notificationStore = useNotificationStore()
+
+onMounted(() => {
+  loadEvents()
+})
+
+const loadEvents = async () => {
+  try {
+    loading.value = true
+    const response = await userStore.initUserEvents()
+
+    if (response.status >= 200 && response.status < 300) {
+      const result = response.data?.data ?? {}
+      eventsStore.initUserEventsData(result)
+
+      if (userStore.justLogin === true) {
+        console.log('entre')
+        triggerEventsModal()
+        userStore.justLogin = false
+      }
+    } else {
+      // Todo we need to handle the edge cases
+      console.log('Error loading events')
+      if (response.status === 401) {
+        notificationStore.addNotification({
+          type: 'error',
+          message: 'Session expired. Please log in again.',
+        })
+      }
+
+    }
+
+  } catch (e) {
+    console.log('aqui error', e.response.status)
+    if (e.response.status === 401) {
+      notificationStore.addNotification({
+        type: 'error',
+        message: 'Session expired. Please log in again.',
+      })
+    }
+
+  } finally {
+    loading.value = false
+  }
+}
+
+
+const triggerEventsModal = () => {
+  showEventsModal.value = true
+}
+
 </script>
 
 <template>
@@ -21,7 +82,9 @@ import InternalFooter from '@/components/internal/layout/InternalFooter.vue'
       </div>
     </div>
 
-    <!-- Footer covering 100% width -->
     <InternalFooter />
+    <CEventsModal
+      v-model="showEventsModal"
+    />
   </div>
 </template>

@@ -22,7 +22,8 @@ export const useUserStore = defineStore('userStore', {
     userId: '',
     token: null,
     lastLogin: null,
-    currentEventId: null,
+    activeEvent: null,
+    justLogin: false,
   }),
   persist: {
     enabled: true,
@@ -58,21 +59,22 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.changePassword({email, password, passwordConfirmation})
     },
 
-    initUserData({ name, email, userId, token, lastLogin }) {
+    initUserData({ name, email, userId, token, lastLogin, activeEvent, justLogin }) {
       this.name = name
       this.email = email
       this.userId = userId
       this.token = token
       this.lastLogin = lastLogin
+      this.activeEvent = activeEvent
+      this.justLogin = justLogin
+    },
+
+    async initUserEvents() {
+      return await UserService.getUserEvents()
     },
 
     async logOut() {
-      const response = await UserService.logOut()
-
-      if (response.status === 200) {
-        console.log('is here. really')
         getActivePinia()._s.forEach((store) => store.$reset())
-      }
     },
 
     async initUserState() {

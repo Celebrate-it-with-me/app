@@ -120,7 +120,9 @@ const onSubmit = async () => {
           email: result?.user?.email ?? '',
           userId: result?.user?.id ?? '',
           token: result?.token ?? '',
-          lastLogin: result?.user?.last_login_session ?? null
+          lastLogin: result?.user?.last_login_session ?? null,
+          activeEvent: result?.user?.activeEvent ?? null,
+          justLogin: true,
         })
 
       return await router.push("dashboard")

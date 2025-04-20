@@ -2,7 +2,7 @@
   <transition name="fade">
     <div
       v-if="modelValue"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black opacity-90 px-4"
     >
       <div
         class="w-full max-w-lg rounded-xl shadow-xl overflow-hidden bg-white dark:bg-gray-900 text-text"
