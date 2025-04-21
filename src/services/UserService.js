@@ -67,6 +67,24 @@ class UserService {
     return await CWM_API.get('events')
   }
 
+  async updateProfile({ name, phone, avatar }) {
+    const formData = new FormData()
+    formData.append('name', name)
+    formData.append('phone', phone)
+    formData.append('avatar', avatar)
+
+    return await CWM_API.post('user/update-profile', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  async refreshUser() {
+    return await CWM_API.get('user')
+  }
+
+
   async logOut() {
     return await CWM_API.post('logout')
   }

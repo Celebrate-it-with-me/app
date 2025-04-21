@@ -9,12 +9,14 @@
       full ? 'w-full' : ''
     ]"
   >
+    <Loader v-if="loading" class="animate-spin w-5 h-5 mr-2" />
     <slot />
   </button>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { Loader } from 'lucide-vue-next'
 
 const props = defineProps({
   variant: {
@@ -30,6 +32,10 @@ const props = defineProps({
     default: true
   },
   full: {
+    type: Boolean,
+    default: false
+  },
+  loading: {
     type: Boolean,
     default: false
   }

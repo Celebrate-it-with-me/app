@@ -7,6 +7,7 @@
     <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-card max-w-4xl mx-auto">
       <div class="flex items-center gap-6 mb-8">
         <CAvatarUploader
+          v-model="userAvatar"
           @file-selected="handleFileSelected"
         />
       </div>
@@ -28,7 +29,8 @@
       <div class="mt-10 flex justify-end">
         <CButton
           type="submit"
-          :disabled="!isModified"
+          :loading="saving"
+          :disabled="!isModified || saving"
           :class="{
             'opacity-50 cursor-not-allowed': !isModified
           }"
@@ -53,6 +55,10 @@ import { Form } from 'vee-validate'
 
 const userStore = useUserStore()
 const saving = ref(false)
+
+const userAvatar = computed(() => {
+  return userStore?.avatar ?? ''
+})
 
 const isModified = computed(() => {
   return (
@@ -97,11 +103,9 @@ onMounted(() => {
   user.avatar = originalUser.avatar = userStore.avatar ?? ''
 })
 
-
 const handleFileSelected = (file) => {
   user.avatar = file
 }
-
 
 const onSubmitProfile = async () => {
   try {
@@ -114,19 +118,14 @@ const onSubmitProfile = async () => {
     })
 
     if (response.status === 200) {
-      userStore.setUser({
-        name: user.name,
-        phone: user.phone,
-        avatar: user.avatar,
-      })
+      await userStore.refreshUser()
+
       originalUser.name = user.name
       originalUser.phone = user.phone
       originalUser.avatar = user.avatar
     } else {
       console.error('Failed to update profile:', response)
     }
-
-
   } catch (error) {
     console.log(error)
   } finally {

@@ -74,7 +74,7 @@ const showErrorMessage = computed(() => props.showError && errorMessage.value &&
 
 const borderColorClass = computed(() => {
   if (showErrorMessage.value) return 'border-red-500 focus-within:border-red-500'
-  if (meta.touched && meta.valid) return 'border-green-500 focus-within:border-green-500'
+  if (meta.valid && inputValue) return 'border-green-500 focus-within:border-green-500'
   return 'border-primary focus-within:border-primary'
 })
 

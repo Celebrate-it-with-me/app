@@ -1,9 +1,21 @@
 <template>
   <div class="relative">
-    <!-- Initials button -->
-    <button
+    <div
+      v-if='userAvatarUrl'
+      @click="toggleMenu()"
       ref="buttonRef"
-      @click="toggleMenu"
+    >
+      <img
+        :src="userAvatarUrl"
+        class="w-10 h-10 rounded-full cursor-pointer"
+        alt="User Avatar"
+      />
+    </div>
+
+    <button
+      v-else
+      ref="buttonRef"
+      @click="toggleMenu()"
       class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-semibold uppercase hover:opacity-90 focus:outline-none"
     >
       {{ initials }}
@@ -61,13 +73,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useRouter } from 'vue-router'
 
-const open = ref(false)
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+
 const userStore = useUserStore()
-const router = useRouter()
+
+const menuRef = ref(null)
+const buttonRef = ref(null)
+
+const userAvatarUrl = computed(() => {
+  return userStore.avatar
+    ? userStore.avatar
+    : null
+})
 
 const initials = computed(() => {
   const name = userStore?.name || 'User'
@@ -77,15 +97,6 @@ const initials = computed(() => {
     .join('')
     .toUpperCase()
 })
-
-const toggleMenu = () => {
-  console.log('Toggling menu', open.value)
-  open.value = !open.value
-  console.log('after toggle', open.value)
-}
-
-const menuRef = ref(null)
-const buttonRef = ref(null)
 
 const handleClickOutside = (event) => {
   setTimeout(() => {
@@ -110,6 +121,14 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
+
+const open = ref(false)
+const router = useRouter()
+
+
+const toggleMenu = () => {
+  open.value = !open.value
+}
 
 const logout = async () => {
   await userStore.logOut()

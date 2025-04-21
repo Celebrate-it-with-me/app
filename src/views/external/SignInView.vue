@@ -114,6 +114,9 @@ const onSubmit = async () => {
 
     if (response.status >= 200 && response.status < 300) {
       const result = response.data ?? {}
+
+      console.log('checking result', result)
+
       userStore.initUserData(
         {
           name: result?.user?.name ?? '',
@@ -123,6 +126,8 @@ const onSubmit = async () => {
           lastLogin: result?.user?.last_login_session ?? null,
           activeEvent: result?.user?.activeEvent ?? null,
           justLogin: true,
+          avatar: result?.user?.avatar_url ?? '',
+          phone: result?.user?.phone ?? '',
         })
 
       return await router.push("dashboard")
