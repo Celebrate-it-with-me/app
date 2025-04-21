@@ -96,7 +96,7 @@ class EventsService {
   }
 
   async updateActiveEvent(event) {
-    return CWM_API.patch(`event/activeEvent`, {
+    return CWM_API.patch(`event/active-event`, {
       eventId: event.id
     })
   }

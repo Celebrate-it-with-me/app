@@ -19,6 +19,8 @@ export const useUserStore = defineStore('userStore', {
   state: () => ({
     name: '',
     email: '',
+    phone: '',
+    avatar: '',
     userId: '',
     token: null,
     lastLogin: null,
@@ -59,7 +61,7 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.changePassword({email, password, passwordConfirmation})
     },
 
-    initUserData({ name, email, userId, token, lastLogin, activeEvent, justLogin }) {
+    initUserData({ name, email, userId, token, lastLogin, activeEvent, justLogin, avatar, phone }) {
       this.name = name
       this.email = email
       this.userId = userId
@@ -67,6 +69,8 @@ export const useUserStore = defineStore('userStore', {
       this.lastLogin = lastLogin
       this.activeEvent = activeEvent
       this.justLogin = justLogin
+      this.avatar = avatar
+      this.phone = phone
     },
 
     async initUserEvents() {
@@ -75,6 +79,38 @@ export const useUserStore = defineStore('userStore', {
 
     async logOut() {
         getActivePinia()._s.forEach((store) => store.$reset())
+    },
+
+    async updateProfile({ name, phone, avatar }) {
+      return await UserService.updateProfile({ name, phone, avatar })
+    },
+
+    async refreshUser() {
+      const response = await UserService.refreshUser()
+
+      console.log('checking data response', response.data)
+
+      if (response.status === 200) {
+        const {
+          name,
+          email,
+          userId,
+          lastLogin,
+          activeEvent,
+          justLogin,
+          avatar_url: avatar,
+          phone
+        } = response.data?.data?.user ?? {}
+
+        this.name = name
+        this.email = email
+        this.userId = userId
+        this.lastLogin = lastLogin
+        this.activeEvent = activeEvent
+        this.justLogin = justLogin
+        this.avatar = avatar
+        this.phone = phone
+      }
     },
 
     async initUserState() {
