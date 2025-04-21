@@ -16,6 +16,11 @@ import CWMEventComments from '../components/authenticated/event-comments/CWMEven
 import ComponentsPlayground from '@/views/components-playground/ComponentsPlayground.vue'
 import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
+import SettingsLayout from '@/components/internal/layout/SettingsLayout.vue'
+import SettingsProfile from '@/views/internal/settings/SettingsProfile.vue'
+import SettingsPreferences from '@/views/internal/settings/SettingsPreferences.vue'
+import SettingsSecurity from '@/views/internal/settings/SettingsSecurity.vue'
+import SettingsDangerZone from '@/views/internal/settings/SettingsDangerZone.vue'
 
 const authRoutes = [
   {
@@ -49,6 +54,16 @@ const authRoutes = [
     meta: {
       title: 'Edit Event'
     },
+  },
+  {
+    path: '/settings',
+    component: SettingsLayout,
+    children: [
+      { path: 'profile', name: 'settings-profile', component: SettingsProfile, meta: { title: 'Profile' } },
+      { path: 'preferences', name: 'settings-preferences', component: SettingsPreferences, meta: { title: 'Preferences' } },
+      { path: 'security', name: 'settings-security', component: SettingsSecurity, meta: { title: 'Security' } },
+      { path: 'danger-zone', name: 'settings-danger-zone', component: SettingsDangerZone, meta: { title: 'Danger Zone' } },
+    ]
   },
       /*children: [
       {
