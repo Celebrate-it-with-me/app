@@ -116,6 +116,24 @@ class UserService {
     })
   }
 
+  async setup2FA() {
+    return await CWM_API.get('user/2fa/setup')
+  }
+
+  async verifyAndEnable2FA(authCode) {
+    return await CWM_API.post('user/2fa/enable', {
+      code: authCode
+    })
+  }
+
+  async get2FAStatus() {
+    return await CWM_API.get('user/2fa/status')
+  }
+
+  async getBackupCodes() {
+    return await CWM_API.get('user/2fa/recovery-codes')
+  }
+
   async logOut() {
     return await CWM_API.post('logout')
   }
