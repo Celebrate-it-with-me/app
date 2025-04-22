@@ -4,43 +4,41 @@
 
     <div class="grid md:grid-cols-4 gap-6">
       <div class="md:col-span-3 space-y-6">
-        <Form
-          :validation-schema="schema"
-          @submit="onSubmit"
-          @invalid-submit="onInvalidSubmit"
-        >
-          <div class="space-y-6">
-            <CInput
-              type="password"
-              label="Current Password"
-              name="currentPassword"
-              show-error
-              v-model="form.currentPassword"
-              id="currentPassword"
-            />
+        <Form :validation-schema="schema" v-slot="{ handleSubmit, resetForm }">
+          <form @submit.prevent="handleSubmit((values) => onSubmit(values, resetForm))">
+            <div class="space-y-6">
+              <CInput
+                type="password"
+                label="Current Password"
+                name="currentPassword"
+                show-error
+                id="currentPasswordInPassword"
+              />
 
-            <CInput
-              type="password"
-              label="New Password"
-              name="newPassword"
-              show-error
-              v-model="form.newPassword"
-              id="newPassword"
-            />
+              <CInput
+                type="password"
+                label="New Password"
+                name="newPassword"
+                show-error
+                id="newPassword"
+              />
 
-            <CInput
-              type="password"
-              label="Confirm New Password"
-              name="confirmPassword"
-              show-error
-              v-model="form.confirmPassword"
-              id="confirmPassword"
-            />
+              <CInput
+                type="password"
+                label="Confirm New Password"
+                name="confirmPassword"
+                show-error
+                id="confirmPassword"
+              />
 
-            <div class="flex justify-end pt-4">
-              <CButton type="submit" :loading="saving">Update Password</CButton>
+              <div class="flex justify-end pt-4">
+                <CButton
+                  type="submit"
+                  :loading="saving"
+                >Update Password</CButton>
+              </div>
             </div>
-          </div>
+          </form>
         </Form>
       </div>
 
@@ -64,13 +62,14 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import * as zod from 'zod'
-import { Form } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useUserStore } from '@/stores/useUserStore'
+import { useForm } from 'vee-validate'
+import { Form } from 'vee-validate'
 
 const saving = ref(false)
 const userStore = useUserStore()
@@ -93,13 +92,15 @@ const schema = toTypedSchema(
   })
 )
 
-const onSubmit = async () => {
+const onSubmit = async (values, resetForm) => {
+  console.log('click on submit')
   try {
     saving.value = true
 
-    const response = await userStore.changePassword({
-      current_password: form.currentPassword,
-      new_password: form.newPassword,
+    const response = await userStore.changeUserPassword({
+      currentPassword: values.currentPassword,
+      newPassword: values.newPassword,
+      newPasswordConfirmation: values.confirmPassword,
     })
 
     if (response?.status === 200) {
@@ -107,17 +108,16 @@ const onSubmit = async () => {
         type: 'success',
         message: 'Password updated successfully',
       })
-
-      form.currentPassword = ''
-      form.newPassword = ''
-      form.confirmPassword = ''
     } else {
       notifications.addNotification({
         type: 'error',
         message: 'Failed to update password. Please try again.',
       })
     }
+
+    resetForm()
   } catch (err) {
+    console.log(err)
     notifications.addNotification({
       type: 'error',
       message: 'An error occurred while updating password.',
@@ -125,9 +125,5 @@ const onSubmit = async () => {
   } finally {
     saving.value = false
   }
-}
-
-const onInvalidSubmit = (errors) => {
-  console.warn('Form validation failed:', errors)
 }
 </script>

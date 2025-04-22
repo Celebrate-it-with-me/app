@@ -1,6 +1,7 @@
 // Example: CButton.vue (first UI design component)
 <template>
   <button
+    :type="type"
     :class="[
       'inline-flex items-center justify-center font-display transition-all duration-200 ease-in-out focus:outline-none',
       sizeClass,
@@ -38,6 +39,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  type: {
+    type: String,
+    default: 'button', // button, submit, reset
   }
 })
 
