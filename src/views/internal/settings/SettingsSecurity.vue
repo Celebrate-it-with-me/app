@@ -5,13 +5,13 @@
     <ChangePasswordCard />
 
     <!-- Update Email -->
-    <UpdateEmailCard />
+    <UpdateEmailCard v-if="false" />
 
     <!-- 2FA -->
     <TwoFactorAuthCard />
 
     <!-- Active Sessions -->
-    <ActiveSessionsCard />
+    <ActiveSessionsCard v-if="false" />
   </div>
 </template>
 
