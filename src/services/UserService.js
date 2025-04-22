@@ -108,6 +108,14 @@ class UserService {
     return await CWM_API.get('user/preferences')
   }
 
+  async changeUserPassword({ currentPassword, newPassword, newPasswordConfirmation }) {
+    return await CWM_API.post('user/update-password', {
+      currentPassword,
+      newPassword,
+      newPasswordConfirmation
+    })
+  }
+
   async logOut() {
     return await CWM_API.post('logout')
   }

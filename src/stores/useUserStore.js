@@ -105,6 +105,10 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.changePassword({ email, password, passwordConfirmation })
     },
 
+    async changeUserPassword({ currentPassword, newPassword, newPasswordConfirmation }) {
+      return await UserService.changeUserPassword({ currentPassword, newPassword, newPasswordConfirmation })
+    },
+
     initUserData({ name, email, userId, token, lastLogin, activeEvent, justLogin, avatar, phone }) {
       this.name = name
       this.email = email
