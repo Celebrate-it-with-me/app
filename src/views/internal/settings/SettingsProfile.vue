@@ -1,42 +1,45 @@
 <template>
+  <CHeading :level="2" weight="semibold">User Profile</CHeading>
   <Form
     :validation-schema="profileSchema"
     @submit="onSubmitProfile"
     @invalid-submit="onInvalidSubmitProfile"
   >
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-card mx-auto">
-      <div class="flex items-center gap-6 mb-8">
-        <CAvatarUploader
-          v-model="userAvatar"
-          @file-selected="handleFileSelected"
-        />
-      </div>
-
-      <form class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <CInput v-model="user.name" label="Full Name" name="name"  id="name"/>
-          <CInput v-model="user.email" label="Email" name="email" disabled id="email"/>
-          <CPhoneInput
-            name="phone"
-            id="user-phone"
-            label="Phone Number"
-            v-model="user.phone"
-            show-error
+    <div class="mx-auto py-10 space-y-10">
+      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-card mx-auto space-y-6">
+        <div class="flex items-center gap-6 mb-8">
+          <CAvatarUploader
+            v-model="userAvatar"
+            @file-selected="handleFileSelected"
           />
         </div>
-      </form>
 
-      <div class="mt-10 flex justify-end">
-        <CButton
-          type="submit"
-          :loading="saving"
-          :disabled="!isModified || saving"
-          :class="{
+        <form class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CInput v-model="user.name" label="Full Name" name="name"  id="name"/>
+            <CInput v-model="user.email" label="Email" name="email" disabled id="email"/>
+            <CPhoneInput
+              name="phone"
+              id="user-phone"
+              label="Phone Number"
+              v-model="user.phone"
+              show-error
+            />
+          </div>
+        </form>
+
+        <div class="mt-10 flex justify-end">
+          <CButton
+            type="submit"
+            :loading="saving"
+            :disabled="!isModified || saving"
+            :class="{
             'opacity-50 cursor-not-allowed': !isModified || saving
           }"
-        >
-          Save Changes
-        </CButton>
+          >
+            Save Changes
+          </CButton>
+        </div>
       </div>
     </div>
   </Form>
@@ -52,6 +55,7 @@ import CPhoneInput from '@/components/UI/form2/CPhoneInput.vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'
+import CHeading from '@/components/UI/headings/CHeading.vue'
 
 const userStore = useUserStore()
 const saving = ref(false)

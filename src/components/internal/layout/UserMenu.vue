@@ -26,7 +26,10 @@
       ref="menuRef"
       class="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 shadow-lg rounded-md border border-gray-200 dark:border-gray-700 z-50"
     >
-      <ul class="text-sm text-gray-700 dark:text-gray-200 divide-y divide-gray-100 dark:divide-gray-700">
+      <ul
+        class="text-sm text-gray-700 dark:text-gray-200 divide-y divide-gray-100 dark:divide-gray-700"
+        @click="closeMenu"
+      >
         <li>
           <RouterLink
             to="/settings/profile"
@@ -45,18 +48,18 @@
         </li>
         <li>
           <RouterLink
-            to="/settings/danger-zone"
-            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            Danger Zone
-          </RouterLink>
-        </li>
-        <li>
-          <RouterLink
             to="/settings/security"
             class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             Security
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            to="/settings/danger-zone"
+            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            Danger Zone
           </RouterLink>
         </li>
         <li>
@@ -125,6 +128,9 @@ onBeforeUnmount(() => {
 const open = ref(false)
 const router = useRouter()
 
+const closeMenu = () => {
+  open.value = false
+}
 
 const toggleMenu = () => {
   open.value = !open.value
