@@ -46,6 +46,10 @@ export const useUserStore = defineStore('userStore', {
     ]
   },
   actions: {
+    async disable2FA() {
+      return await UserService.disable2FA()
+    },
+
     async getBackupCodes() {
       return await UserService.getBackupCodes()
     },

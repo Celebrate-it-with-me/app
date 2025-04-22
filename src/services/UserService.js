@@ -134,6 +134,10 @@ class UserService {
     return await CWM_API.get('user/2fa/recovery-codes')
   }
 
+  async disable2FA() {
+    return await CWM_API.post('user/2fa/disable')
+  }
+
   async logOut() {
     return await CWM_API.post('logout')
   }

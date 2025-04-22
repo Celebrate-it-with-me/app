@@ -57,7 +57,13 @@
             >
               View Backup Codes
             </CButton>
-            <CButton variant="outline" :loading="saving" @click="disable2FA">Disable 2FA</CButton>
+            <CButton
+              variant="outline"
+              :loading="saving"
+              @click="disable2FA"
+            >
+              Disable 2FA
+            </CButton>
           </div>
         </div>
       </div>
@@ -79,6 +85,11 @@
         :codes="backupCodes"
         v-model="showBackupCodes"
       />
+
+      <ConfirmDisable2FAModal
+        v-model="showConfirmModal"
+        @disabled="handleDisabled2FA"
+      />
     </div>
   </section>
 </template>
@@ -92,6 +103,7 @@ import CHeading from '@/components/UI/headings/CHeading.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useUserStore } from '@/stores/useUserStore'
 import TwoFABackupCodesModal from '@/components/UI/modals/TwoFABackupCodesModal.vue'
+import ConfirmDisable2FAModal from '@/components/UI/modals/ConfirmDisable2FAModal.vue'
 
 const enabled = ref(false)
 const authCode = ref('')
@@ -104,6 +116,7 @@ const qrImage = ref('')
 const showBackupCodes = ref(false)
 const loadingBackupCodes = ref(false)
 const backupCodes = ref([])
+const showConfirmModal = ref(false)
 
 
 const userStore = useUserStore()
@@ -112,6 +125,19 @@ const notifications = useNotificationStore()
 onMounted(async() => {
   await getTwoFactorStatus()
 })
+
+const handleDisabled2FA = () => {
+  showConfirmModal.value = false
+  enabled.value = false
+  setupDone.value = false
+  verified.value = false
+  authCode.value = ''
+  sending.value = false
+  backupCodes.value = []
+  qrImage.value = ''
+  showBackupCodes.value = false
+  loadingStatus.value = false
+}
 
 const getTwoFactorStatus = async () => {
   try {
@@ -175,22 +201,7 @@ const verify2FA = async () => {
 }
 
 const disable2FA = async () => {
-  try {
-    saving.value = true
-
-    enabled.value = false
-    notifications.addNotification({
-      type: 'success',
-      message: 'Two-Factor Authentication disabled.',
-    })
-  } catch (e) {
-    notifications.addNotification({
-      type: 'error',
-      message: 'Could not disable 2FA. Try again later.',
-    })
-  } finally {
-    saving.value = false
-  }
+  showConfirmModal.value = true
 }
 
 const handleBackupCodes = async () => {
