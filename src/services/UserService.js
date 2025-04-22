@@ -84,6 +84,29 @@ class UserService {
     return await CWM_API.get('user')
   }
 
+  async updatePreferences({
+                            language,
+                            timezone,
+                            dateFormat,
+                            visualTheme,
+                            notifyByEmail,
+                            notifyBySms,
+                            smartTips
+                          }) {
+    return await CWM_API.post('user/preferences', {
+      language,
+      timezone,
+      dateFormat,
+      visualTheme,
+      notifyByEmail,
+      notifyBySms,
+      smartTips
+    })
+  }
+
+  async getUserPreferences() {
+    return await CWM_API.get('user/preferences')
+  }
 
   async logOut() {
     return await CWM_API.post('logout')

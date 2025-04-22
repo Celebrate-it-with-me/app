@@ -26,23 +26,67 @@ export const useUserStore = defineStore('userStore', {
     lastLogin: null,
     activeEvent: null,
     justLogin: false,
+    preferences: {
+      language: '',
+      timezone: '',
+      visualTheme: '',
+      dateFormat: '',
+      notifyByEmail: null,
+      notifyBySms: null,
+      smartTips: null
+    }
   }),
   persist: {
     enabled: true,
     strategies: [
       {
         key: 'user-store',
-        storage: localStorage,
-      },
-    ],
+        storage: localStorage
+      }
+    ]
   },
   actions: {
-    async login({ email, password, remember, device }){
-      return await UserService.login({email, password, remember, device})
+    async getPreferences() {
+      return await UserService.getUserPreferences()
     },
 
-    async register({ name, email, password }){
-      return await UserService.register({ name, email, password})
+    async updatePreferences({
+                              language,
+                              timezone,
+                              dateFormat,
+                              visualTheme,
+                              notifyByEmail,
+                              notifyBySms,
+                              smartTips }) {
+      return await UserService.updatePreferences({
+        language,
+        timezone,
+        dateFormat,
+        visualTheme,
+        notifyByEmail,
+        notifyBySms,
+        smartTips
+      })
+    },
+
+    setPreferences(newPreferences) {
+      this.preferences = {
+        language: newPreferences.language,
+        timezone: newPreferences.timezone,
+        dateFormat: newPreferences.dateFormat,
+        visualTheme: newPreferences.visualTheme,
+        notifyByEmail: !!newPreferences.notifyByEmail,
+        notifyBySms: !!newPreferences.notifyBySms,
+        smartTips: !!newPreferences.smartTips
+      }
+    },
+
+    async login({ email, password, remember, device }) {
+      return await UserService.login({ email, password, remember, device })
+    },
+
+    async register({ name, email, password }) {
+      return await UserService.register({ name, email, password })
     },
 
     async confirmEmail(confirmUrl) {
@@ -57,8 +101,8 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.checkResetLink(confirmUrl)
     },
 
-    async changePassword({email, password, passwordConfirmation}) {
-      return await UserService.changePassword({email, password, passwordConfirmation})
+    async changePassword({ email, password, passwordConfirmation }) {
+      return await UserService.changePassword({ email, password, passwordConfirmation })
     },
 
     initUserData({ name, email, userId, token, lastLogin, activeEvent, justLogin, avatar, phone }) {
@@ -78,7 +122,7 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async logOut() {
-        getActivePinia()._s.forEach((store) => store.$reset())
+      getActivePinia()._s.forEach((store) => store.$reset())
     },
 
     async updateProfile({ name, phone, avatar }) {

@@ -26,4 +26,7 @@ export const AUTOPLAY_ICON_POSITIONS = [
   { value: 'bottom-right', text: 'Bottom-Right' },
 ]
 
+
+
+
 export const DEFAULT_ERROR_MESSAGE = 'Oops, something went wrong, please try again later!'
