@@ -130,6 +130,12 @@ const onSubmit = async () => {
           phone: result?.user?.phone ?? '',
         })
 
+      const preferences = await userStore.getPreferences()
+
+      if (preferences && preferences.status === 200) {
+        userStore.setPreferences(preferences?.data?.data ?? {})
+      }
+
       return await router.push("dashboard")
     } else {
       backendError.value = true

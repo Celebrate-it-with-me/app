@@ -4,7 +4,7 @@
     @submit="onSubmitProfile"
     @invalid-submit="onInvalidSubmitProfile"
   >
-    <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-card max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-card mx-auto">
       <div class="flex items-center gap-6 mb-8">
         <CAvatarUploader
           v-model="userAvatar"
@@ -32,7 +32,7 @@
           :loading="saving"
           :disabled="!isModified || saving"
           :class="{
-            'opacity-50 cursor-not-allowed': !isModified
+            'opacity-50 cursor-not-allowed': !isModified || saving
           }"
         >
           Save Changes

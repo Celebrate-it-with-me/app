@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="flex items-center justify-between mb-6">
-      <CHeading :level="2" weight="bold">My Events</CHeading>
+      <CHeading :level="2" weight="semibold">My Events</CHeading>
       <CButton variant="gradient" @click="createNewEvent">
         + Create New Event
       </CButton>
@@ -60,14 +60,13 @@ const otherEvents = computed(() =>
 const switchToEvent = async (event) => {
   try {
     await eventsStore.setActiveEvent(event)
-
   } catch (error) {
     console.error('Error switching event:', error)
   }
 }
 
 function createNewEvent() {
-  router.push('/events/create')
+  router.push('/dashboard/events/create')
 }
 
 </script>

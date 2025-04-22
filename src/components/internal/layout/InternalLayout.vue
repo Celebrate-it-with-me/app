@@ -2,7 +2,7 @@
 import InternalSidebar from '@/components/internal/layout/InternalSidebar.vue'
 import HeaderBar from '@/components/internal/layout/InternalHeaderBar.vue'
 import InternalFooter from '@/components/internal/layout/InternalFooter.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import CEventsModal from '@/components/UI/modals/CEventsModal.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
@@ -62,6 +62,28 @@ const loadEvents = async () => {
 const triggerEventsModal = () => {
   showEventsModal.value = true
 }
+
+watch(() => userStore?.preferences?.visualTheme,  () => {
+  const theme = userStore?.preferences?.visualTheme
+  switch (theme) {
+    case 'dark':
+      document.documentElement.classList.add('dark')
+      break
+    case 'light':
+      document.documentElement.classList.remove('dark')
+      break
+    case 'system':
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+      break
+    default:
+      document.documentElement.classList.remove('light')
+  }
+
+})
 
 </script>
 
