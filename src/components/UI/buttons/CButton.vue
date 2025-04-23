@@ -2,12 +2,14 @@
 <template>
   <button
     :type="type"
+    :disabled="disabled"
     :class="[
       'inline-flex items-center justify-center font-display transition-all duration-200 ease-in-out focus:outline-none',
       sizeClass,
       variantClass,
       rounded ? 'rounded-xl' : 'rounded',
-      full ? 'w-full' : ''
+      full ? 'w-full' : '',
+      disabled ? 'opacity-50 cursor-not-allowed' : '',
     ]"
   >
     <Loader v-if="loading" class="animate-spin w-5 h-5 mr-2" />
@@ -43,7 +45,11 @@ const props = defineProps({
   type: {
     type: String,
     default: 'button', // button, submit, reset
-  }
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  },
 })
 
 const sizeClass = computed(() => {

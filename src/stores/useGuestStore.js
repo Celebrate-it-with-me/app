@@ -12,6 +12,10 @@ export const useGuestsStore = defineStore('guestsStore', {
     searchValue: '',
   }),
   actions: {
+    async createGuest(guest) {
+      return await GuestsService.createGuest(guest)
+    },
+
     addGuest(guest) {
       this.guests.push(guest)
     },

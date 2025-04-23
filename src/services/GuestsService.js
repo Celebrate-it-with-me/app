@@ -66,6 +66,10 @@ class GuestsService {
     })
   }
 
+  async createGuest(guestPayload) {
+    return CWM_API.post(`guest`, guestPayload)
+  }
+
 }
 
 export default new GuestsService()

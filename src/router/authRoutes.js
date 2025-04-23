@@ -21,6 +21,7 @@ import SettingsProfile from '@/views/internal/settings/SettingsProfile.vue'
 import SettingsPreferences from '@/views/internal/settings/SettingsPreferences.vue'
 import SettingsSecurity from '@/views/internal/settings/SettingsSecurity.vue'
 import SettingsDangerZone from '@/views/internal/settings/SettingsDangerZone.vue'
+import CreateGuestView from '@/views/internal/guests/CreateGuestView.vue'
 
 const authRoutes = [
   {
@@ -65,6 +66,23 @@ const authRoutes = [
       { path: 'danger-zone', name: 'settings-danger-zone', component: SettingsDangerZone, meta: { title: 'Danger Zone' } },
     ]
   },
+  /*{
+    path: 'dashboard/guests',
+    name: 'guests',
+    component: EventGuests,
+    meta: {
+      title: 'Events Guests'
+    },
+  },*/
+  {
+    path: '/dashboard/guests/create',
+    name: 'create-guest',
+    component: CreateGuestView,
+    meta: {
+      title: 'Create Guest'
+    },
+  },
+
       /*children: [
       {
         path: 'events',
