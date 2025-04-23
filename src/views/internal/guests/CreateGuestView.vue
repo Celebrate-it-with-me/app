@@ -68,8 +68,6 @@ const guestData = ref({
   phone: '',
 })
 
-
-
 const preferences = ref({
   meal_preference: '',
   allergies: '',
@@ -87,7 +85,7 @@ const handleSubmit = async () => {
 
     const response = await guestStore.createGuest(payload)
 
-    if (response?.status === 200) {
+    if (response?.status >= 200 && response?.status < 300) {
       notifications.addNotification({
         type: 'success',
         message: 'Guest added successfully!',

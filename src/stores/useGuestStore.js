@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import GuestsService from '../services/GuestsService'
 import { useUserStore } from './useUserStore'
 
+
+
 export const useGuestsStore = defineStore('guestsStore', {
   state: () => ({
     guests: [],
@@ -12,9 +14,13 @@ export const useGuestsStore = defineStore('guestsStore', {
     searchValue: '',
   }),
   actions: {
+    async deleteGuest(guestId) {
+      const userStore = useUserStore()
+      return await GuestsService.deleteGuest(guestId, userStore.activeEvent)
+    },
+
     async createGuest(guest) {
       const userStore = useUserStore()
-
       return await GuestsService.createGuest(guest, userStore.activeEvent)
     },
 
