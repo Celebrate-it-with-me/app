@@ -33,7 +33,7 @@ const isActive = (path) => route.path.startsWith(path)
 const menuItems = [
   { label: 'Dashboard', to: '/dashboard', icon: Home },
   { label: 'My Events', to: '/dashboard/events', icon: Calendar },
-  { label: 'Guests', to: '/guests', icon: Users },
+  { label: 'Guests', to: '/dashboard/guests', icon: Users },
   { label: 'RSVP', to: '/rsvp', icon: Users },
   { label: 'Seating', to: '/seating', icon: Users },
   { label: 'Timeline', to: '/timeline', icon: Calendar },

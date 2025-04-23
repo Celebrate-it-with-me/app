@@ -12,6 +12,12 @@ export const useGuestsStore = defineStore('guestsStore', {
     searchValue: '',
   }),
   actions: {
+    async createGuest(guest) {
+      const userStore = useUserStore()
+
+      return await GuestsService.createGuest(guest, userStore.activeEvent)
+    },
+
     addGuest(guest) {
       this.guests.push(guest)
     },
@@ -60,7 +66,7 @@ export const useGuestsStore = defineStore('guestsStore', {
       const userStore = useUserStore()
 
       const response =  await GuestsService.getMyEventGuests({
-        eventId: userStore.currentEventId,
+        eventId: userStore.activeEvent,
         perPage: this.perPage,
         pageSelected: this.pageSelected,
         searchValue: this.searchValue

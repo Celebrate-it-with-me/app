@@ -1,31 +1,29 @@
 <template>
-  <CHeading :level="4" weight="normal">Two-Factor Authentication</CHeading>
-  <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6 space-y-6">
+  <CHeading :level="4" weight="normal">Two-Factor Authentication (2FA)</CHeading>
+  <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
     <div class="grid md:grid-cols-4 gap-6">
-      <!-- Main 3/4 -->
       <div class="md:col-span-3 space-y-6">
-        <!-- Toggle -->
         <div class="flex items-center justify-between">
-          <div>
-            <p class="text-base font-medium text-gray-800 dark:text-gray-100">
-              Two-Factor Authentication (2FA)
-            </p>
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-              Add an extra layer of security to your account.
-            </p>
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Add an extra layer of security to your account.
+          </p>
+          <div class="flex items-center justify-end">
+            <CToggle
+              v-model="enabled"
+              name="enabled"
+            />
           </div>
-          <CToggle v-model="enabled" @change="handleToggle" />
         </div>
 
-        <!-- Setup 2FA -->
-        <div v-if="enabled && !confirmed" class="space-y-4">
+        <div v-if="enabled && setupDone && !verified" class="space-y-4">
           <p class="text-sm text-gray-700 dark:text-gray-300">
             Scan this QR code using an authenticator app like Google Authenticator or Authy.
           </p>
 
           <div class="flex justify-center">
             <div class="w-40 h-40 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
-              QR CODE
+              <img v-if="qrImage" :src="qrImage" alt="Auth QR Code" class="w-full h-full object-cover rounded-lg" />
+              <span v-else>Loading QR Code...</span>
             </div>
           </div>
 
@@ -35,22 +33,37 @@
             v-model="authCode"
             maxlength="6"
             placeholder="123456"
+            id="auth_code"
           />
 
           <div class="flex justify-end">
-            <CButton :loading="saving" @click="verify2FA">Verify & Enable</CButton>
+            <CButton
+              :loading="saving"
+              @click="verify2FA"
+            >Verify & Enable</CButton>
           </div>
         </div>
 
         <!-- Already enabled -->
-        <div v-else-if="enabled && confirmed" class="space-y-4">
+        <div v-else-if="enabled && setupDone && verified" class="space-y-4">
           <p class="text-sm text-gray-700 dark:text-gray-300">
             Two-Factor Authentication is <strong class="text-green-600 dark:text-green-400">enabled</strong>.
           </p>
 
           <div class="flex gap-3">
-            <CButton variant="ghost" @click="showBackupCodes">View Backup Codes</CButton>
-            <CButton variant="danger" :loading="saving" @click="disable2FA">Disable 2FA</CButton>
+            <CButton
+              variant="primary"
+              @click="handleBackupCodes"
+            >
+              View Backup Codes
+            </CButton>
+            <CButton
+              variant="outline"
+              :loading="saving"
+              @click="disable2FA"
+            >
+              Disable 2FA
+            </CButton>
           </div>
         </div>
       </div>
@@ -67,43 +80,111 @@
           </ul>
         </div>
       </div>
+
+      <TwoFABackupCodesModal
+        :codes="backupCodes"
+        v-model="showBackupCodes"
+      />
+
+      <ConfirmDisable2FAModal
+        v-model="showConfirmModal"
+        @disabled="handleDisabled2FA"
+      />
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CToggle from '@/components/UI/form2/CToggle.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useUserStore } from '@/stores/useUserStore'
+import TwoFABackupCodesModal from '@/components/UI/modals/TwoFABackupCodesModal.vue'
+import ConfirmDisable2FAModal from '@/components/UI/modals/ConfirmDisable2FAModal.vue'
 
 const enabled = ref(false)
-const confirmed = ref(false)
 const authCode = ref('')
 const saving = ref(false)
+const sending = ref(false)
+const setupDone = ref(false)
+const verified = ref(false)
+const loadingStatus = ref(true)
+const qrImage = ref('')
+const showBackupCodes = ref(false)
+const loadingBackupCodes = ref(false)
+const backupCodes = ref([])
+const showConfirmModal = ref(false)
+
 
 const userStore = useUserStore()
 const notifications = useNotificationStore()
 
-const handleToggle = async () => {
-  if (!enabled.value) {
-    confirmed.value = false
-    notifications.addNotification({
-      type: 'info',
-      message: '2FA will be disabled after confirmation.',
-    })
+onMounted(async() => {
+  await getTwoFactorStatus()
+})
+
+const handleDisabled2FA = () => {
+  showConfirmModal.value = false
+  enabled.value = false
+  setupDone.value = false
+  verified.value = false
+  authCode.value = ''
+  sending.value = false
+  backupCodes.value = []
+  qrImage.value = ''
+  showBackupCodes.value = false
+  loadingStatus.value = false
+}
+
+const getTwoFactorStatus = async () => {
+  try {
+    const response = await userStore.get2FAStatus()
+
+    if (response.status === 200) {
+      const result = response.data ?? {}
+      enabled.value = result?.enabled
+      setupDone.value = result?.setupDone
+      verified.value = result?.verified
+    } else {
+      notifications.addNotification({
+        type: 'error',
+        message: 'Failed to fetch 2FA status. Please try again.',
+      })
+    }
+
+  } catch(error) {
+    console.log(error)
+  } finally {
+    loadingStatus.value = false
   }
 }
 
 const verify2FA = async () => {
   try {
     saving.value = true
-    // Call your backend to verify code and enable 2FA
-    // await api.post('/user/2fa/enable', { code: authCode.value })
-    confirmed.value = true
+
+    if (!authCode.value) {
+      notifications.addNotification({
+        type: 'error',
+        message: 'Please enter the 2FA code.',
+      })
+      return
+    }
+
+    const response = await userStore.verifyAndEnable2FA(authCode.value)
+
+    if (response?.status !== 200) {
+      notifications.addNotification({
+        type: 'error',
+        message: 'Failed to enable 2FA. Please try again.',
+      })
+      return
+    }
+
+    verified.value = true
     authCode.value = ''
     notifications.addNotification({
       type: 'success',
@@ -120,30 +201,74 @@ const verify2FA = async () => {
 }
 
 const disable2FA = async () => {
+  showConfirmModal.value = true
+}
+
+const handleBackupCodes = async () => {
   try {
-    saving.value = true
-    // await api.post('/user/2fa/disable')
-    confirmed.value = false
-    enabled.value = false
-    notifications.addNotification({
-      type: 'success',
-      message: 'Two-Factor Authentication disabled.',
-    })
-  } catch (e) {
+    loadingBackupCodes.value = true
+
+    const response = await userStore.getBackupCodes()
+
+    if (response?.status === 200) {
+      const result = response.data ?? {}
+      backupCodes.value = result?.codes
+      showBackupCodes.value = true
+    } else {
+      notifications.addNotification({
+        type: 'error',
+        message: 'Failed to fetch backup codes. Please try again.',
+      })
+    }
+
+  } catch (err) {
+    console.log(err)
     notifications.addNotification({
       type: 'error',
-      message: 'Could not disable 2FA. Try again later.',
+      message: 'Failed to fetch backup codes. Please try again.',
     })
   } finally {
-    saving.value = false
+    loadingBackupCodes.value = false
   }
 }
 
-const showBackupCodes = () => {
-  // Maybe open a modal or show inline?
-  notifications.addNotification({
-    type: 'info',
-    message: 'Feature coming soon: Backup codes modal.',
-  })
+const toggleEnabled = async () => {
+  if (enabled.value) {
+    await setup2FA()
+  }
 }
+
+const setup2FA = async () => {
+  try {
+    sending.value = true
+    const response = await userStore.setup2FA()
+
+    if (response?.status === 200) {
+      setupDone.value = true
+
+      const result = response.data ?? {}
+      qrImage.value = `data:image/png;base64,${result?.qr_code}`
+
+      notifications.addNotification({
+        type: 'success',
+        message: 'Two-Factor Authentication enabled.',
+      })
+    } else {
+      notifications.addNotification({
+        type: 'error',
+        message: 'Failed to enable 2FA. Please try again.',
+      })
+    }
+  } catch (e) {
+    console.log(e)
+  } finally {
+    sending.value = false
+  }
+}
+
+
+watch(enabled, () => {
+  toggleEnabled()
+})
+
 </script>

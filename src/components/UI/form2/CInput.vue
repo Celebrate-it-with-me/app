@@ -53,7 +53,7 @@ const props = defineProps({
     validator: value =>
       ['text', 'password', 'email', 'number', 'tel', 'url'].includes(value)
   },
-  modelValue: { type: String, default: '' },
+  modelValue: { type: [ String, Number ], default: '' },
   disabled: { type: Boolean, default: false },
   description: { type: String },
   showError: { type: Boolean, default: false },
