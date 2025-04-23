@@ -46,10 +46,14 @@ import GuestInfoStep from '@/components/internal/guests/GuestInfoStep.vue'
 import GuestCompanionsStep from '@/components/internal/guests/GuestCompanionsStep.vue'
 import GuestPreferencesStep from '@/components/internal/guests/GuestPreferencesStep.vue'
 import GuestSummaryStep from '@/components/internal/guests/GuestSummaryStep.vue'
-import { useUserStore } from '@/stores/useUserStore'
 import { useGuestsStore } from '@/stores/useGuestStore'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const currentStep = ref(0)
+const namedCompanions = ref([])
+const unnamedCompanions = ref(0)
+const guestStore = useGuestsStore()
+const notifications = useNotificationStore()
 
 const steps = [
   { title: 'Guest Info' },
@@ -64,9 +68,7 @@ const guestData = ref({
   phone: '',
 })
 
-const namedCompanions = ref([])
-const unnamedCompanions = ref(0)
-const guestStore = useGuestsStore()
+
 
 const preferences = ref({
   meal_preference: '',

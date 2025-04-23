@@ -66,8 +66,8 @@ class GuestsService {
     })
   }
 
-  async createGuest(guestPayload) {
-    return CWM_API.post(`guest`, guestPayload)
+  async createGuest(guestPayload, eventId) {
+    return CWM_API.post(`event/${eventId}/guests`, guestPayload)
   }
 
 }
