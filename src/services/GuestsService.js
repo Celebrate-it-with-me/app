@@ -53,6 +53,10 @@ class GuestsService {
     return CWM_API.delete(`event/${eventId}/guests/${guestId}`, {})
   }
 
+  async getGuestData(guestId, eventId) {
+    return CWM_API.get(`event/${eventId}/guests/${guestId}`, {})
+  }
+
 }
 
 export default new GuestsService()

@@ -14,6 +14,11 @@ export const useGuestsStore = defineStore('guestsStore', {
     searchValue: '',
   }),
   actions: {
+    async loadGuestData(guestId) {
+      const userStore = useUserStore()
+      return await GuestsService.getGuestData(guestId, userStore.activeEvent)
+    },
+
     async deleteGuest(guestId) {
       const userStore = useUserStore()
       return await GuestsService.deleteGuest(guestId, userStore.activeEvent)

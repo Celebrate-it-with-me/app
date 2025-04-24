@@ -43,33 +43,9 @@
         <p>{{ guest.notes || 'None' }}</p>
       </div>
 
-      <!-- Invitation Link -->
-      <div>
-        <p class="font-medium text-gray-500 dark:text-gray-400">Invitation Link</p>
-        <div class="flex items-center gap-2">
-          <input
-            type="text"
-            :value="guest.invitationUrl"
-            readonly
-            class="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-full text-sm"
-          />
-          <CButton size="sm" @click="copyLink">Copy</CButton>
-        </div>
-      </div>
-
-      <!-- QR Code -->
-      <div>
-        <p class="font-medium text-gray-500 dark:text-gray-400">QR Code</p>
-        <img
-          :src="'data:image/png;base64,' + guest.invitationQR"
-          alt="QR Code"
-          class="mt-2 w-32 h-32 object-contain rounded border border-gray-300 dark:border-gray-700"
-        />
-      </div>
-
       <!-- Companions -->
       <div v-if="guest.companions?.length">
-        <p class="font-medium text-gray-500 dark:text-gray-400">Companions</p>
+        <p class="font-medium text-gray-500 dark:text-gray-400 text-lg">Companions</p>
         <ul class="list-disc list-inside space-y-1">
           <li v-for="companion in guest.companions" :key="companion.id">
             {{ companion.name }} ({{ companion.email || 'no email' }})
