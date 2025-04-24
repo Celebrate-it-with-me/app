@@ -35,7 +35,7 @@
                 <th
                   class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
                 >
-                  Status
+                  Companions
                 </th>
                 <th
                   class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
@@ -60,7 +60,7 @@
                   {{ guest.phone }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                  <span :class="statusClass(guest.confirmed)">{{ guest.rsvpStatus }}</span>
+                  <span >{{ guest?.companions?.length ?? 0 }}</span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-left flex flex-start gap-2 text-sm">
                   <CButton size="sm" variant="primary" @click="viewGuest(guest)">Details</CButton>
@@ -113,12 +113,6 @@ const loadGuests = async () => {
   loading.value = true
   await guestStore.loadGuests()
   loading.value = false
-}
-
-const statusClass = (status) => {
-  if (status === 'confirmed') return 'text-green-600 dark:text-green-400'
-  if (status === 'declined') return 'text-red-500'
-  return 'text-gray-500'
 }
 
 const viewGuest = (guest) => {

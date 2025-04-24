@@ -23,6 +23,7 @@ import SettingsSecurity from '@/views/internal/settings/SettingsSecurity.vue'
 import SettingsDangerZone from '@/views/internal/settings/SettingsDangerZone.vue'
 import CreateGuestView from '@/views/internal/guests/CreateGuestView.vue'
 import GuestsView from '@/views/internal/guests/GuestsView.vue'
+import RsvpView from '@/views/internal/rsvp/RsvpView.vue'
 
 const authRoutes = [
   {
@@ -81,6 +82,14 @@ const authRoutes = [
     component: CreateGuestView,
     meta: {
       title: 'Create Guest'
+    },
+  },
+  {
+    path: '/dashboard/rsvp',
+    name: 'rsvp',
+    component: RsvpView,
+    meta: {
+      title: 'RSVP'
     },
   },
 

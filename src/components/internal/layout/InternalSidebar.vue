@@ -34,14 +34,14 @@ const menuItems = [
   { label: 'Dashboard', to: '/dashboard', icon: Home },
   { label: 'My Events', to: '/dashboard/events', icon: Calendar },
   { label: 'Guests', to: '/dashboard/guests', icon: Users },
-  { label: 'RSVP', to: '/rsvp', icon: Users },
-  { label: 'Seating', to: '/seating', icon: Users },
+  { label: 'RSVP', to: '/dashboard/rsvp', icon: Users },
+ /* { label: 'Seating', to: '/seating', icon: Users },
   { label: 'Timeline', to: '/timeline', icon: Calendar },
   { label: 'Checklist', to: '/checklist', icon: Calendar },
   { label: 'Budget Tracker', to: '/budget-tracker', icon: Calendar },
   { label: 'Photo Gallery', to: '/photo-gallery', icon: Calendar },
   { label: 'Music', to: '/music', icon: Music2 },
   { label: 'Calendar', to: '/calendar', icon: Calendar },
-  { label: 'Settings', to: '/settings', icon: Settings },
+  { label: 'Settings', to: '/settings', icon: Settings },*/
 ]
 </script>
