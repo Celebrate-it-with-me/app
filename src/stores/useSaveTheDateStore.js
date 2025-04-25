@@ -7,7 +7,21 @@ export const useSaveTheDateStore = defineStore('stdStore', {
   state: () => ({
     id: null,
     title: '',
+    titleStyles: {
+      fontSize: '24px',
+      color: '#000000',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      fontFamily: 'Arial, Helvetica, sans-serif',
+    },
     message: '',
+    messageStyles: {
+      fontSize: '16px',
+      color: '#000000',
+      fontWeight: 'normal',
+      textAlign: 'center',
+      fontFamily: 'Arial, Helvetica, sans-serif',
+    },
     useCountdown: false,
     useAddToCalendar: false,
     hasPreviousStd: false

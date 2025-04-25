@@ -6,13 +6,9 @@ import CHeading from '@/components/UI/headings/CHeading.vue'
 import CLoading from '@/components/UI/loading/CLoading.vue'
 import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
 
-const stdConfig = ref(null)
 const loading = ref(false)
 const stdStore = useSaveTheDateStore()
 
-const handleUpdateStd = (newConfig) => {
-  stdConfig.value = newConfig
-}
 
 onMounted(() => {
   console.log('std mounted')
@@ -45,14 +41,17 @@ const loadSaveTheDate = async () => {
       <CHeading :level="2" weight="semibold">Save the Date</CHeading>
     </div>
 
-    <div class="overflow-x-auto">
+    <div >
       <CLoading v-if="loading" :size="12" />
 
-      <div v-else class="flex flex-col gap-10">
-        <CreateUpdateStd @updated-std="handleUpdateStd" />
+      <div
+        class="std-container flex flex-col gap-6 md:gap-10"
+      >
+        <CreateUpdateStd />
 
-        <STDPreview :std-config="stdConfig" />
+        <STDPreview />
       </div>
+
     </div>
   </section>
 </template>
