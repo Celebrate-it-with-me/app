@@ -12,55 +12,11 @@
               placeholder="Save the Date Title"
               id="stdTitle"
             />
-            <div class="flex justify-end">
-              <CButton variant="link" size="xs" @click="showTitleDetails = !showTitleDetails">
-                {{ showTitleDetails ? '- Details' : '+ Details' }}
-              </CButton>
-            </div>
 
-
-            <div v-if="showTitleDetails" class="mt-4 space-y-3">
-              <label class="block text-sm">Font Size</label>
-              <input v-model="stdStore.titleStyles.fontSize" type="text" placeholder="e.g. 32px" class="input-style" />
-
-              <label class="block text-sm">Font Color</label>
-              <input v-model="stdStore.titleStyles.color" type="color" class="w-12 h-8" />
-
-              <label class="block text-sm">Font Weight</label>
-              <select v-model="stdStore.titleStyles.fontWeight" class="input-style">
-                <option value="normal">Normal</option>
-                <option value="bold">Bold</option>
-                <option value="lighter">Lighter</option>
-                <option value="bolder">Bolder</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-                <option value="300">300</option>
-                <option value="400">400</option>
-                <option value="500">500</option>
-                <option value="600">600</option>
-                <option value="700">700</option>
-                <option value="800">800</option>
-                <option value="900">900</option>
-              </select>
-
-              <label class="block text-sm">Font Family</label>
-              <select v-model="stdStore.titleStyles.fontFamily" class="input-style">
-                <option value="Arial, Helvetica, sans-serif">Arial</option>
-                <option value="Georgia, serif">Georgia</option>
-                <option value="Tahoma, Geneva, sans-serif">Tahoma</option>
-                <option value="'Trebuchet MS', Helvetica, sans-serif">Trebuchet MS</option>
-                <option value="Verdana, Geneva, sans-serif">Verdana</option>
-                <option value="'Courier New', Courier, monospace">Courier New</option>
-                <option value="'Times New Roman', Times, serif">Times New Roman</option>
-              </select>
-
-              <label class="block text-sm">Alignment</label>
-              <select v-model="stdStore.titleStyles.textAlign" class="input-style">
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
+            <CTextDetails
+              :disabled="stdStore.title.length <= 0"
+              v-model="stdStore.titleStyles"
+            />
           </div>
 
           <div>
@@ -72,54 +28,11 @@
               placeholder="Save the Date subtitle"
               id="stdMessage"
             />
-            <div class="flex justify-end">
-              <CButton variant="link" size="xs" @click="showMessageDetails = !showMessageDetails">
-                {{ showMessageDetails ? '- Details' : '+ Details' }}
-              </CButton>
-            </div>
 
-            <div v-if="showMessageDetails" class="mt-4 space-y-3">
-              <label class="block text-sm">Font Size</label>
-              <input v-model="stdStore.messageStyles.fontSize" type="text" placeholder="e.g. 32px" class="input-style" />
-
-              <label class="block text-sm">Font Color</label>
-              <input v-model="stdStore.messageStyles.color" type="color" class="w-12 h-8" />
-
-              <label class="block text-sm">Font Weight</label>
-              <select v-model="stdStore.messageStyles.fontWeight" class="input-style">
-                <option value="normal">Normal</option>
-                <option value="bold">Bold</option>
-                <option value="lighter">Lighter</option>
-                <option value="bolder">Bolder</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-                <option value="300">300</option>
-                <option value="400">400</option>
-                <option value="500">500</option>
-                <option value="600">600</option>
-                <option value="700">700</option>
-                <option value="800">800</option>
-                <option value="900">900</option>
-              </select>
-
-              <label class="block text-sm">Font Family</label>
-              <select v-model="stdStore.messageStyles.fontFamily" class="input-style">
-                <option value="Arial, Helvetica, sans-serif">Arial</option>
-                <option value="Georgia, serif">Georgia</option>
-                <option value="Tahoma, Geneva, sans-serif">Tahoma</option>
-                <option value="'Trebuchet MS', Helvetica, sans-serif">Trebuchet MS</option>
-                <option value="Verdana, Geneva, sans-serif">Verdana</option>
-                <option value="'Courier New', Courier, monospace">Courier New</option>
-                <option value="'Times New Roman', Times, serif">Times New Roman</option>
-              </select>
-
-              <label class="block text-sm">Alignment</label>
-              <select v-model="stdStore.messageStyles.textAlign" class="input-style">
-                <option value="left">Left</option>
-                <option value="center">Center</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
+            <CTextDetails
+              :disabled="stdStore.message.length <= 0"
+              v-model="stdStore.messageStyles"
+            />
           </div>
 
           <CToggle label="Use Countdown" v-model="stdStore.useCountdown" name="useCountdown" />
@@ -142,8 +55,9 @@ import { toTypedSchema } from '@vee-validate/zod'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CToggle from '@/components/UI/form2/CToggle.vue'
-import CHeading from '@/components/UI/headings/CHeading.vue'
 import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
+import CDetailsPanel from '@/components/UI/form2/styles-details/CDetailsPanel.vue'
+import CTextDetails from '@/components/UI/form2/styles-details/CTextDetails.vue'
 
 const stdStyles = reactive({
   title: { fontSize: '', color: '#000000', textAlign: 'center' },
