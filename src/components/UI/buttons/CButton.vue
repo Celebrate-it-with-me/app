@@ -1,75 +1,48 @@
-// Example: CButton.vue (first UI design component)
 <template>
   <button
     :type="type"
     :disabled="disabled"
     :class="[
-      'inline-flex items-center justify-center font-display transition-all duration-200 ease-in-out focus:outline-none',
-      sizeClass,
-      variantClass,
-      rounded ? 'rounded-xl' : 'rounded',
-      full ? 'w-full' : '',
-      disabled ? 'opacity-50 cursor-not-allowed' : '',
+      'inline-flex items-center justify-center font-medium transition-all duration-150 rounded-xl px-4 py-2 text-sm',
+      variantClasses,
+      disabled ? 'opacity-50 cursor-not-allowed' : ''
     ]"
+    v-bind="$attrs"
   >
-    <Loader v-if="loading" class="animate-spin w-5 h-5 mr-2" />
     <slot />
   </button>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import { Loader } from 'lucide-vue-next'
 
 const props = defineProps({
+  type: { type: String, default: 'button' },
   variant: {
     type: String,
-    default: 'primary', // primary, secondary, outline, gradient
+    default: 'primary',
+    validator: val =>
+      ['primary', 'secondary', 'outline', 'ghost', 'danger', 'link'].includes(val)
   },
-  size: {
-    type: String,
-    default: 'md', // sm, md, lg
-  },
-  rounded: {
-    type: Boolean,
-    default: true
-  },
-  full: {
-    type: Boolean,
-    default: false
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  type: {
-    type: String,
-    default: 'button', // button, submit, reset
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
+  disabled: { type: Boolean, default: false }
 })
 
-const sizeClass = computed(() => {
-  return {
-    sm: 'px-4 py-1.5 text-sm',
-    md: 'px-6 py-2 text-base',
-    lg: 'px-8 py-3 text-lg',
-  }[props.size]
-})
-
-const variantClass = computed(() => {
-  return {
-    primary: 'bg-primary text-white hover:bg-primary-dark shadow-glow dark:bg-primary-dark dark:hover:bg-primary',
-    secondary: 'bg-secondary text-white hover:bg-secondary-dark dark:bg-secondary-dark dark:hover:bg-secondary',
-    outline: 'border border-primary text-primary hover:bg-primary hover:text-white dark:border-primary dark:text-primary dark:hover:bg-primary dark:hover:text-white',
-    gradient: 'bg-gradient-to-r from-primary to-secondary text-white hover:opacity-90 shadow-glow dark:from-primary-dark dark:to-secondary-dark',
-  }[props.variant]
+const variantClasses = computed(() => {
+  switch (props.variant) {
+    case 'primary':
+      return 'bg-primary text-white hover:bg-pink-600 shadow-pink-300 shadow-md'
+    case 'secondary':
+      return 'bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700'
+    case 'outline':
+      return 'border border-primary text-primary hover:bg-primary hover:text-white'
+    case 'ghost':
+      return 'bg-transparent text-gray-800 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700'
+    case 'danger':
+      return 'bg-red-500 text-white hover:bg-red-600'
+    case 'link':
+      return 'bg-transparent text-primary underline px-0 py-0 hover:text-pink-600'
+    default:
+      return ''
+  }
 })
 </script>
-
-<style scoped>
-/* Optionally you can add transitions, focus rings or disabled styles here */
-</style>
