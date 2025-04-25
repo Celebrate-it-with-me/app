@@ -1,7 +1,6 @@
 import DashboardView from '../views/authenticated/DashboardView.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import EventsView from '@/views/internal/events/EventsView.vue'
-import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.vue'
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
 import CWMRsvp from '../components/authenticated/rsvp/CWMRsvp.vue'
@@ -24,6 +23,7 @@ import SettingsDangerZone from '@/views/internal/settings/SettingsDangerZone.vue
 import CreateGuestView from '@/views/internal/guests/CreateGuestView.vue'
 import GuestsView from '@/views/internal/guests/GuestsView.vue'
 import RsvpView from '@/views/internal/rsvp/RsvpView.vue'
+import SaveTheDateView from '@/views/internal/save-the-date/SaveTheDateView.vue'
 
 const authRoutes = [
   {
@@ -92,6 +92,14 @@ const authRoutes = [
       title: 'RSVP'
     },
   },
+  {
+    path: '/dashboard/save-the-date',
+    name: 'save-the-date',
+    component: SaveTheDateView,
+    meta: {
+      title: 'Save the date'
+    }
+  },
 
       /*children: [
       {
@@ -110,14 +118,7 @@ const authRoutes = [
           title: 'CwmEvents Guests'
         },
       },
-      {
-        path: 'save-the-date',
-        name: 'save-the-date',
-        component: SaveTheDate,
-        meta: {
-          title: 'Save the date'
-        }
-      },
+
       {
         path: 'rsvp',
         name: 'rsvp',

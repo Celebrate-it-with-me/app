@@ -28,7 +28,7 @@ const handleClick = (e) => {
 <template>
   <div>
     <button
-      class="px-10 py-4 border-2 border-white rounded-lg text-white font-bold"
+      class="px-10 py-4 border-2 border-primary rounded-lg text-primary font-bold"
       @click="handleClick"
     >
       Add to Calendar

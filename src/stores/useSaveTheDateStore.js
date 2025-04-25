@@ -3,16 +3,13 @@ import STDService from '../services/STDService'
 import { useEventsStore } from './useEventsStore'
 import { useUserStore } from './useUserStore'
 
-export const useSTDStore = defineStore('stdStore', {
+export const useSaveTheDateStore = defineStore('stdStore', {
   state: () => ({
     id: null,
-    stdTitle: '',
-    stdSubTitle: '',
-    backgroundColor: '',
-    image: null,
+    title: '',
+    message: '',
     useCountdown: false,
     useAddToCalendar: false,
-    isEnabled: false,
     hasPreviousStd: false
   }),
   actions: {

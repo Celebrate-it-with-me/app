@@ -1,8 +1,8 @@
 <script setup>
 
 import { computed } from 'vue'
-import STDCountDown from '@/components/authenticated/save-the-date/STDCountDown.vue'
-import STDAddToCalendar from '@/components/authenticated/save-the-date/STDAddToCalendar.vue'
+import STDCountDown from '@/components/internal/save-the-date/STDCountDown.vue'
+import STDAddToCalendar from '@/components/internal/save-the-date/STDAddToCalendar.vue'
 
 const props = defineProps({
   stdConfig: {
@@ -43,47 +43,43 @@ const backgroundStyle = computed(() => {
   };
 });
 
-
-
-
 </script>
 
 <template>
   <div
-    class="event-handle w-[70%] rounded-lg border-4 border-gray-900 dark:border-gray-800
-          flex flex-col justify-center items-center"
+    class="event-handle w-full rounded-2xl border-2 border-gray-200 dark:border-gray-100
+           flex flex-col justify-center items-center p-6 bg-cover bg-center"
     :style="backgroundStyle"
   >
-    <div class="titles-section flex flex-col justify-center items-center">
+    <!-- Title + Subtitle Section -->
+    <div class="titles-section text-center space-y-2">
       <h1
-        v-if="stdConfig?.stdTitle"
-        class="text-2xl text-white font-semibold"
+        v-if="stdConfig?.title"
+        class="text-3xl md:text-4xl font-bold text-text"
       >
-        {{ stdConfig.stdTitle }}
+        {{ stdConfig.title }}
       </h1>
+
       <h3
-        v-if="stdConfig?.stdSubTitle"
-        class="text-xl text-white font-normal"
+        v-if="stdConfig?.message"
+        class="text-lg md:text-xl font-medium text-text"
       >
-        {{ stdConfig.stdSubTitle }}
+        {{ stdConfig.message }}
       </h3>
     </div>
 
-    <div
-      v-if="stdConfig?.useCountdown"
-      class="std-countdown mt-10">
+    <!-- Countdown -->
+    <div v-if="stdConfig?.useCountdown" class="mt-8">
       <STDCountDown />
     </div>
 
-    <div
-      v-if="stdConfig?.useAddToCalendar"
-      class="std-addToCalendar mt-10"
-    >
+    <!-- Add to Calendar -->
+    <div v-if="stdConfig?.useAddToCalendar" class="mt-6">
       <STDAddToCalendar />
     </div>
-
   </div>
 </template>
+
 
 <style scoped>
 
