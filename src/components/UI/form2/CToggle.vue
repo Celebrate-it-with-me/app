@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-between w-full">
+  <div class="flex items-center justify-between w-full mb-2">
     <!-- Label (optional) -->
     <label
       v-if="label"

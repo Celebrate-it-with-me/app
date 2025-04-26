@@ -45,15 +45,23 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const sizes = [
-  { value: '100' },
-  { value: '200' },
-  { value: '300' },
-  { value: '400' },
-  { value: '500' },
-  { value: '600' },
-  { value: '700' },
-  { value: '800' },
-  { value: '900' },
+  { value: '2px' },
+  { value: '4px' },
+  { value: '6px' },
+  { value: '8px' },
+  { value: '10px' },
+  { value: '12px' },
+  { value: '14px' },
+  { value: '16px' },
+  { value: '20px' },
+  { value: '24px' },
+  { value: '32px' },
+  { value: '40px' },
+  { value: '48px' },
+  { value: '64px' },
+  { value: '72px' },
+  { value: '84px' },
+  { value: '96px' },
 ]
 
 const currentIndex = ref(0)

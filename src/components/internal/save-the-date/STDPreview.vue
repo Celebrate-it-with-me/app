@@ -32,7 +32,7 @@ const stdStore = useSaveTheDateStore()
       <STDCountDown />
     </div>
 
-    <div v-if="stdStore?.useAddToCalendar" class="mt-6">
+    <div v-if="stdStore?.addToCalendar" class="mt-6">
       <STDAddToCalendar />
     </div>
   </div>

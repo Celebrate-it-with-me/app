@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
 
 // Function to calculate the time left
 const calculateTimeLeft = () => {
@@ -44,28 +45,58 @@ onUnmounted(() => {
     clearInterval(timer);
   }
 });
+
+
+const stdStore = useSaveTheDateStore()
+
+const numbersStyles = computed(() => {
+  return stdStore.countdownStyles.numbers ?? {}
+})
+
+const labelsStyles = computed(() => {
+  return stdStore.countdownStyles.labels ?? {}
+})
+
 </script>
 
 <template>
   <div class="counter-time flex items-center justify-center gap-10">
     <div class="flex flex-col items-center gap-2">
-      <p class="text-5xl font-light italic">{{ timeLeft.days }}</p>
-      <p class="text-xl">Days</p>
+      <p
+        :style="numbersStyles"
+      >{{ timeLeft.days }}</p>
+      <p
+        :style="labelsStyles"
+      >Days</p>
     </div>
 
     <div class="flex flex-col items-center gap-2">
-      <p class="text-5xl font-light italic">{{ timeLeft.hours }}</p>
-      <p class="text-xl">Hours</p>
+      <p
+        :style="numbersStyles"
+      >{{ timeLeft.hours }}</p>
+      <p
+        :style="labelsStyles"
+      >Hours</p>
     </div>
 
     <div class="flex flex-col items-center gap-2">
-      <p class="text-5xl font-light italic">{{ timeLeft.minutes }}</p>
-      <p class="text-xl">Mins</p>
+      <p
+        :style="numbersStyles"
+      >
+        {{ timeLeft.minutes }}
+      </p>
+      <p
+        :style="labelsStyles"
+      >Mins</p>
     </div>
 
     <div class="flex flex-col items-center gap-2">
-      <p class="text-5xl font-light italic">{{ timeLeft.seconds }}</p>
-      <p class="text-xl">Secs</p>
+      <p
+        :style="numbersStyles"
+      >{{ timeLeft.seconds }}</p>
+      <p
+        :style="labelsStyles"
+      >Secs</p>
     </div>
   </div>
 </template>

@@ -1,9 +1,8 @@
 <template>
-  <div class="rounded-md relative">
-    <div class="flex justify-end">
+  <div ref="panelRef" class="rounded-md relative">
+    <div :class="`flex justify-${position}`">
       <button
         @click="showTitleDetails = !showTitleDetails"
-        class="absolute right-2 top-1/2 -translate-y-1/2"
         :class="{
           'cursor-not-allowed': disabled,
           'cursor-pointer text-primary': !disabled
@@ -29,10 +28,32 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Settings } from 'lucide-vue-next'
 
-defineProps({ title: String, disabled: Boolean })
+defineProps({
+  title: String,
+  disabled: Boolean,
+  position: {
+    type: String,
+    default: 'end'
+  }
+})
 
 const showTitleDetails = ref(false)
+const panelRef = ref(null)
+
+function handleClickOutside(event) {
+  if (panelRef.value && !panelRef.value.contains(event.target)) {
+    showTitleDetails.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
