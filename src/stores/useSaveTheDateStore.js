@@ -23,7 +23,35 @@ export const useSaveTheDateStore = defineStore('stdStore', {
       fontFamily: 'Arial, Helvetica, sans-serif',
     },
     useCountdown: false,
-    useAddToCalendar: false,
+    countdownStyles: {
+      numbers: {
+        fontSize: '24px',
+        color: '#000000',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontFamily: 'Arial, Helvetica, sans-serif',
+      },
+      labels: {
+        fontSize: '16px',
+        color: '#000000',
+        fontWeight: 'normal',
+        textAlign: 'center',
+        fontFamily: 'Arial, Helvetica, sans-serif',
+      },
+    },
+    addToCalendar: 'Add to Calendar',
+    addToCalendarStyles: {
+      fontSize: '16px',
+      color: '#000000',
+      fontWeight: 'normal',
+      fontFamily: 'Arial, Helvetica, sans-serif',
+      paddingX: '10px',
+      paddingY: '5px',
+      borderRadius: '5px',
+      borderWidth: '1px',
+      borderColor: '#000000',
+      borderStyle: 'solid',
+    },
     hasPreviousStd: false
   }),
   actions: {

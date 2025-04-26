@@ -35,8 +35,38 @@
             />
           </div>
 
-          <CToggle label="Use Countdown" v-model="stdStore.useCountdown" name="useCountdown" />
-          <CToggle label="Use Add To Calendar" v-model="stdStore.useAddToCalendar" name="useAddToCalendar" />
+          <div>
+            <CInput
+              v-model="stdStore.addToCalendar"
+              label="Calendar Button"
+              name="stdAddToCalendar"
+              show-error
+              placeholder="Add To Calendar"
+              id="stdAddToCalendar"
+            />
+
+            <CAddToCalendarDetails
+              v-model="stdStore.addToCalendarStyles"
+            />
+          </div>
+
+          <div>
+            <div class="countdown__section">
+              <label class="mb-4 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Use Countdown
+              </label>
+              <CToggle
+                v-model="stdStore.useCountdown"
+                name="useCountdown"
+              />
+            </div>
+
+            <CCountDownDetails
+              :disabled="!stdStore.useCountdown"
+              :position="'start'"
+              v-model="stdStore.countdownStyles"
+            />
+          </div>
         </div>
 
         <div class="mt-8 flex justify-end">
@@ -56,8 +86,9 @@ import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CToggle from '@/components/UI/form2/CToggle.vue'
 import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
-import CDetailsPanel from '@/components/UI/form2/styles-details/CDetailsPanel.vue'
 import CTextDetails from '@/components/UI/form2/styles-details/CTextDetails.vue'
+import CCountDownDetails from '@/components/UI/form2/styles-details/CCountDownDetails.vue'
+import CAddToCalendarDetails from '@/components/UI/form2/styles-details/CAddToCalendarDetails.vue'
 
 const stdStyles = reactive({
   title: { fontSize: '', color: '#000000', textAlign: 'center' },
@@ -65,14 +96,12 @@ const stdStyles = reactive({
 })
 
 const stdStore = useSaveTheDateStore()
-const showTitleDetails = ref(false)
-const showMessageDetails = ref(false)
 
 const stdValidationSchema = toTypedSchema(zod.object({
   title: zod.string().min(1, 'Title is required'),
   message: zod.string().optional(),
   useCountdown: zod.boolean().optional(),
-  useAddToCalendar: zod.boolean().optional(),
+  addToCalendar: zod.string().optional(),
 }))
 
 const onSubmit = () => {
