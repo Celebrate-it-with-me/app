@@ -109,7 +109,7 @@ const authRoutes = [
     }
   },
   {
-    path: '/dashboard/suggest-music',
+    path: '/dashboard/suggested-music',
     name: 'suggest-music',
     component: CSuggestMusic,
     meta: {
