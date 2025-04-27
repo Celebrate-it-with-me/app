@@ -143,9 +143,9 @@ const handleMoveToTop = () => {
       </SeparatorSection>
 
       // Check double play in prod
-<!--      <BackgroundMusic
-        origin="event"
-      />-->
+      <!--      <BackgroundMusic
+              origin="event"
+            />-->
 
       <EventComments
         origin="event"
@@ -155,7 +155,6 @@ const handleMoveToTop = () => {
       <SwipeLeftIcon />
 
       <EventFooter />
-
     </main>
   </div>
 

@@ -2,13 +2,13 @@
 import { useTemplateStore } from '@/stores/useTemplateStore'
 import { computed } from 'vue'
 import NoCompanions from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/NoCompanions.vue'
-import NamedCompanions from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/NamedCompanions.vue'
+import Companions from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/Companions.vue'
 
 const emit = defineEmits(['goToPrevious', 'goToNext'])
 const templateStore = useTemplateStore()
 
-const companionType = computed(() => {
-  return templateStore.guest?.companionType ?? ''
+const hasCompanions = computed(() => {
+  return !templateStore.guest?.companions.length <= 0;
 })
 
 const handlePrevious = () => {
@@ -24,11 +24,11 @@ const handleNext = () => {
 <template>
 <div class="w-full">
   <NoCompanions
-    v-if="companionType === 'no-companions'"
+    v-if="!hasCompanions"
   />
 
-  <NamedCompanions
-    v-if="companionType === 'named'"
+  <Companions
+    v-if="hasCompanions"
     @go-to-previous="handlePrevious"
     @go-to-next="handleNext"
   />

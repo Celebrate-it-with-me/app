@@ -9,7 +9,9 @@ const templateStore = useTemplateStore()
 const currentCompanion = ref(null)
 
 const readyForNext = computed(() => {
-  return !templateStore.guest?.companions?.some((companion) => companion.confirmed === 'pending')
+  return !templateStore.guest?.companions?.some(
+    (companion) => companion.rsvpStatus === 'pending'
+  )
 })
 
 const setCurrentCompanion = (companion) => {
@@ -31,7 +33,7 @@ const handleCompanionConfirmed = (companion) => {
       comp.lastName = companion.lastName
       comp.email = companion.email
       comp.phoneNumber = companion.phoneNumber
-      comp.confirmed = companion.confirmed
+      comp.rsvpStatus = companion.rsvpStatus
     }
   })
 

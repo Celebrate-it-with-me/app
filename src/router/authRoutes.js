@@ -4,7 +4,7 @@ import EventsView from '@/views/internal/events/EventsView.vue'
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
 import CWMRsvp from '../components/authenticated/rsvp/CWMRsvp.vue'
-import CwmSweetMemories from '@/components/authenticated/sweet-memories/CWMSweetMemories.vue'
+import CSweetMemories from '@/components/authenticated/sweet-memories/CSweetMemories.vue'
 import CWMSeatAccommodation from '../components/authenticated/seat-accommodation/CWMSeatAccommodation.vue'
 import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
 import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
@@ -100,6 +100,14 @@ const authRoutes = [
       title: 'Save the date'
     }
   },
+  {
+    path: '/dashboard/sweet-memories',
+    name: 'sweet-memories',
+    component: CSweetMemories,
+    meta: {
+      title: 'Sweet Memories'
+    }
+  },
 
       /*children: [
       {
@@ -127,14 +135,7 @@ const authRoutes = [
           title: 'RSVP Creator'
         }
       },
-      {
-        path: 'sweet-memories',
-        name: 'sweet-memories',
-        component: CwmSweetMemories,
-        meta: {
-          title: 'Sweet Memories'
-        }
-      },
+
       {
         path: 'seats-accommodation',
         name: 'seats-accommodation',

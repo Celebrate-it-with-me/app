@@ -49,7 +49,7 @@ const haveCompanions = computed(() => {
           </p>
           <div class="guest-section">
             <h4 class="text-lg text-dark-blue" >
-              {{ guest.firstName }} {{ guest.lastName }}
+              {{ guest.name }}
             </h4>
             <ul
               class="ml-4 text-dark-blue text-sm"
@@ -59,7 +59,7 @@ const haveCompanions = computed(() => {
                 v-for="companion in guest.companions"
                 :key="companion.id"
               >
-                {{ companion.firstName }} {{ companion.lastName }}
+                {{ companion.name }}
               </li>
             </ul>
           </div>
