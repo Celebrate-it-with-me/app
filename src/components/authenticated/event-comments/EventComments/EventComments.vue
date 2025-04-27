@@ -74,7 +74,7 @@ const commentsSubtitle = computed(() => {
 
 const userEventId = computed(() => {
   if (props.origin === 'admin') {
-    return userStore.currentEventId
+    return userStore.activeEvent
   }
 
   return templateStore.event.id

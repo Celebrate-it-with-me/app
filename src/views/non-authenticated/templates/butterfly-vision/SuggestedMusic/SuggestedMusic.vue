@@ -19,8 +19,6 @@ const suggestedMusic = computed(() => {
   }
 })
 
-
-
 </script>
 
 <template>

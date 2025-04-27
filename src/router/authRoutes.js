@@ -1,19 +1,29 @@
 import DashboardView from '../views/authenticated/DashboardView.vue'
-import EventsView from '../views/authenticated/EventsView.vue'
 import { useUserStore } from '@/stores/useUserStore'
-import SaveTheDate from '../components/authenticated/save-the-date/SaveTheDate.vue'
+import EventsView from '@/views/internal/events/EventsView.vue'
 import MyEvents from '../components/authenticated/events/MyEvents.vue'
 import EventGuests from '../components/authenticated/guests/EventGuests.vue'
 import CWMRsvp from '../components/authenticated/rsvp/CWMRsvp.vue'
-import CwmSweetMemories from '@/components/authenticated/sweet-memories/CWMSweetMemories.vue'
+import CSweetMemories from '@/components/authenticated/sweet-memories/CSweetMemories.vue'
 import CWMSeatAccommodation from '../components/authenticated/seat-accommodation/CWMSeatAccommodation.vue'
 import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
 import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
 import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue'
-import CWMSuggestMusic from '../components/authenticated/suggest-music/CWMSuggestMusic.vue'
+import CSuggestMusic from '../components/authenticated/suggest-music/CSuggestMusic.vue'
 import CWMBackgroundMusic from '../components/authenticated/background-music/CWMBackgroundMusic.vue'
-import CWMEventComments from '../components/authenticated/event-comments/CWMEventComments.vue'
+import CEventComments from '../components/authenticated/event-comments/CEventComments.vue'
 import ComponentsPlayground from '@/views/components-playground/ComponentsPlayground.vue'
+import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
+import { useEventsStore } from '@/stores/useEventsStore'
+import SettingsLayout from '@/components/internal/layout/SettingsLayout.vue'
+import SettingsProfile from '@/views/internal/settings/SettingsProfile.vue'
+import SettingsPreferences from '@/views/internal/settings/SettingsPreferences.vue'
+import SettingsSecurity from '@/views/internal/settings/SettingsSecurity.vue'
+import SettingsDangerZone from '@/views/internal/settings/SettingsDangerZone.vue'
+import CreateGuestView from '@/views/internal/guests/CreateGuestView.vue'
+import GuestsView from '@/views/internal/guests/GuestsView.vue'
+import RsvpView from '@/views/internal/rsvp/RsvpView.vue'
+import SaveTheDateView from '@/views/internal/save-the-date/SaveTheDateView.vue'
 
 const authRoutes = [
   {
@@ -25,13 +35,97 @@ const authRoutes = [
     }
   },
   {
-    path: '/dashboard',
+    path: '/dashboard/events',
     name: 'events',
     component: EventsView,
     meta: {
       title: 'My CwmEvents'
     },
+  },
+  {
+    path: '/dashboard/events/create',
+    name: 'create-events',
+    component: CreateEventsView,
+    meta: {
+      title: 'Create Event'
+    },
+  },
+  {
+    path: '/dashboard/events/edit/:id',
+    name: 'edit-event',
+    component: CreateEventsView,
+    meta: {
+      title: 'Edit Event'
+    },
+  },
+  {
+    path: '/settings',
+    component: SettingsLayout,
     children: [
+      { path: 'profile', name: 'settings-profile', component: SettingsProfile, meta: { title: 'Profile' } },
+      { path: 'preferences', name: 'settings-preferences', component: SettingsPreferences, meta: { title: 'Preferences' } },
+      { path: 'security', name: 'settings-security', component: SettingsSecurity, meta: { title: 'Security' } },
+      { path: 'danger-zone', name: 'settings-danger-zone', component: SettingsDangerZone, meta: { title: 'Danger Zone' } },
+    ]
+  },
+  {
+    path: 'dashboard/guests',
+    name: 'guests',
+    component: GuestsView,
+    meta: {
+      title: 'Events Guests'
+    },
+  },
+  {
+    path: '/dashboard/guests/create',
+    name: 'create-guest',
+    component: CreateGuestView,
+    meta: {
+      title: 'Create Guest'
+    },
+  },
+  {
+    path: '/dashboard/rsvp',
+    name: 'rsvp',
+    component: RsvpView,
+    meta: {
+      title: 'RSVP'
+    },
+  },
+  {
+    path: '/dashboard/save-the-date',
+    name: 'save-the-date',
+    component: SaveTheDateView,
+    meta: {
+      title: 'Save the date'
+    }
+  },
+  {
+    path: '/dashboard/sweet-memories',
+    name: 'sweet-memories',
+    component: CSweetMemories,
+    meta: {
+      title: 'Sweet Memories'
+    }
+  },
+  {
+    path: '/dashboard/suggested-music',
+    name: 'suggest-music',
+    component: CSuggestMusic,
+    meta: {
+      title: 'Suggest Music'
+    }
+  },
+  {
+    path: '/dashboard/event-comments',
+    name: 'event-comments',
+    component: CEventComments,
+    meta: {
+      title: 'Background Music'
+    }
+  },
+
+      /*children: [
       {
         path: 'events',
         name: 'event-handle',
@@ -48,14 +142,7 @@ const authRoutes = [
           title: 'CwmEvents Guests'
         },
       },
-      {
-        path: 'save-the-date',
-        name: 'save-the-date',
-        component: SaveTheDate,
-        meta: {
-          title: 'Save the date'
-        }
-      },
+
       {
         path: 'rsvp',
         name: 'rsvp',
@@ -64,14 +151,7 @@ const authRoutes = [
           title: 'RSVP Creator'
         }
       },
-      {
-        path: 'sweet-memories',
-        name: 'sweet-memories',
-        component: CwmSweetMemories,
-        meta: {
-          title: 'Sweet Memories'
-        }
-      },
+
       {
         path: 'seats-accommodation',
         name: 'seats-accommodation',
@@ -96,14 +176,7 @@ const authRoutes = [
           title: 'Event Previous'
         }
       },
-      {
-        path: 'suggest-music',
-        name: 'suggest-music',
-        component: CWMSuggestMusic,
-        meta: {
-          title: 'Suggest Music'
-        }
-      },
+
       {
         path: 'background-music',
         name: 'background-music',
@@ -112,14 +185,7 @@ const authRoutes = [
           title: 'Background Music'
         }
       },
-      {
-        path: 'event-comments',
-        name: 'event-comments',
-        component: CWMEventComments,
-        meta: {
-          title: 'Background Music'
-        }
-      },
+
       {
         path: 'analytics',
         name: 'analytics',
@@ -135,9 +201,16 @@ const authRoutes = [
         meta: {
           title: 'Components Playground'
         }
+      },
+      {
+        path: 'events',
+        name: 'events',
+        component: EventsView,
+        meta: {
+          title: 'My Events'
+        }
       }
-    ]
-  },
+    ]*/
   {
     path: '/logout',
     name: 'logout',

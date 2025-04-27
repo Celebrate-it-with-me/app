@@ -7,14 +7,12 @@
     >
       {{ label }}
     </label>
+
     <div
       :class="[
-        'flex items-center gap-2 w-full border-b transition focus-within:border-b-2 mb-4',
-        disabled ? 'opacity-50 cursor-not-allowed' : '',
-        showErrorMessage ? 'border-red-500 focus-within:border-red-500'
-        : meta.valid
-          ? 'border-green-500 focus-within:border-green-500'
-          : 'border-gray-300 dark:border-gray-600 focus-within:border-primary'
+        'flex items-center gap-2 w-full border-b transition mb-2',
+        borderColorClass,
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
       ]"
     >
       <slot name="icon" />
@@ -29,16 +27,12 @@
         class="pl-1 w-full bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-extralight"
       />
     </div>
-    <p
-      v-if="showErrorMessage"
-      class="mt-1 text-xs text-red-500"
-    >
+
+    <p v-if="showErrorMessage" class="mt-1 text-xs text-red-500">
       {{ errorMessage }}
     </p>
-    <p
-      v-if="description"
-      class="mt-1 text-xs text-gray-500"
-    >
+
+    <p v-if="description" class="mt-1 text-xs text-gray-500">
       {{ description }}
     </p>
   </div>
@@ -56,13 +50,11 @@ const props = defineProps({
   type: {
     type: String,
     default: 'text',
-    validator: (value) => {
-      return ['text', 'password', 'email', 'number', 'tel', 'url'].includes(value)
-    }
+    validator: value =>
+      ['text', 'password', 'email', 'number', 'tel', 'url'].includes(value)
   },
-  modelValue: { type: String, default: '' },
+  modelValue: { type: [ String, Number ], default: '' },
   disabled: { type: Boolean, default: false },
-  horizontal: { type: Boolean, default: false },
   description: { type: String },
   showError: { type: Boolean, default: false },
 })
@@ -79,19 +71,25 @@ const {
 
 setValue(props.modelValue)
 
-watch(() => props.modelValue, (newValue) => {
+watch(() => props.modelValue, newValue => {
   setValue(newValue)
 })
 
-watch(inputValue, (val) => {
+watch(inputValue, val => {
   emit('update:modelValue', val)
-  if (val) {
-    emit('resetErrors')
-  }
+  if (val) emit('resetErrors')
 })
 
 const showErrorMessage = computed(() => {
   return props.showError && errorMessage.value && meta.touched
+})
+
+const borderColorClass = computed(() => {
+  if (showErrorMessage.value) return 'border-red-500 focus-within:border-red-500'
+
+  if (meta.valid && inputValue) return 'border-green-500 focus-within:border-green-500'
+
+  return 'border-primary focus-within:border-primary'
 })
 
 const handleFieldBlur = (e) => {

@@ -43,7 +43,10 @@
 
         <div class="flex justify-between text-sm text-text-light my-6">
           <CCheckbox
+            v-model="form.remember"
             label="Remember me"
+            name="remember"
+            show-error
           />
 
           <router-link to="/forgot-password">
@@ -94,7 +97,8 @@ const validationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       email: zod.string().email({message: 'Email is required'}),
-      password: zod.string({message: 'Password is required'}).min(8, {message: 'Password must have at least 8 characters long'})
+      password: zod.string({message: 'Password is required'}).min(8, {message: 'Password must have at least 8 characters long'}),
+      remember: zod.boolean().optional().default(false)
     })
   )
 })
@@ -110,14 +114,27 @@ const onSubmit = async () => {
 
     if (response.status >= 200 && response.status < 300) {
       const result = response.data ?? {}
+
+      console.log('checking result', result)
+
       userStore.initUserData(
         {
           name: result?.user?.name ?? '',
           email: result?.user?.email ?? '',
           userId: result?.user?.id ?? '',
           token: result?.token ?? '',
-          lastLogin: result?.user?.last_login_session ?? null
+          lastLogin: result?.user?.last_login_session ?? null,
+          activeEvent: result?.user?.activeEvent ?? null,
+          justLogin: true,
+          avatar: result?.user?.avatar_url ?? '',
+          phone: result?.user?.phone ?? '',
         })
+
+      const preferences = await userStore.getPreferences()
+
+      if (preferences && preferences.status === 200) {
+        userStore.setPreferences(preferences?.data?.data ?? {})
+      }
 
       return await router.push("dashboard")
     } else {
@@ -133,5 +150,7 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = () => {}
+const onInvalidSubmit = (error) => {
+  console.log(error)
+}
 </script>

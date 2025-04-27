@@ -1,41 +1,90 @@
 <template>
   <div class="w-full">
-    <label v-if="label" :for="id" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+    <label
+      v-if="label"
+      :for="id"
+      class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200"
+    >
       {{ label }}
     </label>
-    <textarea
-      :id="id"
-      v-bind="$attrs"
-      v-model="inputValue"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      rows="4"
-      class="w-full resize-none bg-transparent border-b px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary focus:ring-0"
-    />
-    <p v-if="error" class="mt-1 text-xs text-red-500">{{ error }}</p>
+
+    <div
+      :class="[
+        'w-full border-b transition mb-4',
+        borderColorClass,
+        disabled ? 'opacity-50 cursor-not-allowed' : ''
+      ]"
+    >
+      <textarea
+        :id="id"
+        v-bind="$attrs"
+        v-model="inputValue"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        :rows="rows"
+        @blur="handleFieldBlur"
+        class="w-full resize-none bg-transparent border-none outline-none px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-extralight"
+      />
+    </div>
+
+    <p v-if="showErrorMessage" class="mt-1 text-xs text-red-500">
+      {{ errorMessage }}
+    </p>
+    <p v-if="description" class="mt-1 text-xs text-gray-500">
+      {{ description }}
+    </p>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
+import { useField } from 'vee-validate'
 
 const props = defineProps({
-  modelValue: String,
-  label: String,
-  placeholder: String,
   id: String,
-  error: String,
-  disabled: Boolean
+  name: { type: String, required: true },
+  placeholder: String,
+  label: String,
+  modelValue: String,
+  disabled: Boolean,
+  description: String,
+  rows: { type: Number, default: 2 },
+  showError: { type: Boolean, default: false },
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'update:blur', 'resetErrors'])
 
-const inputValue = computed({
-  get: () => props.modelValue,
-  set: value => emit('update:modelValue', value)
+const {
+  value: inputValue,
+  errorMessage,
+  handleBlur,
+  setValue,
+  meta
+} = useField(props.name)
+
+setValue(props.modelValue)
+
+watch(() => props.modelValue, newValue => {
+  setValue(newValue)
 })
+
+watch(inputValue, val => {
+  emit('update:modelValue', val)
+  if (val) emit('resetErrors')
+})
+
+const showErrorMessage = computed(() => {
+  return props.showError && errorMessage.value && meta.touched
+})
+
+const borderColorClass = computed(() => {
+  if (showErrorMessage.value) return 'border-red-500 focus-within:border-red-500'
+  if (meta.valid && inputValue) return 'border-green-500 focus-within:border-green-500'
+  return 'border-primary focus-within:border-primary'
+})
+
+const handleFieldBlur = (e) => {
+  emit('update:blur', e.target.value)
+  handleBlur(e)
+}
 </script>
-
-<style scoped>
-/* Textarea-specific styles if needed */
-</style>

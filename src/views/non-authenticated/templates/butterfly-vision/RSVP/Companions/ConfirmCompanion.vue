@@ -21,38 +21,35 @@ const templateStore = useTemplateStore()
 
 const localCompanion = reactive({
   id: '',
-  firstName: '',
-  lastName: '',
+  name: '',
   email: '',
-  phoneNumber: '',
-  confirmed: 'yes'
+  phone: '',
+  rsvpStatus: 'pending'
 })
 
 onMounted(() => {
   if(props.currentCompanion) {
     localCompanion.id = props.currentCompanion?.id ?? ''
-    localCompanion.firstName = props.currentCompanion?.firstName ?? ''
-    localCompanion.lastName = props.currentCompanion?.lastName ?? ''
+    localCompanion.name = props.currentCompanion?.name ?? ''
     localCompanion.email = props.currentCompanion?.email ?? ''
-    localCompanion.phoneNumber = props.currentCompanion?.phoneNumber ?? ''
-    localCompanion.confirmed = props.currentCompanion?.confirmed ?? 'yes'
+    localCompanion.phone = props.currentCompanion?.phone ?? ''
+    localCompanion.rsvpStatus = props.currentCompanion?.rsvpStatus ?? 'yes'
   }
 })
 
 const companionValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      firstName: zod.string().min(1, 'First Name is required'),
-      lastName: zod.string().min(1, 'Last Name is required'),
+      name: zod.string().min(1, 'First Name is required'),
       email: zod.string()
         .email({ message: 'Invalid email address' })
         .optional(),
-      phoneNumber: zod
+      phone: zod
         .string()
         .regex(/^[0-9\s]*$/, { message: 'Phone Number must be numeric' })
         .optional(),
-      confirmed: zod
-        .enum(['yes', 'no'], { message: 'Please select a confirmation option' })
+      rsvpStatus: zod
+        .enum(['attending', 'not-attending'], { message: 'Please select a confirmation option' })
     })
   )
 })
@@ -80,12 +77,12 @@ const onInvalidSubmit = (errors) => {
       <div class="first-row flex flex-row gap-x-5">
         <div class="relative z-0 w-full mb-5 group">
           <TextField
-            v-model="localCompanion.firstName"
-            name="firstName"
-            id="firstName"
+            v-model="localCompanion.name"
+            name="name"
+            id="name"
             required
             show-error
-            label="First Name"
+            label="Name"
             placeholder=" "
             class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
@@ -99,27 +96,6 @@ const onInvalidSubmit = (errors) => {
         </div>
       </div>
 
-      <div class="first-row flex flex-row gap-x-5">
-        <div class="relative z-0 w-full mb-5 group">
-          <TextField
-            v-model="localCompanion.lastName"
-            name="lastName"
-            id="lastName"
-            required
-            :show-error="true"
-            label="Last Name"
-            placeholder=" "
-            class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
-               border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-900
-               dark:focus:border-rose-400 focus:outline-none focus:ring-0 focus:border-[#dba3ff] peer"
-            class-label="peer-focus:font-medium absolute text-lg text-[#754e9e] font-semibold
-               duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0]
-               peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto
-               peer-focus:text-rose-400 peer-focus:dark:text-rose-400 peer-placeholder-shown:scale-100
-               peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          />
-        </div>
-      </div>
       <div class="second-row flex flex-row gap-x-5">
         <div class="relative z-0 w-full mb-5 group">
           <EmailField
@@ -145,9 +121,9 @@ const onInvalidSubmit = (errors) => {
       <div class="second-row flex flex-row gap-x-5">
         <div class="relative z-0 w-full mb-5 group">
           <TextField
-            v-model="localCompanion.phoneNumber"
-            name="phoneNumber"
-            id="phoneNumber"
+            v-model="localCompanion.phone"
+            name="phone"
+            id="phone"
             required
             :show-error="true"
             label="Phone Number"
@@ -167,13 +143,13 @@ const onInvalidSubmit = (errors) => {
       <div class="third-row flex flex-row items-center gap-x-5">
         <div class="relative z-0 mb-2 group w-1/2">
           <ConfirmationField
-            name="confirmed"
-            v-model="localCompanion.confirmed"
+            name="rsvpStatus"
+            v-model="localCompanion.rsvpStatus"
             label=""
             :show-error="true"
             :options="[
-                { value: 'yes', label: 'Yes' },
-                { value: 'no', label: 'No' }
+                { value: 'attending', label: 'Yes' },
+                { value: 'not-attending', label: 'No' }
               ]"
           />
         </div>

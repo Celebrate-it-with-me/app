@@ -19,27 +19,94 @@ export const useUserStore = defineStore('userStore', {
   state: () => ({
     name: '',
     email: '',
+    phone: '',
+    avatar: '',
     userId: '',
     token: null,
     lastLogin: null,
-    currentEventId: null,
+    activeEvent: null,
+    justLogin: false,
+    preferences: {
+      language: '',
+      timezone: '',
+      visualTheme: '',
+      dateFormat: '',
+      notifyByEmail: null,
+      notifyBySms: null,
+      smartTips: null
+    }
   }),
   persist: {
     enabled: true,
     strategies: [
       {
         key: 'user-store',
-        storage: localStorage,
-      },
-    ],
+        storage: localStorage
+      }
+    ]
   },
   actions: {
-    async login({ email, password, device }){
-      return await UserService.login({email, password, device})
+    async disable2FA() {
+      return await UserService.disable2FA()
     },
 
-    async register({ name, email, password }){
-      return await UserService.register({ name, email, password})
+    async getBackupCodes() {
+      return await UserService.getBackupCodes()
+    },
+
+    async get2FAStatus() {
+      return await UserService.get2FAStatus()
+    },
+
+    async verifyAndEnable2FA(authCode) {
+      return await UserService.verifyAndEnable2FA(authCode)
+    },
+
+    async setup2FA() {
+      return await UserService.setup2FA()
+    },
+
+    async getPreferences() {
+      return await UserService.getUserPreferences()
+    },
+
+    async updatePreferences({
+                              language,
+                              timezone,
+                              dateFormat,
+                              visualTheme,
+                              notifyByEmail,
+                              notifyBySms,
+                              smartTips }) {
+      return await UserService.updatePreferences({
+        language,
+        timezone,
+        dateFormat,
+        visualTheme,
+        notifyByEmail,
+        notifyBySms,
+        smartTips
+      })
+    },
+
+    setPreferences(newPreferences) {
+      this.preferences = {
+        language: newPreferences.language,
+        timezone: newPreferences.timezone,
+        dateFormat: newPreferences.dateFormat,
+        visualTheme: newPreferences.visualTheme,
+        notifyByEmail: !!newPreferences.notifyByEmail,
+        notifyBySms: !!newPreferences.notifyBySms,
+        smartTips: !!newPreferences.smartTips
+      }
+    },
+
+    async login({ email, password, remember, device }) {
+      return await UserService.login({ email, password, remember, device })
+    },
+
+    async register({ name, email, password }) {
+      return await UserService.register({ name, email, password })
     },
 
     async confirmEmail(confirmUrl) {
@@ -54,24 +121,63 @@ export const useUserStore = defineStore('userStore', {
       return await UserService.checkResetLink(confirmUrl)
     },
 
-    async changePassword({email, password, passwordConfirmation}) {
-      return await UserService.changePassword({email, password, passwordConfirmation})
+    async changePassword({ email, password, passwordConfirmation }) {
+      return await UserService.changePassword({ email, password, passwordConfirmation })
     },
 
-    initUserData({ name, email, userId, token, lastLogin }) {
+    async changeUserPassword({ currentPassword, newPassword, newPasswordConfirmation }) {
+      return await UserService.changeUserPassword({ currentPassword, newPassword, newPasswordConfirmation })
+    },
+
+    initUserData({ name, email, userId, token, lastLogin, activeEvent, justLogin, avatar, phone }) {
       this.name = name
       this.email = email
       this.userId = userId
       this.token = token
       this.lastLogin = lastLogin
+      this.activeEvent = activeEvent
+      this.justLogin = justLogin
+      this.avatar = avatar
+      this.phone = phone
+    },
+
+    async initUserEvents() {
+      return await UserService.getUserEvents()
     },
 
     async logOut() {
-      const response = await UserService.logOut()
+      getActivePinia()._s.forEach((store) => store.$reset())
+    },
+
+    async updateProfile({ name, phone, avatar }) {
+      return await UserService.updateProfile({ name, phone, avatar })
+    },
+
+    async refreshUser() {
+      const response = await UserService.refreshUser()
+
+      console.log('checking data response', response.data)
 
       if (response.status === 200) {
-        console.log('is here. really')
-        getActivePinia()._s.forEach((store) => store.$reset())
+        const {
+          name,
+          email,
+          userId,
+          lastLogin,
+          activeEvent,
+          justLogin,
+          avatar_url: avatar,
+          phone
+        } = response.data?.data?.user ?? {}
+
+        this.name = name
+        this.email = email
+        this.userId = userId
+        this.lastLogin = lastLogin
+        this.activeEvent = activeEvent
+        this.justLogin = justLogin
+        this.avatar = avatar
+        this.phone = phone
       }
     },
 
