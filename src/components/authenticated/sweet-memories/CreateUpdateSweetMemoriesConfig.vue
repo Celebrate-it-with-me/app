@@ -37,7 +37,7 @@ onMounted(() => {
 
 const initSweetMemoriesConfig = async () => {
   try {
-    const response = await sweetMemoriesStore.loadSweetMemoriesConfig(currentUserStore.currentEventId)
+    const response = await sweetMemoriesStore.loadSweetMemoriesConfig(currentUserStore.activeEvent)
     if (response.status === 200) {
       const { id, title, subTitle, backgroundColor, maxPictures } = response.data.data ?? {}
       sweetMemoriesStore.config.id = id
@@ -54,9 +54,9 @@ const initSweetMemoriesConfig = async () => {
 
 const handleRequest = () => {
   if (mode.value === 'create') {
-    return sweetMemoriesStore.createSweetMemoriesConfig(currentUserStore.currentEventId)
+    return sweetMemoriesStore.createSweetMemoriesConfig(currentUserStore.activeEvent)
   } else if (mode.value === 'update') {
-    return sweetMemoriesStore.updateSweetMemoriesConfig(currentUserStore.currentEventId)
+    return sweetMemoriesStore.updateSweetMemoriesConfig(currentUserStore.activeEvent)
   }
 }
 

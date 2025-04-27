@@ -38,17 +38,20 @@ const submit = async () => {
     <h2 class="text-2xl font-semibold mb-6 pt-4 text-dark-blue">Confirm your Information</h2>
 
     <div
-      v-if="templateStore.guest.confirmed === 'yes'"
       class="w-full flex flex-col md:flex-row justify-between text-dark-blue"
     >
       <!-- Guest Info -->
       <div class="w-full md:w-[50%] p-6">
         <h3 class="text-xl font-semibold mb-4 border-b pb-2">Main Guest Information:</h3>
         <div class="space-y-2">
-          <p class="flex items-center"><span class="font-semibold w-24">Name:</span> {{ guestInfo?.firstName }} {{ guestInfo?.lastName }}</p>
-          <p class="flex items-center"><span class="font-semibold w-24">Email:</span> {{ guestInfo?.email ?? 'N/A' }}</p>
-          <p class="flex items-center"><span class="font-semibold w-24">Phone:</span> {{ guestInfo?.phoneNumber ?? 'N/A' }}</p>
-          <p class="flex items-center"><span class="font-semibold w-24">Attending:</span> {{ guestInfo?.confirmed ?? 'N/A' }}</p>
+          <p class="flex items-center">
+            <span class="font-semibold w-24">Name:</span> {{ guestInfo?.name }}</p>
+          <p class="flex items-center">
+            <span class="font-semibold w-24">Email:</span> {{ guestInfo?.email ?? 'N/A' }}</p>
+          <p class="flex items-center">
+            <span class="font-semibold w-24">Phone:</span> {{ guestInfo?.phone ?? 'N/A' }}</p>
+          <p class="flex items-center">
+            <span class="font-semibold w-24">Attending:</span> {{ guestInfo?.rsvpStatus ?? 'N/A' }}</p>
         </div>
       </div>
 
@@ -67,35 +70,38 @@ const submit = async () => {
             >
               <p class="flex items-center mb-1">
                 <span class="font-semibold w-24">Name:</span>
-                {{ companion.firstName ?? 'N/A' }} {{ companion.lastName ?? '' }}
+                {{ companion.name ?? 'N/A' }}
               </p>
               <p class="flex items-center">
-                <span class="font-semibold w-24">Attending:</span>
-                {{ companion.confirmed ?? 'N/A' }}
+                <b class="font-semibold w-24">
+                  Attending:
+                </b>
+                <span
+                  v-if="companion.rsvpStatus === 'attending'"
+                >
+                   Attending
+                </span>
+                <span
+                  v-else-if="companion.rsvpStatus === 'not-attending'"
+                >
+                   Not Attending
+                </span>
+                <span
+                  v-else
+                >
+                  Pending
+                </span>
               </p>
             </li>
           </ul>
-
         </div>
-      </div>
-    </div>
-    <div
-      v-else
-      class="mb-8 w-full md:w-[60%] space-y-2 p-6">
-      <div class="alert-container bg-amber-50 border-l-4 border-amber-500 px-6 py-4 rounded-lg shadow-sm">
-        <p class="text-amber-700">
-          You have indicated that you are not attending. Therefore, we will assume that none of
-          your companions will be attending either. If this is not the case, please contact
-          the event organizer to request a new invitation with one of your companions as the
-          main guest.
-        </p>
       </div>
     </div>
 
     <!-- Buttons -->
-    <div class="w-full my-2 flex flex-row justify-end mt-10 gap-x-2">
+    <div class="w-full mb-2 flex flex-row justify-end mt-10 gap-x-2">
       <button
-        class="px-6 py-2 border-2 font-bold mr-2"
+        class="px-6 py-2 border-2 font-bold mr-2 mb-2"
         style="font-family: inherit; color: #9a929e; background-color: transparent; border-color: #9a929e; border-radius: 8px;"
         @click="goBack"
       >
@@ -103,7 +109,7 @@ const submit = async () => {
       </button>
 
       <button
-        class="px-6 py-2 border-2 font-bold mr-2"
+        class="px-6 py-2 border-2 font-bold mr-2 mb-2"
         style="font-family: inherit; color: #dba3ff; background-color: transparent; border-color: #dba3ff; border-radius: 8px;"
         @click="submit"
       >

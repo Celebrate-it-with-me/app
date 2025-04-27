@@ -5,7 +5,7 @@ import { useField } from 'vee-validate'
 const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur'])
 const props = defineProps({
   name: { type: String, required: true },
-  modelValue: { type: String, default: '' },
+  modelValue: { type: String, default: 'pending' },
   label: { type: String, default: 'Confirm' },
   description: { type: String, default: '' },
   classLabel: { type: String, default: 'text-gray-700' },
@@ -13,8 +13,8 @@ const props = defineProps({
   options: {
     type: Array,
     default: () => [
-      { value: 'yes', label: 'Yes, I will be there' },
-      { value: 'no', label: 'Sorry, I can’t come' }
+      { value: 'attending', label: 'Yes, I will be there' },
+      { value: 'not-attending', label: 'Sorry, I can’t come' }
     ]
   },
   showError: { type: Boolean, default: true }
@@ -22,7 +22,6 @@ const props = defineProps({
 
 const name = toRef(props, 'name')
 
-// Initialize vee-validate's `useField`
 const {
   value: inputValue,
   errorMessage,
@@ -34,10 +33,8 @@ const {
   initialValue: props.modelValue
 })
 
-// Watch `modelValue` for external updates
 watch(() => props.modelValue, setValue)
 
-// Emit `update:modelValue` when inputValue updates
 watch(inputValue, (val) => {
   emit('update:modelValue', val)
   if (val) {
