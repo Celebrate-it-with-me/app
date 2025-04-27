@@ -40,7 +40,7 @@ const initEventsCommentsConfig = async () => {
   try {
     loading.value = true
 
-    const response = await eventCommentsStore.loadCommentsConfig(userStore.currentEventId)
+    const response = await eventCommentsStore.loadCommentsConfig(userStore.activeEvent)
     if (response.status === 200) {
       const {
         title,
@@ -88,10 +88,10 @@ const initEventsCommentsConfig = async () => {
 
 const handleRequest = async () => {
   if (mode.value === 'create') {
-    return await eventCommentsStore.createCommentsConfig(userStore.currentEventId)
+    return await eventCommentsStore.createCommentsConfig(userStore.activeEvent)
   }
 
-  return await eventCommentsStore.updateCommentsConfig(userStore.currentEventId)
+  return await eventCommentsStore.updateCommentsConfig(userStore.activeEvent)
 }
 
 const onSubmit = async () => {

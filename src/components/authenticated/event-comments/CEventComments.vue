@@ -1,8 +1,6 @@
 <script setup>
 import CWMEventCommentsCreator from '@/components/authenticated/event-comments/EventComments/CWMEventCommentsCreator.vue'
 import CWMEventCommentsShow from '@/components/authenticated/event-comments/EventComments/CWMEventCommentsShow.vue'
-import { onMounted, ref } from 'vue'
-
 
 </script>
 

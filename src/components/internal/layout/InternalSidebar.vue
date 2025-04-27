@@ -24,7 +24,16 @@
 
 <script setup>
 import { useRoute, RouterLink } from 'vue-router'
-import { Home, Users, Music2, Calendar, Settings, CheckSquare, AlarmClock  } from 'lucide-vue-next'
+import {
+  Home,
+  Users,
+  Music,
+  Calendar,
+  Camera,
+  CheckSquare,
+  AlarmClock,
+  MessageCircle
+} from 'lucide-vue-next'
 
 const route = useRoute()
 
@@ -40,6 +49,9 @@ const menuItems = [
   { label: 'Guests', to: '/dashboard/guests', icon: Users },
   { label: 'RSVP', to: '/dashboard/rsvp', icon: CheckSquare  },
   { label: 'Save the Date', to: '/dashboard/save-the-date', icon: AlarmClock },
+  { label: 'Sweet Memories', to: '/dashboard/sweet-memories', icon: Camera },
+  { label: 'Suggested Music', to: '/dashboard/suggested-music', icon: Music },
+  { label: 'Comments', to: '/dashboard/event-comments', icon: MessageCircle },
  /* { label: 'Seating', to: '/seating', icon: Users },
   { label: 'Timeline', to: '/timeline', icon: Calendar },
   { label: 'Checklist', to: '/checklist', icon: Calendar },

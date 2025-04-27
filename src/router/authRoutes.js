@@ -9,9 +9,9 @@ import CWMSeatAccommodation from '../components/authenticated/seat-accommodation
 import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
 import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
 import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue'
-import CWMSuggestMusic from '../components/authenticated/suggest-music/CWMSuggestMusic.vue'
+import CSuggestMusic from '../components/authenticated/suggest-music/CSuggestMusic.vue'
 import CWMBackgroundMusic from '../components/authenticated/background-music/CWMBackgroundMusic.vue'
-import CWMEventComments from '../components/authenticated/event-comments/CWMEventComments.vue'
+import CEventComments from '../components/authenticated/event-comments/CEventComments.vue'
 import ComponentsPlayground from '@/views/components-playground/ComponentsPlayground.vue'
 import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
@@ -108,6 +108,22 @@ const authRoutes = [
       title: 'Sweet Memories'
     }
   },
+  {
+    path: '/dashboard/suggest-music',
+    name: 'suggest-music',
+    component: CSuggestMusic,
+    meta: {
+      title: 'Suggest Music'
+    }
+  },
+  {
+    path: '/dashboard/event-comments',
+    name: 'event-comments',
+    component: CEventComments,
+    meta: {
+      title: 'Background Music'
+    }
+  },
 
       /*children: [
       {
@@ -160,14 +176,7 @@ const authRoutes = [
           title: 'Event Previous'
         }
       },
-      {
-        path: 'suggest-music',
-        name: 'suggest-music',
-        component: CWMSuggestMusic,
-        meta: {
-          title: 'Suggest Music'
-        }
-      },
+
       {
         path: 'background-music',
         name: 'background-music',
@@ -176,14 +185,7 @@ const authRoutes = [
           title: 'Background Music'
         }
       },
-      {
-        path: 'event-comments',
-        name: 'event-comments',
-        component: CWMEventComments,
-        meta: {
-          title: 'Background Music'
-        }
-      },
+
       {
         path: 'analytics',
         name: 'analytics',

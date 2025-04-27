@@ -1,5 +1,4 @@
 <script setup>
-
 import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
 </script>
 
