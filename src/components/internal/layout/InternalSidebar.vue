@@ -7,7 +7,10 @@
       </RouterLink>
     </div>
 
-    <ul class="flex-1 px-4 py-6 space-y-2 text-sm">
+    <ul
+      v-if="userStore.activeEvent"
+      class="flex-1 px-4 py-6 space-y-2 text-sm"
+    >
       <li v-for="item in menuItems" :key="item.label">
         <RouterLink
           :to="item.to"
@@ -16,6 +19,21 @@
         >
           <component :is="item.icon" class="w-5 h-5" />
           <span>{{ item.label }}</span>
+        </RouterLink>
+      </li>
+    </ul>
+    <ul
+      v-else
+      class="flex-1 px-4 py-6 space-y-2 text-sm"
+    >
+      <li>
+        <RouterLink
+          :to="'/dashboard/events/create'"
+          class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-primary/10
+                 dark:hover:bg-primary/20 bg-primary/10 dark:bg-primary/20 text-primary"
+        >
+          <Calendar class="w-5 h-5" />
+          <span>Create Event</span>
         </RouterLink>
       </li>
     </ul>
@@ -34,6 +52,7 @@ import {
   AlarmClock,
   MessageCircle
 } from 'lucide-vue-next'
+import { useUserStore } from '@/stores/useUserStore'
 
 const route = useRoute()
 
@@ -42,6 +61,8 @@ const isActive = (path) => {
 
   return current === path
 }
+
+const userStore = useUserStore()
 
 const menuItems = [
   { label: 'Dashboard', to: '/dashboard', icon: Home },

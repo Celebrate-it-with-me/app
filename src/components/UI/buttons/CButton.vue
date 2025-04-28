@@ -22,13 +22,15 @@ const props = defineProps({
     type: String,
     default: 'primary',
     validator: val =>
-      ['primary', 'secondary', 'outline', 'ghost', 'danger', 'link'].includes(val)
+      ['primary', 'secondary', 'outline', 'ghost', 'danger', 'link', 'gradient'].includes(val)
   },
   disabled: { type: Boolean, default: false }
 })
 
 const variantClasses = computed(() => {
   switch (props.variant) {
+    case 'gradient':
+      return 'bg-gradient-to-r from-primary to-secondary text-white hover:from-primary hover:to-secondary shadow-md'
     case 'primary':
       return 'bg-primary text-white hover:bg-pink-600 shadow-pink-300 shadow-md'
     case 'secondary':

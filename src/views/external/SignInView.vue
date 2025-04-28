@@ -54,7 +54,13 @@
           </router-link>
         </div>
 
-        <CButton full type="submit">Sign In</CButton>
+        <CButton
+          variant="primary"
+          full
+          type="submit"
+        >
+          Sign In
+        </CButton>
       </Form>
 
       <p class="mt-6 text-center text-sm text-text-light">
@@ -114,8 +120,6 @@ const onSubmit = async () => {
 
     if (response.status >= 200 && response.status < 300) {
       const result = response.data ?? {}
-
-      console.log('checking result', result)
 
       userStore.initUserData(
         {
