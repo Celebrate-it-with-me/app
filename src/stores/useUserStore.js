@@ -162,20 +162,18 @@ export const useUserStore = defineStore('userStore', {
         const {
           name,
           email,
-          userId,
-          lastLogin,
-          activeEvent,
-          justLogin,
+          id,
+          last_active_event_id: activeEvent,
           avatar_url: avatar,
           phone
         } = response.data?.data?.user ?? {}
 
         this.name = name
         this.email = email
-        this.userId = userId
-        this.lastLogin = lastLogin
+        this.userId = id
+        this.lastLogin = null
         this.activeEvent = activeEvent
-        this.justLogin = justLogin
+        this.justLogin = false
         this.avatar = avatar
         this.phone = phone
       }

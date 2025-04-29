@@ -3,7 +3,7 @@
     <slot name="icon" />
     <div class="flex-1">
       <slot name="title" />
-      <slot name="message" />
+      <slot />
     </div>
   </div>
 </template>

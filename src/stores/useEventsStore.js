@@ -20,9 +20,12 @@ export const useEventsStore = defineStore('eventsStore', {
       return await EventsService.updateActiveEvent(event)
     },
 
-    initUserEventsData(result) {
+    async initUserEventsData(result) {
       this.events = result?.events
       this.activeEvent = result?.last_active_event
+      const userStore = useUserStore()
+      userStore.activeEvent = this.activeEvent?.id
+      await this.updateActiveEvent(this.activeEvent)
     },
 
     setEvents(events) {
