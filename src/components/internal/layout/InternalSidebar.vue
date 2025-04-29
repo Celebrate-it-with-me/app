@@ -50,7 +50,8 @@ import {
   Camera,
   CheckSquare,
   AlarmClock,
-  MessageCircle
+  MessageCircle,
+  Map,
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 
@@ -69,6 +70,7 @@ const menuItems = [
   { label: 'My Events', to: '/dashboard/events', icon: Calendar },
   { label: 'Guests', to: '/dashboard/guests', icon: Users },
   { label: 'RSVP', to: '/dashboard/rsvp', icon: CheckSquare  },
+  { label: 'Locations', to: '/dashboard/locations', icon: Map },
   { label: 'Save the Date', to: '/dashboard/save-the-date', icon: AlarmClock },
   { label: 'Sweet Memories', to: '/dashboard/sweet-memories', icon: Camera },
   { label: 'Suggested Music', to: '/dashboard/suggested-music', icon: Music },
