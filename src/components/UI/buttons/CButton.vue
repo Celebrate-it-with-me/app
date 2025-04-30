@@ -5,6 +5,7 @@
     :class="[
       'inline-flex items-center justify-center font-medium transition-all duration-150 rounded-xl px-4 py-2 text-sm',
       variantClasses,
+      sizeClasses,
       disabled ? 'opacity-50 cursor-not-allowed' : '',
       full ? 'w-full' : '',
     ]"
@@ -20,6 +21,11 @@ import { computed } from 'vue'
 const props = defineProps({
   type: { type: String, default: 'button' },
   full: { type: Boolean, default: false },
+  size: {
+    type: String,
+    default: 'md',
+    validator: val => ['sm', 'md', 'lg'].includes(val)
+  },
   variant: {
     type: String,
     default: 'primary',
@@ -27,6 +33,18 @@ const props = defineProps({
       ['primary', 'secondary', 'outline', 'ghost', 'danger', 'link', 'gradient'].includes(val)
   },
   disabled: { type: Boolean, default: false }
+})
+
+const sizeClasses = computed(() => {
+  switch (props.size) {
+    case 'sm':
+      return 'min-w-[90px] px-3 py-1.5 text-sm'
+    case 'lg':
+      return 'min-w-[120px] px-5 py-3 text-base'
+    case 'md':
+    default:
+      return 'min-w-[100px] px-4 py-2 text-sm'
+  }
 })
 
 const variantClasses = computed(() => {

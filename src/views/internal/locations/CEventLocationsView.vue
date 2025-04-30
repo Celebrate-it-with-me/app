@@ -15,7 +15,7 @@
         </div>
         <div v-else>
           <table
-            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+            class="w-full table-auto divide-y divide-gray-200 dark:divide-gray-700"
             v-if="locations.length > 0"
           >
             <thead class="bg-gray-50 dark:bg-gray-800">
@@ -43,7 +43,7 @@
               <th
                 class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
               >
-                Zip Code / Postal Code
+                Zip Code
               </th>
               <th
                 class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
@@ -55,6 +55,11 @@
               >
                 Is Default
               </th>
+              <th
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+              >
+                Actions
+              </th>
             </tr>
             </thead>
             <tbody
@@ -65,30 +70,32 @@
                 :key="location.id"
                 class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
               >
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
+                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
                   {{ location.name }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                   {{ location.address }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                   {{ location.city }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                   {{ location.state }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                   {{ location.zipCode }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                   {{ location.country }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                   {{ location.isDefault ? 'Yes' : 'No' }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-left flex flex-start gap-2 text-sm">
-                  <CButton size="sm" variant="primary" @click="viewLocation(location)">Details</CButton>
-                  <CButton size="sm" variant="outline" @click="confirmDelete(location)">Delete</CButton>
+                <td class="px-2 py-4 whitespace-nowrap text-left text-sm w-[160px]">
+                  <div class="flex gap-2 flex-wrap">
+                    <CButton size="sm" variant="primary" @click="editLocation(location)">Edit</CButton>
+                    <CButton size="sm" variant="outline" @click="confirmDelete(location)">Delete</CButton>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -97,7 +104,13 @@
             There are no locations for this event yet.
           </CAlert>
         </div>
-
+        <CConfirmModal
+          v-model="showConfirmDelete"
+          title="Delete Location"
+          message="Are you sure you want to delete this location? This action cannot be undone."
+          @close="showConfirmDelete = false"
+          @confirm="handleConfirmDelete()"
+        />
       </div>
     </div>
 
@@ -113,12 +126,17 @@ import CAlert from '@/components/UI/alerts/CAlert.vue'
 import { onMounted, ref } from 'vue'
 import { useLocationsStore } from '@/stores/useLocationsStore'
 import { useRouter } from 'vue-router'
+import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
+import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const loading = ref(false)
 const locations = ref([])
 const router = useRouter()
 
 const locationsStore = useLocationsStore()
+const selectedLocationForDelete = ref(null)
+const showConfirmDelete = ref(false)
+const notificationsStore = useNotificationStore()
 
 const loadLocations = async () => {
   loading.value = true
@@ -144,12 +162,36 @@ const viewLocation = (location) => {
   // Logic to view location details
 }
 const confirmDelete = (location) => {
-  // Logic to confirm delete location
+  selectedLocationForDelete.value = location
+  showConfirmDelete.value = true
 }
 
 const addLocation = async () => {
   await router.push('/dashboard/locations/create')
 }
+
+const handleConfirmDelete = async () => {
+  if (selectedLocationForDelete.value) {
+    const response = await locationsStore.deleteLocation(selectedLocationForDelete.value.id)
+
+    if (response.status === 200) {
+      await loadLocations()
+      selectedLocationForDelete.value = null
+      notificationsStore.addNotification({
+        type: 'success',
+        message: 'Location deleted successfully!',
+      })
+    } else {
+      console.error('Failed to delete location:', response)
+      notificationsStore.addNotification({
+        type: 'error',
+        message: 'Failed to delete location. Please try again.',
+      })
+    }
+    showConfirmDelete.value = false
+  }
+}
+
 
 onMounted(loadLocations)
 </script>

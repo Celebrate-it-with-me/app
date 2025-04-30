@@ -15,6 +15,18 @@ class LocationsService {
       }
     })
   }
+
+  async addLocation({ eventId, formData }) {
+    return CWM_API.post(`event/${eventId}/locations`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  async deleteLocation({ eventId, locationId }) {
+    return CWM_API.delete(`event/${eventId}/locations/${locationId}`)
+  }
 }
 
 export default new LocationsService()

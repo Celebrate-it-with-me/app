@@ -22,5 +22,22 @@ export const useLocationsStore = defineStore('locationsStore', {
         searchValue: this.searchValue,
       })
     },
+
+    async addLocation(formData) {
+      const userStore = useUserStore()
+      return await LocationsService.addLocation({
+        eventId: userStore.activeEvent,
+        formData
+      })
+    },
+
+    async deleteLocation(locationId) {
+      const userStore = useUserStore()
+      return await LocationsService.deleteLocation({
+        eventId: userStore.activeEvent,
+        locationId
+      })
+    }
+
   }
 })
