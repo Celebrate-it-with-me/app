@@ -93,7 +93,14 @@
                 </td>
                 <td class="px-2 py-4 whitespace-nowrap text-left text-sm w-[160px]">
                   <div class="flex gap-2 flex-wrap">
-                    <CButton size="sm" variant="primary" @click="editLocation(location)">Edit</CButton>
+                    <CButton
+                      v-tooltip="'Coming Soon'"
+                      size="sm"
+                      variant="primary" @click="editLocation(location)"
+                      disabled
+                    >
+                      Edit
+                    </CButton>
                     <CButton size="sm" variant="outline" @click="confirmDelete(location)">Delete</CButton>
                   </div>
                 </td>
@@ -158,9 +165,11 @@ const loadLocations = async () => {
 }
 
 
-const viewLocation = (location) => {
-  // Logic to view location details
+const editLocation = async (location) => {
+  return await router.push('/dashboard/locations/edit/' + location.id)
 }
+
+
 const confirmDelete = (location) => {
   selectedLocationForDelete.value = location
   showConfirmDelete.value = true
