@@ -10,6 +10,8 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { SpectrumDirective } from '@/directives/SpectrumDirective'
 // import 'spectrum-vanilla/dist/spectrum.css'
 import 'spectrum-vanilla/dist/spectrum-dark.css'
+import FloatingVue from 'floating-vue'
+import 'floating-vue/dist/style.css'
 
 
 const app = createApp(App)
@@ -20,5 +22,6 @@ const pinia = createPinia();
 
 app.directive('colorpicker', SpectrumDirective)
 app.use(pinia.use(piniaPluginPersistedstate)).use(router)
+app.use(FloatingVue)
 
 app.mount('#app')

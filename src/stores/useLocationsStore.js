@@ -37,6 +37,23 @@ export const useLocationsStore = defineStore('locationsStore', {
         eventId: userStore.activeEvent,
         locationId
       })
+    },
+
+    async getLocation(locationId) {
+      const userStore = useUserStore()
+      return await LocationsService.getLocation({
+        eventId: userStore.activeEvent,
+        locationId
+      })
+    },
+
+    async updateLocation(locationId, formData) {
+      const userStore = useUserStore()
+      return await LocationsService.updateLocation({
+        eventId: userStore.activeEvent,
+        locationId,
+        formData
+      })
     }
 
   }

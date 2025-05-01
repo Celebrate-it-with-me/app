@@ -152,6 +152,14 @@ const authRoutes = [
       title: 'Create Location'
     }
   },
+  {
+    path: '/dashboard/locations/edit/:id',
+    name: 'edit-location',
+    component: CEventLocationsCreateView,
+    meta: {
+      title: 'Edit Location'
+    }
+  },
 
   /*children: [
       {

@@ -137,7 +137,9 @@
         <CUploadFile @add-photos="addCustomPhotos" class="mt-4" />
 
         <div class="mt-6 flex justify-end">
-          <CButton variant="primary" type="submit"> Create Location </CButton>
+          <CButton variant="primary" type="submit">
+            {{ isEditMode ? 'Update Location' : 'Create Location' }}
+          </CButton>
         </div>
       </Form>
 
@@ -162,11 +164,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, nextTick } from 'vue'
+import { ref, reactive, nextTick, computed, onMounted } from 'vue'
 import { Form } from 'vee-validate'
 import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import CCard from '@/components/UI/cards/CCard.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
@@ -182,6 +184,7 @@ import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const { setFieldError } = useForm()
 const router = useRouter()
+const route = useRoute()
 const notificationsStore = useNotificationStore()
 const formErrors = ref({})
 
@@ -192,6 +195,7 @@ const showMap = ref(false)
 const selectedPhotos = ref([])
 const locationStore = useLocationsStore()
 
+const locationId = route.params.locationId ?? null
 const localLocation = reactive({
   name: '',
   address: '',
@@ -218,6 +222,9 @@ const validationSchema = toTypedSchema(
   })
 )
 
+const isEditMode = computed(() => !!locationId)
+
+
 const onSubmit = async () => {
   try {
     const formData = new FormData()
@@ -239,12 +246,18 @@ const onSubmit = async () => {
 
     formData.append('google_photos', JSON.stringify(googlePhotos))
 
-    const response = await locationStore.addLocation(formData)
+    let response
+
+    if (isEditMode.value) {
+      response = await locationStore.updateLocation(locationId, formData)
+    } else {
+      response = await locationStore.addLocation(formData)
+    }
 
     if (response?.status === 200 || response?.status === 201) {
       notificationsStore.addNotification({
         type: 'success',
-        message: 'Location created successfully!'
+        message: isEditMode.value ? 'Location updated successfully!' : 'Location created successfully!'
       })
       await router.push('/dashboard/locations')
     } else {
@@ -254,7 +267,6 @@ const onSubmit = async () => {
     handleError(e)
   }
 }
-
 
 const handleError = (e) => {
   const status = e?.response?.status
@@ -365,4 +377,29 @@ const addCustomPhotos = (photos) => {
 const removePhoto = (index) => {
   selectedPhotos.value.splice(index, 1)
 }
+
+const loadLocation = async () => {
+  if (!isEditMode.value) return
+
+  const location = await locationStore.getLocation(locationId)
+
+  if (location) {
+    localLocation.name = location.name
+    localLocation.address = location.address
+    localLocation.city = location.city
+    localLocation.state = location.state
+    localLocation.zipCode = location.zip_code
+    localLocation.country = location.country
+    localLocation.latitude = location.latitude
+    localLocation.longitude = location.longitude
+    localLocation.isDefault = location.is_default
+
+    selectedPhotos.value = location.photos.map((photo) => ({
+      type: 'google',
+      url: photo.url
+    }))
+  }
+}
+
+onMounted(loadLocation)
 </script>
