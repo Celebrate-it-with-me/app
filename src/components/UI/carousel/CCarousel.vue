@@ -1,6 +1,5 @@
 <template>
   <div v-if="images.length" :class="['relative w-full', width, 'mx-auto select-none']">
-    <!-- Imagen -->
     <div
       :class="['overflow-hidden rounded-lg shadow-md relative', height]"
       @touchstart="handleTouchStart"
@@ -16,7 +15,6 @@
       </Transition>
     </div>
 
-    <!-- Arrows -->
     <template v-if="showArrows && images.length > 1">
       <button
         @click="prevPhoto"
@@ -33,7 +31,6 @@
       </button>
     </template>
 
-    <!-- Dots -->
     <div v-if="showDots && images.length > 1" class="flex justify-center mt-4 space-x-2">
       <button
         v-for="(photo, index) in images"
@@ -83,7 +80,7 @@ const props = defineProps({
   },
   transitionEffect: {
     type: String,
-    default: 'fade', // Could be 'fade' or 'slide' (future)
+    default: 'fade',
   },
 })
 
