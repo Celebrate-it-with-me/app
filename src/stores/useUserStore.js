@@ -101,8 +101,10 @@ export const useUserStore = defineStore('userStore', {
       }
     },
 
-    async login({ email, password, remember, device }) {
-      return await UserService.login({ email, password, remember, device })
+    async login({ email, password, remember, device, hcaptcha_token }) {
+      return await UserService.login(
+        { email, password, remember, device, hcaptcha_token }
+      )
     },
 
     async register({ name, email, password }) {

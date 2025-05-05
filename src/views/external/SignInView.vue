@@ -41,6 +41,14 @@
           show-error
         />
 
+        <div
+          id="hcaptcha-container"
+          class="my-4"
+          data-sitekey="7a6ea402-cb2a-4adc-8c42-29ac5c3a2df6"
+          data-callback="onCaptchaSuccess"
+          data-size="normal"
+        ></div>
+
         <div class="flex justify-between text-sm text-text-light my-6">
           <CCheckbox
             v-model="form.remember"
@@ -55,6 +63,7 @@
         </div>
 
         <CButton
+          :disabled="!captchaToken"
           variant="primary"
           full
           type="submit"
@@ -75,7 +84,7 @@
 
 <script setup>
 import { Form } from 'vee-validate'
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import CCard from '@/components/UI/cards/CCard.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
@@ -90,8 +99,8 @@ const sending = ref(false)
 const userStore = useUserStore()
 const backendError = ref(false)
 const backendErrorMessage = ref("")
-
 const router = useRouter()
+const captchaToken = ref(null)
 
 const form = reactive({
   email: '',
@@ -109,14 +118,39 @@ const validationSchema = computed(() => {
   )
 })
 
+onMounted(() => {
+  window.onCaptchaSuccess = (token) => {
+    captchaToken.value = token
+    console.log('Token CAPTCHA:', token)
+  }
+
+  if (window.hcaptcha && document.getElementById('hcaptcha-container')) {
+    window.hcaptcha.render('hcaptcha-container', {
+      sitekey: '7a6ea402-cb2a-4adc-8c42-29ac5c3a2df6',
+      callback: window.onCaptchaSuccess
+    })
+  }
+})
+
 
 const onSubmit = async () => {
   try {
+    if (!captchaToken.value && import.meta.env.VITE_APP_ENVIRONMENT !== 'local') {
+      backendError.value = true
+      backendErrorMessage.value = "Please complete the captcha."
+      return
+    }
+
     sending.value = true
     const browser = detect()
     const device = browser ? `${browser.name} ${browser.version}` : 'unknown'
 
-    const response = await userStore.login({...form, device})
+    const response = await userStore.login(
+      {
+        ...form,
+        device,
+        hcaptcha_token: captchaToken.value
+      })
 
     if (response.status >= 200 && response.status < 300) {
       const result = response.data ?? {}
