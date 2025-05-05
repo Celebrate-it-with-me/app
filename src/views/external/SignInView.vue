@@ -44,7 +44,7 @@
         <div
           id="hcaptcha-container"
           class="my-4"
-          data-sitekey="7a6ea402-cb2a-4adc-8c42-29ac5c3a2df6"
+          :data-sitekey="captchaSiteKey"
           data-callback="onCaptchaSuccess"
           data-size="normal"
         ></div>
@@ -101,6 +101,7 @@ const backendError = ref(false)
 const backendErrorMessage = ref("")
 const router = useRouter()
 const captchaToken = ref(null)
+const captchaSiteKey = import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY
 
 const form = reactive({
   email: '',
@@ -121,12 +122,11 @@ const validationSchema = computed(() => {
 onMounted(() => {
   window.onCaptchaSuccess = (token) => {
     captchaToken.value = token
-    console.log('Token CAPTCHA:', token)
   }
 
   if (window.hcaptcha && document.getElementById('hcaptcha-container')) {
     window.hcaptcha.render('hcaptcha-container', {
-      sitekey: import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY,
+      sitekey: captchaSiteKey,
       callback: window.onCaptchaSuccess
     })
   }
