@@ -126,7 +126,7 @@ onMounted(() => {
 
   if (window.hcaptcha && document.getElementById('hcaptcha-container')) {
     window.hcaptcha.render('hcaptcha-container', {
-      sitekey: '7a6ea402-cb2a-4adc-8c42-29ac5c3a2df6',
+      sitekey: import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY,
       callback: window.onCaptchaSuccess
     })
   }
