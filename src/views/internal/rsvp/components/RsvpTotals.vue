@@ -1,10 +1,10 @@
 <template>
   <div>
-    <CButton variant="outline" @click="loadTotals" :disabled="loading">
+    <CButton variant="outline" @click="toggleShowTotals" :disabled="loading">
       <LucideBarChart2 class="w-4 h-4 mr-2" /> Show Totals
     </CButton>
 
-    <div v-if="totals" class="mt-4 bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
+    <div v-if="showTotals" class="mt-4 bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
       <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">RSVP Summary</h3>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div v-for="(value, label) in formattedTotals" :key="label" class="text-center">
@@ -30,6 +30,15 @@ const notifications = useNotificationStore()
 
 const totals = ref(null)
 const loading = ref(false)
+const showTotals = ref(false)
+
+const toggleShowTotals = async () => {
+  showTotals.value = !showTotals.value
+  if (!totals.value) {
+    await loadTotals()
+  }
+
+}
 
 const loadTotals = async () => {
   try {
