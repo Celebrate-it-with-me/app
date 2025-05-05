@@ -25,6 +25,41 @@ class RsvpService {
   async loadRsvp({ eventId }) {
     return CWM_API.get(`event/${eventId}/rsvp`)
   }
+
+  async loadRsvpGuestsList({ eventId, currentPage, perPage, status, search }) {
+    return CWM_API.get(`event/${eventId}/rsvp/guests`, {
+      params: {
+        page: currentPage,
+        perPage,
+        status,
+        search
+      }
+    })
+  }
+
+  async loadRsvpTotals({ eventId }) {
+    return CWM_API.get(`event/${eventId}/rsvp/guests/totals`)
+  }
+
+  async downloadFile({
+                       eventId,
+                       status,
+                       searchValue,
+                       exportType,
+                       perPage,
+                       currentPage
+  }) {
+    return CWM_API.get(`event/${eventId}/rsvp/guests/download`, {
+      params: {
+        status,
+        searchValue,
+        exportType,
+        perPage,
+        currentPage
+      },
+      responseType: 'blob'
+    })
+  }
 }
 
 export default new RsvpService()
