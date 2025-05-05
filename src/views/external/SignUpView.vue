@@ -52,7 +52,21 @@
           show-error
         />
 
-        <CButton full type="submit">Sign Up</CButton>
+        <div
+          id="hcaptcha-container"
+          class="my-4"
+          :data-sitekey="captchaSiteKey"
+          data-callback="onCaptchaSuccess"
+          data-size="normal"
+        ></div>
+
+        <CButton
+          :disabled="!captchaToken"
+          full
+          type="submit"
+        >
+          Sign Up
+        </CButton>
       </Form>
       <div v-else>
         <p
@@ -85,7 +99,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { Form } from 'vee-validate'
 import CCard from '@/components/UI/cards/CCard.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
@@ -106,6 +120,9 @@ const userStore = useUserStore()
 const backendError = ref(false)
 const backendErrorMessage = ref("")
 const sending = ref(false)
+const captchaToken = ref(null)
+const captchaSiteKey = import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY
+
 const form = reactive({
   name: '',
   email: '',
@@ -123,11 +140,33 @@ const validationSchema = computed(() => {
   )
 })
 
+onMounted(() => {
+  window.onCaptchaSuccess = (token) => {
+    captchaToken.value = token
+  }
+
+  if (window.hcaptcha && document.getElementById('hcaptcha-container')) {
+    window.hcaptcha.render('hcaptcha-container', {
+      sitekey: captchaSiteKey,
+      callback: window.onCaptchaSuccess
+    })
+  }
+})
+
 const onSubmit = async () => {
   try {
+    if (!captchaToken.value && import.meta.env.VITE_APP_ENVIRONMENT !== 'local') {
+      backendError.value = true
+      backendErrorMessage.value = "Please complete the captcha."
+      return
+    }
+
     sending.value = true
 
-    const response = await userStore.register(form)
+    const response = await userStore.register({
+      ...form,
+      hcaptcha_token: captchaToken.value
+    })
 
     if (response.status >= 200 && response.status < 300) {
       registrationComplete.value = true
