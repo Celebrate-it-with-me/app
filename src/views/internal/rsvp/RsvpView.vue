@@ -24,9 +24,23 @@
           />
         </div>
 
-        <CButton variant="primary" @click="sendInvitations" :disabled="!selectedGuests.length">
-          Send Invitation to Selected
-        </CButton>
+        <div
+          class="flex items-center gap-4"
+        >
+          <RsvpDownload
+            :current-page="currentPage"
+            :per-page="perPage"
+            :rsvp-status="rsvpStatus"
+            :search-value="searchValue"
+            :event-id="userStore.activeEvent"
+            class="ml-4"
+          />
+          <CButton variant="primary" @click="sendInvitations" :disabled="!selectedGuests.length">
+            Send Invitation to Selected
+          </CButton>
+        </div>
+
+
       </div>
 
       <div class="overflow-x-auto">
@@ -72,12 +86,7 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-4 justify-start mt-6">
-        <RsvpTotals />
-
-        <RsvpDownload />
-      </div>
-
+      <RsvpTotals />
     </div>
   </div>
   <CRsvpDetailsModal
