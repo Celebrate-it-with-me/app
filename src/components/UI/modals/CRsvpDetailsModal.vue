@@ -44,14 +44,24 @@
           v-if="isCompleted"
         >
           <p class="font-semibold">Revert Confirmation:</p>
-          <CButton variant="primary" size="sm" @click="revertConfirmation">
-            Revert Confirmation
+          <CButton
+            :disabled="reverting"
+            variant="primary"
+            size="sm"
+            @click="revertConfirmation"
+          >
+            <span class="flex gap-x-2" v-if="reverting">
+              <CWMLoading size="w-5 h-5"/>
+              Reverting...
+            </span>
+            <span v-else>
+              Revert Confirmation
+            </span>
           </CButton>
         </div>
 
       </div>
 
-      <!-- Invitation Link -->
       <div
         v-if="!isCompleted && guestData.invitationUrl"
       >
@@ -62,7 +72,6 @@
         </div>
       </div>
 
-      <!-- QR Code -->
       <div
         v-if="!isCompleted && guestData.invitationQR"
       >
@@ -70,7 +79,6 @@
         <img :src="'data:image/png;base64,' + guestData.invitationQR" alt="QR Code" class="w-36 h-36 object-contain rounded border border-gray-300 dark:border-gray-600" />
       </div>
 
-      <!-- RSVP Logs -->
       <div
         v-if="guestData.rsvpLogs?.length"
       >
@@ -82,7 +90,6 @@
         </ul>
       </div>
 
-      <!-- Send/Resend Invitation -->
       <div
         v-if="!isCompleted"
         class="space-y-2"
@@ -136,8 +143,10 @@ import CLoading from '@/components/UI/loading/CLoading.vue'
 import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useGuestsStore } from '@/stores/useGuestStore'
+import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
+import { useRsvpStore } from '@/stores/useRsvpStore'
 
-const emit = defineEmits(['close', 'resend'])
+const emit = defineEmits(['close', 'resend', 'confirmationReverted', 'send'])
 const props = defineProps({
   modelValue: Boolean,
   guest: Object
@@ -147,7 +156,9 @@ const showModal = ref(false)
 const guestData = ref({})
 const loadingGuestData = ref(true)
 const guestStore = useGuestsStore()
+const rsvpStore = useRsvpStore()
 const channel = ref({ email: true, sms: false })
+const reverting = ref(false)
 
 onMounted(() => {
   showModal.value = props.modelValue
@@ -201,8 +212,24 @@ const loadGuestData = async () => {
   loadingGuestData.value = false
 }
 
-const revertConfirmation = () => {
+const revertConfirmation = async () => {
+  try {
+    reverting.value = true
+    const response = await rsvpStore.revertConfirmation({
+      guestId: props.guest.id
+    })
 
+    if (response.status === 200) {
+      emit('confirmationReverted', props.guest.id)
+    } else {
+      console.error('Failed to revert confirmation:', response)
+    }
+
+  } catch (error) {
+    console.error('Failed to revert confirmation:', error)
+  } finally {
+    reverting.value = false
+  }
 }
 
 watch(showModal, (newValue) => {
