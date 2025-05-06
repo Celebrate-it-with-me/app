@@ -122,7 +122,7 @@
           <span>There is no previous invitation sent</span>
           <CButton
             size="sm"
-            variant="outline"
+            variant="primary"
             @click="sendInvitation"
             :disabled="ableToSendInvitation"
           >Send Invitation</CButton>
@@ -131,7 +131,7 @@
     </div>
 
     <template #footer>
-      <CButton variant="ghost" @click="close">Close</CButton>
+      <CButton variant="outline" @click="close">Close</CButton>
     </template>
   </CModal>
 </template>
