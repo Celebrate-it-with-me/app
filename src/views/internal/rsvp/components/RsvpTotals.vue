@@ -1,11 +1,14 @@
 <template>
   <div>
     <CButton variant="outline" @click="toggleShowTotals" :disabled="loading">
-      <LucideBarChart2 class="w-4 h-4 mr-2" /> Show Totals
+      <LucideBarChart2 class="w-4 h-4 mr-2" />
+      Show Totals
     </CButton>
 
     <div v-if="showTotals" class="mt-4 bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
-      <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">RSVP Summary</h3>
+      <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+        RSVP Summary
+      </h3>
       <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div v-for="(value, label) in formattedTotals" :key="label" class="text-center">
           <div class="text-2xl font-bold text-primary">{{ value }}</div>
@@ -43,7 +46,9 @@ const toggleShowTotals = async () => {
 const loadTotals = async () => {
   try {
     loading.value = true
-    const response = await rsvpStore.loadRsvpTotals({ eventId: userStore.activeEvent })
+    const response = await rsvpStore.loadRsvpTotals({
+      eventId: userStore.activeEvent
+    })
 
     if (response.status === 200) {
       totals.value = response.data.data ?? []
@@ -64,9 +69,9 @@ const loadTotals = async () => {
 const formattedTotals = computed(() => {
   if (!totals.value) return {}
   return {
-    Confirmed: totals.value.totalConfirmed,
+    Attending: totals.value.totalConfirmed,
     Pending: totals.value.totalPending,
-    Declined: totals.value.totalDeclined,
+    'Not Attending': totals.value.totalDeclined,
     'Main Guests': totals.value.totalMainGuests,
     Companions: totals.value.totalCompanions,
     'Total Guests': totals.value.totalGuests,

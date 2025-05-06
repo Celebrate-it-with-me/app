@@ -1,7 +1,7 @@
 <script setup>
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
-import { UserIcon, UserRoundIcon } from 'lucide-vue-next'
+import { UserIcon } from 'lucide-vue-next'
 import RsvpGuestCompanionTr from '@/views/internal/rsvp/components/RsvpGuestCompanionTr.vue'
 import { ref } from 'vue'
 
@@ -22,8 +22,8 @@ const props = defineProps({
 const statusClass = (status) => {
   return {
     pending: 'text-yellow-600',
-    confirmed: 'text-green-600',
-    declined: 'text-red-500',
+    attending: 'text-green-600',
+    'not-attending': 'text-red-500',
   }[status] || 'text-gray-500'
 }
 
