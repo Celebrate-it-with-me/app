@@ -60,6 +60,10 @@ class RsvpService {
       responseType: 'blob'
     })
   }
+
+  async revertConfirmation({ guestId, eventId }) {
+    return CWM_API.post(`event/${eventId}/rsvp/guests/${guestId}/revert-confirmation`)
+  }
 }
 
 export default new RsvpService()

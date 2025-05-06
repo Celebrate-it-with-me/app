@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import RsvpService from '../services/RsvpService'
+import { useUserStore } from '@/stores/useUserStore'
 
 export const useRsvpStore = defineStore('rsvpStore', {
   state: () => ({
@@ -40,6 +41,13 @@ export const useRsvpStore = defineStore('rsvpStore', {
         exportType,
         perPage,
         currentPage
+      })
+    },
+    revertConfirmation({ guestId }) {
+      const userStore = useUserStore()
+      return RsvpService.revertConfirmation({
+        guestId,
+        eventId: userStore.activeEvent
       })
     }
 

@@ -93,6 +93,7 @@
     v-model="showDetailsModal"
     :guest="selectedGuest"
     @close="showDetailsModal = false"
+    @confirmation-reverted="handleConfirmationReverted"
   />
 </template>
 
@@ -111,7 +112,6 @@ import CPagination from '@/components/UI/pagination/CPagination.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import RsvpTotals from '@/views/internal/rsvp/components/RsvpTotals.vue'
 import RsvpGuestTr from '@/views/internal/rsvp/components/RsvpGuestTr.vue'
-import { LucideDownload } from 'lucide-vue-next'
 import RsvpDownload from '@/views/internal/rsvp/components/RsvpDownload.vue'
 
 const perPageOptions = [
@@ -170,7 +170,6 @@ const loadGuests = async () => {
 }
 
 const viewGuest = (guest) => {
-  console.log('checking emit', guest)
   selectedGuest.value = guest
   showDetailsModal.value = true
 }
@@ -182,6 +181,11 @@ const sendInvitations = () => {
 const reloadGuests = () => {
   loadGuests()
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+const handleConfirmationReverted = async () => {
+  await loadGuests()
+  showDetailsModal.value = false
 }
 
 onMounted(loadGuests)
