@@ -23,7 +23,7 @@ const rsvpConfig = reactive({
 const templateStore = useTemplateStore()
 
 const rsvpCompleted = computed(() => {
-  return templateStore.guest?.rsvpCompleted ?? false
+  return templateStore.guest?.rsvpStatus !== 'pending'
 })
 
 </script>
@@ -38,7 +38,6 @@ const rsvpCompleted = computed(() => {
       :title="rsvpConfig.title"
       :sub-title="rsvpConfig.subTitle"
     />
-
     <CWMRSVPComponent
       v-if="!rsvpCompleted"
       :form-title="rsvpConfig.formTitle"

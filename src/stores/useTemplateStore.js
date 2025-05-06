@@ -33,7 +33,7 @@ export const useTemplateStore = defineStore('templateStore', {
     },
 
     guestFullName() {
-      return `${this.guest.firstName} ${this.guest.lastName}`
+      return `${this.guest.name}`
     },
 
     eventName() {
