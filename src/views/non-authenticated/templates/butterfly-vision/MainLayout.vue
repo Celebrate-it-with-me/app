@@ -157,9 +157,9 @@ const handleMoveToTop = () => {
 
       <SwipeLeftIcon />
 
-      <BackgroundMusic
+<!--      <BackgroundMusic
         origin="event"
-      />
+      />-->
 
       <EventFooter />
     </main>

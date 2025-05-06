@@ -32,86 +32,116 @@ const submit = async () => {
 
 </script>
 
-
 <template>
-  <div class="w-full flex flex-col items-center">
-    <h2 class="text-2xl font-semibold mb-6 pt-4 text-dark-blue">Confirm your Information</h2>
+  <div class="w-full max-w-5xl bg-white rounded-lg shadow-md px-6 pt-5 pb-5">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-dark-blue mt-4">
+      Confirm your Information
+    </h2>
 
-    <div
-      class="w-full flex flex-col md:flex-row justify-between text-dark-blue"
-    >
-      <!-- Guest Info -->
-      <div class="w-full md:w-[50%] p-6">
-        <h3 class="text-xl font-semibold mb-4 border-b pb-2">Main Guest Information:</h3>
-        <div class="space-y-2">
-          <p class="flex items-center">
-            <span class="font-semibold w-24">Name:</span> {{ guestInfo?.name }}</p>
-          <p class="flex items-center">
-            <span class="font-semibold w-24">Email:</span> {{ guestInfo?.email ?? 'N/A' }}</p>
-          <p class="flex items-center">
-            <span class="font-semibold w-24">Phone:</span> {{ guestInfo?.phone ?? 'N/A' }}</p>
-          <p class="flex items-center">
-            <span class="font-semibold w-24">Attending:</span> {{ guestInfo?.rsvpStatus ?? 'N/A' }}</p>
+    <div class="flex flex-col md:flex-row gap-6 gap-y-10 text-dark-blue">
+      <!-- Main Guest Info -->
+      <div class="flex-1">
+        <h3 class="text-xl font-semibold mb-4 text-center md:text-left border-b pb-2">
+          Main Guest Information:
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full table-auto border rounded-lg shadow-sm text-sm">
+            <tbody>
+            <tr class="border-b">
+              <td class="px-4 py-2 font-semibold text-gray-600 w-32">Name:</td>
+              <td class="px-4 py-2 text-gray-800">{{ guestInfo?.name }}</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2 font-semibold text-gray-600">Email:</td>
+              <td class="px-4 py-2 text-gray-800">{{ guestInfo?.email ?? 'N/A' }}</td>
+            </tr>
+            <tr class="border-b">
+              <td class="px-4 py-2 font-semibold text-gray-600">Phone:</td>
+              <td class="px-4 py-2 text-gray-800">{{ guestInfo?.phone ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+              <td class="px-4 py-2 font-semibold text-gray-600">
+                Attending:
+              </td>
+              <td class="px-4 py-2">
+                <span
+                  class="inline-block px-2 py-1 rounded-full text-xs font-semibold"
+                  :class="{
+                    'text-green-700 bg-green-100': guestInfo?.rsvpStatus === 'attending',
+                    'text-red-700 bg-red-100': guestInfo?.rsvpStatus === 'not-attending',
+                    'text-yellow-700 bg-yellow-100': guestInfo?.rsvpStatus === 'pending'
+                  }"
+                >
+                  {{
+                    guestInfo?.rsvpStatus === 'attending'
+                      ? 'Attending'
+                      : guestInfo?.rsvpStatus === 'not-attending'
+                        ? 'Not Attending'
+                        : 'Pending'
+                  }}
+                </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-
-      <!-- Companions Info -->
-      <div
-        class="w-full md:w-[50%] p-6"
-      >
-        <h3 class="text-xl font-semibold mb-4 border-b pb-2">Companions List:</h3>
-        <div class="relative overflow-x-auto">
-          <ul class="space-y-2">
-            <li
+      <div class="flex-1">
+        <h3 class="text-xl font-semibold mb-4 text-center md:text-left border-b pb-2">
+          Companions List:
+        </h3>
+        <div class="overflow-x-auto">
+          <table class="w-full table-auto border rounded-lg sm:rounded-lg shadow-sm text-sm">
+            <thead class="bg-gray-100 text-gray-600 uppercase">
+            <tr>
+              <th class="px-4 py-2 text-left">Name</th>
+              <th class="px-4 py-2 text-left">Attending</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
               v-for="companion in companions"
               :key="companion.id"
-              class="bg-white"
+              class="bg-white border-t hover:bg-gray-50"
             >
-              <p class="flex items-center mb-1">
-                <span class="font-semibold w-24">Name:</span>
-                {{ companion.name ?? 'N/A' }}
-              </p>
-              <p class="flex items-center">
-                <b class="font-semibold w-24">
-                  Attending:
-                </b>
-                <span
-                  v-if="companion.rsvpStatus === 'attending'"
-                >
-                   Attending
-                </span>
-                <span
-                  v-else-if="companion.rsvpStatus === 'not-attending'"
-                >
-                   Not Attending
-                </span>
-                <span
-                  v-else
-                >
-                  Pending
-                </span>
-              </p>
-            </li>
-          </ul>
+              <td class="px-4 py-2 font-medium text-gray-800">
+                {{ companion.name ?? 'Unnamed' }}
+              </td>
+              <td class="px-4 py-2">
+                  <span
+                    :class="[
+                      'inline-block px-2 py-1 rounded-full text-xs font-semibold',
+                      companion.rsvpStatus === 'attending' ? 'text-green-700 bg-green-100' :
+                      companion.rsvpStatus === 'not-attending' ? 'text-red-700 bg-red-100' :
+                      'text-yellow-700 bg-yellow-100 text-yellow-700'
+                    ]"
+                  >
+                    {{ companion.rsvpStatus === 'attending' ? 'Attending' :
+                    companion.rsvpStatus === 'not-attending' ? 'Not Attending' : 'Pending' }}
+                  </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
     <!-- Buttons -->
-    <div class="w-full mb-2 flex flex-row justify-end mt-10 gap-x-2">
+    <div class="mt-10 flex flex-row justify-center sm:justify-end
+                items-center gap-4 pb-4">
       <button
-        class="px-6 py-2 border-2 font-bold mr-2 mb-2"
-        style="font-family: inherit; color: #9a929e; background-color: transparent; border-color: #9a929e; border-radius: 8px;"
         @click="goBack"
+        class="px-6 py-2 border rounded-lg text-sm font-semibold text-gray-600
+               border-gray-400 hover:bg-gray-100 transition"
       >
         Back
       </button>
 
       <button
-        class="px-6 py-2 border-2 font-bold mr-2 mb-2"
-        style="font-family: inherit; color: #dba3ff; background-color: transparent; border-color: #dba3ff; border-radius: 8px;"
         @click="submit"
+        class="px-6 py-2 border rounded-lg text-sm font-semibold text-purple-600 border-purple-300 hover:bg-purple-50 transition"
       >
         Submit
       </button>

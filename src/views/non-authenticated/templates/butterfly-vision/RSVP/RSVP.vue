@@ -32,7 +32,7 @@ const rsvpCompleted = computed(() => {
   <div
     id="sectionRSVP"
     v-if="rsvpConfig?.isEnabled"
-    class="w-full flex flex-col justify-evenly items-center pt-5 h-screen bg-[#baa7fb]"
+    class="w-full flex flex-col justify-evenly items-center pt-5 bg-[#baa7fb]"
   >
     <RSVPTitles
       :title="rsvpConfig.title"
