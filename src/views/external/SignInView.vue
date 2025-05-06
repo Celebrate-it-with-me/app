@@ -1,87 +1,3 @@
-<template>
-  <section class="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white dark:from-gray-900 dark:to-gray-800 px-4">
-    <CCard class="max-w-md w-full p-8 shadow-xl">
-      <div class="text-center mb-10">
-        <h1 class="text-3xl font-display font-bold text-primary"> Welcome Back</h1>
-        <p class="text-sm text-text-light">Sign in to continue planning your event</p>
-
-        <div
-          v-if="backendError"
-          class="text-red-500 text-sm font-semibold mb-10"
-        >
-          <p>
-            {{ backendErrorMessage }}
-          </p>
-        </div>
-
-      </div>
-
-      <Form
-        :validation-schema="validationSchema"
-        @submit="onSubmit"
-        @invalid-submit="onInvalidSubmit"
-      >
-        <CInput
-          label="Email"
-          type="email"
-          placeholder="Enter your email"
-          v-model="form.email"
-          id="sign_in_email"
-          name="email"
-          show-error
-        />
-
-        <CInput
-          label="Password"
-          type="password"
-          placeholder="Enter your password"
-          v-model="form.password"
-          id="sign_in_password"
-          name="password"
-          show-error
-        />
-
-        <div
-          id="hcaptcha-container"
-          class="my-4"
-          :data-sitekey="captchaSiteKey"
-          data-callback="onCaptchaSuccess"
-          data-size="normal"
-        ></div>
-
-        <div class="flex justify-between text-sm text-text-light my-6">
-          <CCheckbox
-            v-model="form.remember"
-            label="Remember me"
-            name="remember"
-            show-error
-          />
-
-          <router-link to="/forgot-password">
-            <span class="text-primary hover:underline">Forgot password?</span>
-          </router-link>
-        </div>
-
-        <CButton
-          :disabled="!captchaToken"
-          variant="primary"
-          full
-          type="submit"
-        >
-          Sign In
-        </CButton>
-      </Form>
-
-      <p class="mt-6 text-center text-sm text-text-light">
-        Don't have an account?
-        <router-link to="/sign-up">
-          <span class="text-primary font-medium hover:underline">Create one</span>
-        </router-link>
-      </p>
-    </CCard>
-  </section>
-</template>
-
 <script setup>
 import { Form } from 'vee-validate'
 import { computed, onMounted, reactive, ref } from 'vue'
@@ -192,3 +108,95 @@ const onInvalidSubmit = (error) => {
   console.log(error)
 }
 </script>
+
+<template>
+  <section class="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white dark:from-gray-900 dark:to-gray-800 px-4">
+    <CCard class="max-w-md w-full p-8 shadow-xl">
+      <div class="text-center mb-10">
+        <h1 class="text-3xl font-display font-bold text-primary"> Welcome Back</h1>
+        <p class="text-sm text-text-light">Sign in to continue planning your event</p>
+
+        <div
+          v-if="backendError"
+          class="text-red-500 text-sm font-semibold mb-10"
+        >
+          <p>
+            {{ backendErrorMessage }}
+          </p>
+        </div>
+
+      </div>
+
+      <Form
+        :validation-schema="validationSchema"
+        @submit="onSubmit"
+        @invalid-submit="onInvalidSubmit"
+      >
+        <CInput
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          v-model="form.email"
+          id="sign_in_email"
+          name="email"
+          show-error
+        />
+
+        <CInput
+          label="Password"
+          type="password"
+          placeholder="Enter your password"
+          v-model="form.password"
+          id="sign_in_password"
+          name="password"
+          show-error
+        />
+
+        <div
+          id="hcaptcha-container"
+          class="my-4 w-full rounded-md overflow-hidden"
+          :data-sitekey="captchaSiteKey"
+          data-callback="onCaptchaSuccess"
+          data-size="normal"
+        ></div>
+
+        <div class="flex justify-between text-sm text-text-light my-6">
+          <CCheckbox
+            v-model="form.remember"
+            label="Remember me"
+            name="remember"
+            show-error
+          />
+
+          <router-link to="/forgot-password">
+            <span class="text-primary hover:underline">Forgot password?</span>
+          </router-link>
+        </div>
+
+        <CButton
+          :disabled="!captchaToken"
+          variant="primary"
+          full
+          type="submit"
+        >
+          Sign In
+        </CButton>
+      </Form>
+
+      <p class="mt-6 text-center text-sm text-text-light">
+        Don't have an account?
+        <router-link to="/sign-up">
+          <span class="text-primary font-medium hover:underline">Create one</span>
+        </router-link>
+      </p>
+    </CCard>
+  </section>
+</template>
+
+<style scoped>
+#hcaptcha-container iframe {
+  width: 100% !important;
+  min-height: 65px;
+  border-radius: 0.5rem;
+}
+</style>

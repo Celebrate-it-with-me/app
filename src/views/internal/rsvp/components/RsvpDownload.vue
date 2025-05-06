@@ -8,7 +8,7 @@ import { useRsvpStore } from '@/stores/useRsvpStore'
 const props = defineProps({
   status: {
     type: String,
-    default: 'pending',
+    default: '',
   },
   searchValue: {
     type: String,

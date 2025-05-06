@@ -11,8 +11,8 @@ const props = defineProps({
 const statusClass = (status) => {
   return {
     pending: 'text-yellow-600',
-    confirmed: 'text-green-600',
-    declined: 'text-red-500',
+    attending: 'text-green-600',
+    'not-attending': 'text-red-500',
   }[status] || 'text-gray-500'
 }
 </script>

@@ -13,16 +13,18 @@ export const useTemplateStore = defineStore('templateStore', {
     },
 
     initRsvpGuestData(guestData) {
-      this.guest.firstName = guestData.firstName
-      this.guest.lastName = guestData.lastName
+      this.guest.name = guestData.name
       this.guest.email = guestData.email
-      this.guest.phoneNumber = guestData.phoneNumber
+      this.guest.phone = guestData.phone
+      this.guest.rsvpStatus = guestData.rsvpStatus
       this.guest.mealPreference = guestData.mealPreference
-      this.guest.confirmed = guestData.confirmed
     },
 
     async rsvpSaveUpdate() {
-      return await templateService.saveRsvp({eventId: this.event.id, guest: this.guest})
+      return await templateService.saveRsvp({
+        eventId: this.event.id,
+        guest: this.guest
+      })
     }
   },
   getters: {
@@ -31,7 +33,7 @@ export const useTemplateStore = defineStore('templateStore', {
     },
 
     guestFullName() {
-      return `${this.guest.firstName} ${this.guest.lastName}`
+      return `${this.guest.name}`
     },
 
     eventName() {
