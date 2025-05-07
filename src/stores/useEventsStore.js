@@ -6,8 +6,24 @@ export const useEventsStore = defineStore('eventsStore', {
   state: () => ({
     events: [],
     activeEvent: null,
+    eventPlans: [],
+    eventTypes: [],
   }),
   actions: {
+    async loadEventsPlansAndType() {
+      const response = await EventsService.loanEventsPlansAndType()
+
+      if (response.status === 200) {
+        const { data } = response
+
+        this.eventPlans = data.data?.eventPlans ?? []
+        this.eventTypes = data.data?.eventTypes ?? []
+        return true
+      }
+
+      return false
+    },
+
     async setActiveEvent(event) {
       const userStore = useUserStore()
       this.activeEvent = event

@@ -21,6 +21,11 @@ onMounted(() => {
 const loadEvents = async () => {
   try {
     loading.value = true
+
+    const eventsDataResponse = await eventsStore.loadEventsPlansAndType()
+
+    console.log('checking events data result', eventsDataResponse)
+
     const response = await userStore.initUserEvents()
 
     if (response.status >= 200 && response.status < 300) {
@@ -45,7 +50,6 @@ const loadEvents = async () => {
     }
 
   } catch (e) {
-    console.log('aqui error', e.response.status)
     if (e.response.status === 401) {
       notificationStore.addNotification({
         type: 'error',

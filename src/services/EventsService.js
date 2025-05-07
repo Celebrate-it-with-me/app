@@ -96,13 +96,17 @@ class EventsService {
   }
 
   async updateActiveEvent(event) {
-    return CWM_API.patch(`event/active-event`, {
+    return await CWM_API.patch(`event/active-event`, {
       eventId: event.id
     })
   }
 
   async removeCurrentEvent(currentEventId) {
-    return CWM_API.delete(`event/${currentEventId}`)
+    return await CWM_API.delete(`event/${currentEventId}`)
+  }
+
+  async loanEventsPlansAndType() {
+    return await CWM_API.get(`events/load-events-plans-and-types`)
   }
 }
 
