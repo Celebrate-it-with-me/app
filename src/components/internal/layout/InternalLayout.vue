@@ -31,13 +31,10 @@ const loadEvents = async () => {
       await eventsStore.initUserEventsData(result)
 
       if (userStore.justLogin === true) {
-        console.log('entre')
         triggerEventsModal()
         userStore.justLogin = false
       }
     } else {
-      // Todo we need to handle the edge cases
-      console.log('Error loading events')
       if (response.status === 401) {
         notificationStore.addNotification({
           type: 'error',
@@ -99,7 +96,7 @@ watch(() => userStore?.preferences?.visualTheme,  () => {
 
       <!-- Main content -->
       <div class="flex-1 flex flex-col">
-        <HeaderBar />
+        <HeaderBar class="bg-white" />
         <main class="flex-1 p-6 overflow-y-auto">
           <router-view />
         </main>
