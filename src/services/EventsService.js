@@ -4,6 +4,7 @@ import { format } from 'date-fns'
 class EventsService {
   async create({
                  eventName,
+                 eventType,
                  eventDescription,
                  startDate,
                  endDate,
@@ -23,6 +24,7 @@ class EventsService {
   }) {
     return CWM_API.post(`event`, {
       eventName,
+      eventType,
       eventDescription,
       startDate: format(new Date(startDate), 'MM/dd/yyyy HH:mm'),
       endDate: format(new Date(endDate), 'MM/dd/yyyy HH:mm'),
@@ -46,6 +48,7 @@ class EventsService {
                eventId,
                eventName,
                eventDescription,
+               eventType,
                startDate,
                endDate,
                status,
@@ -65,6 +68,7 @@ class EventsService {
     return CWM_API.put(`event/${eventId}`, {
       eventName,
       eventDescription,
+      eventType,
       startDate,
       endDate,
       status,
@@ -107,6 +111,10 @@ class EventsService {
 
   async loanEventsPlansAndType() {
     return await CWM_API.get(`events/load-events-plans-and-types`)
+  }
+
+  async loadSuggestions({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/suggestions`)
   }
 }
 

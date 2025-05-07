@@ -22,15 +22,13 @@ const loadEvents = async () => {
   try {
     loading.value = true
 
-    const eventsDataResponse = await eventsStore.loadEventsPlansAndType()
-
-    console.log('checking events data result', eventsDataResponse)
+    await eventsStore.loadEventsPlansAndType()
 
     const response = await userStore.initUserEvents()
 
     if (response.status >= 200 && response.status < 300) {
       const result = response.data?.data ?? {}
-      eventsStore.initUserEventsData(result)
+      await eventsStore.initUserEventsData(result)
 
       if (userStore.justLogin === true) {
         console.log('entre')

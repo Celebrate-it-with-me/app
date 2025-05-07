@@ -64,6 +64,11 @@ class RsvpService {
   async revertConfirmation({ guestId, eventId }) {
     return CWM_API.post(`event/${eventId}/rsvp/guests/${guestId}/revert-confirmation`)
   }
+
+  async loadDashboardRsvpSummary({ eventId }) {
+    return CWM_API.get(`event/${eventId}/rsvp/summary`)
+  }
+
 }
 
 export default new RsvpService()
