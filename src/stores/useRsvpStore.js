@@ -49,6 +49,10 @@ export const useRsvpStore = defineStore('rsvpStore', {
         guestId,
         eventId: userStore.activeEvent
       })
+    },
+
+    async loadDashboardRsvpSummary({ eventId }) {
+      return await RsvpService.loadDashboardRsvpSummary({ eventId })
     }
 
   },

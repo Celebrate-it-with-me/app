@@ -3,27 +3,7 @@
     <div class="grid md:grid-cols-2 gap-6">
       <DashboardActiveEvent />
 
-      <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
-        <h2 class="text-xl font-semibold mb-4">Rsvp Summary</h2>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <p class="text-sm text-gray-600">Total Guests:</p>
-            <p class="text-lg font-bold">120</p>
-          </div>
-          <div>
-            <p class="text-sm text-green-600">Confirmed:</p>
-            <p class="font-bold">78</p>
-          </div>
-          <div>
-            <p class="text-sm text-yellow-600">Pending:</p>
-            <p class="font-bold">30</p>
-          </div>
-          <div>
-            <p class="text-sm text-red-600">Declined:</p>
-            <p class="font-bold">12</p>
-          </div>
-        </div>
-      </section>
+      <DashboardRsvpSummary />
     </div>
 
     <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
@@ -74,5 +54,6 @@
 <script setup>
 import CButton from '@/components/UI/buttons/CButton.vue'
 import DashboardActiveEvent from '@/views/internal/dashboard/DashboardActiveEvent.vue'
+import DashboardRsvpSummary from '@/views/internal/dashboard/DashboardRsvpSummary.vue'
 
 </script>
