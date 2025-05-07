@@ -62,6 +62,7 @@ export const useEventsStore = defineStore('eventsStore', {
 
     async editEvent({
                       eventName,
+                      eventType,
                       startDate,
                       endDate,
                       eventDescription,
@@ -82,6 +83,7 @@ export const useEventsStore = defineStore('eventsStore', {
       return await EventsService.edit({
         eventId: this.activeEvent.id,
         eventName,
+        eventType,
         startDate,
         endDate,
         eventDescription,
@@ -106,6 +108,7 @@ export const useEventsStore = defineStore('eventsStore', {
                         startDate,
                         endDate,
                         eventDescription,
+                        eventType,
                         status,
                         visibility,
                         customUrlSlug,
@@ -122,6 +125,7 @@ export const useEventsStore = defineStore('eventsStore', {
     }) {
       return await EventsService.create({
         eventName,
+        eventType,
         startDate,
         endDate,
         eventDescription,
