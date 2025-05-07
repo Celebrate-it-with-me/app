@@ -6,22 +6,7 @@
       <DashboardRsvpSummary />
     </div>
 
-    <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold">Asistente Inteligente</h2>
-        <CButton variant="secondary" size="sm">Ver sugerencias</CButton>
-      </div>
-      <p class="text-gray-600 dark:text-gray-300 mb-4">
-        Tu asistente virtual analiza tu progreso y te sugiere los próximos pasos para que tu evento
-        quede perfecto.
-      </p>
-      <ul class="list-disc ml-5 space-y-2">
-        <li>Añade una playlist personalizada basada en el tipo de evento.</li>
-        <li>Completa los datos del lugar para que tus invitados puedan ubicarlo fácilmente.</li>
-        <li>Invita a más personas: tienes 80 confirmados de 120.</li>
-        <li>Sube fotos de inspiración para el diseño del evento.</li>
-      </ul>
-    </section>
+    <DashboardSmartAssistant />
 
     <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
       <h2 class="text-xl font-semibold mb-4">Tareas Pendientes</h2>
@@ -55,5 +40,6 @@
 import CButton from '@/components/UI/buttons/CButton.vue'
 import DashboardActiveEvent from '@/views/internal/dashboard/DashboardActiveEvent.vue'
 import DashboardRsvpSummary from '@/views/internal/dashboard/DashboardRsvpSummary.vue'
+import DashboardSmartAssistant from '@/views/internal/dashboard/DashboardSmartAssistant.vue'
 
 </script>

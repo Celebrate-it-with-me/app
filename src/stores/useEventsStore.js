@@ -166,6 +166,10 @@ export const useEventsStore = defineStore('eventsStore', {
           this.selectEvent(eventId)
         }
       }
+    },
+
+    async loadSuggestions({ eventId }) {
+      return await EventsService.loadSuggestions({eventId})
     }
   },
   getters: {

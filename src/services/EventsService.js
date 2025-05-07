@@ -112,6 +112,10 @@ class EventsService {
   async loanEventsPlansAndType() {
     return await CWM_API.get(`events/load-events-plans-and-types`)
   }
+
+  async loadSuggestions({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/suggestions`)
+  }
 }
 
 export default new EventsService()
