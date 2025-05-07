@@ -4,12 +4,22 @@
       v-if='userAvatarUrl'
       @click="toggleMenu()"
       ref="buttonRef"
+      class="flex items-center gap-x-2"
     >
       <img
         :src="userAvatarUrl"
         class="w-10 h-10 rounded-full cursor-pointer"
         alt="User Avatar"
       />
+
+      <div
+        class="flex cursor-pointer"
+      >
+        {{ userName }}
+
+        <ChevronDown v-if="!open" />
+        <ChevronUp v-else />
+      </div>
     </div>
 
     <button
@@ -78,8 +88,8 @@
 <script setup>
 import { useUserStore } from '@/stores/useUserStore'
 import { useRouter } from 'vue-router'
-
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { ChevronDown, ChevronUp } from 'lucide-vue-next'
 
 const userStore = useUserStore()
 
@@ -90,6 +100,11 @@ const userAvatarUrl = computed(() => {
   return userStore.avatar
     ? userStore.avatar
     : null
+})
+
+
+const userName = computed(() => {
+  return userStore.name ?? ''
 })
 
 const initials = computed(() => {

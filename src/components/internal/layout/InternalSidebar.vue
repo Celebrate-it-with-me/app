@@ -1,7 +1,6 @@
 <template>
-  <nav class="h-full flex flex-col bg-gradient-to-b from-pink-50 to-white dark:from-gray-800
-              dark:to-gray-900 border-r border-gray-200 dark:border-gray-700">
-    <div class="p-6 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center justify-center">
+  <nav class="h-full flex flex-col dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+    <div class="p-6 dark:border-gray-700 h-16 flex items-center justify-center">
       <RouterLink to="/" class="flex items-center gap-2 text-xl font-bold text-primary">
         <img src="@/assets/images/commons/logo_primary_2.png" alt="Logo" class="w-4/5" />
       </RouterLink>
@@ -43,7 +42,6 @@
 <script setup>
 import { useRoute, RouterLink } from 'vue-router'
 import {
-  Home,
   Users,
   Music,
   Calendar,
@@ -52,6 +50,7 @@ import {
   AlarmClock,
   MessageCircle,
   Map,
+  LayoutDashboard
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 
@@ -66,7 +65,7 @@ const isActive = (path) => {
 const userStore = useUserStore()
 
 const menuItems = [
-  { label: 'Dashboard', to: '/dashboard', icon: Home },
+  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
   { label: 'My Events', to: '/dashboard/events', icon: Calendar },
   { label: 'Guests', to: '/dashboard/guests', icon: Users },
   { label: 'RSVP', to: '/dashboard/rsvp', icon: CheckSquare  },
