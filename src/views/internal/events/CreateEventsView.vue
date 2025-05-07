@@ -171,7 +171,6 @@ import { useUserStore } from '@/stores/useUserStore'
 import { useRoute, useRouter } from 'vue-router'
 
 const emit = defineEmits(['cancelCreate'])
-
 const eventState = reactive({
   eventName: '',
   eventDescription: '',
@@ -256,6 +255,9 @@ onMounted(async () => {
     }
   }
 })
+
+
+
 
 const normalizeBooleans = (obj, keys) => {
   keys.forEach((key) => {
