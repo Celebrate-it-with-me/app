@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import GuestsService from '../services/GuestsService'
 import { useUserStore } from './useUserStore'
 
+
+
 export const useGuestsStore = defineStore('guestsStore', {
   state: () => ({
     guests: [],
@@ -12,6 +14,21 @@ export const useGuestsStore = defineStore('guestsStore', {
     searchValue: '',
   }),
   actions: {
+    async loadGuestData(guestId) {
+      const userStore = useUserStore()
+      return await GuestsService.getGuestData(guestId, userStore.activeEvent)
+    },
+
+    async deleteGuest(guestId) {
+      const userStore = useUserStore()
+      return await GuestsService.deleteGuest(guestId, userStore.activeEvent)
+    },
+
+    async createGuest(guest) {
+      const userStore = useUserStore()
+      return await GuestsService.createGuest(guest, userStore.activeEvent)
+    },
+
     addGuest(guest) {
       this.guests.push(guest)
     },
@@ -60,7 +77,7 @@ export const useGuestsStore = defineStore('guestsStore', {
       const userStore = useUserStore()
 
       const response =  await GuestsService.getMyEventGuests({
-        eventId: userStore.currentEventId,
+        eventId: userStore.activeEvent,
         perPage: this.perPage,
         pageSelected: this.pageSelected,
         searchValue: this.searchValue

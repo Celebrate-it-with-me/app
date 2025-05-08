@@ -10,6 +10,10 @@ class TemplateService {
       guest
     })
   }
+
+  async refreshGuestData({ eventId, guestCode }) {
+    return CWM_API.get(`template/event/${eventId}/guest/${guestCode}/data`)
+  }
 }
 
 export default new TemplateService()

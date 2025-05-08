@@ -47,7 +47,7 @@ const onSubmit = async () => {
           lastLogin: result?.user?.last_login_session ?? null
         })
 
-      router.push("dashboard")
+      return await router.push("dashboard")
     } else {
       backendError.value = true
       backendErrorMessage.value = response.response?.data?.message ?? "Oops, something went wrong!"

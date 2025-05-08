@@ -3,7 +3,6 @@ import { useTemplateStore } from '@/stores/useTemplateStore'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import SaveTheDateCountDown from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateCountDown.vue'
 import SaveTheDateAddToCalendar from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateAddToCalendar.vue'
-import 'intersection-observer'
 
 const templateStore = useTemplateStore()
 const h2TitleRef = ref(null)
@@ -46,7 +45,6 @@ onUnmounted(() => {
 <template>
   <div
     id="sectionSTD"
-    v-if="saveTheDate?.isEnabled"
     class="parallax-container bg-[#baa7fb]"
   >
     <div
@@ -56,20 +54,20 @@ onUnmounted(() => {
         ref="h2TitleRef"
         class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center z-10"
         :class="{ 'animate__animated animate__fadeInDown': isH2TitleInView }"
-        v-if="saveTheDate.stdTitle"
+        v-if="true"
       >
-        {{ saveTheDate.stdTitle }}
+        Save the Date
       </h2>
 
       <h3
-        class="text-2xl font-normal text-dark-blue z-10"
-        v-if="saveTheDate.stdSubTitle"
+        v-if="true"
+        class="text-2xl font-normal text-dark-blue z-10 text-center"
       >
-        {{ saveTheDate.stdSubTitle }}
+        <!--{{ saveTheDate.stdSubTitle }}-->
+        Este es un dia especial para nosotros, y queremos compartirlo contigo.
       </h3>
 
       <div
-        v-if="saveTheDate?.useCountdown"
         class="std-countdown mt-10  z-10"
       >
         <SaveTheDateCountDown
@@ -93,7 +91,6 @@ onUnmounted(() => {
       </div>
 
       <div
-        v-if="saveTheDate?.useAddToCalendar"
         class="std-addToCalendar mt-10 z-10"
       >
         <SaveTheDateAddToCalendar

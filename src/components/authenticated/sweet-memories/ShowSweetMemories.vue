@@ -27,7 +27,7 @@ const removeImage = async (fileId) => {
   // Handle the remove image
   try {
     const response = await sweetMemoriesStore.removeSweetMemoriesImage(
-      currentUserStore.currentEventId,
+      currentUserStore.activeEvent,
       fileId
     )
 
@@ -45,7 +45,7 @@ const handleUploadImages = async (files) => {
   try {
     const response = await sweetMemoriesStore.uploadSweetMemoriesImages(
       files,
-      currentUserStore.currentEventId
+      currentUserStore.activeEvent
     )
 
     if (response.status >= 200 && response.status < 300) {
@@ -59,7 +59,7 @@ const handleUploadImages = async (files) => {
 }
 
 const loadSweetMemoriesEventImages = async () => {
-  const result = await sweetMemoriesStore.loadSweetMemoriesImages(currentUserStore.currentEventId)
+  const result = await sweetMemoriesStore.loadSweetMemoriesImages(currentUserStore.activeEvent)
   if (!result.status) {
     console.error('Error loading sweet memories images:', result)
   }
@@ -69,7 +69,7 @@ const handleUpdateImages = async (files) => {
   // Handle the update images
   try {
     const response = await sweetMemoriesStore.updateSweetMemoriesImages(
-      currentUserStore.currentEventId,
+      currentUserStore.activeEvent,
       files
     )
 

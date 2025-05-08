@@ -45,7 +45,7 @@ const updateName = async () => {
     const response = await sweetMemoriesStore.updateImageName(props.imageFile.id, name.value)
 
     if (response.status === 200) {
-      await sweetMemoriesStore.loadSweetMemoriesImages(currentUserStore.currentEventId)
+      await sweetMemoriesStore.loadSweetMemoriesImages(currentUserStore.activeEvent)
       handleClose()
     } else {
       console.error(response)

@@ -5,27 +5,64 @@ import { useUserStore } from './useUserStore'
 export const useEventsStore = defineStore('eventsStore', {
   state: () => ({
     events: [],
-    currentEvent: null,
+    activeEvent: null,
+    eventPlans: [],
+    eventTypes: [],
   }),
   actions: {
+    async loadEventsPlansAndType() {
+      const response = await EventsService.loanEventsPlansAndType()
+
+      if (response.status === 200) {
+        const { data } = response
+
+        this.eventPlans = data.data?.eventPlans ?? []
+        this.eventTypes = data.data?.eventTypes ?? []
+        return true
+      }
+
+      return false
+    },
+
+    async setActiveEvent(event) {
+      const userStore = useUserStore()
+      this.activeEvent = event
+      userStore.activeEvent = event.id
+
+      await this.updateActiveEvent(event)
+    },
+
+    async updateActiveEvent(event) {
+      return await EventsService.updateActiveEvent(event)
+    },
+
+    async initUserEventsData(result) {
+      this.events = result?.events
+      this.activeEvent = result?.last_active_event
+      const userStore = useUserStore()
+      userStore.activeEvent = this.activeEvent?.id
+      await this.updateActiveEvent(this.activeEvent)
+    },
+
     setEvents(events) {
       this.events = events
     },
     selectEvent(eventId) {
       const userStore = useUserStore()
-      this.currentEvent = this.events.find((event) => event.id === eventId)
-      userStore.currentEventId = eventId
+      this.activeEvent = this.events.find((event) => event.id === eventId)
+      userStore.activeEventId = eventId
     },
     addEvent(event) {
       this.events.push(event)
     },
 
-    async removeCurrentEvent() {
-      return await EventsService.removeCurrentEvent(this.currentEvent.id)
+    async removeactiveEvent() {
+      return await EventsService.removeactiveEvent(this.activeEvent.id)
     },
 
     async editEvent({
                       eventName,
+                      eventType,
                       startDate,
                       endDate,
                       eventDescription,
@@ -34,7 +71,7 @@ export const useEventsStore = defineStore('eventsStore', {
                       customUrlSlug,
                       saveTheDate,
                       rsvp,
-                      gallery,
+                      sweetMemories,
                       music,
                       backgroundMusic,
                       eventComments,
@@ -44,8 +81,9 @@ export const useEventsStore = defineStore('eventsStore', {
                       analytics
                     }){
       return await EventsService.edit({
-        eventId: this.currentEvent.id,
+        eventId: this.activeEvent.id,
         eventName,
+        eventType,
         startDate,
         endDate,
         eventDescription,
@@ -54,7 +92,7 @@ export const useEventsStore = defineStore('eventsStore', {
         customUrlSlug,
         saveTheDate,
         rsvp,
-        gallery,
+        sweetMemories,
         music,
         backgroundMusic,
         eventComments,
@@ -70,12 +108,13 @@ export const useEventsStore = defineStore('eventsStore', {
                         startDate,
                         endDate,
                         eventDescription,
+                        eventType,
                         status,
                         visibility,
                         customUrlSlug,
                         saveTheDate,
                         rsvp,
-                        gallery,
+                        sweetMemories,
                         music,
                         backgroundMusic,
                         eventComments,
@@ -86,6 +125,7 @@ export const useEventsStore = defineStore('eventsStore', {
     }) {
       return await EventsService.create({
         eventName,
+        eventType,
         startDate,
         endDate,
         eventDescription,
@@ -94,7 +134,7 @@ export const useEventsStore = defineStore('eventsStore', {
         customUrlSlug,
         saveTheDate,
         rsvp,
-        gallery,
+        sweetMemories,
         music,
         backgroundMusic,
         eventComments,
@@ -126,6 +166,10 @@ export const useEventsStore = defineStore('eventsStore', {
           this.selectEvent(eventId)
         }
       }
+    },
+
+    async loadSuggestions({ eventId }) {
+      return await EventsService.loadSuggestions({eventId})
     }
   },
   getters: {

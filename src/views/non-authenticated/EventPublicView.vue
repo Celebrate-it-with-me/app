@@ -9,7 +9,6 @@ const route = useRoute()
 const loading = ref(true)
 const templateStore = useTemplateStore()
 
-
 onMounted(async () => {
   const { eventId, guestCode  } = route.params
   await getEventData(eventId, guestCode)

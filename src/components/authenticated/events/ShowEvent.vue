@@ -98,9 +98,9 @@ const editCurrentEvent = () => {
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.gallery">ON</span>
+          <span class="font-semibold" v-if="currentEventFeature?.sweetMemories">ON</span>
           <span class="font-semibold" v-else>OFF</span>
-          Gallery
+          Sweet Memories
         </p>
 
         <p class="font-thin">

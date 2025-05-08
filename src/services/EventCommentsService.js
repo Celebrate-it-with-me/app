@@ -50,12 +50,32 @@ class EventCommentsService {
   }
 
   async addComment({ eventId, userId, origin, comment }) {
-    return await CWM_API.post(`event/${eventId}/comments`, {
-      userId,
-      origin,
-      comment
-    })
+    try {
+      // Log para debug
+      console.log('Request parameters:', { eventId, userId, origin, comment });
+
+      await CWM_API.get('sanctum/csrf-cookie', {
+        baseURL: import.meta.env.VITE_API_URL,
+      });
+
+      const response = await CWM_API.post(`event/${eventId}/comments`, {
+        userId,
+        origin,
+        comment
+      });
+
+      return response;
+    } catch (error) {
+      // Log detallado del error
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      throw error;
+    }
   }
+
 
   async loadComments(eventId) {
     return await CWM_API.get(`event/${eventId}/comments`)

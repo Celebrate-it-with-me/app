@@ -1,8 +1,10 @@
 import { CWM_API } from './axios'
+import { format } from 'date-fns'
 
 class EventsService {
   async create({
                  eventName,
+                 eventType,
                  eventDescription,
                  startDate,
                  endDate,
@@ -11,7 +13,7 @@ class EventsService {
                  customUrlSlug,
                  saveTheDate,
                  rsvp,
-                 gallery,
+                 sweetMemories,
                  music,
                  backgroundMusic,
                  eventComments,
@@ -22,15 +24,16 @@ class EventsService {
   }) {
     return CWM_API.post(`event`, {
       eventName,
+      eventType,
       eventDescription,
-      startDate,
-      endDate,
+      startDate: format(new Date(startDate), 'MM/dd/yyyy HH:mm'),
+      endDate: format(new Date(endDate), 'MM/dd/yyyy HH:mm'),
       status,
       visibility,
       customUrlSlug,
       saveTheDate,
       rsvp,
-      gallery,
+      sweetMemories,
       music,
       backgroundMusic,
       eventComments,
@@ -45,6 +48,7 @@ class EventsService {
                eventId,
                eventName,
                eventDescription,
+               eventType,
                startDate,
                endDate,
                status,
@@ -52,7 +56,7 @@ class EventsService {
                customUrlSlug,
                saveTheDate,
                rsvp,
-               gallery,
+               sweetMemories,
                music,
                backgroundMusic,
                eventComments,
@@ -64,6 +68,7 @@ class EventsService {
     return CWM_API.put(`event/${eventId}`, {
       eventName,
       eventDescription,
+      eventType,
       startDate,
       endDate,
       status,
@@ -71,7 +76,7 @@ class EventsService {
       customUrlSlug,
       saveTheDate,
       rsvp,
-      gallery,
+      sweetMemories,
       music,
       backgroundMusic,
       eventComments,
@@ -94,8 +99,22 @@ class EventsService {
     })
   }
 
+  async updateActiveEvent(event) {
+    return await CWM_API.patch(`event/active-event`, {
+      eventId: event.id
+    })
+  }
+
   async removeCurrentEvent(currentEventId) {
-    return CWM_API.delete(`event/${currentEventId}`)
+    return await CWM_API.delete(`event/${currentEventId}`)
+  }
+
+  async loanEventsPlansAndType() {
+    return await CWM_API.get(`events/load-events-plans-and-types`)
+  }
+
+  async loadSuggestions({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/suggestions`)
   }
 }
 

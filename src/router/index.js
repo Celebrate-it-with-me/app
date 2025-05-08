@@ -2,24 +2,34 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { nonAuthRoutes }  from "@/router/nonAuthRoutes"
 import { authRoutes } from "@/router/authRoutes"
 import { eventsRoutes } from "@/router/eventsRoutes"
-import NonAuthenticatedLayout from '@/views/layouts/NonAuthenticatedLayout.vue'
-import AuthenticatedLayout from '@/views/layouts/AuthenticatedLayout.vue'
+import ExternalLayout from '@/components/external/layout/ExternalLayout.vue'
+import ExternalCleanLayout from '@/components/external/layout/ExternalCleanLayout.vue'
+import { externalCleanRoutes } from "@/router/externalCleanRoutes"
+import InternalLayout from '@/components/internal/layout/InternalLayout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/password',
+      name: 'External Clean',
+      component: ExternalCleanLayout,
+      children: [
+        ...externalCleanRoutes
+      ]
+    },
+    {
       path: '',
       name: 'Non Authenticated',
-      component: NonAuthenticatedLayout,
+      component: ExternalLayout,
       children: [
         ...nonAuthRoutes
       ]
     },
     {
       path: '',
-      name: 'Authenticated Layout',
-      component: AuthenticatedLayout,
+      name: 'Authenticated',
+      component: InternalLayout,
       children: [
         ...authRoutes
       ]
@@ -30,7 +40,7 @@ const router = createRouter({
       children: [
         ...eventsRoutes
       ]
-    }
+    },
   ],
 })
 

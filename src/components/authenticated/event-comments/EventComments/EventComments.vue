@@ -74,7 +74,7 @@ const commentsSubtitle = computed(() => {
 
 const userEventId = computed(() => {
   if (props.origin === 'admin') {
-    return userStore.currentEventId
+    return userStore.activeEvent
   }
 
   return templateStore.event.id
@@ -162,7 +162,7 @@ const addComment = async () => {
     creatingComment.value = true
 
     const response = await commentStore.addComment({
-      eventId: userStore.currentEventId,
+      eventId: userEventId.value,
       userId: computedUserId.value,
       origin: props.origin,
     })

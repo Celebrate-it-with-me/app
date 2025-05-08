@@ -36,18 +36,26 @@ const handleConfirmation = (companion) => {
         scope="row"
         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
       >
-        {{ companion.firstName }} {{ companion.lastName }}
+        {{ companion.name }}
       </th>
       <td class="px-6 py-4">
-        <span>{{ companion.confirmed }}</span>
+        <span>
+          <span v-if="companion.rsvpStatus === 'attending'">Attending</span>
+          <span v-else-if="companion.rsvpStatus === 'not-attending'">Not Attending</span>
+          <span v-else>Pending</span>
+        </span>
       </td>
       <td class="px-6 py-4">
         <span
           class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
           @click="handleConfirmation(companion)"
         >
-          <span v-if="companion.confirmed === 'pending'">Confirmar</span>
-          <span v-else>Editar</span>
+          <span v-if="companion.confirmed === 'pending'">
+            Confirmar
+          </span>
+          <span v-else>
+            Editar
+          </span>
         </span>
       </td>
     </tr>

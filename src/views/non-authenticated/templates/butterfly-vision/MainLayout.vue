@@ -12,6 +12,8 @@ import SeparatorSection from '@/views/non-authenticated/templates/butterfly-visi
 import CWMItinerario from '@/views/non-authenticated/templates/butterfly-vision/Itinerario/CWMItinerario.vue'
 import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
 import SwipeLeftIcon from '@/views/non-authenticated/templates/butterfly-vision/SwipeLeftIcon/SwipeLeftIcon.vue'
+import EventLocations from '@/views/non-authenticated/templates/butterfly-vision/location/EventLocations.vue'
+import BackgroundMusic from '@/views/non-authenticated/templates/butterfly-vision/BackgroundMusic/BackgroundMusic.vue'
 
 const showScrollBtn = ref(false)
 const videoReproduced = ref(true)
@@ -101,21 +103,19 @@ const handleMoveToTop = () => {
 
       <SeparatorSection>
         A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
-        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+        mis 15 años de vida. Porque su presencia, siempre será mi mejor regalo.
       </SeparatorSection>
 
       <SaveTheDate class="main-section" />
 
       <SeparatorSection>
-        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
-        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+        Los recuerdos más hermosos nacen con las personas más especiales.
       </SeparatorSection>
 
       <CWMItinerario class="main-section" />
 
       <SeparatorSection>
-        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
-        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+        ¡Prepárate para reír, bailar y celebrar como nunca!
       </SeparatorSection>
 
       <SweetMemories
@@ -124,38 +124,44 @@ const handleMoveToTop = () => {
       />
 
       <SeparatorSection>
-        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
-        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+        Gracias por ser parte de mi historia. Ahora celebremos juntos.
       </SeparatorSection>
 
       <RSVP class="main-section" />
 
       <SeparatorSection>
-        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
-        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+        La música, las memorias y ustedes harán de esta noche mágica.
       </SeparatorSection>
 
       <SuggestedMusic class="main-section" />
 
       <SeparatorSection>
-        A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
-        mis 15 años de vida.Porque su presencia, siempre será mi mejor regalo.
+        Que esta fiesta sea tan inolvidable como ustedes lo son para mí.
       </SeparatorSection>
-
-      // Check double play in prod
-<!--      <BackgroundMusic
-        origin="event"
-      />-->
 
       <EventComments
         origin="event"
         class="main-section"
       />
 
+      <SeparatorSection>
+        Donde hay amor y alegría, el momento es perfecto.
+      </SeparatorSection>
+
+      <EventLocations />
+
+      <SeparatorSection>
+        Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
+        compartir con cada uno de ustedes. ¡Gracias por estar aquí!
+      </SeparatorSection>
+
       <SwipeLeftIcon />
 
-      <EventFooter />
+<!--      <BackgroundMusic
+        origin="event"
+      />-->
 
+      <EventFooter />
     </main>
   </div>
 
