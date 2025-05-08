@@ -23,7 +23,7 @@ const rsvpConfig = reactive({
 const templateStore = useTemplateStore()
 
 const rsvpCompleted = computed(() => {
-  return templateStore.guest?.rsvpStatus !== 'pending'
+  return templateStore.guest?.rsvpStatusDate !== null;
 })
 
 </script>

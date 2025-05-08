@@ -1,13 +1,19 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useRoute } from 'vue-router'
 
 const emit = defineEmits(['goBack', 'submit'])
 const templateStore = useTemplateStore()
 const loading = ref(false)
 
+const route = useRoute()
+const { eventId, guestCode  } = route.params
+
 const guestInfo = computed(() => templateStore.guest)
 const companions = computed(() => templateStore.guest?.companions ?? [])
+
+const hasCompanions = computed(() => companions.value.length > 0)
 
 const goBack = () => {
   emit('goBack')
@@ -19,7 +25,12 @@ const submit = async () => {
     const response = await templateStore.rsvpSaveUpdate()
 
     if (response.status === 200) {
-      templateStore.guest.rsvpCompleted = true
+      const guestData = await templateStore.refreshGuestData({eventId, guestCode})
+
+      const { mainGuest } = guestData.data?.data ?? {}
+
+      templateStore.guest = mainGuest
+
     } else {
       console.log(response)
     }
@@ -87,7 +98,7 @@ const submit = async () => {
         </div>
       </div>
 
-      <div class="flex-1">
+      <div class="flex-1" v-if="hasCompanions">
         <h3 class="text-xl font-semibold mb-4 text-center md:text-left border-b pb-2">
           Companions List:
         </h3>
