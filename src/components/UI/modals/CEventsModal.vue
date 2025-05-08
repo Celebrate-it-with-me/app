@@ -1,6 +1,7 @@
 <template>
   <CModal
     v-model="showModal"
+    :showCloseIcon="activeEvent"
   >
     <template #title>
       <CHeading :level="3" weight="bold" color="text-primary">
@@ -35,7 +36,8 @@
         </div>
       </div>
 
-      <div v-if="otherEvents.length" class="mt-2">
+      <div
+        v-if="otherEvents.length" class="mt-2 others__events-container">
         <CHeading :level="5" class="mb-2">
           <span v-if="activeEvent">Select other Event</span>
           <span v-else>Select an event</span>
@@ -44,6 +46,7 @@
           <CCard
             v-for="event in otherEvents"
             :key="event.id"
+            :padding="'p-4'"
             variant="feature"
           >
             <div class="card__event-container flex flex-row justify-between items-center gap-2">
@@ -83,7 +86,13 @@
     </div>
 
     <template #footer>
-      <CButton variant="outline" @click="close">Close</CButton>
+      <CButton
+        :disabled="!activeEvent"
+        variant="outline"
+        @click="close"
+      >
+        Close
+      </CButton>
     </template>
   </CModal>
 </template>
@@ -96,9 +105,11 @@ import CHeading from '@/components/UI/headings/CHeading.vue'
 import CCard from '@/components/UI/cards/CCard.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
+import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['update:modelValue'])
 const eventsStore = useEventsStore()
+const router = useRouter()
 
 const activeEvent = computed(() => {
   return eventsStore.activeEvent ?? null
@@ -125,13 +136,16 @@ const selectEvent = (event) => {
   close()
 }
 
-const createNewEvent = () => {
-  // eventsStore.createNewEvent()
+const createNewEvent = async () => {
+  await router.push('dashboard/events/create')
   close()
 }
 
 </script>
 
 <style scoped>
-
+.others__events-container {
+  max-height: 300px;
+  overflow-y: auto;
+}
 </style>

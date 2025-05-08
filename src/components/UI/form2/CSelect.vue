@@ -10,7 +10,7 @@
 
     <div
       :class="[
-        'flex items-center gap-2 w-full border-b transition focus-within:border-b-2 mb-4',
+        'flex items-center gap-2 w-full border-b transition focus-within:border-b-2 mb-2',
         borderColorClass,
         disabled ? 'opacity-50 cursor-not-allowed' : ''
       ]"

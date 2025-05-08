@@ -38,7 +38,7 @@ const mainGuestValidationSchema = computed(() => {
 onMounted(() => {
   mainGuestState.name = templateStore.guest?.name ?? ''
   mainGuestState.email = templateStore.guest?.email ?? ''
-  mainGuestState.phoneNumber = templateStore.guest?.phone ?? ''
+  mainGuestState.phone = templateStore.guest?.phone ?? ''
   mainGuestState.mealPreference = templateStore.guest?.mealPreference ?? 0
   mainGuestState.rsvpStatus = templateStore.guest?.rsvpStatus ?? 'pending'
 })

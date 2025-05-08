@@ -74,11 +74,21 @@
               id="event-visibility"
               show-error
             />
+
+            <CSelect
+              v-model="eventState.eventType"
+              name="eventType"
+              :options="eventTypes"
+              id="event-type"
+              show-error
+            />
           </div>
         </div>
 
         <!-- Tips Panel -->
-        <div class="hidden lg:block bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white self-stretch h-full">
+        <div
+          class="hidden lg:block bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white self-stretch h-full"
+        >
           <h3 class="text-lg font-semibold mb-4 text-primary dark:text-pink-300">
             Tips for Creating a Great Event
           </h3>
@@ -97,7 +107,9 @@
       <!-- Features -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 items-start">
         <div class="md:col-span-2 space-y-4">
-          <h2 class="text-xl font-display font-bold text-gray-900 dark:text-white">Event Features</h2>
+          <h2 class="text-xl font-display font-bold text-gray-900 dark:text-white">
+            Event Features
+          </h2>
           <p class="text-gray-600 dark:text-gray-400 text-sm">
             Enable or disable the features for your event.
           </p>
@@ -110,7 +122,9 @@
             <div class="flex items-center gap-4 w-full">
               <component :is="feature.icon" class="w-6 h-6 text-primary dark:text-secondary mt-1" />
               <div class="flex-1">
-                <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ feature.label }}</p>
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">
+                  {{ feature.label }}
+                </p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ feature.description }}</p>
               </div>
             </div>
@@ -120,12 +134,15 @@
           </div>
         </div>
 
-        <div class="hidden lg:block bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white self-stretch h-full">
+        <div
+          class="hidden lg:block bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white self-stretch h-full"
+        >
           <h4 class="text-lg font-semibold mb-4 text-primary dark:text-pink-300">
             Feature Settings
           </h4>
           <p>
-            These settings control which modules will be available in your event dashboard and shared page.
+            These settings control which modules will be available in your event dashboard and
+            shared page.
           </p>
           <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
             Toggle on only the features you plan to use — they can be changed at any time later.
@@ -171,10 +188,10 @@ import { useUserStore } from '@/stores/useUserStore'
 import { useRoute, useRouter } from 'vue-router'
 
 const emit = defineEmits(['cancelCreate'])
-
 const eventState = reactive({
   eventName: '',
   eventDescription: '',
+  eventType: '',
   status: '',
   startDate: '',
   endDate: '',
@@ -211,6 +228,7 @@ const eventValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       eventName: zod.string().min(1, 'Event name is required.'),
+      eventType: zod.string().min(1, 'Event type is required.'),
       startDate: zod.string().min(1, 'Start date is required.'),
       endDate: zod.string().min(1, 'End date is required.'),
       status: zod.string().min(1, { message: 'Status is required' }),
@@ -220,6 +238,13 @@ const eventValidationSchema = computed(() => {
       return end > start
     }, { message: 'End Date must be after Start Date' })
   )
+})
+
+const eventTypes = computed(() => {
+  return eventStore.eventTypes.map((type) => ({
+    label: type.name,
+    value: type.id + ''
+  }))
 })
 
 onMounted(async () => {
@@ -257,6 +282,7 @@ onMounted(async () => {
   }
 })
 
+
 const normalizeBooleans = (obj, keys) => {
   keys.forEach((key) => {
     obj[key] = !!obj[key]
@@ -283,7 +309,7 @@ const onSubmit = async () => {
 
       if (userUpdated.status >= 200 && userUpdated.status < 300) {
         const result = userUpdated.data?.data ?? {}
-        eventStore.initUserEventsData(result)
+        await eventStore.initUserEventsData(result)
 
         await router.push('/dashboard/events')
       } else {

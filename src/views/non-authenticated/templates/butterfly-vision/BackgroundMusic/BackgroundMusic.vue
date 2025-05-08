@@ -32,11 +32,11 @@ const togglePlayPause = () => {
 
 <template>
   <div
-    class="fixed bottom-5 left-5 flex items-center rounded-lg"
+    class="fixed bottom-5 right-5 flex items-center rounded-lg"
   >
-    <!-- Play/Pause Button -->
     <button
-      class="w-10 h-10 bg-gradient-to-r from-pink-400 to-red-400 flex items-center justify-center rounded-full text-white hover:opacity-80 transition-opacity"
+      class="w-10 h-10 bg-gradient-to-r from-pink-400 to-red-400 flex items-center justify-center
+         rounded-full text-white opacity-30 hover:opacity-30 transition-opacity"
       @click="togglePlayPause"
     >
       <span v-if="!isPlaying">▶</span>

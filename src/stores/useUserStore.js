@@ -101,12 +101,14 @@ export const useUserStore = defineStore('userStore', {
       }
     },
 
-    async login({ email, password, remember, device }) {
-      return await UserService.login({ email, password, remember, device })
+    async login({ email, password, remember, device, hcaptcha_token }) {
+      return await UserService.login(
+        { email, password, remember, device, hcaptcha_token }
+      )
     },
 
-    async register({ name, email, password }) {
-      return await UserService.register({ name, email, password })
+    async register({ name, email, password, hcaptcha_token }) {
+      return await UserService.register({ name, email, password, hcaptcha_token })
     },
 
     async confirmEmail(confirmUrl) {
@@ -162,20 +164,18 @@ export const useUserStore = defineStore('userStore', {
         const {
           name,
           email,
-          userId,
-          lastLogin,
-          activeEvent,
-          justLogin,
+          id,
+          last_active_event_id: activeEvent,
           avatar_url: avatar,
           phone
         } = response.data?.data?.user ?? {}
 
         this.name = name
         this.email = email
-        this.userId = userId
-        this.lastLogin = lastLogin
+        this.userId = id
+        this.lastLogin = null
         this.activeEvent = activeEvent
-        this.justLogin = justLogin
+        this.justLogin = false
         this.avatar = avatar
         this.phone = phone
       }

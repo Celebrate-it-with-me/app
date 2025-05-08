@@ -4,18 +4,17 @@ import MainGuestStep from '@/views/non-authenticated/templates/butterfly-vision/
 import CompanionsStep from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/CompanionsStep.vue'
 import GuestInformationCheck
   from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/GuestInformationCheck.vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
 
 const activeStep = ref(1)
 
-const templateStore = useTemplateStore()
-
 const handleStep = (newStep) => {
-  if (templateStore.guest.confirmed === 'no') {
+  console.log(newStep)
+  activeStep.value = newStep
+  /*if (templateStore.guest.confirmed === 'no') {
     activeStep.value = (activeStep.value === 3) ? 1 : 3
   } else {
     activeStep.value = newStep
-  }
+  }*/
 }
 
 </script>

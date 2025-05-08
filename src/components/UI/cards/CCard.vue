@@ -7,7 +7,10 @@
     ]"
   >
     <slot name="image" />
-    <div v-if="variant !== 'gallery'" class="p-6 space-y-3">
+    <div
+      v-if="variant !== 'gallery'"
+      :class="`${padding} space-y-3`"
+    >
       <slot name="icon" />
       <slot name="title" />
       <slot name="subtitle" />
@@ -22,6 +25,10 @@
 import { computed } from 'vue'
 
 const props = defineProps({
+  padding: {
+    type: String,
+    default: 'p-6', // p-6, p-4, p-2
+  },
   variant: {
     type: String,
     default: 'default', // default, testimonial, pricing, gallery, feature

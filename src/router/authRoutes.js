@@ -1,20 +1,10 @@
-import DashboardView from '../views/authenticated/DashboardView.vue'
+import DashboardView from '../views/internal/dashboard/DashboardView.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import EventsView from '@/views/internal/events/EventsView.vue'
-import MyEvents from '../components/authenticated/events/MyEvents.vue'
-import EventGuests from '../components/authenticated/guests/EventGuests.vue'
-import CWMRsvp from '../components/authenticated/rsvp/CWMRsvp.vue'
 import CSweetMemories from '@/components/authenticated/sweet-memories/CSweetMemories.vue'
-import CWMSeatAccommodation from '../components/authenticated/seat-accommodation/CWMSeatAccommodation.vue'
-import CWMPreview from '../components/authenticated/preview/CWMPreview.vue'
-import CWMBudget from '../components/authenticated/budget/CWMBudget.vue'
-import CWMAnalytics from '../components/authenticated/analytics/CWMAnalytics.vue'
 import CSuggestMusic from '../components/authenticated/suggest-music/CSuggestMusic.vue'
-import CWMBackgroundMusic from '../components/authenticated/background-music/CWMBackgroundMusic.vue'
 import CEventComments from '../components/authenticated/event-comments/CEventComments.vue'
-import ComponentsPlayground from '@/views/components-playground/ComponentsPlayground.vue'
 import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
-import { useEventsStore } from '@/stores/useEventsStore'
 import SettingsLayout from '@/components/internal/layout/SettingsLayout.vue'
 import SettingsProfile from '@/views/internal/settings/SettingsProfile.vue'
 import SettingsPreferences from '@/views/internal/settings/SettingsPreferences.vue'
@@ -24,6 +14,8 @@ import CreateGuestView from '@/views/internal/guests/CreateGuestView.vue'
 import GuestsView from '@/views/internal/guests/GuestsView.vue'
 import RsvpView from '@/views/internal/rsvp/RsvpView.vue'
 import SaveTheDateView from '@/views/internal/save-the-date/SaveTheDateView.vue'
+import CEventLocationsView from '@/views/internal/locations/CEventLocationsView.vue'
+import CEventLocationsCreateView from '@/views/internal/locations/CEventLocationsCreateView.vue'
 
 const authRoutes = [
   {
@@ -31,7 +23,7 @@ const authRoutes = [
     name: 'dashboard',
     component: DashboardView,
     meta: {
-      title: 'CwmEvents Dashboard'
+      title: 'Dashboard'
     }
   },
   {
@@ -40,7 +32,7 @@ const authRoutes = [
     component: EventsView,
     meta: {
       title: 'My CwmEvents'
-    },
+    }
   },
   {
     path: '/dashboard/events/create',
@@ -48,7 +40,7 @@ const authRoutes = [
     component: CreateEventsView,
     meta: {
       title: 'Create Event'
-    },
+    }
   },
   {
     path: '/dashboard/events/edit/:id',
@@ -56,16 +48,36 @@ const authRoutes = [
     component: CreateEventsView,
     meta: {
       title: 'Edit Event'
-    },
+    }
   },
   {
     path: '/settings',
     component: SettingsLayout,
     children: [
-      { path: 'profile', name: 'settings-profile', component: SettingsProfile, meta: { title: 'Profile' } },
-      { path: 'preferences', name: 'settings-preferences', component: SettingsPreferences, meta: { title: 'Preferences' } },
-      { path: 'security', name: 'settings-security', component: SettingsSecurity, meta: { title: 'Security' } },
-      { path: 'danger-zone', name: 'settings-danger-zone', component: SettingsDangerZone, meta: { title: 'Danger Zone' } },
+      {
+        path: 'profile',
+        name: 'settings-profile',
+        component: SettingsProfile,
+        meta: { title: 'Profile' }
+      },
+      {
+        path: 'preferences',
+        name: 'settings-preferences',
+        component: SettingsPreferences,
+        meta: { title: 'Preferences' }
+      },
+      {
+        path: 'security',
+        name: 'settings-security',
+        component: SettingsSecurity,
+        meta: { title: 'Security' }
+      },
+      {
+        path: 'danger-zone',
+        name: 'settings-danger-zone',
+        component: SettingsDangerZone,
+        meta: { title: 'Danger Zone' }
+      }
     ]
   },
   {
@@ -74,7 +86,7 @@ const authRoutes = [
     component: GuestsView,
     meta: {
       title: 'Events Guests'
-    },
+    }
   },
   {
     path: '/dashboard/guests/create',
@@ -82,7 +94,7 @@ const authRoutes = [
     component: CreateGuestView,
     meta: {
       title: 'Create Guest'
-    },
+    }
   },
   {
     path: '/dashboard/rsvp',
@@ -90,7 +102,7 @@ const authRoutes = [
     component: RsvpView,
     meta: {
       title: 'RSVP'
-    },
+    }
   },
   {
     path: '/dashboard/save-the-date',
@@ -124,8 +136,32 @@ const authRoutes = [
       title: 'Background Music'
     }
   },
+  {
+    path: '/dashboard/locations',
+    name: 'locations',
+    component: CEventLocationsView,
+    meta: {
+      title: 'Event Locations'
+    }
+  },
+  {
+    path: '/dashboard/locations/create',
+    name: 'create-location',
+    component: CEventLocationsCreateView,
+    meta: {
+      title: 'Create Location'
+    }
+  },
+  {
+    path: '/dashboard/locations/edit/:id',
+    name: 'edit-location',
+    component: CEventLocationsCreateView,
+    meta: {
+      title: 'Edit Location'
+    }
+  },
 
-      /*children: [
+  /*children: [
       {
         path: 'events',
         name: 'event-handle',
@@ -221,6 +257,5 @@ const authRoutes = [
     }
   }
 ]
-
 
 export { authRoutes }

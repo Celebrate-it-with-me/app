@@ -12,7 +12,11 @@
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
             <slot name="title">Modal Title</slot>
           </h3>
-          <button @click="close" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <button
+            v-if="showCloseIcon"
+            @click="close"
+            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          >
             <X class="w-5 h-5" />
           </button>
         </div>
@@ -39,7 +43,8 @@ import { X } from 'lucide-vue-next'
 import CButton from '@/components/UI/buttons/CButton.vue'
 
 const props = defineProps({
-  modelValue: Boolean
+  modelValue: Boolean,
+  showCloseIcon: Boolean,
 })
 
 const emit = defineEmits(['update:modelValue'])

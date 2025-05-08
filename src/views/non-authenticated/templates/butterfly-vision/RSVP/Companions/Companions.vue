@@ -29,10 +29,9 @@ const goToNext = () => {
 const handleCompanionConfirmed = (companion) => {
   templateStore.guest?.companions.forEach((comp) => {
     if (companion.id === comp.id) {
-      comp.firstName = companion.firstName
-      comp.lastName = companion.lastName
+      comp.name = companion.name
       comp.email = companion.email
-      comp.phoneNumber = companion.phoneNumber
+      comp.phone = companion.phone
       comp.rsvpStatus = companion.rsvpStatus
     }
   })

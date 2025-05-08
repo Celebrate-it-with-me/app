@@ -1,7 +1,7 @@
 import { CWM_API } from './axios'
 
 class UserService {
-  async login({ email, password, remember, device}) {
+  async login({ email, password, remember, device, hcaptcha_token}) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
     }).then(async () => {
@@ -9,20 +9,22 @@ class UserService {
         email,
         password,
         remember,
-        device
+        device,
+        hcaptcha_token
       })
     })
   }
 
 
-  async register({ name, email, password }) {
+  async register({ name, email, password, hcaptcha_token }) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
     }).then(
       async () => await CWM_API.post('register', {
         name,
         email,
-        password
+        password,
+        hcaptcha_token
       })
     )
   }

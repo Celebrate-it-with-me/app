@@ -25,6 +25,8 @@ const handleNext = () => {
 <div class="w-full">
   <NoCompanions
     v-if="!hasCompanions"
+    @go-to-previous="handlePrevious"
+    @go-to-next="handleNext"
   />
 
   <Companions
