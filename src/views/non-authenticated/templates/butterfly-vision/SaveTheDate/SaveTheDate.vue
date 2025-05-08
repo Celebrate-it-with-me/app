@@ -3,7 +3,6 @@ import { useTemplateStore } from '@/stores/useTemplateStore'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import SaveTheDateCountDown from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateCountDown.vue'
 import SaveTheDateAddToCalendar from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateAddToCalendar.vue'
-import 'intersection-observer'
 
 const templateStore = useTemplateStore()
 const h2TitleRef = ref(null)
