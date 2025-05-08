@@ -55,7 +55,6 @@ const formatStatus = (status) => {
             <p class="flex items-center gap-2">
               <UserCheck class="w-4 h-4 text-gray-500" />
               <span
-                v-if="templateStore.guest?.rsvpStatus === 'attending'"
                 class="px-2 py-1 rounded-full text-xs font-semibold"
                 :class="[
                   templateStore.guest?.rsvpStatus === 'attending'

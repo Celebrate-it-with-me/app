@@ -25,7 +25,15 @@ export const useTemplateStore = defineStore('templateStore', {
         eventId: this.event.id,
         guest: this.guest
       })
+    },
+
+    async refreshGuestData({ eventId, guestCode }) {
+      return await templateService.refreshGuestData({
+        eventId,
+        guestCode,
+      })
     }
+
   },
   getters: {
     meals() {

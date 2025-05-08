@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useUserStore } from '@/stores/useUserStore'
 import CBadge from '@/components/UI/badges/CBadge.vue'
@@ -15,6 +15,43 @@ const summaries = reactive({
   companions: 0,
   totalAllowed: 0
 })
+
+const chartOptions = ref({
+  labels: ['Confirmed', 'Pending', 'Declined'],
+  colors: ['#22c55e', '#facc15', '#ef4444'],
+  legend: {
+    show: false,
+    position: 'right',
+    labels: {
+      colors: ['#374151'], // Tailwind slate-700 (optional for dark/light mode)
+      useSeriesColors: false
+    },
+    fontSize: '14px',
+    fontWeight: 400
+  },
+  dataLabels: {
+    enabled: true,
+    style: {
+      fontSize: '14px'
+    }
+  },
+  stroke: {
+    width: 1
+  },
+  plotOptions: {
+    pie: {
+      donut: {
+        size: '50%'
+      }
+    }
+  }
+})
+
+const series = computed(() => [
+  summaries.confirmed,
+  summaries.pending,
+  summaries.declined
+])
 
 onMounted(() => {
   loadRsvpSummary()
@@ -75,45 +112,26 @@ const loadRsvpSummary = async () => {
         </span>
       </CBadge>
     </div>
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <p class="text-sm text-gray-600">Total Guests:</p>
-        <p class="text-lg font-bold">
-          {{ summaries.totalGuests }}
-        </p>
-      </div>
-      <div>
-        <p class="text-sm text-green-600">Confirmed:</p>
-        <p class="font-bold">
-          {{ summaries.confirmed }}
-        </p>
-      </div>
-      <div>
-        <p class="text-sm text-yellow-600">Pending:</p>
-        <p class="font-bold">
-          {{ summaries.pending }}
-        </p>
-      </div>
-      <div>
-        <p class="text-sm text-red-600">Declined:</p>
-        <p class="font-bold">
-          {{ summaries.declined }}
-        </p>
-      </div>
-      <div>
-        <p class="text-sm text-yellow-600">Guests:</p>
-        <p class="font-bold">
-          {{ summaries.mainGuests }}
-        </p>
-      </div>
 
-      <div>
-        <p class="text-sm text-yellow-600">Companions:</p>
-        <p class="font-bold">
-          {{ summaries.companions }}
-        </p>
+    <div class="w-full p-4 flex items-center justify-between">
+      <apexchart
+        width="100%"
+        height="150px"
+        type="donut"
+        :options="chartOptions"
+        :series="series"
+      />
+      <div class="flex flex-col justify-center gap-4 mt-4 text-sm">
+        <div class="flex items-center gap-1">
+          <span class="w-3 h-3 rounded-full bg-green-500"></span> Confirmed
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-3 h-3 rounded-full bg-yellow-400"></span> Pending
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-3 h-3 rounded-full bg-red-500"></span> Declined
+        </div>
       </div>
-
     </div>
   </section>
 </template>

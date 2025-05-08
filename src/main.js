@@ -12,6 +12,7 @@ import { SpectrumDirective } from '@/directives/SpectrumDirective'
 import 'spectrum-vanilla/dist/spectrum-dark.css'
 import FloatingVue from 'floating-vue'
 import 'floating-vue/dist/style.css'
+import VueApexCharts from "vue3-apexcharts"
 
 
 const app = createApp(App)
@@ -23,5 +24,6 @@ const pinia = createPinia();
 app.directive('colorpicker', SpectrumDirective)
 app.use(pinia.use(piniaPluginPersistedstate)).use(router)
 app.use(FloatingVue)
+app.use(VueApexCharts)
 
 app.mount('#app')
