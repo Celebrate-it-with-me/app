@@ -22,7 +22,7 @@
       />
 
       <CSelect
-        name="type"
+        name="itemType"
         label="Course Type"
         :options="[
           { label: 'Starter', value: 'starter' },
@@ -34,7 +34,7 @@
       />
 
       <CSelect
-        name="diet_type"
+        name="dietType"
         label="Diet Type"
         :options="[
           { label: 'Regular', value: 'regular' },
@@ -99,10 +99,10 @@ const menuValidationSchema = computed(() => {
   return toTypedSchema(
     z.object({
       name: z.string().min(2, 'Name is required'),
-      type: z.enum(['starter', 'main', 'dessert'], {
+      itemType: z.enum(['starter', 'main', 'dessert'], {
         required_error: 'Type is required',
       }),
-      diet_type: z.string().optional(),
+      dietType: z.string().optional(),
       notes: z.string().optional(),
     })
   )

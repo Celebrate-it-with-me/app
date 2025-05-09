@@ -99,7 +99,10 @@ const handleAddItem = (item) => {
   try {
     addingItem.value = true
 
-    const response = menuStore.addMenuItem(item)
+    const response = menuStore.addMenuItem({
+      menuItem: item,
+      menuId: menuStore.menu.id
+    })
 
     console.log(response)
 

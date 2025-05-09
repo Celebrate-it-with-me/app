@@ -5,7 +5,7 @@ import MenusService from '@/services/MenusService'
 export const useMenusStore = defineStore('menusStore', {
   state: () => ({
     menu: null,
-    currentMenu: null,
+    currentMenu: null
   }),
   actions: {
     async loadMenu() {
@@ -29,10 +29,14 @@ export const useMenusStore = defineStore('menusStore', {
       return MenusService.createMenu(formValues, userStore.activeEvent)
     },
 
-    async addMenuItem(item) {
+    async addMenuItem({ menuItem, menuId }) {
       const userStore = useUserStore()
 
-      return MenusService.addMenuItem(item, userStore.activeEvent)
+      return await MenusService.addMenuItem({
+        menuItem,
+        menuId,
+        eventId: userStore.activeEvent,
+      })
     }
   }
 })
