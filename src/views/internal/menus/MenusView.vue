@@ -10,7 +10,7 @@
     </div>
 
     <section
-      v-if="menuStore.menu"
+      v-if="hasMenu"
       class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-md space-y-8"
     >
       <div class="menu-title text-center text-gray-900">
@@ -21,41 +21,66 @@
           {{ menuStore.menu?.description ?? '' }}
         </CHeading>
 
-        <div class="mt-4 flex justify-center">
+        <div class="mt-4 flex justify-center gap-x-2">
           <CButton @click="handleAddMenuItem" >
             Add Menu Item
           </CButton>
+
+          <CButton
+            @click="goToEditMenu"
+            variant="secondary"
+          >
+            Details
+          </CButton>
+
         </div>
       </div>
 
       <CLoading
         v-if="loading"
       />
-      <div
-        v-if="menu?.menu_items.length"
-        class="space-y-6"
-      >
+
+      <div class="menu-sections" v-if="starterMenuItems.length">
+        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
+          Starters
+        </h3>
         <div
-          v-for="item in menu?.menu_items ?? []"
-          :key="item.id"
-          class="flex items-start gap-4 border-b border-gray-200 pb-4"
+          v-for="(item, index) in starterMenuItems"
+          :key="index"
+          class="mb-8"
         >
-          <div>
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-              {{ item.name }}
-              <span
-                v-if="item.diet_type"
-                class="ml-2 text-sm text-green-600 dark:text-green-400 italic"
-              >
-              ({{ item.diet_type }})
-            </span>
-            </h3>
-            <p class="text-gray-600 dark:text-gray-400 text-sm mt-1" v-if="item.notes">
-              {{ item.notes }}
-            </p>
+          <MenuItem :item="item" />
+        </div>
+      </div>
+
+      <div class="menu-sections" v-if="mainMenuItems.length">
+        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
+          Main
+        </h3>
+        <div
+          v-for="(item, index) in mainMenuItems"
+          :key="index"
+          class="mb-8"
+        >
+          <MenuItem :item="item" />
+        </div>
+      </div>
+
+      <div class="menu-sections" v-if="desertMenuItems.length">
+        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
+          Dessert
+        </h3>
+        <div
+          v-for="(item, index) in desertMenuItems"
+          :key="index"
+          class="mb-8"
+        >
+          <div class="space-y-4">
+            <MenuItem :item="item" />
           </div>
         </div>
       </div>
+
     </section>
   </div>
   <CAddMenuItemModal
@@ -67,15 +92,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import CLoading from '@/components/UI/loading/CLoading.vue'
-import CAlert from '@/components/UI/alerts/CAlert.vue'
 import { useRouter } from 'vue-router'
-import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 import { useMenusStore } from '@/stores/useMenusStore'
 import CAddMenuItemModal from '@/components/UI/modals/CAddMenuItemModal.vue'
+import MenuItem from '@/views/internal/menus/MenuItem.vue'
 
 const router = useRouter()
 const menuStore = useMenusStore()
@@ -84,6 +108,40 @@ const addingItem = ref(false)
 
 const loading = ref()
 const confirmDeleteModal = ref(false)
+
+const hasMenu = computed(() => {
+  return menuStore.menu !== null
+})
+
+const starterMenuItems = computed(() => {
+  if (!menuStore.menu?.menu_items) {
+    return []
+  }
+
+  return menuStore.menu?.menu_items?.filter((item) => {
+    return item.type === 'starter'
+  })
+})
+
+const mainMenuItems = computed(() => {
+  if (!menuStore.menu?.menu_items) {
+    return []
+  }
+
+  return menuStore.menu?.menu_items?.filter((item) => {
+    return item.type === 'main'
+  })
+})
+
+const desertMenuItems = computed(() => {
+  if (!menuStore.menu?.menu_items) {
+    return []
+  }
+
+  return menuStore.menu?.menu_items?.filter((item) => {
+    return item.type === 'dessert'
+  })
+})
 
 const loadMenus = async () => {
   loading.value = true
@@ -95,14 +153,18 @@ const handleAddMenuItem = () => {
   openItemForm.value = true
 }
 
-const handleAddItem = (item) => {
+const handleAddItem = async (item) => {
   try {
     addingItem.value = true
 
-    const response = menuStore.addMenuItem({
+    const response = await menuStore.addMenuItem({
       menuItem: item,
       menuId: menuStore.menu.id
     })
+
+    if (response.status >= 200 && response.status < 300) {
+      await menuStore.loadMenu()
+    }
 
     console.log(response)
 
@@ -114,20 +176,12 @@ const handleAddItem = (item) => {
   }
 }
 
-const viewMenu = (menu) => {
-  showDetailsModal.value = true
+const goToEditMenu = async () => {
+  return await router.push(`/dashboard/menus/edit/${menuStore.menu.id}`)
 }
 
 const createMenu = async () => {
   await router.push('/dashboard/menus/create')
-}
-
-const deleteMenu = async () => {
-
-}
-
-const confirmDelete = (menu) => {
-  confirmDeleteModal.value = true
 }
 
 onMounted(loadMenus)

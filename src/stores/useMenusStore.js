@@ -5,7 +5,6 @@ import MenusService from '@/services/MenusService'
 export const useMenusStore = defineStore('menusStore', {
   state: () => ({
     menu: null,
-    currentMenu: null
   }),
   actions: {
     async loadMenu() {
@@ -15,8 +14,23 @@ export const useMenusStore = defineStore('menusStore', {
       })
 
       if (response.status === 200) {
-        console.log('checking menu response', response.data[0])
-        this.menu = response.data[0] ?? []
+        this.menu = response.data ?? []
+        return true
+      }
+
+      return false
+    },
+
+    async loadRouteMenu(id) {
+      const userStore = useUserStore()
+
+      const response = await MenusService.loadRouteMenu({
+        eventId: userStore.activeEvent,
+        menuId: id
+      })
+
+      if (response.status === 200) {
+        this.menu = response.data ?? []
         return true
       }
 
@@ -26,7 +40,13 @@ export const useMenusStore = defineStore('menusStore', {
     async createMenu(formValues) {
       const userStore = useUserStore()
 
-      return MenusService.createMenu(formValues, userStore.activeEvent)
+      return await MenusService.createMenu(formValues, userStore.activeEvent)
+    },
+
+    async updateMenu(formValues) {
+      const userStore = useUserStore()
+
+      return await MenusService.updateMenu(formValues, userStore.activeEvent)
     },
 
     async addMenuItem({ menuItem, menuId }) {
@@ -37,6 +57,22 @@ export const useMenusStore = defineStore('menusStore', {
         menuId,
         eventId: userStore.activeEvent,
       })
+    },
+
+    async deleteMenu(menuId) {
+      const userStore = useUserStore()
+
+      return await MenusService.deleteMenu(menuId, userStore.activeEvent)
+    },
+
+    async removeMenuItem(menuItem) {
+      const userStore = useUserStore()
+
+      return await MenusService.removeMenuItem({
+        menuItem,
+        eventId: userStore.activeEvent,
+      })
     }
+
   }
 })

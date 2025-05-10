@@ -123,6 +123,14 @@ const authRoutes = [
     }
   },
   {
+    path: '/dashboard/menus/edit/:id',
+    name: 'edit-menus',
+    component: CreateMenusView,
+    meta: {
+      title: 'Edit Menus'
+    }
+  },
+  {
     path: '/dashboard/save-the-date',
     name: 'save-the-date',
     component: SaveTheDateView,
