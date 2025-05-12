@@ -25,7 +25,7 @@ const confirmRemoveItem = async () => {
     const response = await menuStore.removeMenuItem(props.item)
 
     if (response.status === 200) {
-      await menuStore.loadMenu()
+      await menuStore.loadMenus()
       notifications.addNotification({
         type: 'success',
         message: 'Menu item removed successfully.',

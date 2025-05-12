@@ -18,6 +18,7 @@ import CEventLocationsView from '@/views/internal/locations/CEventLocationsView.
 import CEventLocationsCreateView from '@/views/internal/locations/CEventLocationsCreateView.vue'
 import MenusView from '@/views/internal/menus/MenusView.vue'
 import CreateMenusView from '@/views/internal/menus/CreateMenusView.vue'
+import ShowMenuView from '@/views/internal/menus/ShowMenuView.vue'
 
 const authRoutes = [
   {
@@ -120,6 +121,14 @@ const authRoutes = [
     component: CreateMenusView,
     meta: {
       title: 'Menus'
+    }
+  },
+  {
+    path: '/dashboard/menus/show/:id',
+    name: 'show-menu',
+    component: ShowMenuView,
+    meta: {
+      title: 'Show Menus'
     }
   },
   {

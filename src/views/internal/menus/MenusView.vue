@@ -5,90 +5,97 @@
       <CButton
         variant="primary"
         @click="createMenu"
-        v-if="!menuStore.menu"
       >+ Add Menu</CButton>
     </div>
 
     <section
-      v-if="hasMenu"
+      v-if="!menuStore.hasMenu"
+    >
+      <CAlert
+        variant="info"
+      >
+        There is no menus in this event.!
+      </CAlert>
+    </section>
+    <section
+      v-else
       class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-md space-y-8"
     >
-      <div class="menu-title text-center text-gray-900">
-        <CHeading :level="3" weight="semibold">
-          {{ menuStore.menu?.title ?? '' }}
-        </CHeading>
-        <CHeading :level="6" weight="normal">
-          {{ menuStore.menu?.description ?? '' }}
-        </CHeading>
-
-        <div class="mt-4 flex justify-center gap-x-2">
-          <CButton @click="handleAddMenuItem" >
-            Add Menu Item
-          </CButton>
-
-          <CButton
-            @click="goToEditMenu"
-            variant="secondary"
+      <table
+        class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+        v-if="menuStore.menus.length"
+      >
+        <thead class="bg-gray-50 dark:bg-gray-800">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
           >
-            Details
-          </CButton>
-
-        </div>
-      </div>
-
-      <CLoading
-        v-if="loading"
-      />
-
-      <div class="menu-sections" v-if="starterMenuItems.length">
-        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
-          Starters
-        </h3>
-        <div
-          v-for="(item, index) in starterMenuItems"
-          :key="index"
-          class="mb-8"
+            Title
+          </th>
+          <th
+            class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >
+            Description
+          </th>
+          <th
+            class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >
+            Multiple Choice
+          </th>
+          <th
+            class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >
+            Custom Request
+          </th>
+          <th
+            class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >
+            Is Default
+          </th>
+          <th
+            class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+          >
+            Actions
+          </th>
+        </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+        <tr
+          v-for="menu in menuStore.menus"
+          :key="menu.id"
+          class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
         >
-          <MenuItem :item="item" />
-        </div>
-      </div>
-
-      <div class="menu-sections" v-if="mainMenuItems.length">
-        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
-          Main
-        </h3>
-        <div
-          v-for="(item, index) in mainMenuItems"
-          :key="index"
-          class="mb-8"
-        >
-          <MenuItem :item="item" />
-        </div>
-      </div>
-
-      <div class="menu-sections" v-if="desertMenuItems.length">
-        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
-          Dessert
-        </h3>
-        <div
-          v-for="(item, index) in desertMenuItems"
-          :key="index"
-          class="mb-8"
-        >
-          <div class="space-y-4">
-            <MenuItem :item="item" />
-          </div>
-        </div>
-      </div>
-
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
+            {{ menu.title }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+            {{ menu.description }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+            {{ menu.allow_multiple_choices ? 'Yes' : 'No' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            {{ menu.allow_custom_request  ? 'Yes' : 'No' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            {{ menu.is_default ? 'Yes' : 'No' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-left flex flex-start gap-2 text-sm">
+            <CButton size="sm" variant="primary" @click="gotToMenu(menu)">Details</CButton>
+            <CButton size="sm" variant="outline" @click="confirmDeleteMenu(menu)">Delete</CButton>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </section>
+    <CConfirmModal
+      v-model="showConfirmDeleteModal"
+      title="Are you sure?"
+      message="You are about to delete this menu. This action cannot be undone."
+      @confirm="deleteMenu()"
+      @close="showConfirmDeleteModal = false"
+    />
   </div>
-  <CAddMenuItemModal
-    v-model="openItemForm"
-    :menu="menuStore.menu"
-    @close="openItemForm = false"
-    @submitted="handleAddItem"
-  />
 </template>
 
 <script setup>
@@ -100,84 +107,55 @@ import { useRouter } from 'vue-router'
 import { useMenusStore } from '@/stores/useMenusStore'
 import CAddMenuItemModal from '@/components/UI/modals/CAddMenuItemModal.vue'
 import MenuItem from '@/views/internal/menus/MenuItem.vue'
+import CAlert from '@/components/UI/alerts/CAlert.vue'
+import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 
 const router = useRouter()
 const menuStore = useMenusStore()
 const openItemForm = ref(false)
-const addingItem = ref(false)
+
 
 const loading = ref()
-const confirmDeleteModal = ref(false)
+const showConfirmDeleteModal = ref(false)
+const menuSelectedForDelete = ref(null)
 
 const hasMenu = computed(() => {
   return menuStore.menu !== null
 })
 
-const starterMenuItems = computed(() => {
-  if (!menuStore.menu?.menu_items) {
-    return []
-  }
 
-  return menuStore.menu?.menu_items?.filter((item) => {
-    return item.type === 'starter'
-  })
-})
 
-const mainMenuItems = computed(() => {
-  if (!menuStore.menu?.menu_items) {
-    return []
-  }
-
-  return menuStore.menu?.menu_items?.filter((item) => {
-    return item.type === 'main'
-  })
-})
-
-const desertMenuItems = computed(() => {
-  if (!menuStore.menu?.menu_items) {
-    return []
-  }
-
-  return menuStore.menu?.menu_items?.filter((item) => {
-    return item.type === 'dessert'
-  })
-})
 
 const loadMenus = async () => {
   loading.value = true
-  await menuStore.loadMenu()
+  await menuStore.loadMenus()
   loading.value = false
 }
 
-const handleAddMenuItem = () => {
-  openItemForm.value = true
+
+
+const confirmDeleteMenu = (menu) => {
+  menuSelectedForDelete.value = menu
+  showConfirmDeleteModal.value = true
 }
 
-const handleAddItem = async (item) => {
+const deleteMenu = async () => {
   try {
-    addingItem.value = true
-
-    const response = await menuStore.addMenuItem({
-      menuItem: item,
-      menuId: menuStore.menu.id
-    })
+    const response = await menuStore.deleteMenu(menuSelectedForDelete.value.id)
 
     if (response.status >= 200 && response.status < 300) {
-      await menuStore.loadMenu()
+      await loadMenus()
     }
-
-    console.log(response)
 
   } catch (err) {
     console.log(err)
   } finally {
-    addingItem.value = false
-    openItemForm.value = false
+    showConfirmDeleteModal.value = false
   }
 }
 
-const goToEditMenu = async () => {
-  return await router.push(`/dashboard/menus/edit/${menuStore.menu.id}`)
+const gotToMenu = async (menu) => {
+  await router.push(`/dashboard/menus/show/${menu.id}`)
 }
 
 const createMenu = async () => {
