@@ -113,7 +113,7 @@ import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 const router = useRouter()
 const menuStore = useMenusStore()
 const openItemForm = ref(false)
-const addingItem = ref(false)
+
 
 const loading = ref()
 const showConfirmDeleteModal = ref(false)
@@ -132,9 +132,7 @@ const loadMenus = async () => {
   loading.value = false
 }
 
-const handleAddMenuItem = () => {
-  openItemForm.value = true
-}
+
 
 const confirmDeleteMenu = (menu) => {
   menuSelectedForDelete.value = menu
@@ -156,37 +154,8 @@ const deleteMenu = async () => {
   }
 }
 
-
-
 const gotToMenu = async (menu) => {
   await router.push(`/dashboard/menus/show/${menu.id}`)
-}
-
-const handleAddItem = async (item) => {
-  try {
-    addingItem.value = true
-
-    const response = await menuStore.addMenuItem({
-      menuItem: item,
-      menuId: menuStore.menu.id
-    })
-
-    if (response.status >= 200 && response.status < 300) {
-      await menuStore.loadMenu()
-    }
-
-    console.log(response)
-
-  } catch (err) {
-    console.log(err)
-  } finally {
-    addingItem.value = false
-    openItemForm.value = false
-  }
-}
-
-const goToEditMenu = async () => {
-  return await router.push(`/dashboard/menus/edit/${menuStore.menu.id}`)
 }
 
 const createMenu = async () => {

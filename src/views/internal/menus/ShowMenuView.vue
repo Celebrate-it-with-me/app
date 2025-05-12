@@ -12,6 +12,8 @@ const menuStore = useMenusStore()
 const loading = ref(false)
 const route = useRoute()
 const router = useRouter()
+const openItemForm = ref(false)
+const addingItem = ref(false)
 
 onMounted(async () => {
   loading.value = true
@@ -32,27 +34,63 @@ const starterMenuItems = computed(() => {
     return item.type === 'starter'
   })
 })
+
 const mainMenuItems = computed(() => {
-  if (!menuStore.menu?.menu_items) {
+  if (!menuStore.currentMenu?.menu_items) {
     return []
   }
 
-  return menuStore.menu?.menu_items?.filter((item) => {
+  return menuStore.currentMenu?.menu_items?.filter((item) => {
     return item.type === 'main'
   })
 })
 const desertMenuItems = computed(() => {
-  if (!menuStore.menu?.menu_items) {
+  if (!menuStore.currentMenu?.menu_items) {
     return []
   }
 
-  return menuStore.menu?.menu_items?.filter((item) => {
+  return menuStore.currentMenu?.menu_items?.filter((item) => {
     return item.type === 'dessert'
   })
 })
 
 const addNewMenu = async () => {
   await router.push('/dashboard/menus/create')
+}
+
+const menuSelected = computed(() => {
+  return menuStore.currentMenu
+})
+
+const handleAddMenuItem = () => {
+  openItemForm.value = true
+}
+
+const goToEditMenu = async () => {
+  return await router.push(`/dashboard/menus/edit/${menuStore.currentMenu.id}`)
+}
+
+const handleAddItem = async (item) => {
+  try {
+    addingItem.value = true
+
+    const response = await menuStore.addMenuItem({
+      menuItem: item,
+      menuId: menuStore.currentMenu.id
+    })
+
+    if (response.status >= 200 && response.status < 300) {
+      await menuStore.loadMenus()
+      await menuStore.setCurrentMenu(menuStore.currentMenu.id)
+    }
+
+    console.log(response)
+  } catch (err) {
+    console.log(err)
+  } finally {
+    addingItem.value = false
+    openItemForm.value = false
+  }
 }
 
 </script>
@@ -68,15 +106,15 @@ const addNewMenu = async () => {
     </div>
 
     <section
-      v-if="hasMenu"
+      v-if="menuSelected"
       class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-md space-y-8"
     >
       <div class="menu-title text-center text-gray-900">
         <CHeading :level="3" weight="semibold">
-          {{ menuStore.menu?.title ?? '' }}
+          {{ menuSelected?.title ?? '' }}
         </CHeading>
         <CHeading :level="6" weight="normal">
-          {{ menuStore.menu?.description ?? '' }}
+          {{ menuSelected?.description ?? '' }}
         </CHeading>
 
         <div class="mt-4 flex justify-center gap-x-2">
@@ -143,7 +181,7 @@ const addNewMenu = async () => {
   </div>
   <CAddMenuItemModal
     v-model="openItemForm"
-    :menu="menuStore.menu"
+    :menu="menuStore.currentMenu"
     @close="openItemForm = false"
     @submitted="handleAddItem"
   />
