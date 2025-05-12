@@ -27,6 +27,7 @@ const menuState = reactive({
   description: '',
   allow_multiple_choices: false,
   allow_custom_request: false,
+  main_menu: false
 })
 
 const schema = toTypedSchema(z.object({
@@ -34,6 +35,7 @@ const schema = toTypedSchema(z.object({
   description: z.string().optional(),
   allow_multiple_choices: z.boolean().default(false),
   allow_custom_request: z.boolean().default(false),
+  main_menu: z.boolean().default(false),
 }))
 
 onMounted( async () => {
@@ -74,6 +76,7 @@ const { handleSubmit, values, errors } = useForm({
     description: '',
     allow_multiple_choices: false,
     allow_custom_request: false,
+    main_menu: false
   },
 })
 
@@ -91,7 +94,6 @@ const handleRequest = async (formValues) => {
 }
 
 const onSubmit = handleSubmit(async (formValues) => {
-  console.log('Creating menu:', formValues)
   try {
     sending.value = true
     const response = await handleRequest(formValues)
@@ -102,7 +104,7 @@ const onSubmit = handleSubmit(async (formValues) => {
         message: 'Menu processed successfully!'
       })
 
-      await menuStore.loadMenu()
+      await menuStore.loadMenus()
 
       await router.push('/dashboard/menus')
 
@@ -170,6 +172,12 @@ const handleDeleteMenu = async () => {
         label="Allow Multiple Choices"
       />
 
+      <CToggle
+        v-model="menuState.main_menu"
+        name="main_menu"
+        label="Is Main Menu"
+      />
+
       <div class="pt-4 flex justify-end">
         <CButton type="submit" label="Create Menu" >
           <span v-if="mode === 'create'">
@@ -188,8 +196,6 @@ const handleDeleteMenu = async () => {
     v-if="mode === 'edit'"
   >
     <CAlert variant="warning">
-
-
       <div class="flex justify-between items-center">
         <span>
           Delete action is irreversible!, please be careful.

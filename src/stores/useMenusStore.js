@@ -4,21 +4,27 @@ import MenusService from '@/services/MenusService'
 
 export const useMenusStore = defineStore('menusStore', {
   state: () => ({
-    menu: null,
+    menus: [],
+    currentMenu: null,
   }),
   actions: {
-    async loadMenu() {
+    async loadMenus() {
       const userStore = useUserStore()
-      const response = await MenusService.loadMenu({
+      const response = await MenusService.loadMenus({
         eventId: userStore.activeEvent
       })
 
       if (response.status === 200) {
-        this.menu = response.data ?? []
+        this.menus = response.data ?? []
         return true
       }
 
       return false
+    },
+
+    async setCurrentMenu(menuId) {
+      console.log('checking menu id', menuId)
+      this.currentMenu = this.menus.find((menu) =>  + menu.id === + menuId)
     },
 
     async loadRouteMenu(id) {
@@ -74,5 +80,16 @@ export const useMenusStore = defineStore('menusStore', {
       })
     }
 
+  },
+  getters: {
+    getMenus: (state) => {
+      return state.menus
+    },
+    getMenuById: (state) => (id) => {
+      return state.menus.find((menu) => menu.id === id)
+    },
+    hasMenu: (state) => {
+      return state.menus.length > 0
+    },
   }
 })
