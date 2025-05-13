@@ -199,6 +199,7 @@ const eventState = reactive({
   processing: false,
   saveTheDate: false,
   rsvp: false,
+  menu: false,
   sweetMemories: false,
   music: false,
   backgroundMusic: false,
@@ -210,7 +211,8 @@ const eventState = reactive({
 })
 
 const featuresList = [
-  { name: 'rsvp', model: 'rsvp', icon: Calendar, label: 'RSVP', description: 'Allow guests to RSVP to your event.' },
+  { name: 'Menu', model: 'menu', icon: Calendar, label: 'Menu', description: 'Allow the guest to select the menu.' },
+  { name: 'RSVP', model: 'rsvp', icon: Calendar, label: 'RSVP', description: 'Allow guests to RSVP to your event.' },
   { name: 'sweetMemories', model: 'sweetMemories', icon: ImageIcon, label: 'Sweet Memories', description: 'Create a photo gallery to capture memories of your event.' },
   { name: 'music', model: 'music', icon: Waves, label: 'Music', description: 'Share a music playlist with your guests.' },
   { name: 'backgroundMusic', model: 'backgroundMusic', icon: Music, label: 'Background Music', description: 'Enable background music on the event page.' }
@@ -269,6 +271,7 @@ onMounted(async () => {
       normalizeBooleans(eventState, [
         'saveTheDate',
         'rsvp',
+        'menu',
         'sweetMemories',
         'music',
         'backgroundMusic',
