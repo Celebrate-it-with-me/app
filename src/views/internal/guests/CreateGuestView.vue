@@ -62,10 +62,13 @@ const steps = [
   { title: 'Summary' },
 ]
 
+// todo we need to load the menu options from the API
+
 const guestData = ref({
   name: '',
   email: '',
   phone: '',
+  menu: null,
 })
 
 const preferences = ref({

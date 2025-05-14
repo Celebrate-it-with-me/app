@@ -183,7 +183,7 @@ import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { EVENT_STATUSES as statuses, EVENT_VISIBILITIES as visibilities, DEFAULT_ERROR_MESSAGE } from '@/constants/constants'
-import { Calendar, Music, Waves, ImageIcon } from 'lucide-vue-next'
+import { Calendar, Music, Waves, ImageIcon, MessageSquareText } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -215,7 +215,8 @@ const featuresList = [
   { name: 'RSVP', model: 'rsvp', icon: Calendar, label: 'RSVP', description: 'Allow guests to RSVP to your event.' },
   { name: 'sweetMemories', model: 'sweetMemories', icon: ImageIcon, label: 'Sweet Memories', description: 'Create a photo gallery to capture memories of your event.' },
   { name: 'music', model: 'music', icon: Waves, label: 'Music', description: 'Share a music playlist with your guests.' },
-  { name: 'backgroundMusic', model: 'backgroundMusic', icon: Music, label: 'Background Music', description: 'Enable background music on the event page.' }
+  { name: 'backgroundMusic', model: 'backgroundMusic', icon: Music, label: 'Background Music', description: 'Enable background music on the event page.' },
+  { name: 'eventComments', model: 'eventComments', icon: MessageSquareText, label: 'Event Comments', description: 'On/Off event comments sections.' }
 ]
 
 const eventStore = useEventsStore()
@@ -263,9 +264,14 @@ onMounted(async () => {
       await router.push('/dashboard')
     } else {
       const current = eventStore.activeEvent
+      let features = {}
+      eventStore.activeEvent.eventFeatures.forEach((feature) => {
+        features[feature.name] = feature.isActive
+      })
+
       Object.assign(eventState, {
         ...current,
-        ...current.eventFeature
+        ...features
       })
 
       normalizeBooleans(eventState, [
