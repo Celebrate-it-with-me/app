@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import CWizard from '@/components/UI/wizard/CWizard.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import GuestInfoStep from '@/components/internal/guests/GuestInfoStep.vue'
@@ -48,12 +48,14 @@ import GuestPreferencesStep from '@/components/internal/guests/GuestPreferencesS
 import GuestSummaryStep from '@/components/internal/guests/GuestSummaryStep.vue'
 import { useGuestsStore } from '@/stores/useGuestStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
+import { useMenusStore } from '@/stores/useMenusStore'
 
 const currentStep = ref(0)
 const namedCompanions = ref([])
 const unnamedCompanions = ref(0)
 const guestStore = useGuestsStore()
 const notifications = useNotificationStore()
+const menusStore = useMenusStore()
 
 const steps = [
   { title: 'Guest Info' },
@@ -68,7 +70,7 @@ const guestData = ref({
   name: '',
   email: '',
   phone: '',
-  menu: null,
+  menuSelected: null,
 })
 
 const preferences = ref({
@@ -112,22 +114,23 @@ const handleSubmit = async () => {
 
 const resetWizard = () => {
   currentStep.value = 0
-  guestData.value = { name: '', email: '', phone: '' }
+  guestData.value = { name: '', email: '', phone: '', menuSelected: null }
   namedCompanions.value = []
   unnamedCompanions.value = 0
   preferences.value = { meal_preference: '', allergies: '', notes: '' }
 }
 
-
 const isValidNext = computed(() => {
-  if (currentStep.value === 0 && (!guestData.value.name || !guestData.value.email)) {
-    return false
-  }
-
-  return true
+  return !(currentStep.value === 0 && (!guestData.value.name));
 })
 
 const handleStepChange = (step) => {
   currentStep.value = step
 }
+
+watch(() => menusStore.menus, (newValue) => {
+  if (newValue.length > 0) {
+    guestData.value.menuSelected = menusStore.mainMenu?.id ?? 0
+  }
+}, {deep: true, immediate: true})
 </script>

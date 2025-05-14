@@ -25,13 +25,24 @@
         placeholder="e.g., +1 305 123 4567"
         id="guestPhone"
       />
+
+      <CSelect
+        v-model="localData.menuSelected"
+        id="menuSelected"
+        name="menuSelected"
+        :options="menuStore.menusForSelect"
+        label="Select Menu"
+        placeholder="Select a menu"
+      />
     </div>
   </section>
 </template>
 
 <script setup>
-import { watch, reactive } from 'vue'
+import { watch, reactive, onMounted, computed } from 'vue'
 import CInput from '@/components/UI/form2/CInput.vue'
+import CSelect from '@/components/UI/form2/CSelect.vue'
+import { useMenusStore } from '@/stores/useMenusStore'
 
 const props = defineProps({
   modelValue: {
@@ -40,8 +51,13 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const menuStore = useMenusStore()
 
+onMounted(async () => {
+  await  menuStore.loadMenus()
+})
+
+const emit = defineEmits(['update:modelValue'])
 const localData = reactive({ ...props.modelValue })
 
 watch(localData, (val) => {

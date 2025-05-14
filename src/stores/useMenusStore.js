@@ -93,21 +93,28 @@ export const useMenusStore = defineStore('menusStore', {
       return state.menus.length > 0
     },
     needMenu() {
-      // TODO: I need to test this.
       const eventStore = useEventsStore();
 
-      // Extract the menu feature status
       const menuFeature = eventStore.activeEvent?.eventFeatures.find(
         (feature) => feature.name === 'menu'
       );
 
-      // Simplified and reusable logic for menu requirement
       const isMenuFeatureActive = menuFeature?.isActive ?? false;
 
-      // Return combined result
       return isMenuFeatureActive && !this.hasMenu;
+    },
+
+    mainMenu() {
+      return this.menus.find((menu) => menu.is_default)
+    },
+
+    menusForSelect() {
+      return this.menus.map((menu) => {
+        return {
+          label: menu.title,
+          value: menu.id,
+        }
+      })
     }
-
-
   }
 })
