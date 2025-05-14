@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useUserStore } from '@/stores/useUserStore'
 import MenusService from '@/services/MenusService'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 export const useMenusStore = defineStore('menusStore', {
   state: () => ({
@@ -91,5 +92,22 @@ export const useMenusStore = defineStore('menusStore', {
     hasMenu: (state) => {
       return state.menus.length > 0
     },
+    needMenu() {
+      // TODO: I need to test this.
+      const eventStore = useEventsStore();
+
+      // Extract the menu feature status
+      const menuFeature = eventStore.activeEvent?.eventFeatures.find(
+        (feature) => feature.name === 'menu'
+      );
+
+      // Simplified and reusable logic for menu requirement
+      const isMenuFeatureActive = menuFeature?.isActive ?? false;
+
+      // Return combined result
+      return isMenuFeatureActive && !this.hasMenu;
+    }
+
+
   }
 })
