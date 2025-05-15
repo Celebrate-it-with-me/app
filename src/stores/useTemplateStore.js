@@ -8,6 +8,27 @@ export const useTemplateStore = defineStore('templateStore', {
     guest: {},
   }),
   actions: {
+    updateCompanionMenu(payload) {
+      const companionId = payload.guestId
+
+      const companion = this.guest.companions.find((companion) => companion.id === companionId)
+
+      if (!companion) {
+        console.log('companion not found')
+        return
+      }
+
+      companion.menusSelections = payload.selections
+    },
+
+    updateGuestMenu(payload) {
+      if (payload.guestId !== this.guest.id) {
+        console.log('guest id not match')
+        return
+      }
+      this.guest.menusSelections = payload.selections
+    },
+
     async getEventData({ eventId, guestCode }) {
       return await TemplateService.getEventData({ eventId, guestCode })
     },

@@ -76,7 +76,7 @@ const handleMoveToTop = () => {
 <template>
   <div class="bg-red-50/10 font-jost h-full min-h-screen">
       <transition name="fade" mode="out-in">
-        <div v-if="!videoReproduced">
+        <div v-if="false">
           <video
             ref="videoRef"
             class="w-full h-screen object-cover block"
@@ -92,71 +92,78 @@ const handleMoveToTop = () => {
           </video>
         </div>
         <main v-else class="">
-          <HeaderNav />
+          <HeaderNav v-if="false" />
 
-          <HeroSection class="main-section" />
+          <HeroSection class="main-section" v-if="false" />
 
-          <SeparatorSection>
+          <SeparatorSection v-if="false">
             A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
             mis 15 años de vida. Porque su presencia, siempre será mi mejor regalo.
           </SeparatorSection>
 
-          <SaveTheDate class="main-section" />
+          <SaveTheDate class="main-section" v-if="false" />
 
-          <SeparatorSection>
+          <SeparatorSection v-if="false">
             Los recuerdos más hermosos nacen con las personas más especiales.
           </SeparatorSection>
 
-          <CWMItinerario class="main-section" />
+          <CWMItinerario class="main-section" v-if="false" />
 
-          <SeparatorSection>
+          <SeparatorSection v-if="false">
             ¡Prepárate para reír, bailar y celebrar como nunca!
           </SeparatorSection>
 
           <SweetMemories
+            v-if="false"
             class="main-section"
             :mode="'presentation'"
           />
 
-          <SeparatorSection>
+          <SeparatorSection
+            v-if="false"
+          >
             Gracias por ser parte de mi historia. Ahora celebremos juntos.
           </SeparatorSection>
 
           <RSVP class="main-section" />
 
-          <SeparatorSection>
+          <SeparatorSection v-if="false">
             La música, las memorias y ustedes harán de esta noche mágica.
           </SeparatorSection>
 
-          <SuggestedMusic class="main-section" />
+          <SuggestedMusic class="main-section" v-if="false" />
 
-          <SeparatorSection>
+          <SeparatorSection v-if="false">
             Que esta fiesta sea tan inolvidable como ustedes lo son para mí.
           </SeparatorSection>
 
           <EventComments
+            v-if="false"
+
             origin="event"
             class="main-section"
           />
 
-          <SeparatorSection>
+          <SeparatorSection v-if="false">
             Donde hay amor y alegría, el momento es perfecto.
           </SeparatorSection>
 
-          <EventLocations />
+          <EventLocations v-if="false" />
 
-          <SeparatorSection>
+          <SeparatorSection v-if="false">
             Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
             compartir con cada uno de ustedes. ¡Gracias por estar aquí!
           </SeparatorSection>
 
-          <SwipeLeftIcon />
+          <SwipeLeftIcon v-if="false" />
 
           <BackgroundMusic
+
+            v-if="false"
             origin="event"
           />
 
-          <EventFooter />
+          <EventFooter v-if="false" />
         </main>
       </transition>
     </div>
