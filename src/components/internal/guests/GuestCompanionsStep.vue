@@ -3,7 +3,11 @@
     <div class="space-y-4">
       <h3 class="text-lg font-medium text-gray-800 dark:text-gray-100">Named Companions</h3>
 
-      <div v-for="(companion, index) in named" :key="index" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+      <div
+        v-for="(companion, index) in named"
+        :key="index"
+        class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center"
+      >
         <CInput
           v-model="companion.name"
           label="Name"
@@ -26,6 +30,15 @@
           :placeholder="`e.g. 123 456 7890`"
           :name="`companion_phone_${index}`"
           :id="`companion_phone_${index}`"
+        />
+
+        <CSelect
+          v-model="companion.menuSelected"
+          id="menuSelected"
+          name="menuSelected"
+          :options="menuStore.menusForSelect"
+          label="Select Menu"
+          placeholder="Select a menu"
         />
 
         <div class="flex gap-2 justify-end md:justify-start pt-2 md:pt-0">
@@ -65,6 +78,8 @@
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import { watch, toRefs, ref } from 'vue'
+import CSelect from '@/components/UI/form2/CSelect.vue'
+import { useMenusStore } from '@/stores/useMenusStore'
 
 const props = defineProps({
   named: {
@@ -77,13 +92,18 @@ const props = defineProps({
   }
 })
 
+const menuStore = useMenusStore()
 const emit = defineEmits(['update:named', 'update:unnamedCount'])
 
 const { named } = toRefs(props)
 const localUnnamedCount = ref(props.unnamedCount)
 
 const addNamedCompanion = () => {
-  emit('update:named', [...named.value, { name: '' }])
+  emit('update:named', [
+    ...named.value,
+    { name: '', menuSelected: menuStore.mainMenu?.id || null }
+  ]);
+
 }
 
 const removeNamedCompanion = (index) => {
