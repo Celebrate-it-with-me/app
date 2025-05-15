@@ -39,7 +39,7 @@ const mainGuestValidationSchema = computed(() => {
 })
 
 const guestMenu = computed(() => {
-  if (templateStore.guest.menuSelected) {
+  if (templateStore.guest.menuSelected.length) {
     return templateStore.guest.menuSelected
   }
 

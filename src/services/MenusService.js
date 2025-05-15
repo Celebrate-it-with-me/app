@@ -45,6 +45,16 @@ class MenusServices {
   async removeMenuItem({ menuItem, eventId }) {
     return await CWM_API.delete(`event/${eventId}/menus/${menuItem.menu_id}/menu-item/${menuItem.id}`)
   }
+
+  async loadGuestMenu({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/menus/guests`)
+  }
+
+  async exportGuestsMenu({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/menus/guests/download`, {
+      responseType: 'blob'
+    })
+  }
 }
 
 export default new MenusServices()

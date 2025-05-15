@@ -7,8 +7,32 @@ export const useMenusStore = defineStore('menusStore', {
   state: () => ({
     menus: [],
     currentMenu: null,
+    guestsMenu: [],
+    pageSelected: 1,
+    perPage: 10,
+    searchValue: ''
   }),
   actions: {
+    async exportGuestsMenu() {
+      const userStore = useUserStore()
+      return await MenusService.exportGuestsMenu({
+        eventId: userStore.activeEvent
+      })
+    },
+    async loadGuestsMenu() {
+      const userStore = useUserStore()
+      const response = await MenusService.loadGuestMenu({
+        eventId: userStore.activeEvent
+      })
+
+      if (response.status === 200) {
+        this.guestsMenu = response.data.data ?? []
+        this.pageSelected = response.data.meta?.current_page || 1
+        return true
+      }
+      return false
+    },
+
     async loadMenus() {
       const userStore = useUserStore()
       const response = await MenusService.loadMenus({
