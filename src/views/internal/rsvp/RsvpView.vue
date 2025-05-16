@@ -10,8 +10,8 @@
       <CAlert
         variant="info"
       >
-        No guests found for this event. Please check the event details or add guests
-        in the guests section.
+        <p>No guests found for this event. Please check the event details or add guests
+        in the guests section.</p>
       </CAlert>
     </div>
     <section
