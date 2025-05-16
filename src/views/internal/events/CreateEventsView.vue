@@ -231,7 +231,10 @@ const eventValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       eventName: zod.string().min(1, 'Event name is required.'),
-      eventType: zod.string().min(1, 'Event type is required.'),
+      eventType: zod.number({
+        required_error: 'Event type is required.',
+        invalid_type_error: 'Invalid event type.'
+      }),
       startDate: zod.string().min(1, 'Start date is required.'),
       endDate: zod.string().min(1, 'End date is required.'),
       status: zod.string().min(1, { message: 'Status is required' }),
@@ -265,6 +268,7 @@ onMounted(async () => {
     } else {
       const current = eventStore.activeEvent
       let features = {}
+
       eventStore.activeEvent.eventFeatures.forEach((feature) => {
         features[feature.name] = feature.isActive
       })
