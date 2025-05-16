@@ -1,4 +1,4 @@
-<template>
+""<template>
   <div class="w-full">
     <label
       v-if="label"
@@ -103,3 +103,4 @@ select option {
   color: white !important;
 }
 </style>
+""
