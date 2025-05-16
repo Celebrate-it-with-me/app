@@ -15,7 +15,9 @@
       />
     </div>
 
-    <div>
+    <div
+      v-if="otherEvents.length > 0"
+    >
       <CHeading :level="5" class="mb-4">Other Events</CHeading>
       <div
         v-if="otherEvents.length > 0"
