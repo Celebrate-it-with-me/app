@@ -60,93 +60,15 @@ export const useEventsStore = defineStore('eventsStore', {
       return await EventsService.removeactiveEvent(this.activeEvent.id)
     },
 
-    async editEvent({
-                      eventName,
-                      eventType,
-                      startDate,
-                      endDate,
-                      eventDescription,
-                      status,
-                      visibility,
-                      customUrlSlug,
-                      saveTheDate,
-                      rsvp,
-                      menu,
-                      sweetMemories,
-                      music,
-                      backgroundMusic,
-                      eventComments,
-                      seatsAccommodation,
-                      preview,
-                      eventBudget,
-                      analytics
-                    }){
+    async editEvent(eventData){
       return await EventsService.edit({
         eventId: this.activeEvent.id,
-        eventName,
-        eventType,
-        startDate,
-        endDate,
-        eventDescription,
-        status,
-        visibility,
-        customUrlSlug,
-        saveTheDate,
-        rsvp,
-        menu,
-        sweetMemories,
-        music,
-        backgroundMusic,
-        eventComments,
-        seatsAccommodation,
-        preview,
-        eventBudget,
-        analytics
+        ...eventData
       })
     },
 
-    async createEvent({
-                        eventName,
-                        startDate,
-                        endDate,
-                        eventDescription,
-                        eventType,
-                        status,
-                        visibility,
-                        customUrlSlug,
-                        saveTheDate,
-                        rsvp,
-                        menu,
-                        sweetMemories,
-                        music,
-                        backgroundMusic,
-                        eventComments,
-                        seatsAccommodation,
-                        preview,
-                        eventBudget,
-                        analytics
-    }) {
-      return await EventsService.create({
-        eventName,
-        eventType,
-        startDate,
-        endDate,
-        eventDescription,
-        status,
-        visibility,
-        customUrlSlug,
-        saveTheDate,
-        rsvp,
-        menu,
-        sweetMemories,
-        music,
-        backgroundMusic,
-        eventComments,
-        seatsAccommodation,
-        preview,
-        eventBudget,
-        analytics
-      })
+    async createEvent(eventData) {
+      return await EventsService.create(eventData)
     },
 
     async filterEvents(query) {

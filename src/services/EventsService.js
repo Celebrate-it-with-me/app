@@ -1,94 +1,12 @@
 import { CWM_API } from './axios'
-import { format } from 'date-fns'
 
 class EventsService {
-  async create({
-                 eventName,
-                 eventType,
-                 eventDescription,
-                 startDate,
-                 endDate,
-                 status,
-                 visibility,
-                 customUrlSlug,
-                 saveTheDate,
-                 rsvp,
-                 menu,
-                 sweetMemories,
-                 music,
-                 backgroundMusic,
-                 eventComments,
-                 seatsAccommodation,
-                 preview,
-                 eventBudget,
-                 analytics
-  }) {
-    return CWM_API.post(`event`, {
-      eventName,
-      eventType,
-      eventDescription,
-      startDate: format(new Date(startDate), 'MM/dd/yyyy HH:mm'),
-      endDate: format(new Date(endDate), 'MM/dd/yyyy HH:mm'),
-      status,
-      visibility,
-      customUrlSlug,
-      saveTheDate,
-      rsvp,
-      menu,
-      sweetMemories,
-      music,
-      backgroundMusic,
-      eventComments,
-      seatsAccommodation,
-      preview,
-      eventBudget,
-      analytics
-    })
+  async create(eventData) {
+    return CWM_API.post(`event`, eventData)
   }
 
-  async edit({
-               eventId,
-               eventName,
-               eventDescription,
-               eventType,
-               startDate,
-               endDate,
-               status,
-               visibility,
-               customUrlSlug,
-               saveTheDate,
-               rsvp,
-               menu,
-               sweetMemories,
-               music,
-               backgroundMusic,
-               eventComments,
-               seatsAccommodation,
-               preview,
-               eventBudget,
-               analytics
-             }) {
-    return CWM_API.put(`event/${eventId}`, {
-      eventName,
-      eventDescription,
-      eventType,
-      startDate,
-      endDate,
-      status,
-      visibility,
-      customUrlSlug,
-      saveTheDate,
-      rsvp,
-      menu,
-      sweetMemories,
-      music,
-      backgroundMusic,
-      eventComments,
-      seatsAccommodation,
-      preview,
-      eventBudget,
-      analytics
-    })
+  async edit(eventData) {
+    return CWM_API.put(`event/${eventData.eventId}`, eventData)
   }
 
   async getMyEvents() {
