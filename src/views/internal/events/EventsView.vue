@@ -20,7 +20,6 @@
     >
       <CHeading :level="5" class="mb-4">Other Events</CHeading>
       <div
-        v-if="otherEvents.length > 0"
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
       >
         <OtherEventCard
@@ -29,13 +28,6 @@
           :event="event"
           @switch-event="switchToEvent"
         />
-      </div>
-      <div v-else class="col-span-1">
-        <CAlert variant="info">
-          <template #message>
-            <p class="text-sm text-text-light">You have no other events.</p>
-          </template>
-        </CAlert>
       </div>
     </div>
   </section>
