@@ -1,4 +1,4 @@
-""<template>
+<template>
   <div class="w-full">
     <label
       v-if="label"
