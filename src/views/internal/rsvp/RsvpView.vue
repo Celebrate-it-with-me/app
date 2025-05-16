@@ -50,10 +50,26 @@
             <th class="px-3 py-3 text-left w-6">
               <CCheckbox v-model="selectAll" @update:modelValue="toggleSelectAll" />
             </th>
-            <th class="px-3 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Name</th>
-            <th class="px-3 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
-            <th class="px-3 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Status Date</th>
-            <th class="px-3 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Actions</th>
+            <th
+              class="px-3 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+            >
+              Name
+            </th>
+            <th
+              class="px-3 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+            >
+              Status
+            </th>
+            <th
+              class="px-3 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+            >
+              Status Date
+            </th>
+            <th
+              class="px-3 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300"
+            >
+              Actions
+            </th>
           </tr>
           </thead>
 

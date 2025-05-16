@@ -10,7 +10,7 @@
       v-if="userStore.activeEvent"
       class="flex-1 px-4 py-6 space-y-2 text-sm"
     >
-      <li v-for="item in menuItems" :key="item.label">
+      <li v-for="item in activeMenuItems" :key="item.label">
         <RouterLink
           :to="item.to"
           class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-primary/10 dark:hover:bg-primary/20"
@@ -50,9 +50,12 @@ import {
   AlarmClock,
   MessageCircle,
   Map,
-  LayoutDashboard
+  LayoutDashboard,
+  ChefHat
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
+import { computed } from 'vue'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 const route = useRoute()
 
@@ -63,18 +66,20 @@ const isActive = (path) => {
 }
 
 const userStore = useUserStore()
+const eventStore = useEventsStore()
 
 const menuItems = [
-  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-  { label: 'My Events', to: '/dashboard/events', icon: Calendar },
-  { label: 'Guests', to: '/dashboard/guests', icon: Users },
-  { label: 'RSVP', to: '/dashboard/rsvp', icon: CheckSquare  },
-  { label: 'Locations', to: '/dashboard/locations', icon: Map },
-  { label: 'Save the Date', to: '/dashboard/save-the-date', icon: AlarmClock },
-  { label: 'Sweet Memories', to: '/dashboard/sweet-memories', icon: Camera },
-  { label: 'Suggested Music', to: '/dashboard/suggested-music', icon: Music },
-  { label: 'Comments', to: '/dashboard/event-comments', icon: MessageCircle },
- /* { label: 'Seating', to: '/seating', icon: Users },
+  { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, featureName: null },
+  { label: 'My Events', to: '/dashboard/events', icon: Calendar, featureName: null },
+  { label: 'Menu', to: '/dashboard/menus', icon: ChefHat, featureName: 'menu' },
+  { label: 'Guests', to: '/dashboard/guests', icon: Users, featureName: null },
+  { label: 'RSVP', to: '/dashboard/rsvp', icon: CheckSquare, featureName: 'rsvp'  },
+  { label: 'Locations', to: '/dashboard/locations', icon: Map, featureName: 'location' },
+  { label: 'Save the Date', to: '/dashboard/save-the-date', icon: AlarmClock, featureName: 'saveTheDate' },
+  { label: 'Sweet Memories', to: '/dashboard/sweet-memories', icon: Camera, featureName: 'sweetMemories' },
+  { label: 'Suggested Music', to: '/dashboard/suggested-music', icon: Music, featureName: 'music' },
+  { label: 'Comments', to: '/dashboard/event-comments', icon: MessageCircle, featureName: 'eventComments' },
+ /*
   { label: 'Timeline', to: '/timeline', icon: Calendar },
   { label: 'Checklist', to: '/checklist', icon: Calendar },
   { label: 'Budget Tracker', to: '/budget-tracker', icon: Calendar },
@@ -83,4 +88,24 @@ const menuItems = [
   { label: 'Calendar', to: '/calendar', icon: Calendar },
   { label: 'Settings', to: '/settings', icon: Settings },*/
 ]
+
+const activeMenuItems = computed(() => {
+  let activeMenus = []
+
+  menuItems.forEach(item => {
+    if (item.featureName) {
+      const feature = eventStore.activeEvent?.eventFeatures?.find(feature => feature.name === item.featureName)
+
+      if (feature && feature.isActive) {
+        activeMenus.push(item)
+      }
+    } else {
+      activeMenus.push(item)
+    }
+  })
+
+  return activeMenus
+})
+
+
 </script>

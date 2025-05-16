@@ -7,7 +7,10 @@ import TextField from '@/components/UI/form/TextField.vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
 import ConfirmationField from '@/components/UI/form/ConfirmationField.vue'
+import GuestMenuSelection
+  from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/GuestMenuSelection.vue'
 
+const mainGuestStep = ref(1)
 const confirmationError = ref(false)
 const emit = defineEmits(['goToNext'])
 const mainGuestState = reactive({
@@ -35,6 +38,14 @@ const mainGuestValidationSchema = computed(() => {
   )
 })
 
+const guestMenu = computed(() => {
+  if (templateStore.guest.menuSelected.length) {
+    return templateStore.guest.menuSelected
+  }
+
+  return templateStore.event.mainMenu
+})
+
 onMounted(() => {
   mainGuestState.name = templateStore.guest?.name ?? ''
   mainGuestState.email = templateStore.guest?.email ?? ''
@@ -45,7 +56,12 @@ onMounted(() => {
 
 const onSubmit = () => {
   templateStore.initRsvpGuestData(mainGuestState)
-  emit('goToNext')
+
+  if (templateStore.event.hasMenu && mainGuestState.rsvpStatus === 'attending') {
+    mainGuestStep.value = 2
+  } else {
+    emit('goToNext')
+  }
 }
 
 const onInvalidSubmit = (error) => {
@@ -54,6 +70,15 @@ const onInvalidSubmit = (error) => {
   if (error.errors?.confirmed) {
     confirmationError.value = true
   }
+}
+
+const handleGoBack = () => {
+  mainGuestStep.value = 1
+}
+
+const handleUpdateGuestMenu = (payload) => {
+  templateStore.updateGuestMenu(payload)
+  emit('goToNext')
 }
 
 watch(() => mainGuestState.rsvpStatus, () => {
@@ -68,6 +93,7 @@ watch(() => mainGuestState.rsvpStatus, () => {
         <h3>Main Guest</h3>
       </div>
       <Form
+        v-if="mainGuestStep === 1"
         :validation-schema="mainGuestValidationSchema"
         @submit="onSubmit"
         @invalid-submit="onInvalidSubmit"
@@ -154,7 +180,9 @@ watch(() => mainGuestState.rsvpStatus, () => {
             />
           </div>
         </div>
-        <div class="action-button w-full flex flew-row justify-end">
+        <div
+          class="action-button w-full flex flew-row justify-end"
+        >
           <button
             class="px-6 py-2 border-2 font-bold"
             style="
@@ -169,6 +197,16 @@ watch(() => mainGuestState.rsvpStatus, () => {
           </button>
         </div>
       </Form>
+      <div
+        v-if="mainGuestStep === 2"
+      >
+        <GuestMenuSelection
+          :guest="templateStore.guest"
+          :menu="guestMenu"
+          @update:go-back="handleGoBack"
+          @update:guest-menu="handleUpdateGuestMenu"
+        />
+      </div>
     </div>
   </div>
 </template>

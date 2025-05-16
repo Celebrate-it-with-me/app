@@ -2,11 +2,13 @@
 import { Form } from 'vee-validate'
 import TextField from '@/components/UI/form/TextField.vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
-import { computed, onMounted, reactive } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import ConfirmationField from '@/components/UI/form/ConfirmationField.vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
+import GuestMenuSelection
+  from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/GuestMenuSelection.vue'
 
 const emit = defineEmits(['confirmed'])
 const props = defineProps({
@@ -18,7 +20,7 @@ const props = defineProps({
 })
 
 const templateStore = useTemplateStore()
-
+const companionStep = ref(1)
 const localCompanion = reactive({
   id: '',
   name: '',
@@ -26,6 +28,16 @@ const localCompanion = reactive({
   phone: '',
   rsvpStatus: 'pending'
 })
+
+
+const companionMenu = computed(() => {
+  if (props.currentCompanion.menuSelected.length) {
+    return props.currentCompanion.menuSelected
+  }
+
+  return templateStore.event.mainMenu
+})
+
 
 onMounted(() => {
   if(props.currentCompanion) {
@@ -54,8 +66,22 @@ const companionValidationSchema = computed(() => {
   )
 })
 
-const onSubmit = () => {
+const handleGoBack = () => {
+  companionStep.value = 1
+}
+
+const handleUpdateCompanionMenu = (payload) => {
+  console.log(payload)
+  templateStore.updateCompanionMenu(payload)
   emit('confirmed', localCompanion)
+}
+
+const onSubmit = () => {
+  if (templateStore.event.hasMenu && localCompanion.rsvpStatus === 'attending') {
+    companionStep.value = 2
+  } else {
+    emit('confirmed', localCompanion)
+  }
 }
 
 const onInvalidSubmit = (errors) => {
@@ -70,6 +96,7 @@ const onInvalidSubmit = (errors) => {
       <h3>Companions</h3>
     </div>
     <Form
+      v-if="companionStep === 1"
       :validation-schema="companionValidationSchema"
       @submit="onSubmit"
       @invalid-submit="onInvalidSubmit"
@@ -169,6 +196,17 @@ const onInvalidSubmit = (errors) => {
         </button>
       </div>
     </Form>
+    <div
+      v-if="companionStep === 2"
+    >
+      <GuestMenuSelection
+        :guest="props.currentCompanion"
+        :menu="companionMenu"
+        @update:go-back="handleGoBack"
+        @update:guest-menu="handleUpdateCompanionMenu"
+      />
+    </div>
+
   </div>
 </template>
 

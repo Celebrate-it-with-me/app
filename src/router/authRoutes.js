@@ -16,6 +16,9 @@ import RsvpView from '@/views/internal/rsvp/RsvpView.vue'
 import SaveTheDateView from '@/views/internal/save-the-date/SaveTheDateView.vue'
 import CEventLocationsView from '@/views/internal/locations/CEventLocationsView.vue'
 import CEventLocationsCreateView from '@/views/internal/locations/CEventLocationsCreateView.vue'
+import MenusView from '@/views/internal/menus/MenusView.vue'
+import CreateMenusView from '@/views/internal/menus/CreateMenusView.vue'
+import ShowMenuView from '@/views/internal/menus/ShowMenuView.vue'
 
 const authRoutes = [
   {
@@ -102,6 +105,38 @@ const authRoutes = [
     component: RsvpView,
     meta: {
       title: 'RSVP'
+    }
+  },
+  {
+    path: '/dashboard/menus',
+    name: 'menus',
+    component: MenusView,
+    meta: {
+      title: 'Menus'
+    }
+  },
+  {
+    path: '/dashboard/menus/create',
+    name: 'create-menus',
+    component: CreateMenusView,
+    meta: {
+      title: 'Menus'
+    }
+  },
+  {
+    path: '/dashboard/menus/show/:id',
+    name: 'show-menu',
+    component: ShowMenuView,
+    meta: {
+      title: 'Show Menus'
+    }
+  },
+  {
+    path: '/dashboard/menus/edit/:id',
+    name: 'edit-menus',
+    component: CreateMenusView,
+    meta: {
+      title: 'Edit Menus'
     }
   },
   {
