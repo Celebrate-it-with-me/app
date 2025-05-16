@@ -36,7 +36,7 @@
 import { X } from 'lucide-vue-next'
 import CButton from '@/components/UI/buttons/CButton.vue'
 
-const props = defineProps({
+defineProps({
   modelValue: Boolean,
   title: {
     type: String,

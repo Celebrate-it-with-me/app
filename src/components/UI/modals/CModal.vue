@@ -27,7 +27,10 @@
         </div>
 
         <!-- Footer -->
-        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-2">
+        <div
+          v-if="showFooter"
+          class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-2"
+        >
           <slot name="footer">
             <CButton variant="ghost" @click="close">Cancel</CButton>
             <CButton>Confirm</CButton>
@@ -45,6 +48,10 @@ import CButton from '@/components/UI/buttons/CButton.vue'
 const props = defineProps({
   modelValue: Boolean,
   showCloseIcon: Boolean,
+  showFooter: {
+    type: Boolean,
+    default: true
+  }
 })
 
 const emit = defineEmits(['update:modelValue'])

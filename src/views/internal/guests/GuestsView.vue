@@ -2,10 +2,26 @@
   <div class="space-y-8">
     <div class="flex items-center justify-between">
       <CHeading :level="2" weight="semibold">Guest List</CHeading>
-      <CButton variant="primary" @click="createGuest">+ Add Guest</CButton>
+      <CButton
+        v-if="!menuStore.needMenu"
+        variant="primary"
+        @click="createGuest"
+      >+ Add Guest</CButton>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
+    <div
+      v-if="menuStore.needMenu"
+      class="not-menu bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6"
+    >
+      <CAlert variant="info">
+        This event does not have a menu yet. Please create a menu before adding guests.
+      </CAlert>
+    </div>
+
+    <div
+      v-else
+      class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6"
+    >
       <div class="overflow-x-auto">
         <div v-if="loading">
           <CLoading />
@@ -99,8 +115,10 @@ import CAlert from '@/components/UI/alerts/CAlert.vue'
 import { useRouter } from 'vue-router'
 import GuestDetailsModal from '@/components/UI/modals/GuestDetailsModal.vue'
 import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
+import { useMenusStore } from '@/stores/useMenusStore'
 
 const guestStore = useGuestsStore()
+const menuStore = useMenusStore()
 const router = useRouter()
 
 const loading = ref()
