@@ -150,7 +150,6 @@ const deleteGuest = async () => {
       await loadGuests()
       guestToDelete.value = null
     } else {
-      // Handle error (e.g., show notification)
       console.error('Failed to delete guest:', response)
     }
 
@@ -163,7 +162,6 @@ const confirmDelete = (guest) => {
   confirmDeleteModal.value = true
 }
 
-onMounted(loadGuests)
 </script>
 
 <style scoped>
