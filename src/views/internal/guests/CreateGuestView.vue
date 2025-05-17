@@ -64,8 +64,6 @@ const steps = [
   { title: 'Summary' },
 ]
 
-// todo we need to load the menu options from the API
-
 const guestData = ref({
   name: '',
   email: '',
@@ -91,6 +89,7 @@ const handleSubmit = async () => {
     const response = await guestStore.createGuest(payload)
 
     if (response?.status >= 200 && response?.status < 300) {
+      await guestStore.loadGuests()
       notifications.addNotification({
         type: 'success',
         message: 'Guest added successfully!',

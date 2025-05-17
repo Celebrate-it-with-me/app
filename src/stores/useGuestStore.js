@@ -60,8 +60,10 @@ export const useGuestsStore = defineStore('guestsStore', {
       this.guests = []
     },
 
-    setGuests(guests) {
-      this.guests = guests
+    setGuests(guestsData) {
+      this.guests = guestsData.data
+      this.totalItems = guestsData.meta?.total ?? 0
+      this.pageSelected = guestsData.meta?.current_page ?? 1
     },
 
     updateCurrentGuest() {
