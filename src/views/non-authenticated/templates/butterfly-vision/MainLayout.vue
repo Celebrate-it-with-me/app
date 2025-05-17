@@ -22,7 +22,6 @@ const videoInstance = templateRef('videoRef')
 
 const isMobile = ref(false)
 const mobileSrc = new URL('@/assets/videos/mobile_intro.mp4', import.meta.url).href
-const desktopSrc = '/assets/videos/desktop_intro.mp4'
 
 onMounted(() => {
   isMobile.value = window.innerWidth < 768
@@ -76,7 +75,7 @@ const handleMoveToTop = () => {
 <template>
   <div class="bg-red-50/10 font-jost h-full min-h-screen">
       <transition name="fade" mode="out-in">
-        <div v-if="false">
+        <div v-if="!videoReproduced">
           <video
             ref="videoRef"
             class="w-full h-screen object-cover block"
@@ -92,78 +91,71 @@ const handleMoveToTop = () => {
           </video>
         </div>
         <main v-else class="">
-          <HeaderNav v-if="false" />
+          <HeaderNav />
 
-          <HeroSection class="main-section" v-if="false" />
+          <HeroSection class="main-section" />
 
-          <SeparatorSection v-if="false">
+          <SeparatorSection >
             A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
             mis 15 años de vida. Porque su presencia, siempre será mi mejor regalo.
           </SeparatorSection>
 
-          <SaveTheDate class="main-section" v-if="false" />
+          <SaveTheDate class="main-section" />
 
-          <SeparatorSection v-if="false">
+          <SeparatorSection>
             Los recuerdos más hermosos nacen con las personas más especiales.
           </SeparatorSection>
 
-          <CWMItinerario class="main-section" v-if="false" />
+          <CWMItinerario class="main-section" />
 
-          <SeparatorSection v-if="false">
+          <SeparatorSection>
             ¡Prepárate para reír, bailar y celebrar como nunca!
           </SeparatorSection>
 
           <SweetMemories
-            v-if="false"
             class="main-section"
             :mode="'presentation'"
           />
 
-          <SeparatorSection
-            v-if="false"
-          >
+          <SeparatorSection>
             Gracias por ser parte de mi historia. Ahora celebremos juntos.
           </SeparatorSection>
 
           <RSVP class="main-section" />
 
-          <SeparatorSection v-if="false">
+          <SeparatorSection>
             La música, las memorias y ustedes harán de esta noche mágica.
           </SeparatorSection>
 
-          <SuggestedMusic class="main-section" v-if="false" />
+          <SuggestedMusic class="main-section"/>
 
-          <SeparatorSection v-if="false">
+          <SeparatorSection>
             Que esta fiesta sea tan inolvidable como ustedes lo son para mí.
           </SeparatorSection>
 
           <EventComments
-            v-if="false"
-
             origin="event"
             class="main-section"
           />
 
-          <SeparatorSection v-if="false">
+          <SeparatorSection>
             Donde hay amor y alegría, el momento es perfecto.
           </SeparatorSection>
 
-          <EventLocations v-if="false" />
+          <EventLocations />
 
-          <SeparatorSection v-if="false">
+          <SeparatorSection >
             Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
             compartir con cada uno de ustedes. ¡Gracias por estar aquí!
           </SeparatorSection>
 
-          <SwipeLeftIcon v-if="false" />
+          <SwipeLeftIcon />
 
           <BackgroundMusic
-
-            v-if="false"
             origin="event"
           />
 
-          <EventFooter v-if="false" />
+          <EventFooter />
         </main>
       </transition>
     </div>
@@ -185,13 +177,6 @@ body {
   width: 100%;
   height: 100%;
   background-color: white;
-}
-
-.logo-butterfly {
-  width: 80%;
-  position: absolute;
-  top: 251px;
-  left: 40px;
 }
 
 .logo-butterfly img {
