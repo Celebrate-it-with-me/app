@@ -7,14 +7,20 @@ import CEventsModal from '@/components/UI/modals/CEventsModal.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
+import { useHydrationStore } from '@/stores/useHydrationStore'
 
 const userStore = useUserStore()
 const eventsStore = useEventsStore()
+const hydrationStore = useHydrationStore()
 const showEventsModal = ref(false)
 const loading = ref(false)
 const notificationStore = useNotificationStore()
 
-onMounted(() => {
+onMounted(async () => {
+  if (!hydrationStore.isHydrated) {
+    await hydrationStore.hydrateAll()
+  }
+
   loadEvents()
 })
 

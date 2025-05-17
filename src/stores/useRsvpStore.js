@@ -4,6 +4,7 @@ import { useUserStore } from '@/stores/useUserStore'
 
 export const useRsvpStore = defineStore('rsvpStore', {
   state: () => ({
+    rsvpGuests: [],
     title: '',
     description: '',
     customFields: {  },
@@ -11,6 +12,10 @@ export const useRsvpStore = defineStore('rsvpStore', {
     loaded: false
   }),
   actions: {
+    setRsvp(rsvpGuests) {
+      this.rsvpGuests = rsvpGuests
+    },
+
     loadRsvp({ eventId }) {
       return RsvpService.loadRsvp({ eventId })
     },

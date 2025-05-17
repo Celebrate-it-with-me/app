@@ -55,6 +55,10 @@ export const useSaveTheDateStore = defineStore('stdStore', {
     hasPreviousStd: false
   }),
   actions: {
+    setSaveTheDate(saveTheDateData) {
+      this.saveTheDate = saveTheDateData
+    },
+
     initStd(legacyStd) {
       console.log(legacyStd)
       if (Object.keys(legacyStd).length) {
