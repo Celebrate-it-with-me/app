@@ -33,7 +33,7 @@ export const useHydrationStore = defineStore('hydration', () => {
         // Todo: Handle Error, redirect to error page with support message
       }
     } catch (error) {
-      isLoading.value = true
+      isLoading.value = false
     } finally {
       isLoading.value = false
       isHydrated.value = true
