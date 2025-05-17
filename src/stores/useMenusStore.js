@@ -103,6 +103,10 @@ export const useMenusStore = defineStore('menusStore', {
         menuItem,
         eventId: userStore.activeEvent,
       })
+    },
+
+    setMenus(menus) {
+      this.menus = menus
     }
 
   },

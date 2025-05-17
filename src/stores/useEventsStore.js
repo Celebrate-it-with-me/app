@@ -47,6 +47,11 @@ export const useEventsStore = defineStore('eventsStore', {
     setEvents(events) {
       this.events = events
     },
+
+    initActiveEvent(event) {
+      this.activeEvent = event
+    },
+
     selectEvent(eventId) {
       const userStore = useUserStore()
       this.activeEvent = this.events.find((event) => event.id === eventId)
