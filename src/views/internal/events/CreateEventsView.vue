@@ -183,7 +183,14 @@ import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { EVENT_STATUSES as statuses, EVENT_VISIBILITIES as visibilities, DEFAULT_ERROR_MESSAGE } from '@/constants/constants'
-import { Calendar, Music, Waves, ImageIcon, MessageSquareText } from 'lucide-vue-next'
+import {
+  Calendar,
+  Music,
+  Waves,
+  ImageIcon,
+  MessageSquareText,
+  MapIcon,
+} from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -207,7 +214,8 @@ const eventState = reactive({
   seatsAccommodation: false,
   preview: false,
   eventBudget: false,
-  analytics: false
+  analytics: false,
+  location: false,
 })
 
 const featuresList = [
@@ -216,7 +224,8 @@ const featuresList = [
   { name: 'sweetMemories', model: 'sweetMemories', icon: ImageIcon, label: 'Sweet Memories', description: 'Create a photo gallery to capture memories of your event.' },
   { name: 'music', model: 'music', icon: Waves, label: 'Music', description: 'Share a music playlist with your guests.' },
   { name: 'backgroundMusic', model: 'backgroundMusic', icon: Music, label: 'Background Music', description: 'Enable background music on the event page.' },
-  { name: 'eventComments', model: 'eventComments', icon: MessageSquareText, label: 'Event Comments', description: 'On/Off event comments sections.' }
+  { name: 'eventComments', model: 'eventComments', icon: MessageSquareText, label: 'Event Comments', description: 'On/Off event comments sections.' },
+  { name: 'location', model: 'location', icon: MapIcon, label: 'Location', description: 'Enable location on the event page.' },
 ]
 
 const eventStore = useEventsStore()
@@ -231,7 +240,10 @@ const eventValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       eventName: zod.string().min(1, 'Event name is required.'),
-      eventType: zod.string().min(1, 'Event type is required.'),
+      eventType: zod.number({
+        required_error: 'Event type is required.',
+        invalid_type_error: 'Invalid event type.'
+      }),
       startDate: zod.string().min(1, 'Start date is required.'),
       endDate: zod.string().min(1, 'End date is required.'),
       status: zod.string().min(1, { message: 'Status is required' }),
@@ -265,6 +277,7 @@ onMounted(async () => {
     } else {
       const current = eventStore.activeEvent
       let features = {}
+
       eventStore.activeEvent.eventFeatures.forEach((feature) => {
         features[feature.name] = feature.isActive
       })

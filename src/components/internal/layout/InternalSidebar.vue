@@ -49,9 +49,9 @@ import {
   CheckSquare,
   AlarmClock,
   MessageCircle,
-  Map,
   LayoutDashboard,
-  ChefHat
+  ChefHat,
+  MapPin
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 import { computed } from 'vue'
@@ -74,7 +74,7 @@ const menuItems = [
   { label: 'Menu', to: '/dashboard/menus', icon: ChefHat, featureName: 'menu' },
   { label: 'Guests', to: '/dashboard/guests', icon: Users, featureName: null },
   { label: 'RSVP', to: '/dashboard/rsvp', icon: CheckSquare, featureName: 'rsvp'  },
-  { label: 'Locations', to: '/dashboard/locations', icon: Map, featureName: 'location' },
+  { label: 'Location', to: '/dashboard/locations', icon: MapPin, featureName: 'location' },
   { label: 'Save the Date', to: '/dashboard/save-the-date', icon: AlarmClock, featureName: 'saveTheDate' },
   { label: 'Sweet Memories', to: '/dashboard/sweet-memories', icon: Camera, featureName: 'sweetMemories' },
   { label: 'Suggested Music', to: '/dashboard/suggested-music', icon: Music, featureName: 'music' },
