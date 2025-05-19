@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import { useGuestsStore } from '@/stores/useGuestStore'
@@ -161,9 +161,4 @@ const confirmDelete = (guest) => {
   guestToDelete.value = guest
   confirmDeleteModal.value = true
 }
-
 </script>
-
-<style scoped>
-/* Custom styles if needed */
-</style>
