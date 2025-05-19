@@ -7,9 +7,11 @@ import LocationImages from '@/views/internal/locations/LocationImages.vue'
 import LocationsReviews from '@/views/internal/locations/LocationsReviews.vue'
 import { useLocationsStore } from '@/stores/useLocationsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
+import { useRouter } from 'vue-router'
 
 const locationStore = useLocationsStore()
 const notificationsStore = useNotificationStore()
+const router = useRouter()
 
 const currentStep = ref(0)
 const isValidNext = ref(false)
@@ -63,6 +65,8 @@ const handleSubmit = async () => {
         throw new Error('Failed to upload images')
       }
     }
+
+    await router.push('/dashboard/locations')
 
     notificationsStore.addNotification({
       type: 'success',
