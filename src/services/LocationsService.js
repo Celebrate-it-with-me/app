@@ -39,6 +39,18 @@ class LocationsService {
       }
     })
   }
+
+  async getPlaceImages({ eventId, placeId }) {
+    return CWM_API.get(`event/${eventId}/locations/${placeId}/images`)
+  }
+
+  uploadLocationImages(locationId, formData, eventId) {
+    return CWM_API.post(`event/${eventId}/locations/${locationId}/images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
 }
 
 export default new LocationsService()
