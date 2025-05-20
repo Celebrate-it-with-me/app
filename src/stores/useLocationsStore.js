@@ -28,6 +28,20 @@ export const useLocationsStore = defineStore('locationsStore', {
     setLocations(locations) {
       this.locations = locations
     },
+    async uploadLocationImages(locationId, formData){
+      const userStore = useUserStore()
+      return await LocationsService.uploadLocationImages(locationId, formData, userStore.activeEvent)
+    },
+
+    async getPlaceImages(placeId) {
+      const userStore = useUserStore()
+
+      return await LocationsService.getPlaceImages({
+        eventId: userStore.activeEvent,
+        placeId
+      })
+    },
+
     async loadLocations() {
       const userStore = useUserStore()
       return await LocationsService.loadLocations({
