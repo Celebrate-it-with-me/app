@@ -8,7 +8,7 @@
       >+ Add Location</CButton>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
+    <div class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
       <div class="overflow-x-auto">
         <div v-if="loading">
           <CLoading />
@@ -16,7 +16,7 @@
         <div v-else>
           <table
             class="w-full table-auto divide-y divide-gray-200 dark:divide-gray-700"
-            v-if="locations.length > 0"
+            v-if="locationsStore.locations.length > 0"
           >
             <thead class="bg-gray-50 dark:bg-gray-800">
             <tr>
@@ -66,7 +66,7 @@
               class="divide-y divide-gray-100 dark:divide-gray-700"
             >
               <tr
-                v-for="location in locations"
+                v-for="location in locationsStore.locations"
                 :key="location.id"
                 class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
               >
@@ -130,7 +130,7 @@ import CHeading from '@/components/UI/headings/CHeading.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CLoading from '@/components/UI/loading/CLoading.vue'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useLocationsStore } from '@/stores/useLocationsStore'
 import { useRouter } from 'vue-router'
 import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
@@ -147,28 +147,13 @@ const notificationsStore = useNotificationStore()
 
 const loadLocations = async () => {
   loading.value = true
-  try {
-    const response = await locationsStore.loadLocations()
-
-    if (response.status === 200) {
-      locations.value = response?.data?.data ?? []
-      locationsStore.locations = locations.value
-    } else {
-      console.error('Error loading locations:', response)
-    }
-
-  } catch (error) {
-    console.error('Error loading locations:', error)
-  } finally {
-    loading.value = false
-  }
+  await locationsStore.loadLocationsList()
+  loading.value = false
 }
-
 
 const editLocation = async (location) => {
   return await router.push('/dashboard/locations/edit/' + location.id)
 }
-
 
 const confirmDelete = (location) => {
   selectedLocationForDelete.value = location
@@ -201,6 +186,4 @@ const handleConfirmDelete = async () => {
   }
 }
 
-
-onMounted(loadLocations)
 </script>

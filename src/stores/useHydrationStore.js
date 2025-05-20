@@ -7,6 +7,7 @@ import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
 import { useGuestsStore } from '@/stores/useGuestStore'
 import { useUserStore } from '@/stores/useUserStore'
+import { useLocationsStore } from '@/stores/useLocationsStore'
 
 export const useHydrationStore = defineStore('hydration', () => {
   const isHydrated = ref(false)
@@ -29,6 +30,7 @@ export const useHydrationStore = defineStore('hydration', () => {
         useGuestsStore().setGuests(data.guests)
         useRsvpStore().setRsvp(data.rsvp)
         useSaveTheDateStore().setSaveTheDate(data.saveTheDate)
+        useLocationsStore().setLocations(data.locations)
 
       } else {
         // Todo: Handle Error, redirect to error page with support message

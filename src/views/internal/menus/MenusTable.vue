@@ -47,7 +47,7 @@ const gotToMenu = async (menu) => {
   <section v-if="!menuStore.hasMenu">
     <CAlert variant="info"> There is no menus in this event.! </CAlert>
   </section>
-  <section v-else class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-md space-y-8">
+  <section v-else class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md space-y-8">
     <table
       class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
       v-if="menuStore.menus.length"

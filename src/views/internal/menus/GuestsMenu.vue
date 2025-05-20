@@ -66,7 +66,7 @@ watch(() => menuStore.perPage, async () => {
   <section v-if="!menuStore.guestsMenu.length">
     <CAlert variant="info"> There is no guest menu selection yet in this event.! </CAlert>
   </section>
-  <section v-else class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-md space-y-8">
+  <section v-else class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md space-y-8">
     <button
       @click="exportMenu"
       class="px-4 py-2 rounded-xl bg-primary text-white hover:bg-pink-600 transition"

@@ -6,19 +6,32 @@ import LocationsService from '@/services/LocationsService'
 export const useLocationsStore = defineStore('locationsStore', {
   state: () => ({
     locations: [],
-    totalItems: 0,
-    pageSelected: 1,
-    perPage: 5,
     searchValue: '',
     currentLocation: null,
   }),
   actions: {
+    async loadLocationsList() {
+      try {
+        const response = await this.loadLocations()
+
+        if (response.status === 200) {
+          this.locations = response?.data?.data ?? []
+        } else {
+          console.error('Error loading locations:', response)
+        }
+
+      } catch (error) {
+        console.error('Error loading locations:', error)
+      }
+    },
+
+    setLocations(locations) {
+      this.locations = locations
+    },
     async loadLocations() {
       const userStore = useUserStore()
       return await LocationsService.loadLocations({
         eventId: userStore.activeEvent,
-        perPage: this.perPage,
-        pageSelected: this.pageSelected,
         searchValue: this.searchValue,
       })
     },

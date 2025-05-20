@@ -4,28 +4,17 @@
       <CHeading :level="2" weight="semibold">RSVP Guest List</CHeading>
     </div>
 
-    <div
-      v-if="!rsvpGuests.length"
-    >
-      <CAlert
-        variant="info"
-      >
-        <p>No guests found for this event. Please check the event details or add guests
-        in the guests section.</p>
-      </CAlert>
-    </div>
     <section
-      v-else
-      class="rsvp-table-section"
+        class="rsvp-table-section"
     >
-      <div class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
+      <div class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
         <div class="flex items-center justify-between mb-4">
           <div class="flex gap-4 items-center justify-between">
             <CSelect
               id="filterStatus"
               name="filterStatus"
               :options="filterOptions"
-              v-model="rsvpStatus"
+              v-model="rsvpStore.statusSelected"
             />
 
             <CInput
@@ -34,18 +23,19 @@
               type="text"
               placeholder="Search by name"
               class="w-64"
-              v-model="searchValue"
+              v-model="rsvpStore.searchValue"
             />
           </div>
 
           <div
+            v-if="rsvpStore.rsvpGuests.length"
             class="flex items-center gap-4"
           >
             <RsvpDownload
-              :current-page="currentPage"
-              :per-page="perPage"
-              :rsvp-status="rsvpStatus"
-              :search-value="searchValue"
+              :current-page="rsvpStore.pageSelected"
+              :per-page="rsvpStore.perPage"
+              :rsvp-status="rsvpStore.statusSelected"
+              :search-value="rsvpStore.searchValue"
               :event-id="userStore.activeEvent"
               class="ml-4"
             />
@@ -53,11 +43,12 @@
               Send Invitation to Selected
             </CButton>
           </div>
-
-
         </div>
 
-        <div class="overflow-x-auto">
+        <div
+          v-if="rsvpStore.rsvpGuests.length"
+          class="overflow-x-auto"
+        >
           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-50 dark:bg-gray-800">
             <tr>
@@ -98,25 +89,38 @@
             </tbody>
           </table>
         </div>
-        <div class="pagination-section mt-4 flex items-center justify-between">
+        <div
+          v-if="!rsvpGuests.length"
+        >
+          <CAlert
+            variant="info"
+          >
+            <p>No guests found for this event. Please check the event details or add guests
+              in the guests section.</p>
+          </CAlert>
+        </div>
+        <div
+          v-if="rsvpGuests.length"
+          class="pagination-section mt-4 flex items-center justify-between"
+        >
           <div>
             <CSelect
               id="per-page"
               :options="perPageOptions"
               name="perPage"
-              v-model="perPage"
+              v-model="rsvpStore.perPage"
             />
           </div>
           <div>
             <CPagination
-              :total-pages="totalPages"
-              :current-page="currentPage"
-              @update:currentPage="currentPage = $event"
+              :total-pages="rsvpStore.totalPages"
+              :current-page="rsvpStore.pageSelected"
+              @update:currentPage="rsvpStore.pageSelected = $event"
             />
           </div>
         </div>
 
-        <RsvpTotals />
+        <RsvpTotals v-if="rsvpStore.rsvpGuests.length"/>
       </div>
       <CRsvpDetailsModal
         v-model="showDetailsModal"
@@ -129,7 +133,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
@@ -138,7 +142,6 @@ import CRsvpDetailsModal from '@/components/UI/modals/CRsvpDetailsModal.vue'
 
 import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useUserStore } from '@/stores/useUserStore'
-import { useNotificationStore } from '@/stores/useNotificationStore'
 import CPagination from '@/components/UI/pagination/CPagination.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import RsvpTotals from '@/views/internal/rsvp/components/RsvpTotals.vue'
@@ -156,49 +159,24 @@ const selectedGuests = ref([])
 const selectAll = ref(false)
 const selectedGuest = ref(null)
 const showDetailsModal = ref(false)
-const rsvpGuests = ref([])
-const perPage = ref("10")
-const currentPage = ref(1)
-const totalPages = ref(0)
-const rsvpStatus = ref('')
-const searchValue = ref('')
-
 const userStore = useUserStore()
 const rsvpStore = useRsvpStore()
-const notifications = useNotificationStore()
 
 const filterOptions = [
+  { value: '', label: 'All' },
   { value: 'pending', label: 'Pending' },
-  { value: 'confirmed', label: 'Confirmed' },
-  { value: 'declined', label: 'Declined' },
+  { value: 'attending', label: 'Confirmed' },
+  { value: 'not-attending', label: 'Declined' },
 ]
+
+const rsvpGuests = computed(() => {
+  return rsvpStore.rsvpGuests ?? []
+})
+
 
 const toggleSelectAll = (checked) => {
   selectAll.value = checked
   selectedGuests.value = checked ? rsvpGuests.value.map(g => g.id) : []
-}
-
-const loadGuests = async () => {
-  const response = await rsvpStore.loadRsvpGuestsList(
-    {
-      eventId: userStore.activeEvent,
-      currentPage: currentPage.value,
-      perPage: perPage.value,
-      status: rsvpStatus.value,
-      search: searchValue.value,
-    })
-
-  if (response.status !== 200) {
-    notifications.addNotification({
-      type: 'error',
-      message: 'Failed to load guests. Please try again later.',
-    })
-    return
-  }
-
-  rsvpGuests.value = response.data.data ?? []
-  currentPage.value = response.data.meta?.current_page || 1
-  totalPages.value = response.data.meta?.last_page || 1
 }
 
 const viewGuest = (guest) => {
@@ -210,32 +188,30 @@ const sendInvitations = () => {
   alert(`Sending invitations to guests: ${selectedGuests.value.join(', ')}`)
 }
 
-const reloadGuests = () => {
-  loadGuests()
+const reloadGuests = async () => {
+  await rsvpStore.loadGuests()
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const handleConfirmationReverted = async () => {
-  await loadGuests()
+  await rsvpStore.loadGuests()
   showDetailsModal.value = false
 }
 
-onMounted(loadGuests)
-
-watch(perPage, async () => {
-  reloadGuests()
+watch(() => rsvpStore.perPage, async () => {
+  await reloadGuests()
 })
 
-watch(currentPage, async () => {
-  reloadGuests()
+watch(() => rsvpStore.pageSelected, async () => {
+  await reloadGuests()
 })
 
-watch(searchValue, async () => {
-  reloadGuests()
+watch(() => rsvpStore.searchValue, async () => {
+  await reloadGuests()
 })
 
-watch(rsvpStatus, async () => {
-  reloadGuests()
+watch(() => rsvpStore.statusSelected, async () => {
+  await reloadGuests()
 })
 
 </script>
