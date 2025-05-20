@@ -81,7 +81,7 @@ const eventProgress = computed(() => {
         <CalendarCheck class="w-4 h-4" />
         Active Event
       </div>
-      <CButton variant="primary" size="sm" class="rounded-full flex items-center gap-1" @click="seeEvent">
+      <CButton variant="primary" size="xs" class="rounded-full flex items-center gap-1" @click="seeEvent">
         <Eye class="w-4 h-4" />
         See Event
       </CButton>
