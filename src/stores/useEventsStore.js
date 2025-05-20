@@ -104,6 +104,9 @@ export const useEventsStore = defineStore('eventsStore', {
     }
   },
   getters: {
+    hasEvents(){
+      return this.events.length > 0
+    },
     activeEvents() {
       return this.events.filter((event) => ['draft', 'published'].includes(event.status))
     },

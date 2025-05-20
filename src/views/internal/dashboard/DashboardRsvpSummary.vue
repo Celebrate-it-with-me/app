@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useUserStore } from '@/stores/useUserStore'
 import CBadge from '@/components/UI/badges/CBadge.vue'
+import { PieChart } from 'lucide-vue-next'
 
 const rsvpStore = useRsvpStore()
 const userStore = useUserStore()
@@ -19,11 +20,14 @@ const summaries = reactive({
 const chartOptions = ref({
   labels: ['Confirmed', 'Pending', 'Declined'],
   colors: ['#22c55e', '#facc15', '#ef4444'],
+  tooltip: {
+    enabled: false
+  },
   legend: {
     show: false,
     position: 'right',
     labels: {
-      colors: ['#374151'], // Tailwind slate-700 (optional for dark/light mode)
+      colors: ['#374151'],
       useSeriesColors: false
     },
     fontSize: '14px',
@@ -59,10 +63,9 @@ onMounted(() => {
 
 const loadRsvpSummary = async () => {
   try {
-    const response = await rsvpStore.loadDashboardRsvpSummary(
-      {
-        eventId: userStore.activeEvent
-      })
+    const response = await rsvpStore.loadDashboardRsvpSummary({
+      eventId: userStore.activeEvent
+    })
 
     if (response.status === 200) {
       const {
@@ -82,60 +85,52 @@ const loadRsvpSummary = async () => {
       summaries.mainGuests = mainGuests
       summaries.companions = companions
       summaries.totalAllowed = totalAllowed
-
     } else {
       console.error('Error loading RSVP summary:', response)
     }
-
-
   } catch (error) {
     console.error('Error fetching RSVP summary:', error)
   }
 }
-
 </script>
 
 <template>
-  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold">Rsvp Summary</h2>
-      <CBadge
-        variant="secondary"
-        size="sm"
-        class="text-xs"
-      >
-        <span v-if="summaries.totalAllowed === 0">
-          Unlimited Guests
-        </span>
-        <span v-else-if="summaries.totalAllowed !== 0">
-          {{ summaries.totalAllowed }} Guests
-        </span>
+  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2 text-purple-600 font-semibold text-sm bg-purple-50 dark:bg-purple-950 px-3 py-1 rounded-full">
+        <PieChart class="w-4 h-4" />
+        RSVP Summary
+      </div>
+      <CBadge variant="secondary" size="sm" class="text-xs">
+        <span v-if="summaries.totalAllowed === 0">Unlimited Guests</span>
+        <span v-else>{{ summaries.totalAllowed }} Guests</span>
       </CBadge>
     </div>
 
-    <div class="w-full p-4 flex items-center justify-between">
+    <!-- Content -->
+    <div class="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
       <apexchart
         width="100%"
-        height="150px"
+        height="200px"
         type="donut"
         :options="chartOptions"
         :series="series"
       />
-      <div class="flex flex-col justify-center gap-4 mt-4 text-sm">
-        <div class="flex items-center gap-1">
-          <span class="w-3 h-3 rounded-full bg-green-500"></span> Confirmed
+      <div class="flex flex-col gap-2 text-sm">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-green-500"></span>
+          Confirmed ({{ summaries.confirmed }})
         </div>
-        <div class="flex items-center gap-1">
-          <span class="w-3 h-3 rounded-full bg-yellow-400"></span> Pending
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+          Pending ({{ summaries.pending }})
         </div>
-        <div class="flex items-center gap-1">
-          <span class="w-3 h-3 rounded-full bg-red-500"></span> Declined
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-red-500"></span>
+          Declined ({{ summaries.declined }})
         </div>
       </div>
     </div>
   </section>
 </template>
-
-<style scoped>
-
-</style>

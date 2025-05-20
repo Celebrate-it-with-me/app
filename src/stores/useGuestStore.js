@@ -116,5 +116,10 @@ export const useGuestsStore = defineStore('guestsStore', {
     async updateCompanion({ companionId, firstName, lastName, phoneNumber,email }) {
       return GuestsService.updateCompanion({ companionId, firstName, lastName, phoneNumber,email })
     }
+  },
+  getters: {
+    hasGuests() {
+      return this.guests.length > 0
+    },
   }
 })

@@ -83,5 +83,10 @@ export const useLocationsStore = defineStore('locationsStore', {
       })
     }
 
+  },
+  getters: {
+    hasLocations() {
+      return this.locations.length > 0
+    }
   }
 })

@@ -122,5 +122,10 @@ export const useSaveTheDateStore = defineStore('stdStore', {
         eventId: userStore.currentEventId
       })
     }
+  },
+  getters: {
+    hasSaveTheDate() {
+      return !!this.id
+    }
   }
 })
