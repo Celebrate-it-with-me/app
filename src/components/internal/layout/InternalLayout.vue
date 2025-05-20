@@ -8,6 +8,7 @@ import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useHydrationStore } from '@/stores/useHydrationStore'
+import CPageLoaderV2 from '@/components/UI/loading/CPageLoaderV2.vue'
 
 const userStore = useUserStore()
 const eventsStore = useEventsStore()
@@ -17,19 +18,18 @@ const loading = ref(false)
 const notificationStore = useNotificationStore()
 
 onMounted(async () => {
+  loading.value = true
   if (!hydrationStore.isHydrated) {
     await hydrationStore.hydrateAll()
   }
 
-  loadEvents()
+  await loadEvents()
+  loading.value = false
 })
 
 const loadEvents = async () => {
   try {
-    loading.value = true
-
     await eventsStore.loadEventsPlansAndType()
-
     const response = await userStore.initUserEvents()
 
     if (response.status >= 200 && response.status < 300) {
@@ -57,12 +57,8 @@ const loadEvents = async () => {
         message: 'Session expired. Please log in again.',
       })
     }
-
-  } finally {
-    loading.value = false
   }
 }
-
 
 const triggerEventsModal = () => {
   showEventsModal.value = true
@@ -103,7 +99,11 @@ watch(() => userStore?.preferences?.visualTheme,  () => {
       <!-- Main content -->
       <div class="flex-1 flex flex-col">
         <HeaderBar class="bg-white" />
-        <main class="flex-1 p-6 overflow-y-auto">
+        <CPageLoaderV2 v-if="loading" />
+        <main
+          v-else
+          class="flex-1 p-6 overflow-y-auto"
+        >
           <router-view />
         </main>
       </div>

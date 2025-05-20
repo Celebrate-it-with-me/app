@@ -1,6 +1,6 @@
 <script setup>
 import CAlert from '@/components/UI/alerts/CAlert.vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useMenusStore } from '@/stores/useMenusStore'
 import CPagination from '@/components/UI/pagination/CPagination.vue'
 import CSelect from '@/components/UI/form2/CSelect.vue'
@@ -51,13 +51,6 @@ const exportMenu = async () => {
     loading.value = false
   }
 }
-
-
-onMounted(async () => {
-  loading.value = true
-  await loadGuestsMenu()
-  loading.value = false
-})
 
 watch(() => menuStore.pageSelected, async () => {
   await loadGuestsMenu()

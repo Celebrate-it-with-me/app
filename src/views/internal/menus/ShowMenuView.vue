@@ -98,7 +98,7 @@ const handleAddItem = async (item) => {
 <template>
   <div class="space-y-8">
     <div class="flex items-center justify-between">
-      <CHeading :level="2" weight="semibold">Event Show</CHeading>
+      <CHeading :level="2" weight="semibold">Event Menu</CHeading>
       <CButton
         variant="primary"
         @click="addNewMenu"

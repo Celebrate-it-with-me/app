@@ -25,6 +25,7 @@ export const useHydrationStore = defineStore('hydration', () => {
         useEventsStore().setEvents(data.events)
         useEventsStore().initActiveEvent(data.activeEvent)
         useMenusStore().setMenus(data.menus)
+        useMenusStore().setMenuGuests(data.menuGuests)
         useGuestsStore().setGuests(data.guests)
         useRsvpStore().setRsvp(data.rsvp)
         useSaveTheDateStore().setSaveTheDate(data.saveTheDate)

@@ -3,7 +3,7 @@ import CButton from '@/components/UI/buttons/CButton.vue'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
 import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 import { useMenusStore } from '@/stores/useMenusStore'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const menuStore = useMenusStore()
@@ -40,10 +40,6 @@ const loadMenus = async () => {
 const gotToMenu = async (menu) => {
   await router.push(`/dashboard/menus/show/${menu.id}`)
 }
-
-onMounted(async() => {
-  await loadMenus()
-})
 
 </script>
 
@@ -91,13 +87,13 @@ onMounted(async() => {
           {{ menu.description }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-          {{ menu.allow_multiple_choices ? 'Yes' : 'No' }}
+          {{ menu.allowMultipleChoices ? 'Yes' : 'No' }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm">
-          {{ menu.allow_custom_request ? 'Yes' : 'No' }}
+          {{ menu.allowCustomRequest ? 'Yes' : 'No' }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm">
-          {{ menu.is_default ? 'Yes' : 'No' }}
+          {{ menu.isDefault ? 'Yes' : 'No' }}
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-left flex flex-start gap-2 text-sm">
           <CButton size="sm" variant="primary" @click="gotToMenu(menu)">Details</CButton>
