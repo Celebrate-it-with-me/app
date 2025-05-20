@@ -20,7 +20,7 @@
 
     <div
       v-else
-      class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6"
+      class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6"
     >
       <div class="overflow-x-auto">
         <div v-if="loading">

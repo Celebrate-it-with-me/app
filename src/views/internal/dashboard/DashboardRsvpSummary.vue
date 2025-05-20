@@ -96,7 +96,7 @@ const loadRsvpSummary = async () => {
 </script>
 
 <template>
-  <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
+  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">Rsvp Summary</h2>
       <CBadge

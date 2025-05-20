@@ -107,6 +107,10 @@ export const useMenusStore = defineStore('menusStore', {
 
     setMenus(menus) {
       this.menus = menus
+    },
+
+    setMenuGuests(menuGuests) {
+      this.guestsMenu = menuGuests.data
     }
 
   },

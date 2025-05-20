@@ -63,7 +63,7 @@ const eventStatus = computed(() => {
 </script>
 
 <template>
-  <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
+  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-semibold">Active Event</h2>
       <CButton variant="primary" size="sm" @click="seeEvent"> See Event </CButton>

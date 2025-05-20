@@ -8,7 +8,7 @@
 
     <DashboardSmartAssistant />
 
-    <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
+    <section class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
       <h2 class="text-xl font-semibold mb-4">Actividad Reciente</h2>
       <ul class="space-y-3">
         <li>
