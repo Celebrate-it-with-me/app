@@ -54,6 +54,7 @@ const onError = async (error) => {
         await handleUnauthorized()
         break;
       case 403:
+        await router.push('/403');
         console.log('Forbidden:', error.message);
         break;
       case 404:
@@ -70,7 +71,6 @@ const onError = async (error) => {
 const handleUnauthorized = async () => {
   const userStore = useUserStore()
   const notificationStore = useNotificationStore()
-  console.log('here qwe 123')
 
   await userStore.logOut()
 
