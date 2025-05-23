@@ -6,10 +6,21 @@ export const useEventsStore = defineStore('eventsStore', {
   state: () => ({
     events: [],
     activeEvent: null,
+    eventPermissions: null,
     eventPlans: [],
     eventTypes: [],
   }),
   actions: {
+    async loadEventPermissions(eventId) {
+      const response = await EventsService.getEventPermissions(eventId)
+
+      if (response.status === 200) {
+        const { data } = response
+
+        this.eventPermissions = data.data?.eventPermissions ?? []
+      }
+    },
+
     async loadEventsPlansAndType() {
       const response = await EventsService.loanEventsPlansAndType()
 
@@ -112,6 +123,18 @@ export const useEventsStore = defineStore('eventsStore', {
     },
     inactiveEvents() {
       return this.events.filter((event) => ['archived', 'canceled'].includes(event.status))
+    },
+    hasPermission: (state) => (permission) => {
+      if (state.eventPermissions.length > 0) {
+        return state.eventPermissions.some((perm) => perm.name === permission)
+      }
+      return false
+    },
+    hasAnyPermission: (state) => (permissions) => {
+      if (state.eventPermissions.length > 0) {
+        return state.eventPermissions.some((perm) => permissions.includes(perm))
+      }
+      return false
     }
   }
 })
