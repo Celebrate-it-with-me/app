@@ -28,7 +28,7 @@ const authRoutes = [
     meta: {
       title: 'Dashboard',
       requiresAuth: true,
-      requiredPermission: ['view_dashboard'],
+      // requiredPermission: ['view_dashboard'],
     }
   },
   {
@@ -48,7 +48,7 @@ const authRoutes = [
     meta: {
       title: 'Create Event',
       requiresAuth: true,
-      requiredPermission: ['create_events'],
+      requiredPermission: ['create_event'],
     }
   },
   {
@@ -58,7 +58,7 @@ const authRoutes = [
     meta: {
       title: 'Edit Event',
       requiresAuth: true,
-      requiredPermission: ['edit_events'],
+      requiredPermission: ['edit_event'],
     }
   },
   {
@@ -124,7 +124,7 @@ const authRoutes = [
     meta: {
       title: 'Create Guest',
       requiresAuth: true,
-      requiredPermission: ['create_guests'],
+      requiredPermission: ['create_guest'],
     }
   },
   {
@@ -154,7 +154,7 @@ const authRoutes = [
     meta: {
       title: 'Menus',
       requiresAuth: true,
-      requiredPermission: ['create_menus'],
+      requiredPermission: ['create_menu'],
     }
   },
   {
@@ -164,7 +164,7 @@ const authRoutes = [
     meta: {
       title: 'Show Menus',
       requiresAuth: true,
-      requiredPermission: ['view_menus'],
+      requiredPermission: ['view_menu'],
     }
   },
   {
@@ -174,7 +174,7 @@ const authRoutes = [
     meta: {
       title: 'Edit Menus',
       requiresAuth: true,
-      requiredPermission: ['edit_menus'],
+      requiredPermission: ['edit_menu'],
     }
   },
   {
