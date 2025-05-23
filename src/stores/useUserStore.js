@@ -2,6 +2,7 @@ import { defineStore, getActivePinia } from 'pinia'
 import UserService from '../services/UserService'
 import { format } from "date-fns";
 import { useEventsStore } from './useEventsStore'
+import { smartResetAllStores } from '@/utils/reset'
 
 // Function to format the logout time
 function formatLogoutTime(logoutTime) {
@@ -148,7 +149,8 @@ export const useUserStore = defineStore('userStore', {
     },
 
     async logOut() {
-      getActivePinia()._s.forEach((store) => store.$reset())
+      // getActivePinia()._s.forEach((store) => store.$reset())
+      smartResetAllStores()
     },
 
     async updateProfile({ name, phone, avatar }) {

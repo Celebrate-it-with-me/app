@@ -43,9 +43,15 @@ export const useHydrationStore = defineStore('hydration', () => {
     }
   }
 
+  const reset = () => {
+    isHydrated.value = false
+    isLoading.value = false
+  }
+
   return {
     isHydrated,
     isLoading,
     hydrateAll,
+    reset
   }
 })

@@ -38,6 +38,10 @@ class EventsService {
   async loadSuggestions({ eventId }) {
     return await CWM_API.get(`event/${eventId}/suggestions`)
   }
+
+  async getEventPermissions(eventId) {
+    return await CWM_API.get(`event/${eventId}/permissions`)
+  }
 }
 
 export default new EventsService()

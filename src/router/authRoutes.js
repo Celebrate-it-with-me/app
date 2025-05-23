@@ -26,7 +26,9 @@ const authRoutes = [
     name: 'dashboard',
     component: DashboardView,
     meta: {
-      title: 'Dashboard'
+      title: 'Dashboard',
+      requiresAuth: true,
+      requiredPermission: ['view_dashboard'],
     }
   },
   {
@@ -34,7 +36,9 @@ const authRoutes = [
     name: 'events',
     component: EventsView,
     meta: {
-      title: 'My CwmEvents'
+      title: 'My CwmEvents',
+      requiresAuth: true,
+      requiredPermission: ['view_events'],
     }
   },
   {
@@ -42,7 +46,9 @@ const authRoutes = [
     name: 'create-events',
     component: CreateEventsView,
     meta: {
-      title: 'Create Event'
+      title: 'Create Event',
+      requiresAuth: true,
+      requiredPermission: ['create_events'],
     }
   },
   {
@@ -50,7 +56,9 @@ const authRoutes = [
     name: 'edit-event',
     component: CreateEventsView,
     meta: {
-      title: 'Edit Event'
+      title: 'Edit Event',
+      requiresAuth: true,
+      requiredPermission: ['edit_events'],
     }
   },
   {
@@ -61,25 +69,41 @@ const authRoutes = [
         path: 'profile',
         name: 'settings-profile',
         component: SettingsProfile,
-        meta: { title: 'Profile' }
+        meta: {
+          title: 'Profile',
+          requiresAuth: true,
+          requiredPermission: ['view_profile'],
+        }
       },
       {
         path: 'preferences',
         name: 'settings-preferences',
         component: SettingsPreferences,
-        meta: { title: 'Preferences' }
+        meta: {
+          title: 'Preferences',
+          requiresAuth: true,
+          requiredPermission: ['view_preferences'],
+        }
       },
       {
         path: 'security',
         name: 'settings-security',
         component: SettingsSecurity,
-        meta: { title: 'Security' }
+        meta: {
+          title: 'Security',
+          requiresAuth: true,
+          requiredPermission: ['view_security'],
+        }
       },
       {
         path: 'danger-zone',
         name: 'settings-danger-zone',
         component: SettingsDangerZone,
-        meta: { title: 'Danger Zone' }
+        meta: {
+          title: 'Danger Zone',
+          requiresAuth: true,
+          requiredPermission: ['view_danger_zone'],
+        }
       }
     ]
   },
@@ -88,7 +112,9 @@ const authRoutes = [
     name: 'guests',
     component: GuestsView,
     meta: {
-      title: 'Events Guests'
+      title: 'Events Guests',
+      requiresAuth: true,
+      requiredPermission: ['view_guests'],
     }
   },
   {
@@ -96,7 +122,9 @@ const authRoutes = [
     name: 'create-guest',
     component: CreateGuestView,
     meta: {
-      title: 'Create Guest'
+      title: 'Create Guest',
+      requiresAuth: true,
+      requiredPermission: ['create_guests'],
     }
   },
   {
@@ -104,7 +132,9 @@ const authRoutes = [
     name: 'rsvp',
     component: RsvpView,
     meta: {
-      title: 'RSVP'
+      title: 'RSVP',
+      requiresAuth: true,
+      requiredPermission: ['view_rsvp'],
     }
   },
   {
@@ -112,7 +142,9 @@ const authRoutes = [
     name: 'menus',
     component: MenusView,
     meta: {
-      title: 'Menus'
+      title: 'Menus',
+      requiresAuth: true,
+      requiredPermission: ['view_menus'],
     }
   },
   {
@@ -120,7 +152,9 @@ const authRoutes = [
     name: 'create-menus',
     component: CreateMenusView,
     meta: {
-      title: 'Menus'
+      title: 'Menus',
+      requiresAuth: true,
+      requiredPermission: ['create_menus'],
     }
   },
   {
@@ -128,7 +162,9 @@ const authRoutes = [
     name: 'show-menu',
     component: ShowMenuView,
     meta: {
-      title: 'Show Menus'
+      title: 'Show Menus',
+      requiresAuth: true,
+      requiredPermission: ['view_menus'],
     }
   },
   {
@@ -136,7 +172,9 @@ const authRoutes = [
     name: 'edit-menus',
     component: CreateMenusView,
     meta: {
-      title: 'Edit Menus'
+      title: 'Edit Menus',
+      requiresAuth: true,
+      requiredPermission: ['edit_menus'],
     }
   },
   {
@@ -144,7 +182,9 @@ const authRoutes = [
     name: 'save-the-date',
     component: SaveTheDateView,
     meta: {
-      title: 'Save the date'
+      title: 'Save the date',
+      requiresAuth: true,
+      requiredPermission: ['view_save_the_date'],
     }
   },
   {
@@ -152,7 +192,9 @@ const authRoutes = [
     name: 'sweet-memories',
     component: CSweetMemories,
     meta: {
-      title: 'Sweet Memories'
+      title: 'Sweet Memories',
+      requiresAuth: true,
+      requiredPermission: ['view_sweet_memories'],
     }
   },
   {
@@ -160,7 +202,9 @@ const authRoutes = [
     name: 'suggest-music',
     component: CSuggestMusic,
     meta: {
-      title: 'Suggest Music'
+      title: 'Suggest Music',
+      requiresAuth: true,
+      requiredPermission: ['view_suggested_music'],
     }
   },
   {
@@ -168,7 +212,9 @@ const authRoutes = [
     name: 'event-comments',
     component: CEventComments,
     meta: {
-      title: 'Background Music'
+      title: 'Background Music',
+      requiresAuth: true,
+      requiredPermission: ['view_event_comments'],
     }
   },
   {
@@ -176,7 +222,9 @@ const authRoutes = [
     name: 'locations',
     component: CEventLocationsView,
     meta: {
-      title: 'Event Locations'
+      title: 'Event Locations',
+      requiresAuth: true,
+      requiredPermission: ['view_event_locations'],
     }
   },
   {
@@ -184,7 +232,9 @@ const authRoutes = [
     name: 'create-location',
     component: CEventLocationsCreateView,
     meta: {
-      title: 'Create Location'
+      title: 'Create Location',
+      requiresAuth: true,
+      requiredPermission: ['create_event_locations'],
     }
   },
   {
@@ -192,7 +242,9 @@ const authRoutes = [
     name: 'edit-location',
     component: CEventLocationsCreateView,
     meta: {
-      title: 'Edit Location'
+      title: 'Edit Location',
+      requiresAuth: true,
+      requiredPermission: ['edit_event_locations'],
     }
   },
 

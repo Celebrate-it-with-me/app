@@ -6,6 +6,8 @@ import ExternalLayout from '@/components/external/layout/ExternalLayout.vue'
 import ExternalCleanLayout from '@/components/external/layout/ExternalCleanLayout.vue'
 import { externalCleanRoutes } from "@/router/externalCleanRoutes"
 import InternalLayout from '@/components/internal/layout/InternalLayout.vue'
+import { useUserStore } from '@/stores/useUserStore'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,7 +56,27 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   document.title = `Celebrate it with me - ${to.meta?.title}` || 'CWM'
-  next();
+
+  const userStore = useUserStore()
+  const eventStore = useEventsStore()
+
+  if (!to.meta?.requiresAuth) return next()
+
+  if (!userStore.isAuthenticated) {
+    return next({ name: 'sign-in' })
+  }
+
+  const requiredPermission = to.meta?.requiredPermission ?? []
+
+  if (requiredPermission.length === 0) return next()
+
+  const hasPermission = requiredPermission.some((perm) => eventStore.eventPermissions?.includes(perm))
+
+  if (!hasPermission) {
+    return next({ name: 'not-authorized' })
+  }
+
+  return next();
 });
 
 export default router
