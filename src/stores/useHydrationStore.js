@@ -25,6 +25,7 @@ export const useHydrationStore = defineStore('hydration', () => {
 
         useEventsStore().setEvents(data.events)
         useEventsStore().initActiveEvent(data.activeEvent)
+        useEventsStore().initEventPermissions(data.userPermissions)
         useMenusStore().setMenus(data.menus)
         useMenusStore().setMenuGuests(data.menuGuests)
         useGuestsStore().setGuests(data.guests)
