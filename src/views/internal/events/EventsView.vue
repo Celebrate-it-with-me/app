@@ -39,7 +39,6 @@ import { useEventsStore } from '@/stores/useEventsStore'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import { useRouter } from 'vue-router'
-import CAlert from '@/components/UI/alerts/CAlert.vue'
 import OtherEventCard from '@/views/internal/events/OtherEventCard.vue'
 import ActiveEventCard from '@/views/internal/events/ActiveEventCard.vue'
 

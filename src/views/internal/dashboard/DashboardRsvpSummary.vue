@@ -1,12 +1,15 @@
 <script setup>
-import { computed, onMounted, onBeforeUnmount, reactive, ref, inject } from 'vue'
+import { computed, onMounted, onBeforeUnmount, reactive, ref } from 'vue'
 import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useUserStore } from '@/stores/useUserStore'
 import CBadge from '@/components/UI/badges/CBadge.vue'
-import { PieChart, Loader2, AlertCircle, FileBarChart } from 'lucide-vue-next'
+import { PieChart, Loader2, AlertCircle, FileBarChart, Info } from 'lucide-vue-next'
 
+// Store instances
 const rsvpStore = useRsvpStore()
 const userStore = useUserStore()
+
+// RSVP data
 const summaries = reactive({
   totalGuests: 0,
   confirmed: 0,
@@ -17,6 +20,7 @@ const summaries = reactive({
   totalAllowed: 0
 })
 
+// Chart configuration
 const chartOptions = ref({
   labels: ['Confirmed', 'Pending', 'Declined'],
   colors: ['#22c55e', '#facc15', '#ef4444'],
@@ -51,27 +55,40 @@ const chartOptions = ref({
   }
 })
 
+// Computed properties
 const series = computed(() => [
   summaries.confirmed,
   summaries.pending,
   summaries.declined
 ])
 
-
 // Component state
 const isLoading = ref(true)
 const hasData = ref(false)
 const hasError = ref(false)
 const errorMessage = ref('')
+const activeTooltip = ref(null)
 
+// Tooltip methods
+const showTooltip = (id) => {
+  activeTooltip.value = id
+}
+
+const hideTooltip = () => {
+  activeTooltip.value = null
+}
+
+// Data loading
 const loadRsvpSummary = async () => {
   isLoading.value = true
-  hasData.value = false
   hasError.value = false
 
   try {
     // Don't fetch if no active event
-    if (!userStore.activeEvent) return
+    if (!userStore.activeEvent) {
+      isLoading.value = false
+      return
+    }
 
     const response = await rsvpStore.loadDashboardRsvpSummary({
       eventId: userStore.activeEvent
@@ -88,13 +105,13 @@ const loadRsvpSummary = async () => {
         totalAllowed
       } = response?.data ?? {}
 
-      summaries.totalGuests = totalGuests
-      summaries.confirmed = confirmed
-      summaries.pending = pending
-      summaries.declined = declined
-      summaries.mainGuests = mainGuests
-      summaries.companions = companions
-      summaries.totalAllowed = totalAllowed
+      summaries.totalGuests = totalGuests || 0
+      summaries.confirmed = confirmed || 0
+      summaries.pending = pending || 0
+      summaries.declined = declined || 0
+      summaries.mainGuests = mainGuests || 0
+      summaries.companions = companions || 0
+      summaries.totalAllowed = totalAllowed || 0
 
       // Check if we have any data to display
       hasData.value = (confirmed > 0 || pending > 0 || declined > 0)
@@ -117,6 +134,7 @@ const handleDashboardRefresh = () => {
   loadRsvpSummary()
 }
 
+// Lifecycle hooks
 onMounted(() => {
   // Initial data load
   loadRsvpSummary()
@@ -132,46 +150,59 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100">
+  <section
+    class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-800 transition-all duration-300 hover:shadow-xl relative overflow-hidden"
+    :class="{ 'opacity-75': isLoading }"
+    aria-labelledby="rsvp-summary-title"
+  >
+    <!-- Loading overlay -->
+    <div v-if="isLoading && !hasData" class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10">
+      <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500"></div>
+    </div>
+
     <!-- Header -->
-    <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-2 text-purple-600 font-semibold text-sm bg-purple-50 dark:bg-purple-950 px-3 py-1 rounded-full">
-        <PieChart class="w-4 h-4" />
-        RSVP Summary
+    <div class="flex items-center justify-between mb-5">
+      <div
+        class="flex items-center gap-2 text-purple-600 font-semibold text-sm bg-purple-50 dark:bg-purple-950 px-3 py-1.5 rounded-full"
+        id="rsvp-summary-title"
+      >
+        <PieChart class="w-4 h-4" aria-hidden="true" />
+        <span>RSVP Summary</span>
       </div>
-      <CBadge variant="secondary" size="sm" class="text-xs">
+      <CBadge variant="secondary" size="sm" class="text-xs transition-transform hover:scale-105">
         <span v-if="summaries.totalAllowed === 0">Unlimited Guests</span>
         <span v-else>{{ summaries.totalAllowed }} Guests</span>
       </CBadge>
     </div>
 
-    <!-- Content -->
-    <!-- Loading state -->
-    <div v-if="isLoading && !hasData" class="py-8 flex flex-col items-center justify-center">
-      <Loader2 class="w-8 h-8 text-purple-500 animate-spin mb-2" />
-      <p class="text-gray-500 text-sm">Loading RSVP data...</p>
-    </div>
-
     <!-- Error state -->
-    <div v-else-if="hasError" class="py-8 flex flex-col items-center justify-center">
-      <AlertCircle class="w-8 h-8 text-red-500 mb-2" />
-      <p class="text-red-500 text-sm font-medium">{{ errorMessage }}</p>
+    <div v-if="hasError" class="text-center py-4">
+      <div class="text-red-500 mb-2">
+        <AlertCircle class="h-10 w-10 mx-auto" aria-hidden="true" />
+      </div>
+      <p class="text-red-600 dark:text-red-400 font-medium">{{ errorMessage }}</p>
       <button
         @click="loadRsvpSummary"
-        class="mt-3 text-purple-600 hover:text-purple-800 text-sm font-medium"
+        class="mt-3 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md text-sm font-medium transition-colors"
+        aria-label="Retry loading RSVP data"
       >
         Try again
       </button>
     </div>
 
     <!-- Empty state -->
-    <div v-else-if="!hasData" class="py-8 flex flex-col items-center justify-center">
-      <FileBarChart class="w-8 h-8 text-gray-400 mb-2" />
-      <p class="text-gray-500 text-sm">No RSVP data available yet</p>
+    <div v-else-if="!hasData" class="text-center py-4">
+      <div class="text-gray-400 mb-2">
+        <FileBarChart class="h-10 w-10 mx-auto" aria-hidden="true" />
+      </div>
+      <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No RSVP Data</h3>
+      <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">No guest responses have been received yet</p>
     </div>
 
-    <div v-else class="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 min-h-[200px] relative">
-      <div class="w-full md:w-auto">
+    <!-- RSVP content -->
+    <div v-else class="flex flex-col items-center justify-between gap-6 min-h-[200px] relative">
+      <!-- Chart on top -->
+      <div class="w-full" aria-hidden="true">
         <apexchart
           width="100%"
           height="200px"
@@ -180,24 +211,67 @@ onBeforeUnmount(() => {
           :series="series"
         />
       </div>
-      <div class="flex flex-col gap-2 text-sm">
-        <div class="flex items-center gap-2">
-          <span class="w-3 h-3 rounded-full bg-green-500"></span>
-          Confirmed ({{ summaries.confirmed }})
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
-          Pending ({{ summaries.pending }})
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="w-3 h-3 rounded-full bg-red-500"></span>
-          Declined ({{ summaries.declined }})
-        </div>
+
+      <!-- Response summary below -->
+      <div class="flex flex-col gap-3 text-sm bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 w-full">
+        <h3 class="font-medium text-gray-700 dark:text-gray-200 mb-1 text-base">Response Summary</h3>
+        <ul class="space-y-3">
+          <li class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-green-500" aria-hidden="true"></span>
+            <span class="text-gray-700 dark:text-gray-300">Confirmed:</span>
+            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{ summaries.confirmed }}</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-yellow-400" aria-hidden="true"></span>
+            <span class="text-gray-700 dark:text-gray-300">Pending:</span>
+            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{ summaries.pending }}</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500" aria-hidden="true"></span>
+            <span class="text-gray-700 dark:text-gray-300">Declined:</span>
+            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{ summaries.declined }}</span>
+          </li>
+          <li class="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <span class="text-gray-700 dark:text-gray-300">Total Guests:</span>
+            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{ summaries.totalGuests }}</span>
+          </li>
+          <li v-if="summaries.mainGuests > 0 || summaries.companions > 0" class="flex items-center gap-2">
+            <div class="relative flex items-center gap-1 cursor-help"
+                 @mouseenter="showTooltip('guest-breakdown')"
+                 @mouseleave="hideTooltip"
+                 aria-describedby="guest-breakdown-tooltip">
+              <span class="text-gray-700 dark:text-gray-300">Breakdown:</span>
+              <Info class="w-3 h-3 text-gray-400" aria-hidden="true" />
+
+              <!-- Tooltip -->
+              <div
+                v-if="activeTooltip === 'guest-breakdown'"
+                id="guest-breakdown-tooltip"
+                class="absolute z-10 left-0 bottom-full mb-1 bg-white dark:bg-gray-800 shadow-lg rounded-md p-2 text-xs w-48 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
+                role="tooltip"
+              >
+                <div class="font-medium mb-1">Guest Breakdown</div>
+                <div class="flex justify-between">
+                  <span>Main Guests:</span>
+                  <span class="font-semibold">{{ summaries.mainGuests }}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Companions:</span>
+                  <span class="font-semibold">{{ summaries.companions }}</span>
+                </div>
+                <div class="absolute -bottom-1 left-4 w-2 h-2 bg-white dark:bg-gray-800 border-b border-r border-gray-200 dark:border-gray-700 rotate-45"></div>
+              </div>
+            </div>
+            <div class="ml-auto flex items-center gap-1">
+              <span class="text-xs text-gray-500">{{ summaries.mainGuests }} + {{ summaries.companions }}</span>
+            </div>
+          </li>
+        </ul>
       </div>
 
       <!-- Loading indicator when refreshing with existing data -->
       <div v-if="isLoading" class="absolute bottom-4 right-4 flex items-center justify-center">
-        <Loader2 class="w-4 h-4 text-purple-500 animate-spin" />
+        <Loader2 class="w-4 h-4 text-purple-500 animate-spin" aria-hidden="true" />
         <span class="ml-2 text-xs text-gray-500">Refreshing...</span>
       </div>
     </div>

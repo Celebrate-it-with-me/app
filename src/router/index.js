@@ -70,7 +70,14 @@ router.beforeEach((to, from, next) => {
 
   if (requiredPermission.length === 0) return next()
 
-  const hasPermission = requiredPermission.some((perm) => eventStore.eventPermissions?.includes(perm))
+  const hasPermission = requiredPermission.some((perm) => {
+    console.log('checking current permission', perm)
+    console.log('checking event permissions', eventStore.eventPermissions)
+
+    return eventStore.eventPermissions?.includes(perm)
+  })
+
+  console.log('checking permissions', hasPermission)
 
   if (!hasPermission) {
     return next({ name: 'not-authorized' })
