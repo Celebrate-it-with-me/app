@@ -1,9 +1,9 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, onBeforeUnmount, reactive, ref, inject } from 'vue'
 import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useUserStore } from '@/stores/useUserStore'
 import CBadge from '@/components/UI/badges/CBadge.vue'
-import { PieChart } from 'lucide-vue-next'
+import { PieChart, Loader2, AlertCircle, FileBarChart } from 'lucide-vue-next'
 
 const rsvpStore = useRsvpStore()
 const userStore = useUserStore()
@@ -57,12 +57,22 @@ const series = computed(() => [
   summaries.declined
 ])
 
-onMounted(() => {
-  loadRsvpSummary()
-})
+
+// Component state
+const isLoading = ref(true)
+const hasData = ref(false)
+const hasError = ref(false)
+const errorMessage = ref('')
 
 const loadRsvpSummary = async () => {
+  isLoading.value = true
+  hasData.value = false
+  hasError.value = false
+
   try {
+    // Don't fetch if no active event
+    if (!userStore.activeEvent) return
+
     const response = await rsvpStore.loadDashboardRsvpSummary({
       eventId: userStore.activeEvent
     })
@@ -85,13 +95,40 @@ const loadRsvpSummary = async () => {
       summaries.mainGuests = mainGuests
       summaries.companions = companions
       summaries.totalAllowed = totalAllowed
+
+      // Check if we have any data to display
+      hasData.value = (confirmed > 0 || pending > 0 || declined > 0)
     } else {
+      hasError.value = true
+      errorMessage.value = response.message || 'Failed to load RSVP data'
       console.error('Error loading RSVP summary:', response)
     }
   } catch (error) {
+    hasError.value = true
+    errorMessage.value = error.message || 'An unexpected error occurred'
     console.error('Error fetching RSVP summary:', error)
+  } finally {
+    isLoading.value = false
   }
 }
+
+// Event listener for dashboard refresh
+const handleDashboardRefresh = () => {
+  loadRsvpSummary()
+}
+
+onMounted(() => {
+  // Initial data load
+  loadRsvpSummary()
+
+  // Listen for dashboard refresh events
+  document.addEventListener('dashboard-refresh', handleDashboardRefresh)
+})
+
+onBeforeUnmount(() => {
+  // Clean up event listener
+  document.removeEventListener('dashboard-refresh', handleDashboardRefresh)
+})
 </script>
 
 <template>
@@ -109,14 +146,40 @@ const loadRsvpSummary = async () => {
     </div>
 
     <!-- Content -->
-    <div class="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
-      <apexchart
-        width="100%"
-        height="200px"
-        type="donut"
-        :options="chartOptions"
-        :series="series"
-      />
+    <!-- Loading state -->
+    <div v-if="isLoading && !hasData" class="py-8 flex flex-col items-center justify-center">
+      <Loader2 class="w-8 h-8 text-purple-500 animate-spin mb-2" />
+      <p class="text-gray-500 text-sm">Loading RSVP data...</p>
+    </div>
+
+    <!-- Error state -->
+    <div v-else-if="hasError" class="py-8 flex flex-col items-center justify-center">
+      <AlertCircle class="w-8 h-8 text-red-500 mb-2" />
+      <p class="text-red-500 text-sm font-medium">{{ errorMessage }}</p>
+      <button
+        @click="loadRsvpSummary"
+        class="mt-3 text-purple-600 hover:text-purple-800 text-sm font-medium"
+      >
+        Try again
+      </button>
+    </div>
+
+    <!-- Empty state -->
+    <div v-else-if="!hasData" class="py-8 flex flex-col items-center justify-center">
+      <FileBarChart class="w-8 h-8 text-gray-400 mb-2" />
+      <p class="text-gray-500 text-sm">No RSVP data available yet</p>
+    </div>
+
+    <div v-else class="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 min-h-[200px] relative">
+      <div class="w-full md:w-auto">
+        <apexchart
+          width="100%"
+          height="200px"
+          type="donut"
+          :options="chartOptions"
+          :series="series"
+        />
+      </div>
       <div class="flex flex-col gap-2 text-sm">
         <div class="flex items-center gap-2">
           <span class="w-3 h-3 rounded-full bg-green-500"></span>
@@ -130,6 +193,12 @@ const loadRsvpSummary = async () => {
           <span class="w-3 h-3 rounded-full bg-red-500"></span>
           Declined ({{ summaries.declined }})
         </div>
+      </div>
+
+      <!-- Loading indicator when refreshing with existing data -->
+      <div v-if="isLoading" class="absolute bottom-4 right-4 flex items-center justify-center">
+        <Loader2 class="w-4 h-4 text-purple-500 animate-spin" />
+        <span class="ml-2 text-xs text-gray-500">Refreshing...</span>
       </div>
     </div>
   </section>
