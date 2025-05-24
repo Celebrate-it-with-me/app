@@ -1,7 +1,7 @@
 <template>
   <CModal
     v-model="showModal"
-    :showCloseIcon="activeEvent"
+    :showCloseIcon="!!activeEvent"
   >
     <template #title>
       <CHeading :level="3" weight="bold" color="text-primary">

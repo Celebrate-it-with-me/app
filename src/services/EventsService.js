@@ -31,7 +31,7 @@ class EventsService {
     return await CWM_API.delete(`event/${currentEventId}`)
   }
 
-  async loanEventsPlansAndType() {
+  async loadEventsPlansAndType() {
     return await CWM_API.get(`events/load-events-plans-and-types`)
   }
 
