@@ -2,6 +2,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useEventsStore } from '@/stores/useEventsStore'
+import { useUserStore } from '@/stores/useUserStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 import CButton from '@/components/UI/buttons/CButton.vue'
@@ -10,13 +11,35 @@ import CModal from '@/components/UI/modals/CModal.vue'
 
 import {
   Calendar, Music, Waves, ImageIcon, MessageSquareText, MapIcon,
-  Users, Share2, Clock, CalendarDays, Link, ExternalLink, Edit3
+  Users, Share2, Clock, CalendarDays, Link, ExternalLink, Edit3, UserCircle
 } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
 const eventStore = useEventsStore()
+const userStore = useUserStore()
 const notificationStore = useNotificationStore()
+
+// Function to determine user's role for the event
+const getUserRole = computed(() => {
+  if (!event.value) return 'viewer'
+
+  // If the user is the owner of the event
+  if (event.value.user_id === userStore.user?.id) {
+    return 'owner'
+  }
+
+  // Check if user is a collaborator
+  if (event.value.collaborators && event.value.collaborators.length > 0) {
+    const collaborator = event.value.collaborators.find(c => c.email === userStore.user?.email)
+    if (collaborator) {
+      return collaborator.role // 'editor' or 'viewer'
+    }
+  }
+
+  // Default role if no specific role is found
+  return 'viewer'
+})
 
 const event = ref(null)
 const showCollaboratorModal = ref(false)
@@ -145,6 +168,19 @@ const enabledFeatures = computed(() =>
             >
               {{ event.status }}
             </span>
+            <!-- User Role Badge -->
+            <div class="flex items-center bg-white dark:bg-gray-800 px-2 py-1 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 ml-2">
+              <UserCircle class="w-3.5 h-3.5 mr-1" :class="{
+                'text-purple-500': getUserRole === 'owner',
+                'text-blue-500': getUserRole === 'editor',
+                'text-gray-500': getUserRole === 'viewer'
+              }" />
+              <span class="text-xs font-medium capitalize" :class="{
+                'text-purple-500': getUserRole === 'owner',
+                'text-blue-500': getUserRole === 'editor',
+                'text-gray-500': getUserRole === 'viewer'
+              }">{{ getUserRole }}</span>
+            </div>
           </div>
           <div class="flex items-center gap-2 mt-2 text-sm text-gray-600 dark:text-gray-400">
             <CalendarDays class="w-4 h-4" />

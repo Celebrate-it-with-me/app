@@ -63,7 +63,7 @@ const authRoutes = [
     }
   },
   {
-    path: '/dashboard/events/edit/:id',
+    path: '/dashboard/events/:id/edit',
     name: 'edit-event',
     component: CreateEventsView,
     meta: {

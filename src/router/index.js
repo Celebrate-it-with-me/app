@@ -8,6 +8,7 @@ import { externalCleanRoutes } from "@/router/externalCleanRoutes"
 import InternalLayout from '@/components/internal/layout/InternalLayout.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
+import { useHydrationStore } from '@/stores/useHydrationStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,17 +17,13 @@ const router = createRouter({
       path: '/password',
       name: 'External Clean',
       component: ExternalCleanLayout,
-      children: [
-        ...externalCleanRoutes
-      ]
+      children: [...externalCleanRoutes]
     },
     {
       path: '',
       name: 'Non Authenticated',
       component: ExternalLayout,
-      children: [
-        ...nonAuthRoutes
-      ]
+      children: [...nonAuthRoutes]
     },
     {
       path: '/403',
@@ -40,25 +37,22 @@ const router = createRouter({
       path: '',
       name: 'Authenticated',
       component: InternalLayout,
-      children: [
-        ...authRoutes
-      ]
+      children: [...authRoutes]
     },
     {
       path: '',
       name: 'Event Pages Routes',
-      children: [
-        ...eventsRoutes
-      ]
-    },
-  ],
+      children: [...eventsRoutes]
+    }
+  ]
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   document.title = `Celebrate it with me - ${to.meta?.title}` || 'CWM'
 
   const userStore = useUserStore()
   const eventStore = useEventsStore()
+  const hydrationStore = useHydrationStore()
 
   if (!to.meta?.requiresAuth) return next()
 
@@ -66,24 +60,27 @@ router.beforeEach((to, from, next) => {
     return next({ name: 'sign-in' })
   }
 
-  const requiredPermission = to.meta?.requiredPermission ?? []
+  if (!hydrationStore.isHydrated) {
+    try {
+      await hydrationStore.hydrateAll()
+    } catch (e) {
+      console.error('Hydration failed:', e)
+      return next({ name: 'sign-in' })
+    }
+  }
 
+  const requiredPermission = to.meta?.requiredPermission ?? []
   if (requiredPermission.length === 0) return next()
 
-  const hasPermission = requiredPermission.some((perm) => {
-    console.log('checking current permission', perm)
-    console.log('checking event permissions', eventStore.eventPermissions)
-
-    return eventStore.eventPermissions?.includes(perm)
-  })
-
-  console.log('checking permissions', hasPermission)
+  const hasPermission = requiredPermission.some((perm) =>
+    eventStore.eventPermissions?.includes(perm)
+  )
 
   if (!hasPermission) {
     return next({ name: 'not-authorized' })
   }
 
-  return next();
-});
+  return next()
+})
 
 export default router
