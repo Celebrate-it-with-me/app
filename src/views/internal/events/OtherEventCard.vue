@@ -2,12 +2,22 @@
 import CCard from '@/components/UI/cards/CCard.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useEventsStore } from '@/stores/useEventsStore'
+import { MoreVertical, Edit, Archive, XCircle, Calendar, MapPin, SwitchCamera, UserCircle } from 'lucide-vue-next'
+import { vOnClickOutside } from '@vueuse/components'
 
+const router = useRouter()
+const eventStore = useEventsStore()
 const emit = defineEmits(['switchEvent'])
 const props = defineProps({
   event: {
     type: Object,
     required: true
+  },
+  userRole: {
+    type: String,
+    default: 'viewer'
   }
 })
 
@@ -26,9 +36,7 @@ const isActiveEvent = (id) => {
 }
 
 const editEvent = (event) => {
-  if (isActiveEvent(event.id)) {
-    router.push({ name: 'edit-event', params: { id: event.id } })
-  }
+  router.push({ name: 'edit-event', params: { id: event.id } })
 }
 
 const archiveEvent = (event) => {
@@ -43,39 +51,83 @@ const cancelEvent = (event) => {
   }
 }
 
+const formatDate = (date) => {
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  })
+}
+
 
 </script>
 
 <template>
   <CCard
     variant="feature"
+    class="hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700"
   >
-    <div class="relative">
-      <div class="absolute z-10 card-menu">
-        <button @click="toggleMenu()" class="text-lg text-gray-500 hover:text-primary focus:outline-none">
-          ⋮
+    <!-- Top bar with status and menu -->
+    <div class="flex justify-between items-center mb-2">
+      <!-- Role Badge (Status) -->
+      <div class="flex items-center bg-white dark:bg-gray-800 px-2 py-1 rounded-full shadow-sm border border-gray-200 dark:border-gray-700">
+        <UserCircle class="w-3 h-3 mr-1" :class="{
+          'text-purple-500': userRole === 'owner',
+          'text-blue-500': userRole === 'editor',
+          'text-gray-500': userRole === 'viewer'
+        }" />
+        <span class="text-xs font-medium capitalize" :class="{
+          'text-purple-500': userRole === 'owner',
+          'text-blue-500': userRole === 'editor',
+          'text-gray-500': userRole === 'viewer'
+        }">{{ userRole }}</span>
+      </div>
+
+      <!-- Three dots menu -->
+      <div class="relative">
+        <button
+          @click="toggleMenu()"
+          class="p-1.5 rounded-full text-gray-500 hover:text-rose hover:bg-rose-light focus:outline-none transition-colors"
+          aria-label="Event options"
+        >
+          <MoreVertical class="w-4 h-4" />
         </button>
         <div
           v-if="openMenu"
-          class="absolute right-0 mt-2 w-36 bg-white rounded-md shadow-lg border border-gray-200"
+          class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-20"
+          v-on-click-outside="() => openMenu = false"
         >
-          <ul class="text-sm text-gray-700">
+          <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
             <li>
               <button
-                @click="archiveEvent"
-                class="w-full text-left px-4 py-2 hover:bg-gray-100"
-                :disabled="isActiveEvent"
+                @click="editEvent(event)"
+                class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
               >
-                Archive
+                <Edit class="w-4 h-4 mr-2 text-gray-500" />
+                Edit Event
               </button>
             </li>
             <li>
               <button
-                @click="cancelEvent"
-                class="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500"
-                :disabled="isActiveEvent"
+                @click="archiveEvent(event)"
+                class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                :disabled="isActiveEvent(event.id)"
+                :class="{ 'opacity-50 cursor-not-allowed': isActiveEvent(event.id) }"
               >
-                Cancel
+                <Archive class="w-4 h-4 mr-2 text-gray-500" />
+                Archive Event
+              </button>
+            </li>
+            <li>
+              <button
+                @click="cancelEvent(event)"
+                class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center text-red-500"
+                :disabled="isActiveEvent(event.id)"
+                :class="{ 'opacity-50 cursor-not-allowed': isActiveEvent(event.id) }"
+              >
+                <XCircle class="w-4 h-4 mr-2" />
+                Cancel Event
               </button>
             </li>
           </ul>
@@ -83,18 +135,33 @@ const cancelEvent = (event) => {
       </div>
     </div>
 
-    <template #title>{{ event.eventName }}</template>
-    <template #content>
-      <p class="text-sm text-text-light line-clamp-3">{{ event.eventDescription }}</p>
-      <p class="text-xs text-gray-400 mt-1 mb-2">
-        {{ event.startDate }} – {{ event.endDate }}
-      </p>
+    <template #title>
+      <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">{{ event.eventName }}</h3>
     </template>
+
+    <template #content>
+      <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-3">{{ event.eventDescription }}</p>
+
+      <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-2">
+        <Calendar class="w-3.5 h-3.5 mr-1.5 text-rose" />
+        <span>{{ formatDate(event.startDate) }} – {{ formatDate(event.endDate) }}</span>
+      </div>
+
+      <div v-if="event.location" class="flex items-center text-xs text-gray-500 dark:text-gray-400">
+        <MapPin class="w-3.5 h-3.5 mr-1.5 text-rose" />
+        <span class="truncate">{{ event.location }}</span>
+      </div>
+    </template>
+
     <template #cta>
       <CButton
         variant="outline"
         @click="switchToEvent(event)"
-      >Switch to Active</CButton>
+        class="w-full border-rose text-rose hover:bg-rose-light transition-colors"
+      >
+        <SwitchCamera class="w-4 h-4 mr-2" />
+        Switch to Active
+      </CButton>
     </template>
   </CCard>
 </template>

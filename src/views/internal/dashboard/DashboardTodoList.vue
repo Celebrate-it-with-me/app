@@ -1,15 +1,18 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { format } from 'date-fns'
 import { useTodoStore } from '@/stores/todoStore'
-import TextField from '@/components/UI/form/TextField.vue'
-import TextAreaField from '@/components/UI/form/TextAreaField.vue'
-import DateField from '@/components/UI/form/DateField.vue'
-import SelectField from '@/components/UI/form/SelectField.vue'
+import CInput from '@/components/UI/form2/CInput.vue'
+import CTextarea from '@/components/UI/form2/CTextarea.vue'
+import CDate from '@/components/UI/form2/CDate.vue'
+import CSelect from '@/components/UI/form2/CSelect.vue'
+import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
+import { CheckSquare, Plus, Trash2, Calendar, Info } from 'lucide-vue-next'
 
 const todoStore = useTodoStore()
 const isAddingTask = ref(false)
+const isLoading = ref(true)
 
 const newTask = ref({
   title: '',
@@ -40,14 +43,14 @@ const completedTasksCount = computed(() => {
 
 function addTask() {
   if (!newTask.value.title.trim()) return
-  
+
   todoStore.addTask({
     title: newTask.value.title,
     description: newTask.value.description,
     dueDate: newTask.value.dueDate,
     priority: newTask.value.priority
   })
-  
+
   // Reset form
   newTask.value = {
     title: '',
@@ -55,7 +58,7 @@ function addTask() {
     dueDate: null,
     priority: 'medium'
   }
-  
+
   // Close add task form
   isAddingTask.value = false
 }
@@ -83,58 +86,113 @@ const priorityOptions = [
   { value: 'medium', label: 'Medium Priority' },
   { value: 'high', label: 'High Priority' }
 ]
+
+// Load tasks
+const loadTasks = () => {
+  isLoading.value = true
+
+  // Simulate loading delay (remove in production)
+  setTimeout(() => {
+    // In a real implementation, you might fetch tasks from an API here
+    // todoStore.fetchTasks()
+    isLoading.value = false
+  }, 500)
+}
+
+// Event listener for dashboard refresh
+const handleDashboardRefresh = () => {
+  loadTasks()
+}
+
+// Lifecycle hooks
+onMounted(() => {
+  // Initial data load
+  loadTasks()
+
+  // Listen for dashboard refresh events
+  document.addEventListener('dashboard-refresh', handleDashboardRefresh)
+})
+
+onBeforeUnmount(() => {
+  // Clean up event listener
+  document.removeEventListener('dashboard-refresh', handleDashboardRefresh)
+})
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-bold">Event Tasks</h2>
-      <CButton 
-        @click="isAddingTask = !isAddingTask" 
+  <section
+    class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-800 transition-all duration-300 hover:shadow-xl relative overflow-hidden"
+    :class="{ 'opacity-75': isLoading }"
+    aria-labelledby="todo-list-title"
+  >
+    <!-- Loading overlay -->
+    <div v-if="isLoading" class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10">
+      <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-green-500"></div>
+    </div>
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-5">
+      <div
+        class="flex items-center gap-2 text-green-600 font-semibold text-sm bg-green-50 dark:bg-green-950 px-3 py-1.5 rounded-full"
+        id="todo-list-title"
+      >
+        <CheckSquare class="w-4 h-4" aria-hidden="true" />
+        <span>Event Tasks</span>
+      </div>
+      <CButton
+        @click="isAddingTask = !isAddingTask"
         :variant="isAddingTask ? 'secondary' : 'primary'"
         size="sm"
+        class="rounded-full flex items-center gap-1 transition-transform hover:scale-105"
       >
-        {{ isAddingTask ? 'Cancel' : 'Add Task' }}
+        <Plus v-if="!isAddingTask" class="w-4 h-4" aria-hidden="true" />
+        <span>{{ isAddingTask ? 'Cancel' : 'Add Task' }}</span>
       </CButton>
     </div>
 
     <!-- Add new task form -->
     <div v-if="isAddingTask" class="mb-4 p-4 bg-gray-50 rounded-md">
       <div class="mb-3">
-        <TextField
+        <CInput
           v-model="newTask.title"
+          name="title"
           placeholder="Task title"
           class="w-full"
+          id="taskTitle"
         />
       </div>
-      
+
       <div class="mb-3">
-        <TextAreaField
+        <CTextarea
           v-model="newTask.description"
+          name="description"
           placeholder="Task description (optional)"
-          rows="2"
+          :rows="2"
           class="w-full"
         />
       </div>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
         <div>
-          <DateField
+          <CDate
             v-model="newTask.dueDate"
+            name="dueDate"
             placeholder="Due date (optional)"
             class="w-full"
           />
         </div>
-        
+
         <div>
-          <SelectField
+          <CSelect
             v-model="newTask.priority"
+            name="priority"
             :options="priorityOptions"
             class="w-full"
+            id="taskPriority"
           />
         </div>
       </div>
-      
+
       <div class="flex justify-end">
         <CButton
           @click="addTask"
@@ -145,7 +203,7 @@ const priorityOptions = [
         </CButton>
       </div>
     </div>
-    
+
     <!-- Tasks filter -->
     <div class="flex space-x-2 mb-4">
       <button
@@ -170,7 +228,7 @@ const priorityOptions = [
         Completed
       </button>
     </div>
-    
+
     <!-- Tasks list -->
     <div class="overflow-y-auto max-h-80">
       <div v-if="filteredTasks.length > 0">
@@ -182,11 +240,10 @@ const priorityOptions = [
         >
           <div class="flex items-start">
             <div class="flex-shrink-0 mt-0.5">
-              <input
-                type="checkbox"
-                :checked="task.completed"
-                @change="toggleTaskCompletion(task.id)"
-                class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              <CCheckbox
+                :modelValue="task.completed"
+                @update:modelValue="toggleTaskCompletion(task.id)"
+                class="h-4 w-4"
               />
             </div>
             <div class="ml-3 flex-grow">
@@ -194,11 +251,7 @@ const priorityOptions = [
                 <h3 class="font-medium" :class="{ 'line-through text-gray-400': task.completed }">
                   {{ task.title }}
                 </h3>
-                <button @click="removeTask(task.id)" class="text-gray-400 hover:text-red-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                  </svg>
-                </button>
+                <Trash2 @click="removeTask(task.id)" class="w-4 h-4 text-gray-400 hover:text-red-500 cursor-pointer" />
               </div>
               <p v-if="task.description" class="text-sm text-gray-500 mt-1">
                 {{ task.description }}
@@ -207,7 +260,7 @@ const priorityOptions = [
                 <span v-if="task.dueDate" class="inline-flex items-center text-xs bg-gray-100 px-2 py-0.5 rounded">
                   {{ formatDate(task.dueDate) }}
                 </span>
-                <span 
+                <span
                   class="inline-flex items-center text-xs px-2 py-0.5 rounded"
                   :class="{
                     'bg-red-100 text-red-800': task.priority === 'high',
@@ -226,25 +279,17 @@ const priorityOptions = [
         <p>No tasks found</p>
       </div>
     </div>
-    
+
     <!-- Tasks summary -->
     <div class="mt-4 pt-3 border-t text-sm text-gray-500 flex justify-between items-center">
       <p>{{ activeTasksCount }} tasks remaining</p>
-      <button 
+      <button
         v-if="completedTasksCount > 0"
-        @click="clearCompletedTasks" 
+        @click="clearCompletedTasks"
         class="text-sm text-primary-600 hover:text-primary-800"
       >
         Clear completed
       </button>
     </div>
-  </div>
+  </section>
 </template>
-
-<style scoped>
-/* Any additional custom styling can go here */
-</style>
-
-<style scoped>
-
-</style>

@@ -19,6 +19,7 @@ import CEventLocationsCreateView from '@/views/internal/locations/CEventLocation
 import MenusView from '@/views/internal/menus/MenusView.vue'
 import CreateMenusView from '@/views/internal/menus/CreateMenusView.vue'
 import ShowMenuView from '@/views/internal/menus/ShowMenuView.vue'
+import EventDetailsView from '@/views/internal/events/EventDetailsView.vue'
 
 const authRoutes = [
   {
@@ -52,7 +53,17 @@ const authRoutes = [
     }
   },
   {
-    path: '/dashboard/events/edit/:id',
+    path: '/dashboard/events/:id/details',
+    name: 'event-details',
+    component: EventDetailsView,
+    meta: {
+      title: 'Event Details',
+      requiresAuth: true,
+      requiredPermission: ['view_event'],
+    }
+  },
+  {
+    path: '/dashboard/events/:id/edit',
     name: 'edit-event',
     component: CreateEventsView,
     meta: {
