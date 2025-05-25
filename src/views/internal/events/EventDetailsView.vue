@@ -7,12 +7,12 @@ import { useNotificationStore } from '@/stores/useNotificationStore'
 
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CCard from '@/components/UI/cards/CCard.vue'
-import CModal from '@/components/UI/modals/CModal.vue'
 
 import {
   Calendar, Music, Waves, ImageIcon, MessageSquareText, MapIcon,
   Users, Share2, Clock, CalendarDays, Link, ExternalLink, Edit3, UserCircle
 } from 'lucide-vue-next'
+import CAddCollaboratorModal from '@/components/UI/modals/CAddCollaboratorModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -20,34 +20,26 @@ const eventStore = useEventsStore()
 const userStore = useUserStore()
 const notificationStore = useNotificationStore()
 
-// Function to determine user's role for the event
 const getUserRole = computed(() => {
   if (!event.value) return 'viewer'
 
-  // If the user is the owner of the event
   if (event.value.user_id === userStore.user?.id) {
     return 'owner'
   }
 
-  // Check if user is a collaborator
   if (event.value.collaborators && event.value.collaborators.length > 0) {
     const collaborator = event.value.collaborators.find(c => c.email === userStore.user?.email)
     if (collaborator) {
-      return collaborator.role // 'editor' or 'viewer'
+      return collaborator.role
     }
   }
 
-  // Default role if no specific role is found
   return 'viewer'
 })
 
 const event = ref(null)
 const showCollaboratorModal = ref(false)
-const newCollaborator = ref({
-  name: '',
-  email: '',
-  role: 'viewer'
-})
+
 
 const fetchEvent = async () => {
   const id = route.params.id
@@ -61,7 +53,6 @@ const fetchEvent = async () => {
     return router.push('/dashboard')
   }
 
-  // Initialize collaborators array if it doesn't exist
   if (!fetched.collaborators) {
     fetched.collaborators = []
   }
@@ -81,39 +72,6 @@ const openPublicPage = () => {
 
 const openCollaboratorModal = () => {
   showCollaboratorModal.value = true
-  newCollaborator.value = {
-    name: '',
-    email: '',
-    role: 'viewer'
-  }
-}
-
-const addCollaborator = () => {
-  // Validate inputs
-  if (!newCollaborator.value.name || !newCollaborator.value.email) {
-    notificationStore.addNotification({
-      type: 'error',
-      message: 'Please fill in all required fields'
-    })
-    return
-  }
-
-  // Add collaborator to event
-  if (!event.value.collaborators) {
-    event.value.collaborators = []
-  }
-
-  event.value.collaborators.push({
-    id: Date.now(), // Generate a temporary ID
-    ...newCollaborator.value
-  })
-
-  // Close modal and show success notification
-  showCollaboratorModal.value = false
-  notificationStore.addNotification({
-    type: 'success',
-    message: 'Collaborator added successfully'
-  })
 }
 
 const removeCollaborator = (collaboratorId) => {
@@ -323,53 +281,8 @@ const enabledFeatures = computed(() =>
       </div>
     </CCard>
   </section>
-
-  <!-- Collaborator Modal -->
-  <CModal v-model="showCollaboratorModal" showCloseIcon>
-    <template #title>Add Collaborator</template>
-
-    <div class="space-y-4">
-      <div class="mb-4">
-        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
-        <input
-          id="name"
-          v-model="newCollaborator.name"
-          type="text"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-          placeholder="Enter collaborator name"
-        />
-      </div>
-
-      <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-        <input
-          id="email"
-          v-model="newCollaborator.email"
-          type="email"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-          placeholder="Enter collaborator email"
-        />
-      </div>
-
-      <div class="mb-4">
-        <label for="role" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
-        <select
-          id="role"
-          v-model="newCollaborator.role"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-        >
-          <option value="viewer">Viewer</option>
-          <option value="editor">Editor</option>
-        </select>
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Viewers can only view the event. Editors can make changes to the event.
-        </p>
-      </div>
-    </div>
-
-    <template #footer>
-      <CButton variant="ghost" @click="showCollaboratorModal = false">Cancel</CButton>
-      <CButton variant="gradient" @click="addCollaborator">Add Collaborator</CButton>
-    </template>
-  </CModal>
+  <CAddCollaboratorModal
+    :open="showCollaboratorModal"
+    @close-modal="showCollaboratorModal = false"
+  />
 </template>
