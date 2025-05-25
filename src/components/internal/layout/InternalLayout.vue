@@ -92,24 +92,25 @@ watch(() => userStore?.preferences?.visualTheme,  () => {
   <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-text font-[Poppins]">
     <div class="flex flex-1">
       <!-- Sidebar -->
-      <aside class="w-64 bg-white dark:bg-gray-800 shadow-md hidden md:block">
+      <aside class="w-64 bg-white dark:bg-gray-800 shadow-md hidden md:block h-screen sticky top-0">
         <InternalSidebar />
       </aside>
 
       <!-- Main content -->
-      <div class="flex-1 flex flex-col">
-        <HeaderBar class="bg-white" />
+      <div class="flex-1 flex flex-col min-h-screen">
+        <HeaderBar class="bg-white sticky top-0 z-10" />
         <CPageLoaderV2 v-if="loading" />
         <main
           v-else
-          class="flex-1 p-6 overflow-y-auto"
+          class="flex-1 p-6"
         >
           <router-view />
         </main>
+        <InternalFooter />
       </div>
     </div>
 
-    <InternalFooter />
+    <!-- Modals -->
     <CEventsModal
       v-model="showEventsModal"
     />

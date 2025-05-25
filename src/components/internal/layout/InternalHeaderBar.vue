@@ -3,7 +3,7 @@
                  border-gray-200 dark:border-gray-700 dark:from-gray-800 dark:to-gray-900"
   >
     <div class="flex items-center gap-3">
-      <label class="text-md font-medium text-gray-700 dark:text-gray-300">
+      <label class="text-md font-medium text-gray-700 dark:text-gray-300 truncate max-w-[200px] sm:max-w-xs md:max-w-md">
         {{ eventName }}
       </label>
     </div>

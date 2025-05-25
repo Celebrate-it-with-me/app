@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-gray-900 text-text font-[Poppins]">
+  <div class="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-text font-[Poppins]">
     <CNavbarLanding />
-    <main>
+    <main class="flex-grow overflow-auto">
       <router-view />
     </main>
-    <CFooter />
+    <CFooter class="flex-shrink-0" />
   </div>
 </template>
 

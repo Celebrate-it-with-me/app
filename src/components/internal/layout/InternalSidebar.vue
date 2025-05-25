@@ -8,7 +8,7 @@
 
     <ul
       v-if="userStore.activeEvent"
-      class="flex-1 px-4 py-6 space-y-2 text-sm"
+      class="flex-1 px-4 py-6 space-y-2 text-sm overflow-y-auto"
     >
       <li v-for="item in activeMenuItems" :key="item.label">
         <RouterLink
@@ -23,7 +23,7 @@
     </ul>
     <ul
       v-else
-      class="flex-1 px-4 py-6 space-y-2 text-sm"
+      class="flex-1 px-4 py-6 space-y-2 text-sm overflow-y-auto"
     >
       <li>
         <RouterLink
