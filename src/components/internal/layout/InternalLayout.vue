@@ -16,6 +16,7 @@ const hydrationStore = useHydrationStore()
 const showEventsModal = ref(false)
 const loading = ref(false)
 const notificationStore = useNotificationStore()
+const sidebarExpanded = ref(true)
 
 onMounted(async () => {
   loading.value = true
@@ -87,13 +88,18 @@ watch(() => userStore?.preferences?.visualTheme,  () => {
 })
 
 </script>
-
+git
 <template>
   <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-text font-[Poppins]">
     <div class="flex flex-1">
       <!-- Sidebar -->
-      <aside class="w-64 bg-white dark:bg-gray-800 shadow-md hidden md:block h-screen sticky top-0">
-        <InternalSidebar />
+      <aside
+        :class="[
+          sidebarExpanded ? 'w-64' : 'w-20',
+          'bg-white dark:bg-gray-800 shadow-md hidden md:block h-screen sticky top-0 transition-all duration-300 ease-in-out'
+        ]"
+      >
+        <InternalSidebar @update:sidebarState="sidebarExpanded = $event" />
       </aside>
 
       <!-- Main content -->

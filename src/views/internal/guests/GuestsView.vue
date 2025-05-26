@@ -1,164 +1,103 @@
 <template>
-  <div class="space-y-8">
-    <div class="flex items-center justify-between">
-      <CHeading :level="2" weight="semibold">Guest List</CHeading>
-      <CButton
-        v-if="!menuStore.needMenu"
-        variant="primary"
-        @click="createGuest"
-      >+ Add Guest</CButton>
+  <div class="space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="border-b border-gray-200 dark:border-gray-700 pb-5">
+      <CHeading :level="1" weight="semibold" class="text-3xl sm:text-4xl mb-2">Event Guests</CHeading>
+      <p class="text-gray-600 dark:text-gray-400 max-w-3xl">
+        Manage your event guests and their companions. Keep track of guest information and dietary restrictions.
+      </p>
     </div>
 
-    <div
-      v-if="menuStore.needMenu"
-      class="not-menu bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6"
-    >
-      <CAlert variant="info">
-        This event does not have a menu yet. Please create a menu before adding guests.
-      </CAlert>
-    </div>
-
-    <div
-      v-else
-      class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6"
-    >
-      <div class="overflow-x-auto">
-        <div v-if="loading">
-          <CLoading />
-        </div>
-        <div v-else>
-          <table
-            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
-            v-if="guestStore.guests.length"
-          >
-            <thead class="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th
-                  class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >
-                  Name
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >
-                  Email
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >
-                  Phone
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >
-                  Companions
-                </th>
-                <th
-                  class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
-                >
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-              <tr
-                v-for="guest in guestStore.guests"
-                :key="guest.id"
-                class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-              >
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
-                  {{ guest.name }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                  {{ guest.email }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                  {{ guest.phone }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                  <span >{{ guest?.companions?.length ?? 0 }}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-left flex flex-start gap-2 text-sm">
-                  <CButton size="sm" variant="primary" @click="viewGuest(guest)">Details</CButton>
-                  <CButton size="sm" variant="outline" @click="confirmDelete(guest)">Delete</CButton>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <CAlert variant="" v-else> There are no Guests for this event yet. </CAlert>
-        </div>
-        <GuestDetailsModal
-          :guest="selectedGuest"
-          :show="showDetailsModal"
-          @close="showDetailsModal = false"
-        />
-
-        <CConfirmModal
-          :modelValue="confirmDeleteModal"
-          title="Delete Guest"
-          message="Are you sure you want to delete this guest? This action cannot be undone."
-          @confirm="deleteGuest()"
-          @update:modelValue="confirmDeleteModal = false"
-        />
+    <!-- Guest List Section -->
+    <section>
+      <div class="flex items-center justify-between mb-6">
+        <CHeading :level="2" weight="semibold" class="text-2xl">Guest List</CHeading>
+        <CButton
+          variant="primary"
+          @click="createGuest"
+          :disabled="loading || menuStore.needMenu"
+        >
+          <span v-if="loading" class="mr-2">
+            <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"></span>
+          </span>
+          <span>+ Add Guest</span>
+        </CButton>
       </div>
-    </div>
+
+      <div
+        v-if="menuStore.needMenu"
+        class="not-menu bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6"
+      >
+        <CAlert variant="info">
+          This event does not have a menu yet. Please create a menu before adding guests.
+        </CAlert>
+      </div>
+      <GuestsTable v-else ref="guestsTableRef" @loading="setLoading" />
+    </section>
+
+    <!-- Guest Companions Section -->
+    <section v-if="!menuStore.needMenu">
+      <div class="flex items-center justify-between mb-6">
+        <CHeading :level="2" weight="semibold" class="text-2xl">Guest Companions</CHeading>
+        <div class="flex items-center">
+          <span v-if="companionCount" class="text-sm text-gray-600 dark:text-gray-400 mr-4">
+            {{ companionCount }} companions
+          </span>
+        </div>
+      </div>
+      <GuestCompanions ref="guestCompanionsRef" @loading="setLoading" />
+    </section>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import { useGuestsStore } from '@/stores/useGuestStore'
-import CLoading from '@/components/UI/loading/CLoading.vue'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
 import { useRouter } from 'vue-router'
-import GuestDetailsModal from '@/components/UI/modals/GuestDetailsModal.vue'
-import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 import { useMenusStore } from '@/stores/useMenusStore'
+import GuestsTable from '@/views/internal/guests/GuestsTable.vue'
+import GuestCompanions from '@/views/internal/guests/GuestCompanions.vue'
 
+const router = useRouter()
 const guestStore = useGuestsStore()
 const menuStore = useMenusStore()
-const router = useRouter()
+const loading = ref(false)
+const guestsTableRef = ref(null)
+const guestCompanionsRef = ref(null)
 
-const loading = ref()
-const selectedGuest = ref({ })
-const guestToDelete = ref(null)
-const showDetailsModal = ref(false)
-const confirmDeleteModal = ref(false)
-
-const loadGuests = async () => {
-  loading.value = true
-  await guestStore.loadGuests()
-  loading.value = false
-}
-
-const viewGuest = (guest) => {
-  selectedGuest.value = guest
-  showDetailsModal.value = true
-}
+const companionCount = computed(() => {
+  let count = 0
+  if (guestStore.guests && guestStore.guests.length) {
+    guestStore.guests.forEach(guest => {
+      if (guest.companions && guest.companions.length) {
+        count += guest.companions.length
+      }
+    })
+  }
+  return count
+})
 
 const createGuest = async () => {
   await router.push('/dashboard/guests/create')
 }
 
-const deleteGuest = async () => {
-  if (guestToDelete.value) {
-    const response = await guestStore.deleteGuest(guestToDelete.value.id)
+const setLoading = (isLoading) => {
+  loading.value = isLoading
+}
 
-    if (response.status === 200) {
-      await loadGuests()
-      guestToDelete.value = null
-    } else {
-      console.error('Failed to delete guest:', response)
-    }
-
-    confirmDeleteModal.value = false
+onMounted(async () => {
+  // Initial data loading
+  loading.value = true
+  try {
+    await menuStore.loadMenus() // Check if menu exists
+    await guestStore.loadGuests()
+  } catch (error) {
+    console.error('Error loading guest data:', error)
+  } finally {
+    loading.value = false
   }
-}
-
-const confirmDelete = (guest) => {
-  guestToDelete.value = guest
-  confirmDeleteModal.value = true
-}
+})
 </script>
