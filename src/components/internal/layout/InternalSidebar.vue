@@ -1,10 +1,20 @@
 <template>
-  <nav class="h-full flex flex-col dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+  <nav class="h-full flex flex-col dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 relative transition-all duration-300 ease-in-out">
     <div class="p-6 dark:border-gray-700 h-16 flex items-center justify-center">
       <RouterLink to="/" class="flex items-center gap-2 text-xl font-bold text-primary">
-        <img src="@/assets/images/commons/logo_primary_2.png" alt="Logo" class="w-4/5" />
+        <img src="@/assets/images/commons/logo_primary_2.png" alt="Logo" :class="isExpanded ? 'w-4/5' : 'w-full'" />
       </RouterLink>
     </div>
+
+    <!-- Toggle button -->
+    <button
+      @click="isExpanded = !isExpanded"
+      class="absolute -right-3 top-20 bg-white dark:bg-gray-800 rounded-full p-1 shadow-md border border-gray-200 dark:border-gray-700 z-10 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+      aria-label="Toggle sidebar"
+    >
+      <ChevronLeft v-if="isExpanded" class="w-4 h-4 text-gray-600 dark:text-gray-300" />
+      <ChevronRight v-else class="w-4 h-4 text-gray-600 dark:text-gray-300" />
+    </button>
 
     <ul
       v-if="userStore.activeEvent"
@@ -13,11 +23,15 @@
       <li v-for="item in activeMenuItems" :key="item.label">
         <RouterLink
           :to="item.to"
-          class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-primary/10 dark:hover:bg-primary/20"
-          :class="{ 'bg-primary/10 dark:bg-primary/20 text-primary': isActive(item.to) }"
+          class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-primary/10 dark:hover:bg-primary/20 whitespace-nowrap"
+          :class="[
+            { 'bg-primary/10 dark:bg-primary/20 text-primary': isActive(item.to) },
+            { 'justify-center': !isExpanded }
+          ]"
+          :title="!isExpanded ? item.label : ''"
         >
-          <component :is="item.icon" class="w-5 h-5" />
-          <span>{{ item.label }}</span>
+          <component :is="item.icon" class="w-5 h-5 min-w-[20px]" />
+          <span v-if="isExpanded" class="transition-opacity duration-300">{{ item.label }}</span>
         </RouterLink>
       </li>
     </ul>
@@ -28,11 +42,12 @@
       <li>
         <RouterLink
           :to="'/dashboard/events/create'"
-          class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-primary/10
-                 dark:hover:bg-primary/20 bg-primary/10 dark:bg-primary/20 text-primary"
+          class="flex items-center gap-3 p-3 rounded-lg transition hover:bg-primary/10 dark:hover:bg-primary/20 bg-primary/10 dark:bg-primary/20 text-primary whitespace-nowrap"
+          :class="{ 'justify-center': !isExpanded }"
+          title="Create Event"
         >
-          <Calendar class="w-5 h-5" />
-          <span>Create Event</span>
+          <Calendar class="w-5 h-5 min-w-[20px]" />
+          <span v-if="isExpanded" class="transition-opacity duration-300">Create Event</span>
         </RouterLink>
       </li>
     </ul>
@@ -51,11 +66,23 @@ import {
   MessageCircle,
   LayoutDashboard,
   ChefHat,
-  MapPin
+  MapPin,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useEventsStore } from '@/stores/useEventsStore'
+
+const isExpanded = ref(true)
+
+// Emit the sidebar state to parent component
+const emit = defineEmits(['update:sidebarState'])
+
+// Watch for changes in isExpanded and emit the new state
+watch(isExpanded, (newValue) => {
+  emit('update:sidebarState', newValue)
+})
 
 const route = useRoute()
 

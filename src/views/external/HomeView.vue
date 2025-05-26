@@ -9,13 +9,12 @@ import CallToActionSection from '@/components/external/sections/landing/CallToAc
 </script>
 
 <template>
-  <div>
-    <HeroSection  />
-    <FeaturesSection id="features" />
-    <GalleryImagesSection id="gallery" />
-    <PricingSection id="pricing" />
-    <TestimonialsSection id="testimonials" />
+  <div class="scroll-smooth">
+    <HeroSection />
+    <FeaturesSection id="features" class="scroll-mt-16" />
+    <GalleryImagesSection id="gallery" class="scroll-mt-16" />
+    <PricingSection id="pricing" class="scroll-mt-16" />
+    <TestimonialsSection id="testimonials" class="scroll-mt-16" />
     <CallToActionSection />
   </div>
 </template>
-

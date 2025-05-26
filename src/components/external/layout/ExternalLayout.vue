@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-text font-[Poppins]">
     <CNavbarLanding />
-    <main class="flex-grow overflow-auto">
+    <main class="flex-grow">
       <router-view />
     </main>
     <CFooter class="flex-shrink-0" />
