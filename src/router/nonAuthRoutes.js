@@ -2,6 +2,9 @@ import HomeView from '@/views/external/HomeView.vue'
 import SignUpView from '@/views/external/SignUpView.vue'
 import SignInView from '@/views/external/SignInView.vue'
 import ConfirmEmailView from '@/views/external/ConfirmEmailView.vue'
+import TermsView from '@/views/external/TermsView.vue'
+import PrivacyView from '@/views/external/PrivacyView.vue'
+import HelpView from '@/views/external/HelpView.vue'
 
 const nonAuthRoutes = [
   {
@@ -43,6 +46,30 @@ const nonAuthRoutes = [
     component: SignInView,
     meta: {
       title: 'Sign up'
+    }
+  },
+  {
+    path: '/terms',
+    name: 'terms',
+    component: TermsView,
+    meta: {
+      title: 'Terms of Service'
+    }
+  },
+  {
+    path: '/privacy',
+    name: 'privacy',
+    component: PrivacyView,
+    meta: {
+      title: 'Privacy Policy'
+    }
+  },
+  {
+    path: '/help',
+    name: 'help',
+    component: HelpView,
+    meta: {
+      title: 'Help Center'
     }
   },
 ]
