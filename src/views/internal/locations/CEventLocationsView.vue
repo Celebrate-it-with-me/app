@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 max-w-full">
     <div class="flex items-center justify-between">
       <CHeading :level="2" weight="semibold">Event Locations</CHeading>
       <CButton
@@ -9,54 +9,54 @@
     </div>
 
     <div class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
-      <div class="overflow-x-auto">
+      <div class="w-full overflow-hidden">
         <div v-if="loading">
           <CLoading />
         </div>
         <div v-else>
-          <table
-            class="w-full table-auto divide-y divide-gray-200 dark:divide-gray-700"
-            v-if="locationsStore.locations.length > 0"
-          >
+          <div class="max-w-full" v-if="locationsStore.locations.length > 0">
+            <table
+              class="w-full table-auto divide-y divide-gray-200 dark:divide-gray-700"
+            >
             <thead class="bg-gray-50 dark:bg-gray-800">
             <tr>
               <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
               >
                 Name
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
               >
                 Address
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
               >
                 City
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
               >
                 State
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
               >
                 Zip Code
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
               >
                 Country
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
               >
                 Is Default
               </th>
               <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
+                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
               >
                 Actions
               </th>
@@ -70,28 +70,28 @@
                 :key="location.id"
                 class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
               >
-                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
+                <td class="px-2 py-4 text-sm text-gray-800 dark:text-gray-100 break-words">
                   {{ location.name }}
                 </td>
-                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
                   {{ location.address }}
                 </td>
-                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
                   {{ location.city }}
                 </td>
-                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
                   {{ location.state }}
                 </td>
-                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
                   {{ location.zipCode }}
                 </td>
-                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
                   {{ location.country }}
                 </td>
-                <td class="px-2 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
                   {{ location.isDefault ? 'Yes' : 'No' }}
                 </td>
-                <td class="px-2 py-4 whitespace-nowrap text-left text-sm w-[160px]">
+                <td class="px-2 py-4 text-left text-sm w-[160px]">
                   <div class="flex gap-2 flex-wrap">
                     <CButton
                       v-tooltip="'Coming Soon'"
@@ -107,6 +107,7 @@
               </tr>
             </tbody>
           </table>
+          </div>
           <CAlert variant="info" v-else>
             There are no locations for this event yet.
           </CAlert>
