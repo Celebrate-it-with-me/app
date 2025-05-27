@@ -3,10 +3,11 @@ import { ref } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 import CollaboratorsService from '@/services/CollaboratorsService'
 
-export const useCollaboratorsStore = defineStore('collaborators', () => {
+export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
   const collaborators = ref([])
   const isLoading = ref(false)
   const userStore = useUserStore()
+  const invitations = ref([])
 
   /**
    * Load collaborators for the active event
@@ -26,6 +27,117 @@ export const useCollaboratorsStore = defineStore('collaborators', () => {
       }
     } catch (error) {
       console.error('Error loading collaborators:', error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const checkInviteToken = async ({ token, eventId }) => {
+    isLoading.value = true
+    try {
+      const { data, status } = await CollaboratorsService.checkInviteToken({
+        token,
+        eventId
+      })
+      if (status === 200) {
+        return data ?? null
+      } else {
+        // Handle error
+        console.error('Error checking invite token:', data)
+        return null
+      }
+    } catch (error) {
+      console.error('Error checking invite token:', error)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const checkToken = async ({ tokens }) => {
+    isLoading.value = true
+    try {
+      const { data, status } = await CollaboratorsService.checkToken({
+        tokens
+      })
+
+      if (status === 200) {
+        return data ?? null
+      } else {
+        // Handle error
+        console.error('Error checking token:', data)
+        return null
+      }
+    } catch (error) {
+      console.error('Error checking token:', error)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const declineInvite = async ({ token, eventId }) => {
+    isLoading.value = true
+    try {
+      const { data, status } = await CollaboratorsService.declineInvite({
+        token,
+        eventId
+      })
+      if (status === 200) {
+        return data ?? null
+      } else {
+        // Handle error
+        console.error('Error declining invite:', data)
+        return null
+      }
+    } catch (error) {
+      console.error('Error declining invite:', error)
+      return false
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const loadInvitations = async () => {
+    isLoading.value = true
+    try {
+      const invitationsToken = JSON.parse(localStorage.getItem('pending_invite_token') || '[]')
+
+      if (invitationsToken.length > 0) {
+        invitations.value = await checkToken({
+          tokens: invitationsToken
+        })
+      }
+    } catch (error) {
+      console.error('Error loading invitations:', error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const declineInvitation = async ({ invitation }) => {
+    isLoading.value = true
+    try {
+      const { status } = await CollaboratorsService.declineInvite({
+        token: invitation.token,
+        eventId: invitation.event.id
+      })
+      if (status === 200) {
+        invitations.value = invitations.value.filter(i => i.token !== invitation.token)
+
+        // Remove the token from localStorage
+        const invitationsToken = JSON.parse(localStorage.getItem('pending_invite_token') || '[]')
+        const updatedTokens = invitationsToken.filter(token => token !== invitation.token)
+        localStorage.setItem('pending_invite_token', JSON.stringify(updatedTokens))
+
+        return true
+      } else {
+        console.error('Error declining invitation:', status)
+        return false
+      }
+    } catch (error) {
+      console.error('Error declining invitation:', error)
+      return false
     } finally {
       isLoading.value = false
     }
@@ -72,8 +184,14 @@ export const useCollaboratorsStore = defineStore('collaborators', () => {
   return {
     collaborators,
     isLoading,
+    invitations,
     loadCollaborators,
     inviteCollaborator,
-    reset
+    reset,
+    checkInviteToken,
+    declineInvite,
+    checkToken,
+    loadInvitations,
+    declineInvitation
   }
 })

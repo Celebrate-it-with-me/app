@@ -21,6 +21,15 @@ const nonAuthRoutes = [
     }
   },
   {
+    path: '/event/:id/invite',
+    name: 'invite-accept',
+    component: () => import('@/views/external/InviteAcceptView.vue'),
+    meta: {
+      title: 'Accept Invite',
+      requiresAuth: false
+    }
+  },
+  {
     path: '/confirm-email',
     name: 'confirm-email',
     component: ConfirmEmailView,

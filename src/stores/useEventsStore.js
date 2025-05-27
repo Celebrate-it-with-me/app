@@ -87,11 +87,13 @@ export const useEventsStore = defineStore('eventsStore', {
      * @returns {Promise<void>}
      */
     async initUserEventsData(result) {
-      this.events = result?.events
-      this.activeEvent = result?.last_active_event
+      this.events = result?.events ?? []
+      this.activeEvent = result?.last_active_event || null
       const userStore = useUserStore()
-      userStore.activeEvent = this.activeEvent?.id
-      await this.updateActiveEvent(this.activeEvent)
+      userStore.activeEvent = this.activeEvent?.id || null
+      if (this.activeEvent) {
+        await this.updateActiveEvent(this.activeEvent)
+      }
     },
 
     /**
