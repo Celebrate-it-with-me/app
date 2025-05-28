@@ -258,6 +258,16 @@ const authRoutes = [
       requiredPermission: ['edit_event_locations'],
     }
   },
+  {
+    path: '/dashboard/events/:id/invitations',
+    name: 'invitations-processor',
+    component: () => import('@/views/internal/invitations/InvitationProcessorView.vue'),
+    meta: {
+      title: 'Invitations Processor',
+      requiresAuth: true,
+      requiredPermission: [],
+    }
+  },
 
   /*children: [
       {

@@ -46,6 +46,17 @@ const declineInvite = async () => {
       eventId
     })
 
+    if (invite.value) {
+      let pendingInvitations = JSON.parse(localStorage.getItem('pending_invitations') || '[]')
+
+      if (!Array.isArray(pendingInvitations)) {
+        pendingInvitations = []
+      } else {
+        pendingInvitations = pendingInvitations.filter(inv => inv.id !== invite.value.id)
+      }
+
+      localStorage.setItem('pending_invitations', JSON.stringify(pendingInvitations))
+    }
   } catch (e) {
     error.value = e.response?.data?.message || 'Failed to decline invitation.'
   } finally {
@@ -53,23 +64,23 @@ const declineInvite = async () => {
   }
 }
 
-
 const acceptInvite = async () => {
   if (token && typeof token === 'string' ) {
-    let pendingInvite = JSON.parse(localStorage.getItem('pending_invite_token') || '[]')
+    let pendingInvite = JSON.parse(localStorage.getItem('pending_invitations') || '[]')
     if (!Array.isArray(pendingInvite)) {
       pendingInvite = []
     }
-    pendingInvite.push(token)
-    localStorage.setItem('pending_invite_token', JSON.stringify(pendingInvite))
-  }
 
-  if (!isAuthenticated.value) {
-    return await router.push({ name: 'sign-in', query: { redirect: `/invite?token=${token}` } })
+    pendingInvite.push(invite.value)
+    localStorage.setItem('pending_invitations', JSON.stringify(pendingInvite))
   }
 
   try {
-    return await router.push(`/dashboard/events/${invite.value.event.id}`)
+    if (!isAuthenticated.value) {
+      return await router.push({ name: 'sign-in', query: { redirect: `/invite?token=${token}` } })
+    }
+
+    return await router.push(`/dashboard/events/${invite.value.event.id}/invitations`)
   } catch (e) {
     error.value = e.response?.data?.message || 'Failed to accept invitation.'
   }

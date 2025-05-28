@@ -29,6 +29,10 @@ class CollaboratorsService {
     })
   }
 
+  async acceptInvitation({ id, eventId }) {
+    return CWM_API.post(`event/${eventId}/collaborators/invite/${id}/accept`)
+  }
+
 }
 
 export default new CollaboratorsService()

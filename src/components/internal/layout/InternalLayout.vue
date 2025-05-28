@@ -2,7 +2,7 @@
 import InternalSidebar from '@/components/internal/layout/InternalSidebar.vue'
 import HeaderBar from '@/components/internal/layout/InternalHeaderBar.vue'
 import InternalFooter from '@/components/internal/layout/InternalFooter.vue'
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import CEventsModal from '@/components/UI/modals/CEventsModal.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
@@ -11,6 +11,7 @@ import { useHydrationStore } from '@/stores/useHydrationStore'
 import CPageLoaderV2 from '@/components/UI/loading/CPageLoaderV2.vue'
 import { useCollaboratorsStore } from '@/stores/useCollaboratorsStore'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
+import { useRoute } from 'vue-router'
 
 const userStore = useUserStore()
 const eventsStore = useEventsStore()
@@ -20,6 +21,19 @@ const loading = ref(false)
 const notificationStore = useNotificationStore()
 const sidebarExpanded = ref(true)
 const collaboratorsStore = useCollaboratorsStore()
+const route = useRoute()
+
+const shouldShowRouteView = computed(() => {
+  if (route.name === 'invitations-processor') {
+    return true
+  }
+
+  if (!eventsStore.activeEvent) {
+    return false
+  }
+  return true
+})
+
 
 onMounted(async () => {
   loading.value = true
@@ -91,7 +105,6 @@ watch(() => userStore?.preferences?.visualTheme,  () => {
 })
 
 </script>
-git
 <template>
   <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-text font-[Poppins]">
     <div class="flex flex-1">
@@ -114,7 +127,7 @@ git
           class="flex-1 p-6"
         >
           <CAlert
-            v-if="!eventsStore.activeEvent"
+            v-if="!shouldShowRouteView"
           >
             <template #icon>
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
