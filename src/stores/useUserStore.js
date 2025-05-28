@@ -143,6 +143,26 @@ export const useUserStore = defineStore('userStore', {
     },
 
     /**
+     * Log in a user with Google
+     * @param {Object} credentials - Google login credentials
+     * @param {string} credentials.token - Google auth token
+     * @returns {Promise} API response
+     */
+    async googleLogin({ token }) {
+      return await UserService.googleLogin({ token })
+    },
+
+    /**
+     * Log in a user with Facebook
+     * @param {Object} credentials - Facebook login credentials
+     * @param {string} credentials.token - Facebook auth token
+     * @returns {Promise} API response
+     */
+    async facebookLogin({ token }) {
+      return await UserService.facebookLogin({ token })
+    },
+
+    /**
      * Register a new user
      * @param {Object} userData - New user data
      * @param {string} userData.name - User name

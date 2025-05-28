@@ -172,6 +172,31 @@ export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
     }
   }
 
+  const acceptInvitation = async (invite) => {
+    isLoading.value = true
+    try {
+      const { data, status } = await CollaboratorsService.acceptInvitation({
+        id: invite.id,
+        eventId: invite.event.id
+      })
+      if (status === 200) {
+        const currentInvitations = JSON.parse(localStorage.getItem('pending_invitations') || '[]')
+        const updatedInvitations = currentInvitations.filter(i => i.token !== invite.token)
+        localStorage.setItem('pending_invitations', JSON.stringify(updatedInvitations))
+
+        return true
+      } else {
+        console.error('Error accepting invitation:', data)
+        return false
+      }
+    } catch (error) {
+      console.error('Error accepting invitation:', error)
+      return false
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   /**
    * Resets the application state to its initial values.
    * Specifically, it clears the `collaborators` list and sets the `isLoading` flag to `false`.
@@ -192,6 +217,7 @@ export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
     declineInvite,
     checkToken,
     loadInvitations,
-    declineInvitation
+    declineInvitation,
+    acceptInvitation
   }
 })

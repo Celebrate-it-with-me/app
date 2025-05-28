@@ -143,6 +143,26 @@ class UserService {
   async logOut() {
     return await CWM_API.post('logout')
   }
+
+  async googleLogin({ token }) {
+    return await CWM_API.get('sanctum/csrf-cookie', {
+      baseURL: import.meta.env.VITE_API_URL
+    }).then(async () => {
+      return await CWM_API.post('login/google', {
+        token
+      })
+    })
+  }
+
+  async facebookLogin({ token }) {
+    return await CWM_API.get('sanctum/csrf-cookie', {
+      baseURL: import.meta.env.VITE_API_URL
+    }).then(async () => {
+      return await CWM_API.post('login/facebook', {
+        token
+      })
+    })
+  }
 }
 
 export default new UserService()
