@@ -1,7 +1,6 @@
 <script setup>
 import CCard from '@/components/UI/cards/CCard.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
-import CBadge from '@/components/UI/badges/CBadge.vue'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { Calendar, Clock, MapPin, ExternalLink, Edit, UserCircle } from 'lucide-vue-next'
@@ -61,21 +60,24 @@ const eventStatus = computed(() => {
     </div>
 
     <!-- Role Badge -->
-    <div class="absolute -top-3 left-4 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-md border border-gray-200 dark:border-gray-700 flex items-center">
-      <UserCircle class="w-3 h-3 mr-1" :class="{
-        'text-purple-500': userRole === 'owner',
-        'text-blue-500': userRole === 'editor',
-        'text-gray-500': userRole === 'viewer'
-      }" />
-      <span class="text-xs font-medium capitalize" :class="{
-        'text-purple-500': userRole === 'owner',
-        'text-blue-500': userRole === 'editor',
-        'text-gray-500': userRole === 'viewer'
-      }">{{ userRole }}</span>
-    </div>
+
 
     <template #title>
-      <h3 class="text-xl font-semibold text-rose-darken">{{ activeEvent.eventName }}</h3>
+      <div class="title-container flex items-center justify-start gap-x-2">
+        <h3 class="text-xl font-semibold text-rose-darken">{{ activeEvent.eventName }}</h3>
+        <div class="bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-md border border-gray-200 dark:border-gray-700 flex items-center">
+          <UserCircle class="w-3 h-3 mr-1" :class="{
+            'text-purple-500': userRole === 'owner',
+            'text-blue-500': userRole === 'editor',
+            'text-gray-500': userRole === 'viewer'
+          }" />
+          <span class="text-xs font-medium capitalize" :class="{
+            'text-purple-500': userRole === 'owner',
+            'text-blue-500': userRole === 'editor',
+            'text-gray-500': userRole === 'viewer'
+          }">{{ userRole }}</span>
+        </div>
+      </div>
     </template>
 
     <template #content>
