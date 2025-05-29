@@ -62,12 +62,20 @@ export const useTodoStore = defineStore('todo', () => {
     }
   }
 
+  /**
+   * Reset the store to its initial state
+   */
+  function reset() {
+    tasks.value = []
+  }
+
   return {
     tasks,
     addTask,
     updateTask,
     removeTask,
-    toggleTaskCompletion
+    toggleTaskCompletion,
+    reset
   }
 }, {
   persist: {

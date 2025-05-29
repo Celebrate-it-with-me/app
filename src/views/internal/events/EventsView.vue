@@ -117,23 +117,8 @@ const { notify } = useNotification()
 const loading = ref(true)
 const error = ref(null)
 
-// Function to determine user's role for an event
 const getUserRole = (event) => {
-  // If the user is the owner of the event
-  if (event.user_id === userStore.user?.id) {
-    return 'owner'
-  }
-
-  // Check if user is a collaborator
-  if (event.collaborators && event.collaborators.length > 0) {
-    const collaborator = event.collaborators.find(c => c.email === userStore.user?.email)
-    if (collaborator) {
-      return collaborator.role // 'editor' or 'viewer'
-    }
-  }
-
-  // Default role if no specific role is found
-  return 'viewer'
+  return event.userRole
 }
 
 // Computed properties
