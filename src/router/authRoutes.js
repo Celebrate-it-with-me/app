@@ -5,6 +5,7 @@ import CSweetMemories from '@/components/authenticated/sweet-memories/CSweetMemo
 import CSuggestMusic from '../components/authenticated/suggest-music/CSuggestMusic.vue'
 import CEventComments from '../components/authenticated/event-comments/CEventComments.vue'
 import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
+import BudgetView from '@/views/internal/budget/BudgetView.vue'
 import SettingsLayout from '@/components/internal/layout/SettingsLayout.vue'
 import SettingsProfile from '@/views/internal/settings/SettingsProfile.vue'
 import SettingsPreferences from '@/views/internal/settings/SettingsPreferences.vue'
@@ -226,6 +227,16 @@ const authRoutes = [
       title: 'Background Music',
       requiresAuth: true,
       requiredPermission: ['view_event_comments'],
+    }
+  },
+  {
+    path: '/dashboard/budget',
+    name: 'budget',
+    component: BudgetView,
+    meta: {
+      title: 'Budget',
+      requiresAuth: true,
+      requiredPermission: [],
     }
   },
   {

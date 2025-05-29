@@ -68,7 +68,8 @@ import {
   ChefHat,
   MapPin,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Wallet
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 import { computed, ref, watch } from 'vue'
@@ -106,6 +107,7 @@ const menuItems = [
   { label: 'Sweet Memories', to: '/dashboard/sweet-memories', icon: Camera, featureName: 'sweetMemories' },
   { label: 'Suggested Music', to: '/dashboard/suggested-music', icon: Music, featureName: 'music' },
   { label: 'Comments', to: '/dashboard/event-comments', icon: MessageCircle, featureName: 'eventComments' },
+  { label: 'Budget', to: '/dashboard/budget', icon: Wallet, featureName: 'budget' },
  /*
   { label: 'Timeline', to: '/timeline', icon: Calendar },
   { label: 'Checklist', to: '/checklist', icon: Calendar },
