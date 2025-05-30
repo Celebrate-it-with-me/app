@@ -165,6 +165,12 @@ export const useBudgetStore = defineStore('budgetStore', {
           const { data } = response
           this.budgetItems = data.data || []
 
+          // Log the structure of the first budget item if available
+          if (this.budgetItems.length > 0) {
+            console.log('First budget item:', this.budgetItems[0]);
+            console.log('First budget item properties:', Object.keys(this.budgetItems[0]));
+          }
+
           const categorySet = new Set()
           this.budgetItems.forEach(item => {
             if (item.categoryId) {
@@ -302,6 +308,17 @@ export const useBudgetStore = defineStore('budgetStore', {
     }
   },
   getters: {
+    /**
+     * Get a budget item by ID
+     * @param {string|number} id - The ID of the budget item
+     * @returns {Object|null} The budget item or null if not found
+     */
+    getBudgetItemById: (state) => (id) => {
+      // Convert both IDs to strings for comparison to handle type mismatches
+      const idStr = String(id);
+      return state.budgetItems.find(item => String(item.id) === idStr) || null
+    },
+
     /**
      * Check if event has a budget
      * @returns {boolean} True if event has a budget

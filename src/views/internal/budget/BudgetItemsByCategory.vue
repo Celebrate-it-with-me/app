@@ -1,7 +1,6 @@
 <script setup>
-import { Calendar, Edit, PlusCircle, Trash2 } from 'lucide-vue-next'
+import { Calendar, Edit, Trash2, LayoutGrid, Table } from 'lucide-vue-next'
 import CHeading from '@/components/UI/headings/CHeading.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
 import { computed, ref } from 'vue'
 import { useBudgetStore } from '@/stores/useBudgetStore'
 import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
@@ -14,15 +13,17 @@ const notificationStore = useNotificationStore()
 
 const showConfirmDeleteModal = ref(false)
 const deletingItemId = ref(null)
+const viewMode = ref('card') // 'card' or 'table'
 
 const hasBudgetItems = computed(() => budgetStore.hasBudgetItems)
 const budgetItemsByCategory = computed(() => budgetStore.budgetItemsByCategory)
 
-const openAddBudgetItemModal = (categoryId) => {
-  emit('openBudgetItemModal', { mode: 'create', categoryId: categoryId || null })
+const toggleViewMode = (mode) => {
+  viewMode.value = mode
 }
 
 const openEditBudgetItemModal = (item) => {
+  console.log('Opening edit modal for item:', item);
   emit('openBudgetItemModal', { mode: 'edit', item })
 }
 
@@ -64,6 +65,26 @@ const getCategoryByID = (categoryId) => {
 
 <template>
   <div v-if="hasBudgetItems" class="space-y-6">
+    <!-- View mode toggle buttons -->
+    <div class="flex justify-end mb-4">
+      <div class="flex space-x-2">
+        <button
+          @click="toggleViewMode('card')"
+          class="p-2 rounded-md"
+          :class="viewMode === 'card' ? 'bg-rose-100 text-rose-600 dark:bg-rose-900 dark:text-rose-300' : 'text-gray-500 hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-400'"
+        >
+          <LayoutGrid class="w-5 h-5" />
+        </button>
+        <button
+          @click="toggleViewMode('table')"
+          class="p-2 rounded-md"
+          :class="viewMode === 'table' ? 'bg-rose-100 text-rose-600 dark:bg-rose-900 dark:text-rose-300' : 'text-gray-500 hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-400'"
+        >
+          <Table class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+
     <!-- For each category -->
     <div
       v-for="(items, categoryId) in budgetItemsByCategory"
@@ -75,19 +96,10 @@ const getCategoryByID = (categoryId) => {
         <CHeading :level="4">
           {{ categoryId === 'uncategorized' ? 'Uncategorized' : getCategoryByID(categoryId) }}
         </CHeading>
-        <CButton
-          variant="outline"
-          size="sm"
-          @click="openAddBudgetItemModal(categoryId)"
-          class="text-rose hover:bg-rose-50 dark:hover:bg-rose-900"
-        >
-          <PlusCircle class="w-4 h-4 mr-1" />
-          Add Item
-        </CButton>
       </div>
 
-      <!-- Budget Items Cards -->
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Card View -->
+      <div v-if="viewMode === 'card'" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           v-for="item in items"
           :key="item.id"
@@ -120,11 +132,62 @@ const getCategoryByID = (categoryId) => {
             <span class="font-medium">{{ item.actualCost ? '$' + item.actualCost?.toLocaleString() : 'Not set' }}</span>
           </div>
 
-          <div v-if="item.due_date" class="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-3">
+          <div v-if="item.dueDate" class="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-3">
             <Calendar class="w-4 h-4 mr-1" />
-            <span>Due: {{ new Date(item.due_date).toLocaleDateString() }}</span>
+            <span>Due: {{ new Date(item.dueDate).toLocaleDateString() }}</span>
           </div>
         </div>
+      </div>
+
+      <!-- Table View -->
+      <div v-else class="p-6">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-800">
+            <tr>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Title</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Description</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Estimated Cost</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Actual Cost</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Due Date</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            <tr
+              v-for="item in items"
+              :key="item.id"
+              class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+            >
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{{ item.title }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ item.description || '-' }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">${{ item.estimatedCost?.toLocaleString() }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">{{ item.actualCost ? '$' + item.actualCost?.toLocaleString() : 'Not set' }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <div v-if="item.dueDate" class="flex items-center">
+                  <Calendar class="w-4 h-4 mr-1" />
+                  <span>{{ new Date(item.dueDate).toLocaleDateString() }}</span>
+                </div>
+                <span v-else>-</span>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm">
+                <div class="flex space-x-2">
+                  <button
+                    @click="openEditBudgetItemModal(item)"
+                    class="p-1 text-gray-500 hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-400"
+                  >
+                    <Edit class="w-4 h-4" />
+                  </button>
+                  <button
+                    @click="confirmDeleteBudgetItem(item.id)"
+                    class="p-1 text-gray-500 hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-400"
+                  >
+                    <Trash2 class="w-4 h-4" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <CConfirmModal
