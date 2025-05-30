@@ -21,6 +21,7 @@ import MenusView from '@/views/internal/menus/MenusView.vue'
 import CreateMenusView from '@/views/internal/menus/CreateMenusView.vue'
 import ShowMenuView from '@/views/internal/menus/ShowMenuView.vue'
 import EventDetailsView from '@/views/internal/events/EventDetailsView.vue'
+import DressCodeView from '@/views/internal/dress-code/DressCodeView.vue'
 
 const authRoutes = [
   {
@@ -235,6 +236,16 @@ const authRoutes = [
     component: BudgetView,
     meta: {
       title: 'Budget',
+      requiresAuth: true,
+      requiredPermission: [],
+    }
+  },
+  {
+    path: '/dashboard/dress-code',
+    name: 'dress-code',
+    component: DressCodeView,
+    meta: {
+      title: 'Dress Code',
       requiresAuth: true,
       requiredPermission: [],
     }
