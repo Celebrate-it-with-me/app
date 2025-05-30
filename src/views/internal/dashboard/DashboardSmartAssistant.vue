@@ -78,7 +78,7 @@ const goToPrev = () => {
 </script>
 
 <template>
-  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100">
+  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100 overflow-hidden">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2 text-sky-600 font-semibold text-sm bg-sky-50 dark:bg-sky-950 px-3 py-1 rounded-full">
         <Bot class="w-4 h4" />
@@ -169,6 +169,8 @@ const goToPrev = () => {
 <style scoped>
 .suggestions-slider-container {
   margin: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .suggestion-slide {

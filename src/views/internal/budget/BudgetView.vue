@@ -66,21 +66,21 @@ const fetchBudgetData = async () => {
   }
 }
 
-const openAddBudgetItemModal = () => {
-  editingItemId.value = null;
-  showBudgetItemModal.value = true;
-}
 
-const openEditBudgetItemModal = (item) => {
-  budgetItemForm.value = {
-    title: item.title,
-    description: item.description || '',
-    estimated_cost: item.estimated_cost,
-    actual_cost: item.actual_cost || null,
-    due_date: item.due_date || null,
-    category_id: item.category_id || null
-  };
-  editingItemId.value = item.id;
+const handleBudgetItemModal = async (data) => {
+  // Ensure budget items are loaded before opening the modal
+  if (hasEventBudget.value && budgetStore.budgetItems.length === 0) {
+    await budgetStore.loadBudgetItems();
+  }
+
+  if (data.mode === 'edit' && data.item) {
+    // Edit mode
+    editingItemId.value = data.item.id;
+    console.log('Setting editingItemId to:', data.item.id);
+  } else {
+    // Create mode
+    editingItemId.value = null;
+  }
   showBudgetItemModal.value = true;
 }
 
@@ -96,7 +96,7 @@ onMounted(() => {
   <section class="budget-view">
     <!-- Page Header -->
     <BudgetTitles
-      @open-item-modal="openAddBudgetItemModal"
+      @open-item-modal="() => handleBudgetItemModal({ mode: 'create' })"
     />
 
     <!-- Loading State -->
@@ -133,13 +133,12 @@ onMounted(() => {
 
       <!-- Empty State for Budget Items -->
       <AddFirstBudgetItem
-        @open-item-modal="openAddBudgetItemModal"
+        @open-item-modal="() => handleBudgetItemModal({ mode: 'create' })"
       />
 
       <!-- Budget Items by Category -->
       <BudgetItemsByCategory
-        @open-item-modal="openAddBudgetItemModal"
-        @edit-item-modal="openEditBudgetItemModal"
+        @openBudgetItemModal="handleBudgetItemModal"
       />
     </template>
 

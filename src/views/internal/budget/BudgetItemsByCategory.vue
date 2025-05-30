@@ -1,11 +1,13 @@
 <script setup>
-import { Calendar, Edit, PlusCircle, Trash2 } from 'lucide-vue-next'
+import { Calendar, Edit, Trash2, LayoutGrid, Table } from 'lucide-vue-next'
 import CHeading from '@/components/UI/headings/CHeading.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
 import { computed, ref } from 'vue'
 import { useBudgetStore } from '@/stores/useBudgetStore'
 import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
+
+// Colors for categories (same as in BudgetSummary.vue)
+const categoryColors = ['#3b82f6', '#8b5cf6', '#84cc16', '#f97316', '#ec4899', '#14b8a6', '#06b6d4', '#6366f1']
 
 const emit = defineEmits(['openBudgetItemModal', 'openBudgetItemModal', 'deleteBudgetItem'])
 
@@ -14,15 +16,17 @@ const notificationStore = useNotificationStore()
 
 const showConfirmDeleteModal = ref(false)
 const deletingItemId = ref(null)
+const viewMode = ref('table') // 'card' or 'table'
 
 const hasBudgetItems = computed(() => budgetStore.hasBudgetItems)
 const budgetItemsByCategory = computed(() => budgetStore.budgetItemsByCategory)
 
-const openAddBudgetItemModal = (categoryId) => {
-  emit('openBudgetItemModal', { mode: 'create', categoryId: categoryId || null })
+const toggleViewMode = (mode) => {
+  viewMode.value = mode
 }
 
 const openEditBudgetItemModal = (item) => {
+  console.log('Opening edit modal for item:', item);
   emit('openBudgetItemModal', { mode: 'edit', item })
 }
 
@@ -60,10 +64,46 @@ const getCategoryByID = (categoryId) => {
   return category?.label ?? 'Uncategorized';
 }
 
+// Get color for a category based on its ID
+const getCategoryColor = (categoryId) => {
+  // Get the index of the category in the budgetCategories array
+  const categoryIndex = budgetStore.budgetCategories.findIndex(category => {
+    return category.value === categoryId * 1;
+  });
+
+  // If category is not found or is 'uncategorized', use the last color
+  if (categoryIndex === -1 || categoryId === 'uncategorized') {
+    return categoryColors[categoryColors.length - 1];
+  }
+
+  // Use the color at the same index (mod length to avoid out of bounds)
+  return categoryColors[categoryIndex % categoryColors.length];
+}
+
 </script>
 
 <template>
   <div v-if="hasBudgetItems" class="space-y-6">
+    <!-- View mode toggle buttons -->
+    <div class="flex justify-end mb-4">
+      <div class="flex space-x-2">
+        <button
+          @click="toggleViewMode('card')"
+          class="p-2 rounded-md"
+          :class="viewMode === 'card' ? 'bg-rose-100 text-rose-600 dark:bg-rose-900 dark:text-rose-300' : 'text-gray-500 hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-400'"
+        >
+          <LayoutGrid class="w-5 h-5" />
+        </button>
+        <button
+          @click="toggleViewMode('table')"
+          class="p-2 rounded-md"
+          :class="viewMode === 'table' ? 'bg-rose-100 text-rose-600 dark:bg-rose-900 dark:text-rose-300' : 'text-gray-500 hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-400'"
+        >
+          <Table class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+
     <!-- For each category -->
     <div
       v-for="(items, categoryId) in budgetItemsByCategory"
@@ -75,23 +115,18 @@ const getCategoryByID = (categoryId) => {
         <CHeading :level="4">
           {{ categoryId === 'uncategorized' ? 'Uncategorized' : getCategoryByID(categoryId) }}
         </CHeading>
-        <CButton
-          variant="outline"
-          size="sm"
-          @click="openAddBudgetItemModal(categoryId)"
-          class="text-rose hover:bg-rose-50 dark:hover:bg-rose-900"
-        >
-          <PlusCircle class="w-4 h-4 mr-1" />
-          Add Item
-        </CButton>
       </div>
 
-      <!-- Budget Items Cards -->
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Card View -->
+      <div v-if="viewMode === 'card'" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           v-for="item in items"
           :key="item.id"
-          class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 relative">
+          class="rounded-lg p-4 relative"
+          :style="{
+            backgroundColor: getCategoryColor(categoryId) + '20',
+            borderLeft: '4px solid ' + getCategoryColor(categoryId)
+          }">
           <div class="absolute top-2 right-2 flex space-x-1">
             <button
               @click="openEditBudgetItemModal(item)"
@@ -120,11 +155,65 @@ const getCategoryByID = (categoryId) => {
             <span class="font-medium">{{ item.actualCost ? '$' + item.actualCost?.toLocaleString() : 'Not set' }}</span>
           </div>
 
-          <div v-if="item.due_date" class="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-3">
+          <div v-if="item.dueDate" class="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-3">
             <Calendar class="w-4 h-4 mr-1" />
-            <span>Due: {{ new Date(item.due_date).toLocaleDateString() }}</span>
+            <span>Due: {{ new Date(item.dueDate).toLocaleDateString() }}</span>
           </div>
         </div>
+      </div>
+
+      <!-- Table View -->
+      <div v-else class="p-6">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-800">
+            <tr>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Title</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Description</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Estimated Cost</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Actual Cost</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Due Date</th>
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+            <tr
+              v-for="item in items"
+              :key="item.id"
+              class="transition hover:bg-gray-50 dark:hover:bg-gray-800"
+              :style="{
+                borderLeft: '4px solid ' + getCategoryColor(categoryId)
+              }"
+            >
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{{ item.title }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ item.description || '-' }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">${{ item.estimatedCost?.toLocaleString() }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">{{ item.actualCost ? '$' + item.actualCost?.toLocaleString() : 'Not set' }}</td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                <div v-if="item.dueDate" class="flex items-center">
+                  <Calendar class="w-4 h-4 mr-1" />
+                  <span>{{ new Date(item.dueDate).toLocaleDateString() }}</span>
+                </div>
+                <span v-else>-</span>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm">
+                <div class="flex space-x-2">
+                  <button
+                    @click="openEditBudgetItemModal(item)"
+                    class="p-1 text-gray-500 hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-400"
+                  >
+                    <Edit class="w-4 h-4" />
+                  </button>
+                  <button
+                    @click="confirmDeleteBudgetItem(item.id)"
+                    class="p-1 text-gray-500 hover:text-rose-500 dark:text-gray-400 dark:hover:text-rose-400"
+                  >
+                    <Trash2 class="w-4 h-4" />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <CConfirmModal

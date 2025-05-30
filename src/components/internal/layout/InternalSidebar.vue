@@ -2,8 +2,12 @@
   <nav class="h-full flex flex-col dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 relative transition-all duration-300 ease-in-out">
     <div class="p-6 dark:border-gray-700 h-16 flex items-center justify-center">
       <RouterLink to="/" class="flex items-center gap-2 text-xl font-bold text-primary">
-        <img src="@/assets/images/commons/logo_primary_2.png" alt="Logo" :class="isExpanded ? 'w-4/5' : 'w-full'" />
+        <img v-if="isExpanded" src="@/assets/images/commons/logo_primary_2.png" alt="Logo" class="w-4/5" />
+        <img v-else src="@/assets/images/commons/logo.png" alt="Logo" class="w-[120%]" />
       </RouterLink>
+    </div>
+    <div v-if="eventStore.activeEvent" class="md:hidden px-4 text-center text-sm font-medium text-gray-700 dark:text-gray-300 truncate">
+      {{ eventName }}
     </div>
 
     <!-- Toggle button -->
@@ -95,6 +99,8 @@ const isActive = (path) => {
 
 const userStore = useUserStore()
 const eventStore = useEventsStore()
+
+const eventName = computed(() => eventStore.activeEvent?.eventName || 'No Event Selected')
 
 const menuItems = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard, featureName: null },

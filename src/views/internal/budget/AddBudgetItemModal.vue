@@ -61,7 +61,7 @@ const saveBudgetItem = async () => {
     let response;
     if (editingItem.value) {
       // Update existing item
-      response = await budgetStore.updateBudgetItem(editingItem.value, budgetItemForm);
+      response = await budgetStore.updateBudgetItem(editingItem.value.id, budgetItemForm);
       if (response.status === 200) {
         notificationStore.addNotification({
           type: 'success',
@@ -119,17 +119,40 @@ watch(() => props.show, (newVal) => {
   if (newVal) {
     // Reset form when opening modal
     cleanForm();
-    /*if (props.editingItemId) {
+    if (props.editingItemId) {
+      console.log('Editing item ID:', props.editingItemId);
+      console.log('Budget items:', budgetStore.budgetItems);
       const item = budgetStore.getBudgetItemById(props.editingItemId);
+      console.log('Found item:', item);
       if (item) {
-        budgetItemForm.title = item.title;
+        console.log('Item properties:', Object.keys(item));
+
+        // Handle potential property name mismatches (camelCase vs snake_case)
+        editingItem.value = item;
+
+        // Title
+        budgetItemForm.title = item.title || '';
+
+        // Description
         budgetItemForm.description = item.description || '';
-        budgetItemForm.estimatedCost = item.estimatedCost || null;
-        budgetItemForm.actualCost = item.actualCost || null;
-        budgetItemForm.categoryId = item.categoryId || '';
-        budgetItemForm.dueDate = item.dueDate || '';
+
+        // Estimated Cost - check both camelCase and snake_case
+        budgetItemForm.estimatedCost = item.estimatedCost || item.estimated_cost || null;
+
+        // Actual Cost - check both camelCase and snake_case
+        budgetItemForm.actualCost = item.actualCost || item.actual_cost || null;
+
+        // Category ID - check both camelCase and snake_case
+        budgetItemForm.categoryId = item.categoryId || item.category_id || '';
+
+        // Due Date - check both camelCase and snake_case
+        budgetItemForm.dueDate = item.dueDate || item.due_date || '';
+
+        console.log('Form populated with:', budgetItemForm);
+      } else {
+        console.error('Item not found with ID:', props.editingItemId);
       }
-    }*/
+    }
   }
 })
 

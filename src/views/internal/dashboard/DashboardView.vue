@@ -9,7 +9,7 @@ import DashboardTimeline from '@/views/internal/dashboard/DashboardTimeline.vue'
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-6 space-y-10">
+  <div class="max-w-7xl mx-auto px-6 space-y-10 overflow-hidden">
     <!-- Top row -->
     <div class="grid md:grid-cols-2 gap-6">
       <DashboardActiveEvent />
