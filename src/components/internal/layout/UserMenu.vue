@@ -13,7 +13,7 @@
       />
 
       <div
-        class="flex cursor-pointer"
+        class="hidden md:flex cursor-pointer"
       >
         {{ userName }}
 

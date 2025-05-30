@@ -20,6 +20,7 @@ const showEventsModal = ref(false)
 const loading = ref(false)
 const notificationStore = useNotificationStore()
 const sidebarExpanded = ref(true)
+const mobileSidebarOpen = ref(false)
 const collaboratorsStore = useCollaboratorsStore()
 const route = useRoute()
 
@@ -108,23 +109,35 @@ watch(() => userStore?.preferences?.visualTheme,  () => {
 <template>
   <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-text font-[Poppins]">
     <div class="flex flex-1">
+      <!-- Mobile sidebar backdrop -->
+      <div
+        v-if="mobileSidebarOpen"
+        class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+        @click="mobileSidebarOpen = false"
+      ></div>
+
       <!-- Sidebar -->
       <aside
         :class="[
           sidebarExpanded ? 'w-64' : 'w-20',
-          'bg-white dark:bg-gray-800 shadow-md hidden md:block h-screen sticky top-0 transition-all duration-300 ease-in-out'
+          'bg-white dark:bg-gray-800 shadow-md h-screen transition-all duration-300 ease-in-out',
+          mobileSidebarOpen ? 'fixed inset-y-0 left-0 z-50 md:relative md:z-auto' : 'hidden md:block',
+          'md:sticky md:top-0'
         ]"
       >
         <InternalSidebar @update:sidebarState="sidebarExpanded = $event" />
       </aside>
 
       <!-- Main content -->
-      <div class="flex-1 flex flex-col min-h-screen">
-        <HeaderBar class="bg-white sticky top-0 z-10" />
+      <div class="flex-1 flex flex-col min-h-screen overflow-hidden">
+        <HeaderBar
+          class="bg-white sticky top-0 z-10"
+          @toggle-mobile-sidebar="mobileSidebarOpen = !mobileSidebarOpen"
+        />
         <CPageLoaderV2 v-if="loading" />
         <main
           v-else
-          class="flex-1 p-6"
+          class="flex-1 p-6 overflow-hidden"
         >
           <CAlert
             v-if="!shouldShowRouteView"

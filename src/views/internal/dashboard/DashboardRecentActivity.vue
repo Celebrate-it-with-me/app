@@ -103,7 +103,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100">
+  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100 overflow-hidden">
     <div class="flex items-center justify-between mb-4">
       <div class="flex items-center gap-2 text-indigo-600 font-semibold text-sm bg-indigo-50 dark:bg-indigo-950 px-3 py-1 rounded-full">
         <Activity class="w-4 h-4" />

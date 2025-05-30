@@ -120,7 +120,7 @@ const categoryChartOptions = ref({
     height: 250,
   },
   labels: [],
-  colors: ['#3b82f6', '#8b5cf6', '#ec4899', '#f97316', '#84cc16', '#14b8a6', '#06b6d4', '#6366f1'],
+  colors: ['#3b82f6', '#8b5cf6', '#84cc16', '#f97316', '#ec4899', '#14b8a6', '#06b6d4', '#6366f1'],
   legend: {
     position: 'bottom',
     fontSize: '14px',

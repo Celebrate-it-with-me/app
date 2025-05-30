@@ -6,6 +6,9 @@ import { useBudgetStore } from '@/stores/useBudgetStore'
 import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
+// Colors for categories (same as in BudgetSummary.vue)
+const categoryColors = ['#3b82f6', '#8b5cf6', '#84cc16', '#f97316', '#ec4899', '#14b8a6', '#06b6d4', '#6366f1']
+
 const emit = defineEmits(['openBudgetItemModal', 'openBudgetItemModal', 'deleteBudgetItem'])
 
 const budgetStore = useBudgetStore()
@@ -13,7 +16,7 @@ const notificationStore = useNotificationStore()
 
 const showConfirmDeleteModal = ref(false)
 const deletingItemId = ref(null)
-const viewMode = ref('card') // 'card' or 'table'
+const viewMode = ref('table') // 'card' or 'table'
 
 const hasBudgetItems = computed(() => budgetStore.hasBudgetItems)
 const budgetItemsByCategory = computed(() => budgetStore.budgetItemsByCategory)
@@ -61,6 +64,22 @@ const getCategoryByID = (categoryId) => {
   return category?.label ?? 'Uncategorized';
 }
 
+// Get color for a category based on its ID
+const getCategoryColor = (categoryId) => {
+  // Get the index of the category in the budgetCategories array
+  const categoryIndex = budgetStore.budgetCategories.findIndex(category => {
+    return category.value === categoryId * 1;
+  });
+
+  // If category is not found or is 'uncategorized', use the last color
+  if (categoryIndex === -1 || categoryId === 'uncategorized') {
+    return categoryColors[categoryColors.length - 1];
+  }
+
+  // Use the color at the same index (mod length to avoid out of bounds)
+  return categoryColors[categoryIndex % categoryColors.length];
+}
+
 </script>
 
 <template>
@@ -103,7 +122,11 @@ const getCategoryByID = (categoryId) => {
         <div
           v-for="item in items"
           :key="item.id"
-          class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 relative">
+          class="rounded-lg p-4 relative"
+          :style="{
+            backgroundColor: getCategoryColor(categoryId) + '20',
+            borderLeft: '4px solid ' + getCategoryColor(categoryId)
+          }">
           <div class="absolute top-2 right-2 flex space-x-1">
             <button
               @click="openEditBudgetItemModal(item)"
@@ -156,7 +179,10 @@ const getCategoryByID = (categoryId) => {
             <tr
               v-for="item in items"
               :key="item.id"
-              class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+              class="transition hover:bg-gray-50 dark:hover:bg-gray-800"
+              :style="{
+                borderLeft: '4px solid ' + getCategoryColor(categoryId)
+              }"
             >
               <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{{ item.title }}</td>
               <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400">{{ item.description || '-' }}</td>
