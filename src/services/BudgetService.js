@@ -20,6 +20,10 @@ class BudgetService {
     return CWM_API.post(`/event/${eventId}/budget`, budgetData)
   }
 
+  async updateEventBudget(eventId, eventBudgetId, budgetData) {
+    return CWM_API.put(`/event/${eventId}/budget/${eventBudgetId}`, budgetData)
+  }
+
   /**
    * Get budget items for an event budget
    * @param {string|number} eventId - The ID of the event

@@ -8,7 +8,17 @@ export const useBudgetStore = defineStore('budgetStore', {
     budgetItems: [],
     loading: false,
     error: null,
-    categories: []
+    categories: [],
+    budgetCategories: [
+        { value: 1, label: 'Venue' },
+        { value: 2, label: 'Catering' },
+        { value: 3, label: 'Decoration' },
+        { value: 4, label: 'Entertainment' },
+        { value: 5, label: 'Photography' },
+        { value: 6, label: 'Outfits' },
+        { value: 7, label: 'Transportation' },
+        { value: 8, label: 'Miscellaneous' }
+    ],
   }),
   actions: {
     /**
@@ -91,6 +101,44 @@ export const useBudgetStore = defineStore('budgetStore', {
       }
     },
 
+    async updateEventBudget(budgetData) {
+      const eventsStore = useEventsStore()
+      if (!eventsStore.activeEvent || !this.eventBudget) {
+        return {
+          status: 400,
+          message: 'No active event or event budget selected'
+        }
+      }
+
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await BudgetService.updateEventBudget(
+          eventsStore.activeEvent.id,
+          this.eventBudget.id,
+          budgetData
+        )
+
+        if (response.status === 200) {
+          const { data } = response
+          this.eventBudget = data.data || null
+        }
+
+        this.loading = false
+        return response
+      } catch (error) {
+        console.error('Error updating event budget:', error)
+        this.error = error.message || 'An unexpected error occurred'
+        this.loading = false
+
+        return {
+          status: error.response?.status || 500,
+          message: this.error
+        }
+      }
+    },
+
     /**
      * Load budget items for the active event
      * @returns {Promise<Object>} API response or error object
@@ -115,12 +163,12 @@ export const useBudgetStore = defineStore('budgetStore', {
 
         if (response.status === 200) {
           const { data } = response
-          this.budgetItems = data.data?.items || []
+          this.budgetItems = data.data || []
 
           const categorySet = new Set()
           this.budgetItems.forEach(item => {
-            if (item.category_id) {
-              categorySet.add(item.category_id)
+            if (item.categoryId) {
+              categorySet.add(item.categoryId)
             }
           })
           this.categories = Array.from(categorySet)
@@ -275,7 +323,7 @@ export const useBudgetStore = defineStore('budgetStore', {
      * @returns {number} Total estimated cost
      */
     totalEstimatedCost: (state) => {
-      return state.budgetItems.reduce((sum, item) => sum + (item.estimated_cost || 0), 0)
+      return state.budgetItems?.reduce((sum, item) => sum + (item.estimatedCost || 0), 0)
     },
 
     /**
@@ -283,15 +331,20 @@ export const useBudgetStore = defineStore('budgetStore', {
      * @returns {number} Total actual cost
      */
     totalActualCost: (state) => {
-      return state.budgetItems.reduce((sum, item) => sum + (item.actual_cost || 0), 0)
+      return state.budgetItems?.reduce((sum, item) => sum + (item.actualCost || 0), 0)
     },
 
     /**
      * Get budget status
      * @returns {Object} Budget status object with status and class
      */
-    budgetStatus: (state, getters) => {
-      const diff = getters?.budgetCap - getters?.totalActualCost
+    budgetStatus() {
+      const budgetCap = this.budgetCap || 0
+      const totalActualCost = this.totalActualCost || 0
+      const diff = budgetCap - totalActualCost
+
+      console.log('Budget Cap:', budgetCap, 'Total Actual Cost:', totalActualCost, 'Difference:', diff)
+
       if (diff > 0) return { status: 'Under Budget', class: 'text-green-500' }
       if (diff < 0) return { status: 'Over Budget', class: 'text-red-500' }
       return { status: 'On Budget', class: 'text-blue-500' }
@@ -322,11 +375,11 @@ export const useBudgetStore = defineStore('budgetStore', {
 
       // Group items by category
       state.budgetItems.forEach(item => {
-        if (item.category_id) {
-          if (!grouped[item.category_id]) {
-            grouped[item.category_id] = []
+        if (item.categoryId) {
+          if (!grouped[item.categoryId]) {
+            grouped[item.categoryId] = []
           }
-          grouped[item.category_id].push(item)
+          grouped[item.categoryId].push(item)
         } else {
           grouped['uncategorized'].push(item)
         }
