@@ -14,12 +14,7 @@
           class="absolute inset-0 bg-black bg-opacity-40 text-white flex items-center justify-center text-xs font-semibold cursor-pointer opacity-0 group-hover:opacity-100 transition"
         >
           Edit
-          <input
-            type="file"
-            accept="image/*"
-            class="hidden"
-            @change="handleFileChange"
-          />
+          <input type="file" accept="image/*" class="hidden" @change="handleFileChange" />
         </label>
       </div>
       <p class="text-xs text-gray-500 dark:text-gray-400">{{ filename }}</p>
@@ -47,7 +42,7 @@ const value = computed(() => props.modelValue)
 const preview = ref(null)
 const filename = ref('')
 
-const handleFileChange = (event) => {
+const handleFileChange = event => {
   const file = event.target.files[0]
   if (file) {
     preview.value = URL.createObjectURL(file)

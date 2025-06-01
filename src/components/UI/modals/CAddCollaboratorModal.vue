@@ -17,12 +17,12 @@ const props = defineProps({
   open: {
     type: Boolean,
     required: true
-  },
+  }
 })
 
 const collaboratorRoles = [
   { value: 'viewer', label: 'Viewer' },
-  { value: 'editor', label: 'Editor' },
+  { value: 'editor', label: 'Editor' }
 ]
 
 const showCollaboratorModal = ref(false)
@@ -34,13 +34,15 @@ const newCollaborator = reactive({
 const collaboratorValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      email: zod.string({message: 'Email is required'}).email({message: 'Must be a valid email'}),
-      role: zod.enum(['viewer', 'editor'], {message: 'Role is required'}),
+      email: zod
+        .string({ message: 'Email is required' })
+        .email({ message: 'Must be a valid email' }),
+      role: zod.enum(['viewer', 'editor'], { message: 'Role is required' })
     })
   )
 })
 
-const onSubmit = async (fields) => {
+const onSubmit = async fields => {
   try {
     console.log(fields)
     const result = await collaboratorStore.inviteCollaborator(newCollaborator)
@@ -50,7 +52,7 @@ const onSubmit = async (fields) => {
         type: 'error',
         message: 'Failed to invite collaborator'
       })
-      return;
+      return
     }
 
     handleClose()
@@ -58,13 +60,12 @@ const onSubmit = async (fields) => {
       type: 'success',
       message: 'Collaborator invited successfully'
     })
-
   } catch (error) {
     console.log(error)
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.log('errors', errors)
 }
 
@@ -82,25 +83,22 @@ onMounted(() => {
   showCollaboratorModal.value = props.open
 })
 
+watch(
+  () => props.open,
+  newValue => {
+    showCollaboratorModal.value = newValue
+  }
+)
 
-watch(() => props.open, (newValue) => {
-  showCollaboratorModal.value = newValue
-})
-
-watch(showCollaboratorModal, (newValue) => {
+watch(showCollaboratorModal, newValue => {
   if (!newValue) {
     handleClose()
   }
 })
-
 </script>
 
 <template>
-  <CModal
-    v-model="showCollaboratorModal"
-    showCloseIcon
-    :showFooter="false"
-  >
+  <CModal v-model="showCollaboratorModal" show-close-icon :show-footer="false">
     <template #title>Add Collaborator</template>
 
     <Form
@@ -112,9 +110,9 @@ watch(showCollaboratorModal, (newValue) => {
         <div class="mb-4">
           <CInput
             id="collaboratorEmail"
+            v-model="newCollaborator.email"
             name="email"
             label="Email"
-            v-model="newCollaborator.email"
             show-error
             type="email"
             placeholder="Enter collaborator email"
@@ -124,8 +122,8 @@ watch(showCollaboratorModal, (newValue) => {
         <div class="mb-4">
           <CSelect
             id="collaboratorRole"
-            :options="collaboratorRoles"
             v-model="newCollaborator.role"
+            :options="collaboratorRoles"
             name="role"
             show-error
             label="Role"
@@ -145,6 +143,4 @@ watch(showCollaboratorModal, (newValue) => {
   </CModal>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

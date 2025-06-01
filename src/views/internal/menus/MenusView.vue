@@ -2,9 +2,12 @@
   <div class="space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Page Header -->
     <div class="border-b border-gray-200 dark:border-gray-700 pb-5">
-      <CHeading :level="1" weight="semibold" class="text-3xl sm:text-4xl mb-2">Event Menus</CHeading>
+      <CHeading :level="1" weight="semibold" class="text-3xl sm:text-4xl mb-2"
+        >Event Menus</CHeading
+      >
       <p class="text-gray-600 dark:text-gray-400 max-w-3xl">
-        Manage your event menus and track guest selections. Create multiple menu options for your guests to choose from.
+        Manage your event menus and track guest selections. Create multiple menu options for your
+        guests to choose from.
       </p>
     </div>
 
@@ -12,9 +15,11 @@
     <section>
       <div class="flex items-center justify-between mb-6">
         <CHeading :level="2" weight="semibold" class="text-2xl">Menu Options</CHeading>
-        <CButton variant="primary" @click="createMenu" :disabled="loading">
+        <CButton variant="primary" :disabled="loading" @click="createMenu">
           <span v-if="loading" class="mr-2">
-            <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"></span>
+            <span
+              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"
+            ></span>
           </span>
           <span>+ Add Menu</span>
         </CButton>
@@ -60,7 +65,7 @@ const createMenu = async () => {
   await router.push('/dashboard/menus/create')
 }
 
-const setLoading = (isLoading) => {
+const setLoading = isLoading => {
   loading.value = isLoading
 }
 

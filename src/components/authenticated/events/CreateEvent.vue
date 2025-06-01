@@ -23,10 +23,9 @@ const props = defineProps({
     type: String,
     required: false,
     default: 'create',
-    validator: (value) => ['create', 'edit'].includes(value)
+    validator: value => ['create', 'edit'].includes(value)
   }
 })
-
 
 const eventState = reactive({
   eventName: '',
@@ -61,11 +60,11 @@ const eventValidationSchema = computed(() => {
           .string()
           .min(1, { message: 'Start Date is required' })
           .refine(
-            (value) => /^\d{2}\/\d{2}\/\d{4}( \d{2}:\d{2})?$/.test(value), // Validate MM/DD/YYYY or MM/DD/YYYY HH:mm
+            value => /^\d{2}\/\d{2}\/\d{4}( \d{2}:\d{2})?$/.test(value), // Validate MM/DD/YYYY or MM/DD/YYYY HH:mm
             { message: 'Start Date must be in MM/DD/YYYY or MM/DD/YYYY HH:mm format' }
           )
           .refine(
-            (value) => {
+            value => {
               const [datePart, timePart] = value.split(' ')
               const [month, day, year] = datePart.split('/').map(Number)
               const [hours, minutes] = (timePart || '00:00').split(':').map(Number)
@@ -79,11 +78,11 @@ const eventValidationSchema = computed(() => {
           .string()
           .min(1, { message: 'End Date is required' })
           .refine(
-            (value) => /^\d{2}\/\d{2}\/\d{4}( \d{2}:\d{2})?$/.test(value), // Validate MM/DD/YYYY or MM/DD/YYYY HH:mm
+            value => /^\d{2}\/\d{2}\/\d{4}( \d{2}:\d{2})?$/.test(value), // Validate MM/DD/YYYY or MM/DD/YYYY HH:mm
             { message: 'End Date must be in MM/DD/YYYY or MM/DD/YYYY HH:mm format' }
           )
           .refine(
-            (value) => {
+            value => {
               const [datePart, timePart] = value.split(' ')
               const [month, day, year] = datePart.split('/').map(Number)
               const [hours, minutes] = (timePart || '00:00').split(':').map(Number)
@@ -93,15 +92,13 @@ const eventValidationSchema = computed(() => {
             },
             { message: 'End Date must be in the future' }
           ),
-        status: zod
-          .string()
-          .refine((value) => statuses.map((status) => status.value).includes(value)),
+        status: zod.string().refine(value => statuses.map(status => status.value).includes(value)),
         visibility: zod
           .string()
-          .refine((value) => visibilities.map((visibility) => visibility.value).includes(value))
+          .refine(value => visibilities.map(visibility => visibility.value).includes(value))
       })
       .refine(
-        (data) => {
+        data => {
           const { startDate, endDate } = data
 
           if (!startDate || !endDate) {
@@ -144,24 +141,25 @@ onMounted(() => {
 })
 
 const initializeValues = () => {
-    eventState.eventName = eventStore.currentEvent.eventName
-    eventState.eventDescription = eventStore.currentEvent.eventDescription
-    eventState.status = eventStore.currentEvent.status
-    eventState.startDate = eventStore.currentEvent.startDate
-    eventState.endDate = eventStore.currentEvent.endDate
-    eventState.customUrlSlug = eventStore.currentEvent.customUrlSlug
-    eventState.visibility = eventStore.currentEvent.visibility
-    eventState.processing = false
-    eventState.saveTheDate = !!eventStore.currentEvent?.eventFeature?.saveTheDate ?? false
-    eventState.rsvp = !!eventStore.currentEvent?.eventFeature?.rsvp ?? false
-    eventState.sweetMemories = !!eventStore.currentEvent?.eventFeature?.sweetMemories ?? false
-    eventState.music = !!eventStore.currentEvent?.eventFeature?.music ?? false
-    eventState.backgroundMusic = !!eventStore.currentEvent?.eventFeature?.backgroundMusic ?? false
-    eventState.eventComments = !!eventStore.currentEvent?.eventFeature?.eventComments ?? false
-    eventState.seatsAccommodation = !!eventStore.currentEvent?.eventFeature?.seatsAccommodation ?? false
-    eventState.preview = !!eventStore.currentEvent?.eventFeature?.preview ?? false
-    eventState.eventBudget = !!eventStore.currentEvent?.eventFeature?.budget ?? false
-    eventState.analytics = !!eventStore.currentEvent?.eventFeature?.analytics ?? false
+  eventState.eventName = eventStore.currentEvent.eventName
+  eventState.eventDescription = eventStore.currentEvent.eventDescription
+  eventState.status = eventStore.currentEvent.status
+  eventState.startDate = eventStore.currentEvent.startDate
+  eventState.endDate = eventStore.currentEvent.endDate
+  eventState.customUrlSlug = eventStore.currentEvent.customUrlSlug
+  eventState.visibility = eventStore.currentEvent.visibility
+  eventState.processing = false
+  eventState.saveTheDate = !!eventStore.currentEvent?.eventFeature?.saveTheDate ?? false
+  eventState.rsvp = !!eventStore.currentEvent?.eventFeature?.rsvp ?? false
+  eventState.sweetMemories = !!eventStore.currentEvent?.eventFeature?.sweetMemories ?? false
+  eventState.music = !!eventStore.currentEvent?.eventFeature?.music ?? false
+  eventState.backgroundMusic = !!eventStore.currentEvent?.eventFeature?.backgroundMusic ?? false
+  eventState.eventComments = !!eventStore.currentEvent?.eventFeature?.eventComments ?? false
+  eventState.seatsAccommodation =
+    !!eventStore.currentEvent?.eventFeature?.seatsAccommodation ?? false
+  eventState.preview = !!eventStore.currentEvent?.eventFeature?.preview ?? false
+  eventState.eventBudget = !!eventStore.currentEvent?.eventFeature?.budget ?? false
+  eventState.analytics = !!eventStore.currentEvent?.eventFeature?.analytics ?? false
 }
 
 const initUrlSlug = () => {
@@ -214,7 +212,7 @@ const onSubmit = async (fields, { resetForm }) => {
   }
 }
 
-const cleanForm = (resetForm) => {
+const cleanForm = resetForm => {
   eventState.eventName = ''
   eventState.eventDescription = ''
   eventState.eventDate = ''
@@ -245,7 +243,7 @@ const cleanForm = (resetForm) => {
   })
 }
 
-const onInvalidSubmit = (err) => {
+const onInvalidSubmit = err => {
   eventErrors.value = 'Please fix the following errors'
 
   if (Object.keys(err.errors).length) {
@@ -266,8 +264,7 @@ watch(
     <!-- Header Section -->
     <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
       <h3 class="text-lg font-semibold">
-        <span v-if="mode === 'create'">
-          {{ capitalizedMode }} Event</span>
+        <span v-if="mode === 'create'"> {{ capitalizedMode }} Event</span>
         <span v-else>Edit Event</span>
       </h3>
     </div>
@@ -301,10 +298,10 @@ watch(
         <!-- Event Date -->
         <div>
           <SelectField
+            v-model="eventState.status"
             label="Status"
             name="status"
             show-error
-            v-model="eventState.status"
             :items="statuses"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
           />
@@ -351,10 +348,10 @@ watch(
         <!-- Event Visibility -->
         <div>
           <SelectField
+            v-model="eventState.visibility"
             label="Visibility"
             name="visibility"
             show-error
-            v-model="eventState.visibility"
             :items="visibilities"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
           />
@@ -377,37 +374,49 @@ watch(
 
       <h3 class="text-lg font-semibold">Event Features</h3>
       <div class="grid grid-cols-2 gap-6 mt-5">
-        <ToggleField label="Save the Date" name="saveTheDate" v-model="eventState.saveTheDate" />
+        <ToggleField v-model="eventState.saveTheDate" label="Save the Date" name="saveTheDate" />
 
-        <ToggleField label="RSVP" name="rsvp" v-model="eventState.rsvp" />
-
-        <ToggleField label="Sweet Memories" name="sweetMemories" v-model="eventState.sweetMemories" />
-
-        <ToggleField label="Music" name="music" v-model="eventState.music" />
-
-        <ToggleField label="Background Music" name="backgroundMusic" v-model="eventState.backgroundMusic" />
-
-        <ToggleField label="Event Comments" name="eventComments" v-model="eventState.eventComments" />
+        <ToggleField v-model="eventState.rsvp" label="RSVP" name="rsvp" />
 
         <ToggleField
-          label="Seats Accommodation"
-          name="seatsAccommodation"
-          v-model="eventState.seatsAccommodation"
+          v-model="eventState.sweetMemories"
+          label="Sweet Memories"
+          name="sweetMemories"
         />
 
-        <ToggleField label="Page Event Preview" name="preview" v-model="eventState.preview" />
+        <ToggleField v-model="eventState.music" label="Music" name="music" />
 
-        <ToggleField label="Event Budget" name="eventBudget" v-model="eventState.eventBudget" />
+        <ToggleField
+          v-model="eventState.backgroundMusic"
+          label="Background Music"
+          name="backgroundMusic"
+        />
 
-        <ToggleField label="Event Analytics" name="analytics" v-model="eventState.analytics" />
+        <ToggleField
+          v-model="eventState.eventComments"
+          label="Event Comments"
+          name="eventComments"
+        />
+
+        <ToggleField
+          v-model="eventState.seatsAccommodation"
+          label="Seats Accommodation"
+          name="seatsAccommodation"
+        />
+
+        <ToggleField v-model="eventState.preview" label="Page Event Preview" name="preview" />
+
+        <ToggleField v-model="eventState.eventBudget" label="Event Budget" name="eventBudget" />
+
+        <ToggleField v-model="eventState.analytics" label="Event Analytics" name="analytics" />
       </div>
 
       <!-- Form Buttons -->
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
           type="button"
-          @click="cancelCreateEvent"
           class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-medium py-2 px-6 rounded-md"
+          @click="cancelCreateEvent"
         >
           Cancel
         </button>

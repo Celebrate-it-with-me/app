@@ -8,10 +8,7 @@
       {{ label }}
     </label>
 
-    <div
-      class="relative flex items-center w-full border-b transition"
-      :class="borderColorClass"
-    >
+    <div class="relative flex items-center w-full border-b transition" :class="borderColorClass">
       <VueDatePicker
         v-model="localValue"
         :format="format"
@@ -46,16 +43,10 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const {
-  value: fieldValue,
-  errorMessage,
-  handleBlur,
-  meta,
-  setValue
-} = useField(props.name)
+const { value: fieldValue, errorMessage, handleBlur, meta, setValue } = useField(props.name)
 
 // --- Helper: parse string to Date ---
-const parseToDate = (val) => {
+const parseToDate = val => {
   if (val instanceof Date) return val
   if (typeof val === 'string') {
     const [datePart, timePart = '00:00'] = val.split(' ')
@@ -74,22 +65,27 @@ onMounted(() => {
   setValue(props.modelValue) // keep Vee-Validate in sync
 })
 
-watch(() => props.modelValue, (val) => {
-  localValue.value = parseToDate(val)
-})
+watch(
+  () => props.modelValue,
+  val => {
+    localValue.value = parseToDate(val)
+  }
+)
 
-watch(localValue, (val) => {
+watch(localValue, val => {
   if (!val || isNaN(val)) return
 
   const formatted = props.alsoTime
-    ? val.toLocaleString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    }).replace(',', '')
+    ? val
+        .toLocaleString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        })
+        .replace(',', '')
     : val.toLocaleDateString('en-US')
 
   emit('update:modelValue', formatted)
@@ -106,7 +102,7 @@ const borderColorClass = computed(() => {
   return 'border-primary focus-within:border-primary'
 })
 
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   handleBlur(e)
 }
 </script>

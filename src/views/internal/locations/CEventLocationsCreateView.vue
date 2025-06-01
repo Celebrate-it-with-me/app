@@ -26,11 +26,11 @@ const steps = [
   { title: 'Review & Submit', component: LocationsReviews, icon: 'check' }
 ]
 
-const handleStepChange = async (newStep) => {
+const handleStepChange = async newStep => {
   currentStep.value = newStep
 }
 
-const handleNextStep = (isValid) => {
+const handleNextStep = isValid => {
   isValidNext.value = isValid
 }
 
@@ -42,18 +42,18 @@ const handleSubmit = async () => {
       throw new Error('Failed to create location')
     }
 
-
     locationId.value = response.data.data.id
 
     const formData = new FormData()
 
-    const googlePhotos = images.value.filter((image) => image.source === 'google')
+    const googlePhotos = images.value.filter(image => image.source === 'google')
 
     if (googlePhotos.length > 0) {
       formData.append('googlePhotos', JSON.stringify(googlePhotos))
     }
 
-    images.value.filter((image) => image.source !== 'google')
+    images.value
+      .filter(image => image.source !== 'google')
       .forEach((image, index) => {
         formData.append(`images[${index}]`, image.file)
       })
@@ -72,8 +72,6 @@ const handleSubmit = async () => {
       type: 'success',
       message: 'Event Location created successfully!'
     })
-
-
   } catch (e) {
     console.error(e)
     notificationsStore.addNotification({
@@ -92,28 +90,28 @@ const handleSubmit = async () => {
 
     <CWizard
       :steps="steps"
-      :nextValid="isValidNext"
+      :next-valid="isValidNext"
       :initial-step="currentStep"
       @active-step="handleStepChange"
       @submit="handleSubmit"
     >
       <template #current-Step>
         <LocationDetails
-          :initial-place-name="locationData.name"
           v-if="currentStep === 0"
           v-model="locationData"
+          :initial-place-name="locationData.name"
           @valid="handleNextStep"
         />
 
         <LocationImages
-          :place-id="locationData.placeId"
           v-else-if="currentStep === 1"
           v-model="images"
+          :place-id="locationData.placeId"
         />
 
         <LocationsReviews
           v-else-if="currentStep === 2"
-          :locationData="locationData"
+          :location-data="locationData"
           :images="images"
         />
       </template>

@@ -22,7 +22,6 @@ const handleCloseDelete = () => {
 const editCurrentEvent = () => {
   emit('editEvent')
 }
-
 </script>
 
 <template>
@@ -86,62 +85,62 @@ const editCurrentEvent = () => {
 
       <div class="grid grid-cols-2 gap-6 mt-5">
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.saveTheDate">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.saveTheDate" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Save the Date
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.rsvp">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.rsvp" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           RSVP
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.sweetMemories">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.sweetMemories" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Sweet Memories
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.music">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.music" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Music
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.backgroundMusic">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.backgroundMusic" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Background Music
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.eventComments">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.eventComments" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Event Comments
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.seatsAccommodation">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.seatsAccommodation" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Seats Accommodation
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.preview">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.preview" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Page Event Preview
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.budget">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.budget" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Event Budget
         </p>
 
         <p class="font-thin">
-          <span class="font-semibold" v-if="currentEventFeature?.analytics">ON</span>
-          <span class="font-semibold" v-else>OFF</span>
+          <span v-if="currentEventFeature?.analytics" class="font-semibold">ON</span>
+          <span v-else class="font-semibold">OFF</span>
           Event Analytics
         </p>
       </div>
@@ -162,10 +161,7 @@ const editCurrentEvent = () => {
           Delete
         </button>
       </div>
-      <DeleteEventModal
-        :open="showConfirmDelete"
-        @close-modal="handleCloseDelete"
-      />
+      <DeleteEventModal :open="showConfirmDelete" @close-modal="handleCloseDelete" />
     </div>
   </div>
 </template>

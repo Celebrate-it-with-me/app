@@ -1,7 +1,7 @@
 import { CWM_API } from './axios'
 
 class ActivityService {
-  async loadDashboardActivities({eventId}) {
+  async loadDashboardActivities({ eventId }) {
     return CWM_API.get(`/event/${eventId}/dashboard-logs`)
   }
 }

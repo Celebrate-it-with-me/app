@@ -38,7 +38,7 @@ watch(
   { deep: true }
 )
 
-const handlePlace = (place) => {
+const handlePlace = place => {
   if (!place.place_id || !place.geometry || !place.address_components) {
     emit('valid', false)
     return
@@ -57,10 +57,9 @@ const handlePlace = (place) => {
   )
 
   const street_number =
-    place.address_components.find((comp) => comp.types.includes('street_number'))?.long_name || ''
+    place.address_components.find(comp => comp.types.includes('street_number'))?.long_name || ''
 
-  const route =
-    place.address_components.find((comp) => comp.types.includes('route'))?.long_name || ''
+  const route = place.address_components.find(comp => comp.types.includes('route'))?.long_name || ''
 
   const streetAddress = street_number && route ? `${street_number} ${route}` : route || ''
 
@@ -85,68 +84,64 @@ const handlePlace = (place) => {
 
     <CPlacesAutocomplete
       :initial-value="initialPlaceName"
-      @placeChanged="handlePlace"
       class="mt-4"
+      @place-changed="handlePlace"
     />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
       <CInput
+        id="location_name"
         v-model="localLocation.name"
         name="name"
         label="Location Name"
         disabled
-        id="location_name"
       />
       <CInput
+        id="location_address"
         v-model="localLocation.address"
         name="address"
         label="Address"
         disabled
-        id="location_address"
       />
-      <CInput v-model="localLocation.city" name="city" label="City" disabled id="location_city" />
+      <CInput id="location_city" v-model="localLocation.city" name="city" label="City" disabled />
       <CInput
+        id="location_state"
         v-model="localLocation.state"
         name="state"
         label="State"
         disabled
-        id="location_state"
       />
       <CInput
+        id="location_zipCode"
         v-model="localLocation.zipCode"
         name="zipCode"
         label="Zip Code"
         disabled
-        id="location_zipCode"
       />
       <CInput
+        id="location_country"
         v-model="localLocation.country"
         name="country"
         label="Country"
         disabled
-        id="location_country"
       />
       <CInput
+        id="location_latitude"
         v-model="localLocation.latitude"
         name="latitude"
         label="Latitude"
         type="number"
         disabled
-        id="location_latitude"
       />
       <CInput
+        id="location_longitude"
         v-model="localLocation.longitude"
         name="longitude"
         label="Longitude"
         type="number"
         disabled
-        id="location_longitude"
       />
-      <CToggle
-        v-model="localLocation.isDefault"
-        name="isDefault"
-        label="Is Main Location?"
-      />
+      <CToggle v-model="localLocation.isDefault" name="isDefault" label="Is Main Location?" />
     </div>
 
     <CMapPreview

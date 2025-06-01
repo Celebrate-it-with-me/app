@@ -10,7 +10,7 @@ class EventsService {
   }
 
   async getMyEvents() {
-    return CWM_API.get(`event` )
+    return CWM_API.get(`event`)
   }
 
   async filterEvents(query) {

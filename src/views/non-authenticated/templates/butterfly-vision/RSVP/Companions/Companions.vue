@@ -9,12 +9,10 @@ const templateStore = useTemplateStore()
 const currentCompanion = ref(null)
 
 const readyForNext = computed(() => {
-  return !templateStore.guest?.companions?.some(
-    (companion) => companion.rsvpStatus === 'pending'
-  )
+  return !templateStore.guest?.companions?.some(companion => companion.rsvpStatus === 'pending')
 })
 
-const setCurrentCompanion = (companion) => {
+const setCurrentCompanion = companion => {
   currentCompanion.value = companion
 }
 
@@ -26,8 +24,8 @@ const goToNext = () => {
   emit('goToNext')
 }
 
-const handleCompanionConfirmed = (companion) => {
-  templateStore.guest?.companions.forEach((comp) => {
+const handleCompanionConfirmed = companion => {
+  templateStore.guest?.companions.forEach(comp => {
     if (companion.id === comp.id) {
       comp.name = companion.name
       comp.email = companion.email
@@ -38,23 +36,23 @@ const handleCompanionConfirmed = (companion) => {
 
   currentCompanion.value = null
 }
-
 </script>
 
 <template>
   <div class="w-full flex flex-row justify-center items-start">
-    <div
-      class="companions-list w-full"
-      v-if="!currentCompanion"
-    >
-      <CompanionsList
-        @set-current-companion="setCurrentCompanion"
-      />
+    <div v-if="!currentCompanion" class="companions-list w-full">
+      <CompanionsList @set-current-companion="setCurrentCompanion" />
 
       <div class="w-full flex flex-row justify-end my-2 gap-x-2">
         <button
           class="px-6 py-2 border-2 font-bold mr-2"
-          style="font-family: inherit; color: #9a929e; background-color: transparent; border-color: #9a929e; border-radius: 8px;"
+          style="
+            font-family: inherit;
+            color: #9a929e;
+            background-color: transparent;
+            border-color: #9a929e;
+            border-radius: 8px;
+          "
           @click="goToPrevious()"
         >
           Back
@@ -63,7 +61,13 @@ const handleCompanionConfirmed = (companion) => {
         <button
           v-if="readyForNext"
           class="px-6 py-2 border-2 font-bold mr-2"
-          style="font-family: inherit; color: #dba3ff; background-color: transparent; border-color: #dba3ff; border-radius: 8px;"
+          style="
+            font-family: inherit;
+            color: #dba3ff;
+            background-color: transparent;
+            border-color: #dba3ff;
+            border-radius: 8px;
+          "
           @click="goToNext()"
         >
           Next
@@ -71,17 +75,12 @@ const handleCompanionConfirmed = (companion) => {
       </div>
     </div>
 
-    <div
-      class="confirm-companion w-full"
-      v-if="currentCompanion"
-    >
+    <div v-if="currentCompanion" class="confirm-companion w-full">
       <ConfirmCompanion
         :current-companion="currentCompanion"
         @confirmed="handleCompanionConfirmed"
       />
     </div>
-
-
   </div>
 </template>
 

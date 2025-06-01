@@ -10,10 +10,10 @@ const dressCode = computed(() => dressCodeStore.dressCode)
 
 // Map dress code type to a more readable format
 const dressCodeTypeMap = {
-  'formal': 'Formal',
+  formal: 'Formal',
   'semi-formal': 'Semi-formal',
-  'casual': 'Casual',
-  'thematic': 'Thematic',
+  casual: 'Casual',
+  thematic: 'Thematic',
   'black-tie': 'Black Tie'
 }
 
@@ -38,11 +38,7 @@ const handleEdit = () => {
           <Shirt class="w-6 h-6 mr-2 text-primary-600" />
           Event Dress Code
         </h2>
-        <CButton
-          variant="outline"
-          class="flex items-center"
-          @click="handleEdit"
-        >
+        <CButton variant="outline" class="flex items-center" @click="handleEdit">
           <Pencil class="w-4 h-4 mr-2" />
           Edit
         </CButton>
@@ -53,7 +49,9 @@ const handleEdit = () => {
         <!-- Dress Code Type -->
         <div class="col-span-1">
           <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Dress Code Type</h3>
-          <p class="text-lg font-medium text-gray-900 dark:text-white">{{ formattedDressCodeType }}</p>
+          <p class="text-lg font-medium text-gray-900 dark:text-white">
+            {{ formattedDressCodeType }}
+          </p>
         </div>
 
         <!-- Reserved Colors -->
@@ -87,7 +85,10 @@ const handleEdit = () => {
         </div>
 
         <!-- Reference Images -->
-        <div class="col-span-1 md:col-span-2 mt-4" v-if="dressCode.dressCodeImages && dressCode.dressCodeImages.length">
+        <div
+          v-if="dressCode.dressCodeImages && dressCode.dressCodeImages.length"
+          class="col-span-1 md:col-span-2 mt-4"
+        >
           <h3 class="flex items-center text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
             <Image class="w-4 h-4 mr-1" />
             Reference Images

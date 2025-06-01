@@ -31,7 +31,7 @@ const handleClose = () => {
 
 watch(
   () => props.open,
-  (newValue) => {
+  newValue => {
     showModal.value = newValue
   }
 )
@@ -73,7 +73,8 @@ watch(
             :href="qrInvitationUrl"
             download="QRCode.png"
             class="text-white bg-blue-600 hover:bg-blue-700 text-center px-1 py-2 mt-2 rounded-lg"
-          >Download</a>
+            >Download</a
+          >
         </div>
       </div>
     </template>

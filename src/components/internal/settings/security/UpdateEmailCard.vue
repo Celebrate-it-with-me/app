@@ -1,32 +1,27 @@
 <template>
   <CHeading :level="4" weight="normal">Update Email Address</CHeading>
   <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6 space-y-6">
-
     <div class="grid md:grid-cols-4 gap-6">
       <!-- Form (3/4) -->
       <div class="md:col-span-3 space-y-6">
-        <Form
-          :validation-schema="schema"
-          @submit="onSubmit"
-          @invalid-submit="onInvalidSubmit"
-        >
+        <Form :validation-schema="schema" @submit="onSubmit" @invalid-submit="onInvalidSubmit">
           <div class="space-y-6">
             <CInput
+              id="newEmail"
+              v-model="form.newEmail"
               type="email"
               label="New Email Address"
               name="newEmail"
               show-error
-              v-model="form.newEmail"
-              id="newEmail"
             />
 
             <CInput
+              id="currentPassword"
+              v-model="form.currentPassword"
               type="password"
               label="Confirm with Password"
               name="currentPassword"
               show-error
-              v-model="form.currentPassword"
-              id="currentPassword"
             />
 
             <div class="flex justify-end pt-4">
@@ -38,7 +33,9 @@
 
       <!-- Help Box (1/4) -->
       <div class="md:col-span-1">
-        <div class="bg-pink-50 dark:bg-gray-800 p-4 rounded-xl border border-pink-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300">
+        <div
+          class="bg-pink-50 dark:bg-gray-800 p-4 rounded-xl border border-pink-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300"
+        >
           <p class="mb-2 font-medium">How to update your email</p>
           <ul class="list-disc list-inside space-y-1">
             <li>Enter your new email address carefully.</li>
@@ -68,13 +65,13 @@ const userStore = useUserStore()
 
 const form = reactive({
   newEmail: '',
-  currentPassword: '',
+  currentPassword: ''
 })
 
 const schema = toTypedSchema(
   zod.object({
     newEmail: zod.string().email('Please enter a valid email.'),
-    currentPassword: zod.string().min(6, 'Password is required.'),
+    currentPassword: zod.string().min(6, 'Password is required.')
   })
 )
 
@@ -84,13 +81,13 @@ const onSubmit = async () => {
 
     const response = await userStore.updateEmail({
       email: form.newEmail,
-      current_password: form.currentPassword,
+      current_password: form.currentPassword
     })
 
     if (response?.status === 200) {
       notifications.addNotification({
         type: 'success',
-        message: 'Email address updated successfully.',
+        message: 'Email address updated successfully.'
       })
 
       form.newEmail = ''
@@ -98,20 +95,20 @@ const onSubmit = async () => {
     } else {
       notifications.addNotification({
         type: 'error',
-        message: 'Failed to update email. Please try again.',
+        message: 'Failed to update email. Please try again.'
       })
     }
   } catch (err) {
     notifications.addNotification({
       type: 'error',
-      message: 'An error occurred while updating email.',
+      message: 'An error occurred while updating email.'
     })
   } finally {
     saving.value = false
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.warn('Form validation failed:', errors)
 }
 </script>

@@ -14,7 +14,6 @@ onMounted(() => {
   handleCancelCreate()
 })
 
-
 const handleCreateEvent = () => {
   eventsStore.currentEvent = null
   activeView.value = 'create'
@@ -36,59 +35,39 @@ const handleShowEvent = () => {
   activeView.value = 'showEvent'
 }
 
-
 const eventMessage = computed(() => {
   if (!eventsStore.events.length) {
     return "You don't have any event yet, please click in 'Add new event' to start"
   }
 
   if (!eventsStore.currentEvent) {
-    return "Please select one event to work on it!"
+    return 'Please select one event to work on it!'
   }
 
   return ''
 })
-
 </script>
 
 <template>
   <section class="my-events">
-
     <section
       class="my-events-container flex flex-row gap-x-4 mt-2 border-2 border-gray-200/10 p-5 rounded-md min-h-[600px] h-full"
     >
-      <MyEventsList
-        @create-event="handleCreateEvent"
-        @selected-event="handleShowEvent"
-      />
+      <MyEventsList @create-event="handleCreateEvent" @selected-event="handleShowEvent" />
 
       <div class="event-handle w-[70%]">
-        <ShowEvent
-          v-if="activeView === 'showEvent'"
-          @edit-event="handleEditEvent"
-        />
+        <ShowEvent v-if="activeView === 'showEvent'" @edit-event="handleEditEvent" />
 
-        <div
-          v-else-if="['create', 'edit'].includes(activeView)"
-          class="w-full"
-        >
-          <CreateEvent
-            :mode="activeView"
-            @cancel-create="handleCancelCreate"
-          />
+        <div v-else-if="['create', 'edit'].includes(activeView)" class="w-full">
+          <CreateEvent :mode="activeView" @cancel-create="handleCancelCreate" />
         </div>
 
-        <CwmAlert
-          alert-type="info"
-          v-else-if="activeView === 'none'"
-        >
-          {{ eventMessage.length ? eventMessage : 'There is no event selected'}}
+        <CwmAlert v-else-if="activeView === 'none'" alert-type="info">
+          {{ eventMessage.length ? eventMessage : 'There is no event selected' }}
         </CwmAlert>
       </div>
     </section>
   </section>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

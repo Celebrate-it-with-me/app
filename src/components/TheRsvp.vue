@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue';
+import { ref, watch } from 'vue'
 import {
   FwbButton,
-  FwbInput, FwbRadio,
+  FwbInput,
+  FwbRadio,
   FwbTable,
   FwbTableBody,
-  FwbTableCell, FwbTableHead,
+  FwbTableCell,
+  FwbTableHead,
   FwbTableHeadCell,
   FwbTableRow
-} from "flowbite-vue";
+} from 'flowbite-vue'
 import { CWM_API } from '@/services/axios.js'
-import PhoneConfirmationModal from "@/components/PhoneConfirmationModal.vue";
+import PhoneConfirmationModal from '@/components/PhoneConfirmationModal.vue'
 
-const rsvpCode = ref("")
+const rsvpCode = ref('')
 const rsvpError = ref(false)
 const rsvpErrorMessage = ref(false)
 const rsvpServerErrorMessage = ref(false)
@@ -22,7 +24,7 @@ const confirmed = ref(false)
 
 // Watchers
 
-watch(rsvpCode, (newValue) => {
+watch(rsvpCode, newValue => {
   if (newValue) {
     rsvpError.value = false
     rsvpErrorMessage.value = false
@@ -30,19 +32,18 @@ watch(rsvpCode, (newValue) => {
   }
 })
 
-watch(mainGuest, (newValue) => {
+watch(mainGuest, newValue => {
   if (newValue) {
-    let guests = newValue?.party_members;
+    let guests = newValue?.party_members
 
-    if (typeof guests === "string") {
-      mainGuest.value.party_members = JSON.parse(guests);
-      mainGuest.value.party_members.forEach((member) => {
-        member.confirmed = 'yes';
+    if (typeof guests === 'string') {
+      mainGuest.value.party_members = JSON.parse(guests)
+      mainGuest.value.party_members.forEach(member => {
+        member.confirmed = 'yes'
       })
-
     }
   }
-});
+})
 
 // Methods
 const resetInputRsvpError = () => {
@@ -50,22 +51,22 @@ const resetInputRsvpError = () => {
 }
 
 const handleConfirmed = () => {
-  showPhoneConfirmationModal.value = false;
-  confirmed.value = true;
+  showPhoneConfirmationModal.value = false
+  confirmed.value = true
 }
 
 const processCode = async () => {
   if (!rsvpCode.value || rsvpCode.value.length !== 4) {
     rsvpError.value = 'error'
     rsvpErrorMessage.value = true
-    return;
+    return
   }
 
   try {
-    const response = await CWM_API.get(`rsvp/${rsvpCode.value}`);
+    const response = await CWM_API.get(`rsvp/${rsvpCode.value}`)
 
     if (response.status >= 200 && response.status < 300) {
-      mainGuest.value = response.data?.data ?? {};
+      mainGuest.value = response.data?.data ?? {}
       mainGuest.value.confirmed = 'yes'
     } else {
       rsvpError.value = 'error'
@@ -75,9 +76,8 @@ const processCode = async () => {
         rsvpErrorMessage.value = true
       }
     }
-
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
 }
 
@@ -88,27 +88,25 @@ const showPhoneModal = () => {
 const handleCloseConfirmationModal = () => {
   showPhoneConfirmationModal.value = false
 }
-
 </script>
 
 <template>
   <div class="rsvp-container">
-    <div class="code-container" v-if="!mainGuest">
+    <div v-if="!mainGuest" class="code-container">
       <div class="code-input">
         <div class="flex flex-column items-center gap-2">
           <fwb-input
-            class="focus:border-red-300 focus:outline-none focus:ring-4 focus:ring-red-300"
             v-model="rsvpCode"
+            class="focus:border-red-300 focus:outline-none focus:ring-4 focus:ring-red-300"
             :placeholder="$t('accessCodePlaceholder')"
             :validation-status="rsvpError"
             @focus="resetInputRsvpError"
-            @keyup.enter = processCode
+            @keyup.enter="processCode"
           >
           </fwb-input>
           <fwb-button
-              class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 text-sm
-                  px-5 py-2.5 text-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-              @click="processCode"
+            class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 text-sm px-5 py-2.5 text-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+            @click="processCode"
           >
             {{ $t('accessCodeSendButton') }}
           </fwb-button>
@@ -123,12 +121,10 @@ const handleCloseConfirmationModal = () => {
         </p>
       </div>
     </div>
-    <div class="show-main-guest" v-if="mainGuest">
+    <div v-if="mainGuest" class="show-main-guest">
       <template v-if="!confirmed">
         <div class="details">
-          <p class="text-white text-4xl text-center beauty-font main-title">
-            Vanessa Rodriguez
-          </p>
+          <p class="text-white text-4xl text-center beauty-font main-title">Vanessa Rodriguez</p>
 
           <p class="text-white beauty-font main-second-title mt-3">
             {{ $t('celebration') }}
@@ -136,32 +132,32 @@ const handleCloseConfirmationModal = () => {
 
           <p class="text-white text-4xl text-center lora-font">
             {{ $t('celebrationDate') }}
-            <br>
+            <br />
             {{ $t('celebrationHours') }}
           </p>
         </div>
 
-
         <div class="guests">
           <div class="sub-details">
-            <p class="text-white text-4xl text-center beauty-font main-second-title" >
+            <p class="text-white text-4xl text-center beauty-font main-second-title">
               {{ $t('ceremonyPlace') }}
             </p>
 
             <p class="text-white text-4xl text-center lora-font">
-              {{ $t('ceremonyAddress1') }} <br>
+              {{ $t('ceremonyAddress1') }} <br />
             </p>
 
             <p class="text-white text-4xl text-center lora-font">
-              {{ $t('ceremonyAddress2') }} <br>
+              {{ $t('ceremonyAddress2') }} <br />
             </p>
 
             <p class="text-white text-4xl text-center lora-font">
-              {{ $t('reservedMessage1') }} {{ mainGuest.party_members.length + 1 }} {{ $t('reservedMessage2') }}<br>
+              {{ $t('reservedMessage1') }} {{ mainGuest.party_members.length + 1 }}
+              {{ $t('reservedMessage2') }}<br />
             </p>
           </div>
 
-          <hr class="mt-5 mb-5">
+          <hr class="mt-5 mb-5" />
           <fwb-table class="dark">
             <fwb-table-head>
               <fwb-table-head-cell>{{ $t('guestTable.name') }}</fwb-table-head-cell>
@@ -169,19 +165,21 @@ const handleCloseConfirmationModal = () => {
             </fwb-table-head>
             <fwb-table-body>
               <fwb-table-row>
-                <fwb-table-cell>{{ mainGuest.first_name }} {{ mainGuest.last_name }}</fwb-table-cell>
+                <fwb-table-cell
+                  >{{ mainGuest.first_name }} {{ mainGuest.last_name }}</fwb-table-cell
+                >
                 <fwb-table-cell class="flex">
                   <fwb-radio
-                      v-model="mainGuest.confirmed"
-                      :name="`${mainGuest.first_name}_radio`"
-                      :label="$t('guestTable.confirmOptionYes')"
-                      value="yes"
+                    v-model="mainGuest.confirmed"
+                    :name="`${mainGuest.first_name}_radio`"
+                    :label="$t('guestTable.confirmOptionYes')"
+                    value="yes"
                   />
                   <fwb-radio
-                      v-model="mainGuest.confirmed"
-                      :name="`${mainGuest.first_name}_radio`"
-                      :label="$t('guestTable.confirmOptionNo')"
-                      value="no"
+                    v-model="mainGuest.confirmed"
+                    :name="`${mainGuest.first_name}_radio`"
+                    :label="$t('guestTable.confirmOptionNo')"
+                    value="no"
                   />
                 </fwb-table-cell>
               </fwb-table-row>
@@ -189,16 +187,16 @@ const handleCloseConfirmationModal = () => {
                 <fwb-table-cell>{{ member.name }}</fwb-table-cell>
                 <fwb-table-cell class="flex">
                   <fwb-radio
-                      v-model="member.confirmed"
-                      :name="`${index}_radio`"
-                      :label="$t('guestTable.confirmOptionYes')"
-                      value="yes"
+                    v-model="member.confirmed"
+                    :name="`${index}_radio`"
+                    :label="$t('guestTable.confirmOptionYes')"
+                    value="yes"
                   />
                   <fwb-radio
-                      v-model="member.confirmed"
-                      :name="`${index}_radio`"
-                      :label="$t('guestTable.confirmOptionNo')"
-                      value="no"
+                    v-model="member.confirmed"
+                    :name="`${index}_radio`"
+                    :label="$t('guestTable.confirmOptionNo')"
+                    value="no"
                   />
                 </fwb-table-cell>
               </fwb-table-row>
@@ -207,9 +205,8 @@ const handleCloseConfirmationModal = () => {
 
           <div class="flex justify-center mt-5">
             <fwb-button
-                class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 text-sm
-                  px-5 py-2.5 text-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                @click="showPhoneModal"
+              class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 text-sm px-5 py-2.5 text-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+              @click="showPhoneModal"
             >
               {{ $t('guestTable.button') }}
             </fwb-button>
@@ -259,7 +256,7 @@ const handleCloseConfirmationModal = () => {
   width: 90%;
 }
 .code-container {
-  background-image: url("../assets/images/background4.JPG");
+  background-image: url('../assets/images/background4.JPG');
   background-position: center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -272,7 +269,7 @@ const handleCloseConfirmationModal = () => {
 }
 
 .show-main-guest {
-  background-image: url("../assets/images/background3.png");
+  background-image: url('../assets/images/background3.png');
   background-position: 0 center;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -300,7 +297,7 @@ const handleCloseConfirmationModal = () => {
 }
 
 .error-message {
-  color: #FFF;
+  color: #fff;
   width: 275px;
 }
 
@@ -313,39 +310,39 @@ const handleCloseConfirmationModal = () => {
 }
 
 .sub-title {
-  font-family: "Beauty sans",sans-serif;
+  font-family: 'Beauty sans', sans-serif;
   font-size: 2em;
 }
 
 .lora-font {
-  font-family: "Lora sans",sans-serif;
+  font-family: 'Lora sans', sans-serif;
   font-size: 1.2em;
   font-weight: lighter;
   text-align: center;
 }
 
 .beauty-font {
-  font-family: "Beauty sans",sans-serif;
+  font-family: 'Beauty sans', sans-serif;
   font-weight: lighter;
   text-align: center;
 }
 
-.text-gold{
-  font-family: "Beauty sans",sans-serif;
+.text-gold {
+  font-family: 'Beauty sans', sans-serif;
   letter-spacing: 5px;
   font-weight: bold;
   background-image: linear-gradient(
-      to right,
-      #462523 0,
-      #cb9b51 22%,
-      #f6e27a 45%,
-      #f6f2c0 50%,
-      #f6e27a 55%,
-      #cb9b51 78%,
-      #462523 100%
+    to right,
+    #462523 0,
+    #cb9b51 22%,
+    #f6e27a 45%,
+    #f6f2c0 50%,
+    #f6e27a 55%,
+    #cb9b51 78%,
+    #462523 100%
   );
-  color:transparent;
-  -webkit-background-clip:text;
+  color: transparent;
+  -webkit-background-clip: text;
 }
 
 .reservation-color {

@@ -7,8 +7,7 @@ import TextField from '@/components/UI/form/TextField.vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
 import ConfirmationField from '@/components/UI/form/ConfirmationField.vue'
-import GuestMenuSelection
-  from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/GuestMenuSelection.vue'
+import GuestMenuSelection from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/GuestMenuSelection.vue'
 
 const mainGuestStep = ref(1)
 const confirmationError = ref(false)
@@ -32,7 +31,7 @@ const mainGuestValidationSchema = computed(() => {
         .regex(/^[0-9]*$/, { message: 'Phone Number must be numeric' })
         .optional(),
       rsvpStatus: zod.enum(['attending', 'not-attending'], {
-        required_error: 'Please select a confirmation option',
+        required_error: 'Please select a confirmation option'
       })
     })
   )
@@ -64,7 +63,7 @@ const onSubmit = () => {
   }
 }
 
-const onInvalidSubmit = (error) => {
+const onInvalidSubmit = error => {
   console.log(error)
 
   if (error.errors?.confirmed) {
@@ -76,35 +75,40 @@ const handleGoBack = () => {
   mainGuestStep.value = 1
 }
 
-const handleUpdateGuestMenu = (payload) => {
+const handleUpdateGuestMenu = payload => {
   templateStore.updateGuestMenu(payload)
   emit('goToNext')
 }
 
-watch(() => mainGuestState.rsvpStatus, () => {
-  confirmationError.value = false
-})
+watch(
+  () => mainGuestState.rsvpStatus,
+  () => {
+    confirmationError.value = false
+  }
+)
 </script>
 
 <template>
   <div class="main__guest-container w-full flex flex-col items-center">
     <div class="form-container w-full shadow-md sm:rounded-lg p-4 md:p-10">
-      <div class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl">
+      <div
+        class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl"
+      >
         <h3>Main Guest</h3>
       </div>
       <Form
         v-if="mainGuestStep === 1"
         :validation-schema="mainGuestValidationSchema"
+        class="flex flex-col gap-5 mt-8"
         @submit="onSubmit"
         @invalid-submit="onInvalidSubmit"
-        class="flex flex-col gap-5 mt-8"
       >
         <div class="first-row flex flex-row gap-x-5">
           <div class="relative z-0 w-full mb-5 group">
             <TextField
+              id="name"
               v-model="mainGuestState.name"
               name="name"
-              id="name"
               required
               disabled
               :show-error="true"
@@ -125,9 +129,9 @@ watch(() => mainGuestState.rsvpStatus, () => {
         <div class="second-row flex flex-row gap-x-5">
           <div class="relative z-0 w-full mb-5 group">
             <EmailField
+              id="email"
               v-model="mainGuestState.email"
               name="email"
-              id="email"
               required
               :show-error="true"
               label="Email"
@@ -147,9 +151,9 @@ watch(() => mainGuestState.rsvpStatus, () => {
         <div class="second-row flex flex-row gap-x-5">
           <div class="relative z-0 w-full mb-5 group">
             <TextField
+              id="phoneNumber"
               v-model="mainGuestState.phone"
               name="phoneNumber"
-              id="phoneNumber"
               required
               :show-error="true"
               label="Phone Number"
@@ -169,20 +173,18 @@ watch(() => mainGuestState.rsvpStatus, () => {
         <div class="third-row flex flex-row items-center gap-x-5">
           <div class="relative z-0 mb-2 group">
             <ConfirmationField
-              name="rsvpStatus"
               v-model="mainGuestState.rsvpStatus"
+              name="rsvpStatus"
               label=""
               :show-error="true"
               :options="[
-                { value:'attending', label: 'Yes, I will be there' },
+                { value: 'attending', label: 'Yes, I will be there' },
                 { value: 'not-attending', label: 'Sorry, I can’t come' }
               ]"
             />
           </div>
         </div>
-        <div
-          class="action-button w-full flex flew-row justify-end"
-        >
+        <div class="action-button w-full flex flew-row justify-end">
           <button
             class="px-6 py-2 border-2 font-bold"
             style="
@@ -197,9 +199,7 @@ watch(() => mainGuestState.rsvpStatus, () => {
           </button>
         </div>
       </Form>
-      <div
-        v-if="mainGuestStep === 2"
-      >
+      <div v-if="mainGuestStep === 2">
         <GuestMenuSelection
           :guest="templateStore.guest"
           :menu="guestMenu"

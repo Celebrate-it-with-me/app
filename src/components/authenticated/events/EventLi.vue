@@ -11,7 +11,7 @@ const props = defineProps({
   }
 })
 
-const handleSelectEvent = (event) => {
+const handleSelectEvent = event => {
   eventsStore.selectEvent(event.id)
 }
 
@@ -20,9 +20,7 @@ const textColor = computed(() => {
     return 'text-yellow-300 hover:text-yellow-500'
   }
   return 'text-gray-300 hover:text-white'
-
 })
-
 </script>
 
 <template>
@@ -31,20 +29,12 @@ const textColor = computed(() => {
     :class="textColor"
     @click="handleSelectEvent(activeEvent)"
   >
-    <label
-      :for="`event-${activeEvent.id}`"
-      class="text-sm font-light cursor-pointer"
-    >
+    <label :for="`event-${activeEvent.id}`" class="text-sm font-light cursor-pointer">
       {{ activeEvent.eventName }}
     </label>
 
-    <CheckIcon
-      class="h-6 w-6 cursor-pointer"
-    >
-    </CheckIcon>
+    <CheckIcon class="h-6 w-6 cursor-pointer"> </CheckIcon>
   </li>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

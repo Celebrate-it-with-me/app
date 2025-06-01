@@ -9,7 +9,6 @@ import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
 const loading = ref(false)
 const stdStore = useSaveTheDateStore()
 
-
 onMounted(() => {
   console.log('std mounted')
   loadSaveTheDate()
@@ -32,7 +31,6 @@ const loadSaveTheDate = async () => {
     loading.value = false
   }
 }
-
 </script>
 
 <template>
@@ -41,20 +39,16 @@ const loadSaveTheDate = async () => {
       <CHeading :level="2" weight="semibold">Save the Date</CHeading>
     </div>
 
-    <div >
+    <div>
       <CLoading v-if="loading" :size="12" />
 
-      <div
-        class="std-container flex flex-col gap-6 md:gap-10"
-      >
+      <div class="std-container flex flex-col gap-6 md:gap-10">
         <CreateUpdateStd />
 
         <STDPreview />
       </div>
-
     </div>
   </section>
 </template>
-
 
 <style scoped></style>

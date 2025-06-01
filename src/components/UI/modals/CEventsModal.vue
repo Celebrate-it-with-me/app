@@ -1,5 +1,5 @@
 <template>
-  <CModal v-model="showModal" :showCloseIcon="!!activeEvent">
+  <CModal v-model="showModal" :show-close-icon="!!activeEvent">
     <template #title>
       <CHeading :level="3" weight="bold" color="text-primary"> Welcome back </CHeading>
     </template>
@@ -69,7 +69,7 @@
       </div>
 
       <div v-if="pendingInvitations.length" class="grid grid-cols-1 gap-4 mt-2">
-        <CHeading :level="5" class="mt-2" >Pending Invitations</CHeading>
+        <CHeading :level="5" class="mt-2">Pending Invitations</CHeading>
         <CCard
           v-for="invitation in pendingInvitations"
           :key="invitation.event.id"
@@ -114,7 +114,7 @@ const router = useRouter()
 const collaboratorsStore = useCollaboratorsStore()
 
 const pendingInvitations = computed(() => {
-  return collaboratorsStore?.invitations?.filter((invitation) => invitation.status === 'pending')
+  return collaboratorsStore?.invitations?.filter(invitation => invitation.status === 'pending')
 })
 
 const activeEvent = computed(() => {
@@ -126,7 +126,7 @@ const otherEvents = computed(() => {
     return eventsStore.events
   }
 
-  return eventsStore.events.filter((event) => event.id !== activeEvent.value.id)
+  return eventsStore.events.filter(event => event.id !== activeEvent.value.id)
 })
 
 const close = () => {
@@ -135,7 +135,7 @@ const close = () => {
 
 const showModal = ref(false)
 
-const selectEvent = (event) => {
+const selectEvent = event => {
   eventsStore.setActiveEvent(event)
   close()
 }
@@ -145,7 +145,7 @@ const createNewEvent = async () => {
   close()
 }
 
-const decline = async (invitation) => {
+const decline = async invitation => {
   try {
     await collaboratorsStore.declineInvitation({ invitation })
     await collaboratorsStore.loadInvitations()

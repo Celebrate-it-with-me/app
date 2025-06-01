@@ -44,10 +44,13 @@ const validationSchema = toTypedSchema(
       .array(zod.any())
       .optional()
       .refine(
-        files => !files || files.every(file =>
-          (file instanceof File && file.type.startsWith('image/')) ||
-          (file && typeof file === 'object' && file.imagePath)
-        ),
+        files =>
+          !files ||
+          files.every(
+            file =>
+              (file instanceof File && file.type.startsWith('image/')) ||
+              (file && typeof file === 'object' && file.imagePath)
+          ),
         'Only image files or image objects are allowed'
       )
   })
@@ -63,7 +66,7 @@ onMounted(() => {
   }
 })
 
-const handleSubmit = async (values) => {
+const handleSubmit = async values => {
   try {
     sending.value = true
     const action = isEditMode.value ? dressCodeStore.updateDressCode : dressCodeStore.addDressCode
@@ -80,7 +83,7 @@ const handleSubmit = async (values) => {
   }
 }
 
-const onInvalidSubmit = (ctx) => {
+const onInvalidSubmit = ctx => {
   console.error('Form submission errors:', ctx.errors)
 }
 </script>
@@ -101,12 +104,12 @@ const onInvalidSubmit = (ctx) => {
             </div>
           </label>
           <CSelect
+            id="dressCodeType"
             v-model="form.dressCodeType"
             :options="dressCodeOptions"
             placeholder="Select dress code type"
             class="w-full"
             name="dressCodeType"
-            id="dressCodeType"
           />
         </div>
 
@@ -118,11 +121,7 @@ const onInvalidSubmit = (ctx) => {
               <span>Reserved Colors</span>
             </div>
           </label>
-          <CSimpleColor
-            v-model="form.reservedColors"
-            name="reservedColors"
-            id="reservedColors"
-          />
+          <CSimpleColor id="reservedColors" v-model="form.reservedColors" name="reservedColors" />
         </div>
 
         <!-- Description -->
@@ -134,12 +133,12 @@ const onInvalidSubmit = (ctx) => {
             </div>
           </label>
           <CTextarea
+            id="description"
             v-model="form.description"
             :rows="4"
             placeholder="Provide details about the dress code requirements..."
             class="w-full"
             name="description"
-            id="description"
           />
         </div>
 
@@ -152,20 +151,18 @@ const onInvalidSubmit = (ctx) => {
             </div>
           </label>
           <CImageUpload
+            id="dressCodeImages"
             v-model="form.dressCodeImages"
             name="dressCodeImages"
-            id="dressCodeImages"
           />
         </div>
       </div>
 
       <!-- Actions -->
       <div class="flex justify-end gap-3 mt-8">
-        <CButton variant="outline" type="button" @click="emit('formCancelled')">
-          Cancel
-        </CButton>
+        <CButton variant="outline" type="button" @click="emit('formCancelled')"> Cancel </CButton>
         <CButton variant="primary" type="submit" :disabled="sending">
-          {{ sending ? 'Saving...' : (isEditMode ? 'Update Dress Code' : 'Save Dress Code') }}
+          {{ sending ? 'Saving...' : isEditMode ? 'Update Dress Code' : 'Save Dress Code' }}
         </CButton>
       </div>
     </Form>

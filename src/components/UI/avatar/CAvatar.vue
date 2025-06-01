@@ -7,7 +7,10 @@
     ]"
   >
     <img v-if="src" :src="src" :alt="alt" class="object-cover w-full h-full" />
-    <span v-else class="text-sm font-medium text-white bg-gray-400 w-full h-full flex items-center justify-center">
+    <span
+      v-else
+      class="text-sm font-medium text-white bg-gray-400 w-full h-full flex items-center justify-center"
+    >
       {{ initials }}
     </span>
   </div>
@@ -25,7 +28,7 @@ const props = defineProps({
   name: String,
   size: {
     type: String,
-    default: 'md', // sm, md, lg
+    default: 'md' // sm, md, lg
   },
   bordered: {
     type: Boolean,
@@ -44,6 +47,10 @@ const sizeClass = computed(() => {
 const initials = computed(() => {
   if (!props.name) return '👤'
   const parts = props.name.split(' ')
-  return parts.map(p => p[0]).join('').toUpperCase().slice(0, 2)
+  return parts
+    .map(p => p[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
 })
 </script>

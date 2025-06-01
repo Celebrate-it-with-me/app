@@ -1,16 +1,8 @@
 import { CWM_API } from './axios'
 
 class BackgroundMusicService {
-  async create({
-                 eventId,
-                 iconSize,
-                 iconColor,
-                 iconPosition,
-                 autoplay,
-                 songFile
-               }) {
-
-    const formData =  new FormData()
+  async create({ eventId, iconSize, iconColor, iconPosition, autoplay, songFile }) {
+    const formData = new FormData()
 
     formData.append('iconSize', iconSize)
     formData.append('iconColor', iconColor)
@@ -25,16 +17,8 @@ class BackgroundMusicService {
     })
   }
 
-  async update({
-                 backgroundMusicId,
-                 iconSize,
-                 iconColor,
-                 iconPosition,
-                 autoplay,
-                 songFile
-               }) {
-
-    const formData =  new FormData()
+  async update({ backgroundMusicId, iconSize, iconColor, iconPosition, autoplay, songFile }) {
+    const formData = new FormData()
 
     formData.append('iconSize', iconSize)
     formData.append('iconColor', iconColor)
@@ -49,10 +33,9 @@ class BackgroundMusicService {
     })
   }
 
-  async load({ eventId }){
+  async load({ eventId }) {
     return CWM_API.get(`event/${eventId}/background-music`)
   }
-
 }
 
 export default new BackgroundMusicService()

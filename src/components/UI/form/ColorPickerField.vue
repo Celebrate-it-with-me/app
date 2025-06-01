@@ -43,25 +43,23 @@ const {
   initialValue: props.modelValue
 })
 
-
 onMounted(() => {
   if (props.modelValue) {
     setValue(props.modelValue)
   }
 })
 
-
 // Update prop-dependent internal value when modelValue changes
 watch(
   () => props.modelValue,
-  (newValue) => {
+  newValue => {
     selectedColor.value = newValue
     setValue(newValue)
   }
 )
 
 // Update parent when internal value changes
-const handleInputChange = (val) => {
+const handleInputChange = val => {
   emit('update:modelValue', val)
   emit('resetErrors')
 }
@@ -72,13 +70,13 @@ const showErrorMessage = computed(() => {
 })
 
 // Sync blurred field with parent
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   emit('update:blur', e.target.value)
   handleBlur(e)
 }
 
 // Track direct color-picker updates
-const handleColorPickerChange = (newColor) => {
+const handleColorPickerChange = newColor => {
   selectedColor.value = newColor
   emit('update:modelValue', newColor)
   if (newColor) {
@@ -104,20 +102,20 @@ const handleColorPickerChange = (newColor) => {
     <!-- Input Wrapper -->
     <div :class="horizontal ? 'flex-1' : ''" class="relative w-full mt-1">
       <input
-        type="text"
         :id="name"
+        v-colorpicker="{
+          ...colorPickerOptions,
+          color: selectedColor
+        }"
+        type="text"
         :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
         :disabled="disabled"
         :name="name"
         :placeholder="placeholder"
         :readonly="isReadonly"
         :value="modelValue"
-        v-colorpicker="{
-          ...colorPickerOptions,
-          color: selectedColor
-        }"
         @blur="handleFieldBlur"
-        @input="(e) => handleInputChange(e.target.value)"
+        @input="e => handleInputChange(e.target.value)"
         @change="handleColorPickerChange($event.target.value)"
       />
     </div>

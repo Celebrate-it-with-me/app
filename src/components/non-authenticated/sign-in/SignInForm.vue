@@ -10,7 +10,7 @@ import { detect } from 'detect-browser'
 import { useRouter } from 'vue-router'
 
 const backendError = ref(false)
-const backendErrorMessage = ref("")
+const backendErrorMessage = ref('')
 const userStore = useUserStore()
 const router = useRouter()
 const localState = reactive({
@@ -22,8 +22,10 @@ const localState = reactive({
 const registerValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      email: zod.string().email({message: 'Email is required'}),
-      password: zod.string({message: 'Password is required'}).min(8, {message: 'Password must have at least 8 characters long'})
+      email: zod.string().email({ message: 'Email is required' }),
+      password: zod
+        .string({ message: 'Password is required' })
+        .min(8, { message: 'Password must have at least 8 characters long' })
     })
   )
 })
@@ -34,37 +36,34 @@ const onSubmit = async () => {
     const browser = detect()
     const device = browser ? `${browser.name} ${browser.version}` : 'unknown'
 
-    const response = await userStore.login({...localState, device})
+    const response = await userStore.login({ ...localState, device })
 
     if (response.status >= 200 && response.status < 300) {
       const result = response.data ?? {}
-      userStore.initUserData(
-        {
-          name: result?.user?.name ?? '',
-          email: result?.user?.email ?? '',
-          userId: result?.user?.id ?? '',
-          token: result?.token ?? '',
-          lastLogin: result?.user?.last_login_session ?? null
-        })
+      userStore.initUserData({
+        name: result?.user?.name ?? '',
+        email: result?.user?.email ?? '',
+        userId: result?.user?.id ?? '',
+        token: result?.token ?? '',
+        lastLogin: result?.user?.last_login_session ?? null
+      })
 
-      return await router.push("dashboard")
+      return await router.push('dashboard')
     } else {
       backendError.value = true
-      backendErrorMessage.value = response.response?.data?.message ?? "Oops, something went wrong!"
+      backendErrorMessage.value = response.response?.data?.message ?? 'Oops, something went wrong!'
     }
-
-  } catch(e) {
+  } catch (e) {
     console.log('Ops Something happens!', e)
-    backendErrorMessage.value = e.response?.data?.message ?? "Oops, something went wrong!"
+    backendErrorMessage.value = e.response?.data?.message ?? 'Oops, something went wrong!'
   } finally {
     localState.sending = false
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.log(errors)
 }
-
 </script>
 
 <template>
@@ -75,10 +74,7 @@ const onInvalidSubmit = (errors) => {
       @submit="onSubmit"
       @invalid-submit="onInvalidSubmit"
     >
-      <div
-        v-if="backendError"
-        class="text-red-500 text-sm font-semibold mb-10"
-      >
+      <div v-if="backendError" class="text-red-500 text-sm font-semibold mb-10">
         <p>
           {{ backendErrorMessage }}
         </p>
@@ -88,10 +84,10 @@ const onInvalidSubmit = (errors) => {
       <div class="mb-4">
         <EmailField
           id="email"
+          v-model="localState.email"
           name="email"
           label="Email"
           :class-label="'block text-gray-300 font-medium mb-2'"
-          v-model="localState.email"
           show-error
           required
           :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4 py-2
@@ -104,10 +100,10 @@ const onInvalidSubmit = (errors) => {
       <div class="mb-6">
         <PasswordField
           id="password"
+          v-model="localState.password"
           name="password"
           label="Password"
           :class-label="'block text-gray-300 font-medium mb-2'"
-          v-model="localState.password"
           show-error
           required
           :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4 py-2
@@ -120,8 +116,7 @@ const onInvalidSubmit = (errors) => {
       <div>
         <button
           type="submit"
-          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg
-                    focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-400"
+          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-400"
         >
           Login
         </button>
@@ -129,11 +124,7 @@ const onInvalidSubmit = (errors) => {
       <div class="flex flex-row justify-end">
         <p class="text-sm text-white font-thin mt-2">
           Don't have an account?
-          <router-link
-            :to="'sign-up'"
-            tag="a"
-            class="text-yellow-300"
-          >
+          <router-link :to="'sign-up'" tag="a" class="text-yellow-300">
             Click here to sign up!
           </router-link>
         </p>

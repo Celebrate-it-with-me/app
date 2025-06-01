@@ -1,9 +1,6 @@
 <template>
   <div class="w-full">
-    <label
-      v-if="label"
-      class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200"
-    >
+    <label v-if="label" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
       {{ label }}
     </label>
 
@@ -13,14 +10,7 @@
       @drop.prevent="onDrop"
       @blur="handleBlur"
     >
-      <input
-        type="file"
-        ref="input"
-        accept="image/*"
-        multiple
-        class="hidden"
-        @change="addFiles"
-      />
+      <input ref="input" type="file" accept="image/*" multiple class="hidden" @change="addFiles" />
 
       <button
         type="button"
@@ -37,21 +27,13 @@
       </button>
 
       <div v-if="localImages.length" class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div
-          v-for="(img, index) in localImages"
-          :key="imgKey(img, index)"
-          class="relative group"
-        >
-          <img
-            :src="getPreview(img)"
-            alt="Preview"
-            class="rounded-md object-cover w-full h-32"
-          />
+        <div v-for="(img, index) in localImages" :key="imgKey(img, index)" class="relative group">
+          <img :src="getPreview(img)" alt="Preview" class="rounded-md object-cover w-full h-32" />
           <button
             type="button"
             class="absolute top-1 right-1 bg-white dark:bg-gray-900 rounded-full p-1 shadow group-hover:opacity-100 opacity-0 transition"
-            @click.stop="removeImage(index)"
             title="Remove image"
+            @click.stop="removeImage(index)"
           >
             <X class="w-4 h-4 text-gray-600 dark:text-gray-300" />
           </button>
@@ -90,19 +72,13 @@ const emit = defineEmits(['update:modelValue', 'resetErrors'])
 const input = ref(null)
 const localImages = ref([])
 
-const {
-  value: fieldValue,
-  errorMessage,
-  handleBlur,
-  setValue,
-  meta,
-} = useField(props.name)
+const { value: fieldValue, errorMessage, handleBlur, setValue, meta } = useField(props.name)
 
 const initDone = ref(false)
 watch(
   () => props.modelValue,
-  (val) => {
-    console.log('modelValue changed:', val, (Array.isArray(val) && !initDone.value))
+  val => {
+    console.log('modelValue changed:', val, Array.isArray(val) && !initDone.value)
     if (Array.isArray(val) && val.length > 0 && !initDone.value) {
       localImages.value = [...val]
       setValue([...val])
@@ -112,44 +88,44 @@ watch(
   { immediate: true }
 )
 
-watch(localImages, (val) => {
+watch(localImages, val => {
   setValue(val)
   emit('update:modelValue', val)
   if (val.length > 0) emit('resetErrors')
 })
 
-const addFiles = (event) => {
+const addFiles = event => {
   const selected = Array.from(event.target.files).filter(f => f.type.startsWith('image/'))
   const current = localImages.value || []
-  const newImages = selected.filter(file =>
-    !current.some(existing =>
-      existing instanceof File &&
-      existing.name === file.name &&
-      existing.size === file.size
-    )
+  const newImages = selected.filter(
+    file =>
+      !current.some(
+        existing =>
+          existing instanceof File && existing.name === file.name && existing.size === file.size
+      )
   )
   localImages.value = [...current, ...newImages]
 }
 
-const onDrop = (event) => {
+const onDrop = event => {
   const dropped = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'))
   const current = localImages.value || []
-  const newImages = dropped.filter(file =>
-    !current.some(existing =>
-      existing instanceof File &&
-      existing.name === file.name &&
-      existing.size === file.size
-    )
+  const newImages = dropped.filter(
+    file =>
+      !current.some(
+        existing =>
+          existing instanceof File && existing.name === file.name && existing.size === file.size
+      )
   )
   localImages.value = [...current, ...newImages]
 }
 
-const removeImage = (index) => {
+const removeImage = index => {
   localImages.value.splice(index, 1)
   setValue([...localImages.value])
 }
 
-const getPreview = (img) => {
+const getPreview = img => {
   if (img instanceof File) return URL.createObjectURL(img)
   if (img?.imagePath) return img.imagePath
   return ''

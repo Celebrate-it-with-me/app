@@ -1,11 +1,7 @@
 <template>
-  <CDetailsPanel
-    title="CountDown Styles"
-    :disabled="disabled"
-    :position="position"
-  >
+  <CDetailsPanel title="CountDown Styles" :disabled="disabled" :position="position">
     <div class="grid grid-cols-1 md:grid-cols-1 gap-4 items-end">
-      <CHeading :level="4" size="xl" >Numbers</CHeading>
+      <CHeading :level="4" size="xl">Numbers</CHeading>
       <div class="md:col-span-2">
         <div class="flex items-center gap-2">
           <label
@@ -14,10 +10,7 @@
           >
             Font Size:
           </label>
-          <CFontSize
-            v-model="model.numbers.fontSize"
-            label=""
-          />
+          <CFontSize v-model="model.numbers.fontSize" label="" />
         </div>
       </div>
 
@@ -29,9 +22,7 @@
           >
             Color:
           </label>
-          <CColor
-            v-model="model.numbers.color"
-          />
+          <CColor v-model="model.numbers.color" />
         </div>
       </div>
 
@@ -43,9 +34,7 @@
           >
             Font Weight:
           </label>
-          <CFontWeight
-            v-model="model.numbers.fontWeight"
-          />
+          <CFontWeight v-model="model.numbers.fontWeight" />
         </div>
       </div>
 
@@ -59,16 +48,16 @@
           </label>
           <div class="w-[60%]">
             <CSelect
+              id="fontFamily"
               v-model="model.numbers.fontFamily"
               :options="fonts"
-              id="fontFamily"
               name="numbersFontFamily"
             />
           </div>
         </div>
       </div>
 
-      <CHeading :level="4" size="xl" >Time Labels</CHeading>
+      <CHeading :level="4" size="xl">Time Labels</CHeading>
       <div class="md:col-span-2">
         <div class="flex items-center gap-2">
           <label
@@ -77,10 +66,7 @@
           >
             Font Size:
           </label>
-          <CFontSize
-            v-model="model.labels.fontSize"
-            label=""
-          />
+          <CFontSize v-model="model.labels.fontSize" label="" />
         </div>
       </div>
 
@@ -92,9 +78,7 @@
           >
             Color:
           </label>
-          <CColor
-            v-model="model.labels.color"
-          />
+          <CColor v-model="model.labels.color" />
         </div>
       </div>
 
@@ -106,9 +90,7 @@
           >
             Font Weight:
           </label>
-          <CFontWeight
-            v-model="model.labels.fontWeight"
-          />
+          <CFontWeight v-model="model.labels.fontWeight" />
         </div>
       </div>
 
@@ -122,9 +104,9 @@
           </label>
           <div class="w-[60%]">
             <CSelect
+              id="fontFamily"
               v-model="model.labels.fontFamily"
               :options="fonts"
-              id="fontFamily"
               name="labelsFontFamily"
             />
           </div>
@@ -155,7 +137,7 @@ const props = defineProps({
   position: {
     type: String,
     default: 'end',
-    validator: (value) => {
+    validator: value => {
       return ['start', 'end'].includes(value)
     }
   }
@@ -172,5 +154,4 @@ const fonts = [
   'Courier New, monospace',
   'Times New Roman, serif'
 ].map(f => ({ label: f, value: f }))
-
 </script>

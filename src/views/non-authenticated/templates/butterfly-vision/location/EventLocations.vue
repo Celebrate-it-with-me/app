@@ -1,9 +1,7 @@
 <template>
   <section class="w-full max-w-5xl mx-auto mt-10 space-y-6 px-4 mb-4">
     <div class="text-center">
-      <h2 class="text-6xl font-gvibes font-bold text-purple-middle">
-        Event Location
-      </h2>
+      <h2 class="text-6xl font-gvibes font-bold text-purple-middle">Event Location</h2>
       <p class="text-gray-500 mt-2">{{ location.name }}</p>
     </div>
 
@@ -27,7 +25,8 @@
       />
       <div class="p-6 space-y-4 text-center md:text-left">
         <p class="text-lg font-medium text-gray-800 dark:text-gray-200">
-          {{ location.address }}, {{ location.city }}, {{ location.state }} {{ location.zipCode }}, {{ location.country }}
+          {{ location.address }}, {{ location.city }}, {{ location.state }} {{ location.zipCode }},
+          {{ location.country }}
         </p>
 
         <div class="flex justify-center md:justify-start">
@@ -61,7 +60,7 @@ const images = computed(() => {
 })
 
 const imagesUrl = computed(() => {
-  return images.value.map((image) => image.path)
+  return images.value.map(image => image.path)
 })
 
 const googleMapsUrl = computed(() => {
@@ -69,7 +68,7 @@ const googleMapsUrl = computed(() => {
   const lat = location.value?.latitude || ''
   const lng = location.value?.longitude || ''
 
-  const q =  encodeURIComponent(`${name}`)
+  const q = encodeURIComponent(`${name}`)
   return `https://www.google.com/maps/search/?api=1&query=${q}`
 })
 </script>

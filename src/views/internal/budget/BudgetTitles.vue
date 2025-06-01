@@ -23,8 +23,8 @@ const openAddBudgetItemModal = () => {
     <CButton
       v-if="hasEventBudget"
       variant="gradient"
-      @click="openAddBudgetItemModal"
       class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white"
+      @click="openAddBudgetItemModal"
     >
       <PlusCircle class="w-4 h-4 mr-2" />
       Add Budget Item
@@ -32,6 +32,4 @@ const openAddBudgetItemModal = () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

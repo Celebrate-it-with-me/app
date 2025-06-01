@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { nonAuthRoutes }  from "@/router/nonAuthRoutes"
-import { authRoutes } from "@/router/authRoutes"
-import { eventsRoutes } from "@/router/eventsRoutes"
+import { nonAuthRoutes } from '@/router/nonAuthRoutes'
+import { authRoutes } from '@/router/authRoutes'
+import { eventsRoutes } from '@/router/eventsRoutes'
 import ExternalLayout from '@/components/external/layout/ExternalLayout.vue'
 import ExternalCleanLayout from '@/components/external/layout/ExternalCleanLayout.vue'
-import { externalCleanRoutes } from "@/router/externalCleanRoutes"
+import { externalCleanRoutes } from '@/router/externalCleanRoutes'
 import InternalLayout from '@/components/internal/layout/InternalLayout.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
@@ -72,9 +72,7 @@ router.beforeEach(async (to, from, next) => {
   const requiredPermission = to.meta?.requiredPermission ?? []
   if (requiredPermission.length === 0) return next()
 
-  const hasPermission = requiredPermission.some((perm) =>
-    eventStore.eventPermissions?.includes(perm)
-  )
+  const hasPermission = requiredPermission.some(perm => eventStore.eventPermissions?.includes(perm))
 
   if (!hasPermission) {
     return next({ name: 'not-authorized' })

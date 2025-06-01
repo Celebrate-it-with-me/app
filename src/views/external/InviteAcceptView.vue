@@ -31,7 +31,6 @@ onMounted(async () => {
       token,
       eventId
     })
-
   } catch (e) {
     error.value = e.response?.data?.message || 'Invalid or expired invitation.'
   } finally {
@@ -65,7 +64,7 @@ const declineInvite = async () => {
 }
 
 const acceptInvite = async () => {
-  if (token && typeof token === 'string' ) {
+  if (token && typeof token === 'string') {
     let pendingInvite = JSON.parse(localStorage.getItem('pending_invitations') || '[]')
     if (!Array.isArray(pendingInvite)) {
       pendingInvite = []

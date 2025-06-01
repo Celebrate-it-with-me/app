@@ -1,7 +1,6 @@
 import { CWM_API } from './axios'
 
 class CollaboratorsService {
-
   async loadCollaborators({ eventId }) {
     return CWM_API.get(`event/${eventId}/collaborators`)
   }
@@ -32,7 +31,6 @@ class CollaboratorsService {
   async acceptInvitation({ id, eventId }) {
     return CWM_API.post(`event/${eventId}/collaborators/invite/${id}/accept`)
   }
-
 }
 
 export default new CollaboratorsService()

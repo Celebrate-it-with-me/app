@@ -11,8 +11,8 @@
       <!-- Google Photos -->
       <div
         v-else-if="photos.length"
-        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         :key="renderKey"
+        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
         <div
           v-for="(photo, index) in photos"
@@ -22,10 +22,10 @@
           <img :src="photo.url" class="w-full h-40 object-cover" alt="Place Image" />
 
           <button
-            @click="removePhoto(index)"
             class="absolute top-2 right-2 bg-white text-black rounded-full w-6 h-6 flex items-center justify-center text-xs shadow-md hover:bg-gray-100"
             title="Remove Photo"
             type="button"
+            @click="removePhoto(index)"
           >
             ✖
           </button>
@@ -80,11 +80,11 @@ const fetchGooglePhotos = async () => {
   }
 }
 
-const removePhoto = (index) => {
+const removePhoto = index => {
   photos.value.splice(index, 1)
 }
 
-const addUploadedPhotos = (newPhotos) => {
+const addUploadedPhotos = newPhotos => {
   photos.value.push(...newPhotos)
 }
 

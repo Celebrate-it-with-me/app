@@ -31,14 +31,22 @@ const showCompanyList = ref(false)
 const resetQty = ref(false)
 
 // Functions
-const addCompanion = () => { step.value += 1 }
-const handleCompanionQty = () => { showCompanyList.value = true }
-const handleNamedCompanion = (companion) => { companions.value.push(companion); showCompanyList.value = true }
-const handleRemoveCompanion = (companion) => {
-  companions.value = companions.value.filter((existingCompanion) => {
+const addCompanion = () => {
+  step.value += 1
+}
+const handleCompanionQty = () => {
+  showCompanyList.value = true
+}
+const handleNamedCompanion = companion => {
+  companions.value.push(companion)
+  showCompanyList.value = true
+}
+const handleRemoveCompanion = companion => {
+  companions.value = companions.value.filter(existingCompanion => {
     return companion.email
       ? existingCompanion.email !== companion.email
-      : existingCompanion.firstName !== companion.firstName || existingCompanion.lastName !== companion.lastName
+      : existingCompanion.firstName !== companion.firstName ||
+          existingCompanion.lastName !== companion.lastName
   })
 
   if (!companions.value.length) showCompanyList.value = false
@@ -52,8 +60,13 @@ const goBack = () => {
   emitCompanions()
 }
 
-const handleRestartReset = () => { resetQty.value = false }
-const handleRemoveQty = () => { showCompanyList.value = false; resetQty.value = true }
+const handleRestartReset = () => {
+  resetQty.value = false
+}
+const handleRemoveQty = () => {
+  showCompanyList.value = false
+  resetQty.value = true
+}
 
 // Emit data to parent
 const emitCompanions = () => {
@@ -65,25 +78,31 @@ const emitCompanions = () => {
 }
 
 // Sync local state with props
-const setLocalVars = (value) => {
+const setLocalVars = value => {
   companionType.value = value.companionType ?? null
   noNamedCompanionQty.value = value.companionQty ?? 0
   companions.value = value.companionList ?? []
 }
 
 // Watch props and sync local vars
-watch(() => props.modelValue, (newValue) => {
-  if (newValue && typeof newValue === 'object') {
-    setLocalVars(newValue)
+watch(
+  () => props.modelValue,
+  newValue => {
+    if (newValue && typeof newValue === 'object') {
+      setLocalVars(newValue)
+    }
   }
-})
+)
 
-watch(() => props.forceStep, (newValue) => {
-  if (newValue) {
-    step.value = 1
-    showCompanyList.value = false
+watch(
+  () => props.forceStep,
+  newValue => {
+    if (newValue) {
+      step.value = 1
+      showCompanyList.value = false
+    }
   }
-})
+)
 
 // Emit updates whenever local state changes
 watchEffect(() => {
@@ -100,9 +119,12 @@ watchEffect(() => {
 
     <div class="w-full flex flex-row gap-10">
       <div class="w-1/2">
-        <div class="mb-4" v-if="step === 1">
+        <div v-if="step === 1" class="mb-4">
           <p class="text-gray-400 text-sm">No companions added yet.</p>
-          <button class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-md mt-2" @click="addCompanion">
+          <button
+            class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-md mt-2"
+            @click="addCompanion"
+          >
             Add Companion
           </button>
         </div>
@@ -110,14 +132,19 @@ watchEffect(() => {
         <div v-else-if="step === 2">
           <SetCompanionType v-model="companionType" />
           <div v-if="companionType === 'no-named'" class="no-named-section">
-            <NoNamedCompanion v-model="noNamedCompanionQty" :reset-qty="resetQty" @set-companions-qty="handleCompanionQty" @restart-reset="handleRestartReset" />
+            <NoNamedCompanion
+              v-model="noNamedCompanionQty"
+              :reset-qty="resetQty"
+              @set-companions-qty="handleCompanionQty"
+              @restart-reset="handleRestartReset"
+            />
           </div>
           <div v-if="companionType === 'named'">
             <NamedCompanion @companion-send="handleNamedCompanion" />
           </div>
         </div>
       </div>
-      <div class="w-1/2" v-if="showCompanyList">
+      <div v-if="showCompanyList" class="w-1/2">
         <GuestCompanionList
           :type="companionType"
           :qty="noNamedCompanionQty"

@@ -4,9 +4,15 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
       <div>
         <CHeading :level="2" weight="semibold" class="text-rose-darken">My Events</CHeading>
-        <p class="text-gray-500 dark:text-gray-400 mt-1">Manage all your celebrations in one place</p>
+        <p class="text-gray-500 dark:text-gray-400 mt-1">
+          Manage all your celebrations in one place
+        </p>
       </div>
-      <CButton variant="gradient" @click="createNewEvent" class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white">
+      <CButton
+        variant="gradient"
+        class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white"
+        @click="createNewEvent"
+      >
         <PlusCircle class="w-4 h-4 mr-2" />
         Create New Event
       </CButton>
@@ -24,19 +30,27 @@
         <AlertCircle class="w-5 h-5" />
       </template>
       <p>{{ error }}</p>
-      <CButton @click="fetchEvents" variant="text" size="sm" class="mt-2">
+      <CButton variant="text" size="sm" class="mt-2" @click="fetchEvents">
         <RefreshCw class="w-4 h-4 mr-1" /> Try Again
       </CButton>
     </CAlert>
 
     <!-- Empty State -->
-    <div v-else-if="!hasEvents" class="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-card border border-gray-200 dark:border-gray-700">
+    <div
+      v-else-if="!hasEvents"
+      class="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-card border border-gray-200 dark:border-gray-700"
+    >
       <CalendarDays class="w-16 h-16 mx-auto text-rose mb-4" />
       <CHeading :level="4" class="mb-2">No Events Yet</CHeading>
       <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
-        Create your first event to start planning your celebration. You can add details, invite guests, and more.
+        Create your first event to start planning your celebration. You can add details, invite
+        guests, and more.
       </p>
-      <CButton variant="gradient" @click="createNewEvent" class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white">
+      <CButton
+        variant="gradient"
+        class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white"
+        @click="createNewEvent"
+      >
         <PlusCircle class="w-4 h-4 mr-2" />
         Create Your First Event
       </CButton>
@@ -51,10 +65,7 @@
           <CHeading :level="5" class="text-rose">Active Event</CHeading>
         </div>
 
-        <ActiveEventCard
-          :active-event="activeEvent"
-          :user-role="getUserRole(activeEvent)"
-        />
+        <ActiveEventCard :active-event="activeEvent" :user-role="getUserRole(activeEvent)" />
       </div>
 
       <!-- Other Events Section -->
@@ -106,7 +117,13 @@ import OtherEventCard from '@/views/internal/events/OtherEventCard.vue'
 import ActiveEventCard from '@/views/internal/events/ActiveEventCard.vue'
 
 // Icons
-import { PlusCircle, CalendarDays, AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-vue-next'
+import {
+  PlusCircle,
+  CalendarDays,
+  AlertCircle,
+  RefreshCw,
+  SlidersHorizontal
+} from 'lucide-vue-next'
 
 const eventsStore = useEventsStore()
 const userStore = useUserStore()
@@ -117,7 +134,7 @@ const { notify } = useNotification()
 const loading = ref(true)
 const error = ref(null)
 
-const getUserRole = (event) => {
+const getUserRole = event => {
   return event.userRole
 }
 
@@ -145,7 +162,7 @@ const fetchEvents = async () => {
   }
 }
 
-const switchToEvent = async (event) => {
+const switchToEvent = async event => {
   try {
     loading.value = true
     await eventsStore.setActiveEvent(event)
@@ -182,7 +199,13 @@ onMounted(() => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

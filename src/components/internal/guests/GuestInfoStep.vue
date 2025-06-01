@@ -2,33 +2,33 @@
   <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6 space-y-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <CInput
+        id="guestName"
+        v-model="localData.name"
         label="Guest Name"
         name="guestName"
-        v-model="localData.name"
         placeholder="e.g., John Doe"
         :show-error="true"
-        id="guestName"
       />
 
       <CInput
+        id="guestEmail"
+        v-model="localData.email"
         label="Email"
         name="guestEmail"
-        v-model="localData.email"
         placeholder="e.g., john@example.com"
-        id="guestEmail"
       />
 
       <CInput
+        id="guestPhone"
+        v-model="localData.phone"
         label="Phone Number (optional)"
         name="guestPhone"
-        v-model="localData.phone"
         placeholder="e.g., +1 305 123 4567"
-        id="guestPhone"
       />
 
       <CSelect
-        v-model="localData.menuSelected"
         id="menuSelected"
+        v-model="localData.menuSelected"
         name="menuSelected"
         :options="menuStore.menusForSelect"
         label="Select Menu"
@@ -54,13 +54,13 @@ const props = defineProps({
 const menuStore = useMenusStore()
 
 onMounted(async () => {
-  await  menuStore.loadMenus()
+  await menuStore.loadMenus()
 })
 
 const emit = defineEmits(['update:modelValue'])
 const localData = reactive({ ...props.modelValue })
 
-watch(localData, (val) => {
+watch(localData, val => {
   emit('update:modelValue', val)
 })
 </script>

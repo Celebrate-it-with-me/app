@@ -32,7 +32,7 @@ const props = defineProps({
 const name = toRef(props, 'name')
 
 // Function to format Date objects into MM/DD/YYYY HH:mm if alsoTime is enabled
-const formatDateToString = (date) => {
+const formatDateToString = date => {
   if (!(date instanceof Date) || isNaN(date.getTime())) {
     return ''
   }
@@ -45,7 +45,7 @@ const formatDateToString = (date) => {
 }
 
 // Function to parse a MM/DD/YYYY HH:mm string back into a Date object
-const parseStringToDate = (dateStr) => {
+const parseStringToDate = dateStr => {
   const [datePart, timePart] = dateStr.split(' ')
   const [month, day, year] = datePart.split('/').map(Number)
   const [hours, minutes] = (timePart || '00:00').split(':').map(Number)
@@ -72,7 +72,7 @@ let isSyncing = false
 // Watch for changes to props.modelValue and update inputValue if needed
 watch(
   () => props.modelValue,
-  (newValue) => {
+  newValue => {
     if (!isSyncing) {
       const formattedValue =
         newValue instanceof Date && !isNaN(newValue.getTime())
@@ -88,7 +88,7 @@ watch(
 )
 
 // Watch for changes to inputValue and emit up if needed
-watch(inputValue, (val) => {
+watch(inputValue, val => {
   if (!isSyncing) {
     isSyncing = true
     emit('update:modelValue', val) // Emit formatted string
@@ -100,9 +100,7 @@ watch(inputValue, (val) => {
 })
 
 // Computed property for dynamic date formats (MM/DD/YYYY or MM/DD/YYYY HH:mm)
-const dateFormat = computed(() =>
-  props.alsoTime ? 'MM/dd/yyyy HH:mm' : 'MM/dd/yyyy'
-)
+const dateFormat = computed(() => (props.alsoTime ? 'MM/dd/yyyy HH:mm' : 'MM/dd/yyyy'))
 
 // Error handling and dynamic class logic
 const showErrorMessage = computed(() => {
@@ -130,14 +128,11 @@ const inputClasses = computed(() => {
     >
       {{ label }}
     </label>
-    <div
-      class="relative w-full mt-1"
-      :class="horizontal ? 'flex-1' : ''"
-    >
+    <div class="relative w-full mt-1" :class="horizontal ? 'flex-1' : ''">
       <VueDatePicker
+        :id="name"
         v-model="inputValue"
         :placeholder="placeholder"
-        :id="name"
         :dark="true"
         :format="dateFormat"
         :enable-time-picker="alsoTime"
@@ -146,7 +141,7 @@ const inputClasses = computed(() => {
         :disabled="disabled"
         :readonly="isReadonly"
         :ui="{ input: inputClasses }"
-        :parse="(str) => parseStringToDate(str)"
+        :parse="str => parseStringToDate(str)"
         @blur="handleBlur"
       />
     </div>
@@ -176,10 +171,7 @@ const inputClasses = computed(() => {
       {{ validate }}
     </span>
     <!-- Description -->
-    <span
-      v-if="description"
-      class="block text-secondary-500 font-light leading-4 text-xs mt-2"
-    >
+    <span v-if="description" class="block text-secondary-500 font-light leading-4 text-xs mt-2">
       {{ description }}
     </span>
   </div>

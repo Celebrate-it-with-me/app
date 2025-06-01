@@ -5,7 +5,6 @@ import GalleryImagesSection from '@/components/external/sections/landing/Gallery
 import PricingSection from '@/components/external/sections/landing/PricingSection.vue'
 import TestimonialsSection from '@/components/external/sections/landing/TestimonialsSection.vue'
 import CallToActionSection from '@/components/external/sections/landing/CallToActionSection.vue'
-
 </script>
 
 <template>

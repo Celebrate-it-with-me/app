@@ -1,12 +1,11 @@
 <script setup>
-
 import CCard from '@/components/UI/cards/CCard.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 </script>
 
 <template>
   <CCard class="max-w-md w-full p-8 shadow-xl">
-    <div >
+    <div>
       <div class="text-center mb-10">
         <div class="image-container mb-4">
           <img

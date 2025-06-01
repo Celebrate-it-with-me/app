@@ -5,16 +5,17 @@
       <!-- Main (3/4) -->
       <div class="md:col-span-3 space-y-6">
         <p class="text-sm text-gray-600 dark:text-gray-300">
-          This will erase all your event data, including guests, RSVP responses, galleries, and settings. Your account and login credentials will remain intact.
+          This will erase all your event data, including guests, RSVP responses, galleries, and
+          settings. Your account and login credentials will remain intact.
         </p>
 
         <CInput
+          id="currentPasswordReset"
+          v-model="form.currentPassword"
           type="password"
           label="Current Password"
           name="currentPasswordReset"
-          v-model="form.currentPassword"
           show-error
-          id="currentPasswordReset"
         />
 
         <div class="flex justify-end pt-4">
@@ -26,7 +27,9 @@
 
       <!-- Help (1/4) -->
       <div class="md:col-span-1">
-        <div class="bg-pink-50 dark:bg-gray-800 p-4 rounded-xl border border-pink-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300">
+        <div
+          class="bg-pink-50 dark:bg-gray-800 p-4 rounded-xl border border-pink-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300"
+        >
           <p class="mb-2 font-medium">What will be removed?</p>
           <ul class="list-disc list-inside space-y-1">
             <li>All your events and their data.</li>
@@ -63,19 +66,19 @@ const onResetData = async () => {
     if (response?.status === 200) {
       notifications.addNotification({
         type: 'success',
-        message: 'Your account data has been reset.',
+        message: 'Your account data has been reset.'
       })
       form.currentPassword = ''
     } else {
       notifications.addNotification({
         type: 'error',
-        message: 'Failed to reset account data. Please check your password.',
+        message: 'Failed to reset account data. Please check your password.'
       })
     }
   } catch (error) {
     notifications.addNotification({
       type: 'error',
-      message: 'An error occurred. Please try again.',
+      message: 'An error occurred. Please try again.'
     })
   } finally {
     saving.value = false

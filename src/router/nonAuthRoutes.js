@@ -71,7 +71,7 @@ const nonAuthRoutes = [
     meta: {
       title: 'Help Center'
     }
-  },
+  }
 ]
 
 export { nonAuthRoutes }

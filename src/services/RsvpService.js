@@ -2,14 +2,14 @@ import { CWM_API } from './axios'
 
 class RsvpService {
   async create({
-                 eventId,
-                 firstName,
-                 lastName,
-                 email,
-                 phoneNumber,
-                 companionType,
-                 companionQty,
-                 companionList
+    eventId,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    companionType,
+    companionQty,
+    companionList
   }) {
     return CWM_API.post(`event/${eventId}/guest`, {
       firstName,
@@ -41,14 +41,7 @@ class RsvpService {
     return CWM_API.get(`event/${eventId}/rsvp/guests/totals`)
   }
 
-  async downloadFile({
-                       eventId,
-                       status,
-                       searchValue,
-                       exportType,
-                       perPage,
-                       currentPage
-  }) {
+  async downloadFile({ eventId, status, searchValue, exportType, perPage, currentPage }) {
     return CWM_API.get(`event/${eventId}/rsvp/guests/download`, {
       params: {
         status,
@@ -68,7 +61,6 @@ class RsvpService {
   async loadDashboardRsvpSummary({ eventId }) {
     return CWM_API.get(`event/${eventId}/rsvp/summary`)
   }
-
 }
 
 export default new RsvpService()

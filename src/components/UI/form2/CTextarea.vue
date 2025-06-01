@@ -22,8 +22,8 @@
         :placeholder="placeholder"
         :disabled="disabled"
         :rows="rows"
-        @blur="handleFieldBlur"
         class="w-full resize-none bg-transparent border-none outline-none px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-extralight"
+        @blur="handleFieldBlur"
       />
     </div>
 
@@ -49,24 +49,21 @@ const props = defineProps({
   disabled: Boolean,
   description: String,
   rows: { type: Number, default: 2 },
-  showError: { type: Boolean, default: false },
+  showError: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['update:modelValue', 'update:blur', 'resetErrors'])
 
-const {
-  value: inputValue,
-  errorMessage,
-  handleBlur,
-  setValue,
-  meta
-} = useField(props.name)
+const { value: inputValue, errorMessage, handleBlur, setValue, meta } = useField(props.name)
 
 setValue(props.modelValue)
 
-watch(() => props.modelValue, newValue => {
-  setValue(newValue)
-})
+watch(
+  () => props.modelValue,
+  newValue => {
+    setValue(newValue)
+  }
+)
 
 watch(inputValue, val => {
   emit('update:modelValue', val)
@@ -83,7 +80,7 @@ const borderColorClass = computed(() => {
   return 'border-primary focus-within:border-primary'
 })
 
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   emit('update:blur', e.target.value)
   handleBlur(e)
 }

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useUserStore } from '@/stores/useUserStore'
 import DressCodeService from '@/services/DressCodeService'
 
-export const useDressCodeStore = defineStore('dressCodeStore',  {
+export const useDressCodeStore = defineStore('dressCodeStore', {
   state: () => ({
     dressCode: {
       id: null,
@@ -13,6 +13,15 @@ export const useDressCodeStore = defineStore('dressCodeStore',  {
     }
   }),
   actions: {
+    async generateAIImages(dressType) {
+      const userStore = useUserStore()
+
+      return await DressCodeService.generateAIImages({
+        eventId: userStore.activeEvent,
+        dressType
+      })
+    },
+
     async loadDressCode() {
       const userStore = useUserStore()
 
@@ -45,7 +54,10 @@ export const useDressCodeStore = defineStore('dressCodeStore',  {
 
         // Make sure dressCodeImages is an array
         if (dressCodeData.dressCodeImages && !Array.isArray(dressCodeData.dressCodeImages)) {
-          console.warn('dressCodeImages is not an array, converting:', dressCodeData.dressCodeImages)
+          console.warn(
+            'dressCodeImages is not an array, converting:',
+            dressCodeData.dressCodeImages
+          )
           try {
             dressCodeData.dressCodeImages = JSON.parse(dressCodeData.dressCodeImages)
           } catch (e) {
@@ -59,11 +71,9 @@ export const useDressCodeStore = defineStore('dressCodeStore',  {
       } else {
         console.error('Failed to load dress code:', response)
       }
-
     },
 
-    async addDressCode({ dressCodeType, description, reservedColors, dressCodeImages })
-    {
+    async addDressCode({ dressCodeType, description, reservedColors, dressCodeImages }) {
       try {
         const formData = new FormData()
 
@@ -82,15 +92,13 @@ export const useDressCodeStore = defineStore('dressCodeStore',  {
           eventId: useUserStore().activeEvent,
           formData
         })
-
       } catch (error) {
         console.error('Error creating dress code:', error)
         throw error
       }
     },
 
-    async updateDressCode({ dressCodeType, description, reservedColors, dressCodeImages })
-    {
+    async updateDressCode({ dressCodeType, description, reservedColors, dressCodeImages }) {
       try {
         const formData = new FormData()
 
@@ -125,7 +133,6 @@ export const useDressCodeStore = defineStore('dressCodeStore',  {
           dressCodeId: this.dressCode.id,
           formData
         })
-
       } catch (error) {
         console.error('Error updating dress code:', error)
         throw error

@@ -7,8 +7,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import ConfirmationField from '@/components/UI/form/ConfirmationField.vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
-import GuestMenuSelection
-  from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/GuestMenuSelection.vue'
+import GuestMenuSelection from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/GuestMenuSelection.vue'
 
 const emit = defineEmits(['confirmed'])
 const props = defineProps({
@@ -29,7 +28,6 @@ const localCompanion = reactive({
   rsvpStatus: 'pending'
 })
 
-
 const companionMenu = computed(() => {
   if (props.currentCompanion.menuSelected.length) {
     return props.currentCompanion.menuSelected
@@ -38,9 +36,8 @@ const companionMenu = computed(() => {
   return templateStore.event.mainMenu
 })
 
-
 onMounted(() => {
-  if(props.currentCompanion) {
+  if (props.currentCompanion) {
     localCompanion.id = props.currentCompanion?.id ?? ''
     localCompanion.name = props.currentCompanion?.name ?? ''
     localCompanion.email = props.currentCompanion?.email ?? ''
@@ -53,15 +50,14 @@ const companionValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       name: zod.string().min(1, 'First Name is required'),
-      email: zod.string()
-        .email({ message: 'Invalid email address' })
-        .optional(),
+      email: zod.string().email({ message: 'Invalid email address' }).optional(),
       phone: zod
         .string()
         .regex(/^[0-9\s]*$/, { message: 'Phone Number must be numeric' })
         .optional(),
-      rsvpStatus: zod
-        .enum(['attending', 'not-attending'], { message: 'Please select a confirmation option' })
+      rsvpStatus: zod.enum(['attending', 'not-attending'], {
+        message: 'Please select a confirmation option'
+      })
     })
   )
 })
@@ -70,7 +66,7 @@ const handleGoBack = () => {
   companionStep.value = 1
 }
 
-const handleUpdateCompanionMenu = (payload) => {
+const handleUpdateCompanionMenu = payload => {
   console.log(payload)
   templateStore.updateCompanionMenu(payload)
   emit('confirmed', localCompanion)
@@ -84,15 +80,16 @@ const onSubmit = () => {
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.log(errors)
 }
-
 </script>
 
 <template>
   <div class="relative w-full overflow-x-auto border-b pb-2 p-4 md:p-10">
-    <div class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl">
+    <div
+      class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl"
+    >
       <h3>Companions</h3>
     </div>
     <Form
@@ -104,9 +101,9 @@ const onInvalidSubmit = (errors) => {
       <div class="first-row flex flex-row gap-x-5">
         <div class="relative z-0 w-full mb-5 group">
           <TextField
+            id="name"
             v-model="localCompanion.name"
             name="name"
-            id="name"
             required
             show-error
             label="Name"
@@ -126,9 +123,9 @@ const onInvalidSubmit = (errors) => {
       <div class="second-row flex flex-row gap-x-5">
         <div class="relative z-0 w-full mb-5 group">
           <EmailField
+            id="email"
             v-model="localCompanion.email"
             name="email"
-            id="email"
             required
             :show-error="true"
             label="Email"
@@ -148,9 +145,9 @@ const onInvalidSubmit = (errors) => {
       <div class="second-row flex flex-row gap-x-5">
         <div class="relative z-0 w-full mb-5 group">
           <TextField
+            id="phone"
             v-model="localCompanion.phone"
             name="phone"
-            id="phone"
             required
             :show-error="true"
             label="Phone Number"
@@ -170,14 +167,14 @@ const onInvalidSubmit = (errors) => {
       <div class="third-row flex flex-row items-center gap-x-5">
         <div class="relative z-0 mb-2 group w-1/2">
           <ConfirmationField
-            name="rsvpStatus"
             v-model="localCompanion.rsvpStatus"
+            name="rsvpStatus"
             label=""
             :show-error="true"
             :options="[
-                { value: 'attending', label: 'Yes' },
-                { value: 'not-attending', label: 'No' }
-              ]"
+              { value: 'attending', label: 'Yes' },
+              { value: 'not-attending', label: 'No' }
+            ]"
           />
         </div>
       </div>
@@ -196,9 +193,7 @@ const onInvalidSubmit = (errors) => {
         </button>
       </div>
     </Form>
-    <div
-      v-if="companionStep === 2"
-    >
+    <div v-if="companionStep === 2">
       <GuestMenuSelection
         :guest="props.currentCompanion"
         :menu="companionMenu"
@@ -206,7 +201,6 @@ const onInvalidSubmit = (errors) => {
         @update:guest-menu="handleUpdateCompanionMenu"
       />
     </div>
-
   </div>
 </template>
 

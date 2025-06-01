@@ -6,7 +6,7 @@ import SignInForm from '@/components/non-authenticated/sign-in/SignInForm.vue'
 
 <template>
   <section class="sign-up w-full h-full">
-    <div class=" min-w-[600px] min-h-[600px] flex flex-row gap-x-5 justify-center items-center">
+    <div class="min-w-[600px] min-h-[600px] flex flex-row gap-x-5 justify-center items-center">
       <div class="register-titles w-1/2 p-10 flex flex-col">
         <Title
           :level="'h1'"
@@ -15,16 +15,13 @@ import SignInForm from '@/components/non-authenticated/sign-in/SignInForm.vue'
           Celebrate it with <span class="text-yellow-300">me!</span>
         </Title>
 
-        <Title
-          :level="'h4'"
-          :classes="'text-lg md:text-xl text-gray-500 mb-8'"
-        >
-          Log in to reconnect, discover new experiences, and make every moment unforgettable. Welcome back!
+        <Title :level="'h4'" :classes="'text-lg md:text-xl text-gray-500 mb-8'">
+          Log in to reconnect, discover new experiences, and make every moment unforgettable.
+          Welcome back!
         </Title>
       </div>
 
       <SignInForm />
-
     </div>
   </section>
 </template>

@@ -1,9 +1,9 @@
 <template>
   <label class="inline-flex items-center gap-2 cursor-pointer select-none">
     <input
-      type="checkbox"
       :id="id"
       v-model="inputValue"
+      type="checkbox"
       :disabled="disabled"
       class="form-checkbox w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary dark:bg-gray-800 dark:border-gray-600"
     />

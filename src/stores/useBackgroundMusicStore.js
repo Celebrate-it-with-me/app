@@ -12,7 +12,7 @@ export const useBackgroundMusicStore = defineStore('backgroundMusicStore', {
     mode: 'create'
   }),
   actions: {
-    async addBackgroundMusic(eventId){
+    async addBackgroundMusic(eventId) {
       return await BackgroundMusicService.create({
         eventId,
         iconSize: this.iconSize,
@@ -23,11 +23,11 @@ export const useBackgroundMusicStore = defineStore('backgroundMusicStore', {
       })
     },
 
-    async loadBackgroundMusic(eventId){
-      return await BackgroundMusicService.load({eventId})
+    async loadBackgroundMusic(eventId) {
+      return await BackgroundMusicService.load({ eventId })
     },
 
-    async editBackgroundMusic(){
+    async editBackgroundMusic() {
       const options = {
         backgroundMusicId: this.id,
         iconSize: this.iconSize,

@@ -9,7 +9,7 @@ const guestCompanions = computed(() => {
   return templateStore.guest?.companions ?? []
 })
 
-const formatStatus = (status) => {
+const formatStatus = status => {
   if (status === 'attending') {
     return 'Attending'
   } else if (status === 'not-attending') {

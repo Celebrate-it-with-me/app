@@ -1,53 +1,50 @@
 <template>
   <div class="space-y-6">
-    <div class="std-section bg-white dark:bg-gray-900 rounded-2xl shadow-card border border-gray-200 dark:border-gray-700 p-6">
+    <div
+      class="std-section bg-white dark:bg-gray-900 rounded-2xl shadow-card border border-gray-200 dark:border-gray-700 p-6"
+    >
       <Form :validation-schema="stdValidationSchema" @submit="onSubmit">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <CInput
+              id="stdTitle"
               v-model="stdStore.title"
               label="Title"
               name="stdTitle"
               show-error
               placeholder="Save the Date Title"
-              id="stdTitle"
             />
 
-            <CTextDetails
-              :disabled="stdStore.title.length <= 0"
-              v-model="stdStore.titleStyles"
-            />
+            <CTextDetails v-model="stdStore.titleStyles" :disabled="stdStore.title.length <= 0" />
           </div>
 
           <div>
             <CInput
+              id="stdMessage"
               v-model="stdStore.message"
               label="Message"
               name="stdMessage"
               show-error
               placeholder="Save the Date subtitle"
-              id="stdMessage"
             />
 
             <CTextDetails
-              :disabled="stdStore.message.length <= 0"
               v-model="stdStore.messageStyles"
+              :disabled="stdStore.message.length <= 0"
             />
           </div>
 
           <div>
             <CInput
+              id="stdAddToCalendar"
               v-model="stdStore.addToCalendar"
               label="Calendar Button"
               name="stdAddToCalendar"
               show-error
               placeholder="Add To Calendar"
-              id="stdAddToCalendar"
             />
 
-            <CAddToCalendarDetails
-              v-model="stdStore.addToCalendarStyles"
-            />
+            <CAddToCalendarDetails v-model="stdStore.addToCalendarStyles" />
           </div>
 
           <div>
@@ -55,16 +52,13 @@
               <label class="mb-4 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Use Countdown
               </label>
-              <CToggle
-                v-model="stdStore.useCountdown"
-                name="useCountdown"
-              />
+              <CToggle v-model="stdStore.useCountdown" name="useCountdown" />
             </div>
 
             <CCountDownDetails
+              v-model="stdStore.countdownStyles"
               :disabled="!stdStore.useCountdown"
               :position="'start'"
-              v-model="stdStore.countdownStyles"
             />
           </div>
         </div>
@@ -97,12 +91,14 @@ const stdStyles = reactive({
 
 const stdStore = useSaveTheDateStore()
 
-const stdValidationSchema = toTypedSchema(zod.object({
-  title: zod.string().min(1, 'Title is required'),
-  message: zod.string().optional(),
-  useCountdown: zod.boolean().optional(),
-  addToCalendar: zod.string().optional(),
-}))
+const stdValidationSchema = toTypedSchema(
+  zod.object({
+    title: zod.string().min(1, 'Title is required'),
+    message: zod.string().optional(),
+    useCountdown: zod.boolean().optional(),
+    addToCalendar: zod.string().optional()
+  })
+)
 
 const onSubmit = () => {
   console.log('Submitting:', stdState, stdStyles)

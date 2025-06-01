@@ -1,27 +1,23 @@
 <template>
-  <CModal
-    :show-footer="false"
-    v-model="showModal"
-  >
-    <template #title>
-      Add Menu Item
-    </template>
+  <CModal v-model="showModal" :show-footer="false">
+    <template #title> Add Menu Item </template>
 
     <Form
-      @submit="onSubmit"
-      @invalid-submit="onInvalidSubmit"
       :validation-schema="menuValidationSchema"
       class="space-y-4"
+      @submit="onSubmit"
+      @invalid-submit="onInvalidSubmit"
     >
       <CInput
+        id="name"
         name="name"
         label="Item Name"
         placeholder="e.g. Grilled Salmon"
-        id="name"
         show-error
       />
 
       <CSelect
+        id="type"
         name="itemType"
         label="Course Type"
         :options="[
@@ -29,11 +25,11 @@
           { label: 'Main Course', value: 'main' },
           { label: 'Dessert', value: 'dessert' }
         ]"
-        id="type"
         show-error
       />
 
       <CSelect
+        id="diet_type"
         name="dietType"
         label="Diet Type"
         :options="[
@@ -42,15 +38,14 @@
           { label: 'Vegetarian', value: 'vegetarian' },
           { label: 'Gluten-Free', value: 'gluten_free' }
         ]"
-        id="diet_type"
         show-error
       />
 
       <CTextarea
+        id="notes"
         name="notes"
         label="Notes or Ingredients"
         placeholder="Optional notes..."
-        id="notes"
         show-error
       />
 
@@ -58,9 +53,7 @@
         <CButton variant="ghost" @click="close">Close</CButton>
         <button
           type="submit"
-          class="inline-flex items-center justify-center font-medium transition-all duration-150
-                 rounded-xl px-4 py-2 text-sm bg-primary text-white hover:bg-pink-600
-                 shadow-pink-300 shadow-md min-w-[100px]"
+          class="inline-flex items-center justify-center font-medium transition-all duration-150 rounded-xl px-4 py-2 text-sm bg-primary text-white hover:bg-pink-600 shadow-pink-300 shadow-md min-w-[100px]"
         >
           Confirm
         </button>
@@ -100,30 +93,34 @@ const menuValidationSchema = computed(() => {
     z.object({
       name: z.string().min(2, 'Name is required'),
       itemType: z.enum(['starter', 'main', 'dessert'], {
-        required_error: 'Type is required',
+        required_error: 'Type is required'
       }),
       dietType: z.string().optional(),
-      notes: z.string().optional(),
+      notes: z.string().optional()
     })
   )
 })
 
-const onSubmit = (values) => {
+const onSubmit = values => {
   emit('submitted', {
     ...values,
     menu_id: props.menu.id
   })
 }
 
-const onInvalidSubmit = (error) => {
+const onInvalidSubmit = error => {
   console.log('Validation errors:', error)
 }
 
-watch(() => props.modelValue, (newVal) => {
-  showModal.value = newVal
-}, { immediate: true })
+watch(
+  () => props.modelValue,
+  newVal => {
+    showModal.value = newVal
+  },
+  { immediate: true }
+)
 
-watch(showModal, (value) => {
+watch(showModal, value => {
   if (!value) {
     emit('close')
   }

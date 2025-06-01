@@ -30,15 +30,17 @@ const menuState = reactive({
   main_menu: false
 })
 
-const schema = toTypedSchema(z.object({
-  title: z.string().min(3, 'Title is required'),
-  description: z.string().optional(),
-  allow_multiple_choices: z.boolean().default(false),
-  allow_custom_request: z.boolean().default(false),
-  main_menu: z.boolean().default(false),
-}))
+const schema = toTypedSchema(
+  z.object({
+    title: z.string().min(3, 'Title is required'),
+    description: z.string().optional(),
+    allow_multiple_choices: z.boolean().default(false),
+    allow_custom_request: z.boolean().default(false),
+    main_menu: z.boolean().default(false)
+  })
+)
 
-onMounted( async () => {
+onMounted(async () => {
   let id = route.params.id
   if (id) {
     mode.value = 'edit'
@@ -46,7 +48,7 @@ onMounted( async () => {
   }
 })
 
-const loadRouteMenu = async (menuId) => {
+const loadRouteMenu = async menuId => {
   try {
     const result = await menuStore.loadRouteMenu(menuId)
 
@@ -61,7 +63,6 @@ const loadRouteMenu = async (menuId) => {
         message: 'Oops, something went wrong!'
       })
     }
-
   } catch (e) {
     console.error(e)
   } finally {
@@ -77,10 +78,10 @@ const { handleSubmit, values, errors } = useForm({
     allow_multiple_choices: false,
     allow_custom_request: false,
     main_menu: false
-  },
+  }
 })
 
-const handleRequest = async (formValues) => {
+const handleRequest = async formValues => {
   const id = route.params.id
 
   if (mode.value === 'create') {
@@ -93,7 +94,7 @@ const handleRequest = async (formValues) => {
   })
 }
 
-const onSubmit = handleSubmit(async (formValues) => {
+const onSubmit = handleSubmit(async formValues => {
   try {
     sending.value = true
     const response = await handleRequest(formValues)
@@ -107,7 +108,6 @@ const onSubmit = handleSubmit(async (formValues) => {
       await menuStore.loadMenus()
 
       await router.push('/dashboard/menus')
-
     } else {
       notification.addNotification({
         type: 'error',
@@ -119,7 +119,6 @@ const onSubmit = handleSubmit(async (formValues) => {
   } finally {
     sending.value = false
   }
-
 })
 
 const handleDeleteMenu = async () => {
@@ -136,28 +135,27 @@ const handleDeleteMenu = async () => {
     menuStore.showDeleteMenuModal = false
   }
 }
-
 </script>
 
 <template>
   <CCard>
-    <form @submit.prevent="onSubmit" class="space-y-6">
+    <form class="space-y-6" @submit.prevent="onSubmit">
       <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
         <CInput
+          id="menu_title"
           v-model="menuState.title"
           name="title"
           label="Menu Title"
           placeholder="e.g. Reception Dinner"
-          id="menu_title"
         />
       </div>
 
       <CTextarea
+        id="menu_description"
         v-model="menuState.description"
         name="description"
         label="Menu Description"
         placeholder="Optional description for this menu..."
-        id="menu_description"
       />
 
       <CToggle
@@ -172,48 +170,30 @@ const handleDeleteMenu = async () => {
         label="Allow Multiple Choices"
       />
 
-      <CToggle
-        v-model="menuState.main_menu"
-        name="main_menu"
-        label="Is Main Menu"
-      />
+      <CToggle v-model="menuState.main_menu" name="main_menu" label="Is Main Menu" />
 
       <div class="pt-4 flex justify-end">
-        <CButton type="submit" label="Create Menu" >
-          <span v-if="mode === 'create'">
-            Create Menu
-          </span>
-          <span v-if="mode === 'edit'">
-            Update Menu
-          </span>
+        <CButton type="submit" label="Create Menu">
+          <span v-if="mode === 'create'"> Create Menu </span>
+          <span v-if="mode === 'edit'"> Update Menu </span>
         </CButton>
       </div>
     </form>
   </CCard>
 
-  <CCard
-    class="mt-4"
-    v-if="mode === 'edit'"
-  >
+  <CCard v-if="mode === 'edit'" class="mt-4">
     <CAlert variant="warning">
       <div class="flex justify-between items-center">
-        <span>
-          Delete action is irreversible!, please be careful.
-        </span>
-        <CButton
-          variant="danger"
-          @click="showDeleteMenuModal = true"
-        >
-          Delete Menu
-        </CButton>
+        <span> Delete action is irreversible!, please be careful. </span>
+        <CButton variant="danger" @click="showDeleteMenuModal = true"> Delete Menu </CButton>
       </div>
     </CAlert>
   </CCard>
   <CConfirmModal
     v-model="showDeleteMenuModal"
     :message="'Are you sure you want to delete this menu?'"
-    showCloseIcon
-    showFooter
+    show-close-icon
+    show-footer
     @confirm="handleDeleteMenu"
   />
 </template>

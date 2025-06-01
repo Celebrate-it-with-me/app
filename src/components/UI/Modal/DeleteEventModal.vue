@@ -37,7 +37,6 @@ const confirmedDelete = async () => {
     } else {
       console.log(response)
     }
-
   } catch (err) {
     console.log(err)
   } finally {
@@ -46,10 +45,12 @@ const confirmedDelete = async () => {
   }
 }
 
-
-watch(() => props.open, (newValue) => {
-  showModal.value = newValue
-})
+watch(
+  () => props.open,
+  newValue => {
+    showModal.value = newValue
+  }
+)
 </script>
 
 <template>
@@ -64,9 +65,7 @@ watch(() => props.open, (newValue) => {
     </template>
 
     <template #footer>
-      <div
-        class="flex justify-end"
-      >
+      <div class="flex justify-end">
         <div class="action-container flex gap-x-2">
           <button
             type="button"

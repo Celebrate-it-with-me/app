@@ -17,7 +17,7 @@
     >
       <CWizard
         :steps="steps"
-        :nextValid="isValidNext"
+        :next-valid="isValidNext"
         :initial-step="currentStep"
         @active-step="handleStepChange"
         @submit="handleSubmit"
@@ -30,38 +30,40 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="md:col-span-2">
                 <CInput
+                  id="event-name"
                   v-model="eventState.eventName"
                   name="eventName"
                   placeholder="Enter event name"
-                  id="event-name"
                   show-error
                 />
               </div>
 
               <div class="md:col-span-2">
                 <CTextarea
-                  :rows="1"
+                  id="event-description"
                   v-model="eventState.eventDescription"
+                  :rows="1"
                   name="eventDescription"
                   placeholder="Tell us about your event..."
                   show-error
-                  id="event-description"
                 />
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CSelect
+                id="event-type"
                 v-model="eventState.eventType"
                 name="eventType"
                 :options="eventTypes"
-                id="event-type"
                 show-error
               />
             </div>
 
             <!-- Tips Panel -->
-            <div class="bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white">
+            <div
+              class="bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white"
+            >
               <h4 class="text-lg font-semibold mb-2 text-primary dark:text-pink-300">
                 Tips for Basic Information
               </h4>
@@ -79,26 +81,28 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CDate
+                id="start-date"
                 v-model="eventState.startDate"
                 name="startDate"
                 placeholder="MM/DD/YYYY"
                 also-time
                 show-error
-                id="start-date"
               />
 
               <CDate
+                id="end-date"
                 v-model="eventState.endDate"
                 name="endDate"
                 placeholder="MM/DD/YYYY"
                 also-time
-                id="end-date"
                 show-error
               />
             </div>
 
             <!-- Tips Panel -->
-            <div class="bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white">
+            <div
+              class="bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white"
+            >
               <h4 class="text-lg font-semibold mb-2 text-primary dark:text-pink-300">
                 Tips for Date and Time
               </h4>
@@ -112,28 +116,32 @@
 
           <!-- Step 3: Visibility and Status -->
           <div v-else-if="step === 2" class="space-y-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Visibility and Status</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Visibility and Status
+            </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CSelect
+                id="event-status"
                 v-model="eventState.status"
                 name="status"
                 :options="statuses"
-                id="event-status"
                 show-error
               />
 
               <CSelect
+                id="event-visibility"
                 v-model="eventState.visibility"
                 name="visibility"
                 :options="visibilities"
-                id="event-visibility"
                 show-error
               />
             </div>
 
             <!-- Tips Panel -->
-            <div class="bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white">
+            <div
+              class="bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white"
+            >
               <h4 class="text-lg font-semibold mb-2 text-primary dark:text-pink-300">
                 Tips for Visibility and Status
               </h4>
@@ -159,22 +167,29 @@
                 class="flex items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-700 py-5"
               >
                 <div class="flex items-center gap-4 w-full">
-                  <component :is="feature.icon" class="w-6 h-6 text-primary dark:text-secondary mt-1" />
+                  <component
+                    :is="feature.icon"
+                    class="w-6 h-6 text-primary dark:text-secondary mt-1"
+                  />
                   <div class="flex-1">
                     <p class="text-sm font-semibold text-gray-900 dark:text-white">
                       {{ feature.label }}
                     </p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ feature.description }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                      {{ feature.description }}
+                    </p>
                   </div>
                 </div>
                 <div class="flex-shrink-0 ml-4">
-                  <CToggle :name="feature.name" v-model="eventState[feature.model]" />
+                  <CToggle v-model="eventState[feature.model]" :name="feature.name" />
                 </div>
               </div>
             </div>
 
             <!-- Tips Panel -->
-            <div class="bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white">
+            <div
+              class="bg-primary/5 dark:bg-secondary/10 p-4 rounded-md text-sm text-gray-800 dark:text-white"
+            >
               <h4 class="text-lg font-semibold mb-2 text-primary dark:text-pink-300">
                 Feature Settings
               </h4>
@@ -198,17 +213,24 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Event Name</p>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ eventState.eventName || 'Not provided' }}</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ eventState.eventName || 'Not provided' }}
+                    </p>
                   </div>
                   <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Event Type</p>
                     <p class="text-sm font-medium text-gray-900 dark:text-white">
-                      {{ eventTypes.find(t => t.value === eventState.eventType)?.label || 'Not selected' }}
+                      {{
+                        eventTypes.find(t => t.value === eventState.eventType)?.label ||
+                        'Not selected'
+                      }}
                     </p>
                   </div>
                   <div class="md:col-span-2">
                     <p class="text-sm text-gray-500 dark:text-gray-400">Description</p>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ eventState.eventDescription || 'Not provided' }}</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ eventState.eventDescription || 'Not provided' }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -218,28 +240,39 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Start Date</p>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ eventState.startDate || 'Not provided' }}</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ eventState.startDate || 'Not provided' }}
+                    </p>
                   </div>
                   <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">End Date</p>
-                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ eventState.endDate || 'Not provided' }}</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ eventState.endDate || 'Not provided' }}
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
-                <h4 class="font-medium text-gray-900 dark:text-white mb-2">Visibility and Status</h4>
+                <h4 class="font-medium text-gray-900 dark:text-white mb-2">
+                  Visibility and Status
+                </h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Status</p>
                     <p class="text-sm font-medium text-gray-900 dark:text-white">
-                      {{ statuses.find(s => s.value === eventState.status)?.label || 'Not selected' }}
+                      {{
+                        statuses.find(s => s.value === eventState.status)?.label || 'Not selected'
+                      }}
                     </p>
                   </div>
                   <div>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Visibility</p>
                     <p class="text-sm font-medium text-gray-900 dark:text-white">
-                      {{ visibilities.find(v => v.value === eventState.visibility)?.label || 'Not selected' }}
+                      {{
+                        visibilities.find(v => v.value === eventState.visibility)?.label ||
+                        'Not selected'
+                      }}
                     </p>
                   </div>
                 </div>
@@ -248,8 +281,15 @@
               <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
                 <h4 class="font-medium text-gray-900 dark:text-white mb-2">Enabled Features</h4>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                  <div v-for="feature in featuresList" :key="feature.name" class="flex items-center gap-2">
-                    <component :is="feature.icon" class="w-4 h-4 text-primary dark:text-secondary" />
+                  <div
+                    v-for="feature in featuresList"
+                    :key="feature.name"
+                    class="flex items-center gap-2"
+                  >
+                    <component
+                      :is="feature.icon"
+                      class="w-4 h-4 text-primary dark:text-secondary"
+                    />
                     <p class="text-sm text-gray-900 dark:text-white">
                       {{ feature.label }}:
                       <span :class="eventState[feature.model] ? 'text-green-500' : 'text-red-500'">
@@ -261,7 +301,10 @@
               </div>
             </div>
 
-            <div v-if="eventErrors" class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-md text-sm">
+            <div
+              v-if="eventErrors"
+              class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-md text-sm"
+            >
               {{ eventErrors }}
             </div>
           </div>
@@ -269,7 +312,7 @@
       </CWizard>
 
       <div class="mt-6 flex justify-end">
-        <CButton variant="outline" @click="cancelCreateEvent" class="mr-4">Cancel</CButton>
+        <CButton variant="outline" class="mr-4" @click="cancelCreateEvent">Cancel</CButton>
       </div>
     </Form>
   </div>
@@ -292,15 +335,12 @@ import CWizard from '@/components/UI/wizard/CWizard.vue'
 
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import { EVENT_STATUSES as statuses, EVENT_VISIBILITIES as visibilities, DEFAULT_ERROR_MESSAGE } from '@/constants/constants'
 import {
-  Calendar,
-  Music,
-  Waves,
-  ImageIcon,
-  MessageSquareText,
-  MapIcon,
-} from 'lucide-vue-next'
+  EVENT_STATUSES as statuses,
+  EVENT_VISIBILITIES as visibilities,
+  DEFAULT_ERROR_MESSAGE
+} from '@/constants/constants'
+import { Calendar, Music, Waves, ImageIcon, MessageSquareText, MapIcon } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -325,17 +365,59 @@ const eventState = reactive({
   preview: false,
   eventBudget: false,
   analytics: false,
-  location: false,
+  location: false
 })
 
 const featuresList = [
-  { name: 'Menu', model: 'menu', icon: Calendar, label: 'Menu', description: 'Allow the guest to select the menu.' },
-  { name: 'RSVP', model: 'rsvp', icon: Calendar, label: 'RSVP', description: 'Allow guests to RSVP to your event.' },
-  { name: 'sweetMemories', model: 'sweetMemories', icon: ImageIcon, label: 'Sweet Memories', description: 'Create a photo gallery to capture memories of your event.' },
-  { name: 'music', model: 'music', icon: Waves, label: 'Music', description: 'Share a music playlist with your guests.' },
-  { name: 'backgroundMusic', model: 'backgroundMusic', icon: Music, label: 'Background Music', description: 'Enable background music on the event page.' },
-  { name: 'eventComments', model: 'eventComments', icon: MessageSquareText, label: 'Event Comments', description: 'On/Off event comments sections.' },
-  { name: 'location', model: 'location', icon: MapIcon, label: 'Location', description: 'Enable location on the event page.' },
+  {
+    name: 'Menu',
+    model: 'menu',
+    icon: Calendar,
+    label: 'Menu',
+    description: 'Allow the guest to select the menu.'
+  },
+  {
+    name: 'RSVP',
+    model: 'rsvp',
+    icon: Calendar,
+    label: 'RSVP',
+    description: 'Allow guests to RSVP to your event.'
+  },
+  {
+    name: 'sweetMemories',
+    model: 'sweetMemories',
+    icon: ImageIcon,
+    label: 'Sweet Memories',
+    description: 'Create a photo gallery to capture memories of your event.'
+  },
+  {
+    name: 'music',
+    model: 'music',
+    icon: Waves,
+    label: 'Music',
+    description: 'Share a music playlist with your guests.'
+  },
+  {
+    name: 'backgroundMusic',
+    model: 'backgroundMusic',
+    icon: Music,
+    label: 'Background Music',
+    description: 'Enable background music on the event page.'
+  },
+  {
+    name: 'eventComments',
+    model: 'eventComments',
+    icon: MessageSquareText,
+    label: 'Event Comments',
+    description: 'On/Off event comments sections.'
+  },
+  {
+    name: 'location',
+    model: 'location',
+    icon: MapIcon,
+    label: 'Location',
+    description: 'Enable location on the event page.'
+  }
 ]
 
 // Wizard configuration
@@ -347,10 +429,10 @@ const steps = [
   { title: 'Date & Time' },
   { title: 'Visibility' },
   { title: 'Features' },
-  { title: 'Review' },
+  { title: 'Review' }
 ]
 
-const handleStepChange = (step) => {
+const handleStepChange = step => {
   currentStep.value = step
   validateCurrentStep()
 }
@@ -405,25 +487,30 @@ const mode = ref('create')
 
 const eventValidationSchema = computed(() => {
   return toTypedSchema(
-    zod.object({
-      eventName: zod.string().min(1, 'Event name is required.'),
-      eventType: zod.number({
-        required_error: 'Event type is required.',
-        invalid_type_error: 'Invalid event type.'
-      }),
-      startDate: zod.string().min(1, 'Start date is required.'),
-      endDate: zod.string().min(1, 'End date is required.'),
-      status: zod.string().min(1, { message: 'Status is required' }),
-      visibility: zod.string().min(1, { message: 'Status is required' })
-    }).refine(data => {
-      const [start, end] = [new Date(data.startDate), new Date(data.endDate)]
-      return end > start
-    }, { message: 'End Date must be after Start Date' })
+    zod
+      .object({
+        eventName: zod.string().min(1, 'Event name is required.'),
+        eventType: zod.number({
+          required_error: 'Event type is required.',
+          invalid_type_error: 'Invalid event type.'
+        }),
+        startDate: zod.string().min(1, 'Start date is required.'),
+        endDate: zod.string().min(1, 'End date is required.'),
+        status: zod.string().min(1, { message: 'Status is required' }),
+        visibility: zod.string().min(1, { message: 'Status is required' })
+      })
+      .refine(
+        data => {
+          const [start, end] = [new Date(data.startDate), new Date(data.endDate)]
+          return end > start
+        },
+        { message: 'End Date must be after Start Date' }
+      )
   )
 })
 
 const eventTypes = computed(() => {
-  return eventStore.eventTypes.map((type) => ({
+  return eventStore.eventTypes.map(type => ({
     label: type.name,
     value: type.id + ''
   }))
@@ -445,7 +532,7 @@ onMounted(async () => {
       const current = eventStore.activeEvent
       let features = {}
 
-      eventStore.activeEvent.eventFeatures.forEach((feature) => {
+      eventStore.activeEvent.eventFeatures.forEach(feature => {
         features[feature.name] = feature.isActive
       })
 
@@ -474,9 +561,8 @@ onMounted(async () => {
   }
 })
 
-
 const normalizeBooleans = (obj, keys) => {
-  keys.forEach((key) => {
+  keys.forEach(key => {
     obj[key] = !!obj[key]
   })
 }
@@ -500,9 +586,8 @@ const cancelCreateEvent = () => {
   router.push('/dashboard/events')
 }
 
-const createOrEditEvent = () => mode.value === 'edit'
-  ? eventStore.editEvent(eventState)
-  : eventStore.createEvent(eventState)
+const createOrEditEvent = () =>
+  mode.value === 'edit' ? eventStore.editEvent(eventState) : eventStore.createEvent(eventState)
 
 const onSubmit = async () => {
   try {
@@ -526,14 +611,14 @@ const onSubmit = async () => {
         if (userUpdated.status === 401) {
           notificationStore.addNotification({
             type: 'error',
-            message: 'Session expired. Please log in again.',
+            message: 'Session expired. Please log in again.'
           })
         }
       }
     } else {
       eventErrors.value = result.response?.data?.message ?? DEFAULT_ERROR_MESSAGE
     }
-  } catch (error){
+  } catch (error) {
     console.log('checking errors', error)
     eventErrors.value = DEFAULT_ERROR_MESSAGE
   } finally {
@@ -541,7 +626,7 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = (e) => {
+const onInvalidSubmit = e => {
   console.log('invalid form', e)
   eventErrors.value = Object.values(e.errors)[0] || DEFAULT_ERROR_MESSAGE
 }

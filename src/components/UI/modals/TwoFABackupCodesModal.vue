@@ -8,11 +8,11 @@
         class="w-full max-w-md rounded-xl shadow-xl overflow-hidden bg-white dark:bg-gray-900 text-text"
       >
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Backup Codes
-          </h3>
-          <button @click="close" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Backup Codes</h3>
+          <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" @click="close">
             <X class="w-5 h-5" />
           </button>
         </div>
@@ -20,7 +20,8 @@
         <!-- Content -->
         <div class="px-6 py-4 space-y-4">
           <p class="text-sm text-gray-700 dark:text-gray-300">
-            Save these recovery codes in a safe place. Each code can be used once to access your account if you lose access to your authenticator app.
+            Save these recovery codes in a safe place. Each code can be used once to access your
+            account if you lose access to your authenticator app.
           </p>
 
           <div class="relative group">
@@ -67,8 +68,8 @@ const props = defineProps({
   codes: {
     type: Array,
     required: true,
-    default: () => [],
-  },
+    default: () => []
+  }
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -98,12 +99,12 @@ const copyAllCodes = async () => {
 
     notifications.addNotification({
       type: 'success',
-      message: 'Backup codes copied to clipboard!',
+      message: 'Backup codes copied to clipboard!'
     })
   } catch (e) {
     notifications.addNotification({
       type: 'error',
-      message: 'Could not copy codes. Try manually.',
+      message: 'Could not copy codes. Try manually.'
     })
     console.error('Clipboard copy error:', e)
   }

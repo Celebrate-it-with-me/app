@@ -19,7 +19,6 @@ const guestStore = useGuestsStore()
 const companionsModal = ref(false)
 const showMoreInfoModal = ref(false)
 
-
 onMounted(() => {
   loadEventGuests()
 })
@@ -50,7 +49,7 @@ const loadEventGuests = async () => {
   }
 }
 
-const handleUpdatePerPage = (value) => {
+const handleUpdatePerPage = value => {
   guestStore.perPage = value
 }
 
@@ -58,28 +57,33 @@ const showAddGuestView = () => {
   emit('showAddGuest')
 }
 
-const showCompanionsList = (guest) => {
+const showCompanionsList = guest => {
   guestStore.currentGuest = guest
   companionsModal.value = true
 }
 
-const handleShowMoreInfo = (guest) => {
+const handleShowMoreInfo = guest => {
   guestStore.currentGuest = guest
   showMoreInfoModal.value = true
 }
 
-watch(() => guestStore.pageSelected, () => {
-  loadEventGuests()
-})
+watch(
+  () => guestStore.pageSelected,
+  () => {
+    loadEventGuests()
+  }
+)
 
-watch(() => guestStore.perPage, () => {
-  loadEventGuests()
-})
+watch(
+  () => guestStore.perPage,
+  () => {
+    loadEventGuests()
+  }
+)
 
 const filterBySearch = () => {
   loadEventGuests()
 }
-
 </script>
 
 <template>
@@ -88,9 +92,7 @@ const filterBySearch = () => {
       <CWMLoading />
     </div>
 
-    <div
-      class="flex w-full justify-end"
-    >
+    <div class="flex w-full justify-end">
       <button
         class="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-6 rounded-md"
         @click="showAddGuestView"
@@ -99,50 +101,37 @@ const filterBySearch = () => {
       </button>
     </div>
 
-    <div
-      class="mt-5"
-      v-if="!loading"
-    >
+    <div v-if="!loading" class="mt-5">
       <div
-        class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white
-              dark:text-white dark:bg-gray-800"
+        class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800"
       >
         <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
-          This is the guest list for your event **{{ eventTitle }}**. To see more information,
-          click on **more info**, to view companions, click on **companions**, and to edit a value,
-          click on the value you want to edit.
+          This is the guest list for your event **{{ eventTitle }}**. To see more information, click
+          on **more info**, to view companions, click on **companions**, and to edit a value, click
+          on the value you want to edit.
         </p>
 
-        <div
-          class="w-full flex items-center justify-end gap-x-2"
-        >
+        <div class="w-full flex items-center justify-end gap-x-2">
           <TextPlain
-            class="w-[250px]"
             id="search"
-            placeholder="name or email"
             v-model="guestStore.searchValue"
+            class="w-[250px]"
+            placeholder="name or email"
             @keyup.enter="filterBySearch"
           />
-          <fwb-button
-            @click="filterBySearch"
-          >
-            Search
-          </fwb-button>
+          <fwb-button @click="filterBySearch"> Search </fwb-button>
         </div>
-
       </div>
-      <CWMAlert
-        type="info"
-        v-if="!guestStore.guests.length"
-      >
+      <CWMAlert v-if="!guestStore.guests.length" type="info">
         There is not guests for this event yet!
       </CWMAlert>
       <table
         v-else
         class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
       >
-
-        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <thead
+          class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
           <tr>
             <th scope="col" class="px-6 py-3">Guest Name</th>
             <th scope="col" class="px-6 py-3">Email</th>
@@ -172,19 +161,17 @@ const filterBySearch = () => {
               <span v-else>{{ guest.phoneNumber }}</span>
             </td>
             <td class="px-6 py-4">
-              <span v-if="guest.companionType === 'no_companion' ">
+              <span v-if="guest.companionType === 'no_companion'">
                 <span
-                  class="bg-red-300 text-white text-xs font-medium me-2 px-2.5 py-0.5
-                            rounded-full dark:bg-red-500/50 dark:text-white cursor-pointer"
-                    @click="showCompanionsList(guest)"
+                  class="bg-red-300 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-500/50 dark:text-white cursor-pointer"
+                  @click="showCompanionsList(guest)"
                 >
                   No companions
                 </span>
               </span>
               <span v-else>
                 <span
-                  class="bg-yellow-300 text-white text-xs font-medium me-2 px-2.5 py-0.5
-                            rounded-full dark:bg-yellow-600 dark:text-white cursor-pointer"
+                  class="bg-yellow-300 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-600 dark:text-white cursor-pointer"
                   @click="showCompanionsList(guest)"
                 >
                   {{ guest.companionQty }}
@@ -192,10 +179,7 @@ const filterBySearch = () => {
               </span>
             </td>
             <td class="px-6 py-4 text-right">
-              <fwb-button
-                color="default"
-                @click="handleShowMoreInfo(guest)"
-              >
+              <fwb-button color="default" @click="handleShowMoreInfo(guest)">
                 more info
               </fwb-button>
             </td>
@@ -203,14 +187,8 @@ const filterBySearch = () => {
         </tbody>
       </table>
     </div>
-    <CompanionListModal
-      :open="companionsModal"
-      @close-modal="companionsModal = false"
-    />
-    <MoreInfoModal
-      :open="showMoreInfoModal"
-      @close-modal="showMoreInfoModal = false"
-    />
+    <CompanionListModal :open="companionsModal" @close-modal="companionsModal = false" />
+    <MoreInfoModal :open="showMoreInfoModal" @close-modal="showMoreInfoModal = false" />
   </div>
   <CWMPagination
     v-if="guestStore.guests.length"
