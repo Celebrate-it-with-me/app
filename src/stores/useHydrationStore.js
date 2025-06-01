@@ -32,6 +32,8 @@ export const useHydrationStore = defineStore('hydration', () => {
         useRsvpStore().setRsvp(data.rsvp)
         useSaveTheDateStore().setSaveTheDate(data.saveTheDate)
         useLocationsStore().setLocations(data.locations)
+        useEventsStore().setEventTypes(data.eventTypes)
+        useEventsStore().setEventPlans(data.eventPlans)
 
       } else {
         // Todo: Handle Error, redirect to error page with support message

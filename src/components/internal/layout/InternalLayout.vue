@@ -29,10 +29,7 @@ const shouldShowRouteView = computed(() => {
     return true
   }
 
-  if (!eventsStore.activeEvent) {
-    return false
-  }
-  return true
+  return eventsStore.activeEvent;
 })
 
 
@@ -43,41 +40,14 @@ onMounted(async () => {
   }
 
   await collaboratorsStore.loadInvitations()
-  await loadEvents()
   loading.value = false
-})
 
-const loadEvents = async () => {
-  try {
-    await eventsStore.loadEventsPlansAndType()
-    const response = await userStore.initUserEvents()
-
-    if (response.status >= 200 && response.status < 300) {
-      const result = response.data?.data ?? {}
-      await eventsStore.initUserEventsData(result)
-
-      if (userStore.justLogin === true) {
-        triggerEventsModal()
-        userStore.justLogin = false
-      }
-    } else {
-      if (response.status === 401) {
-        notificationStore.addNotification({
-          type: 'error',
-          message: 'Session expired. Please log in again.',
-        })
-      }
-    }
-  } catch (e) {
-    console.log('checking error', e)
-    if (e.response.status === 401) {
-      notificationStore.addNotification({
-        type: 'error',
-        message: 'Session expired. Please log in again.',
-      })
-    }
+  if (userStore.justLogin === true) {
+    triggerEventsModal()
+    userStore.justLogin = false
   }
-}
+
+})
 
 const triggerEventsModal = () => {
   showEventsModal.value = true

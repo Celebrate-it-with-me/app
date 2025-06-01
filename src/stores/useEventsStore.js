@@ -121,6 +121,24 @@ export const useEventsStore = defineStore('eventsStore', {
     },
 
     /**
+     * Sets the event types for the current instance.
+     *
+     * @param {Array<string>} types - An array of event type strings to be assigned.
+     * @return {void} Does not return a value.
+     */
+    setEventTypes(types) {
+      this.eventTypes = types
+    },
+
+    /**
+     * Sets the event plans for the current instance.
+     * @param plans
+     */
+    setEventPlans(plans) {
+      this.eventPlans = plans
+    },
+
+    /**
      * Select an event by ID and update active event
      * @param {string|number} eventId - The ID of the event to select
      */
