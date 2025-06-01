@@ -58,26 +58,26 @@ const budgetProgressOptions = computed(() => {
         endAngle: 135,
         hollow: {
           margin: 0,
-          size: '70%',
+          size: '70%'
         },
         track: {
           background: '#e7e7e7',
           strokeWidth: '97%',
-          margin: 5,
+          margin: 5
         },
         dataLabels: {
           name: {
             show: true,
             fontSize: '14px',
-            offsetY: -10,
+            offsetY: -10
           },
           value: {
             fontSize: '22px',
             show: true,
-            formatter: function(val) {
+            formatter: function (val) {
               return val + '%'
             },
-            offsetY: 10,
+            offsetY: 10
           }
         }
       }
@@ -101,7 +101,7 @@ const budgetProgressOptions = computed(() => {
     colors: [budgetUsageColor.value],
     labels: ['Budget Used'],
     valueText: {
-      formatter: function(val) {
+      formatter: function (val) {
         return val + '%'
       }
     }
@@ -117,7 +117,7 @@ const budgetProgressSeries = computed(() => {
 const categoryChartOptions = ref({
   chart: {
     type: 'donut',
-    height: 250,
+    height: 250
   },
   labels: [],
   colors: ['#3b82f6', '#8b5cf6', '#84cc16', '#f97316', '#ec4899', '#14b8a6', '#06b6d4', '#6366f1'],
@@ -126,22 +126,22 @@ const categoryChartOptions = ref({
     fontSize: '14px',
     fontFamily: 'Inter, sans-serif',
     labels: {
-      colors: '#6b7280',
+      colors: '#6b7280'
     },
     markers: {
       width: 12,
       height: 12,
-      radius: 12,
+      radius: 12
     },
     itemMargin: {
       horizontal: 10,
       vertical: 5
     },
-    formatter: function(seriesName, opts) {
+    formatter: function (seriesName, opts) {
       // Add dollar amount to the legend
       return seriesName + ': $' + categoryData.value[opts.seriesIndex].toLocaleString()
     },
-    show: true,
+    show: true
   },
   dataLabels: {
     enabled: false
@@ -155,7 +155,7 @@ const categoryChartOptions = ref({
           total: {
             show: true,
             label: 'Total',
-            formatter: function(w) {
+            formatter: function (w) {
               return '$' + w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString()
             }
           }
@@ -163,21 +163,22 @@ const categoryChartOptions = ref({
       }
     }
   },
-  responsive: [{
-    breakpoint: 480,
-    options: {
-      chart: {
-        height: 300
-      },
-      legend: {
-        position: 'bottom',
-        fontSize: '12px',
-        offsetY: 5
+  responsive: [
+    {
+      breakpoint: 480,
+      options: {
+        chart: {
+          height: 300
+        },
+        legend: {
+          position: 'bottom',
+          fontSize: '12px',
+          offsetY: 5
+        }
       }
     }
-  }]
+  ]
 })
-
 
 // Process category data for the chart
 const processCategoryData = () => {
@@ -218,9 +219,13 @@ const processCategoryData = () => {
 }
 
 // Watch for changes in budget items
-watch(() => budgetStore.budgetItems, () => {
-  processCategoryData()
-}, { deep: true })
+watch(
+  () => budgetStore.budgetItems,
+  () => {
+    processCategoryData()
+  },
+  { deep: true }
+)
 
 // Lifecycle hooks
 onMounted(() => {
@@ -230,19 +235,21 @@ onMounted(() => {
 const handleShowBudgetForm = () => {
   emit('showBudgetForm')
 }
-
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 mb-8 shadow-card border border-gray-200 dark:border-gray-700">
+  <div
+    class="bg-white dark:bg-gray-800 rounded-xl p-6 mb-8 shadow-card border border-gray-200 dark:border-gray-700"
+  >
     <div class="flex justify-between items-center mb-4">
       <CHeading :level="4">Budget Summary</CHeading>
-      <div class="bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 px-4 py-2 rounded-lg flex items-center">
+      <div
+        class="bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200 px-4 py-2 rounded-lg flex items-center"
+      >
         <DollarSign class="w-4 h-4 mr-1" />
-        <span
-          class="font-semibold cursor-pointer"
-          @click="handleShowBudgetForm()"
-        >Budget Cap: ${{ budgetCap?.toLocaleString() }}</span>
+        <span class="font-semibold cursor-pointer" @click="handleShowBudgetForm()"
+          >Budget Cap: ${{ budgetCap?.toLocaleString() }}</span
+        >
       </div>
     </div>
 
@@ -271,9 +278,15 @@ const handleShowBudgetForm = () => {
             <Gauge class="w-4 h-4 mr-1 text-gray-500 dark:text-gray-400" />
             <h3 class="text-gray-700 dark:text-gray-300 font-medium">Budget Usage</h3>
           </div>
-          <div v-if="budgetUsagePercentage > 75"
-               :class="budgetUsagePercentage > 90 ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'"
-               class="text-xs px-2 py-1 rounded-full">
+          <div
+            v-if="budgetUsagePercentage > 75"
+            :class="
+              budgetUsagePercentage > 90
+                ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                : 'bg-orange-100 text-orange-700 dark:bg-orange-900 dark:text-orange-300'
+            "
+            class="text-xs px-2 py-1 rounded-full"
+          >
             {{ budgetUsagePercentage > 90 ? 'Critical' : 'Warning' }}
           </div>
         </div>
@@ -311,13 +324,18 @@ const handleShowBudgetForm = () => {
               :series="categoryData"
             />
           </div>
-          <div class="lg:w-1/2 p-3 bg-gray-100 dark:bg-gray-600 rounded-lg flex flex-col justify-center">
+          <div
+            class="lg:w-1/2 p-3 bg-gray-100 dark:bg-gray-600 rounded-lg flex flex-col justify-center"
+          >
             <p class="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">Color Legend:</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               <div v-for="(label, index) in categoryLabels" :key="index" class="flex items-center">
                 <span
                   class="w-4 h-4 rounded-full mr-2"
-                  :style="{ backgroundColor: categoryChartOptions.colors[index % categoryChartOptions.colors.length] }"
+                  :style="{
+                    backgroundColor:
+                      categoryChartOptions.colors[index % categoryChartOptions.colors.length]
+                  }"
                 ></span>
                 <span class="text-sm text-gray-600 dark:text-gray-300">
                   {{ label }}: ${{ categoryData[index].toLocaleString() }}
@@ -331,10 +349,11 @@ const handleShowBudgetForm = () => {
         </div>
         <div v-else class="flex flex-col items-center justify-center h-[250px]">
           <p class="text-gray-500 dark:text-gray-400 text-sm">No category data available</p>
-          <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">Add budget items with actual costs to see the distribution</p>
+          <p class="text-gray-400 dark:text-gray-500 text-xs mt-1">
+            Add budget items with actual costs to see the distribution
+          </p>
         </div>
       </div>
-
     </div>
   </div>
 </template>

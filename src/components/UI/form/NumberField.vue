@@ -21,23 +21,16 @@ const props = defineProps({
   max: { type: Number, default: null },
   step: { type: Number, default: 1 },
   decimals: { type: Number, default: null },
-  integerOnly: { type: Boolean, default: false },
+  integerOnly: { type: Boolean, default: false }
 })
 
 const name = toRef(props, 'name')
 
-const {
-  value: inputValue,
-  errorMessage,
-  handleBlur,
-  handleChange,
-  setValue,
-  meta
-} = useField(name)
+const { value: inputValue, errorMessage, handleBlur, handleChange, setValue, meta } = useField(name)
 
 watch(
   () => props.modelValue,
-  (newValue) => {
+  newValue => {
     if (newValue !== inputValue.value) {
       setValue(newValue)
     }
@@ -45,12 +38,13 @@ watch(
   { immediate: true }
 )
 
-watch(inputValue, (val) => {
-  const parsedValue = props.decimals !== null
-    ? parseFloat(Number(val).toFixed(props.decimals))
-    : props.integerOnly
-      ? parseInt(val)
-      : Number(val)
+watch(inputValue, val => {
+  const parsedValue =
+    props.decimals !== null
+      ? parseFloat(Number(val).toFixed(props.decimals))
+      : props.integerOnly
+        ? parseInt(val)
+        : Number(val)
 
   emit('update:modelValue', parsedValue)
   if (val) {
@@ -58,12 +52,11 @@ watch(inputValue, (val) => {
   }
 })
 
-
 const showErrorMessage = computed(() => {
   return props.showError && errorMessage.value && meta.touched
 })
 
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   emit('update:blur', e.target.value)
   handleBlur(e)
 }
@@ -125,10 +118,7 @@ const handleFieldBlur = (e) => {
     </span>
 
     <!-- Additional Description -->
-    <span
-      v-if="description"
-      class="block text-secondary-500 font-light leading-4 text-xs mt-2"
-    >
+    <span v-if="description" class="block text-secondary-500 font-light leading-4 text-xs mt-2">
       {{ description }}
     </span>
   </div>

@@ -17,7 +17,7 @@ export const useEventCommentsStore = defineStore('eventComments', {
     currentComment: {
       id: null,
       comment: null,
-      author: null,
+      author: null
     },
     mode: 'create'
   }),
@@ -25,18 +25,18 @@ export const useEventCommentsStore = defineStore('eventComments', {
     async createCommentsConfig(eventId) {
       return await EventCommentsService.createCommentsConfig({
         eventId,
-        ...this.config,
+        ...this.config
       })
     },
 
     async loadCommentsConfig(eventId) {
-      return await EventCommentsService.loadCommentConfig({eventId})
+      return await EventCommentsService.loadCommentConfig({ eventId })
     },
 
     async updateCommentsConfig(eventId) {
       return await EventCommentsService.updateCommentsConfig({
         eventId,
-        ...this.config,
+        ...this.config
       })
     },
 

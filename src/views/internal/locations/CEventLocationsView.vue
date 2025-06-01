@@ -2,10 +2,7 @@
   <div class="space-y-6 max-w-full">
     <div class="flex items-center justify-between">
       <CHeading :level="2" weight="semibold">Event Locations</CHeading>
-      <CButton
-        variant="primary"
-        @click="addLocation()"
-      >+ Add Location</CButton>
+      <CButton variant="primary" @click="addLocation()">+ Add Location</CButton>
     </div>
 
     <div class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
@@ -14,103 +11,100 @@
           <CLoading />
         </div>
         <div v-else>
-          <div class="max-w-full" v-if="locationsStore.locations.length > 0">
-            <table
-              class="w-full table-auto divide-y divide-gray-200 dark:divide-gray-700"
-            >
-            <thead class="bg-gray-50 dark:bg-gray-800">
-            <tr>
-              <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
-              >
-                Name
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
-              >
-                Address
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
-              >
-                City
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
-              >
-                State
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
-              >
-                Zip Code
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
-              >
-                Country
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
-              >
-                Is Default
-              </th>
-              <th
-                class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
-              >
-                Actions
-              </th>
-            </tr>
-            </thead>
-            <tbody
-              class="divide-y divide-gray-100 dark:divide-gray-700"
-            >
-              <tr
-                v-for="location in locationsStore.locations"
-                :key="location.id"
-                class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-              >
-                <td class="px-2 py-4 text-sm text-gray-800 dark:text-gray-100 break-words">
-                  {{ location.name }}
-                </td>
-                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
-                  {{ location.address }}
-                </td>
-                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
-                  {{ location.city }}
-                </td>
-                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
-                  {{ location.state }}
-                </td>
-                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
-                  {{ location.zipCode }}
-                </td>
-                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
-                  {{ location.country }}
-                </td>
-                <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
-                  {{ location.isDefault ? 'Yes' : 'No' }}
-                </td>
-                <td class="px-2 py-4 text-left text-sm w-[160px]">
-                  <div class="flex gap-2 flex-wrap">
-                    <CButton
-                      v-tooltip="'Coming Soon'"
-                      size="sm"
-                      variant="primary" @click="editLocation(location)"
-                      disabled
-                    >
-                      Edit
-                    </CButton>
-                    <CButton size="sm" variant="outline" @click="confirmDelete(location)">Delete</CButton>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-if="locationsStore.locations.length > 0" class="max-w-full">
+            <table class="w-full table-auto divide-y divide-gray-200 dark:divide-gray-700">
+              <thead class="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
+                  >
+                    Name
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
+                  >
+                    Address
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
+                  >
+                    City
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
+                  >
+                    State
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
+                  >
+                    Zip Code
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
+                  >
+                    Country
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
+                  >
+                    Is Default
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 break-words"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                <tr
+                  v-for="location in locationsStore.locations"
+                  :key="location.id"
+                  class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                >
+                  <td class="px-2 py-4 text-sm text-gray-800 dark:text-gray-100 break-words">
+                    {{ location.name }}
+                  </td>
+                  <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
+                    {{ location.address }}
+                  </td>
+                  <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
+                    {{ location.city }}
+                  </td>
+                  <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
+                    {{ location.state }}
+                  </td>
+                  <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
+                    {{ location.zipCode }}
+                  </td>
+                  <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
+                    {{ location.country }}
+                  </td>
+                  <td class="px-2 py-4 text-sm text-gray-600 dark:text-gray-400 break-words">
+                    {{ location.isDefault ? 'Yes' : 'No' }}
+                  </td>
+                  <td class="px-2 py-4 text-left text-sm w-[160px]">
+                    <div class="flex gap-2 flex-wrap">
+                      <CButton
+                        v-tooltip="'Coming Soon'"
+                        size="sm"
+                        variant="primary"
+                        disabled
+                        @click="editLocation(location)"
+                      >
+                        Edit
+                      </CButton>
+                      <CButton size="sm" variant="outline" @click="confirmDelete(location)"
+                        >Delete</CButton
+                      >
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <CAlert variant="info" v-else>
-            There are no locations for this event yet.
-          </CAlert>
+          <CAlert v-else variant="info"> There are no locations for this event yet. </CAlert>
         </div>
         <CConfirmModal
           v-model="showConfirmDelete"
@@ -121,8 +115,6 @@
         />
       </div>
     </div>
-
-
   </div>
 </template>
 
@@ -152,11 +144,11 @@ const loadLocations = async () => {
   loading.value = false
 }
 
-const editLocation = async (location) => {
+const editLocation = async location => {
   return await router.push('/dashboard/locations/edit/' + location.id)
 }
 
-const confirmDelete = (location) => {
+const confirmDelete = location => {
   selectedLocationForDelete.value = location
   showConfirmDelete.value = true
 }
@@ -174,17 +166,16 @@ const handleConfirmDelete = async () => {
       selectedLocationForDelete.value = null
       notificationsStore.addNotification({
         type: 'success',
-        message: 'Location deleted successfully!',
+        message: 'Location deleted successfully!'
       })
     } else {
       console.error('Failed to delete location:', response)
       notificationsStore.addNotification({
         type: 'error',
-        message: 'Failed to delete location. Please try again.',
+        message: 'Failed to delete location. Please try again.'
       })
     }
     showConfirmDelete.value = false
   }
 }
-
 </script>

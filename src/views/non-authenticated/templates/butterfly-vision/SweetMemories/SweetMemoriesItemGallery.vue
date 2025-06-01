@@ -5,7 +5,6 @@ defineProps({
     required: true
   }
 })
-
 </script>
 
 <template>
@@ -15,26 +14,20 @@ defineProps({
     class="image_container w-[150px] h-[150px]"
     :data-sub-html="galleryItem.subHtml"
   >
-    <img
-      :src="galleryItem.thumb"
-      :alt="galleryItem.title"
-      class="rounded"
-    />
+    <img :src="galleryItem.thumb" :alt="galleryItem.title" class="rounded" />
   </a>
 </template>
 
 <style scoped>
-.image_container{
+.image_container {
   width: 150px;
   height: 150px;
 }
 
 @media screen and (min-width: 768px) {
-  .image_container{
+  .image_container {
     width: 250px;
     height: 250px;
   }
 }
-
-
 </style>

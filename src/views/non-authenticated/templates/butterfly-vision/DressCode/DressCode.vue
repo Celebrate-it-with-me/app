@@ -12,51 +12,48 @@ const dressCodeConfig = computed(() => {
 </script>
 
 <template>
-<section
-  v-if="dressCodeConfig.isEnabled"
-  class="dress-code w-full h-screen flex flex-col justify-evenly items-center p-20"
->
-  <div class="dc-titles h-[20%]">
-    <h2 class="text-6xl font-gvibes font-bold gap-10 gradient-text" v-if="dressCodeConfig.title">
-      {{ dressCodeConfig.title }}
-    </h2>
-
-    <h4
-      v-if="dressCodeConfig.subTitle"
-      class="relative text-2xl font-normal text-gray-600/70 text-center moments-title"
-    >
-      {{ dressCodeConfig.subTitle }}
-    </h4>
-  </div>
-
-  <div
-    class="w-full h-[75%] flex flex-row justify-between items-center"
+  <section
+    v-if="dressCodeConfig.isEnabled"
+    class="dress-code w-full h-screen flex flex-col justify-evenly items-center p-20"
   >
-    <img
-      src="/images/dress_code/black_tie/black_tie_male.png"
-      alt="Male Black Tie"
-      class="blackTie__dress-code"
-    >
+    <div class="dc-titles h-[20%]">
+      <h2 v-if="dressCodeConfig.title" class="text-6xl font-gvibes font-bold gap-10 gradient-text">
+        {{ dressCodeConfig.title }}
+      </h2>
 
-    <div class="reserved-colors flex flex-col items-center text-center">
-      <h3 class="text-3xl font-bold mb-6">Reserved Colors for the Quinceañera</h3>
-      <div class="color-names flex flex-row gap-10">
-        <!-- Gold Word -->
-        <span class="color-name color-name--gold">Gold</span>
-
-        <!-- Purple Word -->
-        <span class="color-name color-name--purple">Purple</span>
-      </div>
+      <h4
+        v-if="dressCodeConfig.subTitle"
+        class="relative text-2xl font-normal text-gray-600/70 text-center moments-title"
+      >
+        {{ dressCodeConfig.subTitle }}
+      </h4>
     </div>
 
+    <div class="w-full h-[75%] flex flex-row justify-between items-center">
+      <img
+        src="/images/dress_code/black_tie/black_tie_male.png"
+        alt="Male Black Tie"
+        class="blackTie__dress-code"
+      />
 
-    <img
-      src="/images/dress_code/black_tie/black_tie_female.png"
-      alt="Male Black Tie"
-      class="blackTie__dress-code"
-    >
-  </div>
-</section>
+      <div class="reserved-colors flex flex-col items-center text-center">
+        <h3 class="text-3xl font-bold mb-6">Reserved Colors for the Quinceañera</h3>
+        <div class="color-names flex flex-row gap-10">
+          <!-- Gold Word -->
+          <span class="color-name color-name--gold">Gold</span>
+
+          <!-- Purple Word -->
+          <span class="color-name color-name--purple">Purple</span>
+        </div>
+      </div>
+
+      <img
+        src="/images/dress_code/black_tie/black_tie_female.png"
+        alt="Male Black Tie"
+        class="blackTie__dress-code"
+      />
+    </div>
+  </section>
 </template>
 
 <style scoped>
@@ -107,7 +104,8 @@ const dressCodeConfig = computed(() => {
 .color-name:hover {
   transform: scale(1.1); /* Slightly grow on hover */
   text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); /* Add a glow effect */
-  transition: transform 0.3s ease, text-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    text-shadow 0.3s ease;
 }
-
 </style>

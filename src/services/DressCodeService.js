@@ -5,7 +5,7 @@ class DressCodeService {
     return CWM_API.get(`/event/${eventId}/dress-code`)
   }
 
-  async createDressCode({ eventId, formData}) {
+  async createDressCode({ eventId, formData }) {
     return CWM_API.post(`/event/${eventId}/dress-code`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -13,7 +13,7 @@ class DressCodeService {
     })
   }
 
-  async updateDressCode({ eventId, dressCodeId, formData}) {
+  async updateDressCode({ eventId, dressCodeId, formData }) {
     return CWM_API.post(`/event/${eventId}/dress-code/${dressCodeId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'

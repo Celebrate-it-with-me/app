@@ -27,7 +27,6 @@ const errors = reactive({
 })
 
 const onSubmit = () => {
-
   errors.starters = ''
   errors.mains = ''
   errors.desserts = ''
@@ -80,15 +79,12 @@ onMounted(() => {
 
 <template>
   <div class="space-y-6 mt-6">
-    <Form
-      @submit="onSubmit"
-      class="space-y-6"
-    >
+    <Form class="space-y-6" @submit="onSubmit">
       <!-- STARTERS -->
-      <div
-        v-if="menu.menuItems?.starter?.length"
-      >
-        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Starters</h4>
+      <div v-if="menu.menuItems?.starter?.length">
+        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">
+          Starters
+        </h4>
         <p v-if="errors.starters" class="text-sm text-red-500 mt-1">{{ errors.starters }}</p>
         <div class="flex flex-wrap gap-4 border-b border-gray-200">
           <label
@@ -98,11 +94,11 @@ onMounted(() => {
           >
             <div class="relative">
               <input
-                type="radio"
                 :id="`starter-${item.id}`"
+                v-model="menuValues.starters"
+                type="radio"
                 name="starter"
                 :value="item.id"
-                v-model="menuValues.starters"
                 class="opacity-0 absolute w-5 h-5"
               />
               <span
@@ -111,7 +107,7 @@ onMounted(() => {
               >
                 <span
                   class="w-2.5 h-2.5 bg-purple-600 rounded-full"
-                  :class="{ 'hidden': menuValues.starters !== item.id }"
+                  :class="{ hidden: menuValues.starters !== item.id }"
                 ></span>
               </span>
             </div>
@@ -122,7 +118,9 @@ onMounted(() => {
 
       <!-- MAINS -->
       <div v-if="menu.menuItems?.main?.length">
-        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Main Course</h4>
+        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">
+          Main Course
+        </h4>
         <p v-if="errors.mains" class="text-sm text-red-500 mt-1">{{ errors.mains }}</p>
         <div class="flex flex-wrap gap-4 border-b border-gray-200">
           <label
@@ -132,11 +130,11 @@ onMounted(() => {
           >
             <div class="relative">
               <input
-                type="radio"
                 :id="`main-${item.id}`"
+                v-model="menuValues.mains"
+                type="radio"
                 name="main"
                 :value="item.id"
-                v-model="menuValues.mains"
                 class="opacity-0 absolute w-5 h-5"
               />
               <span
@@ -145,7 +143,7 @@ onMounted(() => {
               >
                 <span
                   class="w-2.5 h-2.5 bg-purple-600 rounded-full"
-                  :class="{ 'hidden': menuValues.mains !== item.id }"
+                  :class="{ hidden: menuValues.mains !== item.id }"
                 ></span>
               </span>
             </div>
@@ -156,7 +154,9 @@ onMounted(() => {
 
       <!-- DESSERTS -->
       <div v-if="menu.menuItems?.dessert?.length">
-        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Dessert</h4>
+        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">
+          Dessert
+        </h4>
         <p v-if="errors.mains" class="text-sm text-red-500 mt-1">{{ errors.mains }}</p>
         <div class="flex flex-wrap gap-4">
           <label
@@ -166,11 +166,11 @@ onMounted(() => {
           >
             <div class="relative">
               <input
-                type="radio"
                 :id="`dessert-${item.id}`"
+                v-model="menuValues.desserts"
+                type="radio"
                 name="dessert"
                 :value="item.id"
-                v-model="menuValues.desserts"
                 class="opacity-0 absolute w-5 h-5"
               />
               <span
@@ -179,7 +179,7 @@ onMounted(() => {
               >
                 <span
                   class="w-2.5 h-2.5 bg-purple-600 rounded-full"
-                  :class="{ 'hidden': menuValues.desserts !== item.id }"
+                  :class="{ hidden: menuValues.desserts !== item.id }"
                 ></span>
               </span>
             </div>

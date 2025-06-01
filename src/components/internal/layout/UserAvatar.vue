@@ -1,16 +1,7 @@
-<script setup>
-
-
-
-
-</script>
+<script setup></script>
 
 <template>
-  <div class="menu-container">
-
-  </div>
+  <div class="menu-container"></div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

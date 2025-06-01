@@ -1,14 +1,14 @@
 <template>
   <div class="flex justify-center">
     <input
-      type="file"
       ref="fileInput"
+      type="file"
       multiple
       accept="image/jpeg,image/png,image/webp"
       class="hidden"
       @change="handleFileChange"
     />
-    <CButton @click="triggerFileInput" variant="outline">
+    <CButton variant="outline" @click="triggerFileInput">
       {{ buttonLabel }}
     </CButton>
   </div>
@@ -23,7 +23,7 @@ const emit = defineEmits(['addPhotos'])
 defineProps({
   buttonLabel: {
     type: String,
-    default: 'Add Custom Photos',
+    default: 'Add Custom Photos'
   }
 })
 
@@ -33,7 +33,7 @@ const triggerFileInput = () => {
   fileInput.value?.click()
 }
 
-const handleFileChange = (event) => {
+const handleFileChange = event => {
   const files = Array.from(event.target.files)
 
   const uploadedPhotos = files
@@ -41,7 +41,7 @@ const handleFileChange = (event) => {
     .map(file => ({
       type: 'uploaded',
       file: file,
-      url: URL.createObjectURL(file),
+      url: URL.createObjectURL(file)
     }))
 
   emit('addPhotos', uploadedPhotos)

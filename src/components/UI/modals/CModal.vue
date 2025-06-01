@@ -8,14 +8,16 @@
         class="w-full max-w-lg rounded-xl shadow-xl overflow-hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
       >
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700"
+        >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
             <slot name="title">Modal Title</slot>
           </h3>
           <button
             v-if="showCloseIcon"
-            @click="close"
             class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            @click="close"
           >
             <X class="w-5 h-5" />
           </button>

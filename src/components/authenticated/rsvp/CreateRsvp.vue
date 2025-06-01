@@ -30,15 +30,10 @@ const rsvpState = reactive({
           />
         </div>
 
-        <div>
-          
-        </div>
+        <div></div>
       </Form>
     </div>
-
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

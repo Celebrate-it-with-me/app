@@ -1,0 +1,43 @@
+name: 🧪 Frontend CI 🧠
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+  pull_request:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  lint-test-typecheck:
+    name: 🔍 Lint, 🧼 Format, 🧪 Test & ✅ Type Check
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🛠️ Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔍 Run ESLint (Linting)
+        run: npm run lint
+
+      - name: 🧼 Run Prettier (Formatting Check)
+        run: npm run format -- --check
+
+      - name: ✅ Run Type Check (TS / Vue)
+        run: npm run type-check
+
+      - name: 🧪 Run Unit Tests (Vitest)
+        run: npm run test:unit

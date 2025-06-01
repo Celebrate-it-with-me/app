@@ -12,14 +12,16 @@ const props = defineProps({
 </script>
 
 <template>
-<section class="rsvp-titles-section">
-  <h2 class="text-5xl font-gvibes font-bold gap-10 text-purple-middle text-center">
-    {{ title }}
-  </h2>
-  <h4 class="music-subtitle relative text-2xl font-normal text-dark-blue text-center moments-title">
-    {{ subTitle }}
-  </h4>
-</section>
+  <section class="rsvp-titles-section">
+    <h2 class="text-5xl font-gvibes font-bold gap-10 text-purple-middle text-center">
+      {{ title }}
+    </h2>
+    <h4
+      class="music-subtitle relative text-2xl font-normal text-dark-blue text-center moments-title"
+    >
+      {{ subTitle }}
+    </h4>
+  </section>
 </template>
 
 <style scoped>

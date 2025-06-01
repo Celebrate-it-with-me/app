@@ -7,9 +7,9 @@ export const useNotificationStore = defineStore('notificationStore', {
 
   actions: {
     addNotification({
-                      type = 'success',
-                      message = 'Action complete successfully',
-                      duration = 3000
+      type = 'success',
+      message = 'Action complete successfully',
+      duration = 3000
     }) {
       const id = Date.now()
       const notification = { id, type, message }
@@ -19,11 +19,10 @@ export const useNotificationStore = defineStore('notificationStore', {
       setTimeout(() => {
         this.removeNotification(id)
       }, duration)
-
     },
 
     removeNotification(id) {
-      this.notifications = this.notifications.filter((noty) => noty.id !== id)
+      this.notifications = this.notifications.filter(noty => noty.id !== id)
     }
   }
 })

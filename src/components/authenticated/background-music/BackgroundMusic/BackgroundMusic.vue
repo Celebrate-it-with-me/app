@@ -58,7 +58,7 @@ const loadBackgroundMusic = async () => {
     if (response.status !== 200) {
       notificationStore.addNotification({
         type: 'error',
-        message: 'Background music failed.',
+        message: 'Background music failed.'
       })
     } else {
       backgroundMusicStore.id = response.data.data.id
@@ -72,14 +72,13 @@ const loadBackgroundMusic = async () => {
       if (props.origin === 'admin') {
         notificationStore.addNotification({
           type: 'success',
-          message: 'Background music loaded successfully.',
+          message: 'Background music loaded successfully.'
         })
       } else {
         if (backgroundMusicStore.autoplay && backgroundMusicStore.songFile !== null) {
           initAudioInstance()
         }
       }
-
     }
   } catch (err) {
     console.log(err)
@@ -119,11 +118,11 @@ const initAudioInstance = () => {
 }
 
 const destroyAudioInstance = () => {
-    if (audio != null) {
-      audio.pause()
-      audio.src = ''
-      audio = null
-    }
+  if (audio != null) {
+    audio.pause()
+    audio.src = ''
+    audio = null
+  }
 }
 
 const buildPositions = () => {

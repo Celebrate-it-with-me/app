@@ -8,11 +8,13 @@
         class="w-full max-w-md rounded-2xl shadow-xl bg-white dark:bg-gray-900 backdrop-blur-md border border-gray-200 dark:border-gray-700 text-text"
       >
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700"
+        >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
             {{ title }}
           </h3>
-          <button @click="close" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" @click="close">
             <X class="w-5 h-5" />
           </button>
         </div>

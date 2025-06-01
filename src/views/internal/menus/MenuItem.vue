@@ -8,8 +8,8 @@ import { useNotificationStore } from '@/stores/useNotificationStore'
 const props = defineProps({
   item: {
     type: Object,
-    required: true,
-  },
+    required: true
+  }
 })
 
 const showConfirmDeleteMenuItemModal = ref(false)
@@ -29,17 +29,15 @@ const confirmRemoveItem = async () => {
       await menuStore.setCurrentMenu(menuStore.currentMenu.id)
       notifications.addNotification({
         type: 'success',
-        message: 'Menu item removed successfully.',
+        message: 'Menu item removed successfully.'
       })
     }
-
   } catch (e) {
     console.error(e)
   } finally {
     showConfirmDeleteMenuItemModal.value = false
   }
 }
-
 </script>
 
 <template>
@@ -48,20 +46,12 @@ const confirmRemoveItem = async () => {
       <div>
         <p class="text-lg font-medium text-gray-900">{{ item.name }}</p>
         <p class="text-sm text-gray-600">{{ item.notes }}</p>
-        <p
-          v-if="item.diet_type"
-          class="text-xs text-green-600 italic"
-        >
+        <p v-if="item.diet_type" class="text-xs text-green-600 italic">
           {{ item.diet_type }}
         </p>
       </div>
       <div>
-        <CButton
-          @click="removeMenuItem"
-          variant="danger"
-        >
-          Remove
-        </CButton>
+        <CButton variant="danger" @click="removeMenuItem"> Remove </CButton>
       </div>
     </div>
   </div>
@@ -73,6 +63,4 @@ const confirmRemoveItem = async () => {
   />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

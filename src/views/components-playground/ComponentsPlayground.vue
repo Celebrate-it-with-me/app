@@ -1,5 +1,11 @@
 <template>
-  <div :class="['min-h-screen transition-colors duration-300', isDark ? 'bg-gray-900 text-white' : 'bg-background text-text']" class="p-10">
+  <div
+    :class="[
+      'min-h-screen transition-colors duration-300',
+      isDark ? 'bg-gray-900 text-white' : 'bg-background text-text'
+    ]"
+    class="p-10"
+  >
     <div class="flex justify-between items-center mb-10">
       <h1 class="text-3xl font-display">🎨 UI Component Playground</h1>
       <button
@@ -34,10 +40,18 @@
 
       <div class="space-y-6">
         <CHeading :level="1">Heading 1 – Default</CHeading>
-        <CHeading :level="2" color="text-primary" weight="semibold">Heading 2 – Primary & Semibold</CHeading>
-        <CHeading :level="3" color="text-secondary" weight="medium">Heading 3 – Secondary & Medium</CHeading>
-        <CHeading :level="4" :gradient="true" weight="extrabold">Heading 4 – Gradient & Extra Bold</CHeading>
-        <CHeading :level="5" color="text-accent" weight="light">Heading 5 – Accent & Light</CHeading>
+        <CHeading :level="2" color="text-primary" weight="semibold"
+          >Heading 2 – Primary & Semibold</CHeading
+        >
+        <CHeading :level="3" color="text-secondary" weight="medium"
+          >Heading 3 – Secondary & Medium</CHeading
+        >
+        <CHeading :level="4" :gradient="true" weight="extrabold"
+          >Heading 4 – Gradient & Extra Bold</CHeading
+        >
+        <CHeading :level="5" color="text-accent" weight="light"
+          >Heading 5 – Accent & Light</CHeading
+        >
         <CHeading :level="6" weight="normal">Heading 6 – Normal</CHeading>
       </div>
     </section>
@@ -51,7 +65,11 @@
             <CCard variant="testimonial">
               <template #title>
                 <div class="flex items-center gap-3">
-                  <img src="https://randomuser.me/api/portraits/women/68.jpg" class="w-10 h-10 rounded-full"  alt=""/>
+                  <img
+                    src="https://randomuser.me/api/portraits/women/68.jpg"
+                    class="w-10 h-10 rounded-full"
+                    alt=""
+                  />
                   <div>
                     <p class="font-semibold">Maria Rodríguez</p>
                     <p class="text-sm text-text-light">Quinceañera</p>
@@ -59,7 +77,10 @@
                 </div>
               </template>
               <template #content>
-                <p>"Planning my daughter's quinceañera was so much easier with Celebra. The tools and support were incredible!"</p>
+                <p>
+                  "Planning my daughter's quinceañera was so much easier with Celebra. The tools and
+                  support were incredible!"
+                </p>
               </template>
             </CCard>
           </div>
@@ -99,7 +120,9 @@
         <!-- Feature Card Example -->
         <CCard variant="feature">
           <template #icon>
-            <div class="w-12 h-12 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center">
+            <div
+              class="w-12 h-12 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center"
+            >
               📅
             </div>
           </template>
@@ -107,7 +130,9 @@
             <p class="text-lg font-semibold">Event Planning</p>
           </template>
           <template #content>
-            <p class="text-sm text-text-light">Comprehensive planning tools, checklists, and timelines to keep you organized.</p>
+            <p class="text-sm text-text-light">
+              Comprehensive planning tools, checklists, and timelines to keep you organized.
+            </p>
           </template>
         </CCard>
       </div>
@@ -141,7 +166,7 @@
 
       <CAlert variant="warning">
         <template #icon>
-          <AlertTriangle class="mt-1 text-yellow-600 dark:text-yellow-300" :size="24"/>
+          <AlertTriangle class="mt-1 text-yellow-600 dark:text-yellow-300" :size="24" />
         </template>
         <template #title>
           <p class="font-semibold">Warning</p>
@@ -181,7 +206,7 @@
       <h2 class="text-xl font-bold mb-4">Pagination</h2>
 
       <div class="flex flex-col items-start gap-4">
-        <CPagination v-model:currentPage="currentPage" :totalPages="totalPages" />
+        <CPagination v-model:current-page="currentPage" :total-pages="totalPages" />
 
         <p class="text-sm">
           Current Page: <span class="font-semibold text-primary">{{ currentPage }}</span>
@@ -220,7 +245,12 @@
         </CInput>
 
         <!-- Input con error -->
-        <CInput v-model="inputWithError" label="Username" placeholder="your_username" error="Username is required" />
+        <CInput
+          v-model="inputWithError"
+          label="Username"
+          placeholder="your_username"
+          error="Username is required"
+        />
 
         <!-- Input con success visual -->
         <CInput v-model="inputName" label="Validated" placeholder="Looks good" success />
@@ -230,19 +260,14 @@
     <section class="mb-10 max-w-md">
       <h2 class="text-xl font-bold mb-4">Vee-Validate + Zod</h2>
 
-      <form @submit.prevent="onSubmit" class="space-y-6">
+      <form class="space-y-6" @submit.prevent="onSubmit">
         <!-- Name Field -->
-        <Field name="name" v-slot="{ field, errorMessage }">
-          <CInput
-            v-bind="field"
-            label="Name"
-            placeholder="Your name"
-            :error="errorMessage"
-          />
+        <Field v-slot="{ field, errorMessage }" name="name">
+          <CInput v-bind="field" label="Name" placeholder="Your name" :error="errorMessage" />
         </Field>
 
         <!-- Email Field -->
-        <Field name="email" v-slot="{ field, errorMessage }">
+        <Field v-slot="{ field, errorMessage }" name="email">
           <CInput
             v-bind="field"
             label="Email"
@@ -260,17 +285,16 @@
 
     <section class="mb-10 max-w-md">
       <h2 class="text-xl font-bold mb-4">Textarea</h2>
-      <CTextarea
-        v-model="message"
-        label="Message"
-        placeholder="Type your message here..."
-      />
+      <CTextarea v-model="message" label="Message" placeholder="Type your message here..." />
     </section>
 
     <section class="mb-10 max-w-md">
       <h2 class="text-xl font-bold mb-4">Select</h2>
       <div class="w-full">
-        <label for="custom-select" class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label
+          for="custom-select"
+          class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200"
+        >
           Choose an option
         </label>
         <select
@@ -289,34 +313,16 @@
 
     <section class="mb-10 max-w-md">
       <h2 class="text-xl font-bold mb-4">Checkbox</h2>
-      <CCheckbox
-        v-model="accepted"
-        label="I accept the terms and conditions"
-      />
+      <CCheckbox v-model="accepted" label="I accept the terms and conditions" />
       <p class="mt-2 text-sm text-gray-500">Accepted: {{ accepted }}</p>
     </section>
 
     <section class="mb-10 max-w-md">
       <h2 class="text-xl font-bold mb-4">Radio Buttons</h2>
       <div class="space-y-2 space-x-4">
-        <CRadio
-          v-model="selectedOption"
-          name="options"
-          value="option1"
-          label="Option 1"
-        />
-        <CRadio
-          v-model="selectedOption"
-          name="options"
-          value="option2"
-          label="Option 2"
-        />
-        <CRadio
-          v-model="selectedOption"
-          name="options"
-          value="option3"
-          label="Option 3"
-        />
+        <CRadio v-model="selectedOption" name="options" value="option1" label="Option 1" />
+        <CRadio v-model="selectedOption" name="options" value="option2" label="Option 2" />
+        <CRadio v-model="selectedOption" name="options" value="option3" label="Option 3" />
       </div>
       <p class="mt-2 text-sm text-gray-500">Selected: {{ selectedOption }}</p>
     </section>
@@ -325,7 +331,6 @@
       <h2 class="text-xl font-bold mb-4">Toggle Example</h2>
       <CToggle v-model="isFeatureEnabled" label="Enable feature" />
     </section>
-
   </div>
 </template>
 
@@ -349,10 +354,12 @@ import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
 import CRadio from '@/components/UI/form2/CRadio.vue'
 import CToggle from '@/components/UI/form2/CToggle.vue'
 
-const schema = toTypedSchema(z.object({
-  email: z.string().email('Invalid email address'),
-  name: z.string().min(1, 'Name is required'),
-}))
+const schema = toTypedSchema(
+  z.object({
+    email: z.string().email('Invalid email address'),
+    name: z.string().min(1, 'Name is required')
+  })
+)
 
 const { handleSubmit, errors } = useForm({
   validationSchema: schema

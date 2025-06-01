@@ -30,7 +30,7 @@ const authRoutes = [
     component: DashboardView,
     meta: {
       title: 'Dashboard',
-      requiresAuth: true,
+      requiresAuth: true
       // requiredPermission: ['view_dashboard'],
     }
   },
@@ -41,7 +41,7 @@ const authRoutes = [
     meta: {
       title: 'My CwmEvents',
       requiresAuth: true,
-      requiredPermission: ['view_events'],
+      requiredPermission: ['view_events']
     }
   },
   {
@@ -51,7 +51,7 @@ const authRoutes = [
     meta: {
       title: 'Create Event',
       requiresAuth: true,
-      requiredPermission: ['create_event'],
+      requiredPermission: ['create_event']
     }
   },
   {
@@ -61,7 +61,7 @@ const authRoutes = [
     meta: {
       title: 'Event Details',
       requiresAuth: true,
-      requiredPermission: ['view_event'],
+      requiredPermission: ['view_event']
     }
   },
   {
@@ -71,7 +71,7 @@ const authRoutes = [
     meta: {
       title: 'Edit Event',
       requiresAuth: true,
-      requiredPermission: ['edit_event'],
+      requiredPermission: ['edit_event']
     }
   },
   {
@@ -85,7 +85,7 @@ const authRoutes = [
         meta: {
           title: 'Profile',
           requiresAuth: true,
-          requiredPermission: ['view_profile'],
+          requiredPermission: ['view_profile']
         }
       },
       {
@@ -95,7 +95,7 @@ const authRoutes = [
         meta: {
           title: 'Preferences',
           requiresAuth: true,
-          requiredPermission: ['view_preferences'],
+          requiredPermission: ['view_preferences']
         }
       },
       {
@@ -105,7 +105,7 @@ const authRoutes = [
         meta: {
           title: 'Security',
           requiresAuth: true,
-          requiredPermission: ['view_security'],
+          requiredPermission: ['view_security']
         }
       },
       {
@@ -115,7 +115,7 @@ const authRoutes = [
         meta: {
           title: 'Danger Zone',
           requiresAuth: true,
-          requiredPermission: ['view_danger_zone'],
+          requiredPermission: ['view_danger_zone']
         }
       }
     ]
@@ -127,7 +127,7 @@ const authRoutes = [
     meta: {
       title: 'Events Guests',
       requiresAuth: true,
-      requiredPermission: ['view_guests'],
+      requiredPermission: ['view_guests']
     }
   },
   {
@@ -137,7 +137,7 @@ const authRoutes = [
     meta: {
       title: 'Create Guest',
       requiresAuth: true,
-      requiredPermission: ['create_guest'],
+      requiredPermission: ['create_guest']
     }
   },
   {
@@ -147,7 +147,7 @@ const authRoutes = [
     meta: {
       title: 'RSVP',
       requiresAuth: true,
-      requiredPermission: ['view_rsvp'],
+      requiredPermission: ['view_rsvp']
     }
   },
   {
@@ -157,7 +157,7 @@ const authRoutes = [
     meta: {
       title: 'Menus',
       requiresAuth: true,
-      requiredPermission: ['view_menus'],
+      requiredPermission: ['view_menus']
     }
   },
   {
@@ -167,7 +167,7 @@ const authRoutes = [
     meta: {
       title: 'Menus',
       requiresAuth: true,
-      requiredPermission: ['create_menu'],
+      requiredPermission: ['create_menu']
     }
   },
   {
@@ -177,7 +177,7 @@ const authRoutes = [
     meta: {
       title: 'Show Menus',
       requiresAuth: true,
-      requiredPermission: ['view_menu'],
+      requiredPermission: ['view_menu']
     }
   },
   {
@@ -187,7 +187,7 @@ const authRoutes = [
     meta: {
       title: 'Edit Menus',
       requiresAuth: true,
-      requiredPermission: ['edit_menu'],
+      requiredPermission: ['edit_menu']
     }
   },
   {
@@ -197,7 +197,7 @@ const authRoutes = [
     meta: {
       title: 'Save the date',
       requiresAuth: true,
-      requiredPermission: ['view_save_the_date'],
+      requiredPermission: ['view_save_the_date']
     }
   },
   {
@@ -207,7 +207,7 @@ const authRoutes = [
     meta: {
       title: 'Sweet Memories',
       requiresAuth: true,
-      requiredPermission: ['view_sweet_memories'],
+      requiredPermission: ['view_sweet_memories']
     }
   },
   {
@@ -217,7 +217,7 @@ const authRoutes = [
     meta: {
       title: 'Suggest Music',
       requiresAuth: true,
-      requiredPermission: ['view_suggested_music'],
+      requiredPermission: ['view_suggested_music']
     }
   },
   {
@@ -227,7 +227,7 @@ const authRoutes = [
     meta: {
       title: 'Background Music',
       requiresAuth: true,
-      requiredPermission: ['view_event_comments'],
+      requiredPermission: ['view_event_comments']
     }
   },
   {
@@ -237,7 +237,7 @@ const authRoutes = [
     meta: {
       title: 'Budget',
       requiresAuth: true,
-      requiredPermission: [],
+      requiredPermission: []
     }
   },
   {
@@ -247,7 +247,7 @@ const authRoutes = [
     meta: {
       title: 'Dress Code',
       requiresAuth: true,
-      requiredPermission: [],
+      requiredPermission: []
     }
   },
   {
@@ -257,7 +257,7 @@ const authRoutes = [
     meta: {
       title: 'Event Locations',
       requiresAuth: true,
-      requiredPermission: ['view_event_locations'],
+      requiredPermission: ['view_event_locations']
     }
   },
   {
@@ -267,7 +267,7 @@ const authRoutes = [
     meta: {
       title: 'Create Location',
       requiresAuth: true,
-      requiredPermission: ['create_event_locations'],
+      requiredPermission: ['create_event_locations']
     }
   },
   {
@@ -277,7 +277,7 @@ const authRoutes = [
     meta: {
       title: 'Edit Location',
       requiresAuth: true,
-      requiredPermission: ['edit_event_locations'],
+      requiredPermission: ['edit_event_locations']
     }
   },
   {
@@ -287,7 +287,7 @@ const authRoutes = [
     meta: {
       title: 'Invitations Processor',
       requiresAuth: true,
-      requiredPermission: [],
+      requiredPermission: []
     }
   },
 

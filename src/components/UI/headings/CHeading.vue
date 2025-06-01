@@ -21,7 +21,7 @@ const props = defineProps({
   level: {
     type: Number,
     default: 1,
-    validator: (val) => val >= 1 && val <= 6
+    validator: val => val >= 1 && val <= 6
   },
   gradient: {
     type: Boolean,
@@ -29,11 +29,11 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: '',
+    default: ''
   },
   weight: {
     type: String,
-    default: 'bold',
+    default: 'bold'
   }
 })
 
@@ -46,7 +46,7 @@ const sizeClass = computed(() => {
     3: 'text-2xl sm:text-3xl',
     4: 'text-xl sm:text-2xl',
     5: 'text-lg sm:text-xl',
-    6: 'text-base sm:text-lg',
+    6: 'text-base sm:text-lg'
   }[props.level]
 })
 

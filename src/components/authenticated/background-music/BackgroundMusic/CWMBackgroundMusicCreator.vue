@@ -24,7 +24,7 @@ const bgMusicValidationSchema = computed(() => {
       iconPosition: zod.enum(['top-left', 'top-right', 'bottom-right', 'bottom-left']),
       iconColor: zod.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex color format'),
       autoplay: zod.boolean(),
-      songFile: zod.any().refine((file) => typeof file === 'string' || file instanceof File, {
+      songFile: zod.any().refine(file => typeof file === 'string' || file instanceof File, {
         message: 'File is not valid',
         path: ['songFile']
       })
@@ -68,7 +68,7 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.log(backgroundMusicStore.autoplay)
   console.log('onInvalidSubmit', errors)
 }
@@ -96,19 +96,18 @@ const onInvalidSubmit = (errors) => {
 
       <div class="flex flex-col gap-6">
         <div>
-
           <UploadAudioField
+            v-model="backgroundMusicStore.songFile"
             name="songFile"
             label="Background Music"
-            v-model="backgroundMusicStore.songFile"
           />
         </div>
         <!-- STD Title -->
         <div>
           <SelectField
+            v-model="backgroundMusicStore.iconSize"
             name="iconSize"
             label="Icon Size"
-            v-model="backgroundMusicStore.iconSize"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             :items="iconSizes"
           />
@@ -117,9 +116,9 @@ const onInvalidSubmit = (errors) => {
         <!-- STD Title -->
         <div>
           <SelectField
+            v-model="backgroundMusicStore.iconPosition"
             name="iconPosition"
             label="Icon position"
-            v-model="backgroundMusicStore.iconPosition"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             :items="iconPositions"
           />
@@ -127,11 +126,11 @@ const onInvalidSubmit = (errors) => {
 
         <div>
           <ColorPickerField
+            v-model="backgroundMusicStore.iconColor"
             label="Icon Color"
-            classLabel="text-lg font-medium"
+            class-label="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             name="iconColor"
-            v-model="backgroundMusicStore.iconColor"
             :colorpicker-options="{
               type: 'component',
               showPalette: true,
@@ -139,15 +138,15 @@ const onInvalidSubmit = (errors) => {
               preferredFormat: 'hex',
               showInitial: true
             }"
-            :showError="true"
+            :show-error="true"
           />
         </div>
 
         <div>
           <ToggleField
+            v-model="backgroundMusicStore.autoplay"
             name="autoplay"
             label="Background Music Autoplay"
-            v-model="backgroundMusicStore.autoplay"
           />
         </div>
       </div>

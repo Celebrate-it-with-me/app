@@ -23,7 +23,7 @@ const props = defineProps({
 const validationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      name: zod.string(),
+      name: zod.string()
     })
   )
 })
@@ -50,7 +50,6 @@ const updateName = async () => {
     } else {
       console.error(response)
     }
-
   } catch (err) {
     console.log(err)
   } finally {
@@ -58,13 +57,13 @@ const updateName = async () => {
   }
 }
 
-const onInvalidSubmit = (error) => {
+const onInvalidSubmit = error => {
   console.log(error)
 }
 
 watch(
   () => props.open,
-  (newValue) => {
+  newValue => {
     showModal.value = newValue
   }
 )
@@ -75,9 +74,7 @@ watch(
     <template #header> Edit Image Name </template>
 
     <template #body>
-      <div
-        class="flex flex-col gap-y-4"
-      >
+      <div class="flex flex-col gap-y-4">
         <Form
           :validation-schema="validationSchema"
           @submit="updateName"

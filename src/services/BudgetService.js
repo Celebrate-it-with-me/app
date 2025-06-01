@@ -54,7 +54,10 @@ class BudgetService {
    * @returns {Promise<Object>} API response
    */
   async updateBudgetItem(eventId, eventBudgetId, budgetItemId, budgetItemData) {
-    return CWM_API.put(`/event/${eventId}/budget/${eventBudgetId}/items/${budgetItemId}`, budgetItemData)
+    return CWM_API.put(
+      `/event/${eventId}/budget/${eventBudgetId}/items/${budgetItemId}`,
+      budgetItemData
+    )
   }
 
   /**

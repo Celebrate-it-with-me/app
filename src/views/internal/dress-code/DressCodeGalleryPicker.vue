@@ -33,7 +33,6 @@ const fallbackImages = {
   ]
 }
 
-
 const images = computed(() => fallbackImages[props.type] ?? [])
 </script>
 

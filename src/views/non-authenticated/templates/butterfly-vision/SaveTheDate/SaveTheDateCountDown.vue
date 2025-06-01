@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   numbers: {
@@ -12,62 +12,58 @@ const props = defineProps({
   }
 })
 
-
-
 // Function to calculate the time left
 const calculateTimeLeft = () => {
-  const eventDate = new Date('2025-09-27T12:00:00-04:00').getTime();
-  const now = new Date().getTime();
-  const distance = eventDate - now;
+  const eventDate = new Date('2025-09-27T12:00:00-04:00').getTime()
+  const now = new Date().getTime()
+  const distance = eventDate - now
 
   if (distance < 0) {
-    return { days: '00', hours: '00', minutes: '00', seconds: '00' };
+    return { days: '00', hours: '00', minutes: '00', seconds: '00' }
   }
 
-  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000)
 
   return {
     days: days.toString().padStart(2, '0'),
     hours: hours.toString().padStart(2, '0'),
     minutes: minutes.toString().padStart(2, '0'),
     seconds: seconds.toString().padStart(2, '0')
-  };
-};
+  }
+}
 
 // Reactive state for time left
-const timeLeft = ref(calculateTimeLeft());
+const timeLeft = ref(calculateTimeLeft())
 
 // Timer variable
-let timer = null;
+let timer = null
 
 // Lifecycle hooks
 onMounted(() => {
   // Update time left every second
   timer = setInterval(() => {
-    timeLeft.value = calculateTimeLeft();
-  }, 1000);
-});
+    timeLeft.value = calculateTimeLeft()
+  }, 1000)
+})
 
 // Cleanup timer on component unmount
 onUnmounted(() => {
   if (timer) {
-    clearInterval(timer);
+    clearInterval(timer)
   }
-});
+})
 
-const generateStyle = (styles) => ({
+const generateStyle = styles => ({
   fontFamily: styles.font || 'inherit',
   color: styles.color || 'inherit',
   fontSize: styles.size || 'inherit',
   fontStyle: styles.style || 'normal',
-  fontWeight: styles.weight || 'normal',  // Add more styles if needed
-  letterSpacing: styles.letterSpacing || 'normal',
-});
-
-
+  fontWeight: styles.weight || 'normal', // Add more styles if needed
+  letterSpacing: styles.letterSpacing || 'normal'
+})
 </script>
 
 <template>

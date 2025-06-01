@@ -15,7 +15,7 @@ const props = defineProps({
   origin: {
     type: String,
     required: false,
-    default: 'admin',
+    default: 'admin'
   }
 })
 
@@ -23,7 +23,7 @@ const page = ref(1)
 const eventCommentValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      comment: zod.string(),
+      comment: zod.string()
     })
   )
 })
@@ -80,7 +80,6 @@ const userEventId = computed(() => {
   return templateStore.event.id
 })
 
-
 onMounted(() => {
   loadComments()
 })
@@ -101,9 +100,8 @@ const loadComments = async (updatePage = true) => {
         })
       }
 
-
       if (updatePage) {
-        page.value +=1
+        page.value += 1
       }
       totalItems.value = response.data?.meta?.total ?? 10
     } else {
@@ -112,7 +110,6 @@ const loadComments = async (updatePage = true) => {
         message: 'Oops something went wrong!.'
       })
     }
-
   } catch (e) {
     console.log(e)
   } finally {
@@ -127,14 +124,13 @@ const onLoadMore = async () => {
       const response = await commentStore.loadMoreComments(userEventId.value, page.value)
 
       if (response.status === 200) {
-        commentStore.eventComments = [...commentStore.eventComments, ...response.data?.data ?? []]
-        page.value +=1
+        commentStore.eventComments = [...commentStore.eventComments, ...(response.data?.data ?? [])]
+        page.value += 1
       } else {
         notificationStore.addNotification({
           type: 'error',
           message: 'Oops something went wrong!.'
-        });
-
+        })
       }
     }
   } catch (e) {
@@ -156,7 +152,6 @@ const computedUserId = computed(() => {
   return templateStore.guest.id
 })
 
-
 const addComment = async () => {
   try {
     creatingComment.value = true
@@ -164,7 +159,7 @@ const addComment = async () => {
     const response = await commentStore.addComment({
       eventId: userEventId.value,
       userId: computedUserId.value,
-      origin: props.origin,
+      origin: props.origin
     })
 
     if (response.status >= 200 && response.status < 300) {
@@ -182,7 +177,6 @@ const addComment = async () => {
         message: 'Oops something went wrong!.'
       })
     }
-
   } catch (error) {
     console.error(error)
   } finally {
@@ -190,7 +184,7 @@ const addComment = async () => {
   }
 }
 
-const onInvalidSubmit = (error) => {
+const onInvalidSubmit = error => {
   console.log('error', error)
 }
 </script>
@@ -230,12 +224,8 @@ const onInvalidSubmit = (error) => {
           :style="buttonColorComputed"
           :disabled="creatingComment"
         >
-          <CWMLoading
-            v-if="creatingComment"
-          ></CWMLoading>
-          <span
-            v-else
-          >
+          <CWMLoading v-if="creatingComment"></CWMLoading>
+          <span v-else>
             {{ buttonTextComputed }}
           </span>
         </button>

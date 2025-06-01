@@ -1,5 +1,4 @@
 <script setup>
-
 import { computed, reactive } from 'vue'
 import RSVPTitles from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVPTitles.vue'
 import CWMRSVPComponent from '@/views/non-authenticated/templates/butterfly-vision/RSVP/CWMRSVPComponent.vue'
@@ -23,21 +22,17 @@ const rsvpConfig = reactive({
 const templateStore = useTemplateStore()
 
 const rsvpCompleted = computed(() => {
-  return templateStore.guest?.rsvpStatusDate !== null;
+  return templateStore.guest?.rsvpStatusDate !== null
 })
-
 </script>
 
 <template>
   <div
-    id="sectionRSVP"
     v-if="rsvpConfig?.isEnabled"
+    id="sectionRSVP"
     class="w-full flex flex-col justify-evenly items-center pt-5 bg-[#baa7fb]"
   >
-    <RSVPTitles
-      :title="rsvpConfig.title"
-      :sub-title="rsvpConfig.subTitle"
-    />
+    <RSVPTitles :title="rsvpConfig.title" :sub-title="rsvpConfig.subTitle" />
     <CWMRSVPComponent
       v-if="!rsvpCompleted"
       :form-title="rsvpConfig.formTitle"

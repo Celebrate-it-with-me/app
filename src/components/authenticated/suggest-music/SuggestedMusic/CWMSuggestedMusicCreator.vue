@@ -76,7 +76,9 @@ const saveSuggestedMusicConfig = async () => {
   try {
     loading.value = true
 
-    const response = await suggestedMusicStore.saveSuggestedConfig({eventId: currentEventId.value})
+    const response = await suggestedMusicStore.saveSuggestedConfig({
+      eventId: currentEventId.value
+    })
 
     if (response.status >= 200 && response.status < 300) {
       notification.addNotification({
@@ -134,7 +136,7 @@ const onSubmit = async () => {
   return updateSuggestedMusicConfig()
 }
 
-const onInvalidSubmit = (error) => {
+const onInvalidSubmit = error => {
   console.error(error)
 }
 </script>
@@ -186,11 +188,11 @@ const onInvalidSubmit = (error) => {
 
         <div>
           <ColorPickerField
+            v-model="suggestedMusicStore.config.mainColor"
             label="Main Color"
-            classLabel="text-lg font-medium"
+            class-label="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             name="color"
-            v-model="suggestedMusicStore.config.mainColor"
             :colorpicker-options="{
               type: 'component',
               showPalette: true,
@@ -198,17 +200,17 @@ const onInvalidSubmit = (error) => {
               preferredFormat: 'hex',
               showInitial: true
             }"
-            :showError="true"
+            :show-error="true"
           />
         </div>
 
         <div>
           <ColorPickerField
+            v-model="suggestedMusicStore.config.secondaryColor"
             label="Secondary Color"
-            classLabel="text-lg font-medium"
+            class-label="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             name="color"
-            v-model="suggestedMusicStore.config.secondaryColor"
             :colorpicker-options="{
               type: 'component',
               showPalette: true,
@@ -216,7 +218,7 @@ const onInvalidSubmit = (error) => {
               preferredFormat: 'hex',
               showInitial: true
             }"
-            :showError="true"
+            :show-error="true"
           />
         </div>
 
@@ -233,17 +235,17 @@ const onInvalidSubmit = (error) => {
 
         <div>
           <ToggleField
+            v-model="suggestedMusicStore.config.usePreview"
             name="usePreview"
             label="Use Music Preview"
-            v-model="suggestedMusicStore.config.usePreview"
           />
         </div>
 
         <div>
           <ToggleField
+            v-model="suggestedMusicStore.config.useVoteSystem"
             name="useVoteSystem"
             label="Use Vote System"
-            v-model="suggestedMusicStore.config.useVoteSystem"
           />
         </div>
       </div>

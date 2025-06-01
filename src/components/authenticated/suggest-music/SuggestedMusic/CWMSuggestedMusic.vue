@@ -10,7 +10,7 @@ defineProps({
   mode: {
     type: String,
     default: 'normal',
-    validator: (value) => ['normal', 'creator'].includes(value)
+    validator: value => ['normal', 'creator'].includes(value)
   }
 })
 
@@ -19,11 +19,9 @@ const userStore = useUserStore()
 const loading = ref(false)
 const notification = useNotificationStore()
 
-
 onMounted(() => {
   getSuggestedSongs()
 })
-
 
 const getSuggestedSongs = async () => {
   try {
@@ -43,14 +41,12 @@ const getSuggestedSongs = async () => {
         message: 'Oops something went wrong!'
       })
     }
-
-  } catch(e) {
+  } catch (e) {
     console.log(e)
   } finally {
     loading.value = false
   }
 }
-
 </script>
 
 <template>

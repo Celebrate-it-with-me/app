@@ -1,6 +1,15 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { Calendar, Clock, Plus, Edit, Trash2, AlertCircle, Loader2, ArrowUpRight } from 'lucide-vue-next'
+import {
+  Calendar,
+  Clock,
+  Plus,
+  Edit,
+  Trash2,
+  AlertCircle,
+  Loader2,
+  ArrowUpRight
+} from 'lucide-vue-next'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CTextarea from '@/components/UI/form2/CTextarea.vue'
@@ -124,7 +133,7 @@ const addTimelineItem = () => {
   isAddingItem.value = false
 }
 
-const editTimelineItem = (id) => {
+const editTimelineItem = id => {
   const item = timelineItems.value.find(item => item.id === id)
   if (item) {
     newItem.value = { ...item }
@@ -167,7 +176,7 @@ const updateTimelineItem = () => {
   }
 }
 
-const removeTimelineItem = (id) => {
+const removeTimelineItem = id => {
   timelineItems.value = timelineItems.value.filter(item => item.id !== id)
 }
 
@@ -184,7 +193,7 @@ const cancelForm = () => {
 }
 
 // Format time for display
-const formatTime = (timeString) => {
+const formatTime = timeString => {
   try {
     const date = new Date(timeString)
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -194,7 +203,7 @@ const formatTime = (timeString) => {
 }
 
 // Format date for display
-const formatDate = (timeString) => {
+const formatDate = timeString => {
   try {
     const date = new Date(timeString)
     return date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })
@@ -204,7 +213,7 @@ const formatDate = (timeString) => {
 }
 
 // Get category color
-const getCategoryColor = (category) => {
+const getCategoryColor = category => {
   const colorMap = {
     arrival: 'blue',
     reception: 'purple',
@@ -235,6 +244,11 @@ const handleDashboardRefresh = () => {
   loadTimelineData()
 }
 
+const addItem = () => {
+  isAddingItem.value = true
+  editingItemId.value = null
+}
+
 // Lifecycle hooks
 onMounted(() => {
   // Initial data load
@@ -257,24 +271,27 @@ onBeforeUnmount(() => {
     aria-labelledby="timeline-title"
   >
     <!-- Loading overlay -->
-    <div v-if="isLoading" class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10">
+    <div
+      v-if="isLoading"
+      class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10"
+    >
       <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
     </div>
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-5">
       <div
-        class="flex items-center gap-2 text-blue-600 font-semibold text-sm bg-blue-50 dark:bg-blue-950 px-3 py-1.5 rounded-full"
         id="timeline-title"
+        class="flex items-center gap-2 text-blue-600 font-semibold text-sm bg-blue-50 dark:bg-blue-950 px-3 py-1.5 rounded-full"
       >
         <Calendar class="w-4 h-4" aria-hidden="true" />
         <span>Event Timeline</span>
       </div>
       <CButton
-        @click="isAddingItem = !isAddingItem; editingItemId = null"
         :variant="isAddingItem ? 'secondary' : 'primary'"
         size="sm"
         class="rounded-full flex items-center gap-1 transition-transform hover:scale-105"
+        @click="addItem"
       >
         <Plus v-if="!isAddingItem" class="w-4 h-4" aria-hidden="true" />
         <span>{{ isAddingItem ? 'Cancel' : 'Add Item' }}</span>
@@ -288,9 +305,9 @@ onBeforeUnmount(() => {
       </div>
       <p class="text-red-600 dark:text-red-400 font-medium">{{ errorMessage }}</p>
       <button
-        @click="loadTimelineData"
         class="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium transition-colors"
         aria-label="Retry loading timeline data"
+        @click="loadTimelineData"
       >
         Try again
       </button>
@@ -299,12 +316,7 @@ onBeforeUnmount(() => {
     <!-- Add/Edit timeline item form -->
     <div v-if="isAddingItem" class="mb-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
       <div class="mb-3">
-        <CInput
-          v-model="newItem.title"
-          name="title"
-          placeholder="Event title"
-          class="w-full"
-        />
+        <CInput v-model="newItem.title" name="title" placeholder="Event title" class="w-full" />
       </div>
 
       <div class="mb-3">
@@ -319,12 +331,7 @@ onBeforeUnmount(() => {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
         <div>
-          <CDate
-            v-model="newItem.time"
-            name="time"
-            placeholder="Date and time"
-            class="w-full"
-          />
+          <CDate v-model="newItem.time" name="time" placeholder="Date and time" class="w-full" />
         </div>
         <div>
           <CSelect
@@ -348,16 +355,11 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="flex justify-end gap-2">
+        <CButton variant="secondary" @click="cancelForm"> Cancel </CButton>
         <CButton
-          @click="cancelForm"
-          variant="secondary"
-        >
-          Cancel
-        </CButton>
-        <CButton
-          @click="editingItemId ? updateTimelineItem() : addTimelineItem()"
           variant="primary"
           :disabled="!newItem.title || !newItem.time"
+          @click="editingItemId ? updateTimelineItem() : addTimelineItem()"
         >
           {{ editingItemId ? 'Update Item' : 'Add Item' }}
         </CButton>
@@ -372,12 +374,11 @@ onBeforeUnmount(() => {
         <p class="text-sm mt-1">Add your first event to start building your timeline</p>
       </div>
 
-      <div v-else class="relative pl-8 space-y-6 before:absolute before:top-0 before:bottom-0 before:left-4 before:w-0.5 before:bg-blue-100 dark:before:bg-blue-900">
-        <div
-          v-for="item in timelineItems"
-          :key="item.id"
-          class="relative"
-        >
+      <div
+        v-else
+        class="relative pl-8 space-y-6 before:absolute before:top-0 before:bottom-0 before:left-4 before:w-0.5 before:bg-blue-100 dark:before:bg-blue-900"
+      >
+        <div v-for="item in timelineItems" :key="item.id" class="relative">
           <!-- Timeline dot -->
           <div
             class="absolute -left-8 w-6 h-6 rounded-full flex items-center justify-center"
@@ -390,17 +391,27 @@ onBeforeUnmount(() => {
           </div>
 
           <!-- Timeline content -->
-          <div class="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+          <div
+            class="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700"
+          >
             <div class="flex justify-between items-start">
               <div>
                 <h3 class="font-medium text-gray-900 dark:text-white">{{ item.title }}</h3>
-                <p v-if="item.description" class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ item.description }}</p>
+                <p v-if="item.description" class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {{ item.description }}
+                </p>
               </div>
               <div class="flex gap-1">
-                <button @click="editTimelineItem(item.id)" class="text-blue-500 hover:text-blue-700 p-1">
+                <button
+                  class="text-blue-500 hover:text-blue-700 p-1"
+                  @click="editTimelineItem(item.id)"
+                >
                   <Edit class="w-4 h-4" />
                 </button>
-                <button @click="removeTimelineItem(item.id)" class="text-red-500 hover:text-red-700 p-1">
+                <button
+                  class="text-red-500 hover:text-red-700 p-1"
+                  @click="removeTimelineItem(item.id)"
+                >
                   <Trash2 class="w-4 h-4" />
                 </button>
               </div>
@@ -432,7 +443,10 @@ onBeforeUnmount(() => {
 
     <!-- View full timeline link -->
     <div class="mt-4 text-right">
-      <a href="#" class="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center">
+      <a
+        href="#"
+        class="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center"
+      >
         View Full Timeline
         <ArrowUpRight class="w-3 h-3 ml-1" />
       </a>

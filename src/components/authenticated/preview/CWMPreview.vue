@@ -1,11 +1,5 @@
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
+<template>Event Previous - This is going to be fund!</template>
 
-<template>
-  Event Previous - This is going to be fund!
-</template>
-
-<style scoped>
-
-</style>
+<style scoped></style>

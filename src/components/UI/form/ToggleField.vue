@@ -1,44 +1,44 @@
 <script setup>
-import { useField } from 'vee-validate';
+import { useField } from 'vee-validate'
 import { onMounted, ref, watch } from 'vue'
 
-const emit = defineEmits(['update:modelValue', 'resetErrors']);
+const emit = defineEmits(['update:modelValue', 'resetErrors'])
 const props = defineProps({
   name: { type: String, required: true },
   modelValue: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   label: { type: String, default: '' },
-  validate: { type: String, default: '' },
-});
+  validate: { type: String, default: '' }
+})
 
 const { value, errorMessage, setValue } = useField(props.name, {
-  initialValue: props.modelValue,
-});
+  initialValue: props.modelValue
+})
 
-const localValue = ref(null);
+const localValue = ref(null)
 
 onMounted(() => {
   if (props.modelValue) {
-    localValue.value = props.modelValue;
+    localValue.value = props.modelValue
   }
 })
 
 watch(
   () => props.modelValue,
-  (newVal) => {
+  newVal => {
     if (localValue.value !== newVal) {
-      localValue.value = newVal;
-      setValue(newVal);
+      localValue.value = newVal
+      setValue(newVal)
     }
   }
-);
+)
 
-watch(localValue, (val) => {
-  emit('update:modelValue', val);
-  setValue(val);
+watch(localValue, val => {
+  emit('update:modelValue', val)
+  setValue(val)
 
-  if (val) emit('resetErrors');
-});
+  if (val) emit('resetErrors')
+})
 </script>
 
 <template>
@@ -50,7 +50,7 @@ watch(localValue, (val) => {
         :checked="localValue"
         :disabled="disabled"
         class="sr-only peer"
-        @change="(e) => localValue = e.target.checked"
+        @change="e => (localValue = e.target.checked)"
       />
 
       <div

@@ -1,56 +1,56 @@
 <script setup>
-import {FwbButton, FwbFileInput} from "flowbite-vue";
-import {ref, watch} from "vue";
-import {CWM_API} from "@/services/axios";
-import {useRoute, useRouter} from "vue-router";
-import {useNotification} from "@kyvg/vue3-notification";
+import { FwbButton, FwbFileInput } from 'flowbite-vue'
+import { ref, watch } from 'vue'
+import { CWM_API } from '@/services/axios'
+import { useRoute, useRouter } from 'vue-router'
+import { useNotification } from '@kyvg/vue3-notification'
 
-const selectedImages = ref([]);
-const imageSource = ref([]);
-const invalidFiles = ref([]);
-const route = useRoute();
-const router = useRouter();
-const uploading = ref(false);
-const { notify } = useNotification();
+const selectedImages = ref([])
+const imageSource = ref([])
+const invalidFiles = ref([])
+const route = useRoute()
+const router = useRouter()
+const uploading = ref(false)
+const { notify } = useNotification()
 
-const name = ref(route.params.name);
+const name = ref(route.params.name)
 
-watch(selectedImages, (newValue) => {
+watch(selectedImages, newValue => {
   previewImages(newValue)
 })
 
-const previewImages = (newValue) => {
+const previewImages = newValue => {
   if (newValue && newValue.length) {
     if (newValue.length > 5) {
-      newValue.length = 5;
+      newValue.length = 5
       showNotification(
-          "You can select up to 5 images at a time. Additional images have been removed.",
-          'Notice',
-          'warning'
-      );
+        'You can select up to 5 images at a time. Additional images have been removed.',
+        'Notice',
+        'warning'
+      )
     }
 
-    for(let i = 0; i < newValue.length; i++) {
-      let file = newValue[i];
-      let fileName = file.name;
+    for (let i = 0; i < newValue.length; i++) {
+      let file = newValue[i]
+      let fileName = file.name
       if (!file.type.match('image.*')) {
-        invalidFiles.value.push(fileName);
-        selectedImages.value.splice(i, 1);
-        continue;
+        invalidFiles.value.push(fileName)
+        selectedImages.value.splice(i, 1)
+        continue
       }
-      let reader = new FileReader();
+      let reader = new FileReader()
 
-      reader.onload = (e) => {
+      reader.onload = e => {
         imageSource.value.push({
           src: e.target.result,
           name: fileName
-        });
+        })
       }
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
     }
   } else {
-    imageSource.value = [];
-    invalidFiles.value = [];
+    imageSource.value = []
+    invalidFiles.value = []
   }
 }
 
@@ -62,67 +62,51 @@ const showNotification = (message, title, type) => {
   })
 }
 
-const deleteImage = (index) => {
-  imageSource.value.splice(index, 1);
-  selectedImages.value.splice(index, 1);
+const deleteImage = index => {
+  imageSource.value.splice(index, 1)
+  selectedImages.value.splice(index, 1)
 }
 
 const uploadImages = async () => {
   if (selectedImages.value.length > 5) {
-    showNotification(
-        "You can upload up to 5 images at a time.",
-        'Error',
-        'error'
-    );
-    return;
+    showNotification('You can upload up to 5 images at a time.', 'Error', 'error')
+    return
   }
 
-  let formData = new FormData();
+  let formData = new FormData()
 
   selectedImages.value.forEach((image, index) => {
-    formData.append(
-      'images[]',
-      selectedImages.value[index],
-      image.name
-    );
-  });
+    formData.append('images[]', selectedImages.value[index], image.name)
+  })
 
   try {
-    uploading.value = true;
-    let response = await CWM_API.post(`gallery/upload-images/${name.value}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-    );
+    uploading.value = true
+    let response = await CWM_API.post(`gallery/upload-images/${name.value}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
 
-    selectedImages.value = [];
-    imageSource.value = [];
-    invalidFiles.value = [];
+    selectedImages.value = []
+    imageSource.value = []
+    invalidFiles.value = []
 
-    showNotification(
-        "All images have been uploaded successfully!",
-      'Success',
-      'success'
-    );
+    showNotification('All images have been uploaded successfully!', 'Success', 'success')
 
-    console.log('Image upload successfully', response.data);
+    console.log('Image upload successfully', response.data)
   } catch (error) {
-    console.error('Upload error: ', error);
+    console.error('Upload error: ', error)
   } finally {
-    uploading.value = false;
+    uploading.value = false
   }
-
 }
 
 const goBack = () => {
-  router.push(`/images/${name.value}`);
+  router.push(`/images/${name.value}`)
 }
 
 const viewGallery = () => {
-  router.push(`/view-gallery/${name.value}`);
+  router.push(`/view-gallery/${name.value}`)
 }
 </script>
 
@@ -131,67 +115,44 @@ const viewGallery = () => {
     <div class="upload-container">
       <div class="centering-wrapper">
         <div class="upload">
-        <label for="" class="upload-label">
-          Upload up to 5 Images at a time.
-        </label>
-        <fwb-file-input
+          <label for="" class="upload-label"> Upload up to 5 Images at a time. </label>
+          <fwb-file-input
             v-model="selectedImages"
             size="sm"
             browse-label="testing label"
             placeholder="test"
             class="dark"
             multiple
-        />
+          />
 
-        <div
-          v-if="imageSource.length"
-          class="show-thumbnails"
-        >
-          <div
-            class="thumbnail"
-            v-for="(image, index) in imageSource"
-            :key="index"
-          >
-            <div class="image-container">
-              <img :src="image.src" alt="Image preview...">
+          <div v-if="imageSource.length" class="show-thumbnails">
+            <div v-for="(image, index) in imageSource" :key="index" class="thumbnail">
+              <div class="image-container">
+                <img :src="image.src" alt="Image preview..." />
+              </div>
+              <p>{{ image.name }}</p>
+              <p @click="deleteImage(index)">X</p>
             </div>
-            <p>{{ image.name }}</p>
-            <p @click="deleteImage(index)">X</p>
           </div>
-        </div>
-        <div
-          v-if="invalidFiles.length"
-        >
-          <h3 class="error-message">There is some invalid files</h3>
-          <small>
-            Notice: The invalid files will not be uploaded!
-          </small>
-        </div>
+          <div v-if="invalidFiles.length">
+            <h3 class="error-message">There is some invalid files</h3>
+            <small> Notice: The invalid files will not be uploaded! </small>
+          </div>
 
-        <fwb-button
-          size="sm"
-          class="image-button"
-          v-if="selectedImages.length"
-          :loading="uploading"
-          @click="uploadImages()"
-        >
-          Upload Images
-        </fwb-button>
-      </div>
+          <fwb-button
+            v-if="selectedImages.length"
+            size="sm"
+            class="image-button"
+            :loading="uploading"
+            @click="uploadImages()"
+          >
+            Upload Images
+          </fwb-button>
+        </div>
       </div>
       <div class="go-back">
-        <fwb-button
-          size="sm"
-          class="image-button"
-          @click="goBack()"
-        >
-          Go Back
-        </fwb-button>
-        <fwb-button
-          class="image-button ml-2"
-          size="sm"
-          @click="viewGallery()"
-        >
+        <fwb-button size="sm" class="image-button" @click="goBack()"> Go Back </fwb-button>
+        <fwb-button class="image-button ml-2" size="sm" @click="viewGallery()">
           View Gallery
         </fwb-button>
       </div>
@@ -205,11 +166,11 @@ const viewGallery = () => {
 }
 
 .images-main {
-  background: url("../../public/images/bg4.webp") no-repeat center;
+  background: url('../../public/images/bg4.webp') no-repeat center;
   background-size: cover;
 
-  @media(max-width: 600px) {
-    background: url("../../public/images/bg4.webp") no-repeat -360px center;
+  @media (max-width: 600px) {
+    background: url('../../public/images/bg4.webp') no-repeat -360px center;
     background-size: cover;
   }
 }
@@ -274,8 +235,8 @@ const viewGallery = () => {
   height: 60px;
 }
 
-.image-button{
-  background: url("../../public/images/img.png");
+.image-button {
+  background: url('../../public/images/img.png');
   width: 125px;
   height: 50px;
   border: none;

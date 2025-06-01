@@ -2,8 +2,6 @@ import { defineStore } from 'pinia'
 import GuestsService from '../services/GuestsService'
 import { useUserStore } from './useUserStore'
 
-
-
 export const useGuestsStore = defineStore('guestsStore', {
   state: () => ({
     guests: [],
@@ -11,7 +9,7 @@ export const useGuestsStore = defineStore('guestsStore', {
     pageSelected: 1,
     perPage: 5,
     currentGuest: null,
-    searchValue: '',
+    searchValue: ''
   }),
   actions: {
     async loadGuestData(guestId) {
@@ -34,18 +32,18 @@ export const useGuestsStore = defineStore('guestsStore', {
     },
 
     removeGuestById(guestId) {
-      this.guests = this.guests.filter((guest) => guest.id !== guestId)
+      this.guests = this.guests.filter(guest => guest.id !== guestId)
     },
 
     updateGuestById(guestId, updatedGuest) {
-      const index = this.guests.findIndex((guest) => guest.id === guestId)
+      const index = this.guests.findIndex(guest => guest.id === guestId)
       if (index !== -1) {
         this.guests[index] = { ...this.guests[index], ...updatedGuest }
       }
     },
 
     setCurrentGuest(guestId) {
-      this.currentGuest = this.guests.find((guest) => guest.id === guestId) || null
+      this.currentGuest = this.guests.find(guest => guest.id === guestId) || null
     },
 
     clearCurrentGuest() {
@@ -53,7 +51,7 @@ export const useGuestsStore = defineStore('guestsStore', {
     },
 
     getGuestById(guestId) {
-      return this.guests.find((guest) => guest.id === guestId) || null
+      return this.guests.find(guest => guest.id === guestId) || null
     },
 
     clearGuests() {
@@ -68,17 +66,17 @@ export const useGuestsStore = defineStore('guestsStore', {
 
     updateCurrentGuest() {
       if (this.currentGuest !== null) {
-        const guestToUpdate = this.guests.find((guest) => guest.id === this.currentGuest.id)
+        const guestToUpdate = this.guests.find(guest => guest.id === this.currentGuest.id)
         if (guestToUpdate) {
           this.currentGuest = { ...guestToUpdate }
         }
       }
     },
 
-    async loadGuests(){
+    async loadGuests() {
       const userStore = useUserStore()
 
-      const response =  await GuestsService.getMyEventGuests({
+      const response = await GuestsService.getMyEventGuests({
         eventId: userStore.activeEvent,
         perPage: this.perPage,
         pageSelected: this.pageSelected,
@@ -109,17 +107,17 @@ export const useGuestsStore = defineStore('guestsStore', {
         phoneNumber,
         firstName,
         lastName,
-        email,
+        email
       })
     },
 
-    async updateCompanion({ companionId, firstName, lastName, phoneNumber,email }) {
-      return GuestsService.updateCompanion({ companionId, firstName, lastName, phoneNumber,email })
+    async updateCompanion({ companionId, firstName, lastName, phoneNumber, email }) {
+      return GuestsService.updateCompanion({ companionId, firstName, lastName, phoneNumber, email })
     }
   },
   getters: {
     hasGuests() {
       return this.guests.length > 0
-    },
+    }
   }
 })

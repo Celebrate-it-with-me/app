@@ -39,7 +39,7 @@ const {
 
 watch(() => props.modelValue, setValue)
 
-watch(inputValue, (val) => {
+watch(inputValue, val => {
   emit('update:modelValue', val)
   if (val) {
     emit('resetErrors')
@@ -50,7 +50,7 @@ const showErrorMessage = computed(() => {
   return props.showError && errorMessage.value && meta.touched
 })
 
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   emit('update:blur', e.target.value)
   handleBlur(e)
 }
@@ -59,12 +59,7 @@ const handleFieldBlur = (e) => {
 <template>
   <div>
     <!-- Label -->
-    <label
-      v-if="label"
-      :for="name"
-      :class="classLabel"
-      class="block mb-2"
-    >
+    <label v-if="label" :for="name" :class="classLabel" class="block mb-2">
       {{ label }}
     </label>
 
@@ -115,10 +110,7 @@ const handleFieldBlur = (e) => {
     </p>
 
     <!-- Error Feedback -->
-    <span
-      v-if="showErrorMessage"
-      class="text-red-500 text-sm mt-1 block"
-    >
+    <span v-if="showErrorMessage" class="text-red-500 text-sm mt-1 block">
       {{ errorMessage }}
     </span>
   </div>

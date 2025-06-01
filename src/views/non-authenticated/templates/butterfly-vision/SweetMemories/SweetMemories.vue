@@ -24,7 +24,7 @@ const sweetMemoriesImages = computed(() => {
 
 const sweetMemoriesConfig = computed(() => {
   if (props.mode === 'create') {
-    return sweetMemoriesStore?.config ?? {};
+    return sweetMemoriesStore?.config ?? {}
   }
 
   return templateStore.event?.sweetMemoriesConfig ?? {}
@@ -39,25 +39,27 @@ const generalStyles = computed(() => {
 
 // Methods
 
-const formatImages = (images) => {
+const formatImages = images => {
   console.log(images)
   return images.map((memory, index) => {
     return {
-      image: (props.mode === 'create') ? memory.url  : memory.imagePath,
-      thumb: (props.mode === 'create') ? memory.url  : memory.imagePath,
-      title: (props.mode === 'create')
-        ? memory.name || `Sweet Memory ${index + 1}`
-        : memory.imageOriginalName || `Sweet Memory ${index + 1}`,
-      subHtml: (props.mode === 'create')
-        ? `<h4>${memory.name}</h4>` || `<h4>Sweet Memory ${index + 1}</h4>`
-        : `<h4>${memory.imageOriginalName}</h4>` || `<h4>Sweet Memory ${index + 1}</h4>`,
-      alt: (props.mode === 'create')
-        ? memory.name || `Sweet Memory ${index + 1}`
-        : memory.imageOriginalName || `Sweet Memory ${index + 1}`
+      image: props.mode === 'create' ? memory.url : memory.imagePath,
+      thumb: props.mode === 'create' ? memory.url : memory.imagePath,
+      title:
+        props.mode === 'create'
+          ? memory.name || `Sweet Memory ${index + 1}`
+          : memory.imageOriginalName || `Sweet Memory ${index + 1}`,
+      subHtml:
+        props.mode === 'create'
+          ? `<h4>${memory.name}</h4>` || `<h4>Sweet Memory ${index + 1}</h4>`
+          : `<h4>${memory.imageOriginalName}</h4>` || `<h4>Sweet Memory ${index + 1}</h4>`,
+      alt:
+        props.mode === 'create'
+          ? memory.name || `Sweet Memory ${index + 1}`
+          : memory.imageOriginalName || `Sweet Memory ${index + 1}`
     }
   })
 }
-
 </script>
 
 <template>
@@ -85,13 +87,9 @@ const formatImages = (images) => {
     </div>
 
     <div class="w-full max-w-7xl mx-auto mt-8">
-      <SweetMemoriesGallery
-        :memories="sweetMemoriesImages"
-        class="fade-in-up"
-      />
+      <SweetMemoriesGallery :memories="sweetMemoriesImages" class="fade-in-up" />
     </div>
   </section>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

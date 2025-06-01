@@ -13,11 +13,11 @@
     <button
       :id="name"
       type="button"
-      @click="toggle"
       :class="[
         'relative w-11 h-6 rounded-full transition-colors duration-300 focus:outline-none',
         localValue ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'
       ]"
+      @click="toggle"
     >
       <span
         class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-300"
@@ -27,10 +27,7 @@
   </div>
 
   <!-- Optional Error -->
-  <p
-    v-if="showError"
-    class="text-xs text-red-500 mt-1"
-  >
+  <p v-if="showError" class="text-xs text-red-500 mt-1">
     {{ errorMessage }}
   </p>
 </template>
@@ -60,13 +57,13 @@ onMounted(() => {
 
 watch(
   () => props.modelValue,
-  (val) => {
+  val => {
     localValue.value = val
     setValue(val)
   }
 )
 
-watch(localValue, (val) => {
+watch(localValue, val => {
   emit('update:modelValue', val)
   setValue(val)
   if (val) emit('resetErrors')
@@ -79,6 +76,6 @@ const toggle = () => {
 
 <style scoped>
 .bg-primary {
-  background-color: #EC4899;
+  background-color: #ec4899;
 }
 </style>

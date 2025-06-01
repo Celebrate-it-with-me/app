@@ -1,5 +1,5 @@
-<script setup >
-import {onMounted, ref} from "vue";
+<script setup>
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import i18n from '../../locales/i18n'
 
@@ -18,30 +18,29 @@ const localeOptions = ref([
   {
     locale: 'es',
     label: 'EN'
-  },
-]);
+  }
+])
 
 onMounted(() => {
   const defaultLocale = i18n.global.locale.value
 
-  localeOptions.value.forEach((loc) => {
+  localeOptions.value.forEach(loc => {
     if (defaultLocale === loc.locale) {
       selectedLocale.value = loc
     }
   })
 })
 
-const changeLocale = (currentLocale) => {
-  localeOptions.value.forEach((loc) => {
+const changeLocale = currentLocale => {
+  localeOptions.value.forEach(loc => {
     if (loc.locale !== currentLocale) {
       selectedLocale.value = loc
     }
-  });
+  })
 
   localStorage.setItem('selectedLocale', selectedLocale.value.locale)
   i18n.global.locale.value = selectedLocale.value.locale
 }
-
 </script>
 
 <template>

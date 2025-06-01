@@ -2,16 +2,15 @@ import { CWM_API } from './axios'
 
 class EventCommentsService {
   async createCommentsConfig({
-                               eventId,
-                               title,
-                               subTitle,
-                               backgroundColor,
-                               commentsTitle,
-                               buttonColor,
-                               buttonText,
-                               maxComments
-               }) {
-
+    eventId,
+    title,
+    subTitle,
+    backgroundColor,
+    commentsTitle,
+    buttonColor,
+    buttonText,
+    maxComments
+  }) {
     return await CWM_API.post(`event/${eventId}/comments-config`, {
       title,
       subTitle,
@@ -28,16 +27,16 @@ class EventCommentsService {
   }
 
   async updateCommentsConfig({
-                               eventId,
-                               id,
-                               title,
-                               subTitle,
-                               backgroundColor,
-                               commentsTitle,
-                               buttonColor,
-                               buttonText,
-                               maxComments
-                             }){
+    eventId,
+    id,
+    title,
+    subTitle,
+    backgroundColor,
+    commentsTitle,
+    buttonColor,
+    buttonText,
+    maxComments
+  }) {
     return await CWM_API.put(`event/${eventId}/comments-config/${id}`, {
       title,
       subTitle,
@@ -52,30 +51,29 @@ class EventCommentsService {
   async addComment({ eventId, userId, origin, comment }) {
     try {
       // Log para debug
-      console.log('Request parameters:', { eventId, userId, origin, comment });
+      console.log('Request parameters:', { eventId, userId, origin, comment })
 
       await CWM_API.get('sanctum/csrf-cookie', {
-        baseURL: import.meta.env.VITE_API_URL,
-      });
+        baseURL: import.meta.env.VITE_API_URL
+      })
 
       const response = await CWM_API.post(`event/${eventId}/comments`, {
         userId,
         origin,
         comment
-      });
+      })
 
-      return response;
+      return response
     } catch (error) {
       // Log detallado del error
       console.error('Error details:', {
         message: error.message,
         response: error.response?.data,
         status: error.response?.status
-      });
-      throw error;
+      })
+      throw error
     }
   }
-
 
   async loadComments(eventId) {
     return await CWM_API.get(`event/${eventId}/comments`)
@@ -83,7 +81,7 @@ class EventCommentsService {
 
   async loadMoreComments(eventId, page) {
     console.log('in load more comments')
-    return await CWM_API.get(`event/${eventId}/comments`,{
+    return await CWM_API.get(`event/${eventId}/comments`, {
       params: {
         page: page
       }

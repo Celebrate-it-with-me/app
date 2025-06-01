@@ -84,7 +84,9 @@ const startDateFormatted = computed(() => {
 
 const eventVisibility = computed(() => {
   const visibility = eventStore.activeEvent?.visibility ?? ''
-  return visibility ? visibility.charAt(0).toUpperCase() + visibility.slice(1).toLowerCase() : 'Private'
+  return visibility
+    ? visibility.charAt(0).toUpperCase() + visibility.slice(1).toLowerCase()
+    : 'Private'
 })
 
 const eventStatus = computed(() => {
@@ -148,7 +150,7 @@ const progressColor = computed(() => {
 })
 
 // Tooltip methods
-const showTooltip = (id) => {
+const showTooltip = id => {
   activeTooltip.value = id
 }
 
@@ -158,15 +160,20 @@ const hideTooltip = () => {
 
 // Status descriptions
 const statusDescriptions = {
-  'Draft': 'Event is in planning stage and not yet published',
-  'Published': 'Event is live and visible to guests',
-  'Completed': 'Event has already taken place',
-  'Cancelled': 'Event has been cancelled'
+  Draft: 'Event is in planning stage and not yet published',
+  Published: 'Event is live and visible to guests',
+  Completed: 'Event has already taken place',
+  Cancelled: 'Event has been cancelled'
 }
 
 const visibilityDescriptions = {
-  'Public': 'Event is visible to everyone',
-  'Private': 'Event is only visible to invited guests'
+  Public: 'Event is visible to everyone',
+  Private: 'Event is only visible to invited guests'
+}
+
+const retry = () => {
+  isLoading.value = true
+  hasError.value = false
 }
 
 // Lifecycle hooks
@@ -182,7 +189,6 @@ onMounted(async () => {
     isLoading.value = false
   }
 })
-
 </script>
 
 <template>
@@ -192,21 +198,33 @@ onMounted(async () => {
     aria-labelledby="active-event-title"
   >
     <!-- Loading overlay -->
-    <div v-if="isLoading" class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10">
+    <div
+      v-if="isLoading"
+      class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10"
+    >
       <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-pink-500"></div>
     </div>
 
     <!-- Error state -->
     <div v-else-if="hasError" class="text-center py-4">
       <div class="text-red-500 mb-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-10 w-10 mx-auto"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
         </svg>
       </div>
       <p class="text-red-600 dark:text-red-400 font-medium">{{ errorMessage }}</p>
-      <CButton variant="secondary" size="sm" class="mt-3" @click="isLoading = true; hasError = false">
-        Retry
-      </CButton>
+      <CButton variant="secondary" size="sm" class="mt-3" @click="retry"> Retry </CButton>
     </div>
 
     <!-- Empty state -->
@@ -215,7 +233,9 @@ onMounted(async () => {
         <CalendarCheck class="h-10 w-10 mx-auto" />
       </div>
       <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No Active Event</h3>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">Create an event to get started with your planning</p>
+      <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+        Create an event to get started with your planning
+      </p>
       <CButton variant="primary" size="sm" @click="router.push({ name: 'create-event' })">
         Create Event
       </CButton>
@@ -226,8 +246,8 @@ onMounted(async () => {
       <!-- Header -->
       <div class="flex items-center justify-between mb-5">
         <div
-          class="flex items-center gap-2 text-pink-600 font-semibold text-sm bg-pink-50 dark:bg-pink-950 px-3 py-1.5 rounded-full"
           id="active-event-title"
+          class="flex items-center gap-2 text-pink-600 font-semibold text-sm bg-pink-50 dark:bg-pink-950 px-3 py-1.5 rounded-full"
         >
           <CalendarCheck class="w-4 h-4" aria-hidden="true" />
           <span>Active Event</span>
@@ -236,8 +256,8 @@ onMounted(async () => {
           variant="primary"
           size="xs"
           class="rounded-full flex items-center gap-1 transition-transform hover:scale-105"
-          @click="navigateToEventDetails"
           aria-label="View event details"
+          @click="navigateToEventDetails"
         >
           <Eye class="w-4 h-4" aria-hidden="true" />
           <span>View Details</span>
@@ -246,7 +266,9 @@ onMounted(async () => {
 
       <!-- Info -->
       <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 mb-5">
-        <h3 class="font-medium text-gray-700 dark:text-gray-200 mb-3 text-base">Event Information</h3>
+        <h3 class="font-medium text-gray-700 dark:text-gray-200 mb-3 text-base">
+          Event Information
+        </h3>
         <ul class="space-y-3 text-sm">
           <li class="flex justify-between items-center">
             <span class="text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
@@ -260,7 +282,9 @@ onMounted(async () => {
               <Clock class="w-4 h-4" aria-hidden="true" />
               <span>Date:</span>
             </span>
-            <span class="font-semibold text-gray-800 dark:text-white">{{ startDateFormatted }}</span>
+            <span class="font-semibold text-gray-800 dark:text-white">{{
+              startDateFormatted
+            }}</span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
@@ -271,11 +295,13 @@ onMounted(async () => {
               <span
                 :class="[
                   'font-semibold px-2 py-0.5 rounded-full text-xs flex items-center gap-1 cursor-help',
-                  eventVisibility === 'Public' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
+                  eventVisibility === 'Public'
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
+                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'
                 ]"
+                aria-describedby="visibility-tooltip"
                 @mouseenter="showTooltip('visibility')"
                 @mouseleave="hideTooltip"
-                aria-describedby="visibility-tooltip"
               >
                 {{ eventVisibility }}
                 <Info class="w-3 h-3" />
@@ -288,23 +314,37 @@ onMounted(async () => {
                 role="tooltip"
               >
                 {{ visibilityDescriptions[eventVisibility] || 'Set the visibility of your event' }}
-                <div class="absolute -top-1 right-2 w-2 h-2 bg-white dark:bg-gray-800 border-t border-l border-gray-200 dark:border-gray-700 transform rotate-45"></div>
+                <div
+                  class="absolute -top-1 right-2 w-2 h-2 bg-white dark:bg-gray-800 border-t border-l border-gray-200 dark:border-gray-700 transform rotate-45"
+                ></div>
               </div>
             </div>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
               <span>Status:</span>
             </span>
             <div class="relative">
               <span
                 class="font-semibold px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 flex items-center gap-1 cursor-help"
+                aria-describedby="status-tooltip"
                 @mouseenter="showTooltip('status')"
                 @mouseleave="hideTooltip"
-                aria-describedby="status-tooltip"
               >
                 {{ eventStatus }}
                 <Info class="w-3 h-3" />
@@ -317,7 +357,9 @@ onMounted(async () => {
                 role="tooltip"
               >
                 {{ statusDescriptions[eventStatus] || 'Current status of your event' }}
-                <div class="absolute -top-1 right-2 w-2 h-2 bg-white dark:bg-gray-800 border-t border-l border-gray-200 dark:border-gray-700 transform rotate-45"></div>
+                <div
+                  class="absolute -top-1 right-2 w-2 h-2 bg-white dark:bg-gray-800 border-t border-l border-gray-200 dark:border-gray-700 transform rotate-45"
+                ></div>
               </div>
             </div>
           </li>
@@ -328,11 +370,19 @@ onMounted(async () => {
       <div>
         <div class="flex justify-between items-center mb-2">
           <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">Planning Progress</h3>
-          <span class="text-sm font-bold" :class="[
-            eventProgress < 25 ? 'text-red-500' :
-            eventProgress < 50 ? 'text-yellow-500' :
-            eventProgress < 75 ? 'text-blue-500' : 'text-green-500'
-          ]">{{ eventProgress }}%</span>
+          <span
+            class="text-sm font-bold"
+            :class="[
+              eventProgress < 25
+                ? 'text-red-500'
+                : eventProgress < 50
+                  ? 'text-yellow-500'
+                  : eventProgress < 75
+                    ? 'text-blue-500'
+                    : 'text-green-500'
+            ]"
+            >{{ eventProgress }}%</span
+          >
         </div>
 
         <!-- Progress bar -->
@@ -353,15 +403,23 @@ onMounted(async () => {
             v-for="(item, index) in progressItems"
             :key="index"
             class="flex items-center gap-2 p-2 rounded-lg transition-colors relative group"
-            :class="item.completed ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300' : 'bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400'"
+            :class="
+              item.completed
+                ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300'
+                : 'bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400'
+            "
+            :aria-describedby="`${item.id}-tooltip`"
             @mouseenter="showTooltip(item.id)"
             @mouseleave="hideTooltip"
-            :aria-describedby="`${item.id}-tooltip`"
           >
             <component
               :is="item.icon"
               class="w-4 h-4"
-              :class="item.completed ? 'text-green-500 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'"
+              :class="
+                item.completed
+                  ? 'text-green-500 dark:text-green-400'
+                  : 'text-gray-400 dark:text-gray-500'
+              "
               aria-hidden="true"
             />
             <span>{{ item.name }}</span>
@@ -370,7 +428,11 @@ onMounted(async () => {
             <div class="ml-auto flex items-center">
               <Info
                 class="w-3 h-3 mr-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-help"
-                :class="item.completed ? 'text-green-500 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'"
+                :class="
+                  item.completed
+                    ? 'text-green-500 dark:text-green-400'
+                    : 'text-gray-400 dark:text-gray-500'
+                "
               />
               <svg
                 v-if="item.completed"
@@ -381,7 +443,12 @@ onMounted(async () => {
                 stroke="currentColor"
                 aria-hidden="true"
               >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               <svg
                 v-else
@@ -392,7 +459,12 @@ onMounted(async () => {
                 stroke="currentColor"
                 aria-hidden="true"
               >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
 
@@ -405,13 +477,17 @@ onMounted(async () => {
             >
               <div class="font-medium mb-1">{{ item.name }}</div>
               <p>{{ item.description }}</p>
-              <div class="mt-1 pt-1 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+              <div
+                class="mt-1 pt-1 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between"
+              >
                 <span>Status:</span>
                 <span :class="item.completed ? 'text-green-500 font-medium' : 'text-gray-500'">
                   {{ item.completed ? 'Completed' : 'Pending' }}
                 </span>
               </div>
-              <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white dark:bg-gray-800 border-b border-r border-gray-200 dark:border-gray-700 rotate-45"></div>
+              <div
+                class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-white dark:bg-gray-800 border-b border-r border-gray-200 dark:border-gray-700 rotate-45"
+              ></div>
             </div>
           </li>
         </ul>

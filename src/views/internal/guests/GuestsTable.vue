@@ -6,8 +6,8 @@
       </div>
       <div v-else>
         <table
-          class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
           v-if="guestStore.guests.length"
+          class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
         >
           <thead class="bg-gray-50 dark:bg-gray-800">
             <tr>
@@ -63,7 +63,7 @@
             </tr>
           </tbody>
         </table>
-        <CAlert variant="" v-else> There are no Guests for this event yet. </CAlert>
+        <CAlert v-else variant=""> There are no Guests for this event yet. </CAlert>
       </div>
       <GuestDetailsModal
         :guest="selectedGuest"
@@ -72,11 +72,11 @@
       />
 
       <CConfirmModal
-        :modelValue="confirmDeleteModal"
+        :model-value="confirmDeleteModal"
         title="Delete Guest"
         message="Are you sure you want to delete this guest? This action cannot be undone."
         @confirm="deleteGuest()"
-        @update:modelValue="confirmDeleteModal = false"
+        @update:model-value="confirmDeleteModal = false"
       />
     </div>
   </div>
@@ -115,7 +115,7 @@ const loadGuests = async () => {
   emit('loading', false)
 }
 
-const viewGuest = (guest) => {
+const viewGuest = guest => {
   selectedGuest.value = guest
   showDetailsModal.value = true
 }
@@ -139,7 +139,7 @@ const deleteGuest = async () => {
   }
 }
 
-const confirmDelete = (guest) => {
+const confirmDelete = guest => {
   guestToDelete.value = guest
   confirmDeleteModal.value = true
 }

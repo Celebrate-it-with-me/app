@@ -35,7 +35,7 @@ const props = defineProps({
   mode: {
     type: String,
     default: 'normal',
-    validator: (value) => ['normal', 'creator'].includes(value)
+    validator: value => ['normal', 'creator'].includes(value)
   },
   event: {
     type: Object,
@@ -64,8 +64,7 @@ const getSuggestedSongs = async () => {
         message: 'Oops something went wrong!'
       })
     }
-
-  } catch(e) {
+  } catch (e) {
     console.log(e)
   } finally {
     loading.value = false
@@ -80,7 +79,7 @@ watch(pageSelected, () => getSuggestedSongs())
 
 watch(
   () => props.event,
-  (newValue) => {
+  newValue => {
     if (Object.entries(newValue).length) {
       getSuggestedSongs()
     }
@@ -88,18 +87,18 @@ watch(
   {
     deep: true,
     immediate: true
-  })
-
+  }
+)
 </script>
 
 <template>
-  <div
-    class="event-handle w-[90%] md:w-[70%] rounded-lg flex flex-col items-center"
-  >
+  <div class="event-handle w-[90%] md:w-[70%] rounded-lg flex flex-col items-center">
     <h2 class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center">
       {{ title }}
     </h2>
-    <h4 class="music-subtitle relative text-2xl font-normal text-dark-blue text-center moments-title">
+    <h4
+      class="music-subtitle relative text-2xl font-normal text-dark-blue text-center moments-title"
+    >
       {{ subTitle }}
     </h4>
 
@@ -120,8 +119,8 @@ watch(
     />
 
     <CWMSimplePagination
-      v-model="pageSelected"
       v-if="songsStore.selectedSongs.length"
+      v-model="pageSelected"
       :total-items="totalItems"
     />
   </div>
@@ -136,7 +135,7 @@ watch(
   bottom: -20px;
   width: 70%;
   height: 1px;
-  content: "";
+  content: '';
   background: #fdeab2;
 }
 
@@ -148,7 +147,7 @@ watch(
   bottom: -10px;
   width: 100%;
   height: 1px;
-  content: "";
+  content: '';
   background: #fdeab2;
 }
 </style>

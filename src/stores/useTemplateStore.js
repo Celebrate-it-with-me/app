@@ -5,13 +5,13 @@ import templateService from '../services/TemplateService'
 export const useTemplateStore = defineStore('templateStore', {
   state: () => ({
     event: {},
-    guest: {},
+    guest: {}
   }),
   actions: {
     updateCompanionMenu(payload) {
       const companionId = payload.guestId
 
-      const companion = this.guest.companions.find((companion) => companion.id === companionId)
+      const companion = this.guest.companions.find(companion => companion.id === companionId)
 
       if (!companion) {
         console.log('companion not found')
@@ -51,10 +51,9 @@ export const useTemplateStore = defineStore('templateStore', {
     async refreshGuestData({ eventId, guestCode }) {
       return await templateService.refreshGuestData({
         eventId,
-        guestCode,
+        guestCode
       })
     }
-
   },
   getters: {
     meals() {

@@ -11,20 +11,22 @@ const emit = defineEmits(['toggleGuestSelection', 'viewGuest'])
 const props = defineProps({
   guest: {
     type: Object,
-    required: true,
+    required: true
   },
   selectedGuests: {
     type: Array,
-    required: true,
-  },
+    required: true
+  }
 })
 
-const statusClass = (status) => {
-  return {
-    pending: 'text-yellow-600',
-    attending: 'text-green-600',
-    'not-attending': 'text-red-500',
-  }[status] || 'text-gray-500'
+const statusClass = status => {
+  return (
+    {
+      pending: 'text-yellow-600',
+      attending: 'text-green-600',
+      'not-attending': 'text-red-500'
+    }[status] || 'text-gray-500'
+  )
 }
 
 const toggleGuestSelection = () => {
@@ -39,7 +41,6 @@ const toggleGuestSelection = () => {
 const viewGuest = () => {
   emit('viewGuest', props.guest)
 }
-
 </script>
 
 <template>
@@ -47,24 +48,22 @@ const viewGuest = () => {
     <td class="px-3 py-2">
       <CCheckbox
         :id="`guest_${guest.id}`"
-        :modelValue="selectedGuests.includes(guest.id)"
-        @update:modelValue="val => toggleGuestSelection(guest.id, val)"
+        :model-value="selectedGuests.includes(guest.id)"
+        @update:model-value="val => toggleGuestSelection(guest.id, val)"
       />
     </td>
     <td class="px-3 py-2 text-sm font-medium text-gray-800 dark:text-white flex items-center gap-2">
       <UserIcon class="w-4 h-4 text-primary" /> {{ guest.name }}
       <span
-        v-if="guest.companions?.length" class="ml-2 text-xs text-gray-500 cursor-pointer"
+        v-if="guest.companions?.length"
         v-tooltip="'Show guest companions'"
+        class="ml-2 text-xs text-gray-500 cursor-pointer"
         @click="showCompanionsList = !showCompanionsList"
       >
         +{{ guest.companions.length }} companion(s)
       </span>
     </td>
-    <td
-      class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400"
-
-    >
+    <td class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400">
       <span :class="statusClass(guest.rsvpStatus)">
         {{ guest.rsvpStatus || 'N/A' }}
       </span>
@@ -75,25 +74,17 @@ const viewGuest = () => {
       </span>
     </td>
     <td class="px-3 py-2 text-right">
-      <CButton
-        size="sm"
-        variant="outline"
-        @click="viewGuest(guest)"
-      >
-        Details
-      </CButton>
+      <CButton size="sm" variant="outline" @click="viewGuest(guest)"> Details </CButton>
     </td>
   </tr>
 
   <template v-if="showCompanionsList">
     <RsvpGuestCompanionTr
-      :companion="companion"
       v-for="companion in guest.companions"
       :key="`companion_${companion.id}`"
+      :companion="companion"
     />
   </template>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -27,13 +27,13 @@ const handleClose = () => {
   emit('closeModal')
 }
 
-const changeViewSelected = (view) => {
+const changeViewSelected = view => {
   viewSelected.value = view
 }
 
 watch(
   () => props.open,
-  (newValue) => {
+  newValue => {
     showModal.value = newValue
   }
 )
@@ -45,8 +45,8 @@ watch(
 
     <template #body>
       <div
-        class="flex flex-col justify-end items-center w-full mb-5"
         v-if="viewSelected === 'showCompanions'"
+        class="flex flex-col justify-end items-center w-full mb-5"
       >
         <div class="w-full flex justify-end items-center mb-5">
           <fwb-button color="dark" @click="changeViewSelected('editCompanionType')">

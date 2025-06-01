@@ -9,8 +9,8 @@ const props = defineProps({
   dressType: {
     type: String,
     required: false,
-    default: '',
-  },
+    default: ''
+  }
 })
 
 const dressCodeStore = useDressCodeStore()
@@ -29,19 +29,18 @@ const generateImages = async () => {
     loading.value = false
   }
 }
-
 </script>
 
 <template>
-<div>
-  <CButton
-    :disabled="loading"
-    variant="primary"
-    @click="generateImages"
-    class="flex items-center gap-2"
-  >
-    <Sparkles class="w-4 h-4" />
-    {{ loading ? 'Generating...' : 'Generate with AI' }}
-  </CButton>
-</div>
+  <div>
+    <CButton
+      :disabled="loading"
+      variant="primary"
+      class="flex items-center gap-2"
+      @click="generateImages"
+    >
+      <Sparkles class="w-4 h-4" />
+      {{ loading ? 'Generating...' : 'Generate with AI' }}
+    </CButton>
+  </div>
 </template>

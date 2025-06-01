@@ -2,16 +2,18 @@
   <div ref="panelRef" class="rounded-md relative">
     <div :class="`flex justify-${position}`">
       <button
-        @click="showTitleDetails = !showTitleDetails"
         :class="{
           'cursor-not-allowed': disabled,
           'cursor-pointer text-primary': !disabled
         }"
         :disabled="disabled"
+        @click="showTitleDetails = !showTitleDetails"
       >
         <span class="settings-group relative">
           <Settings class="w-4 h-4" />
-          <span class="absolute opacity-0 group-hover:opacity-100 transition text-xs bg-black text-white px-2 py-1 rounded shadow-md top-full mt-2">
+          <span
+            class="absolute opacity-0 group-hover:opacity-100 transition text-xs bg-black text-white px-2 py-1 rounded shadow-md top-full mt-2"
+          >
             Customize style
           </span>
         </span>

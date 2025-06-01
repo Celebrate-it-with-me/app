@@ -8,7 +8,6 @@ const emit = defineEmits(['showDressCodeForm'])
 const createDressCode = () => {
   emit('showDressCodeForm', true)
 }
-
 </script>
 
 <template>
@@ -21,11 +20,7 @@ const createDressCode = () => {
       <p class="text-gray-500 dark:text-gray-400 mb-6 text-center max-w-md">
         Define a dress code to help your guests know what to wear to your event.
       </p>
-      <CButton
-        @click="createDressCode"
-        variant="gradient"
-        class="mt-2"
-      >
+      <CButton variant="gradient" class="mt-2" @click="createDressCode">
         <Plus class="w-4 h-4 mr-2" />
         Create Dress Code
       </CButton>
@@ -33,6 +28,4 @@ const createDressCode = () => {
   </CCard>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

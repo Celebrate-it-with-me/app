@@ -18,18 +18,12 @@ onMounted(async () => {
   <div v-if="loading">
     <CWMLoadingPage />
   </div>
-  <div
-    v-else
-    class="relative min-h-screen bg-gray-900 text-gray-200"
-  >
+  <div v-else class="relative min-h-screen bg-gray-900 text-gray-200">
     <Header />
     <div class="container md:w-[80%] mx-auto px-6 pt-32">
       <router-view />
     </div>
   </div>
-
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

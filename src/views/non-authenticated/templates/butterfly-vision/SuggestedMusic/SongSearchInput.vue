@@ -44,7 +44,7 @@ const secondaryColorComputed = computed(() => {
   return { backgroundColor: props.secondaryColor }
 })
 
-const selectSuggestion = (song) => {
+const selectSuggestion = song => {
   skipFetch = true
 
   saveSelectedSong(song)
@@ -56,7 +56,7 @@ const selectSuggestion = (song) => {
   }, 300)
 }
 
-const saveSelectedSong = async (song) => {
+const saveSelectedSong = async song => {
   if (props.mode === 'creator') return
 
   try {
@@ -91,10 +91,10 @@ const fetchSuggestions = debounce(async () => {
     try {
       const result = await SpotifyService.searchSongs(searchQuery.value)
 
-      suggestions.value = result.tracks.items.map((track) => ({
+      suggestions.value = result.tracks.items.map(track => ({
         platformId: track.id,
         title: track.name,
-        artist: track.artists.map((artist) => artist.name).join(', '),
+        artist: track.artists.map(artist => artist.name).join(', '),
         album: track.album.name || 'Unknown Album',
         thumbnailUrl: track.album.images[0]?.url || 'https://via.placeholder.com/48'
       }))
@@ -116,11 +116,11 @@ const fetchSuggestions = debounce(async () => {
     <div class="relative">
       <input
         v-model="searchQuery"
-        @input="fetchSuggestions"
         type="text"
         class="w-full text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 input-control w-full block focus:outline-none h-[40px]"
         :style="secondaryColorComputed"
         placeholder="Search for a song..."
+        @input="fetchSuggestions"
       />
     </div>
 

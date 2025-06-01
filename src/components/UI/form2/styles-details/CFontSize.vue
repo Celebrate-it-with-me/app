@@ -1,17 +1,16 @@
 <template>
   <div class="flex flex-col gap-1 w-3/4">
-    <label
-      v-if="label"
-      class="text-sm font-medium text-gray-700 dark:text-gray-300"
-    >
+    <label v-if="label" class="text-sm font-medium text-gray-700 dark:text-gray-300">
       {{ label }}
     </label>
 
-    <div class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 shadow-sm w-full">
+    <div
+      class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 shadow-sm w-full"
+    >
       <button
-        @click="decrease"
         :disabled="currentIndex === 0"
         class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+        @click="decrease"
       >
         <Minus class="w-4 h-4 text-gray-700 dark:text-gray-200" />
       </button>
@@ -21,9 +20,9 @@
       </span>
 
       <button
-        @click="increase"
         :disabled="currentIndex === sizes.length - 1"
         class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+        @click="increase"
       >
         <Plus class="w-4 h-4 text-gray-700 dark:text-gray-200" />
       </button>
@@ -57,17 +56,21 @@ const sizes = [
   { value: '64px', label: 'Huge' },
   { value: '72px', label: '2Huge' },
   { value: '84px', label: '3Huge' },
-  { value: '96px', label: '4Huge' },
+  { value: '96px', label: '4Huge' }
 ]
 
 const currentIndex = ref(0)
 
-watch(() => props.modelValue, (newVal) => {
-  const foundIndex = sizes.findIndex(s => s.value === newVal)
-  if (foundIndex !== -1) {
-    currentIndex.value = foundIndex
-  }
-}, { immediate: true })
+watch(
+  () => props.modelValue,
+  newVal => {
+    const foundIndex = sizes.findIndex(s => s.value === newVal)
+    if (foundIndex !== -1) {
+      currentIndex.value = foundIndex
+    }
+  },
+  { immediate: true }
+)
 
 const currentSize = computed(() => sizes[currentIndex.value]?.value)
 

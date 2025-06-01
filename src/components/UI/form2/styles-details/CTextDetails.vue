@@ -1,8 +1,5 @@
 <template>
-  <CDetailsPanel
-    title="Text Styles"
-    :disabled="disabled"
-  >
+  <CDetailsPanel title="Text Styles" :disabled="disabled">
     <div class="grid grid-cols-1 md:grid-cols-1 gap-4 items-end">
       <!-- Font Size -->
       <div class="md:col-span-2">
@@ -13,12 +10,8 @@
           >
             Font Size:
           </label>
-          <CFontSize
-            v-model="model.fontSize"
-            label=""
-          />
+          <CFontSize v-model="model.fontSize" label="" />
         </div>
-
       </div>
 
       <div class="md:col-span-2">
@@ -29,10 +22,7 @@
           >
             Font Weight:
           </label>
-          <CFontWeight
-            v-model="model.fontWeight"
-            label=""
-          />
+          <CFontWeight v-model="model.fontWeight" label="" />
         </div>
       </div>
 
@@ -44,9 +34,7 @@
           >
             Font Color:
           </label>
-          <CColor
-            v-model="model.color"
-          />
+          <CColor v-model="model.color" />
         </div>
       </div>
 
@@ -60,13 +48,12 @@
           </label>
           <div class="w-[60%]">
             <CSelect
+              id="textAlign"
               v-model="model.textAlign"
               :options="alignments"
-              id="textAlign"
               name="textAlign"
             />
           </div>
-
         </div>
       </div>
 
@@ -80,16 +67,15 @@
           </label>
           <div class="w-[60%]">
             <CSelect
+              id="fontFamily"
               v-model="model.fontFamily"
               :options="fonts"
-              id="fontFamily"
               name="fontFamily"
             />
           </div>
         </div>
       </div>
     </div>
-
   </CDetailsPanel>
 </template>
 
@@ -103,7 +89,7 @@ import CFontWeight from '@/components/UI/form2/styles-details/CFontWeight.vue'
 
 const props = defineProps({
   modelValue: Object,
-  disabled: Boolean,
+  disabled: Boolean
 })
 const emit = defineEmits(['update:modelValue'])
 

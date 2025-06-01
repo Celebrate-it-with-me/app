@@ -1,7 +1,7 @@
 import { CWM_API } from './axios'
 
 class UserService {
-  async login({ email, password, remember, device, hcaptcha_token}) {
+  async login({ email, password, remember, device, hcaptcha_token }) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
     }).then(async () => {
@@ -15,53 +15,48 @@ class UserService {
     })
   }
 
-
   async register({ name, email, password, hcaptcha_token }) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
     }).then(
-      async () => await CWM_API.post('register', {
-        name,
-        email,
-        password,
-        hcaptcha_token
-      })
+      async () =>
+        await CWM_API.post('register', {
+          name,
+          email,
+          password,
+          hcaptcha_token
+        })
     )
   }
 
   async confirmEmail(confirmUrl) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
-    }).then(
-      async () => await CWM_API.post(confirmUrl)
-    )
+    }).then(async () => await CWM_API.post(confirmUrl))
   }
 
   async sendResetPasswordLink(form) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
-    }).then(
-      async () => await CWM_API.post('forgot-password', form)
-    )
+    }).then(async () => await CWM_API.post('forgot-password', form))
   }
 
   async checkResetLink(confirmUrl) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
-    }).then(
-      async () => await CWM_API.post(confirmUrl)
-    )
+    }).then(async () => await CWM_API.post(confirmUrl))
   }
 
-  async changePassword({email, password, passwordConfirmation}) {
+  async changePassword({ email, password, passwordConfirmation }) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
     }).then(
-      async () => await CWM_API.post('reset-password', {
-        email,
-        password,
-        password_confirmation: passwordConfirmation
-      })
+      async () =>
+        await CWM_API.post('reset-password', {
+          email,
+          password,
+          password_confirmation: passwordConfirmation
+        })
     )
   }
 
@@ -87,14 +82,14 @@ class UserService {
   }
 
   async updatePreferences({
-                            language,
-                            timezone,
-                            dateFormat,
-                            visualTheme,
-                            notifyByEmail,
-                            notifyBySms,
-                            smartTips
-                          }) {
+    language,
+    timezone,
+    dateFormat,
+    visualTheme,
+    notifyByEmail,
+    notifyBySms,
+    smartTips
+  }) {
     return await CWM_API.post('user/preferences', {
       language,
       timezone,

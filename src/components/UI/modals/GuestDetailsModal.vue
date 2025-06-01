@@ -1,8 +1,6 @@
 <template>
   <CModal v-model="showModal">
-    <template #title>
-      Guest Details
-    </template>
+    <template #title> Guest Details </template>
 
     <div class="text-sm text-gray-700 dark:text-gray-200 space-y-6">
       <!-- General Info -->
@@ -60,7 +58,6 @@
   </CModal>
 </template>
 
-
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import CModal from '@/components/UI/modals/CModal.vue'
@@ -84,7 +81,6 @@ onMounted(() => {
   showModal.value = props.show
 })
 
-
 const copyLink = async () => {
   try {
     await navigator.clipboard.writeText(props.guest.invitationUrl)
@@ -95,23 +91,28 @@ const copyLink = async () => {
 
 const rsvpClass = computed(() => {
   const status = props.guest.rsvpStatus
-  return {
-    'text-yellow-600': status === 'pending',
-    'text-green-600': status === 'confirmed',
-    'text-red-600': status === 'declined',
-  }[status] || 'text-gray-500'
+  return (
+    {
+      'text-yellow-600': status === 'pending',
+      'text-green-600': status === 'confirmed',
+      'text-red-600': status === 'declined'
+    }[status] || 'text-gray-500'
+  )
 })
 
-watch(showModal, (value) => {
+watch(showModal, value => {
   if (!value) {
     emit('close')
   }
 })
 
-watch(() => props.show, (newVal) => {
+watch(
+  () => props.show,
+  newVal => {
     showModal.value = newVal
   },
   {
     immediate: true
-  })
+  }
+)
 </script>

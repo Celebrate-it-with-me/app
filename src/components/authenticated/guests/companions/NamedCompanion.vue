@@ -26,16 +26,16 @@ const namedValidationSchema = computed(() => {
 })
 
 const onNamedValidationSubmit = (values, { resetForm }) => {
-  emit('companionSend', {...companion})
+  emit('companionSend', { ...companion })
 
   clearCompanion(resetForm)
 }
 
-const onNamedInvalidSubmit = (error) => {
+const onNamedInvalidSubmit = error => {
   console.log(error)
 }
 
-const clearCompanion = (resetForm) => {
+const clearCompanion = resetForm => {
   companion.firstName = ''
   companion.lastName = ''
   companion.email = ''
@@ -55,9 +55,7 @@ const clearCompanion = (resetForm) => {
       phoneNumber: false
     }
   })
-
 }
-
 </script>
 
 <template>
@@ -90,9 +88,7 @@ const clearCompanion = (resetForm) => {
           />
         </div>
       </div>
-      <div
-        class="flex flex-row gap-x-4 w-full"
-      >
+      <div class="flex flex-row gap-x-4 w-full">
         <div class="w-1/2">
           <TextField
             v-model="companion.email"
@@ -107,13 +103,12 @@ const clearCompanion = (resetForm) => {
 
         <div class="w-1/2">
           <PhoneNumberField
+            v-model="companion.phoneNumber"
             name="phoneNumber"
             label="Phone Number"
-            v-model="companion.phoneNumber"
             show-error
           />
         </div>
-
       </div>
       <div>
         <button
@@ -127,6 +122,4 @@ const clearCompanion = (resetForm) => {
   </Form>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
