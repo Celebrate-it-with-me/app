@@ -20,6 +20,10 @@ class DressCodeService {
       }
     })
   }
+
+  async generateAIImages({ eventId, dressType }) {
+    return CWM_API.post(`/event/${eventId}/dress-code/generate-images`, { dressType })
+  }
 }
 
 export default new DressCodeService()

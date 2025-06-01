@@ -13,6 +13,16 @@ export const useDressCodeStore = defineStore('dressCodeStore',  {
     }
   }),
   actions: {
+    async generateAIImages(dressType) {
+      const userStore = useUserStore()
+
+      return await DressCodeService.generateAIImages({
+        eventId: userStore.activeEvent,
+        dressType
+      })
+    },
+
+
     async loadDressCode() {
       const userStore = useUserStore()
 
