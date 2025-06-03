@@ -80,7 +80,6 @@ class EventCommentsService {
   }
 
   async loadMoreComments(eventId, page) {
-    console.log('in load more comments')
     return await CWM_API.get(`event/${eventId}/comments`, {
       params: {
         page: page
@@ -88,8 +87,14 @@ class EventCommentsService {
     })
   }
 
-  async loadNewComments({ eventId }) {
-    return await CWM_API.get(`event/${eventId}/event-comments`)
+  async loadNewComments({ eventId, currentPage, perPage, search }) {
+    return await CWM_API.get(`event/${eventId}/event-comments`, {
+      params: {
+        page: currentPage,
+        perPage,
+        search
+      }
+    })
   }
 
   async addNewComment({ eventId, comment }) {

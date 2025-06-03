@@ -10,6 +10,10 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
       comment: null,
       author: null
     },
+    pageSelected: 1,
+    perPage: 10,
+    searchValue: '',
+    totalPages: 1,
     mode: 'create'
   }),
   actions: {
@@ -21,7 +25,7 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
       const userStore = useUserStore()
 
       return EventCommentsService.loadComments({
-        eventId: userStore.activeEvent
+        eventId: userStore.activeEvent,
       })
     },
 
@@ -29,11 +33,16 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
       const userStore = useUserStore()
 
       const response = await EventCommentsService.loadNewComments({
-        eventId: userStore.activeEvent
+        eventId: userStore.activeEvent,
+        currentPage: this.pageSelected,
+        perPage: this.perPage,
+        search: this.searchValue
       })
 
       if (response.status === 200) {
         this.eventComments = response.data?.data || []
+        this.pageSelected = response.data.meta?.current_page || 1
+        this.totalPages = response.data.meta?.last_page || 1
 
         return true
       } else {

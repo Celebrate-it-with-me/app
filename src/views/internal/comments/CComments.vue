@@ -1,29 +1,28 @@
 <template>
   <section class="comments-view">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Event Comments</h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-2">
-        Manage comments from your event guests. You can view, hide, or delete comments as needed.
-      </p>
+    <div class="mb-8 flex items-center justify-between">
+      <div class="comments-titles">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Event Comments</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">
+          Manage comments from your event guests. You can view, hide, or delete comments as needed.
+        </p>
+      </div>
+      <div class="add-comments">
+        <CButton
+          v-if="eventComments.length"
+          variant="primary"
+          size="sm"
+          class="flex items-center"
+          @click="showAddCommentModal = true"
+        >
+          <PlusCircle class="w-4 h-4 mr-1" />
+          Add Comment
+        </CButton>
+      </div>
     </div>
 
     <!-- Comments Card -->
     <CCard class="mb-6">
-      <template #header>
-        <div class="flex items-center justify-end mt-4 mr-4">
-          <CButton
-            v-if="eventComments.length"
-            variant="primary"
-            size="sm"
-            class="flex items-center"
-            @click="showAddCommentModal = true"
-          >
-            <PlusCircle class="w-4 h-4 mr-1" />
-            Add Comment
-          </CButton>
-        </div>
-      </template>
-
       <!-- Loading State -->
       <div v-if="loading" class="flex flex-col items-center justify-center py-12">
         <CWMLoading class="w-12 h-12 text-rose mb-4" />

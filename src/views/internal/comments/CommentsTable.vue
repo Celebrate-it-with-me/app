@@ -2,16 +2,47 @@
 import { MessageCircle } from 'lucide-vue-next'
 import CBadge from '@/components/UI/badges/CBadge.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 import CModal from '@/components/UI/modals/CModal.vue'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
+import CPagination from '@/components/UI/pagination/CPagination.vue'
+import CSelect from '@/components/UI/form2/CSelect.vue'
+import CInput from '@/components/UI/form2/CInput.vue'
+
+const perPageOptions = [
+  { value: 5, label: '5' },
+  { value: 10, label: '10' },
+  { value: 20, label: '20' }
+]
 
 const selectedComment = ref({})
 const showDetailsModal = ref(false)
 const confirmDeleteModal = ref(false)
 const commentToDelete = ref(null)
 const commentsStore = useEventCommentsStore()
+
+// Watch for changes in search, perPage, and pageSelected to reload comments
+watch(
+  () => commentsStore.searchValue,
+  async () => {
+    await commentsStore.loadNewComments()
+  }
+)
+
+watch(
+  () => commentsStore.perPage,
+  async () => {
+    await commentsStore.loadNewComments()
+  }
+)
+
+watch(
+  () => commentsStore.pageSelected,
+  async () => {
+    await commentsStore.loadNewComments()
+  }
+)
 
 const props = defineProps({
   eventComments: {
@@ -65,6 +96,18 @@ const deleteComment = async () => {
 
 <template>
   <div class="overflow-x-auto">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex gap-4 items-center justify-between">
+        <CInput
+          id="search-value"
+          v-model="commentsStore.searchValue"
+          name="searchValue"
+          type="text"
+          placeholder="Search by name"
+          class="w-64"
+        />
+      </div>
+    </div>
     <table
       v-if="eventComments.length"
       class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
@@ -125,6 +168,27 @@ const deleteComment = async () => {
         </tr>
       </tbody>
     </table>
+    <div
+      v-if="eventComments.length"
+      class="pagination-section mt-4 flex items-center justify-between"
+    >
+      <div>
+        <CSelect
+          id="per-page"
+          v-model="commentsStore.perPage"
+          :options="perPageOptions"
+          name="perPage"
+        />
+      </div>
+      <div>
+        <CPagination
+          :total-pages="commentsStore.totalPages"
+          :current-page="commentsStore.pageSelected"
+          @update:current-page="commentsStore.pageSelected = $event"
+        />
+      </div>
+    </div>
+
     <!-- Comment Details Modal -->
     <CModal v-if="showDetailsModal" v-model="showDetailsModal">
       <template #title>

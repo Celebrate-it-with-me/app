@@ -43,6 +43,7 @@ const createNewComment = async () => {
     const response = await commentStore.addNewComment(newComment.text)
     if (response.status >= 200 && response.status < 300) {
       await commentStore.loadNewComments()
+      newComment.text = ''
       emit('close')
     } else {
       console.error('Failed to add comment:', response.error)
