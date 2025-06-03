@@ -23,6 +23,7 @@ import ShowMenuView from '@/views/internal/menus/ShowMenuView.vue'
 import EventDetailsView from '@/views/internal/events/EventDetailsView.vue'
 import DressCodeView from '@/views/internal/dress-code/DressCodeView.vue'
 import CComments from '@/views/internal/comments/CComments.vue'
+import CWMAnalytics from '@/components/authenticated/analytics/CWMAnalytics.vue'
 
 const authRoutes = [
   {
@@ -252,6 +253,16 @@ const authRoutes = [
     }
   },
   {
+    path: '/dashboard/analytics',
+    name: 'analytics-dashboard',
+    component: CWMAnalytics,
+    meta: {
+      title: 'Event Analytics',
+      requiresAuth: true,
+      requiredPermission: []
+    }
+  },
+  {
     path: '/dashboard/locations',
     name: 'locations',
     component: CEventLocationsView,
@@ -358,7 +369,7 @@ const authRoutes = [
         name: 'analytics',
         component: CWMAnalytics,
         meta: {
-          title: 'Event Previous'
+          title: 'Event Analytics'
         }
       },
       {
