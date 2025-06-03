@@ -22,6 +22,7 @@ import CreateMenusView from '@/views/internal/menus/CreateMenusView.vue'
 import ShowMenuView from '@/views/internal/menus/ShowMenuView.vue'
 import EventDetailsView from '@/views/internal/events/EventDetailsView.vue'
 import DressCodeView from '@/views/internal/dress-code/DressCodeView.vue'
+import CComments from '@/views/internal/comments/CComments.vue'
 
 const authRoutes = [
   {
@@ -223,7 +224,7 @@ const authRoutes = [
   {
     path: '/dashboard/event-comments',
     name: 'event-comments',
-    component: CEventComments,
+    component: CComments,
     meta: {
       title: 'Background Music',
       requiresAuth: true,

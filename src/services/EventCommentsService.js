@@ -75,17 +75,41 @@ class EventCommentsService {
     }
   }
 
-  async loadComments(eventId) {
+  async loadComments({ eventId }) {
     return await CWM_API.get(`event/${eventId}/comments`)
   }
 
   async loadMoreComments(eventId, page) {
-    console.log('in load more comments')
     return await CWM_API.get(`event/${eventId}/comments`, {
       params: {
         page: page
       }
     })
+  }
+
+  async loadNewComments({ eventId, currentPage, perPage, search }) {
+    return await CWM_API.get(`event/${eventId}/event-comments`, {
+      params: {
+        page: currentPage,
+        perPage,
+        search
+      }
+    })
+  }
+
+  async addNewComment({ eventId, comment }) {
+    return await CWM_API.post(`event/${eventId}/event-comments`, {
+      comment,
+      origin: 'admin'
+    })
+  }
+
+  async toggleCommentVisibility({ eventId, commentId }) {
+    return await CWM_API.patch(`event/${eventId}/event-comments/${commentId}/toggle-visibility`)
+  }
+
+  async deleteComment({ eventId, commentId }) {
+    return await CWM_API.delete(`event/${eventId}/event-comments/${commentId}`)
   }
 }
 
