@@ -7,7 +7,7 @@ class STDService {
    */
   prepareSTDFormData({
                        stdTitle = '',
-                       stdSubTitle = '',
+                       stdSubtitle = '',
                        backgroundColor = '',
                        image,
                        useCountdown = '',
@@ -16,7 +16,7 @@ class STDService {
                      }) {
     const formData = new FormData();
     formData.append('stdTitle', stdTitle);
-    formData.append('stdSubtitle', stdSubTitle);
+    formData.append('stdSubtitle', stdSubtitle);
     formData.append('backgroundColor', backgroundColor);
     formData.append('useCountdown', useCountdown);
     formData.append('useAddToCalendar', useAddToCalendar);

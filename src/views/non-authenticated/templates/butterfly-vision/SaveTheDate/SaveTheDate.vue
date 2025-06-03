@@ -63,7 +63,7 @@ onUnmounted(() => {
         v-if="true"
         class="text-2xl font-normal text-dark-blue z-10 text-center"
       >
-        <!--{{ saveTheDate.stdSubTitle }}-->
+        <!--{{ saveTheDate.stdSubtitle }}-->
         Este es un dia especial para nosotros, y queremos compartirlo contigo.
       </h3>
 

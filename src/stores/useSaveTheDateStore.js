@@ -61,7 +61,7 @@ export const useSaveTheDateStore = defineStore('stdStore', {
         this.id = legacyStd.id
         this.hasPreviousStd = true
         this.stdTitle = legacyStd.stdTitle || ''
-        this.stdSubTitle = legacyStd.stdSubTitle || ''
+        this.stdSubtitle = legacyStd.stdSubtitle || ''
         this.backgroundColor = legacyStd.backgroundColor || ''
         this.image = legacyStd.imageUrl || null
         this.useCountdown = !!legacyStd.useCountdown
@@ -74,7 +74,7 @@ export const useSaveTheDateStore = defineStore('stdStore', {
         this.id = null
         this.hasPreviousStd = false
         this.stdTitle = ''
-        this.stdSubTitle = ''
+        this.stdSubtitle = ''
         this.backgroundColor = ''
         this.image = null
         this.useCountdown = false
@@ -83,13 +83,13 @@ export const useSaveTheDateStore = defineStore('stdStore', {
     },
 
 
-    async createSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar, isEnabled }) {
+    async createSTD({ stdTitle, stdSubtitle, backgroundColor, image, useCountdown, useAddToCalendar, isEnabled }) {
       const eventsStore = useEventsStore()
 
       return await STDService.createSTD({
         eventId: eventsStore?.currentEvent?.id,
         stdTitle,
-        stdSubTitle,
+        stdSubtitle,
         backgroundColor,
         image,
         useCountdown,
@@ -98,11 +98,11 @@ export const useSaveTheDateStore = defineStore('stdStore', {
       })
     },
 
-    async updateSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar, isEnabled }) {
+    async updateSTD({ stdTitle, stdSubtitle, backgroundColor, image, useCountdown, useAddToCalendar, isEnabled }) {
       return await STDService.updateSTD({
         stdId: this.id,
         stdTitle,
-        stdSubTitle,
+        stdSubtitle,
         backgroundColor,
         image,
         useCountdown,
