@@ -3,7 +3,6 @@ import { useUserStore } from '@/stores/useUserStore'
 import EventsView from '@/views/internal/events/EventsView.vue'
 import CSweetMemories from '@/components/authenticated/sweet-memories/CSweetMemories.vue'
 import CSuggestMusic from '../components/authenticated/suggest-music/CSuggestMusic.vue'
-import CEventComments from '../components/authenticated/event-comments/CEventComments.vue'
 import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
 import BudgetView from '@/views/internal/budget/BudgetView.vue'
 import SettingsLayout from '@/components/internal/layout/SettingsLayout.vue'
@@ -23,6 +22,8 @@ import ShowMenuView from '@/views/internal/menus/ShowMenuView.vue'
 import EventDetailsView from '@/views/internal/events/EventDetailsView.vue'
 import DressCodeView from '@/views/internal/dress-code/DressCodeView.vue'
 import CComments from '@/views/internal/comments/CComments.vue'
+import CWMAnalytics from '@/components/authenticated/analytics/CWMAnalytics.vue'
+import SeatingView from '@/views/internal/seating/SeatingView.vue'
 
 const authRoutes = [
   {
@@ -252,6 +253,26 @@ const authRoutes = [
     }
   },
   {
+    path: '/dashboard/analytics',
+    name: 'analytics-dashboard',
+    component: CWMAnalytics,
+    meta: {
+      title: 'Event Analytics',
+      requiresAuth: true,
+      requiredPermission: []
+    }
+  },
+  {
+    path: '/dashboard/seating',
+    name: 'seating',
+    component: SeatingView,
+    meta: {
+      title: 'Seat Accommodation',
+      requiresAuth: true,
+      requiredPermission: []
+    }
+  },
+  {
     path: '/dashboard/locations',
     name: 'locations',
     component: CEventLocationsView,
@@ -358,7 +379,7 @@ const authRoutes = [
         name: 'analytics',
         component: CWMAnalytics,
         meta: {
-          title: 'Event Previous'
+          title: 'Event Analytics'
         }
       },
       {
