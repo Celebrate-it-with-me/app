@@ -128,7 +128,7 @@
       </div>
 
       <!-- Newsletter -->
-      <div>
+      <div class="md:col-span-2 lg:col-span-1">
         <h3 class="text-white font-semibold mb-4 text-lg">Newsletter</h3>
         <p class="text-gray-400 mb-4">
           Subscribe to get planning tips, special offers, and event inspiration.
