@@ -77,7 +77,10 @@ import {
   MapPin,
   ChevronLeft,
   ChevronRight,
-  Wallet
+  Wallet,
+  Shirt,
+  NotebookPen,
+  ChartNoAxesCombined
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 import { computed, ref, watch } from 'vue'
@@ -112,6 +115,7 @@ const menuItems = [
   { label: 'Menu', to: '/dashboard/menus', icon: ChefHat, featureName: 'menu' },
   { label: 'Guests', to: '/dashboard/guests', icon: Users, featureName: null },
   { label: 'RSVP', to: '/dashboard/rsvp', icon: CheckSquare, featureName: 'rsvp' },
+  { label: 'Dress Code', to: '/dashboard/dress-code', icon: Shirt, featureName: 'dressCode' },
   { label: 'Location', to: '/dashboard/locations', icon: MapPin, featureName: 'location' },
   {
     label: 'Save the Date',
@@ -132,7 +136,19 @@ const menuItems = [
     icon: MessageCircle,
     featureName: 'eventComments'
   },
-  { label: 'Budget', to: '/dashboard/budget', icon: Wallet, featureName: 'budget' }
+  { label: 'Budget', to: '/dashboard/budget', icon: Wallet, featureName: 'budget' },
+  {
+    label: 'Analytics',
+    to: '/dashboard/analytics',
+    icon: ChartNoAxesCombined,
+    featureName: 'budget'
+  },
+  {
+    label: 'Seating',
+    to: '/dashboard/seating',
+    icon: NotebookPen,
+    featureName: 'seatsAccommodation'
+  }
   /*
   { label: 'Timeline', to: '/timeline', icon: Calendar },
   { label: 'Checklist', to: '/checklist', icon: Calendar },
