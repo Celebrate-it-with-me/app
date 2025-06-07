@@ -330,7 +330,6 @@ import CDate from '@/components/UI/form2/CDate.vue'
 import CSelect from '@/components/UI/form2/CSelect.vue'
 import CToggle from '@/components/UI/form2/CToggle.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
-import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import CWizard from '@/components/UI/wizard/CWizard.vue'
 
 import { useEventsStore } from '@/stores/useEventsStore'
@@ -340,7 +339,15 @@ import {
   EVENT_VISIBILITIES as visibilities,
   DEFAULT_ERROR_MESSAGE
 } from '@/constants/constants'
-import { Calendar, Music, Waves, ImageIcon, MessageSquareText, MapIcon } from 'lucide-vue-next'
+import {
+  Calendar,
+  Music,
+  Waves,
+  ImageIcon,
+  MessageSquareText,
+  MapIcon,
+  Wallet
+} from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -363,7 +370,7 @@ const eventState = reactive({
   eventComments: false,
   seatsAccommodation: false,
   preview: false,
-  eventBudget: false,
+  budget: false,
   analytics: false,
   location: false
 })
@@ -417,6 +424,13 @@ const featuresList = [
     icon: MapIcon,
     label: 'Location',
     description: 'Enable location on the event page.'
+  },
+  {
+    name: 'Budget',
+    model: 'budget',
+    icon: Wallet,
+    label: 'Budget',
+    description: 'Enable budget administration on the event.'
   }
 ]
 
@@ -512,7 +526,7 @@ const eventValidationSchema = computed(() => {
 const eventTypes = computed(() => {
   return eventStore.eventTypes.map(type => ({
     label: type.name,
-    value: type.id + ''
+    value: type.id
   }))
 })
 

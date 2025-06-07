@@ -24,6 +24,8 @@ import DressCodeView from '@/views/internal/dress-code/DressCodeView.vue'
 import CComments from '@/views/internal/comments/CComments.vue'
 import CWMAnalytics from '@/components/authenticated/analytics/CWMAnalytics.vue'
 import SeatingView from '@/views/internal/seating/SeatingView.vue'
+import CSuggestedMusic from '@/views/internal/suggested-music/CSuggestedMusic.vue'
+import CTimeline from '@/components/internal/timeline/CTimeline.vue'
 
 const authRoutes = [
   {
@@ -215,7 +217,7 @@ const authRoutes = [
   {
     path: '/dashboard/suggested-music',
     name: 'suggest-music',
-    component: CSuggestMusic,
+    component: CSuggestedMusic,
     meta: {
       title: 'Suggest Music',
       requiresAuth: true,
@@ -312,7 +314,16 @@ const authRoutes = [
       requiredPermission: []
     }
   },
-
+  {
+    path: '/dashboard/timeline',
+    name: 'timeline',
+    component: CTimeline,
+    meta: {
+      title: 'Timeline',
+      requiresAuth: true,
+      requiredPermission: []
+    }
+  },
   /*children: [
       {
         path: 'events',
