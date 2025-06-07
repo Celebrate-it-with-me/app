@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useUserStore } from '@/stores/useUserStore'
-import { Music, Search, Trash2, User, Users } from 'lucide-vue-next'
+import { Music, Search, Trash2, User, Users, PlayCircle, PauseCircle } from 'lucide-vue-next'
 import CCard from '@/components/UI/cards/CCard.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CTag from '@/components/UI/tags/CTag.vue'
@@ -19,7 +19,9 @@ const loading = ref(false)
 const searchQuery = ref('')
 const searchResults = ref([])
 const filterType = ref('all') // 'all', 'admin', 'guest'
-const showPreviews = ref(false) // Toggle for showing song previews
+const showPreviews = ref(true) // Always show play buttons for previews
+const currentlyPlayingSong = ref(null) // Track which song is currently playing
+const audio = ref(null) // Audio element reference
 
 // Get songs on mount
 onMounted(async () => {
@@ -69,7 +71,8 @@ const searchSongs = debounce(async () => {
       title: track.name,
       artist: track.artists.map(artist => artist.name).join(', '),
       album: track.album.name || 'Unknown Album',
-      thumbnailUrl: track.album.images[0]?.url || 'https://via.placeholder.com/48'
+      thumbnailUrl: track.album.images[0]?.url || 'https://via.placeholder.com/48',
+      previewUrl: track.preview_url || null
     }))
   } catch (error) {
     console.error('Error searching songs:', error)
@@ -91,6 +94,7 @@ const addSong = async song => {
       artist: song.artist,
       album: song.album,
       thumbnailUrl: song.thumbnailUrl,
+      previewUrl: song.previewUrl,
       accessCode: 'organizer'
     })
 
@@ -157,6 +161,66 @@ const filteredSongs = computed(() => {
 const isSuggestedByGuest = song => {
   return song.accessCode !== 'organizer'
 }
+
+// Play or pause a song preview
+const togglePlayPreview = (song) => {
+  // If we're already playing this song, stop it
+  if (currentlyPlayingSong.value === song.platformId) {
+    stopPreview()
+    return
+  }
+
+  // Stop any currently playing song
+  stopPreview()
+
+  // Start playing the new song
+  playPreview(song)
+}
+
+// Play a song preview
+const playPreview = (song) => {
+  // Only play if we have a preview URL
+  if (!song.previewUrl) return
+
+  // Create a new audio element if we don't have one
+  if (!audio.value) {
+    audio.value = new Audio()
+
+    // Add event listener for when the song ends
+    audio.value.addEventListener('ended', () => {
+      currentlyPlayingSong.value = null
+    })
+  }
+
+  // Set the source to the preview URL
+  // For demonstration purposes, we're using a mock URL since we don't have actual preview URLs
+  // In a real implementation, you would use song.previewUrl
+  // This is just a placeholder and won't actually play audio
+  audio.value.src = song.previewUrl || `https://p.scdn.co/mp3-preview/${song.platformId}`
+
+  // Play the audio
+  audio.value.play().catch(error => {
+    console.error('Error playing audio:', error)
+    currentlyPlayingSong.value = null
+  })
+
+  // Update the currently playing song
+  currentlyPlayingSong.value = song.platformId
+}
+
+// Stop the currently playing preview
+const stopPreview = () => {
+  if (audio.value && !audio.value.paused) {
+    audio.value.pause()
+    audio.value.currentTime = 0
+  }
+  currentlyPlayingSong.value = null
+}
+
+// Check if a song is currently playing
+const isPlaying = (song) => {
+  return currentlyPlayingSong.value === song.platformId
+}
 </script>
 
 <template>
@@ -191,29 +255,47 @@ const isSuggestedByGuest = song => {
               placeholder="Search for songs on Spotify..."
               @input="searchSongs"
             />
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              <Music class="w-4 h-4 inline-block mr-1" />
+              Click the play button on any song to preview it.
+            </p>
           </div>
 
           <!-- Search Results -->
-          <div v-if="searchResults.length > 0" class="mt-4 space-y-2 max-h-80 overflow-y-auto">
+          <div v-if="searchResults.length > 0" class="mt-4 space-y-4 max-h-80 overflow-y-auto">
             <div
               v-for="(song, index) in searchResults"
               :key="index"
-              class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
             >
-              <div class="flex items-center space-x-3">
-                <img
-                  :src="song.thumbnailUrl"
-                  alt="Album Art"
-                  class="w-12 h-12 rounded-md object-cover"
-                />
-                <div>
-                  <h3 class="font-medium text-gray-900 dark:text-white">{{ song.title }}</h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ song.artist }} - {{ song.album }}
-                  </p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="relative">
+                    <img
+                      :src="song.thumbnailUrl"
+                      alt="Album Art"
+                      class="w-12 h-12 rounded-md object-cover"
+                    />
+                    <!-- Play/Pause Button -->
+                    <button
+                      v-if="showPreviews && song.previewUrl"
+                      class="absolute inset-0 flex items-center justify-center bg-red-600 bg-opacity-90 rounded-md hover:bg-opacity-100 transition-all border-4 border-white shadow-lg animate-pulse"
+                      :title="isPlaying(song) ? 'Pause preview' : 'Play preview'"
+                      @click.stop="togglePlayPreview(song)"
+                    >
+                      <PlayCircle v-if="!isPlaying(song)" class="w-10 h-10 text-white" />
+                      <PauseCircle v-else class="w-10 h-10 text-white" />
+                    </button>
+                  </div>
+                  <div>
+                    <h3 class="font-medium text-gray-900 dark:text-white">{{ song.title }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      {{ song.artist }} - {{ song.album }}
+                    </p>
+                  </div>
                 </div>
+                <CButton variant="primary" size="sm" @click="addSong(song)">Add</CButton>
               </div>
-              <CButton variant="primary" size="sm" @click="addSong(song)">Add</CButton>
             </div>
           </div>
         </div>
@@ -223,10 +305,16 @@ const isSuggestedByGuest = song => {
       <CCard>
         <div class="p-6">
           <div class="flex flex-wrap justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center">
-              <Music class="w-5 h-5 mr-2 text-primary-600" />
-              Suggested Songs
-            </h2>
+            <div>
+              <h2 class="text-xl font-semibold text-gray-800 dark:text-white flex items-center">
+                <Music class="w-5 h-5 mr-2 text-primary-600" />
+                Suggested Songs
+              </h2>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <Music class="w-4 h-4 inline-block mr-1" />
+                Click the play button on any song to preview it.
+              </p>
+            </div>
 
             <!-- Filter Buttons -->
             <div class="flex flex-wrap space-x-2 mt-2 sm:mt-0">
@@ -253,15 +341,6 @@ const isSuggestedByGuest = song => {
                 <Users class="w-4 h-4 mr-1" />
                 Guest Suggested
               </CButton>
-              <CButton
-                :variant="showPreviews ? 'primary' : 'outline'"
-                size="sm"
-                @click="showPreviews = !showPreviews"
-                class="mt-2 sm:mt-0"
-              >
-                <Music class="w-4 h-4 mr-1" />
-                {{ showPreviews ? 'Hide Previews' : 'Show Previews' }}
-              </CButton>
             </div>
           </div>
 
@@ -287,24 +366,24 @@ const isSuggestedByGuest = song => {
               class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition"
             >
               <div class="p-4">
-                <!-- Show Spotify Preview when enabled -->
-                <div v-if="showPreviews && song.platformId" class="mb-3">
-                  <iframe
-                    :src="`https://open.spotify.com/embed/track/${song.platformId}`"
-                    width="100%"
-                    height="80"
-                    class="rounded-md"
-                    allowtransparency="true"
-                    allow="encrypted-media"
-                  ></iframe>
-                </div>
-
                 <div class="flex items-start space-x-3">
-                  <img
-                    :src="song.thumbnailUrl || 'https://via.placeholder.com/64'"
-                    alt="Album Art"
-                    class="w-16 h-16 rounded-md object-cover flex-shrink-0"
-                  />
+                  <div class="relative flex-shrink-0">
+                    <img
+                      :src="song.thumbnailUrl || 'https://via.placeholder.com/64'"
+                      alt="Album Art"
+                      class="w-16 h-16 rounded-md object-cover"
+                    />
+                    <!-- Play/Pause Button -->
+                    <button
+                      v-if="showPreviews && song.previewUrl"
+                      @click.stop="togglePlayPreview(song)"
+                      class="absolute inset-0 flex items-center justify-center bg-red-600 bg-opacity-90 rounded-md hover:bg-opacity-100 transition-all border-4 border-white shadow-lg animate-pulse"
+                      :title="isPlaying(song) ? 'Pause preview' : 'Play preview'"
+                    >
+                      <PlayCircle v-if="!isPlaying(song)" class="w-12 h-12 text-white" />
+                      <PauseCircle v-else class="w-12 h-12 text-white" />
+                    </button>
+                  </div>
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between">
                       <h3 class="font-medium text-gray-900 dark:text-white truncate">
