@@ -25,6 +25,7 @@ import CComments from '@/views/internal/comments/CComments.vue'
 import CWMAnalytics from '@/components/authenticated/analytics/CWMAnalytics.vue'
 import SeatingView from '@/views/internal/seating/SeatingView.vue'
 import CSuggestedMusic from '@/views/internal/suggested-music/CSuggestedMusic.vue'
+import CSweetMemoriesAdmin from '@/views/internal/sweet-memories/CSweetMemories.vue'
 import CTimeline from '@/components/internal/timeline/CTimeline.vue'
 
 const authRoutes = [
@@ -252,6 +253,16 @@ const authRoutes = [
       title: 'Dress Code',
       requiresAuth: true,
       requiredPermission: []
+    }
+  },
+  {
+    path: '/dashboard/memories',
+    name: 'memories-admin',
+    component: CSweetMemoriesAdmin,
+    meta: {
+      title: 'Sweet Memories',
+      requiresAuth: true,
+      requiredPermission: ['view_sweet_memories']
     }
   },
   {

@@ -125,7 +125,7 @@ const menuItems = [
   },
   {
     label: 'Sweet Memories',
-    to: '/dashboard/sweet-memories',
+    to: '/dashboard/memories',
     icon: Camera,
     featureName: 'sweetMemories'
   },
