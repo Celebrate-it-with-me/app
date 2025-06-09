@@ -73,24 +73,30 @@
                 <!-- Memory Details -->
                 <div class="space-y-4">
                   <CInput
+                    id="memory-title"
                     v-model="memory.title"
+                    name="memoryTitle"
                     label="Title"
                     placeholder="e.g., First Day of School"
                   />
                   <CInput
+                    id="memory-year"
                     v-model="memory.year"
                     label="Year or Age (Optional)"
                     placeholder="e.g., 2010 or Age 6"
+                    name="memoryYear"
                   />
                   <CTextarea
+                    id="memory-description"
                     v-model="memory.description"
+                    name="memoryDescription"
                     label="Description (Optional)"
                     placeholder="Share the story behind this memory..."
                     rows="4"
                   />
                   <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                      <CToggle v-model="memory.visible" />
+                      <CToggle id="memory-visible" v-model="memory.visible" name="memoryVisible" />
                       <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
                         {{ memory.visible ? 'Visible' : 'Hidden' }}
                       </span>
