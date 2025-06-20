@@ -2,7 +2,6 @@ import DashboardView from '../views/internal/dashboard/DashboardView.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import EventsView from '@/views/internal/events/EventsView.vue'
 import CSweetMemories from '@/components/authenticated/sweet-memories/CSweetMemories.vue'
-import CSuggestMusic from '../components/authenticated/suggest-music/CSuggestMusic.vue'
 import CreateEventsView from '@/views/internal/events/CreateEventsView.vue'
 import BudgetView from '@/views/internal/budget/BudgetView.vue'
 import SettingsLayout from '@/components/internal/layout/SettingsLayout.vue'
@@ -25,6 +24,7 @@ import CComments from '@/views/internal/comments/CComments.vue'
 import CWMAnalytics from '@/components/authenticated/analytics/CWMAnalytics.vue'
 import SeatingView from '@/views/internal/seating/SeatingView.vue'
 import CSuggestedMusic from '@/views/internal/suggested-music/CSuggestedMusic.vue'
+import SuggestedMusicVotesAdmin from '@/views/internal/suggested-music/SuggestedMusicVotesAdmin.vue'
 import CSweetMemoriesAdmin from '@/views/internal/sweet-memories/CSweetMemories.vue'
 import CTimeline from '@/components/internal/timeline/CTimeline.vue'
 
@@ -221,6 +221,16 @@ const authRoutes = [
     component: CSuggestedMusic,
     meta: {
       title: 'Suggest Music',
+      requiresAuth: true,
+      requiredPermission: ['view_suggested_music']
+    }
+  },
+  {
+    path: '/dashboard/music/votes',
+    name: 'music-votes',
+    component: SuggestedMusicVotesAdmin,
+    meta: {
+      title: 'Music Votes Dashboard',
       requiresAuth: true,
       requiredPermission: ['view_suggested_music']
     }
