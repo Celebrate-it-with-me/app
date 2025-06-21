@@ -46,7 +46,7 @@ const props = defineProps({
   id: { type: String, required: true },
   name: { type: String, required: true },
   placeholder: { type: String, default: '' },
-  label: { type: String },
+  label: { type: String, default: '' },
   type: {
     type: String,
     default: 'text',
@@ -54,7 +54,7 @@ const props = defineProps({
   },
   modelValue: { type: [String, Number], default: '' },
   disabled: { type: Boolean, default: false },
-  description: { type: String },
+  description: { type: String, default: '' },
   showError: { type: Boolean, default: false }
 })
 

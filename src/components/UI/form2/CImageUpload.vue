@@ -6,23 +6,33 @@
 
     <div
       class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center relative"
+      :class="{ 'opacity-60 cursor-not-allowed': isLimitReached }"
       @dragover.prevent
       @drop.prevent="onDrop"
       @blur="handleBlur"
     >
-      <input ref="input" type="file" accept="image/*" multiple class="hidden" @change="addFiles" />
+      <input
+        ref="input"
+        type="file"
+        accept="image/*"
+        :multiple="maxImages !== 1"
+        class="hidden"
+        @change="addFiles"
+      />
 
       <button
         type="button"
         class="flex flex-col items-center justify-center w-full h-full cursor-pointer"
-        @click="input?.click()"
+        :class="{ 'cursor-not-allowed': isLimitReached }"
+        @click="isLimitReached ? null : input?.click()"
       >
         <Upload class="w-10 h-10 text-gray-400 mb-2" />
         <span class="text-sm text-gray-500 dark:text-gray-400">
-          Click to upload or drag and drop
+          {{ isLimitReached ? 'Maximum images limit reached' : 'Click to upload or drag and drop' }}
         </span>
         <span class="text-xs text-gray-400 dark:text-gray-500 mt-1">
           PNG, JPG, GIF up to 10MB
+          {{ maxImages > 0 ? `(Max ${maxImages} ${maxImages === 1 ? 'image' : 'images'})` : '' }}
         </span>
       </button>
 
@@ -53,17 +63,21 @@
 
 <script setup>
 import { Upload, X } from 'lucide-vue-next'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useField } from 'vee-validate'
 
 const props = defineProps({
   name: { type: String, required: true },
-  label: String,
+  label: { type: String, required: false, default: '' },
   showError: Boolean,
-  description: String,
+  description: { type: String, required: false, default: '' },
   modelValue: {
     type: Array,
     default: () => []
+  },
+  maxImages: {
+    type: Number,
+    default: 0 // 0 means unlimited, 1 for single image, etc.
   }
 })
 
@@ -72,7 +86,11 @@ const emit = defineEmits(['update:modelValue', 'resetErrors'])
 const input = ref(null)
 const localImages = ref([])
 
-const { value: fieldValue, errorMessage, handleBlur, setValue, meta } = useField(props.name)
+const { value, errorMessage, handleBlur, setValue, meta } = useField(props.name)
+
+const isLimitReached = computed(() => {
+  return props.maxImages > 0 && localImages.value.length >= props.maxImages
+})
 
 const initDone = ref(false)
 watch(
@@ -80,8 +98,11 @@ watch(
   val => {
     console.log('modelValue changed:', val, Array.isArray(val) && !initDone.value)
     if (Array.isArray(val) && val.length > 0 && !initDone.value) {
-      localImages.value = [...val]
-      setValue([...val])
+      // If there's a limit, only take up to maxImages
+      localImages.value = props.maxImages > 0
+        ? [...val].slice(0, props.maxImages)
+        : [...val]
+      setValue(localImages.value)
       initDone.value = true
     }
   },
@@ -95,8 +116,11 @@ watch(localImages, val => {
 })
 
 const addFiles = event => {
+  if (isLimitReached.value) return
+
   const selected = Array.from(event.target.files).filter(f => f.type.startsWith('image/'))
   const current = localImages.value || []
+
   const newImages = selected.filter(
     file =>
       !current.some(
@@ -104,12 +128,20 @@ const addFiles = event => {
           existing instanceof File && existing.name === file.name && existing.size === file.size
       )
   )
-  localImages.value = [...current, ...newImages]
+
+  // If there's a limit, only add as many as we can
+  const remainingSlots = props.maxImages > 0 ? props.maxImages - current.length : Infinity
+  const imagesToAdd = newImages.slice(0, remainingSlots)
+
+  localImages.value = [...current, ...imagesToAdd]
 }
 
 const onDrop = event => {
+  if (isLimitReached.value) return
+
   const dropped = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'))
   const current = localImages.value || []
+
   const newImages = dropped.filter(
     file =>
       !current.some(
@@ -117,7 +149,12 @@ const onDrop = event => {
           existing instanceof File && existing.name === file.name && existing.size === file.size
       )
   )
-  localImages.value = [...current, ...newImages]
+
+  // If there's a limit, only add as many as we can
+  const remainingSlots = props.maxImages > 0 ? props.maxImages - current.length : Infinity
+  const imagesToAdd = newImages.slice(0, remainingSlots)
+
+  localImages.value = [...current, ...imagesToAdd]
 }
 
 const removeImage = index => {
