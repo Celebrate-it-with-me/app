@@ -11,8 +11,12 @@ import CImageUpload from '@/components/UI/form2/CImageUpload.vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'
+import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
 
 const formErrors = ref(null)
+const sending = ref(false)
+const sweetMemoriesStore = useSweetMemoriesStore()
+
 const emit = defineEmits(['save', 'delete', 'cancel'])
 const props = defineProps({
   initialMemory: {
@@ -70,11 +74,27 @@ const cancelEdit = () => {
   emit('cancel')
 }
 
-const onSubmit = fields => {
-  console.log(fields, memory)
+const onSubmit = async () => {
+  sending.value = true
+
+  try {
+    const response = await sweetMemoriesStore.createSweetMemory(memory)
+
+    if (response.status >= 200 && response.status < 300) {
+      console.log('Memory saved successfully:', response.data)
+    } else {
+      console.error('Failed to save memory:', response)
+      invalidSubmit(response.data.errors || response.data)
+    }
+  } catch (error) {
+    console.log(error)
+  } finally {
+    sending.value = false
+  }
 }
 
 const invalidSubmit = errors => {
+  formErrors.value = errors
   console.error('Form submission failed:', errors)
 }
 </script>
@@ -127,8 +147,8 @@ const invalidSubmit = errors => {
               <div class="flex items-center">
                 <CToggle id="memory-visible" v-model="memory.visible" name="visible" />
                 <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                {{ memory.visible ? 'Visible' : 'Hidden' }}
-              </span>
+                  {{ memory.visible ? 'Visible' : 'Hidden' }}
+                </span>
               </div>
               <div class="flex space-x-2">
                 <CButton

@@ -42,7 +42,8 @@ const props = defineProps({
   name: { type: String, required: true },
   modelValue: { type: Boolean, default: false },
   label: { type: String, default: '' },
-  showError: { type: Boolean, default: false }
+  showError: { type: Boolean, default: false },
+  id: { type: String, default: '' }
 })
 
 const { value, errorMessage, setValue, meta } = useField(props.name, {

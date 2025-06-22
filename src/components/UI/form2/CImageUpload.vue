@@ -98,7 +98,6 @@ watch(
   val => {
     console.log('modelValue changed:', val, Array.isArray(val) && !initDone.value)
     if (Array.isArray(val) && val.length > 0 && !initDone.value) {
-      // If there's a limit, only take up to maxImages
       localImages.value = props.maxImages > 0
         ? [...val].slice(0, props.maxImages)
         : [...val]
