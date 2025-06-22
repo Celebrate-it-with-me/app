@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import SweetMemoriesService from '@/services/SweetMemoriesService'
+import { useUserStore } from '@/stores/useUserStore'
 
 export const useSweetMemoriesStore = defineStore('sweetMemories', {
   state: () => ({
@@ -85,6 +86,17 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
 
     async updateImageName(imageId, name) {
       return await SweetMemoriesService.updateImageName(imageId, name)
+    },
+
+    //------------ New Version 2.0 Methods -------------//
+
+    async createSweetMemory(memory) {
+      const userStore = useUserStore()
+      console.log('checking memory in store', memory)
+      return await SweetMemoriesService.createSweetMemory({
+        eventId: userStore.activeEvent,
+        ...memory
+      })
     }
   },
   getters: {}

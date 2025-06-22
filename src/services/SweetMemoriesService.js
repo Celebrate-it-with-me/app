@@ -92,6 +92,26 @@ class SweetMemoriesService {
       name
     })
   }
+
+  //---- Sweet Memories V2 ---- //
+
+  async createSweetMemory({ eventId, title, description, year, visible, image }) {
+    const formData = new FormData()
+
+    image.forEach(img => {
+      formData.append('images[]', img)
+    })
+    formData.append('title', title)
+    formData.append('description', description)
+    formData.append('year', year)
+    formData.append('visible', visible)
+
+    return await CWM_API.post(`event/${eventId}/sweet-memories-v2`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
 }
 
 export default new SweetMemoriesService()
