@@ -8,11 +8,11 @@
       </CButton>
     </div>
 
-    <NoSweetMemories v-if="memories.length === 0" @add-first-memory="addMemory" />
+    <NoSweetMemories v-if="memories?.length === 0" @add-first-memory="addMemory" />
 
     <!-- Draggable Memories -->
     <draggable
-      v-if="memories.length > 0"
+      v-if="memories?.length > 0"
       class="space-y-6"
       :list="memories"
       item-key="id"
@@ -24,14 +24,12 @@
       <div v-for="memory in memories" :key="memory.id">
         <CCard class="relative">
           <div class="p-6">
-            <!-- Drag Handle -->
             <div class="absolute top-4 left-4 cursor-move drag-handle">
               <GripVertical class="w-6 h-6 text-gray-400" />
             </div>
 
             <div class="ml-8">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Memory Image -->
                 <div>
                   <img
                     v-if="memory.imageUrl"
@@ -102,15 +100,16 @@ import { Plus, Trash2, GripVertical, Edit, Image as ImageIcon } from 'lucide-vue
 import CCard from '@/components/UI/cards/CCard.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import NoSweetMemories from '@/views/internal/sweet-memories/NoSweetMemories.vue'
-
-defineProps({
-  memories: {
-    type: Array,
-    required: true
-  }
-})
+import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
+import { computed } from 'vue'
 
 const emit = defineEmits(['add', 'edit', 'delete', 'order-changed'])
+
+const sweetMemoriesStorage = useSweetMemoriesStore()
+
+const memories = computed(() => {
+  return sweetMemoriesStorage.memories || []
+})
 
 const addMemory = () => {
   emit('add')

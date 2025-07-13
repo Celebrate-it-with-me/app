@@ -17,7 +17,8 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
       picture: null,
       thumbnail: null
     },
-    mode: 'create'
+    mode: 'create',
+    memories: []
   }),
   actions: {
     async createSweetMemoriesConfig(eventId) {
@@ -92,11 +93,24 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
 
     async createSweetMemory(memory) {
       const userStore = useUserStore()
-      console.log('checking memory in store', memory)
       return await SweetMemoriesService.createSweetMemory({
         eventId: userStore.activeEvent,
         ...memory
       })
+    },
+
+    async loadMemories() {
+      const userStore = useUserStore()
+      const response = await SweetMemoriesService.loadSweetMemoriesV2({
+        eventId: userStore.activeEvent
+      })
+
+      if (response.status === 200) {
+        this.memories = response.data.data || []
+        return { success: true, memories: this.memories }
+      } else {
+        return { success: false, error: response }
+      }
     }
   },
   getters: {}

@@ -112,6 +112,10 @@ class SweetMemoriesService {
       }
     })
   }
+
+  async loadSweetMemoriesV2({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/sweet-memories-v2`)
+  }
 }
 
 export default new SweetMemoriesService()
