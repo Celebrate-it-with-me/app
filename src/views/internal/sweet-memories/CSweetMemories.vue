@@ -24,7 +24,6 @@
     <!-- Show list when not in edit mode -->
     <CSweetMemoriesList
       v-else
-      :memories="memories"
       @add="addNewMemory"
       @edit="editMemory"
       @delete="deleteMemory"
@@ -34,12 +33,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Camera } from 'lucide-vue-next'
 
 import CSweetMemoriesForm from '@/views/internal/sweet-memories/CSweetMemoriesForm.vue'
 import CSweetMemoriesList from '@/views/internal/sweet-memories/CSweetMemoriesList.vue'
+import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
 
+const sweetMemoriesStorage = useSweetMemoriesStore()
 const memories = ref([])
 const showForm = ref(false)
 const isEditing = ref(false)
@@ -99,5 +100,11 @@ const cancelEdit = () => {
 
 const handleOrderChange = newOrder => {
   memories.value = [...newOrder]
+
+  console.log(newOrder)
 }
+
+onMounted(async () => {
+  await sweetMemoriesStorage.loadMemories()
+})
 </script>
