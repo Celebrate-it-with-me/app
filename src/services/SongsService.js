@@ -12,11 +12,11 @@ class SongsService {
     })
   }
 
-  async getSuggestedSongs(eventId, pageSelected = 1){
-    console.log('getSuggestedSongs', eventId, pageSelected)
+  async getSuggestedSongs(eventId, pageSelected = 1, perPage = 4){
     return CWM_API.get(`event/${eventId}/suggest-music`, {
       params: {
-        pageSelected
+        pageSelected,
+        perPage
       }
     })
   }
