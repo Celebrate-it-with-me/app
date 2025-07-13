@@ -10,7 +10,7 @@ const suggestedMusic = computed(() => {
   return {
     isEnabled: true,
     backgroundColor: '#fff',
-    title: 'Sugerencias de Canciones',
+    title: 'Sugerencia de Canciones',
     subTitle: 'Envienos sus canciones preferidas para usarlas en el evento',
     mainColor: '#f3a40a',
     secondaryColor: '#B3A383FF',
@@ -41,3 +41,16 @@ const suggestedMusic = computed(() => {
     />
   </div>
 </template>
+
+<style scoped>
+.suggested-music {
+  background-image: url('@/assets/images/meli-bote.JPG');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+</style>

@@ -96,20 +96,21 @@ const handleMoveToTop = () => {
           <HeroSection class="main-section" />
 
           <SeparatorSection >
-            A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
-            mis 15 años de vida. Porque su presencia, siempre será mi mejor regalo.
+            A todos los seres queridos que llenan mi vida de amor y alegría:
+            Me encantaría que me acompañen a celebrar un momento muy especial, mis 15 años.
+            Su presencia será, sin duda, el mejor regalo que podría recibir.
           </SeparatorSection>
 
           <SaveTheDate class="main-section" />
 
           <SeparatorSection>
-            Los recuerdos más hermosos nacen con las personas más especiales.
+            Quienes ocupan un lugar especial en el corazón, crean recuerdos que duran para siempre.
           </SeparatorSection>
 
           <CWMItinerario class="main-section" />
 
           <SeparatorSection>
-            ¡Prepárate para reír, bailar y celebrar como nunca!
+            ¡La fiesta está por comenzar! Prepárate para reír, bailar y disfrutar al máximo.
           </SeparatorSection>
 
           <SweetMemories
@@ -118,7 +119,8 @@ const handleMoveToTop = () => {
           />
 
           <SeparatorSection>
-            Gracias por ser parte de mi historia. Ahora celebremos juntos.
+            Gracias por acompañarme en cada paso de mi historia, porque sin ti no sería la misma.
+            Hoy, celebremos juntos este día inolvidable.
           </SeparatorSection>
 
           <RSVP class="main-section" />
@@ -130,7 +132,7 @@ const handleMoveToTop = () => {
           <SuggestedMusic class="main-section"/>
 
           <SeparatorSection>
-            Que esta fiesta sea tan inolvidable como ustedes lo son para mí.
+            Con música, recuerdos y su compañía, esta noche será mágica.
           </SeparatorSection>
 
           <EventComments

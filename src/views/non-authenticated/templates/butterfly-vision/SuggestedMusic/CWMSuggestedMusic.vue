@@ -53,7 +53,11 @@ const getSuggestedSongs = async () => {
   try {
     loading.value = true
 
-    const response = await SongsService.getSuggestedSongs(props?.event?.id, pageSelected.value)
+    const response = await SongsService.getSuggestedSongs(
+      props?.event?.id,
+      pageSelected.value,
+      4
+    )
 
     if (response.status === 200) {
       songsStore.selectedSongs = response?.data?.data ?? []
@@ -94,12 +98,13 @@ watch(
 
 <template>
   <div
-    class="event-handle w-[90%] md:w-[70%] rounded-lg flex flex-col items-center"
+    class="event-handle w-[90%] md:w-[70%] rounded-lg flex flex-col
+          items-center justify-center bg-white bg-opacity-50"
   >
-    <h2 class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center">
+    <h2 class="text-6xl font-gvibes font-bold gap-5 text-purple-middle text-center ">
       {{ title }}
     </h2>
-    <h4 class="music-subtitle relative text-2xl font-normal text-dark-blue text-center moments-title">
+    <h4 class="music-subtitle relative text-2xl font-semibold text-dark-blue text-center moments-title">
       {{ subTitle }}
     </h4>
 

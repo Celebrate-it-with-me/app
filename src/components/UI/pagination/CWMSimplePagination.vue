@@ -16,7 +16,7 @@ const props = defineProps({
   perPageOptions: {
     type: Array,
     required: false,
-    default: () => [5, 10, 20, 50, 100]
+    default: () => [4, 10, 20, 50, 100]
   }
 })
 
@@ -54,7 +54,7 @@ const changePage = (page) => {
     @click="changePage(currentPage - 1)"
   >
     <ArrowLeftIcon class="w-6 h-6"/>
-    Previous
+    Anterior
   </div>
   <div class="number-containers flex gap-x-2">
     <span
@@ -81,7 +81,7 @@ const changePage = (page) => {
       ? 'text-gray-200 cursor-not-allowed'
       : 'text-gray-700 cursor-pointer'"
   >
-    Next
+    Siguiente
     <ArrowRightIcon class="w-6 h-6"/>
   </div>
 </div>

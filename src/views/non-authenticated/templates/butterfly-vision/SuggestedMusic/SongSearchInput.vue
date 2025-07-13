@@ -73,12 +73,12 @@ const saveSelectedSong = async (song) => {
     if (response.status >= 200 && response.status < 300) {
       emit('update:List')
       notification.addNotification({
-        message: 'Song added successfully'
+        message: 'Cancion adicionada correctamente',
       })
     } else {
       notification.addNotification({
         type: 'error',
-        message: 'Oops something went wrong!'
+        message: 'Oops algo salio mal!'
       })
     }
   } catch (e) {
@@ -120,7 +120,7 @@ const fetchSuggestions = debounce(async () => {
         type="text"
         class="w-full text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 input-control w-full block focus:outline-none h-[40px]"
         :style="secondaryColorComputed"
-        placeholder="Search for a song..."
+        placeholder="Buscar..."
       />
     </div>
 

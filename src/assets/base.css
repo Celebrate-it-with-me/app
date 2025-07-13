@@ -8,6 +8,13 @@
   font-family: "Lora sans";
   src: url("./fonts/Lora/Lora-VariableFont_wght.ttf");
 }
+
+@font-face {
+  font-family: "Quicksand";
+    src: url("./fonts/QuickSand/Quicksand-VariableFont_wght.ttf");
+}
+
+
 :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;

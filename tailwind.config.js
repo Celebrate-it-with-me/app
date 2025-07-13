@@ -36,6 +36,7 @@ module.exports = {
       fontFamily: {
         display: ['"Poppins"', 'sans-serif'],
         body: ['"Open Sans"', 'sans-serif'],
+        quicksand: ['"Quicksand"'],
       },
       borderRadius: {
         'xl': '1.25rem',
