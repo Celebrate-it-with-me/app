@@ -41,7 +41,7 @@ const dressCodeConfig = computed(() => {
     </div>
 
     <div class="reserved-colors w-full md:w-1/3 flex flex-col items-center text-center px-4">
-      <h3 class="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Reserved Colors for the Quinceañera</h3>
+      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 md:mb-6">Colores reservados para la Quinceañera</h3>
       <div class="color-names flex flex-row flex-wrap justify-center gap-6 md:gap-10">
         <!-- Gold Word -->
         <span class="color-name color-name--gold">Gold</span>
