@@ -5,18 +5,9 @@
         Event Location
       </h2>
       <p class="text-gray-500 mt-2">{{ location.name }}</p>
-    </div>
-
-    <div v-if="images.length" class="mt-6">
-      <CCarousel
-        :images="imagesUrl"
-        width="w-full"
-        height="h-[300px]"
-        :autoplay="true"
-        :show-dots="true"
-        :show-arrows="true"
-        transition-effect="slide"
-      />
+      <p class="text-lg font-medium text-gray-800 dark:text-gray-200">
+        {{ location.address }}, {{ location.city }}, {{ location.state }} {{ location.zipCode }}, {{ location.country }}
+      </p>
     </div>
 
     <div class="bg-white dark:bg-gray-900 shadow-md rounded-2xl overflow-hidden">
@@ -26,10 +17,6 @@
         class="w-full h-[300px]"
       />
       <div class="p-6 space-y-4 text-center md:text-left">
-        <p class="text-lg font-medium text-gray-800 dark:text-gray-200">
-          {{ location.address }}, {{ location.city }}, {{ location.state }} {{ location.zipCode }}, {{ location.country }}
-        </p>
-
         <div class="flex justify-center md:justify-start">
           <a
             :href="googleMapsUrl"
