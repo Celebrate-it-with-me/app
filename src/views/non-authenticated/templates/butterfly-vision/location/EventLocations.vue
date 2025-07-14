@@ -2,7 +2,7 @@
   <section class="w-full max-w-5xl mx-auto mt-10 space-y-6 px-4 mb-4">
     <div class="text-center">
       <h2 class="text-6xl font-gvibes font-bold text-purple-middle">
-        Event Location
+        Lugar del Evento
       </h2>
       <p class="text-gray-500 mt-2">{{ location.name }}</p>
       <p class="text-lg font-medium text-gray-800 dark:text-gray-200">

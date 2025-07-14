@@ -10,6 +10,7 @@ import EventFooter from '@/views/non-authenticated/templates/butterfly-vision/Ev
 import { templateRef } from '@vueuse/core'
 import SeparatorSection from '@/views/non-authenticated/templates/butterfly-vision/SeparatorSection.vue'
 import CWMItinerario from '@/views/non-authenticated/templates/butterfly-vision/Itinerario/CWMItinerario.vue'
+import DressCode from '@/views/non-authenticated/templates/butterfly-vision/DressCode/DressCode.vue'
 import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
 import SwipeLeftIcon from '@/views/non-authenticated/templates/butterfly-vision/SwipeLeftIcon/SwipeLeftIcon.vue'
 import EventLocations from '@/views/non-authenticated/templates/butterfly-vision/location/EventLocations.vue'
@@ -133,6 +134,12 @@ const handleMoveToTop = () => {
 
           <SeparatorSection>
             Con música, recuerdos y su compañía, esta noche será mágica.
+          </SeparatorSection>
+
+          <DressCode class="main-section"/>
+
+          <SeparatorSection>
+            La elegancia en el vestir realza la belleza del momento compartido.
           </SeparatorSection>
 
           <EventComments
