@@ -23,7 +23,7 @@ const haveCompanions = computed(() => {
       <!-- Parallax Background -->
       <div
         class="parallax-bg absolute inset-0 bg-fixed bg-cover bg-center sm:bg-contain flex flex-col
-              items-center justify-between pt-20 pb-1"
+              items-center justify-between pt-20 pb-8"
         :style="`background-image: url(${bgImage});`"
       >
         <div class="top-hero flex flex-col items-center justify-center w-full">
