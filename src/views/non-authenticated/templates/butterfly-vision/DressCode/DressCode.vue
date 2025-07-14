@@ -17,13 +17,13 @@ const dressCodeConfig = computed(() => {
   class="dress-code w-full min-h-screen flex flex-col justify-evenly items-center p-4 md:p-8 lg:p-20"
 >
   <div class="dc-titles mb-6 md:mb-0 md:h-[20%] text-center">
-    <h2 class="text-4xl md:text-5xl lg:text-6xl font-gvibes font-bold gradient-text" v-if="dressCodeConfig.title">
+    <h2 class="text-6xl md:text-5xl lg:text-6xl font-gvibes font-bold text-purple-middle" v-if="dressCodeConfig.title">
       {{ dressCodeConfig.title }}
     </h2>
 
     <h4
       v-if="dressCodeConfig.subTitle"
-      class="relative text-xl md:text-2xl font-normal text-gray-600/70 text-center moments-title mt-2"
+      class="relative text-lg md:text-2xl font-normal text-dark-blue text-center moments-title mt-2"
     >
       {{ dressCodeConfig.subTitle }}
     </h4>
@@ -64,7 +64,7 @@ const dressCodeConfig = computed(() => {
 
 <style scoped>
 .dress-code {
-  background-color: #ae720f;
+  background-color: rgba(208, 181, 244, 0.67);
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
