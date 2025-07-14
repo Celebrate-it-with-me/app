@@ -92,7 +92,7 @@ const handleMoveToTop = () => {
               type="video/mp4"
             />
           </video>
-          <div v-if="showOverlay" class="absolute inset-x-0 top-1/2 mt-32 flex flex-col items-center justify-center cursor-pointer" @click="startTheVideo">
+          <div v-if="showOverlay" class="absolute inset-x-0 bottom-0 mb-8 flex flex-col items-center justify-center cursor-pointer" @click="startTheVideo">
             <img src="@/assets/images/img/hand-tap.svg" alt="Tap icon" class="w-16 h-16 animate-pulse" />
             <p class="text-white text-xl font-semibold mt-2 text-center">Click para empezar</p>
           </div>
