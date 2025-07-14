@@ -2,7 +2,7 @@
 import LightGallery from 'lightgallery/vue'
 import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgZoom from 'lightgallery/plugins/zoom';
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-thumbnail.css';
@@ -57,9 +57,14 @@ const totalPages = computed(() => {
 
 // Compute current visible items
 const visibleItems = computed(() => {
+  console.log('SweetMemoriesGallery - props.memories:', props.memories);
+  console.log('SweetMemoriesGallery - props.memories.length:', props.memories?.length);
+
   const start = currentPage.value * itemsPerPage.value;
   const end = start + itemsPerPage.value;
-  return props.memories.slice(start, end);
+  const items = props.memories.slice(start, end);
+  console.log('SweetMemoriesGallery - visibleItems:', items);
+  return items;
 });
 
 // Navigation methods

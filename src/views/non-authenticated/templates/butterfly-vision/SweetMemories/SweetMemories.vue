@@ -16,9 +16,11 @@ const sweetMemoriesStore = useSweetMemoriesStore()
 
 const sweetMemoriesImages = computed(() => {
   if (props.mode === 'create') {
+    console.log('Create mode - sweetMemoriesStore.memoriesImages:', sweetMemoriesStore.memoriesImages);
     return formatImages(sweetMemoriesStore.memoriesImages ?? [])
   }
 
+  console.log('View mode - templateStore.event?.sweetMemoriesImages:', templateStore.event?.sweetMemoriesImages);
   return formatImages(templateStore.event?.sweetMemoriesImages ?? [])
 })
 
@@ -40,20 +42,34 @@ const generalStyles = computed(() => {
 // Methods
 
 const formatImages = (images) => {
-  console.log(images)
+  console.log('Formatting images:', images)
   return images.map((memory, index) => {
+    // Create mode properties
+    let image, thumb, title, subHtml, alt;
+
+    if (props.mode === 'create') {
+      image = memory.url;
+      thumb = memory.url;
+      title = memory.name || `Sweet Memory ${index + 1}`;
+      subHtml = memory.name ? `<h4>${memory.name}</h4>` : `<h4>Sweet Memory ${index + 1}</h4>`;
+      alt = memory.name || `Sweet Memory ${index + 1}`;
+    } else {
+      // View mode properties
+      image = memory.imagePath;
+      thumb = memory.imagePath;
+      title = memory.imageOriginalName || `Sweet Memory ${index + 1}`;
+      subHtml = memory.imageOriginalName ? `<h4>${memory.imageOriginalName}</h4>` : `<h4>Sweet Memory ${index + 1}</h4>`;
+      alt = memory.imageOriginalName || `Sweet Memory ${index + 1}`;
+    }
+
+    console.log('Formatted image:', { image, thumb, title, subHtml, alt });
+
     return {
-      image: (props.mode === 'create') ? memory.url  : memory.imagePath,
-      thumb: (props.mode === 'create') ? memory.url  : memory.imagePath,
-      title: (props.mode === 'create')
-        ? memory.name || `Sweet Memory ${index + 1}`
-        : memory.imageOriginalName || `Sweet Memory ${index + 1}`,
-      subHtml: (props.mode === 'create')
-        ? `<h4>${memory.name}</h4>` || `<h4>Sweet Memory ${index + 1}</h4>`
-        : `<h4>${memory.imageOriginalName}</h4>` || `<h4>Sweet Memory ${index + 1}</h4>`,
-      alt: (props.mode === 'create')
-        ? memory.name || `Sweet Memory ${index + 1}`
-        : memory.imageOriginalName || `Sweet Memory ${index + 1}`
+      image,
+      thumb,
+      title,
+      subHtml,
+      alt
     }
   })
 }
