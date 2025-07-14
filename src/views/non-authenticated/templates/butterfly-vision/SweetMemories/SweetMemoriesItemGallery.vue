@@ -1,10 +1,12 @@
 <script setup lang="ts">
-defineProps({
+const props = defineProps({
   galleryItem: {
     type: Object,
     required: true
   }
 })
+
+console.log('SweetMemoriesItemGallery - galleryItem:', props.galleryItem);
 
 </script>
 
