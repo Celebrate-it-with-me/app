@@ -108,7 +108,7 @@ watch(() => mainGuestState.rsvpStatus, () => {
               required
               disabled
               :show-error="true"
-              label="Name"
+              label="Nombre"
               placeholder=" "
               class-input="block py-2.5 px-0 w-full text-md text-dark-blue bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
@@ -152,7 +152,7 @@ watch(() => mainGuestState.rsvpStatus, () => {
               id="phoneNumber"
               required
               :show-error="true"
-              label="Phone Number"
+              label="Numero de Teléfono"
               placeholder=" "
               class-input="block py-2.5 px-0 w-full text-md text-dark-blue bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
@@ -193,7 +193,7 @@ watch(() => mainGuestState.rsvpStatus, () => {
               border-radius: 8px;
             "
           >
-            Next
+            Siguiente
           </button>
         </div>
       </Form>

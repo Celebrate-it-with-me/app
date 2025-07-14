@@ -122,7 +122,7 @@ onMounted(() => {
 
       <!-- MAINS -->
       <div v-if="menu.menuItems?.main?.length">
-        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Main Course</h4>
+        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Plato Principal</h4>
         <p v-if="errors.mains" class="text-sm text-red-500 mt-1">{{ errors.mains }}</p>
         <div class="flex flex-wrap gap-4 border-b border-gray-200">
           <label
@@ -195,13 +195,13 @@ onMounted(() => {
           class="px-6 py-2 border-2 font-bold mr-2 rounded-lg text-gray-500 border-gray-500 hover:bg-gray-100"
           @click="goBack"
         >
-          Back
+          Anterior
         </button>
         <button
           type="submit"
           class="px-6 py-2 border-2 font-bold rounded-lg text-pink-400 border-pink-400 hover:bg-pink-50"
         >
-          Next
+          Siguiente
         </button>
       </div>
     </Form>

@@ -13,8 +13,8 @@ const props = defineProps({
   options: {
     type: Array,
     default: () => [
-      { value: 'attending', label: 'Yes, I will be there' },
-      { value: 'not-attending', label: 'Sorry, I can’t come' }
+      { value: 'attending', label: 'Si, ahi estare' },
+      { value: 'not-attending', label: 'Lo siento, no podre asistir' }
     ]
   },
   showError: { type: Boolean, default: true }
