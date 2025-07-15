@@ -21,14 +21,32 @@ const videoReproduced = ref(false)
 const showButterflyLogo = ref(true)
 const showOverlay = ref(true)
 const videoInstance = templateRef('videoRef')
+const isIOS = ref(false)
 
 const isMobile = ref(false)
 const mobileSrc = new URL('@/assets/videos/mobile_intro.mp4', import.meta.url).href
 
 onMounted(() => {
+  // Detectar si es iOS
+  isIOS.value = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+
   isMobile.value = window.innerWidth < 768
   document.body.classList.remove('dark')
   showHideScrollButton()
+
+  // Cargar y preparar el video pero no reproducirlo
+  if (videoInstance.value) {
+    videoInstance.value.load()
+
+    // Detectar cuando el video está listo para reproducir
+    videoInstance.value.addEventListener('canplaythrough', () => {
+      // Asegurar que el primer frame sea visible
+      if (videoInstance.value.paused) {
+        // Intentar mostrar el primer frame sin reproducir
+        videoInstance.value.currentTime = 0.1
+      }
+    })
+  }
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -48,13 +66,23 @@ onMounted(() => {
   sections.forEach(section => {
     observer.observe(section)
   })
-
 })
 
 const startTheVideo = () => {
   showButterflyLogo.value = false
   showOverlay.value = false
-  videoInstance.value.play()
+
+  if (videoInstance.value) {
+    const playPromise = videoInstance.value.play()
+
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.error("Error reproduciendo video:", error)
+        // Si falla la reproducción, volvemos a mostrar el overlay
+        showOverlay.value = true
+      })
+    }
+  }
 }
 
 const handleVideoEnd = () => {
@@ -77,103 +105,107 @@ const handleMoveToTop = () => {
 
 <template>
   <div class="bg-red-50/10 font-jost h-full min-h-screen">
-      <transition name="fade" mode="out-in">
-        <div v-if="!videoReproduced" class="relative">
-          <video
-            ref="videoRef"
-            class="w-full h-screen object-cover block"
-            muted
-            playsinline
-            @ended="handleVideoEnd"
-            @click="startTheVideo"
-          >
-            <source
-              :src="mobileSrc"
-              type="video/mp4"
-            />
-          </video>
-          <div v-if="showOverlay" class="fixed left-0 right-0 bottom-8 flex flex-col items-center justify-center cursor-pointer z-10" @click="startTheVideo">
-            <img src="@/assets/images/img/hand-tap.svg" alt="Tap icon" class="w-16 h-16 animate-pulse" />
-            <p class="text-white text-xl font-semibold mt-2 text-center text-shadow">Click para empezar</p>
-          </div>
+    <transition name="fade" mode="out-in">
+      <div v-if="!videoReproduced" class="relative bg-black h-screen">
+        <!-- Video visible pero en pausa desde el inicio -->
+        <video
+          ref="videoRef"
+          class="w-full h-screen object-cover block"
+          muted
+          playsinline
+          preload="auto"
+          @ended="handleVideoEnd"
+          @click="startTheVideo"
+        >
+          <source
+            :src="mobileSrc"
+            type="video/mp4"
+          />
+        </video>
+
+        <!-- Overlay "Click para empezar" siempre visible al inicio -->
+        <div v-if="showOverlay" class="absolute inset-x-0 bottom-0 mb-8 flex flex-col items-center justify-center cursor-pointer z-20" @click="startTheVideo">
+          <img src="@/assets/images/img/hand-tap.svg" alt="Tap icon" class="w-16 h-16 animate-pulse" />
+          <p class="text-white text-xl font-semibold mt-2 text-center text-shadow">Click para empezar</p>
         </div>
-        <main v-else class="">
-          <HeaderNav />
+      </div>
+      <main v-else class="">
+        <HeaderNav />
 
-          <HeroSection class="main-section" />
+        <HeroSection class="main-section" />
 
-          <SeparatorSection >
-            A todos los seres queridos que llenan mi vida de amor y alegría:
-            Me encantaría que me acompañen a celebrar un momento muy especial, mis 15 años.
-            Su presencia será, sin duda, el mejor regalo que podría recibir.
-          </SeparatorSection>
+        <SeparatorSection >
+          A todos los seres queridos que llenan mi vida de amor y alegría:
+          Me encantaría que me acompañen a celebrar un momento muy especial, mis 15 años.
+          Su presencia será, sin duda, el mejor regalo que podría recibir.
+        </SeparatorSection>
 
-          <SaveTheDate class="main-section" />
+        <SaveTheDate class="main-section" />
 
-          <SeparatorSection>
-            Quienes ocupan un lugar especial en el corazón, crean recuerdos que duran para siempre.
-          </SeparatorSection>
+        <SeparatorSection>
+          Quienes ocupan un lugar especial en el corazón, crean recuerdos que duran para siempre.
+        </SeparatorSection>
 
-          <CWMItinerario class="main-section" />
+        <CWMItinerario class="main-section" />
 
-          <SeparatorSection>
-            ¡La fiesta está por comenzar! Prepárate para reír, bailar y disfrutar al máximo.
-          </SeparatorSection>
+        <SeparatorSection>
+          ¡La fiesta está por comenzar! Prepárate para reír, bailar y disfrutar al máximo.
+        </SeparatorSection>
 
-          <SweetMemories
-            class="main-section"
-            :mode="'presentation'"
-          />
+        <SweetMemories
+          class="main-section"
+          :mode="'presentation'"
+        />
 
-          <SeparatorSection>
-            Gracias por acompañarme en cada paso de mi historia, porque sin ti no sería la misma.
-            Hoy, celebremos juntos este día inolvidable.
-          </SeparatorSection>
+        <SeparatorSection>
+          Gracias por acompañarme en cada paso de mi historia, porque sin ti no sería la misma.
+          Hoy, celebremos juntos este día inolvidable.
+        </SeparatorSection>
 
-          <RSVP class="main-section" />
+        <RSVP class="main-section" />
 
-          <SeparatorSection>
-            La música, las memorias y ustedes harán de esta noche mágica.
-          </SeparatorSection>
+        <SeparatorSection>
+          La música, las memorias y ustedes harán de esta noche mágica.
+        </SeparatorSection>
 
-          <SuggestedMusic class="main-section"/>
+        <SuggestedMusic class="main-section"/>
 
-          <SeparatorSection>
-            Con música, recuerdos y su compañía, esta noche será mágica.
-          </SeparatorSection>
+        <SeparatorSection>
+          Con música, recuerdos y su compañía, esta noche será mágica.
+        </SeparatorSection>
 
-          <DressCode class="main-section"/>
+        <DressCode class="main-section"/>
 
-          <SeparatorSection>
-            La elegancia en el vestir realza la belleza del momento compartido.
-          </SeparatorSection>
+        <SeparatorSection>
+          La elegancia en el vestir realza la belleza del momento compartido.
+        </SeparatorSection>
 
-          <EventComments
-            origin="event"
-            class="main-section"
-          />
+        <EventComments
+          origin="event"
+          class="main-section"
+        />
 
-          <SeparatorSection>
-            Donde hay amor y alegría, el momento es perfecto.
-          </SeparatorSection>
+        <SeparatorSection>
+          Donde hay amor y alegría, el momento es perfecto.
+        </SeparatorSection>
 
-          <EventLocations />
+        <EventLocations />
 
-          <SeparatorSection >
-            Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
-            compartir con cada uno de ustedes. ¡Gracias por estar aquí!
-          </SeparatorSection>
+        <SeparatorSection >
+          Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
+          compartir con cada uno de ustedes. ¡Gracias por estar aquí!
+        </SeparatorSection>
 
-          <SwipeLeftIcon />
+        <SwipeLeftIcon />
 
-          <BackgroundMusic
-            origin="event"
-          />
+        <BackgroundMusic
+          origin="event"
+        />
 
-          <EventFooter />
-        </main>
-      </transition>
-    </div>
+        <EventFooter />
+      </main>
+    </transition>
+  </div>
 
   <button
     id="scrollToTopBtn"
@@ -225,6 +257,10 @@ body {
   src: url('@/assets/fonts/GreatVibes-Regular.ttf') format('truetype');
 }
 
+.text-shadow {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
 section {
   scroll-margin-top: 80px;
 }
@@ -243,6 +279,4 @@ main {
 section {
   scroll-margin-top: 80px;
 }
-
-
 </style>
