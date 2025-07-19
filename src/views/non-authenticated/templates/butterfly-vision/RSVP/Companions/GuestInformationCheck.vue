@@ -46,20 +46,20 @@ const submit = async () => {
 <template>
   <div class="w-full max-w-5xl bg-white rounded-lg shadow-md px-6 pt-5 pb-5">
     <h2 class="text-2xl font-semibold mb-6 text-center text-dark-blue mt-4">
-      Confirm your Information
+      Confirme su información
     </h2>
 
     <div class="flex flex-col md:flex-row gap-6 gap-y-10 text-dark-blue">
       <!-- Main Guest Info -->
       <div class="flex-1">
         <h3 class="text-xl font-semibold mb-4 text-center md:text-left border-b pb-2">
-          Main Guest Information:
+          Información del Invitado Principal:
         </h3>
         <div class="overflow-x-auto">
           <table class="w-full table-auto border rounded-lg shadow-sm text-sm">
             <tbody>
             <tr class="border-b">
-              <td class="px-4 py-2 font-semibold text-gray-600 w-32">Name:</td>
+              <td class="px-4 py-2 font-semibold text-gray-600 w-32">Nombre:</td>
               <td class="px-4 py-2 text-gray-800">{{ guestInfo?.name }}</td>
             </tr>
             <tr class="border-b">
@@ -67,12 +67,12 @@ const submit = async () => {
               <td class="px-4 py-2 text-gray-800">{{ guestInfo?.email ?? 'N/A' }}</td>
             </tr>
             <tr class="border-b">
-              <td class="px-4 py-2 font-semibold text-gray-600">Phone:</td>
+              <td class="px-4 py-2 font-semibold text-gray-600">Telefono:</td>
               <td class="px-4 py-2 text-gray-800">{{ guestInfo?.phone ?? 'N/A' }}</td>
             </tr>
             <tr>
               <td class="px-4 py-2 font-semibold text-gray-600">
-                Attending:
+                Asistiendo?:
               </td>
               <td class="px-4 py-2">
                 <span
@@ -85,10 +85,10 @@ const submit = async () => {
                 >
                   {{
                     guestInfo?.rsvpStatus === 'attending'
-                      ? 'Attending'
+                      ? 'Asistiendo'
                       : guestInfo?.rsvpStatus === 'not-attending'
-                        ? 'Not Attending'
-                        : 'Pending'
+                        ? 'No asistiendo'
+                        : 'pendiente'
                   }}
                 </span>
               </td>
@@ -100,14 +100,14 @@ const submit = async () => {
 
       <div class="flex-1" v-if="hasCompanions">
         <h3 class="text-xl font-semibold mb-4 text-center md:text-left border-b pb-2">
-          Companions List:
+          Lista de acompañantes:
         </h3>
         <div class="overflow-x-auto">
           <table class="w-full table-auto border rounded-lg sm:rounded-lg shadow-sm text-sm">
             <thead class="bg-gray-100 text-gray-600 uppercase">
             <tr>
-              <th class="px-4 py-2 text-left">Name</th>
-              <th class="px-4 py-2 text-left">Attending</th>
+              <th class="px-4 py-2 text-left">Nombre</th>
+              <th class="px-4 py-2 text-left">Asistiendo</th>
             </tr>
             </thead>
             <tbody>
@@ -117,7 +117,7 @@ const submit = async () => {
               class="bg-white border-t hover:bg-gray-50"
             >
               <td class="px-4 py-2 font-medium text-gray-800">
-                {{ companion.name ?? 'Unnamed' }}
+                {{ companion.name ?? '' }}
               </td>
               <td class="px-4 py-2">
                   <span
@@ -128,8 +128,8 @@ const submit = async () => {
                       'text-yellow-700 bg-yellow-100 text-yellow-700'
                     ]"
                   >
-                    {{ companion.rsvpStatus === 'attending' ? 'Attending' :
-                    companion.rsvpStatus === 'not-attending' ? 'Not Attending' : 'Pending' }}
+                    {{ companion.rsvpStatus === 'attending' ? 'Asistiendo' :
+                    companion.rsvpStatus === 'not-attending' ? 'No asistiendo' : 'Pendiente' }}
                   </span>
               </td>
             </tr>
@@ -147,14 +147,14 @@ const submit = async () => {
         class="px-6 py-2 border rounded-lg text-sm font-semibold text-gray-600
                border-gray-400 hover:bg-gray-100 transition"
       >
-        Back
+        Anterior
       </button>
 
       <button
         @click="submit"
         class="px-6 py-2 border rounded-lg text-sm font-semibold text-purple-600 border-purple-300 hover:bg-purple-50 transition"
       >
-        Submit
+        Siguiente
       </button>
     </div>
   </div>

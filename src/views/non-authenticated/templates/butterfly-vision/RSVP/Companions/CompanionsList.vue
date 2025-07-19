@@ -21,9 +21,9 @@ const handleConfirmation = (companion) => {
       class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
     >
     <tr>
-      <th scope="col" class="px-6 py-3">Name</th>
-      <th scope="col" class="px-6 py-3">Will Attend?</th>
-      <th scope="col" class="px-6 py-3">Action</th>
+      <th scope="col" class="px-6 py-3">Nombre</th>
+      <th scope="col" class="px-6 py-3">Asistiras?</th>
+      <th scope="col" class="px-6 py-3"></th>
     </tr>
     </thead>
     <tbody>
@@ -40,9 +40,9 @@ const handleConfirmation = (companion) => {
       </th>
       <td class="px-6 py-4">
         <span>
-          <span v-if="companion.rsvpStatus === 'attending'">Attending</span>
-          <span v-else-if="companion.rsvpStatus === 'not-attending'">Not Attending</span>
-          <span v-else>Pending</span>
+          <span v-if="companion.rsvpStatus === 'attending'">Asistiendo</span>
+          <span v-else-if="companion.rsvpStatus === 'not-attending'">No asistiendo</span>
+          <span v-else>Pendiente</span>
         </span>
       </td>
       <td class="px-6 py-4">

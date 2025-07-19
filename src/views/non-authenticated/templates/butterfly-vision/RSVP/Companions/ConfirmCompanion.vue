@@ -93,7 +93,7 @@ const onInvalidSubmit = (errors) => {
 <template>
   <div class="relative w-full overflow-x-auto border-b pb-2 p-4 md:p-10">
     <div class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl">
-      <h3>Companions</h3>
+      <h3>Acompañantes</h3>
     </div>
     <Form
       v-if="companionStep === 1"
@@ -109,7 +109,7 @@ const onInvalidSubmit = (errors) => {
             id="name"
             required
             show-error
-            label="Name"
+            label="Nombre"
             placeholder=" "
             class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600
@@ -153,7 +153,7 @@ const onInvalidSubmit = (errors) => {
             id="phone"
             required
             :show-error="true"
-            label="Phone Number"
+            label="Telefono"
             placeholder=" "
             class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
              border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600

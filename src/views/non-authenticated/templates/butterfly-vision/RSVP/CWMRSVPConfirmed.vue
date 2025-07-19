@@ -11,11 +11,11 @@ const guestCompanions = computed(() => {
 
 const formatStatus = (status) => {
   if (status === 'attending') {
-    return 'Attending'
+    return 'Asistiendo'
   } else if (status === 'not-attending') {
-    return 'Not Attending'
+    return 'No Asistiendo'
   } else if (status === 'pending') {
-    return 'Pending'
+    return 'Pendiente'
   }
   return ''
 }
@@ -31,10 +31,10 @@ const formatStatus = (status) => {
             class="text-2xl font-bold text-purple-600 mb-2 flex items-center justify-center gap-2"
           >
             <CheckCircle class="w-6 h-6 text-purple-600" />
-            Thank you, {{ templateStore.guestFullName }}!
+            Gracias, {{ templateStore.guestFullName }}!
           </h2>
           <p class="text-gray-700">
-            We’re excited to welcome you to
+            Estamos encantados de darte la bienvenida a
             <span class="font-semibold">{{ templateStore.eventName }}</span
             >.
           </p>
@@ -42,7 +42,7 @@ const formatStatus = (status) => {
 
         <!-- Guest Info -->
         <div class="mb-6">
-          <h3 class="text-lg font-semibold mb-2 border-b pb-1">Your Information</h3>
+          <h3 class="text-lg font-semibold mb-2 border-b pb-1">Tu información</h3>
           <div class="space-y-2 text-sm">
             <p class="flex items-center gap-2">
               <Mail class="w-4 h-4 text-gray-500" />
@@ -74,7 +74,7 @@ const formatStatus = (status) => {
 
         <!-- Companions -->
         <div class="mb-6">
-          <h3 class="text-lg font-semibold mb-2 border-b pb-1">Accompanying Guests</h3>
+          <h3 class="text-lg font-semibold mb-2 border-b pb-1">Acompañantes</h3>
           <ul v-if="guestCompanions.length > 0" class="space-y-2 text-sm">
             <li
               v-for="(companion, index) in guestCompanions"
@@ -99,14 +99,14 @@ const formatStatus = (status) => {
               </span>
             </li>
           </ul>
-          <p v-else class="text-sm text-gray-500">No accompanying guests.</p>
+          <p v-else class="text-sm text-gray-500">Sin acompañantes.</p>
         </div>
 
         <!-- Next Steps -->
         <div>
           <p>
-            <strong>Need Assistance?</strong>
-            Reach out at
+            <strong>Necesitas asistencia?</strong>
+            Evianos un correo a
             <a
               :href="`mailto:${templateStore.eventOrganizerEmail}`"
               class="text-purple-600 underline"

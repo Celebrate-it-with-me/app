@@ -33,8 +33,8 @@ const rsvpState = reactive({
 const rsvpValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      name: zod.string().min(1, {message: 'Name is required'}),
-      email: zod.string().email({message: 'Email is required'}),
+      name: zod.string().min(1, {message: 'El nombre es requerido'}),
+      email: zod.string().email({message: 'Email es requerido'}),
       attendingConfirm: zod.string().refine(value => ['yes', 'no'].includes(value)),
       guestsSelected: zod.string(),
       mealPreferences: zod.string()
@@ -114,7 +114,7 @@ const openCompanionsModal = () => {
 
     <div class="relative z-0 w-full mb-2 group">
       <fieldset class="flex flex-row justify-between gap-4">
-        <legend class="sr-only">Confirm</legend>
+        <legend class="sr-only">Confirmar</legend>
 
         <div class="flex items-center mb-4">
           <label class="flex items-center space-x-2 cursor-pointer">
@@ -133,7 +133,7 @@ const openCompanionsModal = () => {
               >
               </span>
             </span>
-            <span class="text-gray-700">Yes, I will be there</span>
+            <span class="text-gray-700">Si, asistire</span>
           </label>
         </div>
 
@@ -154,7 +154,7 @@ const openCompanionsModal = () => {
               >
               </span>
             </span>
-            <span class="text-gray-700">Sorry, I can’t come</span>
+            <span class="text-gray-700">Lo siento, no puedo asistir</span>
           </label>
         </div>
       </fieldset>
@@ -168,7 +168,7 @@ const openCompanionsModal = () => {
         name="guestsSelected"
         v-model="rsvpState.guestsSelected"
         :items="guests"
-        label="Companions"
+        label="Acompañantes"
         class-label="text-gray-900"
         class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
                      border-gray-100 appearance-none dark:text-gray-900 dark:border-gray-600
@@ -180,7 +180,7 @@ const openCompanionsModal = () => {
         <span
           class="text-gray-500 underline cursor-pointer text-xs"
           @click="openCompanionsModal"
-        >Details</span>
+        >Detalles</span>
       </div>
     </div>
 
@@ -189,7 +189,7 @@ const openCompanionsModal = () => {
         name="mealPreference"
         v-model="rsvpState.mealPreference"
         :items="mealsAvailable"
-        label="Meal Preference"
+        label="Preferencias de comida"
         class-label="text-gray-900"
         class-input="block py-2.5 px-0 w-full text-md text-gray-900 bg-transparent border-0 border-b
                      border-gray-100 appearance-none dark:text-gray-900 dark:border-gray-600

@@ -33,7 +33,7 @@ const goToNext = () => {
       style="font-family: inherit; color: #9a929e; background-color: transparent; border-color: #9a929e; border-radius: 8px;"
       @click="goToPrevious()"
     >
-      Back
+      Anterior
     </button>
 
     <button
@@ -41,7 +41,7 @@ const goToNext = () => {
       style="font-family: inherit; color: #dba3ff; background-color: transparent; border-color: #dba3ff; border-radius: 8px;"
       @click="goToNext()"
     >
-      Next
+      Siguiente
     </button>
   </div>
 </div>
