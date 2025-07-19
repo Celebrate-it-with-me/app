@@ -88,7 +88,7 @@ onMounted(() => {
       <div
         v-if="menu.menuItems?.starter?.length"
       >
-        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Starters</h4>
+        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Entrantes</h4>
         <p v-if="errors.starters" class="text-sm text-red-500 mt-1">{{ errors.starters }}</p>
         <div class="flex flex-wrap gap-4 border-b border-gray-200">
           <label
@@ -156,7 +156,7 @@ onMounted(() => {
 
       <!-- DESSERTS -->
       <div v-if="menu.menuItems?.dessert?.length">
-        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Dessert</h4>
+        <h4 class="text-md font-medium capitalize mb-2 text-gray-700 dark:text-gray-300">Postres</h4>
         <p v-if="errors.mains" class="text-sm text-red-500 mt-1">{{ errors.mains }}</p>
         <div class="flex flex-wrap gap-4">
           <label

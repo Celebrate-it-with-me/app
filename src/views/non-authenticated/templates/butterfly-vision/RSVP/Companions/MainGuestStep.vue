@@ -90,7 +90,7 @@ watch(() => mainGuestState.rsvpStatus, () => {
   <div class="main__guest-container w-full flex flex-col items-center">
     <div class="form-container w-full shadow-md sm:rounded-lg p-4 md:p-10">
       <div class="form-title flex justify-center items-center text-dark-blue font-extralight text-2xl">
-        <h3>Main Guest</h3>
+        <h3>Invitado Principal</h3>
       </div>
       <Form
         v-if="mainGuestStep === 1"

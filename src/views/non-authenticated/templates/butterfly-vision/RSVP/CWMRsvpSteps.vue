@@ -49,7 +49,7 @@ const handleStep = (newStep) => {
       <p
         class="text-gray-600"
       >
-        No active step selected.
+        No pasos activos seleccionados.
       </p>
     </div>
   </div>
