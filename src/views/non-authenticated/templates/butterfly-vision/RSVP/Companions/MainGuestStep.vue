@@ -25,14 +25,14 @@ const templateStore = useTemplateStore()
 const mainGuestValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      name: zod.string().min(1, 'First Name is required'),
-      email: zod.string().email({ message: 'Invalid email address' }).optional(),
+      name: zod.string().min(1, 'EL nombre es requerido'),
+      email: zod.string().email({ message: 'Direccion de correo invalida' }).optional(),
       phone: zod
         .string()
-        .regex(/^[0-9]*$/, { message: 'Phone Number must be numeric' })
+        .regex(/^[0-9]*$/, { message: 'Numero de telefono debe ser numerico' })
         .optional(),
       rsvpStatus: zod.enum(['attending', 'not-attending'], {
-        required_error: 'Please select a confirmation option',
+        required_error: 'Por favor selecciona una opción',
       })
     })
   )
@@ -174,8 +174,8 @@ watch(() => mainGuestState.rsvpStatus, () => {
               label=""
               :show-error="true"
               :options="[
-                { value:'attending', label: 'Yes, I will be there' },
-                { value: 'not-attending', label: 'Sorry, I can’t come' }
+                { value:'attending', label: 'Si, Asistiré' },
+                { value: 'not-attending', label: 'Lo siento, no puedo asistir' }
               ]"
             />
           </div>
