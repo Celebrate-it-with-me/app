@@ -1,5 +1,8 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+
+const showDressCodePopup = ref(false)
+const showColorsPopup = ref(false)
 
 const dressCodeConfig = computed(() => {
   return {
@@ -20,43 +23,57 @@ const dressCodeConfig = computed(() => {
     <h2 class="text-6xl md:text-5xl lg:text-6xl font-gvibes font-bold text-purple-middle" v-if="dressCodeConfig.title">
       {{ dressCodeConfig.title }}
     </h2>
-
-    <h4
-      v-if="dressCodeConfig.subTitle"
-      class="relative text-lg md:text-2xl font-normal text-dark-blue text-center moments-title mt-2"
-    >
-      {{ dressCodeConfig.subTitle }}
-    </h4>
   </div>
 
   <div
     class="w-full flex flex-col md:flex-row justify-center md:justify-between items-center gap-8 md:gap-4"
   >
-    <div class="dress-image-container w-full md:w-1/3 flex justify-center">
-      <img
-        src="@/assets/images/external/gallery-1.jpg"
-        alt="Formal Male Attire"
-        class="dress-code-image rounded-lg shadow-lg"
-      >
-    </div>
-
-    <div class="reserved-colors w-full md:w-1/3 flex flex-col items-center text-center px-4">
-      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 md:mb-6">Colores reservados para la Quinceañera</h3>
-      <div class="color-names flex flex-row flex-wrap justify-center gap-6 md:gap-10">
-        <!-- Gold Word -->
-        <span class="color-name color-name--gold">Gold</span>
-
-        <!-- Purple Word -->
-        <span class="color-name color-name--purple">Purple</span>
+    <div class="dress-image-container w-full md:w-1/3 flex flex-col items-center">
+      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4">
+        {{ dressCodeConfig.subTitle }}
+      </h3>
+      <div class="relative">
+        <img
+          src="@/assets/images/external/dress-code.jpg"
+          alt="Formal Male Attire"
+          class="dress-code-image rounded-lg shadow-lg cursor-pointer"
+          @click="showDressCodePopup = true"
+        >
+        <div v-if="showDressCodePopup" class="popup-overlay" @click="showDressCodePopup = false">
+          <div class="popup-content" @click.stop>
+            <h3 class="popup-title">Código de Vestimenta</h3>
+            <p class="popup-text">
+              Para esta ocasión especial, se sugiere un estilo formal. Los caballeros pueden optar por trajes o guayaberas elegantes,
+              mientras que las damas pueden usar vestidos formales. Recuerden evitar los colores reservados para la quinceañera.
+            </p>
+            <button class="popup-close" @click="showDressCodePopup = false">Cerrar</button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="dress-image-container w-full md:w-1/3 flex justify-center">
-      <img
-        src="@/assets/images/external/gallery-2.jpg"
-        alt="Formal Female Attire"
-        class="dress-code-image rounded-lg shadow-lg"
-      >
+    <div class="dress-image-container w-full md:w-1/3 flex flex-col items-center">
+      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4">
+        Colores reservados para la Quinceañera
+      </h3>
+      <div class="relative">
+        <img
+          src="@/assets/images/external/dress-colors.png"
+          alt="Formal Female Attire"
+          class="dress-code-image rounded-lg shadow-lg cursor-pointer"
+          @click="showColorsPopup = true"
+        >
+        <div v-if="showColorsPopup" class="popup-overlay" @click="showColorsPopup = false">
+          <div class="popup-content" @click.stop>
+            <h3 class="popup-title">Colores Reservados</h3>
+            <p class="popup-text">
+              Los colores reservados para la quinceañera son <span class="reserved-color gold">Gold</span> y
+              <span class="reserved-color lavender">Lavanda</span>. Por favor, evite usar estos colores en su vestimenta.
+            </p>
+            <button class="popup-close" @click="showColorsPopup = false">Cerrar</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -80,52 +97,89 @@ const dressCodeConfig = computed(() => {
   transform: scale(1.03);
 }
 
-.reserved-colors {
-  margin: 1rem 0;
-  text-align: center;
-  padding: 1rem 0;
-}
-
-/* Color Names Container */
-.color-names {
+/* Popup Styles */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  align-items: center;
+  z-index: 1000;
 }
 
-/* Base Color Name Styling */
-.color-name {
-  font-size: 2.5rem;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
-  -webkit-background-clip: text;
-  transition: transform 0.3s ease, text-shadow 0.3s ease;
+.popup-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: popup-appear 0.3s ease-out;
 }
 
-@media (max-width: 768px) {
-  .color-name {
-    font-size: 2rem;
+@keyframes popup-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-/* Gold Gradient for 'Gold' Word */
-.color-name--gold {
-  color: #ffd700;
-  opacity: 0.5;
-}
-
-/* Purple Gradient for 'Purple' Word */
-.color-name--purple {
+.popup-title {
+  font-size: 1.8rem;
   color: #800080;
-  opacity: 0.5;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  text-align: center;
 }
 
-.color-name:hover {
-  transform: scale(1.1);
-  text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+.popup-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.popup-close {
+  display: block;
+  margin: 0 auto;
+  padding: 0.5rem 1.5rem;
+  background-color: #800080;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.popup-close:hover {
+  background-color: #6a006a;
+}
+
+/* Reserved Color Styles */
+.reserved-color {
+  font-weight: bold;
+  display: inline-block;
+  padding: 0 5px;
+}
+
+.gold {
+  color: #ffd700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.lavender {
+  color: #9370db;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 640px) {
@@ -139,6 +193,19 @@ const dressCodeConfig = computed(() => {
 
   .dress-code-image {
     max-height: 300px;
+  }
+
+  .popup-content {
+    padding: 1.5rem;
+    width: 95%;
+  }
+
+  .popup-title {
+    font-size: 1.5rem;
+  }
+
+  .popup-text {
+    font-size: 1rem;
   }
 }
 </style>

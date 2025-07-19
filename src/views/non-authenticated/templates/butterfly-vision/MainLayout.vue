@@ -107,7 +107,6 @@ const handleMoveToTop = () => {
   <div class="bg-red-50/10 font-jost h-full min-h-screen">
     <transition name="fade" mode="out-in">
       <div v-if="!videoReproduced" class="relative bg-black h-screen">
-        <!-- Video visible pero en pausa desde el inicio -->
         <video
           ref="videoRef"
           class="w-full h-screen object-cover block"
