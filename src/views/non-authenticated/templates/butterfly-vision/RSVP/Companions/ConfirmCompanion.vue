@@ -52,16 +52,16 @@ onMounted(() => {
 const companionValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      name: zod.string().min(1, 'First Name is required'),
+      name: zod.string().min(1, 'Nombre es requerido'),
       email: zod.string()
-        .email({ message: 'Invalid email address' })
+        .email({ message: 'Direccion de correo invalida' })
         .optional(),
       phone: zod
         .string()
-        .regex(/^[0-9\s]*$/, { message: 'Phone Number must be numeric' })
+        .regex(/^[0-9\s]*$/, { message: 'Numero de telefono debe ser numerico' })
         .optional(),
       rsvpStatus: zod
-        .enum(['attending', 'not-attending'], { message: 'Please select a confirmation option' })
+        .enum(['attending', 'not-attending'], { message: 'Seleccione una ocpcion' })
     })
   )
 })
@@ -175,7 +175,7 @@ const onInvalidSubmit = (errors) => {
             label=""
             :show-error="true"
             :options="[
-                { value: 'attending', label: 'Yes' },
+                { value: 'attending', label: 'Si' },
                 { value: 'not-attending', label: 'No' }
               ]"
           />
