@@ -32,11 +32,11 @@ const dressCodeConfig = computed(() => {
       <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 text-center">
         {{ dressCodeConfig.subTitle }}
       </h3>
-      <div class="relative">
+      <div class="relative max-w-[500px] w-full mx-auto">
         <img
           src="@/assets/images/external/dress-code.jpg"
           alt="Formal Male Attire"
-          class="dress-code-image rounded-lg shadow-lg cursor-pointer"
+          class="dress-code-image rounded-lg shadow-lg cursor-pointer max-w-full h-auto mx-auto object-contain"
           @click="showDressCodePopup = true"
         >
         <div v-if="showDressCodePopup" class="popup-overlay" @click="showDressCodePopup = false">
@@ -56,11 +56,11 @@ const dressCodeConfig = computed(() => {
       <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 text-center">
         Colores reservados para la Quinceañera
       </h3>
-      <div class="relative">
+      <div class="relative max-w-[500px] w-full mx-auto">
         <img
           src="@/assets/images/external/dress-colors.png"
           alt="Formal Female Attire"
-          class="dress-code-image rounded-lg shadow-lg cursor-pointer"
+          class="dress-code-image rounded-lg shadow-lg cursor-pointer max-w-full h-auto mx-auto object-contain"
           @click="showColorsPopup = true"
         >
         <div v-if="showColorsPopup" class="popup-overlay" @click="showColorsPopup = false">
@@ -87,14 +87,11 @@ const dressCodeConfig = computed(() => {
 }
 
 .dress-code-image {
-  max-height: 400px;
-  width: 100%;
-  object-fit: cover;
   transition: transform 0.3s ease;
 }
 
 .dress-code-image:hover {
-  transform: scale(1.03);
+  transform: scale(1.01);
 }
 
 /* Popup Styles */
@@ -191,9 +188,7 @@ const dressCodeConfig = computed(() => {
     margin-bottom: 1.5rem;
   }
 
-  .dress-code-image {
-    max-height: 300px;
-  }
+  /* Mobile styles for dress-code-image are now handled by Tailwind classes */
 
   .popup-content {
     padding: 1.5rem;
