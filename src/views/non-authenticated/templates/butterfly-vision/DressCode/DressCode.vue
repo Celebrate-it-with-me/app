@@ -32,11 +32,11 @@ const dressCodeConfig = computed(() => {
       <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 text-center">
         {{ dressCodeConfig.subTitle }}
       </h3>
-      <div class="relative max-w-[500px] w-full mx-auto">
+      <div class="relative max-w-[500px] w-full mx-auto h-[350px] flex items-center justify-center">
         <img
           src="@/assets/images/external/dress-code.jpg"
           alt="Formal Male Attire"
-          class="dress-code-image rounded-lg shadow-lg cursor-pointer max-w-full h-auto mx-auto object-contain"
+          class="dress-code-image rounded-lg shadow-lg cursor-pointer max-w-full h-auto mx-auto object-contain max-h-[350px]"
           @click="showDressCodePopup = true"
         >
         <div v-if="showDressCodePopup" class="popup-overlay" @click="showDressCodePopup = false">
@@ -56,11 +56,11 @@ const dressCodeConfig = computed(() => {
       <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 text-center">
         Colores reservados para la Quinceañera
       </h3>
-      <div class="relative max-w-[500px] w-full mx-auto">
+      <div class="relative max-w-[500px] w-full mx-auto h-[350px] flex items-center justify-center">
         <img
           src="@/assets/images/external/dress-colors.png"
           alt="Formal Female Attire"
-          class="dress-code-image rounded-lg shadow-lg cursor-pointer max-w-full h-auto mx-auto object-contain"
+          class="dress-code-image rounded-lg shadow-lg cursor-pointer max-w-full h-auto mx-auto object-contain max-h-[350px]"
           @click="showColorsPopup = true"
         >
         <div v-if="showColorsPopup" class="popup-overlay" @click="showColorsPopup = false">
@@ -189,6 +189,13 @@ const dressCodeConfig = computed(() => {
   }
 
   /* Mobile styles for dress-code-image are now handled by Tailwind classes */
+  .relative.max-w-\[500px\] {
+    height: 250px !important; /* Smaller height for mobile */
+  }
+
+  .dress-code-image {
+    max-height: 250px !important; /* Smaller max-height for mobile */
+  }
 
   .popup-content {
     padding: 1.5rem;
