@@ -29,7 +29,7 @@ const dressCodeConfig = computed(() => {
     class="w-full flex flex-col md:flex-row justify-center md:justify-between items-center gap-8 md:gap-4"
   >
     <div class="dress-image-container w-full md:w-1/3 flex flex-col items-center">
-      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4">
+      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 text-center">
         {{ dressCodeConfig.subTitle }}
       </h3>
       <div class="relative">
@@ -42,7 +42,7 @@ const dressCodeConfig = computed(() => {
         <div v-if="showDressCodePopup" class="popup-overlay" @click="showDressCodePopup = false">
           <div class="popup-content" @click.stop>
             <h3 class="popup-title">Código de Vestimenta</h3>
-            <p class="popup-text">
+            <p class="popup-text text-dark-blue">
               Para esta ocasión especial, se sugiere un estilo formal. Los caballeros pueden optar por trajes o guayaberas elegantes,
               mientras que las damas pueden usar vestidos formales. Recuerden evitar los colores reservados para la quinceañera.
             </p>
@@ -53,7 +53,7 @@ const dressCodeConfig = computed(() => {
     </div>
 
     <div class="dress-image-container w-full md:w-1/3 flex flex-col items-center">
-      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4">
+      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 text-center">
         Colores reservados para la Quinceañera
       </h3>
       <div class="relative">
@@ -66,7 +66,7 @@ const dressCodeConfig = computed(() => {
         <div v-if="showColorsPopup" class="popup-overlay" @click="showColorsPopup = false">
           <div class="popup-content" @click.stop>
             <h3 class="popup-title">Colores Reservados</h3>
-            <p class="popup-text">
+            <p class="popup-text text-dark-blue">
               Los colores reservados para la quinceañera son <span class="reserved-color gold">Gold</span> y
               <span class="reserved-color lavender">Lavanda</span>. Por favor, evite usar estos colores en su vestimenta.
             </p>
