@@ -21,10 +21,10 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
     </div>
     <div
       class="itinerario-container relative z-10 mx-auto flex justify-center w-full h-screen min-h-screen
-             bg-pink-300 p-2 md:p-8"
+             p-2 md:p-8 overflow-y-auto"
     >
       <div
-        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
+        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-white/80 rounded-lg"
       >
         <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
         <div
