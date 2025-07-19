@@ -4,35 +4,6 @@ import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
 import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
 import DanceGif from '@/assets/images/Itinerario/dance.gif'
 import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
-import { onMounted, ref } from 'vue'
-
-const isIOS = ref(false)
-
-onMounted(() => {
-  // Detect iOS
-  isIOS.value = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-
-  const parallaxBg = document.querySelector('.parallax-bg')
-  const container = document.querySelector('.itinerario-container')
-
-  if (parallaxBg && container) {
-    // Apply parallax effect based on device
-    container.addEventListener('scroll', () => {
-      const scrollY = container.scrollTop
-      const parallaxSpeed = isIOS.value ? 0.4 : 0.3 // Different speeds for iOS vs other devices
-
-      // Move the background at a different rate than the content
-      parallaxBg.style.transform = `translate3d(0, ${scrollY * parallaxSpeed}px, 0)`
-    })
-
-    // Trigger initial position
-    setTimeout(() => {
-      const scrollEvent = new Event('scroll')
-      container.dispatchEvent(scrollEvent)
-    }, 100)
-  }
-})
 </script>
 
 <template>
@@ -40,7 +11,7 @@ onMounted(() => {
     id="sectionItinerario"
     class="relative overflow-hidden h-[100vh] w-full"
   >
-    <div class="absolute inset-0 w-full h-full parallax-bg">
+    <div class="absolute inset-0 w-full h-full">
       <img
         src="@/assets/images/img/itinerario_bg_2.jpg"
         alt="Background"
@@ -50,10 +21,10 @@ onMounted(() => {
     </div>
     <div
       class="itinerario-container relative z-10 mx-auto flex justify-center w-full h-screen min-h-screen
-             p-2 md:p-8 overflow-y-auto"
+             bg-pink-300 p-2 md:p-8"
     >
       <div
-        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-white/50 rounded-lg"
+        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
       >
         <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
         <div
@@ -164,7 +135,11 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* This style has been merged with the one below */
+.itinerario-container {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
 
 @media screen and (min-width: 1024px) {
   #sectionItinerario .absolute img {
@@ -194,47 +169,5 @@ onMounted(() => {
   100% {
     background-position: 0% 50%;
   }
-}
-
-.parallax-bg {
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-/* Non-iOS devices use a different parallax technique */
-@media (min-width: 768px) {
-  .parallax-bg img {
-    transition: transform 0.1s linear;
-  }
-}
-
-.itinerario-container {
-  min-height: 100vh;
-  width: 100%;
-  position: relative;
-  perspective: 1px;
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.itinerario-container::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
-.itinerario-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.itinerario-container::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 0.25rem;
 }
 </style>
