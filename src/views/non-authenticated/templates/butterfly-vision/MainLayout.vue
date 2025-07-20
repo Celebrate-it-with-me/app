@@ -100,7 +100,7 @@ const handleMoveToTop = () => {
       <main v-else>
         <HeaderNav />
         <HeroSection class="main-section" />
-        <SeparatorSection>
+        <SeparatorSection class="relative z-20">
           A todos los seres queridos que llenan mi vida de amor y alegría:
           Me encantaría que me acompañen a celebrar un momento muy especial, mis 15 años.
           Su presencia será, sin duda, el mejor regalo que podría recibir.

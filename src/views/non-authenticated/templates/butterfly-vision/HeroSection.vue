@@ -1,53 +1,31 @@
 <script setup>
 import bgImage from '@/assets/images/img/hero_1.jpg'
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed } from 'vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useParallaxBackground } from '@/composables/useParallaxBackground.js'
 
+// Store para invitados
 const templateStore = useTemplateStore()
 const guest = computed(() => templateStore.guest)
 const haveCompanions = computed(() => guest.value?.companions?.length > 0)
 
-let ticking = false
-let parallaxEl = null
-const speed = 0.4
-
-const onScroll = () => {
-  if (!ticking) {
-    window.requestAnimationFrame(() => {
-      const scrollY = window.scrollY
-      if (parallaxEl) {
-        const offset = scrollY * speed
-        parallaxEl.style.transform = `translate3d(0, ${offset}px, 0)`
-      }
-      ticking = false
-    })
-    ticking = true
-  }
-}
-
-onMounted(() => {
-  parallaxEl = document.querySelector('.parallax-bg')
-  window.addEventListener('scroll', onScroll)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-})
+// Activar efecto parallax
+useParallaxBackground('.parallax-bg', 0.4)
 </script>
 
 <template>
   <section
     id="sectionHome"
-    class="hero-section relative w-full min-h-screen z-0"
+    class="hero-section relative w-full min-h-screen z-0 overflow-hidden"
   >
     <!-- Fondo Parallax -->
     <div
-      class="parallax-bg absolute inset-0 bg-cover bg-center will-change-transform z-[-1]"
+      class="parallax-bg absolute inset-0 bg-cover bg-center will-change-transform z-[-1] pointer-events-none"
       :style="`background-image: url(${bgImage});`"
     ></div>
 
     <!-- Contenido -->
-    <div class="w-full h-full flex flex-col justify-between pt-20 pb-8">
+    <div class="w-full h-full flex flex-col justify-between pt-20 pb-8 z-10 relative">
       <div class="top-hero flex flex-col items-center justify-center w-full">
         <p class="text-5xl font-bold text-purple-middle font-gvibes animate__animated animate__bounceInLeft mt-2">
           Melissa Rodriguez
@@ -65,10 +43,7 @@ onUnmounted(() => {
           </p>
           <div class="guest-section mt-4 text-center">
             <h4 class="text-lg text-dark-blue">{{ guest.name }}</h4>
-            <ul
-              class="text-dark-blue text-sm mt-1"
-              v-if="haveCompanions"
-            >
+            <ul class="text-dark-blue text-sm mt-1" v-if="haveCompanions">
               <li v-for="companion in guest.companions" :key="companion.id">
                 {{ companion.name }}
               </li>
