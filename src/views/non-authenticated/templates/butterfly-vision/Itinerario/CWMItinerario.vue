@@ -1,177 +1,124 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import MargaritaGif from '@/assets/images/Itinerario/margarita.gif'
 import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
 import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
 import DanceGif from '@/assets/images/Itinerario/dance.gif'
 import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 
-// Importar las imágenes de fondo directamente
+// Imagen de fondo
 import itinerarioBg from '@/assets/images/img/itinerario_bg_2.jpg'
-import itinerarioBgLarge from '@/assets/images/img/itinerario_bg_large.jpg'
 
-// Importar el composable de parallax solo para iOS
-import { useParallaxBackground } from '@/composables/useParallaxBackground.js'
+// Referencias para el parallax
+const backgroundRef = ref(null)
+let ticking = false
 
-const isIOS = ref(false)
+// Parallax cross-device
+const handleParallax = () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      if (backgroundRef.value) {
+        const scrolled = window.scrollY
+        const speed = 0.1
+        const yPos = scrolled * speed
+        backgroundRef.value.style.transform = `translate3d(0, ${yPos}px, 0)`
+      }
+      ticking = false
+    })
+    ticking = true
+  }
+}
 
 onMounted(() => {
-  // Detectar iOS
-  const userAgent = navigator.userAgent.toLowerCase()
-  const platform = navigator.platform?.toLowerCase() || ''
-
-  isIOS.value = (
-    /ipad|iphone|ipod/.test(userAgent) &&
-    (platform.includes('ipad') || platform.includes('iphone') || platform.includes('ipod') || platform.includes('mac'))
-  ) && !platform.includes('win') && !platform.includes('linux')
-
-  console.log('Is iOS detected:', isIOS.value)
-
-  // Solo usar parallax en iOS (para simular fondo fijo)
-  if (isIOS.value) {
-    // Speed muy bajo para simular fondo casi fijo
-    useParallaxBackground('.itinerario-parallax-bg', 0.1)
-  }
+  window.addEventListener('scroll', handleParallax, { passive: true })
 })
 
-// Imagen responsiva basada en el tamaño de pantalla
-const backgroundImage = computed(() => {
-  console.log('Background image path:', itinerarioBg)
-  // Aquí podrías detectar el tamaño de pantalla si fuera necesario
-  // Por ahora usamos la imagen base
-  return itinerarioBg
-})
-
-// Para responsive podríamos usar un computed más complejo
-const currentBackgroundImage = computed(() => {
-  // En una app real, usarías un composable para detectar tamaño de pantalla
-  // Por simplicidad, retornamos la imagen base
-  return backgroundImage.value
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleParallax)
 })
 </script>
 
 <template>
-  <section
-    id="sectionItinerario"
-    class="itinerario-section relative w-full min-h-screen overflow-hidden"
-    :class="{ 'ios-version': isIOS }"
-    :style="!isIOS ? `background-image: url(${currentBackgroundImage});` : ''"
-  >
-    <!-- Fondo Parallax para iOS o fijo para desktop/Android -->
+  <section class="itinerario-section">
+    <!-- Imagen de fondo con parallax -->
     <div
-      v-if="isIOS"
-      class="itinerario-parallax-bg absolute inset-0 bg-cover bg-center will-change-transform pointer-events-none"
-      :style="`background-image: url(${currentBackgroundImage}); background-color: #fbb3cd;`"
-      style="z-index: 1;"
+      ref="backgroundRef"
+      class="background-image"
+      :style="{ backgroundImage: `url(${itinerarioBg})` }"
     ></div>
 
-    <!-- Contenido del Itinerario -->
-    <div class="w-full h-full flex justify-center p-2 md:p-8 relative" style="z-index: 10;">
-      <div
-        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
-      >
-        <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
-        <div
-          class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border"
-          style="left: 50%"
-        ></div>
-        <!-- right timeline -->
-        <div class="flex flex-col justify-between h-full">
-          <div class="mb-8 flex justify-between items-center w-full right-timeline">
-            <div class="order-1 w-5/12 flex justify-center items-center">
-              <img
-                :src="MargaritaGif"
-                alt="Margarita"
-                class="h-auto rounded-lg w-24 h-24"
-              />
+    <!-- Timeline wrapper con transparencia -->
+    <div class="timeline-wrapper">
+      <div class="timeline-container">
+        <!-- Título -->
+        <h2 class="timeline-title">Itinerario</h2>
+
+        <!-- Línea central -->
+        <div class="timeline-line"></div>
+
+        <!-- Timeline items -->
+        <div class="timeline-content">
+
+          <!-- Step 1 - Cocktail -->
+          <div class="timeline-item timeline-item-right">
+            <div class="timeline-icon-wrapper">
+              <img :src="MargaritaGif" alt="Cocktail" class="timeline-icon" />
             </div>
-            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-              <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
-            </div>
-            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-              <h3 class="font-bold text-[#111827] text-md">Cocktail</h3>
-              <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
-                7:00pm-8:00pm
-              </p>
+            <div class="timeline-number">1</div>
+            <div class="timeline-card">
+              <h3>Cocktail</h3>
+              <p>7:00pm-8:00pm</p>
             </div>
           </div>
 
-          <!-- left timeline -->
-          <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
-            <div class="order-1 w-5/12 flex justify-center items-center">
-              <img
-                :src="CeremonyGif"
-                alt="Ceremonia"
-                class="w-24 h-24 h-auto rounded-lg"
-              />
+          <!-- Step 2 - Ceremonia -->
+          <div class="timeline-item timeline-item-left">
+            <div class="timeline-icon-wrapper">
+              <img :src="CeremonyGif" alt="Ceremonia" class="timeline-icon" />
             </div>
-            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-              <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
-            </div>
-            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-              <h3 class="font-bold text-[#111827] text-xl">Ceremonia</h3>
-              <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
-                8:00pm-9:30pm
-              </p>
+            <div class="timeline-number">2</div>
+            <div class="timeline-card">
+              <h3>Ceremonia</h3>
+              <p>8:00pm-9:30pm</p>
             </div>
           </div>
 
-          <!-- right timeline -->
-          <div class="mb-8 flex justify-between items-center w-full right-timeline">
-            <div class="order-1 w-5/12 flex justify-center items-center">
-              <img
-                :src="FoodGif"
-                alt="Cena"
-                class="w-24 h-24 h-auto rounded-lg"
-              />
+          <!-- Step 3 - Cena -->
+          <div class="timeline-item timeline-item-right">
+            <div class="timeline-icon-wrapper">
+              <img :src="FoodGif" alt="Cena" class="timeline-icon" />
             </div>
-            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-              <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
-            </div>
-            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-              <h3 class="font-bold text-[#111827] text-lg">Cena</h3>
-              <p class="text-sm leading-snug tracking-wide text-[#111827] text-opacity-100">
-                9:30pm-10:30pm
-              </p>
+            <div class="timeline-number">3</div>
+            <div class="timeline-card">
+              <h3>Cena</h3>
+              <p>9:30pm-10:30pm</p>
             </div>
           </div>
 
-          <!-- left timeline -->
-          <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
-            <div class="order-1 w-5/12 flex justify-center items-center">
-              <img
-                :src="DanceGif"
-                alt="Baile Sorpresa"
-                class="w-24 h-24 h-auto rounded-lg"
-              />
+          <!-- Step 4 - Baile Sorpresa -->
+          <div class="timeline-item timeline-item-left">
+            <div class="timeline-icon-wrapper">
+              <img :src="DanceGif" alt="Baile Sorpresa" class="timeline-icon" />
             </div>
-            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-              <h1 class="mx-auto text-white font-semibold text-lg">4</h1>
-            </div>
-            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-              <h3 class="font-bold text-[#111827] text-lg">Baile Sorpresa</h3>
-              <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
-                10:30pm-11:00pm
-              </p>
+            <div class="timeline-number">4</div>
+            <div class="timeline-card">
+              <h3>Baile Sorpresa</h3>
+              <p>10:30pm-11:00pm</p>
             </div>
           </div>
 
-          <div class="mb-8 flex justify-between items-center w-full right-timeline">
-            <div class="order-1 w-5/12 flex justify-center items-center">
-              <img
-                :src="DanceFloor"
-                alt="Dance Floor"
-                class="w-24 h-24 h-auto rounded-lg"
-              />
+          <!-- Step 5 - Hora Loca -->
+          <div class="timeline-item timeline-item-right">
+            <div class="timeline-icon-wrapper">
+              <img :src="DanceFloor" alt="Hora Loca" class="timeline-icon" />
             </div>
-            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-              <h1 class="mx-auto font-semibold text-lg text-white">5</h1>
-            </div>
-            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-              <h3 class="font-bold text-[#111827] text-lg">Hora Loca</h3>
-              <p class="text-sm leading-snug tracking-wide text-[#111827] text-opacity-100">11:00pm</p>
+            <div class="timeline-number">5</div>
+            <div class="timeline-card">
+              <h3>Hora Loca</h3>
+              <p>11:00pm</p>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -179,50 +126,228 @@ const currentBackgroundImage = computed(() => {
 </template>
 
 <style scoped>
-/* Fondo fijo para desktop y Android */
-.itinerario-section:not(.ios-version) {
-  min-height: 100vh;
+/* Sección principal - más altura */
+.itinerario-section {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh + 20px); /* 10px arriba y 10px abajo */
+  overflow: hidden;
+  padding: 10px 0; /* Espaciado arriba y abajo */
+}
+
+/* Imagen de fondo con parallax - cubrir desde arriba */
+.background-image {
+  position: absolute;
+  top: -50%;
+  left: 0;
+  width: 100%;
+  height: 200%; /* Más altura para cubrir completamente */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: #fbb3cd; /* fallback */
+  will-change: transform;
+  z-index: 1;
 }
 
-/* Sin fondo directo para iOS (usa el div parallax) */
-.itinerario-section.ios-version {
-  min-height: 100vh;
-  background-color: #fbb3cd; /* fallback */
+/* Wrapper del timeline - 10px arriba y abajo */
+.timeline-wrapper {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  width: 100%;
+  height: calc(100% - 20px);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(0.5px);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
 }
 
-/* Responsivo para la imagen de fondo de iOS */
-@media screen and (min-width: 1024px) {
-  .itinerario-parallax-bg {
-    background-image: v-bind('`url(${itinerarioBgLarge})`') !important;
+/* Container del timeline - usar toda la altura disponible */
+.timeline-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 100%; /* Usar toda la altura del wrapper */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(2px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Título */
+.timeline-title {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 2rem;
+  font-family: 'Great Vibes', cursive;
+}
+
+/* Línea central - cubrir todo el contenido */
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 4rem; /* Después del título */
+  bottom: 1rem; /* Hasta casi abajo */
+  width: 2px;
+  background: rgba(107, 114, 128, 0.7);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* Contenido del timeline - distribuir verticalmente */
+.timeline-content {
+  position: relative;
+  z-index: 2;
+  flex: 1; /* Tomar todo el espacio disponible */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly; /* Distribuir uniformemente */
+}
+
+/* Item del timeline - sin margin bottom fijo */
+.timeline-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  justify-content: center;
+  flex: 1; /* Cada item toma espacio igual */
+}
+
+/* Lado derecho: Icono a la izquierda, Número centro, Card derecha */
+.timeline-item-right {
+  /* Icono a la izquierda del centro */
+}
+
+.timeline-item-right .timeline-icon-wrapper {
+  position: absolute;
+  left: calc(50% - 6rem); /* Icono a la izquierda del centro */
+}
+
+.timeline-item-right .timeline-number {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.timeline-item-right .timeline-card {
+  position: absolute;
+  left: calc(50% + 2rem); /* Card a la derecha del centro */
+}
+
+/* Lado izquierdo: Card izquierda, Número centro, Icono derecha */
+.timeline-item-left {
+  /* Card a la izquierda del centro */
+}
+
+.timeline-item-left .timeline-card {
+  position: absolute;
+  right: calc(50% + 2rem); /* Card a la izquierda del centro */
+}
+
+.timeline-item-left .timeline-number {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+}
+
+.timeline-item-left .timeline-icon-wrapper {
+  position: absolute;
+  right: calc(50% - 6rem); /* Icono a la derecha del centro */
+}
+
+/* Wrapper del icono */
+.timeline-icon-wrapper {
+  width: 64px; /* Reducir tamaño */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0; /* No permitir que se reduzca */
+}
+
+/* Iconos - asegurar que se vean las animaciones */
+.timeline-icon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.5rem;
+  object-fit: cover; /* Para mantener aspecto de las animaciones */
+}
+
+/* Números - centrados en la línea como imagen 1 */
+.timeline-number {
+  width: 2rem;
+  height: 2rem;
+  background: #1f2937;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.125rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards - ajustar tamaño */
+.timeline-card {
+  background: rgba(186, 167, 251, 0.9);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  min-width: 140px;
+  max-width: 200px;
+  flex-shrink: 0;
+}
+
+.timeline-card h3 {
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+  font-size: 1.125rem;
+}
+
+.timeline-card p {
+  color: #1f2937;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timeline-wrapper {
+    padding: 1rem;
   }
-}
 
-.gold-metallic-animated {
-  background: linear-gradient(
-    45deg,
-    #cebcfb 0%,
-    #baa7fb 35%,
-    #fffde7 50%,
-    #bba8f6 65%,
-    #e1d8ff 100%
-  );
-  background-size: 200% 200%;
-}
+  .timeline-container {
+    padding: 1rem;
+  }
 
-@keyframes goldShimmer {
-  0% {
-    background-position: 0% 50%;
+  .timeline-title {
+    font-size: 2rem;
   }
-  50% {
-    background-position: 100% 50%;
+
+  .timeline-icon {
+    width: 4rem;
+    height: 4rem;
   }
-  100% {
-    background-position: 0% 50%;
+
+  .timeline-icon-wrapper {
+    width: 64px;
+  }
+
+  .timeline-card {
+    min-width: 150px;
   }
 }
 </style>
