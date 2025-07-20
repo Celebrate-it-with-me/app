@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import MargaritaGif from '@/assets/images/Itinerario/margarita.gif'
 import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
 import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
@@ -10,19 +10,16 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 import itinerarioBg from '@/assets/images/img/itinerario_bg_2.jpg'
 import itinerarioBgLarge from '@/assets/images/img/itinerario_bg_large.jpg'
 
-const isIOS = ref(false)
-const sectionRef = ref(null)
-const iosBackgroundRef = ref(null)
-const scrollY = ref(0)
+// Importar el composable de parallax solo para iOS
+import { useParallaxBackground } from '@/composables/useParallaxBackground.js'
 
-let observer = null
+const isIOS = ref(false)
 
 onMounted(() => {
-  // Detectar iOS real (no simulación en DevTools)
+  // Detectar iOS
   const userAgent = navigator.userAgent.toLowerCase()
   const platform = navigator.platform?.toLowerCase() || ''
 
-  // Solo verdadero iOS/iPadOS - excluir simulaciones de DevTools
   isIOS.value = (
     /ipad|iphone|ipod/.test(userAgent) &&
     (platform.includes('ipad') || platform.includes('iphone') || platform.includes('ipod') || platform.includes('mac'))
@@ -30,268 +27,178 @@ onMounted(() => {
 
   console.log('Is iOS detected:', isIOS.value)
 
-  if (isIOS.value && sectionRef.value) {
-    setupIOSParallax()
-  }
-})
-
-onUnmounted(() => {
-  if (observer) {
-    observer.disconnect()
-  }
+  // Solo usar parallax en iOS (para simular fondo fijo)
   if (isIOS.value) {
-    window.removeEventListener('scroll', handleIOSScroll)
+    // Speed muy bajo para simular fondo casi fijo
+    useParallaxBackground('.itinerario-parallax-bg', 0.1)
   }
 })
 
-const setupIOSParallax = () => {
-  // Usar Intersection Observer para detectar cuando la sección está visible
-  observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        window.addEventListener('scroll', handleIOSScroll, { passive: true })
-      } else {
-        window.removeEventListener('scroll', handleIOSScroll)
-      }
-    })
-  }, {
-    threshold: 0.1
-  })
+// Imagen responsiva basada en el tamaño de pantalla
+const backgroundImage = computed(() => {
+  console.log('Background image path:', itinerarioBg)
+  // Aquí podrías detectar el tamaño de pantalla si fuera necesario
+  // Por ahora usamos la imagen base
+  return itinerarioBg
+})
 
-  if (sectionRef.value) {
-    observer.observe(sectionRef.value)
-  }
-}
-
-const handleIOSScroll = () => {
-  if (!sectionRef.value || !iosBackgroundRef.value) return
-
-  const rect = sectionRef.value.getBoundingClientRect()
-  const viewportHeight = window.innerHeight
-
-  // Solo aplicar el efecto cuando la sección está visible
-  if (rect.bottom >= 0 && rect.top <= viewportHeight) {
-    // Calcular el desplazamiento relativo a la sección
-    const scrollOffset = -rect.top
-    // Reducir el movimiento del fondo para crear efecto parallax
-    const parallaxOffset = scrollOffset * 0.3
-
-    // Aplicar transform al fondo para que se mueva más lento
-    iosBackgroundRef.value.style.transform = `translate3d(0, ${parallaxOffset}px, 0)`
-  }
-}
+// Para responsive podríamos usar un computed más complejo
+const currentBackgroundImage = computed(() => {
+  // En una app real, usarías un composable para detectar tamaño de pantalla
+  // Por simplicidad, retornamos la imagen base
+  return backgroundImage.value
+})
 </script>
 
 <template>
-  <div
-    ref="sectionRef"
+  <section
     id="sectionItinerario"
-    class="itinerario-container mx-auto flex justify-center w-full min-h-screen p-2 md:p-8"
-    :class="{ 'ios-container': isIOS }"
-    :style="!isIOS ? {
-      backgroundImage: `url(${itinerarioBg})`
-    } : {}"
+    class="itinerario-section relative w-full min-h-screen overflow-hidden"
+    :class="{ 'ios-version': isIOS }"
+    :style="!isIOS ? `background-image: url(${currentBackgroundImage});` : ''"
   >
-    <!-- Fondo con parallax controlado por JavaScript para iOS -->
+    <!-- Fondo Parallax para iOS o fijo para desktop/Android -->
     <div
       v-if="isIOS"
-      ref="iosBackgroundRef"
-      class="ios-parallax-bg"
-      :style="{ backgroundImage: `url(${itinerarioBg})` }"
+      class="itinerario-parallax-bg absolute inset-0 bg-cover bg-center will-change-transform pointer-events-none"
+      :style="`background-image: url(${currentBackgroundImage}); background-color: #fbb3cd;`"
+      style="z-index: 1;"
     ></div>
-    <div
-      class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
-    >
-      <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
+
+    <!-- Contenido del Itinerario -->
+    <div class="w-full h-full flex justify-center p-2 md:p-8 relative" style="z-index: 10;">
       <div
-        class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border"
-        style="left: 50%"
-      ></div>
-      <!-- right timeline -->
-      <div class="flex flex-col justify-between h-full">
-        <div class="mb-8 flex justify-between items-center w-full right-timeline">
-          <div class="order-1 w-5/12 flex justify-center items-center">
-            <img
-              :src="MargaritaGif"
-              alt="Margarita"
-              class="h-auto rounded-lg w-24 h-24"
-            />
-          </div>
-          <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-            <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
-          </div>
-          <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-            <h3 class="font-bold text-[#111827] text-md">Cocktail</h3>
-            <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
-              7:00pm-8:00pm
-            </p>
-          </div>
-        </div>
-
-        <!-- left timeline -->
-        <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
-          <div class="order-1 w-5/12 flex justify-center items-center">
-            <img
-              :src="CeremonyGif"
-              alt="Ceremonia"
-              class="w-24 h-24 h-auto rounded-lg"
-            />
-          </div>
-          <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-            <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
-          </div>
-          <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-            <h3 class="font-bold text-[#111827] text-xl">Ceremonia</h3>
-            <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
-              8:00pm-9:30pm
-            </p>
-          </div>
-        </div>
-
+        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
+      >
+        <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
+        <div
+          class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border"
+          style="left: 50%"
+        ></div>
         <!-- right timeline -->
-        <div class="mb-8 flex justify-between items-center w-full right-timeline">
-          <div class="order-1 w-5/12 flex justify-center items-center">
-            <img
-              :src="FoodGif"
-              alt="Cena"
-              class="w-24 h-24 h-auto rounded-lg"
-            />
+        <div class="flex flex-col justify-between h-full">
+          <div class="mb-8 flex justify-between items-center w-full right-timeline">
+            <div class="order-1 w-5/12 flex justify-center items-center">
+              <img
+                :src="MargaritaGif"
+                alt="Margarita"
+                class="h-auto rounded-lg w-24 h-24"
+              />
+            </div>
+            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+              <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
+            </div>
+            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
+              <h3 class="font-bold text-[#111827] text-md">Cocktail</h3>
+              <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
+                7:00pm-8:00pm
+              </p>
+            </div>
           </div>
-          <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-            <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
-          </div>
-          <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-            <h3 class="font-bold text-[#111827] text-lg">Cena</h3>
-            <p class="text-sm leading-snug tracking-wide text-[#111827] text-opacity-100">
-              9:30pm-10:30pm
-            </p>
-          </div>
-        </div>
 
-        <!-- left timeline -->
-        <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
-          <div class="order-1 w-5/12 flex justify-center items-center">
-            <img
-              :src="DanceGif"
-              alt="Baile Sorpresa"
-              class="w-24 h-24 h-auto rounded-lg"
-            />
+          <!-- left timeline -->
+          <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+            <div class="order-1 w-5/12 flex justify-center items-center">
+              <img
+                :src="CeremonyGif"
+                alt="Ceremonia"
+                class="w-24 h-24 h-auto rounded-lg"
+              />
+            </div>
+            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+              <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
+            </div>
+            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
+              <h3 class="font-bold text-[#111827] text-xl">Ceremonia</h3>
+              <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
+                8:00pm-9:30pm
+              </p>
+            </div>
           </div>
-          <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-            <h1 class="mx-auto text-white font-semibold text-lg">4</h1>
-          </div>
-          <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-            <h3 class="font-bold text-[#111827] text-lg">Baile Sorpresa</h3>
-            <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
-              10:30pm-11:00pm
-            </p>
-          </div>
-        </div>
 
-        <div class="mb-8 flex justify-between items-center w-full right-timeline">
-          <div class="order-1 w-5/12 flex justify-center items-center">
-            <img
-              :src="DanceFloor"
-              alt="Dance Floor"
-              class="w-24 h-24 h-auto rounded-lg"
-            />
+          <!-- right timeline -->
+          <div class="mb-8 flex justify-between items-center w-full right-timeline">
+            <div class="order-1 w-5/12 flex justify-center items-center">
+              <img
+                :src="FoodGif"
+                alt="Cena"
+                class="w-24 h-24 h-auto rounded-lg"
+              />
+            </div>
+            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+              <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
+            </div>
+            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
+              <h3 class="font-bold text-[#111827] text-lg">Cena</h3>
+              <p class="text-sm leading-snug tracking-wide text-[#111827] text-opacity-100">
+                9:30pm-10:30pm
+              </p>
+            </div>
           </div>
-          <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
-            <h1 class="mx-auto font-semibold text-lg text-white">5</h1>
+
+          <!-- left timeline -->
+          <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+            <div class="order-1 w-5/12 flex justify-center items-center">
+              <img
+                :src="DanceGif"
+                alt="Baile Sorpresa"
+                class="w-24 h-24 h-auto rounded-lg"
+              />
+            </div>
+            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+              <h1 class="mx-auto text-white font-semibold text-lg">4</h1>
+            </div>
+            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
+              <h3 class="font-bold text-[#111827] text-lg">Baile Sorpresa</h3>
+              <p class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100">
+                10:30pm-11:00pm
+              </p>
+            </div>
           </div>
-          <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
-            <h3 class="font-bold text-[#111827] text-lg">Hora Loca</h3>
-            <p class="text-sm leading-snug tracking-wide text-[#111827] text-opacity-100">11:00pm</p>
+
+          <div class="mb-8 flex justify-between items-center w-full right-timeline">
+            <div class="order-1 w-5/12 flex justify-center items-center">
+              <img
+                :src="DanceFloor"
+                alt="Dance Floor"
+                class="w-24 h-24 h-auto rounded-lg"
+              />
+            </div>
+            <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
+              <h1 class="mx-auto font-semibold text-lg text-white">5</h1>
+            </div>
+            <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
+              <h3 class="font-bold text-[#111827] text-lg">Hora Loca</h3>
+              <p class="text-sm leading-snug tracking-wide text-[#111827] text-opacity-100">11:00pm</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>
-/* Estilos para desktop y Android (parallax normal) */
-.itinerario-container:not(.ios-container) {
-  position: relative;
+/* Fondo fijo para desktop y Android */
+.itinerario-section:not(.ios-version) {
   min-height: 100vh;
-  width: 100%;
-  background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
-  background-color: #fbb3cd; /* bg-pink-300 fallback */
+  background-color: #fbb3cd; /* fallback */
 }
 
-/* Fallback para cualquier caso */
-.itinerario-container {
-  position: relative;
+/* Sin fondo directo para iOS (usa el div parallax) */
+.itinerario-section.ios-version {
   min-height: 100vh;
-  width: 100%;
-  background-color: #fbb3cd; /* bg-pink-300 fallback */
+  background-color: #fbb3cd; /* fallback */
 }
 
-/* Estilos específicos para iOS con parallax controlado por JS */
-.itinerario-container.ios-container {
-  background-image: none !important;
-  background-attachment: scroll;
-  position: relative;
-  overflow: hidden;
-}
-
-.ios-parallax-bg {
-  position: absolute;
-  top: -20%;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 140%; /* Más alto para permitir el movimiento */
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  z-index: 1;
-
-  /* Optimizaciones para iOS */
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* Responsive para iOS */
+/* Responsivo para la imagen de fondo de iOS */
 @media screen and (min-width: 1024px) {
-  .ios-parallax-bg {
+  .itinerario-parallax-bg {
     background-image: v-bind('`url(${itinerarioBgLarge})`') !important;
-  }
-}
-
-.timeline-container {
-  position: relative;
-  z-index: 10;
-}
-
-/* Media queries para responsive */
-@media screen and (min-width: 768px) {
-  .itinerario-container:not(.ios-container) {
-    background-size: 100% auto;
-  }
-
-  .ios-fixed-bg {
-    background-size: 100% auto;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .itinerario-container:not(.ios-container) {
-    background-image: v-bind('`url(${itinerarioBgLarge})`') !important;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-attachment: fixed;
-  }
-
-  .ios-fixed-bg {
-    background-image: v-bind('`url(${itinerarioBgLarge})`') !important;
-    background-size: cover;
   }
 }
 
