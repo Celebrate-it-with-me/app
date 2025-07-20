@@ -240,7 +240,7 @@ const eventValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       eventName: zod.string().min(1, 'Event name is required.'),
-      eventType: zod.number({
+      eventType: zod.string({
         required_error: 'Event type is required.',
         invalid_type_error: 'Invalid event type.'
       }),
