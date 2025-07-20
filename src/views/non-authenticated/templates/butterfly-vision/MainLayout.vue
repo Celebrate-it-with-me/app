@@ -270,7 +270,7 @@ section {
 }
 
 main {
-  overflow-y: auto;
+  /*overflow-y: auto;*/
   height: 100vh;
 }
 
