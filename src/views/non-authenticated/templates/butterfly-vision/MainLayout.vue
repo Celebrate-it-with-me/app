@@ -22,50 +22,23 @@ const showButterflyLogo = ref(true)
 const showOverlay = ref(true)
 const videoInstance = templateRef('videoRef')
 const isIOS = ref(false)
-
 const isMobile = ref(false)
 const mobileSrc = new URL('@/assets/videos/mobile_intro.mp4', import.meta.url).href
 
 onMounted(() => {
-  // Detectar si es iOS
   isIOS.value = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
-
   isMobile.value = window.innerWidth < 768
   document.body.classList.remove('dark')
   showHideScrollButton()
 
-  // Cargar y preparar el video pero no reproducirlo
   if (videoInstance.value) {
     videoInstance.value.load()
-
-    // Detectar cuando el video está listo para reproducir
     videoInstance.value.addEventListener('canplaythrough', () => {
-      // Asegurar que el primer frame sea visible
       if (videoInstance.value.paused) {
-        // Intentar mostrar el primer frame sin reproducir
         videoInstance.value.currentTime = 0.1
       }
     })
   }
-
-  /*const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.intersectionRatio > 0.5) {
-        entry.target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        })
-      }
-    })
-  }, {
-    threshold: 0.5,
-    rootMargin: '0px'
-  })
-
-  const sections = document.querySelectorAll('.main-section')
-  sections.forEach(section => {
-    observer.observe(section)
-  })*/
 })
 
 const startTheVideo = () => {
@@ -78,7 +51,6 @@ const startTheVideo = () => {
     if (playPromise !== undefined) {
       playPromise.catch(error => {
         console.error("Error reproduciendo video:", error)
-        // Si falla la reproducción, volvemos a mostrar el overlay
         showOverlay.value = true
       })
     }
@@ -96,10 +68,7 @@ const showHideScrollButton = () => {
 }
 
 const handleMoveToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  })
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 
@@ -116,91 +85,62 @@ const handleMoveToTop = () => {
           @ended="handleVideoEnd"
           @click="startTheVideo"
         >
-          <source
-            :src="mobileSrc"
-            type="video/mp4"
-          />
+          <source :src="mobileSrc" type="video/mp4" />
         </video>
 
-        <!-- Overlay "Click para empezar" siempre visible al inicio -->
-        <div v-if="showOverlay" class="absolute inset-x-0 bottom-0 mb-8 flex flex-col items-center justify-center cursor-pointer z-20" @click="startTheVideo">
+        <div
+          v-if="showOverlay"
+          class="absolute inset-x-0 bottom-0 mb-8 flex flex-col items-center justify-center cursor-pointer z-20"
+          @click="startTheVideo"
+        >
           <img src="@/assets/images/img/hand-tap.svg" alt="Tap icon" class="w-16 h-16 animate-pulse" />
           <p class="text-white text-xl font-semibold mt-2 text-center text-shadow">Click para empezar</p>
         </div>
       </div>
-      <main v-else class="">
+      <main v-else>
         <HeaderNav />
-
         <HeroSection class="main-section" />
-
-        <SeparatorSection >
+        <SeparatorSection>
           A todos los seres queridos que llenan mi vida de amor y alegría:
           Me encantaría que me acompañen a celebrar un momento muy especial, mis 15 años.
           Su presencia será, sin duda, el mejor regalo que podría recibir.
         </SeparatorSection>
-
         <SaveTheDate class="main-section" />
-
         <SeparatorSection>
           Quienes ocupan un lugar especial en el corazón, crean recuerdos que duran para siempre.
         </SeparatorSection>
-
         <CWMItinerario class="main-section" />
-
         <SeparatorSection>
           ¡La fiesta está por comenzar! Prepárate para reír, bailar y disfrutar al máximo.
         </SeparatorSection>
-
-        <SweetMemories
-          class="main-section"
-          :mode="'presentation'"
-        />
-
+        <SweetMemories class="main-section" :mode="'presentation'" />
         <SeparatorSection>
           Gracias por acompañarme en cada paso de mi historia, porque sin ti no sería la misma.
           Hoy, celebremos juntos este día inolvidable.
         </SeparatorSection>
-
         <RSVP class="main-section" />
-
         <SeparatorSection>
           La música, las memorias y ustedes harán de esta noche mágica.
         </SeparatorSection>
-
-        <SuggestedMusic class="main-section"/>
-
+        <SuggestedMusic class="main-section" />
         <SeparatorSection>
           Con música, recuerdos y su compañía, esta noche será mágica.
         </SeparatorSection>
-
-        <DressCode class="main-section"/>
-
+        <DressCode class="main-section" />
         <SeparatorSection>
           La elegancia en el vestir realza la belleza del momento compartido.
         </SeparatorSection>
-
-        <EventComments
-          origin="event"
-          class="main-section"
-        />
-
+        <EventComments origin="event" class="main-section" />
         <SeparatorSection>
           Donde hay amor y alegría, el momento es perfecto.
         </SeparatorSection>
-
         <EventLocations />
-
-        <SeparatorSection >
+        <SeparatorSection>
           Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
           compartir con cada uno de ustedes. ¡Gracias por estar aquí!
         </SeparatorSection>
-
         <SwipeLeftIcon />
-
-        <BackgroundMusic
-          origin="event"
-        />
-
+        <BackgroundMusic origin="event" />
         <EventFooter />
       </main>
     </transition>
@@ -230,15 +170,9 @@ body {
 }
 
 @keyframes butterfly-animate {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 @font-face {
@@ -270,11 +204,8 @@ section {
 }
 
 main {
-  /*overflow-y: auto;*/
-  height: 100vh;
-}
-
-section {
-  scroll-margin-top: 80px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 </style>
