@@ -1,24 +1,24 @@
 <script setup>
-import { computed, ref, onMounted, onUnmounted } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
 import bgImage from '@/assets/images/img/hero_1.jpg'
+import { computed, onMounted, onUnmounted } from 'vue'
+import { useTemplateStore } from '@/stores/useTemplateStore'
 
 const templateStore = useTemplateStore()
 const guest = computed(() => templateStore.guest)
 const haveCompanions = computed(() => guest.value?.companions?.length > 0)
 
-const rawScroll = ref(0)
-const smoothedScroll = ref(0)
-const parallaxY = computed(() => smoothedScroll.value * 0.5)
-
 let ticking = false
+let parallaxEl = null
+const speed = 0.4
 
-const handleScroll = () => {
-  rawScroll.value = window.scrollY
-
+const onScroll = () => {
   if (!ticking) {
     window.requestAnimationFrame(() => {
-      smoothedScroll.value = rawScroll.value
+      const scrollY = window.scrollY
+      if (parallaxEl) {
+        const offset = scrollY * speed
+        parallaxEl.style.transform = `translate3d(0, ${offset}px, 0)`
+      }
       ticking = false
     })
     ticking = true
@@ -26,29 +26,27 @@ const handleScroll = () => {
 }
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
+  parallaxEl = document.querySelector('.parallax-bg')
+  window.addEventListener('scroll', onScroll)
 })
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('scroll', onScroll)
 })
 </script>
 
 <template>
   <section
     id="sectionHome"
-    class="hero-section relative w-full min-h-screen z-0 overflow-hidden"
+    class="hero-section relative w-full min-h-screen z-0"
   >
-    <!-- Parallax Background -->
+    <!-- Fondo Parallax -->
     <div
-      class="absolute inset-0 bg-cover bg-center z-[-1] will-change-transform transition-transform ease-out"
-      :style="{
-        backgroundImage: `url(${bgImage})`,
-        transform: `translateY(${parallaxY}px)`
-      }"
+      class="parallax-bg absolute inset-0 bg-cover bg-center will-change-transform z-[-1]"
+      :style="`background-image: url(${bgImage});`"
     ></div>
 
-    <!-- Foreground Content -->
+    <!-- Contenido -->
     <div class="w-full h-full flex flex-col justify-between pt-20 pb-8">
       <div class="top-hero flex flex-col items-center justify-center w-full">
         <p class="text-5xl font-bold text-purple-middle font-gvibes animate__animated animate__bounceInLeft mt-2">
@@ -67,7 +65,10 @@ onUnmounted(() => {
           </p>
           <div class="guest-section mt-4 text-center">
             <h4 class="text-lg text-dark-blue">{{ guest.name }}</h4>
-            <ul class="text-dark-blue text-sm mt-1" v-if="haveCompanions">
+            <ul
+              class="text-dark-blue text-sm mt-1"
+              v-if="haveCompanions"
+            >
               <li v-for="companion in guest.companions" :key="companion.id">
                 {{ companion.name }}
               </li>
