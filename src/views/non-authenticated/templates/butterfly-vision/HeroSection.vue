@@ -19,7 +19,7 @@ const haveCompanions = computed(() => {
           z-10 mt-0 md:mt-12"
   >
     <!-- Hero Section -->
-    <div class="hero relative w-full h-screen overflow-hidden">
+    <div class="hero relative w-full h-screen">
       <!-- Parallax Background -->
       <div
         class="parallax-bg absolute inset-0 bg-fixed bg-cover bg-center sm:bg-contain flex flex-col

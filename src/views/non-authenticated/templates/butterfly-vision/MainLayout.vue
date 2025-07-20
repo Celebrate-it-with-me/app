@@ -48,7 +48,7 @@ onMounted(() => {
     })
   }
 
-  const observer = new IntersectionObserver((entries) => {
+  /*const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.intersectionRatio > 0.5) {
         entry.target.scrollIntoView({
@@ -65,7 +65,7 @@ onMounted(() => {
   const sections = document.querySelectorAll('.main-section')
   sections.forEach(section => {
     observer.observe(section)
-  })
+  })*/
 })
 
 const startTheVideo = () => {
@@ -270,7 +270,6 @@ section {
 }
 
 main {
-  scroll-snap-type: y proximity;
   overflow-y: auto;
   height: 100vh;
 }
