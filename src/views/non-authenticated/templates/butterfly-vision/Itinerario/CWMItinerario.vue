@@ -1,36 +1,25 @@
 <script setup>
-import { ref, onMounted } from 'vue'
 import MargaritaGif from '@/assets/images/Itinerario/margarita.gif'
 import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
 import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
 import DanceGif from '@/assets/images/Itinerario/dance.gif'
 import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 
-const isIOS = ref(false)
-
-onMounted(() => {
-  // Detectar iOS/Safari móvil
-  isIOS.value = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.userAgent.includes('Safari') && navigator.userAgent.includes('Mobile'))
-})
+// Importar las imágenes de fondo directamente
+import itinerarioBg from '@/assets/images/img/itinerario_bg_2.jpg'
+import itinerarioBgLarge from '@/assets/images/img/itinerario_bg_large.jpg'
 </script>
 
 <template>
   <div
     id="sectionItinerario"
-    class="itinerario-container bg-gray-200 mx-auto flex justify-center w-full h-screen min-h-screen
-           bg-pink-300 p-2 md:p-8"
-    :class="{ 'ios-container': isIOS }"
+    class="itinerario-container mx-auto flex justify-center w-full min-h-screen p-2 md:p-8"
+    :style="{
+      backgroundImage: `url(${itinerarioBg})`
+    }"
   >
-    <!-- Fondo fijo para iOS -->
-    <div
-      v-if="isIOS"
-      class="ios-fixed-background"
-    ></div>
-
     <div
       class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
-      :class="{ 'ios-content': isIOS }"
     >
       <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
       <div
@@ -140,74 +129,38 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Estilos para desktop y Android (funciona normal) */
 .itinerario-container {
-  background-image: url('@/assets/images/img/itinerario_bg_2.jpg');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-  background-position: center;
+  position: relative;
   min-height: 100vh;
   width: 100%;
-  position: relative;
-}
-
-/* Estilos específicos para iOS */
-.itinerario-container.ios-container {
-  background-image: none; /* Removemos el fondo del contenedor */
-  background-attachment: scroll;
-  position: relative;
-  overflow: hidden;
-}
-
-.ios-fixed-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: url('@/assets/images/img/itinerario_bg_2.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  z-index: -1;
-  /* Forzamos que permanezca fijo */
-  transform: translateZ(0);
-  backface-visibility: hidden;
+  background-attachment: fixed;
+  /* Fallback color */
+  background-color: #fbb3cd; /* bg-pink-300 */
 }
 
-.ios-content {
+.timeline-container {
   position: relative;
-  z-index: 1;
-  background: rgba(229, 231, 235, 0.4); /* bg-gray-200/40 */
+  z-index: 3;
 }
 
 /* Media queries para responsive */
 @media screen and (min-width: 768px) {
-  .itinerario-container:not(.ios-container) {
-    background-size: 100% auto;
-    background-position: center;
-  }
-
-  .ios-fixed-background {
+  .itinerario-container {
     background-size: 100% auto;
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .itinerario-container:not(.ios-container) {
-    background-image: url('@/assets/images/img/itinerario_bg_large.jpg');
-    background-size: cover;
-    background-position: center;
-  }
-
-  .ios-fixed-background {
-    background-image: url('@/assets/images/img/itinerario_bg_large.jpg');
+  .itinerario-container {
+    background-image: v-bind('`url(${itinerarioBgLarge})`') !important;
     background-size: cover;
   }
 }
 
-/* Fallback usando CSS para Safari móvil */
+/* Específico para iOS Safari - usa scroll en lugar de fixed */
 @supports (-webkit-touch-callout: none) {
   .itinerario-container {
     background-attachment: scroll;
