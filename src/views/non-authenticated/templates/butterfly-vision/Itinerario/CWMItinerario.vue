@@ -14,7 +14,7 @@ const { scroll } = useParallax(containerRef)
 </script>
 
 <template>
-  <div ref="containerRef" id="sectionItinerario" class="relative overflow-hidden min-h-screen w-full">
+  <div ref="containerRef" id="sectionItinerario" class="relative overflow-hidden min-h-[200vh] w-full">
     <!-- Background Image (parallax simulated) -->
     <img
       :src="ItineraryBg"
@@ -25,10 +25,10 @@ const { scroll } = useParallax(containerRef)
 
     <!-- Timeline content -->
     <div
-      class="mx-auto flex justify-center w-full min-h-screen p-2 md:p-8 backdrop-blur-sm"
+      class="relative z-10 mx-auto flex justify-center w-full min-h-screen p-2 md:p-8 bg-white/30 backdrop-blur-sm"
     >
       <div
-        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
+        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/30 rounded-lg"
       >
         <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
         <div
@@ -45,7 +45,7 @@ const { scroll } = useParallax(containerRef)
             <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
               <h1 class="mx-auto font-semibold text-lg text-white">1</h1>
             </div>
-            <div class="order-1 bg-[#baa7fb]/80 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
+            <div class="order-1 bg-[#baa7fb]/70 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
               <h3 class="font-bold text-[#111827] text-md">Cocktail</h3>
               <p class="text-sm font-medium text-[#111827]">7:00pm–8:00pm</p>
             </div>
@@ -59,7 +59,7 @@ const { scroll } = useParallax(containerRef)
             <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
               <h1 class="mx-auto text-white font-semibold text-lg">2</h1>
             </div>
-            <div class="order-1 bg-[#baa7fb]/80 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
+            <div class="order-1 bg-[#baa7fb]/70 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
               <h3 class="font-bold text-[#111827] text-xl">Ceremonia</h3>
               <p class="text-sm font-medium text-[#111827]">8:00pm–9:30pm</p>
             </div>
@@ -73,7 +73,7 @@ const { scroll } = useParallax(containerRef)
             <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
               <h1 class="mx-auto font-semibold text-lg text-white">3</h1>
             </div>
-            <div class="order-1 bg-[#baa7fb]/80 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
+            <div class="order-1 bg-[#baa7fb]/70 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
               <h3 class="font-bold text-[#111827] text-lg">Cena</h3>
               <p class="text-sm text-[#111827]">9:30pm–10:30pm</p>
             </div>
@@ -87,7 +87,7 @@ const { scroll } = useParallax(containerRef)
             <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
               <h1 class="mx-auto text-white font-semibold text-lg">4</h1>
             </div>
-            <div class="order-1 bg-[#baa7fb]/80 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
+            <div class="order-1 bg-[#baa7fb]/70 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
               <h3 class="font-bold text-[#111827] text-lg">Baile Sorpresa</h3>
               <p class="text-sm font-medium text-[#111827]">10:30pm–11:00pm</p>
             </div>
@@ -101,7 +101,7 @@ const { scroll } = useParallax(containerRef)
             <div class="z-20 flex items-center order-1 bg-gray-800 shadow-xl w-8 h-8 rounded-full">
               <h1 class="mx-auto font-semibold text-lg text-white">5</h1>
             </div>
-            <div class="order-1 bg-[#baa7fb]/80 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
+            <div class="order-1 bg-[#baa7fb]/70 backdrop-blur-sm rounded-lg shadow-xl w-5/12 px-2 py-2">
               <h3 class="font-bold text-[#111827] text-lg">Hora Loca</h3>
               <p class="text-sm text-[#111827]">11:00pm</p>
             </div>
