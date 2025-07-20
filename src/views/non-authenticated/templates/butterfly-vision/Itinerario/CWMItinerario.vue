@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
 import MargaritaGif from '@/assets/images/Itinerario/margarita.gif'
 import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
 import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
@@ -8,16 +9,45 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 // Importar las imágenes de fondo directamente
 import itinerarioBg from '@/assets/images/img/itinerario_bg_2.jpg'
 import itinerarioBgLarge from '@/assets/images/img/itinerario_bg_large.jpg'
+
+const isIOS = ref(false)
+const sectionRef = ref(null)
+
+onMounted(() => {
+  // Detectar iOS real (no simulación en DevTools)
+  const userAgent = navigator.userAgent.toLowerCase()
+  const platform = navigator.platform?.toLowerCase() || ''
+
+  // Solo verdadero iOS/iPadOS - excluir simulaciones de DevTools
+  isIOS.value = (
+    /ipad|iphone|ipod/.test(userAgent) &&
+    (platform.includes('ipad') || platform.includes('iphone') || platform.includes('ipod') || platform.includes('mac'))
+  ) && !platform.includes('win') && !platform.includes('linux')
+
+  console.log('Is iOS detected:', isIOS.value)
+  console.log('User Agent:', navigator.userAgent)
+  console.log('Platform:', navigator.platform)
+  console.log('Is DevTools simulation:', /iphone|ipad|ipod/.test(userAgent) && platform.includes('win'))
+  console.log('Should show background on container:', !isIOS.value)
+})
 </script>
 
 <template>
   <div
+    ref="sectionRef"
     id="sectionItinerario"
     class="itinerario-container mx-auto flex justify-center w-full min-h-screen p-2 md:p-8"
-    :style="{
+    :class="{ 'ios-container': isIOS }"
+    :style="!isIOS ? {
       backgroundImage: `url(${itinerarioBg})`
-    }"
+    } : {}"
   >
+    <!-- Fondo fijo específico para iOS -->
+    <div
+      v-if="isIOS"
+      class="ios-fixed-bg"
+      :style="{ backgroundImage: `url(${itinerarioBg})` }"
+    ></div>
     <div
       class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
     >
@@ -129,7 +159,8 @@ import itinerarioBgLarge from '@/assets/images/img/itinerario_bg_large.jpg'
 </template>
 
 <style scoped>
-.itinerario-container {
+/* Estilos para desktop y Android (parallax normal) */
+.itinerario-container:not(.ios-container) {
   position: relative;
   min-height: 100vh;
   width: 100%;
@@ -137,33 +168,79 @@ import itinerarioBgLarge from '@/assets/images/img/itinerario_bg_large.jpg'
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  /* Fallback color */
-  background-color: #fbb3cd; /* bg-pink-300 */
+  background-color: #fbb3cd; /* bg-pink-300 fallback */
+}
+
+/* Fallback para cualquier caso */
+.itinerario-container {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #fbb3cd; /* bg-pink-300 fallback */
+}
+
+/* Estilos específicos para iOS */
+.itinerario-container.ios-container {
+  background-image: none !important;
+  background-attachment: scroll;
+  position: relative;
+  overflow: hidden; /* Importante para el efecto */
+}
+
+.ios-fixed-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: scroll;
+  z-index: 1;
+
+  /* Optimizaciones específicas para iOS */
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+
+  /* Asegurar que el fondo cubra toda el área visible */
+  min-height: 100vh;
+  min-width: 100vw;
 }
 
 .timeline-container {
   position: relative;
-  z-index: 3;
+  z-index: 10;
 }
 
 /* Media queries para responsive */
 @media screen and (min-width: 768px) {
-  .itinerario-container {
+  .itinerario-container:not(.ios-container) {
+    background-size: 100% auto;
+  }
+
+  .ios-fixed-bg {
     background-size: 100% auto;
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .itinerario-container {
+  .itinerario-container:not(.ios-container) {
     background-image: v-bind('`url(${itinerarioBgLarge})`') !important;
     background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
   }
-}
 
-/* Específico para iOS Safari - usa scroll en lugar de fixed */
-@supports (-webkit-touch-callout: none) {
-  .itinerario-container {
-    background-attachment: scroll;
+  .ios-fixed-bg {
+    background-image: v-bind('`url(${itinerarioBgLarge})`') !important;
+    background-size: cover;
   }
 }
 
