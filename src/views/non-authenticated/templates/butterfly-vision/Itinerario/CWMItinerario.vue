@@ -19,13 +19,13 @@ const { scroll } = useParallax(containerRef)
     <img
       :src="ItineraryBg"
       alt="Background"
-      class="absolute inset-0 w-full h-full object-cover object-center -z-10"
+      class="absolute inset-0 w-full h-full object-cover object-center z-0"
       :style="{ transform: `translateY(${scroll * 50}px)` }"
     />
 
     <!-- Timeline content -->
     <div
-      class="mx-auto flex justify-center w-full min-h-screen p-2 md:p-8 bg-pink-300/70 backdrop-blur-sm"
+      class="mx-auto flex justify-center w-full min-h-screen p-2 md:p-8 backdrop-blur-sm"
     >
       <div
         class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
