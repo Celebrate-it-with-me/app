@@ -1,7 +1,6 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, nextTick } from 'vue'
 import { useParallaxBackground } from '@/composables/useParallaxBackground'
-
 import MargaritaGif from '@/assets/images/Itinerario/margarita.gif'
 import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
 import FoodGif from '@/assets/images/Itinerario/food-delivery.gif'
@@ -9,25 +8,30 @@ import DanceGif from '@/assets/images/Itinerario/dance.gif'
 import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 import ItineraryBg from '@/assets/images/img/itinerario_bg_2.jpg'
 
-// ⚠️ SOLO LLAMA UNA VEZ EL PARALLAX EN onMounted
 onMounted(() => {
-  useParallaxBackground('.parallax-bg', 0.3)
+  nextTick(() => {
+    useParallaxBackground('#sectionItinerario', 0.3)
+  })
 })
 </script>
 
 <template>
-  <section id="sectionItinerario" class="relative w-full min-h-screen overflow-hidden">
-    <!-- Fondo con efecto parallax -->
-    <div
-      class="parallax-bg absolute top-0 left-0 w-full h-[150%] bg-cover bg-center z-0"
-      :style="`background-image: url('${ItineraryBg}')`"
-    ></div>
-
-    <!-- Contenido principal con overlay -->
-    <div class="relative z-10 w-full min-h-screen bg-pink/60 p-2 md:p-8 flex justify-center">
-      <div class="timeline-container w-full md:w-3/4 py-10 px-2 bg-white/60 rounded-lg">
+  <div
+    id="sectionItinerario"
+    class="parallax-bg relative w-full bg-cover bg-center"
+    :style="`background-image: url('${ItineraryBg}')`"
+  >
+    <!-- Overlay -->
+    <div class="w-full min-h-[100vh] bg-pink/60 p-2 md:p-8 flex justify-center">
+      <div
+        class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-[#e5e7eb]/60 rounded-lg"
+      >
         <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
-        <div class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border" style="left: 50%"></div>
+
+        <div
+          class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border"
+          style="left: 50%"
+        ></div>
 
         <div class="flex flex-col justify-between h-full">
           <!-- Paso 1 -->
@@ -102,12 +106,37 @@ onMounted(() => {
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <style scoped>
-.parallax-bg {
+#sectionItinerario {
   will-change: transform;
-  pointer-events: none;
+  position: relative;
+  z-index: 0;
+}
+
+.gold-metallic-animated {
+  background: linear-gradient(
+    45deg,
+    #cebcfb 0%,
+    #baa7fb 35%,
+    #fffde7 50%,
+    #bba8f6 65%,
+    #e1d8ff 100%
+  );
+  background-size: 200% 200%;
+}
+
+@keyframes goldShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 </style>
