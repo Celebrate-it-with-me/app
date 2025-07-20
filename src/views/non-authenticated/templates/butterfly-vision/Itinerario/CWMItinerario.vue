@@ -9,19 +9,23 @@ import DanceGif from '@/assets/images/Itinerario/dance.gif'
 import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 import ItineraryBg from '@/assets/images/img/itinerario_bg_2.jpg'
 
-const containerRef = ref(null)
-const { scroll } = useParallax(containerRef)
+const bgRef = ref(null)
+const { tilt } = useParallax(bgRef)
 </script>
 
 <template>
-  <div ref="containerRef" id="sectionItinerario" class="relative overflow-hidden min-h-[200vh] w-full">
-    <!-- Background Image (parallax simulated) -->
-    <img
-      :src="ItineraryBg"
-      alt="Background"
-      class="absolute inset-0 w-full h-full object-cover object-center z-0"
-      :style="{ transform: `translateY(${scroll * 100}px)` }"
-    />
+  <div ref="bgRef" id="sectionItinerario" class="relative min-h-[200vh] w-full overflow-hidden">
+    <!-- Parallax Background -->
+    <div
+      class="absolute inset-0 w-full h-full z-0 transition-transform duration-300 ease-out will-change-transform"
+      :style="{ transform: `translateY(${tilt * 50}px)` }"
+    >
+      <img
+        :src="ItineraryBg"
+        alt="Background"
+        class="w-full h-full object-cover object-center"
+      />
+    </div>
 
     <!-- Timeline content -->
     <div
