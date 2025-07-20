@@ -3,17 +3,25 @@ import { useTemplateStore } from '@/stores/useTemplateStore'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import SaveTheDateCountDown from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateCountDown.vue'
 import SaveTheDateAddToCalendar from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateAddToCalendar.vue'
-import { useParallaxBackground } from '@/composables/useParallaxBackground.js'
 
 const templateStore = useTemplateStore()
 const h2TitleRef = ref(null)
 const isH2TitleInView = ref(false)
 let observer
 
-const saveTheDate = computed(() => templateStore.event?.saveTheDate)
+const saveTheDate = computed(() => {
+  return templateStore.event?.saveTheDate
+})
 
-// Init parallax background
-useParallaxBackground('.std-parallax-bg')
+const generalStyles = computed(() => {
+  let styles = {}
+
+  if (saveTheDate.value.backgroundColor) {
+    styles.backgroundColor = saveTheDate.value.backgroundColor
+  }
+
+  return styles
+})
 
 onMounted(() => {
   observer = new IntersectionObserver((entries) => {
@@ -22,90 +30,143 @@ onMounted(() => {
     })
   })
 
-  if (h2TitleRef.value) {
-    observer.observe(h2TitleRef.value)
+  if(h2TitleRef.value) {
+    observer.observe(h2TitleRef.value);
   }
 })
 
 onUnmounted(() => {
-  if (observer && h2TitleRef.value) {
-    observer.unobserve(h2TitleRef.value)
+  if(observer && h2TitleRef.value) {
+    observer.unobserve(h2TitleRef.value);
   }
 })
 </script>
 
 <template>
-  <section id="sectionSTD" class="relative w-full min-h-screen z-0">
-    <!-- Fondo Parallax -->
+  <div
+    id="sectionSTD"
+    class="parallax-container bg-[#baa7fb]"
+  >
     <div
-      class="std-parallax-bg absolute inset-0 bg-cover bg-center will-change-transform z-[-1] pointer-events-none h-full"
-      style="background-image: linear-gradient(rgba(186, 167, 251, 0.8), rgba(186, 167, 251, 0.8)), url('/src/assets/images/SaveTheDate/savethedate_bg_5_2.png')"
-    ></div>
-
-    <!-- Contenido -->
-    <div class="save-the-date w-full px-5 flex flex-col items-center justify-center relative z-10">
+      class="save-the-date w-full p-5 h-screen"
+    >
       <h2
         ref="h2TitleRef"
-        class="text-6xl font-gvibes font-bold text-purple-middle text-center"
+        class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center z-10"
         :class="{ 'animate__animated animate__fadeInDown': isH2TitleInView }"
+        v-if="true"
       >
         Save the Date
       </h2>
 
-      <h3 class="text-2xl font-normal text-dark-blue text-center mt-2">
-        Este es un día especial para nosotros, y queremos compartirlo contigo.
+      <h3
+        v-if="true"
+        class="text-2xl font-normal text-dark-blue z-10 text-center"
+      >
+        <!--{{ saveTheDate.stdSubTitle }}-->
+        Este es un dia especial para nosotros, y queremos compartirlo contigo.
       </h3>
 
-      <div class="std-countdown mt-10">
+      <div
+        class="std-countdown mt-10  z-10"
+      >
         <SaveTheDateCountDown
           :numbers="{
-            font: 'jost',
-            color: '#111827',
-            size: '3rem',
-            style: 'italic',
-            weight: '300',
-            letterSpacing: ''
-          }"
+          font: 'jost',
+          color: '#111827',
+          size: '3rem',
+          style: 'italic',
+          weight: '300',
+          letterSpacing: ''
+        }"
           :text="{
-            font: 'Great Vibes, cursive',
-            color: '#111827',
-            size: '1.25rem',
-            style: 'normal',
-            weight: '',
-            letterSpacing: ''
-          }"
+          font: 'Great Vibes, cursive',
+          color: '#111827',
+          size: '1.25rem',
+          style: 'normal',
+          weight: '',
+          letterSpacing: ''
+        }"
         />
       </div>
 
-      <div class="std-addToCalendar mt-10">
+      <div
+        class="std-addToCalendar mt-10 z-10"
+      >
         <SaveTheDateAddToCalendar
           :button-style="{
-            bgColor: 'transparent',
-            fontColor: '#111827',
-            hoverColor: '#111827',
-            fontFamily: '',
-            borderRadius: '8px',
-            borderColor: '#111827'
-          }"
+          bgColor: 'transparent',
+          fontColor: '#111827',
+          hoverColor: '#111827',
+          fontFamily: '',
+          borderRadius: '8px',
+          borderColor: '#111827'
+        }"
         />
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
-<style scoped>
+<style>
+.parallax-container {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+}
+
+.save-the-date {
+  position: relative;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.save-the-date::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(rgba(186, 167, 251, 0.8), rgba(186, 167, 251, 0.8)),
+  url('@/assets/images/SaveTheDate/savethedate_bg_5_2.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+
+
 .font-gvibes {
   font-family: 'Great Vibes', sans-serif;
+}
+
+.glow-gold-text {
+  color: #FFD700; /* Gold */
+  text-shadow:
+    0 0 5px #FFD700,
+    0 0 10px #FFA500,
+    0 0 20px #FFD700,
+    0 0 40px #FF8C00;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-align: center;
 }
 
 .text-6xl {
   line-height: 1.4;
   padding: 0.2em;
-}
-
-.std-parallax-bg {
-  will-change: transform;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
 }
 </style>
