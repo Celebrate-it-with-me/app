@@ -12,6 +12,10 @@ import itinerarioBgLarge from '@/assets/images/img/itinerario_bg_large.jpg'
 
 const isIOS = ref(false)
 const sectionRef = ref(null)
+const iosBackgroundRef = ref(null)
+const scrollY = ref(0)
+
+let observer = null
 
 onMounted(() => {
   // Detectar iOS real (no simulación en DevTools)
@@ -25,11 +29,57 @@ onMounted(() => {
   ) && !platform.includes('win') && !platform.includes('linux')
 
   console.log('Is iOS detected:', isIOS.value)
-  console.log('User Agent:', navigator.userAgent)
-  console.log('Platform:', navigator.platform)
-  console.log('Is DevTools simulation:', /iphone|ipad|ipod/.test(userAgent) && platform.includes('win'))
-  console.log('Should show background on container:', !isIOS.value)
+
+  if (isIOS.value && sectionRef.value) {
+    setupIOSParallax()
+  }
 })
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect()
+  }
+  if (isIOS.value) {
+    window.removeEventListener('scroll', handleIOSScroll)
+  }
+})
+
+const setupIOSParallax = () => {
+  // Usar Intersection Observer para detectar cuando la sección está visible
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        window.addEventListener('scroll', handleIOSScroll, { passive: true })
+      } else {
+        window.removeEventListener('scroll', handleIOSScroll)
+      }
+    })
+  }, {
+    threshold: 0.1
+  })
+
+  if (sectionRef.value) {
+    observer.observe(sectionRef.value)
+  }
+}
+
+const handleIOSScroll = () => {
+  if (!sectionRef.value || !iosBackgroundRef.value) return
+
+  const rect = sectionRef.value.getBoundingClientRect()
+  const viewportHeight = window.innerHeight
+
+  // Solo aplicar el efecto cuando la sección está visible
+  if (rect.bottom >= 0 && rect.top <= viewportHeight) {
+    // Calcular el desplazamiento relativo a la sección
+    const scrollOffset = -rect.top
+    // Reducir el movimiento del fondo para crear efecto parallax
+    const parallaxOffset = scrollOffset * 0.3
+
+    // Aplicar transform al fondo para que se mueva más lento
+    iosBackgroundRef.value.style.transform = `translate3d(0, ${parallaxOffset}px, 0)`
+  }
+}
 </script>
 
 <template>
@@ -42,17 +92,11 @@ onMounted(() => {
       backgroundImage: `url(${itinerarioBg})`
     } : {}"
   >
-    <!-- Fondo fijo específico para iOS -->
+    <!-- Fondo con parallax controlado por JavaScript para iOS -->
     <div
       v-if="isIOS"
-      class="ios-fixed-bg"
-      :style="{ backgroundImage: `url(${itinerarioBg})` }"
-    ></div>
-
-    <!-- Contenedor principal con fondo para iOS (alternativo) -->
-    <div
-      v-if="isIOS"
-      class="ios-section-bg"
+      ref="iosBackgroundRef"
+      class="ios-parallax-bg"
       :style="{ backgroundImage: `url(${itinerarioBg})` }"
     ></div>
     <div
@@ -186,57 +230,38 @@ onMounted(() => {
   background-color: #fbb3cd; /* bg-pink-300 fallback */
 }
 
-/* Estilos específicos para iOS */
+/* Estilos específicos para iOS con parallax controlado por JS */
 .itinerario-container.ios-container {
   background-image: none !important;
   background-attachment: scroll;
   position: relative;
-  overflow: hidden; /* Importante para el efecto */
+  overflow: hidden;
 }
 
-.ios-fixed-bg {
+.ios-parallax-bg {
   position: absolute;
-  top: 0;
+  top: -20%;
   left: 0;
   right: 0;
-  bottom: 0;
   width: 100%;
-  height: 100%;
+  height: 140%; /* Más alto para permitir el movimiento */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  background-attachment: scroll;
   z-index: 1;
 
-  /* Optimizaciones específicas para iOS */
+  /* Optimizaciones para iOS */
   transform: translate3d(0, 0, 0);
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);
-
-  /* Asegurar que el fondo cubra toda el área visible */
-  min-height: 100vh;
-  min-width: 100vw;
 }
 
-/* Solución alternativa para iOS - fondo a nivel de sección */
-.ios-section-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-
-  /* Forzar que se mantenga en su lugar */
-  transform: translateZ(0);
-  will-change: auto;
+/* Responsive para iOS */
+@media screen and (min-width: 1024px) {
+  .ios-parallax-bg {
+    background-image: v-bind('`url(${itinerarioBgLarge})`') !important;
+  }
 }
 
 .timeline-container {
