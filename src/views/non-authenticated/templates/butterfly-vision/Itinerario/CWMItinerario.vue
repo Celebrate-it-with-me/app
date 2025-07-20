@@ -48,6 +48,13 @@ onMounted(() => {
       class="ios-fixed-bg"
       :style="{ backgroundImage: `url(${itinerarioBg})` }"
     ></div>
+
+    <!-- Contenedor principal con fondo para iOS (alternativo) -->
+    <div
+      v-if="isIOS"
+      class="ios-section-bg"
+      :style="{ backgroundImage: `url(${itinerarioBg})` }"
+    ></div>
     <div
       class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-gray-200/40 rounded-lg"
     >
@@ -211,6 +218,25 @@ onMounted(() => {
   /* Asegurar que el fondo cubra toda el área visible */
   min-height: 100vh;
   min-width: 100vw;
+}
+
+/* Solución alternativa para iOS - fondo a nivel de sección */
+.ios-section-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+
+  /* Forzar que se mantenga en su lugar */
+  transform: translateZ(0);
+  will-change: auto;
 }
 
 .timeline-container {
