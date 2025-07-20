@@ -1,6 +1,5 @@
 <script setup>
-import { ref } from 'vue'
-import { useParallax } from '@vueuse/core'
+import { useWindowScroll } from '@vueuse/core'
 
 import MargaritaGif from '@/assets/images/Itinerario/margarita.gif'
 import CeremonyGif from '@/assets/images/Itinerario/ceremony.gif'
@@ -9,18 +8,17 @@ import DanceGif from '@/assets/images/Itinerario/dance.gif'
 import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
 import ItineraryBg from '@/assets/images/img/itinerario_bg_2.jpg'
 
-const containerRef = ref(null)
-const { scroll } = useParallax(containerRef)
+const { y: scrollY } = useWindowScroll()
 </script>
 
 <template>
-  <div ref="containerRef" id="sectionItinerario" class="relative overflow-hidden min-h-[200vh] w-full">
-    <!-- Background Image (parallax simulated) -->
+  <div id="sectionItinerario" class="relative overflow-hidden min-h-[200vh] w-full">
+    <!-- Background Image (parallax effect based on window scroll) -->
     <img
       :src="ItineraryBg"
       alt="Background"
-      class="absolute inset-0 w-full h-full object-cover object-center z-0"
-      :style="{ transform: `translateY(${scroll * 100}px)` }"
+      class="absolute inset-0 w-full h-full object-cover object-center z-0 transition-transform duration-100"
+      :style="{ transform: `translateY(${scrollY * 0.2}px)` }"
     />
 
     <!-- Timeline content -->
