@@ -14,7 +14,7 @@ import ItineraryBg from '@/assets/images/img/itinerario_bg_2.jpg'
     :style="`background-image: url('${ItineraryBg}')`"
   >
     <!-- Overlay -->
-    <div class="w-full min-h-[200vh] bg-white/60 p-2 md:p-8 flex justify-center">
+    <div class="w-full min-h-[100vh] bg-pink/60 p-2 md:p-8 flex justify-center">
       <div
         class="timeline-container relative w-full md:w-3/4 wrap overflow-hidden py-10 px-2 bg-[#e5e7eb]/60 rounded-lg"
       >
