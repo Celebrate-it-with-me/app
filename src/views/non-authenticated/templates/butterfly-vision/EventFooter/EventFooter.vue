@@ -5,6 +5,8 @@ import { computed } from 'vue'
 const templateStore = useTemplateStore()
 
 const currentYear = computed(() => new Date().getFullYear())
+
+const eventOrganizerEmail = computed(() => templateStore.eventOrganizerEmail || '')
 </script>
 
 <template>
@@ -26,8 +28,8 @@ const currentYear = computed(() => new Date().getFullYear())
       </p>
       <p>
         For any inquiries, contact us at
-        <a href="mailto:info@melissaquinces.com" class="text-blue-400 hover:underline">
-          info@melissaquinces.com </a
+        <a :href="'mailto:' + eventOrganizerEmail" class="text-blue-400 hover:underline">
+          {{ eventOrganizerEmail }} </a
         >.
       </p>
     </div>
