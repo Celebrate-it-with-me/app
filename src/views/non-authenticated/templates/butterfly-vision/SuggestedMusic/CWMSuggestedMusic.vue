@@ -104,7 +104,7 @@ watch(
     <h2 class="text-6xl font-gvibes font-bold gap-5 text-purple-middle text-center ">
       {{ title }}
     </h2>
-    <h4 class="music-subtitle relative text-2xl font-semibold text-dark-blue text-center moments-title">
+    <h4 class="music-subtitle relative text-2xl font-quicksand font-semibold text-dark-blue text-center moments-title">
       {{ subTitle }}
     </h4>
 

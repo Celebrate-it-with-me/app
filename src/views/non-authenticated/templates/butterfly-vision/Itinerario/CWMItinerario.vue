@@ -13,13 +13,13 @@ import itinerarioBg from '@/assets/images/img/itinerario_bg_2.jpg'
 const backgroundRef = ref(null)
 let ticking = false
 
-// Parallax cross-device
+// Parallax cross-device - solo para el fondo
 const handleParallax = () => {
   if (!ticking) {
     requestAnimationFrame(() => {
       if (backgroundRef.value) {
         const scrolled = window.scrollY
-        const speed = 0.1
+        const speed = 0.2 // Fondo muy lento
         const yPos = scrolled * speed
         backgroundRef.value.style.transform = `translate3d(0, ${yPos}px, 0)`
       }
@@ -167,12 +167,12 @@ onUnmounted(() => {
   padding: 1rem;
 }
 
-/* Container del timeline - usar toda la altura disponible */
+/* Container del timeline - volver a opacidad original */
 .timeline-container {
   position: relative;
   width: 100%;
   max-width: 600px;
-  height: 100%; /* Usar toda la altura del wrapper */
+  height: 100%;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(2px);
   border-radius: 1rem;
@@ -223,14 +223,11 @@ onUnmounted(() => {
   flex: 1; /* Cada item toma espacio igual */
 }
 
-/* Lado derecho: Icono a la izquierda, Número centro, Card derecha */
-.timeline-item-right {
-  /* Icono a la izquierda del centro */
-}
-
+/* Lado derecho: Icono centrado en la mitad izquierda */
 .timeline-item-right .timeline-icon-wrapper {
   position: absolute;
-  left: calc(50% - 6rem); /* Icono a la izquierda del centro */
+  left: 25%; /* Un cuarto del ancho total */
+  transform: translateX(-50%); /* Centrar el icono */
 }
 
 .timeline-item-right .timeline-number {
@@ -242,17 +239,13 @@ onUnmounted(() => {
 
 .timeline-item-right .timeline-card {
   position: absolute;
-  left: calc(50% + 2rem); /* Card a la derecha del centro */
+  left: calc(50% + 2rem);
 }
 
-/* Lado izquierdo: Card izquierda, Número centro, Icono derecha */
-.timeline-item-left {
-  /* Card a la izquierda del centro */
-}
-
+/* Lado izquierdo: Icono centrado en la mitad derecha */
 .timeline-item-left .timeline-card {
   position: absolute;
-  right: calc(50% + 2rem); /* Card a la izquierda del centro */
+  right: calc(50% + 2rem);
 }
 
 .timeline-item-left .timeline-number {
@@ -264,24 +257,25 @@ onUnmounted(() => {
 
 .timeline-item-left .timeline-icon-wrapper {
   position: absolute;
-  right: calc(50% - 6rem); /* Icono a la derecha del centro */
+  right: 25%; /* Un cuarto del ancho total desde la derecha */
+  transform: translateX(50%); /* Centrar el icono */
 }
 
-/* Wrapper del icono */
+/* Wrapper del icono - más grande */
 .timeline-icon-wrapper {
-  width: 64px; /* Reducir tamaño */
+  width: 80px; /* Aumentado de 64px a 80px */
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-shrink: 0; /* No permitir que se reduzca */
+  flex-shrink: 0;
 }
 
-/* Iconos - asegurar que se vean las animaciones */
+/* Iconos - más grandes */
 .timeline-icon {
-  width: 4rem;
-  height: 4rem;
+  width: 5rem; /* Aumentado de 4rem a 5rem */
+  height: 5rem; /* Aumentado de 4rem a 5rem */
   border-radius: 0.5rem;
-  object-fit: cover; /* Para mantener aspecto de las animaciones */
+  object-fit: cover;
 }
 
 /* Números - centrados en la línea como imagen 1 */
@@ -338,8 +332,8 @@ onUnmounted(() => {
   }
 
   .timeline-icon {
-    width: 4rem;
-    height: 4rem;
+    width: 5rem;
+    height: 5rem;
   }
 
   .timeline-icon-wrapper {
