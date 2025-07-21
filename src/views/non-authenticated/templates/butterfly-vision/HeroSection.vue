@@ -37,14 +37,18 @@ useParallaxBackground('.parallax-bg', 0.4)
 
       <div class="bottom-hero w-full flex flex-col items-center justify-center">
         <div class="w-full bg-white/50 p-10">
-          <p class="text-3xl font-normal text-purple-middle font-gvibes text-center">
+          <p class="text-4xl font-bold text-purple-middle font-gvibes text-center">
             <span v-if="haveCompanions">Es nuestro Placer Invitarlos</span>
             <span v-else>Es nuestro placer Invitarte</span>
           </p>
           <div class="guest-section mt-4 text-center">
-            <h4 class="text-lg text-dark-blue">{{ guest.name }}</h4>
-            <div class="text-dark-blue text-lg mt-1" v-if="haveCompanions">
-              <p v-for="companion in guest.companions" :key="companion.id">
+            <h4 class="text-lg font-quicksand font-semibold text-dark-blue">{{ guest.name }}</h4>
+            <div class="mt-1" v-if="haveCompanions">
+              <p
+                v-for="companion in guest.companions"
+                class="text-dark-blue font-quicksand font-semibold text-lg"
+                :key="companion.id"
+              >
                 {{ companion.name }}
               </p>
             </div>
