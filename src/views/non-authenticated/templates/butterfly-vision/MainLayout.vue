@@ -111,7 +111,9 @@ const handleMoveToTop = () => {
         </SeparatorSection>
         <CWMItinerario class="main-section" />
         <SeparatorSection>
-          ¡La fiesta está por comenzar! Prepárate para reír, bailar y disfrutar al máximo.
+          ¡Sé puntual!
+          El itinerario del evento puede variar sin previo aviso.
+          Tu presencia a tiempo es muy importante para no perderte ningún momento especial.
         </SeparatorSection>
         <SweetMemories class="main-section" :mode="'presentation'" />
         <SeparatorSection>

@@ -79,7 +79,7 @@ onUnmounted(() => {
             <div class="timeline-number">2</div>
             <div class="timeline-card">
               <h3>Ceremonia</h3>
-              <p>8:00pm-9:30pm</p>
+              <p>8:00pm-9:00pm</p>
             </div>
           </div>
 
@@ -91,7 +91,7 @@ onUnmounted(() => {
             <div class="timeline-number">3</div>
             <div class="timeline-card">
               <h3>Cena</h3>
-              <p>9:30pm-10:30pm</p>
+              <p>9:00pm-9:40pm</p>
             </div>
           </div>
 
@@ -103,7 +103,7 @@ onUnmounted(() => {
             <div class="timeline-number">4</div>
             <div class="timeline-card">
               <h3>Baile Sorpresa</h3>
-              <p>10:30pm-11:00pm</p>
+              <p>9:40pm-10:00pm</p>
             </div>
           </div>
 
@@ -115,7 +115,7 @@ onUnmounted(() => {
             <div class="timeline-number">5</div>
             <div class="timeline-card">
               <h3>Hora Loca</h3>
-              <p>11:00pm</p>
+              <p>10:30pm</p>
             </div>
           </div>
 
