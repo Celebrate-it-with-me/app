@@ -8,7 +8,7 @@ const dressCodeConfig = computed(() => {
   return {
     backgroundColor: '#ffe2b1',
     isEnabled: true,
-    title: 'Codigo de Vestimenta',
+    title: 'Codigo de Vestir',
     subTitle: 'Estilo Sugerido, Formal para Esta Ocación Especial'
   }
 })
@@ -41,7 +41,7 @@ const dressCodeConfig = computed(() => {
         >
         <div v-if="showDressCodePopup" class="popup-overlay" @click="showDressCodePopup = false">
           <div class="popup-content" @click.stop>
-            <h3 class="popup-title">Código de Vestimenta</h3>
+            <h3 class="popup-title">Código de Vestir</h3>
             <p class="popup-text text-dark-blue">
               Para esta ocasión especial, se sugiere un estilo formal. Los caballeros pueden optar por trajes o guayaberas elegantes,
               mientras que las damas pueden usar vestidos formales. Recuerden evitar los colores reservados para la quinceañera.
