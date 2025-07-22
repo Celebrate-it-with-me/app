@@ -16,7 +16,6 @@ import SwipeLeftIcon from '@/views/non-authenticated/templates/butterfly-vision/
 import EventLocations from '@/views/non-authenticated/templates/butterfly-vision/location/EventLocations.vue'
 import BackgroundMusic from '@/views/non-authenticated/templates/butterfly-vision/BackgroundMusic/BackgroundMusic.vue'
 
-const showScrollBtn = ref(false)
 const videoReproduced = ref(false)
 const showButterflyLogo = ref(true)
 const showOverlay = ref(true)
@@ -29,7 +28,6 @@ onMounted(() => {
   isIOS.value = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
   isMobile.value = window.innerWidth < 768
   document.body.classList.remove('dark')
-  showHideScrollButton()
 
   if (videoInstance.value) {
     videoInstance.value.load()
@@ -59,16 +57,6 @@ const startTheVideo = () => {
 
 const handleVideoEnd = () => {
   videoReproduced.value = true
-}
-
-const showHideScrollButton = () => {
-  window.addEventListener('scroll', () => {
-    showScrollBtn.value = window.scrollY > 200
-  })
-}
-
-const handleMoveToTop = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 
@@ -148,15 +136,6 @@ const handleMoveToTop = () => {
       </main>
     </transition>
   </div>
-
-  <button
-    id="scrollToTopBtn"
-    v-if="showScrollBtn"
-    class="fixed w-10 h-10 bottom-5 right-5 bg-pink-300 border border-pink-400/50 text-white text-lg text-bold rounded-full shadow-lg hover:bg-pink-500/50 focus:outline-none"
-    @click="handleMoveToTop"
-  >
-    ↑
-  </button>
 </template>
 
 <style>
