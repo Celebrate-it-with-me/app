@@ -16,9 +16,9 @@ const isHovered = ref(false)
 const config = {
   name: "[Reminder] Melissa XV's Birthday Party",
   description: "Melissa XV's Birthday Party",
-  startDate: "2025-07-27",
+  startDate: "2025-09-27",
   startTime: "18:45",
-  endDate: "2025-07-27",
+  endDate: "2025-09-27",
   endTime: "23:59",
   options: ["Google", "iCal", "Apple", "Outlook.com", "Yahoo"],
   timeZone: "America/New_York",

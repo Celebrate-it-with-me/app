@@ -126,7 +126,8 @@ const handleMoveToTop = () => {
         </SeparatorSection>
         <SuggestedMusic class="main-section" />
         <SeparatorSection>
-          Con música, recuerdos y su compañía, esta noche será mágica.
+          ¡Prepara tus mejores pasos! <br />
+          Esta fiesta se baila de principio a fin.
         </SeparatorSection>
         <DressCode class="main-section" />
         <SeparatorSection>

@@ -24,7 +24,6 @@ useParallaxBackground('.parallax-bg', 0.4)
       :style="`background-image: url(${bgImage});`"
     ></div>
 
-    <!-- Contenido -->
     <div class="w-full h-full flex flex-col justify-between pt-20 pb-8 z-10 relative">
       <div class="top-hero flex flex-col items-center justify-center w-full">
         <p class="text-5xl font-bold text-purple-middle font-gvibes animate__animated animate__bounceInLeft mt-2">
@@ -38,7 +37,7 @@ useParallaxBackground('.parallax-bg', 0.4)
       <div class="bottom-hero w-full flex flex-col items-center justify-center">
         <div class="w-full bg-white/50 p-10">
           <p class="text-4xl font-bold text-purple-middle font-gvibes text-center">
-            <span v-if="haveCompanions">Es nuestro Placer Invitarlos</span>
+            <span v-if="haveCompanions">Es nuestro Placer Invitarles</span>
             <span v-else>Es nuestro placer Invitarte</span>
           </p>
           <div class="guest-section mt-4 text-center">

@@ -51,7 +51,7 @@ onUnmounted(() => {
     <div class="timeline-wrapper">
       <div class="timeline-container">
         <!-- Título -->
-        <h2 class="timeline-title">Itinerario</h2>
+        <h2 class="timeline-title text-5xl text-purple-middle">Itinerario</h2>
 
         <!-- Línea central -->
         <div class="timeline-line"></div>
@@ -184,9 +184,7 @@ onUnmounted(() => {
 /* Título */
 .timeline-title {
   text-align: center;
-  font-size: 3rem;
   font-weight: bold;
-  color: #1f2937;
   margin-bottom: 2rem;
   font-family: 'Great Vibes', cursive;
 }
@@ -325,10 +323,6 @@ onUnmounted(() => {
 
   .timeline-container {
     padding: 1rem;
-  }
-
-  .timeline-title {
-    font-size: 2rem;
   }
 
   .timeline-icon {
