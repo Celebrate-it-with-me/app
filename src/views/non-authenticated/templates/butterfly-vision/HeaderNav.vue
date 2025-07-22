@@ -88,8 +88,8 @@ const handleClick = (hash) => {
                 </a>
               </li>
               <li>
-                <a @click="handleClick('#sectionContact')" class="block p-3 rounded-lg">
-                  <div class="font-semibold">Contacto</div>
+                <a @click="handleClick('#sectionLocation')" class="block p-3 rounded-lg">
+                  <div class="font-semibold">Location</div>
                 </a>
               </li>
             </ul>

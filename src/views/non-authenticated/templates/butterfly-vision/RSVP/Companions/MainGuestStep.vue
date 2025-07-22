@@ -26,10 +26,10 @@ const mainGuestValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       name: zod.string().min(1, 'EL nombre es requerido'),
-      email: zod.string().email({ message: 'Direccion de correo invalida' }).optional(),
+      email: zod.string().email({ message: 'Dirección de correo invalida' }).optional(),
       phone: zod
         .string()
-        .regex(/^[0-9]*$/, { message: 'Numero de telefono debe ser numerico' })
+        .regex(/^[0-9]*$/, { message: 'Número de teléfono debe ser numérico' })
         .optional(),
       rsvpStatus: zod.enum(['attending', 'not-attending'], {
         required_error: 'Por favor selecciona una opción',
@@ -152,7 +152,7 @@ watch(() => mainGuestState.rsvpStatus, () => {
               id="phoneNumber"
               required
               :show-error="true"
-              label="Numero de Teléfono"
+              label="Número de Teléfono"
               placeholder=" "
               class-input="block py-2.5 px-0 w-full text-md text-dark-blue bg-transparent border-0 border-b
                border-gray-300 appearance-none dark:text-gray-900 dark:border-gray-600

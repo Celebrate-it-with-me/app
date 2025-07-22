@@ -1,11 +1,11 @@
 <template>
-  <section class="w-full max-w-5xl mx-auto mt-10 space-y-6 px-4 mb-4">
+  <section id="sectionLocation" class="w-full max-w-5xl mx-auto mt-10 space-y-6 px-4 mb-4">
     <div class="text-center">
       <h2 class="text-5xl font-gvibes font-bold text-purple-middle">
         Lugar del Evento
       </h2>
-      <p class="text-gray-500 mt-2">{{ location.name }}</p>
-      <p class="text-2xl font-quicksand font-semibold text-dark-blue">
+      <p class="mt-2 text-dark-blue font-quicksand font-semibold">{{ location.name }}</p>
+      <p class="text-md font-quicksand font-normal text-gray-500">
         {{ location.address }}, {{ location.city }}, {{ location.state }} {{ location.zipCode }}, {{ location.country }}
       </p>
     </div>

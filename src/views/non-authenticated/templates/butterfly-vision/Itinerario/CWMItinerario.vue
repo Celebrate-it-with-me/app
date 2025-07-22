@@ -39,27 +39,21 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="itinerario-section">
-    <!-- Imagen de fondo con parallax -->
+  <section id="sectionItinerario" class="itinerario-section">
     <div
       ref="backgroundRef"
       class="background-image"
       :style="{ backgroundImage: `url(${itinerarioBg})` }"
     ></div>
 
-    <!-- Timeline wrapper con transparencia -->
     <div class="timeline-wrapper">
       <div class="timeline-container">
-        <!-- Título -->
         <h2 class="timeline-title text-5xl text-purple-middle">Itinerario</h2>
 
-        <!-- Línea central -->
         <div class="timeline-line"></div>
 
-        <!-- Timeline items -->
         <div class="timeline-content">
 
-          <!-- Step 1 - Cocktail -->
           <div class="timeline-item timeline-item-right">
             <div class="timeline-icon-wrapper">
               <img :src="MargaritaGif" alt="Cocktail" class="timeline-icon" />
@@ -71,7 +65,6 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- Step 2 - Ceremonia -->
           <div class="timeline-item timeline-item-left">
             <div class="timeline-icon-wrapper">
               <img :src="CeremonyGif" alt="Ceremonia" class="timeline-icon" />
@@ -83,7 +76,6 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- Step 3 - Cena -->
           <div class="timeline-item timeline-item-right">
             <div class="timeline-icon-wrapper">
               <img :src="FoodGif" alt="Cena" class="timeline-icon" />
@@ -95,7 +87,6 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- Step 4 - Baile Sorpresa -->
           <div class="timeline-item timeline-item-left">
             <div class="timeline-icon-wrapper">
               <img :src="DanceGif" alt="Baile Sorpresa" class="timeline-icon" />
@@ -107,7 +98,6 @@ onUnmounted(() => {
             </div>
           </div>
 
-          <!-- Step 5 - Hora Loca -->
           <div class="timeline-item timeline-item-right">
             <div class="timeline-icon-wrapper">
               <img :src="DanceFloor" alt="Hora Loca" class="timeline-icon" />
@@ -126,22 +116,20 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* Sección principal - más altura */
 .itinerario-section {
   position: relative;
   width: 100%;
-  min-height: calc(100vh + 20px); /* 10px arriba y 10px abajo */
+  min-height: calc(100vh + 20px);
   overflow: hidden;
-  padding: 10px 0; /* Espaciado arriba y abajo */
+  padding: 10px 0;
 }
 
-/* Imagen de fondo con parallax - cubrir desde arriba */
 .background-image {
   position: absolute;
   top: -50%;
   left: 0;
   width: 100%;
-  height: 200%; /* Más altura para cubrir completamente */
+  height: 200%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -149,7 +137,6 @@ onUnmounted(() => {
   z-index: 1;
 }
 
-/* Wrapper del timeline - 10px arriba y abajo */
 .timeline-wrapper {
   position: absolute;
   top: 10px;
@@ -167,7 +154,6 @@ onUnmounted(() => {
   padding: 1rem;
 }
 
-/* Container del timeline - volver a opacidad original */
 .timeline-container {
   position: relative;
   width: 100%;
@@ -181,7 +167,6 @@ onUnmounted(() => {
   flex-direction: column;
 }
 
-/* Título */
 .timeline-title {
   text-align: center;
   font-weight: bold;
@@ -189,43 +174,39 @@ onUnmounted(() => {
   font-family: 'Great Vibes', cursive;
 }
 
-/* Línea central - cubrir todo el contenido */
 .timeline-line {
   position: absolute;
   left: 50%;
-  top: 4rem; /* Después del título */
-  bottom: 1rem; /* Hasta casi abajo */
+  top: 4rem;
+  bottom: 1rem;
   width: 2px;
   background: rgba(107, 114, 128, 0.7);
   transform: translateX(-50%);
   z-index: 1;
 }
 
-/* Contenido del timeline - distribuir verticalmente */
 .timeline-content {
   position: relative;
   z-index: 2;
-  flex: 1; /* Tomar todo el espacio disponible */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly; /* Distribuir uniformemente */
+  justify-content: space-evenly;
 }
 
-/* Item del timeline - sin margin bottom fijo */
 .timeline-item {
   display: flex;
   align-items: center;
   position: relative;
   width: 100%;
   justify-content: center;
-  flex: 1; /* Cada item toma espacio igual */
+  flex: 1;
 }
 
-/* Lado derecho: Icono centrado en la mitad izquierda */
 .timeline-item-right .timeline-icon-wrapper {
   position: absolute;
-  left: 25%; /* Un cuarto del ancho total */
-  transform: translateX(-50%); /* Centrar el icono */
+  left: 25%;
+  transform: translateX(-50%);
 }
 
 .timeline-item-right .timeline-number {
@@ -240,7 +221,6 @@ onUnmounted(() => {
   left: calc(50% + 2rem);
 }
 
-/* Lado izquierdo: Icono centrado en la mitad derecha */
 .timeline-item-left .timeline-card {
   position: absolute;
   right: calc(50% + 2rem);
@@ -255,28 +235,25 @@ onUnmounted(() => {
 
 .timeline-item-left .timeline-icon-wrapper {
   position: absolute;
-  right: 25%; /* Un cuarto del ancho total desde la derecha */
-  transform: translateX(50%); /* Centrar el icono */
+  right: 25%;
+  transform: translateX(50%);
 }
 
-/* Wrapper del icono - más grande */
 .timeline-icon-wrapper {
-  width: 80px; /* Aumentado de 64px a 80px */
+  width: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
 }
 
-/* Iconos - más grandes */
 .timeline-icon {
-  width: 5rem; /* Aumentado de 4rem a 5rem */
-  height: 5rem; /* Aumentado de 4rem a 5rem */
+  width: 5rem;
+  height: 5rem;
   border-radius: 0.5rem;
   object-fit: cover;
 }
 
-/* Números - centrados en la línea como imagen 1 */
 .timeline-number {
   width: 2rem;
   height: 2rem;
@@ -291,7 +268,6 @@ onUnmounted(() => {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* Cards - ajustar tamaño */
 .timeline-card {
   background: rgba(186, 167, 251, 0.9);
   border-radius: 0.5rem;
@@ -315,7 +291,6 @@ onUnmounted(() => {
   margin: 0;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .timeline-wrapper {
     padding: 1rem;

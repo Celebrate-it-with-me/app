@@ -54,14 +54,14 @@ const companionValidationSchema = computed(() => {
     zod.object({
       name: zod.string().min(1, 'Nombre es requerido'),
       email: zod.string()
-        .email({ message: 'Direccion de correo invalida' })
+        .email({ message: 'Dirección de correo inválida' })
         .optional(),
       phone: zod
         .string()
-        .regex(/^[0-9\s]*$/, { message: 'Numero de telefono debe ser numerico' })
+        .regex(/^[0-9\s]*$/, { message: 'Número de teléfono debe ser numérico' })
         .optional(),
       rsvpStatus: zod
-        .enum(['attending', 'not-attending'], { message: 'Seleccione una ocpcion' })
+        .enum(['attending', 'not-attending'], { message: 'Seleccione una opcion' })
     })
   )
 })
