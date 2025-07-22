@@ -12,7 +12,6 @@ const props = defineProps({
 
 const isHovered = ref(false)
 
-// Esta configuración detecta automáticamente la plataforma
 const config = {
   name: "[Reminder] Melissa XV's Birthday Party",
   description: "Melissa XV's Birthday Party",

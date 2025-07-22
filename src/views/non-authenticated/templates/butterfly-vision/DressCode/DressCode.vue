@@ -20,7 +20,7 @@ const dressCodeConfig = computed(() => {
   class="dress-code w-full min-h-screen flex flex-col justify-evenly items-center p-4 md:p-8 lg:p-20"
 >
   <div class="dc-titles mb-6 md:mb-0 md:h-[20%] text-center">
-    <h2 class="text-6xl md:text-5xl lg:text-6xl font-gvibes font-bold text-purple-middle" v-if="dressCodeConfig.title">
+    <h2 class="text-5xl md:text-5xl lg:text-6xl font-gvibes font-bold text-purple-middle" v-if="dressCodeConfig.title">
       {{ dressCodeConfig.title }}
     </h2>
   </div>
@@ -29,7 +29,7 @@ const dressCodeConfig = computed(() => {
     class="w-full flex flex-col md:flex-row justify-center md:justify-between items-center gap-8 md:gap-4"
   >
     <div class="dress-image-container w-full md:w-1/3 flex flex-col items-center">
-      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 text-center">
+      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-semibold mb-4 text-center">
         {{ dressCodeConfig.subTitle }}
       </h3>
       <div class="relative max-w-[500px] w-full mx-auto h-[350px] flex items-center justify-center">
@@ -53,7 +53,7 @@ const dressCodeConfig = computed(() => {
     </div>
 
     <div class="dress-image-container w-full md:w-1/3 flex flex-col items-center">
-      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-bold mb-4 text-center">
+      <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-semibold mb-4 text-center">
         Colores reservados para la Quinceañera
       </h3>
       <div class="relative max-w-[500px] w-full mx-auto h-[350px] flex items-center justify-center">
