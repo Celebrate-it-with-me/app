@@ -9,7 +9,7 @@ const dressCodeConfig = computed(() => {
     backgroundColor: '#ffe2b1',
     isEnabled: true,
     title: 'Codigo de Vestir',
-    subTitle: 'Estilo Sugerido, Formal para Esta Ocación Especial'
+    subTitle: 'Estilo sugerido, "Formal" para esta ocación especial'
   }
 })
 </script>
@@ -67,8 +67,9 @@ const dressCodeConfig = computed(() => {
           <div class="popup-content" @click.stop>
             <h3 class="popup-title">Colores Reservados</h3>
             <p class="popup-text text-dark-blue">
-              Los colores reservados para la quinceañera son <span class="reserved-color gold">Gold</span> y
-              <span class="reserved-color lavender">Lavanda</span>. Por favor, evite usar estos colores en su vestimenta.
+              <span class="reserved-color gold">Dorado</span> y <span class="reserved-color lavender">Lavanda</span>
+              son los tonos que distinguirán a la quinceañera en su día especial. Agradecemos tu
+              comprensión al elegir colores distintos.
             </p>
             <button class="popup-close" @click="showColorsPopup = false">Cerrar</button>
           </div>
