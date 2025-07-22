@@ -45,7 +45,6 @@ const dressCodeConfig = computed(() => {
         </div>
         <div class="mobile-indicator">
           <ZoomIn class="zoom-icon" size="14" />
-          <span>Ampliar</span>
         </div>
         <div v-if="showDressCodePopup" class="popup-overlay" @click="showDressCodePopup = false">
           <div class="popup-content" @click.stop>
@@ -76,7 +75,6 @@ const dressCodeConfig = computed(() => {
         </div>
         <div class="mobile-indicator">
           <ZoomIn class="zoom-icon" size="14" />
-          <span>Ampliar</span>
         </div>
         <div v-if="showColorsPopup" class="popup-overlay" @click="showColorsPopup = false">
           <div class="popup-content" @click.stop>
