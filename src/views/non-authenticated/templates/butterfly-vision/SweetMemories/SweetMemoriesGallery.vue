@@ -3,6 +3,7 @@ import LightGallery from 'lightgallery/vue'
 import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgZoom from 'lightgallery/plugins/zoom';
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
 
 import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-thumbnail.css';
@@ -57,13 +58,9 @@ const totalPages = computed(() => {
 
 // Compute current visible items
 const visibleItems = computed(() => {
-  console.log('SweetMemoriesGallery - props.memories:', props.memories);
-  console.log('SweetMemoriesGallery - props.memories.length:', props.memories?.length);
-
   const start = currentPage.value * itemsPerPage.value;
   const end = start + itemsPerPage.value;
   const items = props.memories.slice(start, end);
-  console.log('SweetMemoriesGallery - visibleItems:', items);
   return items;
 });
 
@@ -143,9 +140,7 @@ const gallerySettings = {
       aria-label="Previous images"
     >
       <span class="sr-only">Previous</span>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-        <path fill-rule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clip-rule="evenodd" />
-      </svg>
+      <ChevronLeft class="w-7 h-7 text-gray-800" />
     </button>
 
     <!-- Gallery content with transition -->
@@ -179,9 +174,7 @@ const gallerySettings = {
       aria-label="Next images"
     >
       <span class="sr-only">Next</span>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-        <path fill-rule="evenodd" d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z" clip-rule="evenodd" />
-      </svg>
+      <ChevronRight class="w-7 h-7 text-gray-800" />
     </button>
 
     <!-- Pagination indicator -->
@@ -205,17 +198,17 @@ const gallerySettings = {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.95);
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 10;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
 
