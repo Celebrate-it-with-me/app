@@ -12,15 +12,42 @@ const props = defineProps({
 
 const isHovered = ref(false)
 
+// Esta configuración detecta automáticamente la plataforma
 const config = {
-  label: "Melissa Quince's",
-  name: "[Reminder] Melissa Quince`s Birthday",
-  description: "Melissa Quince`s Birthday Party",
-  startDate: "2025-01-07",
-  startTime: "10:15",
-  endTime: "23:30",
-  options: ["Google", "iCal", "Apple", "Outlook.com"],
+  name: "[Reminder] Melissa XV's Birthday Party",
+  description: "Melissa XV's Birthday Party",
+  startDate: "2025-07-27",
+  startTime: "18:45",
+  endDate: "2025-07-27",
+  endTime: "23:59",
+  options: ["Google", "iCal", "Apple", "Outlook.com", "Yahoo"],
   timeZone: "America/New_York",
+  iCalFileName: "Melissa-Birthday",
+  listStyle: "overlay",
+  trigger: "click",
+
+  bypassWebViewCheck: true,
+
+  clientsupport: {
+    ios: true,
+    android: true,
+    desktop: true
+  },
+
+  buttonStyle: "date",
+
+  symbols: {
+    google: true,
+    apple: true,
+    ical: true,
+    outlook: true,
+    yahoo: true
+  },
+
+  customLabels: {
+    close: "Cerrar",
+    calendarLabel: "Calendario"
+  }
 }
 
 const handleClick = (e) => {
@@ -29,8 +56,34 @@ const handleClick = (e) => {
   try {
     atcb_action(config)
   } catch (error) {
-    console.error(error);
+    console.error('Error al abrir el calendario:', error);
+    fallbackCalendarAction();
   }
+}
+
+const fallbackCalendarAction = () => {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/.test(navigator.userAgent);
+
+  const formatDate = (date, time) => {
+    const dt = new Date(`${date}T${time}`);
+    return dt.toISOString().replace(/-|:|\.\d+/g, '');
+  };
+
+  const start = formatDate(config.startDate, config.startTime);
+  const end = formatDate(config.endDate, config.endTime);
+
+  let calendarUrl;
+
+  if (isIOS) {
+    calendarUrl = `webcal://p44-caldav.icloud.com/published/2/MTAwMjYyNTMxODUxMDI2MsU4U5OuUG_PZoIwFQzMyyYx4mNkz2r-9QQN5FAAjmYIz4tYAB4-v7wRXvHYQ-qcKYhSADOtl_BsLORVNb8`;
+  } else if (isAndroid) {
+    calendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(config.name)}&details=${encodeURIComponent(config.description)}&dates=${start}/${end}&ctz=${config.timeZone}`;
+  } else {
+    calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(config.name)}&details=${encodeURIComponent(config.description)}&dates=${start}/${end}&ctz=${config.timeZone}`;
+  }
+
+  window.open(calendarUrl, '_blank');
 }
 
 const buttonStyle = computed(() => ({
@@ -66,5 +119,12 @@ const buttonStyle = computed(() => ({
 </template>
 
 <style scoped>
+:global(.atcb-initialized) {
+  position: relative;
+  z-index: 100;
+}
 
+:global(.atcb-dropdown-anchor) {
+  position: relative;
+}
 </style>
