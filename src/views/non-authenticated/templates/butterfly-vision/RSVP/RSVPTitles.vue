@@ -16,7 +16,9 @@ const props = defineProps({
   <h2 class="text-5xl font-gvibes font-bold gap-10 text-purple-middle text-center">
     {{ title }}
   </h2>
-  <h4 class="music-subtitle relative text-2xl font-normal text-dark-blue text-center moments-title">
+  <h4 class="music-subtitle relative text-2xl font-semibold font-quicksand text-dark-blue
+            text-center moments-title mt-8"
+  >
     {{ subTitle }}
   </h4>
 </section>

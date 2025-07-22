@@ -52,16 +52,16 @@ onUnmounted(() => {
     >
       <h2
         ref="h2TitleRef"
-        class="text-6xl font-gvibes font-bold gap-10 text-purple-middle text-center z-10"
+        class="text-5xl font-gvibes font-bold gap-10 text-purple-middle text-center z-10"
         :class="{ 'animate__animated animate__fadeInDown': isH2TitleInView }"
         v-if="true"
       >
-        Save the Date
+        Reserva la Fecha
       </h2>
 
       <h3
         v-if="true"
-        class="text-2xl font-normal text-dark-blue z-10 text-center"
+        class="text-2xl font-semibold font-quicksand text-dark-blue z-10 text-center"
       >
         <!--{{ saveTheDate.stdSubTitle }}-->
         Este es un dia especial para nosotros, y queremos compartirlo contigo.
@@ -127,7 +127,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
   min-height: 100vh;
   width: 100%;
 }

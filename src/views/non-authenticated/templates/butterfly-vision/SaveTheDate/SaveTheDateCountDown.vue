@@ -74,22 +74,22 @@ const generateStyle = (styles) => ({
   <div class="counter-time flex items-center justify-center gap-10">
     <div class="flex flex-col items-center gap-2">
       <p :style="generateStyle(numbers)">{{ timeLeft.days }}</p>
-      <p :style="generateStyle(text)">Days</p>
+      <p :style="generateStyle(text)">Dias</p>
     </div>
 
     <div class="flex flex-col items-center gap-2">
       <p :style="generateStyle(numbers)">{{ timeLeft.hours }}</p>
-      <p :style="generateStyle(text)">Hours</p>
+      <p :style="generateStyle(text)">Horas</p>
     </div>
 
     <div class="flex flex-col items-center gap-2">
       <p :style="generateStyle(numbers)">{{ timeLeft.minutes }}</p>
-      <p :style="generateStyle(text)">Mins</p>
+      <p :style="generateStyle(text)">Min</p>
     </div>
 
     <div class="flex flex-col items-center gap-2">
       <p :style="generateStyle(numbers)">{{ timeLeft.seconds }}</p>
-      <p :style="generateStyle(text)">Secs</p>
+      <p :style="generateStyle(text)">Seg</p>
     </div>
   </div>
 </template>

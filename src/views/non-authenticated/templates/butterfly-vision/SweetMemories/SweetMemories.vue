@@ -85,7 +85,7 @@ const formatImages = (images) => {
     <div class="w-full max-w-4xl mx-auto space-y-6">
       <h2
         v-if="sweetMemoriesConfig.title"
-        class="font-gvibes text-4xl md:text-5xl lg:text-6xl text-purple-middle text-center font-bold transition-all duration-300 ease-in-out hover:scale-105"
+        class="font-gvibes text-5xl md:text-5xl lg:text-6xl text-purple-middle text-center font-bold transition-all duration-300 ease-in-out hover:scale-105"
       >
         {{ sweetMemoriesConfig.title }}
       </h2>
@@ -93,7 +93,11 @@ const formatImages = (images) => {
       <div class="relative">
         <h4
           v-if="sweetMemoriesConfig.subTitle"
-          class="text-xl md:text-2xl text-dark-blue text-center font-normal relative pb-8 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-32 md:after:w-48 after:h-px after:bg-amber-200 before:content-[''] before:absolute before:bottom-3 before:left-1/2 before:-translate-x-1/2 before:w-24 md:before:w-36 before:h-px before:bg-amber-200"
+          class="text-xl md:text-2xl text-dark-blue text-center font-quicksand font-semibold relative pb-8
+                 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2
+                 after:w-32 md:after:w-48 after:h-px after:bg-amber-200 before:content-[''] before:absolute
+                 before:bottom-3 before:left-1/2 before:-translate-x-1/2 before:w-24 md:before:w-36
+                 before:h-px before:bg-amber-200"
         >
           {{ sweetMemoriesConfig.subTitle }}
         </h4>
