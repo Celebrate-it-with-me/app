@@ -41,7 +41,7 @@ const dressCodeConfig = computed(() => {
           @click="showDressCodePopup = true"
         >
         <div class="click-overlay" @click="showDressCodePopup = true">
-          <span class="click-text">Haz clic para ampliar</span>
+          <span class="click-text">Haz click para mas detalles</span>
         </div>
         <div class="mobile-indicator">
           <ZoomIn class="zoom-icon" size="14" />
@@ -71,7 +71,7 @@ const dressCodeConfig = computed(() => {
           @click="showColorsPopup = true"
         >
         <div class="click-overlay" @click="showColorsPopup = true">
-          <span class="click-text">Haz clic para ampliar</span>
+          <span class="click-text">Haz click para mas detalles</span>
         </div>
         <div class="mobile-indicator">
           <ZoomIn class="zoom-icon" size="14" />
