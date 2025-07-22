@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { ZoomIn } from 'lucide-vue-next';
 
 const showDressCodePopup = ref(false)
 const showColorsPopup = ref(false)
@@ -32,13 +33,20 @@ const dressCodeConfig = computed(() => {
       <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-semibold mb-4 text-center">
         {{ dressCodeConfig.subTitle }}
       </h3>
-      <div class="relative max-w-[500px] w-full mx-auto h-[350px] flex items-center justify-center">
+      <div class="relative max-w-[500px] w-full mx-auto h-[350px] flex items-center justify-center overflow-hidden">
         <img
           src="@/assets/images/external/dress-code.jpg"
           alt="Formal Male Attire"
           class="dress-code-image rounded-lg shadow-lg cursor-pointer max-w-full h-auto mx-auto object-contain max-h-[350px]"
           @click="showDressCodePopup = true"
         >
+        <div class="click-overlay" @click="showDressCodePopup = true">
+          <span class="click-text">Haz clic para ampliar</span>
+        </div>
+        <div class="mobile-indicator">
+          <ZoomIn class="zoom-icon" size="14" />
+          <span>Ampliar</span>
+        </div>
         <div v-if="showDressCodePopup" class="popup-overlay" @click="showDressCodePopup = false">
           <div class="popup-content" @click.stop>
             <h3 class="popup-title">Código de Vestir</h3>
@@ -56,13 +64,20 @@ const dressCodeConfig = computed(() => {
       <h3 class="text-2xl md:text-3xl text-dark-blue font-quicksand font-semibold mb-4 text-center">
         Colores reservados para la Quinceañera
       </h3>
-      <div class="relative max-w-[500px] w-full mx-auto h-[350px] flex items-center justify-center">
+      <div class="relative max-w-[500px] w-full mx-auto h-[350px] flex items-center justify-center overflow-hidden">
         <img
           src="@/assets/images/external/dress-colors.png"
           alt="Formal Female Attire"
           class="dress-code-image rounded-lg shadow-lg cursor-pointer max-w-full h-auto mx-auto object-contain max-h-[350px]"
           @click="showColorsPopup = true"
         >
+        <div class="click-overlay" @click="showColorsPopup = true">
+          <span class="click-text">Haz clic para ampliar</span>
+        </div>
+        <div class="mobile-indicator">
+          <ZoomIn class="zoom-icon" size="14" />
+          <span>Ampliar</span>
+        </div>
         <div v-if="showColorsPopup" class="popup-overlay" @click="showColorsPopup = false">
           <div class="popup-content" @click.stop>
             <h3 class="popup-title">Colores Reservados</h3>
@@ -93,6 +108,64 @@ const dressCodeConfig = computed(() => {
 
 .dress-code-image:hover {
   transform: scale(1.01);
+}
+
+/* Click overlay styles */
+.click-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 12px;
+}
+
+.click-text {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  padding: 8px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+}
+
+.relative:hover .click-overlay {
+  opacity: 1;
+}
+
+/* Mobile indicator styling */
+.mobile-indicator {
+  position: absolute;
+  bottom: 15px;
+  right: 100px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 5;
+  align-items: center;
+  gap: 4px;
+  display: none;
+}
+
+/* Show mobile indicator on small screens */
+@media screen and (max-width: 640px) {
+  .mobile-indicator {
+    display: flex;
+  }
+}
+
+.zoom-icon {
+  stroke-width: 2.5;
 }
 
 /* Popup Styles */
