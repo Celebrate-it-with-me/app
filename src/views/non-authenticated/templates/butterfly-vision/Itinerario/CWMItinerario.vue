@@ -93,7 +93,7 @@ onUnmounted(() => {
             </div>
             <div class="timeline-number">4</div>
             <div class="timeline-card">
-              <h3>Baile Sorpresa</h3>
+              <h3>A Bailar!</h3>
               <p>9:40pm-10:00pm</p>
             </div>
           </div>

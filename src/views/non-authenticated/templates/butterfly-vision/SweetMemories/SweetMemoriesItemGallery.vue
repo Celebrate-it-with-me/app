@@ -117,8 +117,8 @@ console.log('SweetMemoriesItemGallery - galleryItem:', props.galleryItem);
 /* Mobile indicator styling */
 .mobile-indicator {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  bottom: 15px;
+  right: 15px;
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
   border-radius: 4px;
