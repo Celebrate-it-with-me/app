@@ -73,14 +73,14 @@ export const useGuestsStore = defineStore('guestsStore', {
       }
     },
 
-    async loadGuests(){
+    async loadGuests(searchValue = '') {
       const userStore = useUserStore()
 
       const response =  await GuestsService.getMyEventGuests({
         eventId: userStore.activeEvent,
         perPage: this.perPage,
         pageSelected: this.pageSelected,
-        searchValue: this.searchValue
+        searchValue: searchValue
       })
 
       if (response.status === 200) {
