@@ -1,7 +1,10 @@
 <template>
   <div class="space-y-8">
     <div class="flex items-center justify-between">
-      <CHeading :level="2" weight="semibold">Guest List</CHeading>
+      <div class="titles">
+        <CHeading :level="2" weight="semibold">Guest List</CHeading>
+        <p>Click on details to see companions</p>
+      </div>
       <CButton
         v-if="!menuStore.needMenu"
         variant="primary"
@@ -22,6 +25,19 @@
       v-else
       class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6"
     >
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex gap-4 items-center justify-between">
+          <CInput
+            id="search-value"
+            name="searchValue"
+            type="text"
+            placeholder="Search by name"
+            class="w-64"
+            v-model="searchValue"
+          />
+        </div>
+      </div>
+
       <div class="overflow-x-auto">
         <div v-if="loading">
           <CLoading />
@@ -106,7 +122,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import { useGuestsStore } from '@/stores/useGuestStore'
@@ -116,6 +132,7 @@ import { useRouter } from 'vue-router'
 import GuestDetailsModal from '@/components/UI/modals/GuestDetailsModal.vue'
 import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 import { useMenusStore } from '@/stores/useMenusStore'
+import CInput from '@/components/UI/form2/CInput.vue'
 
 const guestStore = useGuestsStore()
 const menuStore = useMenusStore()
@@ -126,10 +143,11 @@ const selectedGuest = ref({ })
 const guestToDelete = ref(null)
 const showDetailsModal = ref(false)
 const confirmDeleteModal = ref(false)
+const searchValue = ref('')
 
 const loadGuests = async () => {
   loading.value = true
-  await guestStore.loadGuests()
+  await guestStore.loadGuests(searchValue.value)
   loading.value = false
 }
 
@@ -163,7 +181,18 @@ const confirmDelete = (guest) => {
   confirmDeleteModal.value = true
 }
 
+const reloadGuests = () => {
+  loadGuests()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 onMounted(loadGuests)
+
+watch(searchValue, async () => {
+  reloadGuests()
+})
+
+
 </script>
 
 <style scoped>

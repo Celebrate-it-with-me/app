@@ -53,8 +53,6 @@
               Send Invitation to Selected
             </CButton>
           </div>
-
-
         </div>
 
         <div class="overflow-x-auto">
