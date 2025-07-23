@@ -31,7 +31,7 @@ const localCompanion = reactive({
 
 
 const companionMenu = computed(() => {
-  if (props.currentCompanion.menuSelected.length) {
+  if (props.currentCompanion.menuSelected) {
     return props.currentCompanion.menuSelected
   }
 
