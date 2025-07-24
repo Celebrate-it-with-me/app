@@ -154,7 +154,7 @@ const submit = async () => {
         @click="submit"
         class="px-6 py-2 border rounded-lg text-sm font-semibold text-purple-600 border-purple-300 hover:bg-purple-50 transition"
       >
-        Siguiente
+        Finalizar
       </button>
     </div>
   </div>
