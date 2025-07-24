@@ -50,7 +50,7 @@ const handleConfirmation = (companion) => {
           class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
           @click="handleConfirmation(companion)"
         >
-          <span v-if="companion.confirmed === 'pending'">
+          <span v-if="companion.rsvpStatus === 'pending'">
             Confirmar
           </span>
           <span v-else>

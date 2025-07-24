@@ -4,18 +4,7 @@
       <CHeading :level="2" weight="semibold">RSVP Guest List</CHeading>
     </div>
 
-    <div
-      v-if="!rsvpGuests.length"
-    >
-      <CAlert
-        variant="info"
-      >
-        <p>No guests found for this event. Please check the event details or add guests
-        in the guests section.</p>
-      </CAlert>
-    </div>
     <section
-      v-else
       class="rsvp-table-section"
     >
       <div class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6">
@@ -56,7 +45,17 @@
         </div>
 
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <div
+            v-if="!rsvpGuests.length"
+          >
+            <CAlert
+              variant="info"
+            >
+              <p>No guests found for this event. Please check the event details or add guests
+                in the guests section.</p>
+            </CAlert>
+          </div>
+          <table v-else class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-50 dark:bg-gray-800">
             <tr>
               <th class="px-3 py-3 text-left w-6">
@@ -166,6 +165,7 @@ const rsvpStore = useRsvpStore()
 const notifications = useNotificationStore()
 
 const filterOptions = [
+  { value: '', label: 'All' },
   { value: 'pending', label: 'Pending' },
   { value: 'confirmed', label: 'Confirmed' },
   { value: 'declined', label: 'Declined' },
