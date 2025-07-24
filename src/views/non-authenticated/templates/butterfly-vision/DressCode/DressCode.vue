@@ -10,7 +10,7 @@ const dressCodeConfig = computed(() => {
     backgroundColor: '#ffe2b1',
     isEnabled: true,
     title: 'Codigo de Vestir',
-    subTitle: 'Estilo sugerido, "Formal" para esta ocasións especial'
+    subTitle: 'Estilo sugerido, "Formal" para esta ocasión especial'
   }
 })
 </script>
