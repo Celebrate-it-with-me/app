@@ -96,7 +96,7 @@ const paginationItems = computed(() => {
 </script>
 
 <template>
-  <div class="modern-pagination-container max-h-[50%] w-full flex items-center justify-center gap-1 sm:gap-2 mt-4 px-2">
+  <div class="modern-pagination-container pb-3 w-full flex items-center justify-center gap-1 sm:gap-2 mt-4 px-2">
     <!-- First page button -->
     <CButton
       v-if="totalPages > 1"
