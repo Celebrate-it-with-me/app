@@ -203,14 +203,15 @@ const paginationItems = computed(() => {
 /* Page number buttons */
 .pagination-page-btn {
   @apply transition-all duration-200 ease-in-out font-medium;
-  width: 2.5rem;
-  height: 2.5rem;
-  min-width: unset;
-  min-height: unset;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  min-width: unset !important;
+  min-height: unset !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .pagination-page-btn:hover:not(.pagination-active) {
@@ -241,8 +242,8 @@ const paginationItems = computed(() => {
 /* Mobile optimizations */
 @media (max-width: 640px) {
   .pagination-page-btn {
-    width: 2rem;
-    height: 2rem;
+    width: 2rem !important;
+    height: 2rem !important;
     font-size: 0.875rem;
   }
 
