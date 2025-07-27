@@ -96,7 +96,7 @@ const paginationItems = computed(() => {
 </script>
 
 <template>
-  <div class="modern-pagination-container w-full flex items-center justify-center gap-1 sm:gap-2 mt-4 px-2">
+  <div class="modern-pagination-container max-h-[50%] w-full flex items-center justify-center gap-1 sm:gap-2 mt-4 px-2">
     <!-- First page button -->
     <CButton
       v-if="totalPages > 1"
@@ -203,31 +203,47 @@ const paginationItems = computed(() => {
 /* Page number buttons */
 .pagination-page-btn {
   @apply transition-all duration-200 ease-in-out font-medium;
-  width: 2.5rem !important;
-  height: 2.5rem !important;
-  min-width: unset !important;
-  min-height: unset !important;
-  border-radius: 50% !important;
-  padding: 0 !important;
+  min-width: 2.5rem !important;
+  min-height: 2.5rem !important;
+  padding: 0.5rem !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  position: relative !important;
 }
 
 .pagination-page-btn:hover:not(.pagination-active) {
   @apply transform scale-105 shadow-md bg-gray-100 text-gray-700;
 }
 
-/* Active page styling with primary color */
+/* Active page styling with lavender line indicator */
 .pagination-active {
-  background-color: #EC4899 !important;
-  color: white !important;
-  @apply shadow-lg shadow-pink-200;
+  background-color: transparent !important;
+  color: #6B46C1 !important;
+  position: relative !important;
+}
+
+.pagination-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background-color: #B19CD9;
+  border-radius: 2px;
+  transition: all 0.2s ease-in-out;
 }
 
 .pagination-active:hover {
-  background-color: #DB2777 !important;
-  @apply transform scale-105 shadow-xl shadow-pink-300;
+  color: #553C9A !important;
+  @apply transform scale-105;
+}
+
+.pagination-active:hover::after {
+  background-color: #A78BDB;
+  width: 90%;
 }
 
 /* Ellipsis styling */
@@ -242,9 +258,15 @@ const paginationItems = computed(() => {
 /* Mobile optimizations */
 @media (max-width: 640px) {
   .pagination-page-btn {
-    width: 2rem !important;
-    height: 2rem !important;
+    min-width: 2rem !important;
+    min-height: 2rem !important;
     font-size: 0.875rem;
+    padding: 0.375rem !important;
+  }
+
+  .pagination-active::after {
+    height: 2px;
+    bottom: -1px;
   }
 
   .pagination-nav-btn {
@@ -261,7 +283,8 @@ const paginationItems = computed(() => {
 /* Smooth focus states for accessibility */
 .pagination-nav-btn:focus,
 .pagination-page-btn:focus {
-  @apply outline-none ring-2 ring-pink-300 ring-offset-2;
+  @apply outline-none ring-2 ring-offset-2;
+  ring-color: #B19CD9;
 }
 
 /* Enhanced hover effects for better UX */

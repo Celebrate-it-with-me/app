@@ -98,7 +98,7 @@ watch(
 
 <template>
   <div
-    class="event-handle w-[90%] md:w-[70%] rounded-lg flex flex-col
+    class="event-handle w-[90%] min-h-[565px] md:w-[70%] rounded-lg flex flex-col
           items-center justify-center bg-white bg-opacity-50"
   >
     <h2 class="text-6xl font-gvibes font-bold gap-5 text-purple-middle text-center ">
