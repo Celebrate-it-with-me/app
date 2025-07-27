@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { ArrowLeftIcon } from '@heroicons/vue/16/solid'
-import { ArrowRightIcon } from '@heroicons/vue/16/solid'
+import { ChevronDoubleLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronDoubleRightIcon } from '@heroicons/vue/16/solid'
+import CButton from '@/components/UI/buttons/CButton.vue'
 
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
@@ -42,51 +42,228 @@ const changePage = (page) => {
   currentPage.value = page
 }
 
+// Smart pagination logic: << < 1 2 ... n-1 n > >>
+const paginationItems = computed(() => {
+  const items = []
+  const current = currentPage.value
+  const total = totalPages.value
+
+  if (total <= 7) {
+    // Show all pages if 7 or fewer
+    for (let i = 1; i <= total; i++) {
+      items.push({ type: 'page', value: i, active: i === current })
+    }
+    return items
+  }
+
+  // Always show first page
+  items.push({ type: 'page', value: 1, active: current === 1 })
+
+  // Show second page if not too close to current
+  if (current > 4) {
+    items.push({ type: 'page', value: 2, active: false })
+    items.push({ type: 'ellipsis', value: '...' })
+  } else if (current > 3) {
+    items.push({ type: 'ellipsis', value: '...' })
+  }
+
+  // Show current page and neighbors
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+
+  for (let i = start; i <= end; i++) {
+    if (i !== 1 && i !== total) {
+      items.push({ type: 'page', value: i, active: i === current })
+    }
+  }
+
+  // Show ellipsis and last pages
+  if (current < total - 3) {
+    items.push({ type: 'ellipsis', value: '...' })
+    items.push({ type: 'page', value: total - 1, active: false })
+  } else if (current < total - 2) {
+    items.push({ type: 'ellipsis', value: '...' })
+  }
+
+  // Always show last page
+  if (total > 1) {
+    items.push({ type: 'page', value: total, active: current === total })
+  }
+
+  return items
+})
+
 </script>
 
 <template>
-<div class="pagination-container w-[90%] flex flex-row justify-between mt-1">
-  <div
-    class="previous-section font-normal flex flex-row items-center gap-x-2"
-    :class="currentPage === 1
-      ? 'text-gray-200 cursor-not-allowed'
-      : 'text-gray-700 cursor-pointer'"
-    @click="changePage(currentPage - 1)"
-  >
-    <ArrowLeftIcon class="w-6 h-6"/>
-    Anterior
-  </div>
-  <div class="number-containers flex gap-x-2">
-    <span
-      v-for="page in totalPages"
-      :key="page"
-      :class="currentPage === page"
-      class=""
+  <div class="modern-pagination-container w-full flex items-center justify-center gap-1 sm:gap-2 mt-4 px-2">
+    <!-- First page button -->
+    <CButton
+      v-if="totalPages > 1"
+      size="sm"
+      variant="ghost"
+      :disabled="currentPage === 1"
+      @click="changePage(1)"
+      class="hidden sm:flex pagination-nav-btn"
+      aria-label="First page"
     >
-      <button
-        @click="changePage(page)"
-        :class="currentPage === page
-              ? 'flex items-center justify-center px-3 h-8 font-normal text-gray-700 border-b border-gray-900'
-              : 'flex items-center justify-center px-3 h-8 leading-tight text-gray-400 bg-white'"
-      >
-        {{ page }}
-      </button>
-    </span>
+      <ChevronDoubleLeftIcon class="w-4 h-4" />
+    </CButton>
 
+    <!-- Previous page button -->
+    <CButton
+      v-if="totalPages > 1"
+      size="sm"
+      variant="ghost"
+      :disabled="currentPage === 1"
+      @click="changePage(currentPage - 1)"
+      class="pagination-nav-btn"
+      aria-label="Previous page"
+    >
+      <ChevronLeftIcon class="w-4 h-4" />
+    </CButton>
+
+    <!-- Page numbers and ellipsis -->
+    <div class="flex items-center gap-1 sm:gap-2">
+      <template v-for="item in paginationItems" :key="`${item.type}-${item.value}`">
+        <!-- Page number button -->
+        <CButton
+          v-if="item.type === 'page'"
+          size="sm"
+          :variant="item.active ? 'primary' : 'ghost'"
+          @click="changePage(item.value)"
+          class="pagination-page-btn"
+          :class="{ 'pagination-active': item.active }"
+          :aria-label="`Page ${item.value}`"
+          :aria-current="item.active ? 'page' : undefined"
+        >
+          {{ item.value }}
+        </CButton>
+
+        <!-- Ellipsis -->
+        <span
+          v-else-if="item.type === 'ellipsis'"
+          class="pagination-ellipsis text-gray-500 px-2 py-1 text-sm font-medium"
+          aria-hidden="true"
+        >
+          {{ item.value }}
+        </span>
+      </template>
+    </div>
+
+    <!-- Next page button -->
+    <CButton
+      v-if="totalPages > 1"
+      size="sm"
+      variant="ghost"
+      :disabled="currentPage === totalPages"
+      @click="changePage(currentPage + 1)"
+      class="pagination-nav-btn"
+      aria-label="Next page"
+    >
+      <ChevronRightIcon class="w-4 h-4" />
+    </CButton>
+
+    <!-- Last page button -->
+    <CButton
+      v-if="totalPages > 1"
+      size="sm"
+      variant="ghost"
+      :disabled="currentPage === totalPages"
+      @click="changePage(totalPages)"
+      class="hidden sm:flex pagination-nav-btn"
+      aria-label="Last page"
+    >
+      <ChevronDoubleRightIcon class="w-4 h-4" />
+    </CButton>
   </div>
-  <div
-    class="next-section font-normal flex flex-row items-center gap-x-2"
-    @click="changePage(currentPage + 1)"
-    :class="currentPage === totalPages
-      ? 'text-gray-200 cursor-not-allowed'
-      : 'text-gray-700 cursor-pointer'"
-  >
-    Siguiente
-    <ArrowRightIcon class="w-6 h-6"/>
-  </div>
-</div>
 </template>
 
 <style scoped>
+/* Modern pagination container */
+.modern-pagination-container {
+  @apply select-none;
+}
 
+/* Navigation buttons styling */
+.pagination-nav-btn {
+  @apply transition-all duration-200 ease-in-out;
+  min-width: 2rem;
+  min-height: 2rem;
+}
+
+.pagination-nav-btn:hover:not(:disabled) {
+  @apply transform scale-105 shadow-md;
+}
+
+.pagination-nav-btn:disabled {
+  @apply opacity-40 cursor-not-allowed;
+}
+
+/* Page number buttons */
+.pagination-page-btn {
+  @apply transition-all duration-200 ease-in-out font-medium;
+  min-width: 2.5rem;
+  min-height: 2rem;
+}
+
+.pagination-page-btn:hover:not(.pagination-active) {
+  @apply transform scale-105 shadow-md bg-gray-100 text-gray-700;
+}
+
+/* Active page styling with primary color */
+.pagination-active {
+  background-color: #EC4899 !important;
+  color: white !important;
+  @apply shadow-lg shadow-pink-200;
+}
+
+.pagination-active:hover {
+  background-color: #DB2777 !important;
+  @apply transform scale-105 shadow-xl shadow-pink-300;
+}
+
+/* Ellipsis styling */
+.pagination-ellipsis {
+  @apply transition-colors duration-200;
+  min-width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .pagination-page-btn {
+    min-width: 2rem;
+    font-size: 0.875rem;
+  }
+
+  .pagination-nav-btn {
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+  }
+
+  .pagination-ellipsis {
+    min-width: 1.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Smooth focus states for accessibility */
+.pagination-nav-btn:focus,
+.pagination-page-btn:focus {
+  @apply outline-none ring-2 ring-pink-300 ring-offset-2;
+}
+
+/* Enhanced hover effects for better UX */
+.pagination-nav-btn:active:not(:disabled),
+.pagination-page-btn:active {
+  @apply transform scale-95;
+}
+
+/* Ensure proper spacing and alignment */
+.modern-pagination-container > * {
+  @apply flex-shrink-0;
+}
 </style>
