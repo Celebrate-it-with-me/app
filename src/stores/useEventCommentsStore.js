@@ -25,7 +25,7 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
       const userStore = useUserStore()
 
       return EventCommentsService.loadComments({
-        eventId: userStore.activeEvent,
+        eventId: userStore.activeEvent
       })
     },
 

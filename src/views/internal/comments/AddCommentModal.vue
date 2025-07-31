@@ -68,7 +68,8 @@ watch(
   () => props.show,
   newValue => {
     showAddCommentModal.value = newValue
-})
+  }
+)
 
 onMounted(() => {
   showAddCommentModal.value = props.show
