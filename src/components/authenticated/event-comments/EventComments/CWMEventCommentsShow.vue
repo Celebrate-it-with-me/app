@@ -4,13 +4,10 @@ import EventComments from '@/components/authenticated/event-comments/EventCommen
 
 <template>
   <div
-    class="w-[70%] rounded-lg p-4 border-4 border-gray-900 dark:border-gray-800 flex flex-col
-          items-center"
+    class="w-[70%] rounded-lg p-4 border-4 border-gray-900 dark:border-gray-800 flex flex-col items-center"
   >
     <EventComments />
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

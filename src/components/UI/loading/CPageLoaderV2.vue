@@ -1,12 +1,12 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-pink-400 via-fuchsia-500 to-purple-600 animate-fadeIn">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-pink-400 via-fuchsia-500 to-purple-600 animate-fadeIn"
+  >
     <div class="flex flex-col items-center space-y-6">
-      <img
-        :src="logo"
-        alt="Celebrate It With Me Logo"
-        class="w-40 md:w-64 animate-glow"
-      />
-      <p class="text-white text-lg font-semibold tracking-wide animate-pulse">Loading your celebration...</p>
+      <img :src="logo" alt="Celebrate It With Me Logo" class="w-40 md:w-64 animate-glow" />
+      <p class="text-white text-lg font-semibold tracking-wide animate-pulse">
+        Loading your celebration...
+      </p>
     </div>
   </div>
 </template>
@@ -17,7 +17,8 @@ const logo = new URL('@/assets/images/commons/logo_primary_2.png', import.meta.u
 
 <style scoped>
 @keyframes glow {
-  0%, 100% {
+  0%,
+  100% {
     filter: drop-shadow(0 0 5px #ec4899) drop-shadow(0 0 10px #f472b6);
     transform: scale(1);
   }

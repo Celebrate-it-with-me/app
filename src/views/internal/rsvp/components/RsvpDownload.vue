@@ -8,20 +8,20 @@ import { useRsvpStore } from '@/stores/useRsvpStore'
 const props = defineProps({
   status: {
     type: String,
-    default: '',
+    default: ''
   },
   searchValue: {
     type: String,
-    default: '',
+    default: ''
   },
   perPage: {
     type: Number,
-    default: 10,
+    default: 10
   },
   currentPage: {
     type: Number,
-    default: 1,
-  },
+    default: 1
+  }
 })
 
 const exportType = ref('')
@@ -55,7 +55,7 @@ const requestExport = async () => {
       searchValue: props.searchValue,
       exportType: exportType.value,
       perPage: props.perPage,
-      currentPage: props.currentPage,
+      currentPage: props.currentPage
     })
 
     if (response.status === 200) {
@@ -71,14 +71,12 @@ const requestExport = async () => {
     } else {
       throw new Error('Failed to export data')
     }
-
   } catch (error) {
     console.error('Error exporting data:', error)
   } finally {
     showDropdown.value = false
   }
 }
-
 </script>
 
 <template>
@@ -89,22 +87,18 @@ const requestExport = async () => {
 
     <div
       v-if="showDropdown"
-      class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md
-            bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5
-            focus:outline-none"
+      class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
     >
       <div class="py-1">
         <button
+          class="block w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
           @click="exportToPDF"
-          class="block w-full px-4 py-2 text-sm text-left text-gray-700
-                dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           PDF
         </button>
         <button
+          class="block w-full px-4 py-2 text-sm text-left text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
           @click="exportToExcel"
-          class="block w-full px-4 py-2 text-sm text-left text-gray-700
-                dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           Excel
         </button>
@@ -113,6 +107,4 @@ const requestExport = async () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

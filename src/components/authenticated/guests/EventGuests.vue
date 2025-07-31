@@ -1,4 +1,4 @@
-<script setup >
+<script setup>
 import CreateUpdateGuest from '@/components/authenticated/guests/CreateUpdateGuest.vue'
 import EventGuestList from '@/components/authenticated/guests/EventGuestList.vue'
 import { ref } from 'vue'
@@ -12,7 +12,6 @@ const handleShowAddGuest = () => {
 const handleShowGuestList = () => {
   activeView.value = 'list'
 }
-
 </script>
 
 <template>
@@ -20,10 +19,7 @@ const handleShowGuestList = () => {
     <div
       class="my-events-container mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[300px] h-full"
     >
-      <EventGuestList
-        v-if="activeView === 'list'"
-        @show-add-guest="handleShowAddGuest"
-      />
+      <EventGuestList v-if="activeView === 'list'" @show-add-guest="handleShowAddGuest" />
 
       <CreateUpdateGuest
         v-else-if="activeView === 'create-update'"
@@ -33,6 +29,4 @@ const handleShowGuestList = () => {
   </section>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

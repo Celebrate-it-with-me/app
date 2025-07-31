@@ -11,17 +11,14 @@ defineProps({
     required: false
   }
 })
-
 </script>
 
 <template>
-<section
-  class="rsvp-section px-2 mt-5 mb-5 overflow-hidden w-full min-h-[500px] flex justify-center items-center"
->
-  <CwmRsvpSteps />
-</section>
+  <section
+    class="rsvp-section px-2 mt-5 mb-5 overflow-hidden w-full min-h-[500px] flex justify-center items-center"
+  >
+    <CwmRsvpSteps />
+  </section>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

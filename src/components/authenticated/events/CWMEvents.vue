@@ -16,15 +16,12 @@ const currentTabs = [
   { id: 8, label: 'Budget', route: '/dashboard/budget', selected: false },
   { id: 10, label: 'Analytics', route: '/dashboard/analytics', selected: false }
 ]
-
 </script>
 
 <template>
   <div class="container pb-10">
     <WelcomeBack />
 
-    <CWMTabs
-      :tabs=currentTabs
-    />
+    <CWMTabs :tabs="currentTabs" />
   </div>
 </template>

@@ -15,7 +15,7 @@ const showAddEvent = () => {
   emit('createEvent')
 }
 
-const changeEventNameSearch = debounce((query) => {
+const changeEventNameSearch = debounce(query => {
   eventsStore.filterEvents(query)
 })
 
@@ -24,8 +24,6 @@ const eventSelected = () => {
 }
 
 watch(eventName, changeEventNameSearch)
-
-
 </script>
 
 <template>
@@ -33,8 +31,8 @@ watch(eventName, changeEventNameSearch)
     <div class="my-events w-full">
       <div class="mb-5">
         <TextField
-          name="evenFilter"
           v-model="eventName"
+          name="evenFilter"
           label=""
           class-input="w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2
                        focus:ring-blue-400 input-control w-full block focus:outline-none h-[40px]"
@@ -44,28 +42,20 @@ watch(eventName, changeEventNameSearch)
       <ul>
         <EventLi
           v-for="activeEvent in eventsStore.activeEvents"
-          :active-event="activeEvent"
           :key="activeEvent.id"
+          :active-event="activeEvent"
           @click="eventSelected"
         />
       </ul>
     </div>
 
     <div class="w-full add__new-event">
-      <CWMButton
-        size="small"
-        @click="showAddEvent"
-      >
+      <CWMButton size="small" @click="showAddEvent">
         <PlusIcon class="h-6 w-6" />
         Add New Event
       </CWMButton>
     </div>
   </div>
-
-
-
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

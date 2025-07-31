@@ -16,10 +16,9 @@ onMounted(() => {
   companionType.value = props.modelValue
 })
 
-watch(companionType, (value) => {
+watch(companionType, value => {
   emit('update:modelValue', value)
 })
-
 </script>
 
 <template>
@@ -27,22 +26,20 @@ watch(companionType, (value) => {
   <div class="select-companion-type flex flex-row gap-x-4">
     <RadioPlain
       id="option1"
+      v-model="companionType"
       name="companionType"
       value="no-named"
       label="No Named"
-      v-model="companionType"
     />
 
     <RadioPlain
       id="option2"
+      v-model="companionType"
       name="companionType"
       value="named"
       label="Named"
-      v-model="companionType"
     />
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

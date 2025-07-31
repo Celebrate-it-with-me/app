@@ -6,8 +6,8 @@
       </div>
       <div v-else>
         <table
-          class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
           v-if="companions.length"
+          class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
         >
           <thead class="bg-gray-50 dark:bg-gray-800">
             <tr>
@@ -49,21 +49,25 @@
                 {{ companion.dietaryRestrictions || 'None' }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-left flex flex-start gap-2 text-sm">
-                <CButton size="sm" variant="primary" @click="viewCompanion(companion)">Details</CButton>
-                <CButton size="sm" variant="outline" @click="confirmDelete(companion)">Delete</CButton>
+                <CButton size="sm" variant="primary" @click="viewCompanion(companion)"
+                  >Details</CButton
+                >
+                <CButton size="sm" variant="outline" @click="confirmDelete(companion)"
+                  >Delete</CButton
+                >
               </td>
             </tr>
           </tbody>
         </table>
-        <CAlert variant="" v-else> There are no companions for guests yet. </CAlert>
+        <CAlert v-else variant=""> There are no companions for guests yet. </CAlert>
       </div>
 
       <CConfirmModal
-        :modelValue="confirmDeleteModal"
+        :model-value="confirmDeleteModal"
         title="Delete Companion"
         message="Are you sure you want to delete this companion? This action cannot be undone."
         @confirm="deleteCompanion()"
-        @update:modelValue="confirmDeleteModal = false"
+        @update:model-value="confirmDeleteModal = false"
       />
     </div>
   </div>
@@ -102,12 +106,12 @@ const companions = computed(() => {
   return allCompanions
 })
 
-const findGuestName = (guestId) => {
+const findGuestName = guestId => {
   const guest = guestStore.guests.find(g => g.id === guestId)
   return guest ? guest.name : 'Unknown'
 }
 
-const viewCompanion = (companion) => {
+const viewCompanion = companion => {
   // This would typically open a modal or navigate to a details page
   console.log('View companion details:', companion)
 }
@@ -143,7 +147,7 @@ const deleteCompanion = async () => {
   }
 }
 
-const confirmDelete = (companion) => {
+const confirmDelete = companion => {
   companionToDelete.value = companion
   confirmDeleteModal.value = true
 }

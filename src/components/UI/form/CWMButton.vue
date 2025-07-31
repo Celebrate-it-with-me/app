@@ -11,11 +11,14 @@ const props = defineProps({
 })
 
 const buttonClasses = computed(() => {
-  const baseStyles = 'w-full inline-flex items-center justify-center font-medium tracking-wide rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2'
+  const baseStyles =
+    'w-full inline-flex items-center justify-center font-medium tracking-wide rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2'
 
   const variantStyles = {
-    primary: 'bg-yellow-500 text-black hover:bg-yellow-600 focus:ring-yellow-300 disabled:bg-yellow-300',
-    secondary: 'bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-400 disabled:bg-gray-100',
+    primary:
+      'bg-yellow-500 text-black hover:bg-yellow-600 focus:ring-yellow-300 disabled:bg-yellow-300',
+    secondary:
+      'bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-400 disabled:bg-gray-100',
     danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-300 disabled:bg-red-300'
   }
 
@@ -36,11 +39,7 @@ const buttonClasses = computed(() => {
 </script>
 
 <template>
-  <button
-    :type="type"
-    :class="buttonClasses"
-    :disabled="disabled || loading"
-  >
+  <button :type="type" :class="buttonClasses" :disabled="disabled || loading">
     <slot />
   </button>
 </template>

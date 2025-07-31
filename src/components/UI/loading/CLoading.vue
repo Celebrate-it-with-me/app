@@ -1,10 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center gap-2 p-6">
     <Loader :class="`animate-spin size-${size} text-primary`" />
-    <span
-      class="text-gray-600 dark:text-gray-300"
-      :class="textSize"
-    >Loading...</span>
+    <span class="text-gray-600 dark:text-gray-300" :class="textSize">Loading...</span>
   </div>
 </template>
 
@@ -28,11 +25,10 @@ const sizeToTextClassMap = [
   { maxSize: Infinity, class: 'text-3xl' }
 ]
 
-const getTextClass = (size) => {
-  const matched = sizeToTextClassMap.find(item => size <= item.maxSize);
+const getTextClass = size => {
+  const matched = sizeToTextClassMap.find(item => size <= item.maxSize)
   return matched ? matched.class : 'text-3xl'
 }
 
 const textSize = computed(() => getTextClass(props.size))
-
 </script>

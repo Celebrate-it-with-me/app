@@ -1,20 +1,19 @@
 <script setup>
-import { useRoute } from "vue-router";
-import {FwbButton} from "flowbite-vue";
-import {computed, ref} from "vue";
+import { useRoute } from 'vue-router'
+import { FwbButton } from 'flowbite-vue'
+import { computed, ref } from 'vue'
 
-const route = useRoute();
+const route = useRoute()
 
-const name = ref(route.params.name);
+const name = ref(route.params.name)
 
 const viewGalleryLink = computed(() => {
-  return `/view-gallery/${name.value}`;
+  return `/view-gallery/${name.value}`
 })
 
 const uploadImageLink = computed(() => {
-  return `/upload-image/${name.value}`;
+  return `/upload-image/${name.value}`
 })
-
 </script>
 
 <template>
@@ -22,20 +21,10 @@ const uploadImageLink = computed(() => {
     <div class="action-buttons-container">
       <div class="action-buttons">
         <router-link :to="viewGalleryLink">
-          <fwb-button
-              size="sm"
-              class="image-btn"
-          >
-            View Gallery
-          </fwb-button>
+          <fwb-button size="sm" class="image-btn"> View Gallery </fwb-button>
         </router-link>
         <router-link :to="uploadImageLink">
-          <fwb-button
-            size="sm"
-            class="image-btn"
-          >
-            Upload Images
-          </fwb-button>
+          <fwb-button size="sm" class="image-btn"> Upload Images </fwb-button>
         </router-link>
       </div>
     </div>
@@ -44,11 +33,11 @@ const uploadImageLink = computed(() => {
 
 <style scoped>
 .images-main {
-  background: url("../../public/images/bg4.webp") no-repeat center;
+  background: url('../../public/images/bg4.webp') no-repeat center;
   background-size: cover;
 
-  @media(max-width: 600px) {
-    background: url("../../public/images/bg4.webp") no-repeat -360px center;
+  @media (max-width: 600px) {
+    background: url('../../public/images/bg4.webp') no-repeat -360px center;
     background-size: cover;
   }
 }
@@ -63,19 +52,21 @@ const uploadImageLink = computed(() => {
   flex-direction: column;
   gap: 10px;
   justify-content: center;
-  align-items: center
+  align-items: center;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.1s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 
-.image-btn{
-  background: url("../../public/images/img.png");
+.image-btn {
+  background: url('../../public/images/img.png');
   width: 125px;
   height: 50px;
   border: none;

@@ -13,17 +13,17 @@ onMounted(() => {
 })
 
 // Methods
-const handleFilesSelected = (files) => {
+const handleFilesSelected = files => {
   console.log('Selected files:', files)
 }
 
-const handleFileRemoved = async (file) => {
+const handleFileRemoved = async file => {
   if (file?.id && Number.isInteger(file.id)) {
     await removeImage(file.id)
   }
 }
 
-const removeImage = async (fileId) => {
+const removeImage = async fileId => {
   // Handle the remove image
   try {
     const response = await sweetMemoriesStore.removeSweetMemoriesImage(
@@ -41,7 +41,7 @@ const removeImage = async (fileId) => {
   }
 }
 
-const handleUploadImages = async (files) => {
+const handleUploadImages = async files => {
   try {
     const response = await sweetMemoriesStore.uploadSweetMemoriesImages(
       files,
@@ -65,7 +65,7 @@ const loadSweetMemoriesEventImages = async () => {
   }
 }
 
-const handleUpdateImages = async (files) => {
+const handleUpdateImages = async files => {
   // Handle the update images
   try {
     const response = await sweetMemoriesStore.updateSweetMemoriesImages(
@@ -100,14 +100,9 @@ const handleUpdateImages = async (files) => {
     />
 
     <div class="sweet__memories-previous mt-6">
-      <SweetMemories
-        :mode="'create'"
-      />
+      <SweetMemories :mode="'create'" />
     </div>
   </div>
-
-
-
 </template>
 
 <style scoped></style>

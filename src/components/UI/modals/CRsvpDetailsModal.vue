@@ -1,8 +1,6 @@
 <template>
   <CModal v-model="showModal">
-    <template #title>
-      RSVP Details
-    </template>
+    <template #title> RSVP Details </template>
 
     <div v-if="loadingGuestData" class="space-y-5 text-sm text-gray-700 dark:text-gray-300">
       <CLoading :size="10" />
@@ -26,13 +24,15 @@
         <div>
           <p class="font-semibold">Status:</p>
           <p :class="statusClass">
-            {{ guestData.rsvpStatus === 'attending'
-              ? 'Attending'
-              : guestData.rsvpStatus === 'not-attending'
-                ? 'Not Attending'
-                : guestData.rsvpStatus === 'pending'
-                  ? 'Pending'
-                  : 'Unknown' }}
+            {{
+              guestData.rsvpStatus === 'attending'
+                ? 'Attending'
+                : guestData.rsvpStatus === 'not-attending'
+                  ? 'Not Attending'
+                  : guestData.rsvpStatus === 'pending'
+                    ? 'Pending'
+                    : 'Unknown'
+            }}
           </p>
         </div>
         <div>
@@ -40,48 +40,41 @@
           <p>{{ guestData.rsvpStatusDate || 'Not confirmed' }}</p>
         </div>
 
-        <div
-          v-if="isCompleted"
-        >
+        <div v-if="isCompleted">
           <p class="font-semibold">Revert Confirmation:</p>
-          <CButton
-            :disabled="reverting"
-            variant="primary"
-            size="sm"
-            @click="revertConfirmation"
-          >
-            <span class="flex gap-x-2" v-if="reverting">
-              <CWMLoading size="w-5 h-5"/>
+          <CButton :disabled="reverting" variant="primary" size="sm" @click="revertConfirmation">
+            <span v-if="reverting" class="flex gap-x-2">
+              <CWMLoading size="w-5 h-5" />
               Reverting...
             </span>
-            <span v-else>
-              Revert Confirmation
-            </span>
+            <span v-else> Revert Confirmation </span>
           </CButton>
         </div>
-
       </div>
 
-      <div
-        v-if="!isCompleted && guestData.invitationUrl"
-      >
+      <div v-if="!isCompleted && guestData.invitationUrl">
         <p class="font-semibold mb-1">Invitation Link:</p>
         <div class="flex items-center gap-2">
-          <input type="text" :value="guestData.invitationUrl" readonly class="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-full" />
+          <input
+            type="text"
+            :value="guestData.invitationUrl"
+            readonly
+            class="bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded w-full"
+          />
           <CButton size="sm" @click="copyLink">Copy</CButton>
         </div>
       </div>
 
-      <div
-        v-if="!isCompleted && guestData.invitationQR"
-      >
+      <div v-if="!isCompleted && guestData.invitationQR">
         <p class="font-semibold mb-1">QR Code:</p>
-        <img :src="'data:image/png;base64,' + guestData.invitationQR" alt="QR Code" class="w-36 h-36 object-contain rounded border border-gray-300 dark:border-gray-600" />
+        <img
+          :src="'data:image/png;base64,' + guestData.invitationQR"
+          alt="QR Code"
+          class="w-36 h-36 object-contain rounded border border-gray-300 dark:border-gray-600"
+        />
       </div>
 
-      <div
-        v-if="guestData.rsvpLogs?.length"
-      >
+      <div v-if="guestData.rsvpLogs?.length">
         <p class="font-semibold mb-1">Interaction History:</p>
         <ul class="list-disc list-inside space-y-1 text-xs">
           <li v-for="log in guestData.rsvpLogs" :key="log.id">
@@ -90,22 +83,12 @@
         </ul>
       </div>
 
-      <div
-        v-if="!isCompleted"
-        class="space-y-2"
-      >
+      <div v-if="!isCompleted" class="space-y-2">
         <div>
           <p class="font-semibold mb-1">Select Channel:</p>
           <div class="flex items-center gap-3">
-            <CCheckbox
-              v-model="channel.email"
-              label="Email" id="rsvp-email-checkbox"
-            />
-            <CCheckbox
-              v-model="channel.sms"
-              label="SMS"
-              id="rsvp-sms-checkbox"
-            />
+            <CCheckbox id="rsvp-email-checkbox" v-model="channel.email" label="Email" />
+            <CCheckbox id="rsvp-sms-checkbox" v-model="channel.sms" label="SMS" />
           </div>
         </div>
 
@@ -114,18 +97,20 @@
           <CButton
             size="sm"
             variant="outline"
-            @click="resendInvitation"
             :disabled="ableToSendInvitation"
-          >Resend Invitation</CButton>
+            @click="resendInvitation"
+            >Resend Invitation</CButton
+          >
         </div>
         <div v-else class="flex items-center gap-2">
           <span>There is no previous invitation sent</span>
           <CButton
             size="sm"
             variant="primary"
-            @click="sendInvitation"
             :disabled="ableToSendInvitation"
-          >Send Invitation</CButton>
+            @click="sendInvitation"
+            >Send Invitation</CButton
+          >
         </div>
       </div>
     </div>
@@ -167,21 +152,22 @@ onMounted(() => {
 const close = () => emit('close', false)
 
 const isCompleted = computed(() => {
-  return props.guest?.rsvpStatus === 'attending'
-    || props.guest?.rsvpStatus === 'not-attending'
+  return props.guest?.rsvpStatus === 'attending' || props.guest?.rsvpStatus === 'not-attending'
 })
 
 const statusClass = computed(() => {
-  return {
-    pending: 'text-yellow-500',
-    attending: 'text-green-600 dark:text-green-400',
-    'not-attending': 'text-red-500'
-  }[props.guest?.rsvpStatus] || 'text-gray-500'
+  return (
+    {
+      pending: 'text-yellow-500',
+      attending: 'text-green-600 dark:text-green-400',
+      'not-attending': 'text-red-500'
+    }[props.guest?.rsvpStatus] || 'text-gray-500'
+  )
 })
 
 const ableToSendInvitation = computed(() => {
   let isAble = true
-  Object.keys(channel.value).forEach((key) => {
+  Object.keys(channel.value).forEach(key => {
     if (channel.value[key]) {
       isAble = false
     }
@@ -224,7 +210,6 @@ const revertConfirmation = async () => {
     } else {
       console.error('Failed to revert confirmation:', response)
     }
-
   } catch (error) {
     console.error('Failed to revert confirmation:', error)
   } finally {
@@ -232,12 +217,16 @@ const revertConfirmation = async () => {
   }
 }
 
-watch(showModal, (newValue) => {
+watch(showModal, newValue => {
   if (!newValue) emit('close', false)
 })
 
-watch(() => props.modelValue, async (newValue) => {
-  showModal.value = newValue
-  if (showModal.value) await loadGuestData()
-}, { immediate: true })
+watch(
+  () => props.modelValue,
+  async newValue => {
+    showModal.value = newValue
+    if (showModal.value) await loadGuestData()
+  },
+  { immediate: true }
+)
 </script>

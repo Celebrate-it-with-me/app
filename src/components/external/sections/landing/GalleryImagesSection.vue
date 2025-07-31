@@ -1,5 +1,7 @@
 <template>
-  <section class="py-24 px-4 bg-gradient-to-br from-purple-50/30 via-white to-pink-50/30 dark:from-gray-900 dark:via-gray-800/50 dark:to-purple-900/20 relative overflow-hidden">
+  <section
+    class="py-24 px-4 bg-gradient-to-br from-purple-50/30 via-white to-pink-50/30 dark:from-gray-900 dark:via-gray-800/50 dark:to-purple-900/20 relative overflow-hidden"
+  >
     <!-- Enhanced Background Elements -->
     <div class="absolute inset-0 overflow-hidden">
       <div class="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl opacity-60 animate-pulse"></div>

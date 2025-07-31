@@ -2,9 +2,12 @@
   <div class="space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Page Header -->
     <div class="border-b border-gray-200 dark:border-gray-700 pb-5">
-      <CHeading :level="1" weight="semibold" class="text-3xl sm:text-4xl mb-2">Event Guests</CHeading>
+      <CHeading :level="1" weight="semibold" class="text-3xl sm:text-4xl mb-2"
+        >Event Guests</CHeading
+      >
       <p class="text-gray-600 dark:text-gray-400 max-w-3xl">
-        Manage your event guests and their companions. Keep track of guest information and dietary restrictions.
+        Manage your event guests and their companions. Keep track of guest information and dietary
+        restrictions.
       </p>
     </div>
 
@@ -12,13 +15,11 @@
     <section>
       <div class="flex items-center justify-between mb-6">
         <CHeading :level="2" weight="semibold" class="text-2xl">Guest List</CHeading>
-        <CButton
-          variant="primary"
-          @click="createGuest"
-          :disabled="loading || menuStore.needMenu"
-        >
+        <CButton variant="primary" :disabled="loading || menuStore.needMenu" @click="createGuest">
           <span v-if="loading" class="mr-2">
-            <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"></span>
+            <span
+              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"
+            ></span>
           </span>
           <span>+ Add Guest</span>
         </CButton>
@@ -84,7 +85,7 @@ const createGuest = async () => {
   await router.push('/dashboard/guests/create')
 }
 
-const setLoading = (isLoading) => {
+const setLoading = isLoading => {
   loading.value = isLoading
 }
 

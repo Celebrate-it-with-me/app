@@ -1,8 +1,7 @@
 <script setup>
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { ref } from 'vue'
-import CreateUpdateSweetMemoriesConfig
-  from '@/components/authenticated/sweet-memories/CreateUpdateSweetMemoriesConfig.vue'
+import CreateUpdateSweetMemoriesConfig from '@/components/authenticated/sweet-memories/CreateUpdateSweetMemoriesConfig.vue'
 import ShowSweetMemories from '@/components/authenticated/sweet-memories/ShowSweetMemories.vue'
 const loading = ref(false)
 </script>
@@ -14,13 +13,10 @@ const loading = ref(false)
     >
       <CWMLoading
         v-if="loading"
-        :loaderClasses="'w-full flex flex-row justify-center items-center'"
+        :loader-classes="'w-full flex flex-row justify-center items-center'"
         :loader-fill="'fill-gray-800'"
       />
-      <div
-        v-else
-        class="flex flex-row gap-x-4 "
-      >
+      <div v-else class="flex flex-row gap-x-4">
         <CreateUpdateSweetMemoriesConfig />
 
         <ShowSweetMemories />
@@ -29,6 +25,4 @@ const loading = ref(false)
   </section>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

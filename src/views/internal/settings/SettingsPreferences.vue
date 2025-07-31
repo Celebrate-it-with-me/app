@@ -10,71 +10,70 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <CSelect
             id="language"
+            v-model="preferences.language"
             label="Language"
             name="language"
             show-error
             :options="[
-            { label: 'Español', value: 'es' },
-            { label: 'English', value: 'en' }
-          ]"
-            v-model="preferences.language"
+              { label: 'Español', value: 'es' },
+              { label: 'English', value: 'en' }
+            ]"
           />
 
           <CSelect
             id="timezone"
+            v-model="preferences.timezone"
             label="Timezone"
             name="timezone"
             show-error
             :options="timezonesOptions"
-            v-model="preferences.timezone"
           />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <CSelect
             id="date_format"
+            v-model="preferences.dateFormat"
             label="Date Format"
             name="dateFormat"
             show-error
             :options="[
-            { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
-            { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' }
-          ]"
-            v-model="preferences.dateFormat"
+              { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
+              { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' }
+            ]"
           />
 
           <CSelect
             id="visual_theme"
+            v-model="preferences.visualTheme"
             label="Visual Theme"
             name="visualTheme"
             show-error
             :options="[
-            { label: 'Light', value: 'light' },
-            { label: 'Dark', value: 'dark' },
-            { label: 'System Default', value: 'system' }
-          ]"
-            v-model="preferences.visualTheme"
+              { label: 'Light', value: 'light' },
+              { label: 'Dark', value: 'dark' },
+              { label: 'System Default', value: 'system' }
+            ]"
           />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
           <CToggle
+            v-model="preferences.notifyByEmail"
             label="Receive email notifications"
             name="notifyByEmail"
-            v-model="preferences.notifyByEmail"
-
           />
 
           <CToggle
+            v-model="preferences.notifyBySms"
             label="Receive SMS notifications"
             name="notifyBySms"
-            v-model="preferences.notifyBySms"
           />
 
           <CToggle
+            v-model="preferences.smartTips"
             label="Get smart tips from AI assistant"
             name="smartTips"
-            v-model="preferences.smartTips"
           />
         </div>
 
@@ -119,7 +118,7 @@ const preferences = reactive({
   dateFormat: '',
   notifyByEmail: false,
   notifyBySms: false,
-  smartTips: false,
+  smartTips: false
 })
 
 const originalPreferences = reactive({
@@ -129,7 +128,7 @@ const originalPreferences = reactive({
   dateFormat: '',
   notifyByEmail: false,
   notifyBySms: false,
-  smartTips: false,
+  smartTips: false
 })
 
 const preferencesSchema = computed(() => {
@@ -141,15 +140,15 @@ const preferencesSchema = computed(() => {
       visualTheme: zod.string().min(1, 'Visual theme is required.'),
       notifyByEmail: zod.boolean().default(false),
       notifyBySms: zod.boolean().default(false),
-      smartTips: zod.boolean().default(false),
+      smartTips: zod.boolean().default(false)
     })
   )
 })
 
 const timezonesOptions = computed(() => {
-  return timezones.map((tz) => ({
+  return timezones.map(tz => ({
     label: tz.label,
-    value: `${tz.value}-${tz.label}`,
+    value: `${tz.value}-${tz.label}`
   }))
 })
 
@@ -168,13 +167,15 @@ const isModified = computed(() => {
 onMounted(() => {
   preferences.language = originalPreferences.language = userStore.preferences.language ?? ''
   preferences.timezone = originalPreferences.timezone = userStore.preferences.timezone ?? ''
-  preferences.visualTheme = originalPreferences.visualTheme = userStore.preferences.visualTheme ?? ''
+  preferences.visualTheme = originalPreferences.visualTheme =
+    userStore.preferences.visualTheme ?? ''
   preferences.dateFormat = originalPreferences.dateFormat = userStore.preferences.dateFormat ?? ''
-  preferences.notifyByEmail = originalPreferences.notifyByEmail = userStore.preferences.notifyByEmail ?? false
-  preferences.notifyBySms = originalPreferences.notifyBySms = userStore.preferences.notifyBySms ?? false
+  preferences.notifyByEmail = originalPreferences.notifyByEmail =
+    userStore.preferences.notifyByEmail ?? false
+  preferences.notifyBySms = originalPreferences.notifyBySms =
+    userStore.preferences.notifyBySms ?? false
   preferences.smartTips = originalPreferences.smartTips = userStore.preferences.smartTips ?? false
 })
-
 
 const savePreferences = async () => {
   try {
@@ -183,11 +184,10 @@ const savePreferences = async () => {
     const response = await userStore.updatePreferences(preferences)
 
     if (response && response.status === 200) {
-
       userStore.setPreferences(response?.data?.data ?? {})
       notifications.addNotification({
         type: 'success',
-        message: 'Preferences saved successfully.',
+        message: 'Preferences saved successfully.'
       })
 
       originalPreferences.language = preferences.language
@@ -200,25 +200,25 @@ const savePreferences = async () => {
     } else {
       notifications.addNotification({
         type: 'error',
-        message: 'Failed to save preferences. Please try again.',
+        message: 'Failed to save preferences. Please try again.'
       })
     }
   } catch (e) {
     console.error(e)
     notifications.addNotification({
       type: 'error',
-      message: 'Error saving preferences. Please try again.',
+      message: 'Error saving preferences. Please try again.'
     })
   } finally {
     saving.value = false
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.error('Form validation errors:', errors)
   notifications.addNotification({
     type: 'error',
-    message: 'Please fix the errors in the form.',
+    message: 'Please fix the errors in the form.'
   })
 }
 </script>

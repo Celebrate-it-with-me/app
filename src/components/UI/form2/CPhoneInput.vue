@@ -18,12 +18,12 @@
       <input
         :id="id"
         v-bind="$attrs"
-        type="tel"
         v-model="inputValue"
+        type="tel"
         :placeholder="placeholder"
         :disabled="disabled"
-        @blur="handleFieldBlur"
         class="pl-1 w-full bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-extralight"
+        @blur="handleFieldBlur"
       />
     </div>
 
@@ -54,18 +54,15 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'update:blur', 'resetErrors'])
 
-const {
-  value: inputValue,
-  errorMessage,
-  handleBlur,
-  setValue,
-  meta
-} = useField(props.name)
+const { value: inputValue, errorMessage, handleBlur, setValue, meta } = useField(props.name)
 
 setValue(props.modelValue)
 
-watch(() => props.modelValue, (val) => setValue(val))
-watch(inputValue, (val) => {
+watch(
+  () => props.modelValue,
+  val => setValue(val)
+)
+watch(inputValue, val => {
   emit('update:modelValue', val)
   if (val) emit('resetErrors')
 })
@@ -78,7 +75,7 @@ const borderColorClass = computed(() => {
   return 'border-primary focus-within:border-primary'
 })
 
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   emit('update:blur', e.target.value)
   handleBlur(e)
 }

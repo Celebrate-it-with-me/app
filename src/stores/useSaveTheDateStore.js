@@ -12,7 +12,7 @@ export const useSaveTheDateStore = defineStore('stdStore', {
       color: '#000000',
       fontWeight: 'bold',
       textAlign: 'center',
-      fontFamily: 'Arial, Helvetica, sans-serif',
+      fontFamily: 'Arial, Helvetica, sans-serif'
     },
     message: '',
     messageStyles: {
@@ -20,7 +20,7 @@ export const useSaveTheDateStore = defineStore('stdStore', {
       color: '#000000',
       fontWeight: 'normal',
       textAlign: 'center',
-      fontFamily: 'Arial, Helvetica, sans-serif',
+      fontFamily: 'Arial, Helvetica, sans-serif'
     },
     useCountdown: false,
     countdownStyles: {
@@ -29,15 +29,15 @@ export const useSaveTheDateStore = defineStore('stdStore', {
         color: '#000000',
         fontWeight: 'bold',
         textAlign: 'center',
-        fontFamily: 'Arial, Helvetica, sans-serif',
+        fontFamily: 'Arial, Helvetica, sans-serif'
       },
       labels: {
         fontSize: '16px',
         color: '#000000',
         fontWeight: 'normal',
         textAlign: 'center',
-        fontFamily: 'Arial, Helvetica, sans-serif',
-      },
+        fontFamily: 'Arial, Helvetica, sans-serif'
+      }
     },
     addToCalendar: 'Add to Calendar',
     addToCalendarStyles: {
@@ -50,7 +50,7 @@ export const useSaveTheDateStore = defineStore('stdStore', {
       borderRadius: '5px',
       borderWidth: '1px',
       borderColor: '#000000',
-      borderStyle: 'solid',
+      borderStyle: 'solid'
     },
     hasPreviousStd: false
   }),
@@ -75,19 +75,26 @@ export const useSaveTheDateStore = defineStore('stdStore', {
     },
 
     cleanStd() {
-        this.id = null
-        this.hasPreviousStd = false
-        this.stdTitle = ''
-        this.stdSubTitle = ''
-        this.backgroundColor = ''
-        this.image = null
-        this.useCountdown = false
-        this.useAddToCalendar = false
-        this.isEnabled = false
+      this.id = null
+      this.hasPreviousStd = false
+      this.stdTitle = ''
+      this.stdSubTitle = ''
+      this.backgroundColor = ''
+      this.image = null
+      this.useCountdown = false
+      this.useAddToCalendar = false
+      this.isEnabled = false
     },
 
-
-    async createSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar, isEnabled }) {
+    async createSTD({
+      stdTitle,
+      stdSubTitle,
+      backgroundColor,
+      image,
+      useCountdown,
+      useAddToCalendar,
+      isEnabled
+    }) {
       const eventsStore = useEventsStore()
 
       return await STDService.createSTD({
@@ -102,7 +109,15 @@ export const useSaveTheDateStore = defineStore('stdStore', {
       })
     },
 
-    async updateSTD({ stdTitle, stdSubTitle, backgroundColor, image, useCountdown, useAddToCalendar, isEnabled }) {
+    async updateSTD({
+      stdTitle,
+      stdSubTitle,
+      backgroundColor,
+      image,
+      useCountdown,
+      useAddToCalendar,
+      isEnabled
+    }) {
       return await STDService.updateSTD({
         stdId: this.id,
         stdTitle,

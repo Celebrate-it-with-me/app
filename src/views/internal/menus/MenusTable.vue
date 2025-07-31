@@ -12,7 +12,7 @@ const showConfirmDeleteModal = ref(false)
 const menuSelectedForDelete = ref(null)
 const router = useRouter()
 
-const confirmDeleteMenu = (menu) => {
+const confirmDeleteMenu = menu => {
   menuSelectedForDelete.value = menu
   showConfirmDeleteModal.value = true
 }
@@ -37,10 +37,9 @@ const loadMenus = async () => {
   loading.value = false
 }
 
-const gotToMenu = async (menu) => {
+const gotToMenu = async menu => {
   await router.push(`/dashboard/menus/show/${menu.id}`)
 }
-
 </script>
 
 <template>
@@ -49,57 +48,57 @@ const gotToMenu = async (menu) => {
   </section>
   <section v-else class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md space-y-8">
     <table
-      class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
       v-if="menuStore.menus.length"
+      class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
     >
       <thead class="bg-gray-50 dark:bg-gray-800">
-      <tr>
-        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Title
-        </th>
-        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Description
-        </th>
-        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Multiple Choice
-        </th>
-        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Custom Request
-        </th>
-        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Is Default
-        </th>
-        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-          Actions
-        </th>
-      </tr>
+        <tr>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Title
+          </th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Description
+          </th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Multiple Choice
+          </th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Custom Request
+          </th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Is Default
+          </th>
+          <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+            Actions
+          </th>
+        </tr>
       </thead>
       <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-      <tr
-        v-for="menu in menuStore.menus"
-        :key="menu.id"
-        class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-      >
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
-          {{ menu.title }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-          {{ menu.description }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-          {{ menu.allowMultipleChoices ? 'Yes' : 'No' }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm">
-          {{ menu.allowCustomRequest ? 'Yes' : 'No' }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm">
-          {{ menu.isDefault ? 'Yes' : 'No' }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-left flex flex-start gap-2 text-sm">
-          <CButton size="sm" variant="primary" @click="gotToMenu(menu)">Details</CButton>
-          <CButton size="sm" variant="outline" @click="confirmDeleteMenu(menu)">Delete</CButton>
-        </td>
-      </tr>
+        <tr
+          v-for="menu in menuStore.menus"
+          :key="menu.id"
+          class="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+        >
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
+            {{ menu.title }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+            {{ menu.description }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+            {{ menu.allowMultipleChoices ? 'Yes' : 'No' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            {{ menu.allowCustomRequest ? 'Yes' : 'No' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            {{ menu.isDefault ? 'Yes' : 'No' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-left flex flex-start gap-2 text-sm">
+            <CButton size="sm" variant="primary" @click="gotToMenu(menu)">Details</CButton>
+            <CButton size="sm" variant="outline" @click="confirmDeleteMenu(menu)">Delete</CButton>
+          </td>
+        </tr>
       </tbody>
     </table>
     <CConfirmModal
@@ -112,6 +111,4 @@ const gotToMenu = async (menu) => {
   </section>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

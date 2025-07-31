@@ -12,7 +12,7 @@ class SongsService {
     })
   }
 
-  async getSuggestedSongs(eventId, pageSelected = 1){
+  async getSuggestedSongs(eventId, pageSelected = 1) {
     console.log('getSuggestedSongs', eventId, pageSelected)
     return CWM_API.get(`event/${eventId}/suggest-music`, {
       params: {
@@ -32,17 +32,17 @@ class SongsService {
   }
 
   async saveSuggestedConfig({
-                              useSuggestedMusic,
-                              title,
-                              subTitle,
-                              usePreview,
-                              mainColor,
-                              secondaryColor,
-                              useVoteSystem,
-                              searchLimit,
-                              eventId
-  }){
-    return await CWM_API.post(`event/${eventId}/suggest-music-config`,{
+    useSuggestedMusic,
+    title,
+    subTitle,
+    usePreview,
+    mainColor,
+    secondaryColor,
+    useVoteSystem,
+    searchLimit,
+    eventId
+  }) {
+    return await CWM_API.post(`event/${eventId}/suggest-music-config`, {
       useSuggestedMusic,
       title,
       subTitle,
@@ -56,31 +56,30 @@ class SongsService {
   }
 
   async updateSuggestedConfig({
-                                id,
-                                title,
-                                subTitle,
-                                usePreview,
-                                mainColor,
-                                secondaryColor,
-                                useVoteSystem,
-                                searchLimit,
-                              }) {
+    id,
+    title,
+    subTitle,
+    usePreview,
+    mainColor,
+    secondaryColor,
+    useVoteSystem,
+    searchLimit
+  }) {
     console.log('checking id', id)
-    return await CWM_API.put(`suggest-music-config/${id}`,{
+    return await CWM_API.put(`suggest-music-config/${id}`, {
       title,
       subTitle,
       usePreview,
       mainColor,
       secondaryColor,
       useVoteSystem,
-      searchLimit,
+      searchLimit
     })
   }
 
-  async getSuggestedConfig(eventId){
+  async getSuggestedConfig(eventId) {
     return CWM_API.get(`event/${eventId}/suggest-music-config`)
   }
-
 }
 
 export default new SongsService()

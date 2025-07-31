@@ -8,7 +8,7 @@ const templateStore = useTemplateStore()
 const loading = ref(false)
 
 const route = useRoute()
-const { eventId, guestCode  } = route.params
+const { eventId, guestCode } = route.params
 
 const guestInfo = computed(() => templateStore.guest)
 const companions = computed(() => templateStore.guest?.companions ?? [])
@@ -25,12 +25,11 @@ const submit = async () => {
     const response = await templateStore.rsvpSaveUpdate()
 
     if (response.status === 200) {
-      const guestData = await templateStore.refreshGuestData({eventId, guestCode})
+      const guestData = await templateStore.refreshGuestData({ eventId, guestCode })
 
       const { mainGuest } = guestData.data?.data ?? {}
 
       templateStore.guest = mainGuest
-
     } else {
       console.log(response)
     }
@@ -40,7 +39,6 @@ const submit = async () => {
     loading.value = false
   }
 }
-
 </script>
 
 <template>
@@ -58,81 +56,86 @@ const submit = async () => {
         <div class="overflow-x-auto">
           <table class="w-full table-auto border rounded-lg shadow-sm text-sm">
             <tbody>
-            <tr class="border-b">
-              <td class="px-4 py-2 font-semibold text-gray-600 w-32">Name:</td>
-              <td class="px-4 py-2 text-gray-800">{{ guestInfo?.name }}</td>
-            </tr>
-            <tr class="border-b">
-              <td class="px-4 py-2 font-semibold text-gray-600">Email:</td>
-              <td class="px-4 py-2 text-gray-800">{{ guestInfo?.email ?? 'N/A' }}</td>
-            </tr>
-            <tr class="border-b">
-              <td class="px-4 py-2 font-semibold text-gray-600">Phone:</td>
-              <td class="px-4 py-2 text-gray-800">{{ guestInfo?.phone ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-              <td class="px-4 py-2 font-semibold text-gray-600">
-                Attending:
-              </td>
-              <td class="px-4 py-2">
-                <span
-                  class="inline-block px-2 py-1 rounded-full text-xs font-semibold"
-                  :class="{
-                    'text-green-700 bg-green-100': guestInfo?.rsvpStatus === 'attending',
-                    'text-red-700 bg-red-100': guestInfo?.rsvpStatus === 'not-attending',
-                    'text-yellow-700 bg-yellow-100': guestInfo?.rsvpStatus === 'pending'
-                  }"
-                >
-                  {{
-                    guestInfo?.rsvpStatus === 'attending'
-                      ? 'Attending'
-                      : guestInfo?.rsvpStatus === 'not-attending'
-                        ? 'Not Attending'
-                        : 'Pending'
-                  }}
-                </span>
-              </td>
-            </tr>
+              <tr class="border-b">
+                <td class="px-4 py-2 font-semibold text-gray-600 w-32">Name:</td>
+                <td class="px-4 py-2 text-gray-800">{{ guestInfo?.name }}</td>
+              </tr>
+              <tr class="border-b">
+                <td class="px-4 py-2 font-semibold text-gray-600">Email:</td>
+                <td class="px-4 py-2 text-gray-800">{{ guestInfo?.email ?? 'N/A' }}</td>
+              </tr>
+              <tr class="border-b">
+                <td class="px-4 py-2 font-semibold text-gray-600">Phone:</td>
+                <td class="px-4 py-2 text-gray-800">{{ guestInfo?.phone ?? 'N/A' }}</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-2 font-semibold text-gray-600">Attending:</td>
+                <td class="px-4 py-2">
+                  <span
+                    class="inline-block px-2 py-1 rounded-full text-xs font-semibold"
+                    :class="{
+                      'text-green-700 bg-green-100': guestInfo?.rsvpStatus === 'attending',
+                      'text-red-700 bg-red-100': guestInfo?.rsvpStatus === 'not-attending',
+                      'text-yellow-700 bg-yellow-100': guestInfo?.rsvpStatus === 'pending'
+                    }"
+                  >
+                    {{
+                      guestInfo?.rsvpStatus === 'attending'
+                        ? 'Attending'
+                        : guestInfo?.rsvpStatus === 'not-attending'
+                          ? 'Not Attending'
+                          : 'Pending'
+                    }}
+                  </span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <div class="flex-1" v-if="hasCompanions">
+      <div v-if="hasCompanions" class="flex-1">
         <h3 class="text-xl font-semibold mb-4 text-center md:text-left border-b pb-2">
           Companions List:
         </h3>
         <div class="overflow-x-auto">
           <table class="w-full table-auto border rounded-lg sm:rounded-lg shadow-sm text-sm">
             <thead class="bg-gray-100 text-gray-600 uppercase">
-            <tr>
-              <th class="px-4 py-2 text-left">Name</th>
-              <th class="px-4 py-2 text-left">Attending</th>
-            </tr>
+              <tr>
+                <th class="px-4 py-2 text-left">Name</th>
+                <th class="px-4 py-2 text-left">Attending</th>
+              </tr>
             </thead>
             <tbody>
-            <tr
-              v-for="companion in companions"
-              :key="companion.id"
-              class="bg-white border-t hover:bg-gray-50"
-            >
-              <td class="px-4 py-2 font-medium text-gray-800">
-                {{ companion.name ?? 'Unnamed' }}
-              </td>
-              <td class="px-4 py-2">
+              <tr
+                v-for="companion in companions"
+                :key="companion.id"
+                class="bg-white border-t hover:bg-gray-50"
+              >
+                <td class="px-4 py-2 font-medium text-gray-800">
+                  {{ companion.name ?? 'Unnamed' }}
+                </td>
+                <td class="px-4 py-2">
                   <span
                     :class="[
                       'inline-block px-2 py-1 rounded-full text-xs font-semibold',
-                      companion.rsvpStatus === 'attending' ? 'text-green-700 bg-green-100' :
-                      companion.rsvpStatus === 'not-attending' ? 'text-red-700 bg-red-100' :
-                      'text-yellow-700 bg-yellow-100 text-yellow-700'
+                      companion.rsvpStatus === 'attending'
+                        ? 'text-green-700 bg-green-100'
+                        : companion.rsvpStatus === 'not-attending'
+                          ? 'text-red-700 bg-red-100'
+                          : 'text-yellow-700 bg-yellow-100 text-yellow-700'
                     ]"
                   >
-                    {{ companion.rsvpStatus === 'attending' ? 'Attending' :
-                    companion.rsvpStatus === 'not-attending' ? 'Not Attending' : 'Pending' }}
+                    {{
+                      companion.rsvpStatus === 'attending'
+                        ? 'Attending'
+                        : companion.rsvpStatus === 'not-attending'
+                          ? 'Not Attending'
+                          : 'Pending'
+                    }}
                   </span>
-              </td>
-            </tr>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -140,19 +143,17 @@ const submit = async () => {
     </div>
 
     <!-- Buttons -->
-    <div class="mt-10 flex flex-row justify-center sm:justify-end
-                items-center gap-4 pb-4">
+    <div class="mt-10 flex flex-row justify-center sm:justify-end items-center gap-4 pb-4">
       <button
+        class="px-6 py-2 border rounded-lg text-sm font-semibold text-gray-600 border-gray-400 hover:bg-gray-100 transition"
         @click="goBack"
-        class="px-6 py-2 border rounded-lg text-sm font-semibold text-gray-600
-               border-gray-400 hover:bg-gray-100 transition"
       >
         Back
       </button>
 
       <button
-        @click="submit"
         class="px-6 py-2 border rounded-lg text-sm font-semibold text-purple-600 border-purple-300 hover:bg-purple-50 transition"
+        @click="submit"
       >
         Submit
       </button>
@@ -160,6 +161,4 @@ const submit = async () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -8,23 +8,21 @@
         class="w-full max-w-md rounded-xl shadow-xl overflow-hidden bg-white dark:bg-gray-900 text-text"
       >
         <!-- Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700"
+        >
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
             Disable Two-Factor Authentication
           </h3>
-          <button @click="close" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" @click="close">
             <X class="w-5 h-5" />
           </button>
         </div>
 
         <!-- Content -->
         <div class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
-          <p class="mb-2">
-            Are you sure you want to disable Two-Factor Authentication?
-          </p>
-          <p class="text-red-500 font-medium">
-            This will make your account less secure.
-          </p>
+          <p class="mb-2">Are you sure you want to disable Two-Factor Authentication?</p>
+          <p class="text-red-500 font-medium">This will make your account less secure.</p>
         </div>
 
         <!-- Footer -->
@@ -45,7 +43,7 @@ import { useUserStore } from '@/stores/useUserStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 defineProps({
-  modelValue: Boolean,
+  modelValue: Boolean
 })
 
 const loading = ref(false)
@@ -64,28 +62,26 @@ const disable2FA = async () => {
     if (response?.status !== 200) {
       notifications.addNotification({
         type: 'error',
-        message: 'Failed to disable 2FA. Please try again.',
+        message: 'Failed to disable 2FA. Please try again.'
       })
       return
     }
 
     notifications.addNotification({
       type: 'success',
-      message: 'Two-Factor Authentication disabled.',
+      message: 'Two-Factor Authentication disabled.'
     })
 
     emit('disabled')
-
   } catch (e) {
     notifications.addNotification({
       type: 'error',
-      message: 'Could not disable 2FA. Try again later.',
+      message: 'Could not disable 2FA. Try again later.'
     })
   } finally {
     loading.value = false
   }
 }
-
 </script>
 
 <style scoped>

@@ -5,37 +5,26 @@
         <div class="flex items-center gap-2">
           <div
             class="w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold"
-            :class="[
-              currentStep === index ? 'bg-primary text-white' : 'bg-gray-300 text-gray-700',
-            ]"
+            :class="[currentStep === index ? 'bg-primary text-white' : 'bg-gray-300 text-gray-700']"
           >
-            {{ index + 1}}
+            {{ index + 1 }}
           </div>
           <div class="text-sm font-medium" :class="{ 'text-primary': currentStep === index }">
             {{ step.title }}
           </div>
         </div>
-        <div
-          v-if="index < steps.length - 1"
-          class="w-6 h-px bg-gray-300 dark:bg-gray-600"
-        />
+        <div v-if="index < steps.length - 1" class="w-6 h-px bg-gray-300 dark:bg-gray-600" />
       </template>
     </div>
 
-    <slot name="current-Step" :step="currentStep" :stepData="steps[currentStep]" />
+    <slot name="current-Step" :step="currentStep" :step-data="steps[currentStep]" />
 
     <div class="flex justify-between pt-4">
-      <CButton
-        variant="secondary"
-        :disabled="currentStep === 0"
-        @click="prevStep"
-      >
-        Back
-      </CButton>
+      <CButton variant="secondary" :disabled="currentStep === 0" @click="prevStep"> Back </CButton>
 
       <CButton
         variant="primary"
-        :disabled="isLastStep && !canSubmit || !nextValid"
+        :disabled="(isLastStep && !canSubmit) || !nextValid"
         @click="nextStep"
       >
         {{ isLastStep ? 'Finish' : 'Next' }}
@@ -77,7 +66,7 @@ const isLastStep = computed(() => {
 const nextStep = () => {
   if (isLastStep.value) {
     emit('submit')
-    return;
+    return
   }
 
   currentStep.value++
@@ -96,5 +85,4 @@ const setActiveStep = () => {
     emit('active-step', currentStep.value)
   }
 }
-
 </script>

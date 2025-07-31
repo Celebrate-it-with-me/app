@@ -29,12 +29,8 @@ const shouldShowRouteView = computed(() => {
     return true
   }
 
-  if (!eventsStore.activeEvent) {
-    return false
-  }
-  return true
+  return eventsStore.activeEvent
 })
-
 
 onMounted(async () => {
   loading.value = true
@@ -43,68 +39,41 @@ onMounted(async () => {
   }
 
   await collaboratorsStore.loadInvitations()
-  await loadEvents()
   loading.value = false
-})
 
-const loadEvents = async () => {
-  try {
-    await eventsStore.loadEventsPlansAndType()
-    const response = await userStore.initUserEvents()
-
-    if (response.status >= 200 && response.status < 300) {
-      const result = response.data?.data ?? {}
-      await eventsStore.initUserEventsData(result)
-
-      if (userStore.justLogin === true) {
-        triggerEventsModal()
-        userStore.justLogin = false
-      }
-    } else {
-      if (response.status === 401) {
-        notificationStore.addNotification({
-          type: 'error',
-          message: 'Session expired. Please log in again.',
-        })
-      }
-    }
-  } catch (e) {
-    console.log('checking error', e)
-    if (e.response.status === 401) {
-      notificationStore.addNotification({
-        type: 'error',
-        message: 'Session expired. Please log in again.',
-      })
-    }
+  if (userStore.justLogin === true) {
+    triggerEventsModal()
+    userStore.justLogin = false
   }
-}
+})
 
 const triggerEventsModal = () => {
   showEventsModal.value = true
 }
 
-watch(() => userStore?.preferences?.visualTheme,  () => {
-  const theme = userStore?.preferences?.visualTheme
-  switch (theme) {
-    case 'dark':
-      document.documentElement.classList.add('dark')
-      break
-    case 'light':
-      document.documentElement.classList.remove('dark')
-      break
-    case 'system':
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+watch(
+  () => userStore?.preferences?.visualTheme,
+  () => {
+    const theme = userStore?.preferences?.visualTheme
+    switch (theme) {
+      case 'dark':
         document.documentElement.classList.add('dark')
-      } else {
+        break
+      case 'light':
         document.documentElement.classList.remove('dark')
-      }
-      break
-    default:
-      document.documentElement.classList.remove('light')
+        break
+      case 'system':
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+        break
+      default:
+        document.documentElement.classList.remove('light')
+    }
   }
-
-})
-
+)
 </script>
 <template>
   <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-text font-[Poppins]">
@@ -121,11 +90,13 @@ watch(() => userStore?.preferences?.visualTheme,  () => {
         :class="[
           sidebarExpanded ? 'w-64' : 'w-20',
           'bg-white dark:bg-gray-800 shadow-md h-screen transition-all duration-300 ease-in-out',
-          mobileSidebarOpen ? 'fixed inset-y-0 left-0 z-50 md:relative md:z-auto' : 'hidden md:block',
+          mobileSidebarOpen
+            ? 'fixed inset-y-0 left-0 z-50 md:relative md:z-auto'
+            : 'hidden md:block',
           'md:sticky md:top-0'
         ]"
       >
-        <InternalSidebar @update:sidebarState="sidebarExpanded = $event" />
+        <InternalSidebar @update:sidebar-state="sidebarExpanded = $event" />
       </aside>
 
       <!-- Main content -->
@@ -135,35 +106,33 @@ watch(() => userStore?.preferences?.visualTheme,  () => {
           @toggle-mobile-sidebar="mobileSidebarOpen = !mobileSidebarOpen"
         />
         <CPageLoaderV2 v-if="loading" />
-        <main
-          v-else
-          class="flex-1 p-6 overflow-hidden"
-        >
-          <CAlert
-            v-if="!shouldShowRouteView"
-          >
+        <main v-else class="flex-1 p-6 overflow-hidden">
+          <CAlert v-if="!shouldShowRouteView">
             <template #icon>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 text-yellow-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </template>
-            <template #title>
-              No active event found
-            </template>
+            <template #title> No active event found </template>
             Please select or create an event to continue.
           </CAlert>
-          <router-view
-            v-else
-          />
+          <router-view v-else />
           <!-- Modals -->
-          <CEventsModal
-            v-model="showEventsModal"
-          />
+          <CEventsModal v-model="showEventsModal" />
         </main>
         <InternalFooter />
       </div>
     </div>
-
-
   </div>
 </template>

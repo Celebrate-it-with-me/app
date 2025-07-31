@@ -5,18 +5,18 @@
     <div class="inputGroup">
       <input
         :id="name"
+        ref="fileInput"
         :name="name"
         type="file"
         :disabled="isReadonly || disabled"
         accept="audio/*"
-        @change="handleFileChange"
-        ref="fileInput"
         class="hidden"
+        @change="handleFileChange"
       />
 
       <audio
-        controls
         v-if="previewUrl"
+        controls
         :src="previewUrl"
         class="w-full h-12 bg-gray-200 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
       ></audio>
@@ -66,10 +66,9 @@ const {
   initialValue: props.modelValue
 })
 
-
 watch(
   () => props.modelValue,
-  (val) => {
+  val => {
     if (!val) {
       previewUrl.value = null
     }
@@ -83,11 +82,11 @@ onMounted(() => {
   }
 })
 
-watch(inputValue, (val) => {
+watch(inputValue, val => {
   emit('update:modelValue', val)
 })
 
-const handleFileChange = (event) => {
+const handleFileChange = event => {
   const file = event.target.files[0]
   inputValue.value = file
   if (file) {

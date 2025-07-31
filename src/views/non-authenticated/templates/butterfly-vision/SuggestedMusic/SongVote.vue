@@ -16,7 +16,7 @@ const props = defineProps({
   }
 })
 
-const voteSong = async (direction) => {
+const voteSong = async direction => {
   try {
     const response = await SongsService.voteSong({
       songId: props.song.id,
@@ -25,21 +25,20 @@ const voteSong = async (direction) => {
 
     if (response.status === 200) {
       notification.addNotification({
-        message: `Your vote was successfully registered!`,
-      });
+        message: `Your vote was successfully registered!`
+      })
     } else {
       notification.addNotification({
         type: 'error',
-        message: 'Something went wrong. Unable to register your vote!',
-      });
+        message: 'Something went wrong. Unable to register your vote!'
+      })
     }
-
-  } catch(e) {
+  } catch (e) {
     console.log('Error voting for song:', e)
     notification.addNotification({
       type: 'error',
-      message: 'An error occurred while voting for the song.',
-    });
+      message: 'An error occurred while voting for the song.'
+    })
   }
 }
 
@@ -49,33 +48,27 @@ const noVoteSystemMessage = () => {
     message: 'This vote feature is not available in creator mode!'
   })
 }
-
 </script>
 
 <template>
-  <div
-    v-if="mode === 'creator'"
-  >
-    <div
-      class="flex items-center space-x-4">
-      <button @click="noVoteSystemMessage" class="rounded-full">
+  <div v-if="mode === 'creator'">
+    <div class="flex items-center space-x-4">
+      <button class="rounded-full" @click="noVoteSystemMessage">
         <HandThumbUpIcon class="h-5 w-5 text-white hover:text-green-500" />
       </button>
-      <button @click="noVoteSystemMessage" class="rounded-full">
+      <button class="rounded-full" @click="noVoteSystemMessage">
         <HandThumbDownIcon class="h-5 w-5 text-white hover:text-red-500" />
       </button>
     </div>
   </div>
   <div v-else>
-    <div
-      class="flex items-center space-x-4">
-      <button @click="voteSong('up')" class="rounded-full">
+    <div class="flex items-center space-x-4">
+      <button class="rounded-full" @click="voteSong('up')">
         <HandThumbUpIcon class="h-5 w-5 text-white hover:text-green-500" />
       </button>
-      <button @click="voteSong('down')" class="rounded-full">
+      <button class="rounded-full" @click="voteSong('down')">
         <HandThumbDownIcon class="h-5 w-5 text-white hover:text-red-500" />
       </button>
     </div>
   </div>
-
 </template>

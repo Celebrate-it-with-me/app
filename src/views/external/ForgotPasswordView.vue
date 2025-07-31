@@ -9,7 +9,7 @@ import * as zod from 'zod'
 import { useUserStore } from '@/stores/useUserStore'
 
 const backendError = ref(false)
-const backendErrorMessage = ref("")
+const backendErrorMessage = ref('')
 const sending = ref(false)
 const userStore = useUserStore()
 const resetLinkSent = ref(false)
@@ -21,7 +21,9 @@ const form = reactive({
 const validationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      email: zod.string({message: 'Email is required'}).email({message: 'Must be a valid email'}),
+      email: zod
+        .string({ message: 'Email is required' })
+        .email({ message: 'Must be a valid email' })
     })
   )
 })
@@ -34,12 +36,12 @@ const onSubmit = async () => {
 
     if (response.status === 200) {
       backendError.value = false
-      backendErrorMessage.value = ""
+      backendErrorMessage.value = ''
       form.email = ''
       resetLinkSent.value = true
     } else {
       backendError.value = true
-      backendErrorMessage.value = response.response?.data?.message ?? "Oops, something went wrong!"
+      backendErrorMessage.value = response.response?.data?.message ?? 'Oops, something went wrong!'
     }
   } catch (e) {
     console.log(e)
@@ -48,10 +50,9 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.log(errors)
 }
-
 </script>
 
 <template>
@@ -63,23 +64,18 @@ const onInvalidSubmit = (errors) => {
           alt="Celebrate it with me logo"
           class="w-64 h-auto mx-auto"
         />
-
       </div>
 
-      <h1 class="text-3xl font-display font-bold text-gray-700 mb-4"> Forgot Password</h1>
+      <h1 class="text-3xl font-display font-bold text-gray-700 mb-4">Forgot Password</h1>
       <p v-if="!resetLinkSent" class="text-sm text-text-light">
         Enter your account email address and we will send a password reset link
       </p>
 
-      <div
-        v-if="backendError"
-        class="text-red-500 text-sm font-semibold mb-10"
-      >
+      <div v-if="backendError" class="text-red-500 text-sm font-semibold mb-10">
         <p>
           {{ backendErrorMessage }}
         </p>
       </div>
-
     </div>
 
     <Form
@@ -89,40 +85,28 @@ const onInvalidSubmit = (errors) => {
       @invalid-submit="onInvalidSubmit"
     >
       <CInput
+        id="forgot_password_email"
+        v-model="form.email"
         label="Email"
         type="email"
         placeholder="Enter your email"
-        v-model="form.email"
-        id="forgot_password_email"
         name="email"
         show-error
       />
 
-      <CButton variant="gradient" full type="submit" class="mt-4">
-        Send Reset Link
-      </CButton>
+      <CButton variant="gradient" full type="submit" class="mt-4"> Send Reset Link </CButton>
 
       <div class="mt-6 flex items-center justify-center">
         <router-link to="/sign-in">
-        <span class="text-primary font-medium hover:underline">
-          Back to Sign In
-        </span>
+          <span class="text-primary font-medium hover:underline"> Back to Sign In </span>
         </router-link>
       </div>
     </Form>
 
-    <div
-      v-else
-      class="text-gray-500 text-sm font-semibold mb-10"
-    >
-      <p>
-        Thank you for your request, please check your email to reset your password.
-      </p>
+    <div v-else class="text-gray-500 text-sm font-semibold mb-10">
+      <p>Thank you for your request, please check your email to reset your password.</p>
     </div>
-
   </CCard>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,7 +1,6 @@
 <template>
   <CHeading :level="4" weight="normal" color="text-red-600">Delete Account</CHeading>
   <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6 space-y-6">
-
     <div class="grid md:grid-cols-4 gap-6">
       <!-- Main (3/4) -->
       <div class="md:col-span-3 space-y-6">
@@ -10,12 +9,12 @@
         </p>
 
         <CInput
+          id="currentPasswordDelete"
+          v-model="form.currentPassword"
           type="password"
           label="Current Password"
           name="currentPasswordDelete"
-          v-model="form.currentPassword"
           show-error
-          id="currentPasswordDelete"
         />
 
         <div class="flex justify-end pt-4">
@@ -27,7 +26,9 @@
 
       <!-- Help (1/4) -->
       <div class="md:col-span-1">
-        <div class="bg-pink-50 dark:bg-gray-800 p-4 rounded-xl border border-pink-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300">
+        <div
+          class="bg-pink-50 dark:bg-gray-800 p-4 rounded-xl border border-pink-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300"
+        >
           <p class="mb-2 font-medium">Before deleting your account</p>
           <ul class="list-disc list-inside space-y-1">
             <li>This action is irreversible.</li>
@@ -64,18 +65,18 @@ const onDeleteAccount = async () => {
     if (response?.status === 200) {
       notifications.addNotification({
         type: 'success',
-        message: 'Your account has been deleted.',
+        message: 'Your account has been deleted.'
       })
     } else {
       notifications.addNotification({
         type: 'error',
-        message: 'Failed to delete account. Please check your password.',
+        message: 'Failed to delete account. Please check your password.'
       })
     }
   } catch (error) {
     notifications.addNotification({
       type: 'error',
-      message: 'An error occurred. Please try again.',
+      message: 'An error occurred. Please try again.'
     })
   } finally {
     saving.value = false

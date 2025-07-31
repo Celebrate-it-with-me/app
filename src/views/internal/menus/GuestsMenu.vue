@@ -14,7 +14,7 @@ const currentPage = ref(1)
 const perPageOptions = [
   { value: 5, label: '5' },
   { value: 10, label: '10' },
-  { value: 20, label: '20' },
+  { value: 20, label: '20' }
 ]
 
 const totalPages = computed(() => {
@@ -44,7 +44,6 @@ const exportMenu = async () => {
     } else {
       throw new Error('Failed to export data')
     }
-
   } catch (error) {
     console.error('Error exporting data:', error)
   } finally {
@@ -52,14 +51,19 @@ const exportMenu = async () => {
   }
 }
 
-watch(() => menuStore.pageSelected, async () => {
-  await loadGuestsMenu()
-})
+watch(
+  () => menuStore.pageSelected,
+  async () => {
+    await loadGuestsMenu()
+  }
+)
 
-watch(() => menuStore.perPage, async () => {
-  await loadGuestsMenu()
-})
-
+watch(
+  () => menuStore.perPage,
+  async () => {
+    await loadGuestsMenu()
+  }
+)
 </script>
 
 <template>
@@ -68,14 +72,14 @@ watch(() => menuStore.perPage, async () => {
   </section>
   <section v-else class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md space-y-8">
     <button
-      @click="exportMenu"
       class="px-4 py-2 rounded-xl bg-primary text-white hover:bg-pink-600 transition"
+      @click="exportMenu"
     >
       Export All to XLSX
     </button>
     <table
-      class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
       v-if="menuStore.menus.length"
+      class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
     >
       <thead class="bg-gray-50 dark:bg-gray-800">
         <tr>
@@ -124,16 +128,16 @@ watch(() => menuStore.perPage, async () => {
       <div>
         <CSelect
           id="per-page"
+          v-model="menuStore.perPage"
           :options="perPageOptions"
           name="perPage"
-          v-model="menuStore.perPage"
         />
       </div>
       <div>
         <CPagination
           :total-pages="totalPages"
           :current-page="menuStore.pageSelected"
-          @update:currentPage="currentPage = $event"
+          @update:current-page="currentPage = $event"
         />
       </div>
     </div>

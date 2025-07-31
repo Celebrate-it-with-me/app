@@ -1,9 +1,9 @@
 <template>
   <div class="relative">
     <div
-      @click="toggleMenu()"
       ref="buttonRef"
       class="flex items-center justify-center gap-x-2 border border-gray-200 w-10 h-10 rounded-full cursor-pointer relative"
+      @click="toggleMenu()"
     >
       <Bell />
 
@@ -11,7 +11,6 @@
         v-if="hasUnread"
         class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full"
       ></span>
-
     </div>
 
     <div
@@ -21,9 +20,7 @@
     >
       <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-700">
         <div>
-          <h2 class="text-xl font-medium text-gray-900 dark:text-white">
-            Notifications
-          </h2>
+          <h2 class="text-xl font-medium text-gray-900 dark:text-white">Notifications</h2>
         </div>
       </div>
 
@@ -63,17 +60,12 @@ const hasUnread = computed(() => {
   return true
 })
 
-const handleClickOutside = (event) => {
+const handleClickOutside = event => {
   setTimeout(() => {
     const menu = menuRef.value
     const button = buttonRef.value
 
-    if (
-      menu &&
-      !menu.contains(event.target) &&
-      button &&
-      !button.contains(event.target)
-    ) {
+    if (menu && !menu.contains(event.target) && button && !button.contains(event.target)) {
       open.value = false
     }
   }, 0)

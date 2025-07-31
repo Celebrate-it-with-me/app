@@ -1,11 +1,5 @@
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
+<template>CWM Budget</template>
 
-<template>
-CWM Budget
-</template>
-
-<style scoped>
-
-</style>
+<style scoped></style>

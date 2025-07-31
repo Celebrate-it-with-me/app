@@ -62,15 +62,14 @@ const onSubmit = async (values, { resetForm }) => {
     } else {
       console.error('There is some errors', response)
     }
-
-  } catch(error) {
+  } catch (error) {
     console.log(error)
   } finally {
     loading.value = false
   }
 }
 
-const clearForm = (resetForm) => {
+const clearForm = resetForm => {
   stdState.firstName = ''
   stdState.lastName = ''
   stdState.email = ''
@@ -102,11 +101,10 @@ const onInvalidSubmit = () => {
 const backToGuestList = () => {
   emit('showGuestList')
 }
-
 </script>
 
 <template>
-  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-full ">
+  <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md w-full">
     <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6">
       <h3 class="text-lg font-semibold">Add Guest</h3>
     </div>
@@ -116,7 +114,6 @@ const backToGuestList = () => {
       @submit="onSubmit"
       @invalid-submit="onInvalidSubmit"
     >
-
       <h4 class="text-xl font-semibold mb-4">Main Guest</h4>
 
       <div v-if="guestsErrors" class="w-full mb-4">
@@ -173,14 +170,10 @@ const backToGuestList = () => {
               :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             />
           </div>
-
         </div>
       </div>
 
-      <GuestCompanions
-        :force-step="forceStep"
-        v-model="companions"
-      />
+      <GuestCompanions v-model="companions" :force-step="forceStep" />
 
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
@@ -193,13 +186,13 @@ const backToGuestList = () => {
         <button
           type="submit"
           class="flex items-center gap-x-2 text-white text-sm font-medium py-2 px-6 rounded-md"
-          :class="{'bg-blue-500 hover:bg-blue-600': !loading, 'bg-gray-700 hover:bg-gray-600': loading }"
+          :class="{
+            'bg-blue-500 hover:bg-blue-600': !loading,
+            'bg-gray-700 hover:bg-gray-600': loading
+          }"
           :disabled="loading"
         >
-          <CWMLoading
-            v-if="loading"
-            :size="'h-6 w-6'"
-          />
+          <CWMLoading v-if="loading" :size="'h-6 w-6'" />
           <span>Save Guest</span>
         </button>
       </div>

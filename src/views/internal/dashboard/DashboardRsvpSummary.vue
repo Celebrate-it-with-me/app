@@ -56,11 +56,7 @@ const chartOptions = ref({
 })
 
 // Computed properties
-const series = computed(() => [
-  summaries.confirmed,
-  summaries.pending,
-  summaries.declined
-])
+const series = computed(() => [summaries.confirmed, summaries.pending, summaries.declined])
 
 // Component state
 const isLoading = ref(true)
@@ -70,7 +66,7 @@ const errorMessage = ref('')
 const activeTooltip = ref(null)
 
 // Tooltip methods
-const showTooltip = (id) => {
+const showTooltip = id => {
   activeTooltip.value = id
 }
 
@@ -95,15 +91,8 @@ const loadRsvpSummary = async () => {
     })
 
     if (response.status === 200) {
-      const {
-        confirmed,
-        pending,
-        declined,
-        mainGuests,
-        companions,
-        totalGuests,
-        totalAllowed
-      } = response?.data ?? {}
+      const { confirmed, pending, declined, mainGuests, companions, totalGuests, totalAllowed } =
+        response?.data ?? {}
 
       summaries.totalGuests = totalGuests || 0
       summaries.confirmed = confirmed || 0
@@ -114,7 +103,7 @@ const loadRsvpSummary = async () => {
       summaries.totalAllowed = totalAllowed || 0
 
       // Check if we have any data to display
-      hasData.value = (confirmed > 0 || pending > 0 || declined > 0)
+      hasData.value = confirmed > 0 || pending > 0 || declined > 0
     } else {
       hasError.value = true
       errorMessage.value = response.message || 'Failed to load RSVP data'
@@ -156,15 +145,20 @@ onBeforeUnmount(() => {
     aria-labelledby="rsvp-summary-title"
   >
     <!-- Loading overlay -->
-    <div v-if="isLoading && !hasData" class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10">
-      <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500"></div>
+    <div
+      v-if="isLoading && !hasData"
+      class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10"
+    >
+      <div
+        class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-500"
+      ></div>
     </div>
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-5">
       <div
-        class="flex items-center gap-2 text-purple-600 font-semibold text-sm bg-purple-50 dark:bg-purple-950 px-3 py-1.5 rounded-full"
         id="rsvp-summary-title"
+        class="flex items-center gap-2 text-purple-600 font-semibold text-sm bg-purple-50 dark:bg-purple-950 px-3 py-1.5 rounded-full"
       >
         <PieChart class="w-4 h-4" aria-hidden="true" />
         <span>RSVP Summary</span>
@@ -182,9 +176,9 @@ onBeforeUnmount(() => {
       </div>
       <p class="text-red-600 dark:text-red-400 font-medium">{{ errorMessage }}</p>
       <button
-        @click="loadRsvpSummary"
         class="mt-3 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md text-sm font-medium transition-colors"
         aria-label="Retry loading RSVP data"
+        @click="loadRsvpSummary"
       >
         Try again
       </button>
@@ -196,7 +190,9 @@ onBeforeUnmount(() => {
         <FileBarChart class="h-10 w-10 mx-auto" aria-hidden="true" />
       </div>
       <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">No RSVP Data</h3>
-      <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">No guest responses have been received yet</p>
+      <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+        No guest responses have been received yet
+      </p>
     </div>
 
     <!-- RSVP content -->
@@ -214,32 +210,47 @@ onBeforeUnmount(() => {
 
       <!-- Response summary below -->
       <div class="flex flex-col gap-3 text-sm bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 w-full">
-        <h3 class="font-medium text-gray-700 dark:text-gray-200 mb-1 text-base">Response Summary</h3>
+        <h3 class="font-medium text-gray-700 dark:text-gray-200 mb-1 text-base">
+          Response Summary
+        </h3>
         <ul class="space-y-3">
           <li class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-green-500" aria-hidden="true"></span>
             <span class="text-gray-700 dark:text-gray-300">Confirmed:</span>
-            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{ summaries.confirmed }}</span>
+            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{
+              summaries.confirmed
+            }}</span>
           </li>
           <li class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-yellow-400" aria-hidden="true"></span>
             <span class="text-gray-700 dark:text-gray-300">Pending:</span>
-            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{ summaries.pending }}</span>
+            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{
+              summaries.pending
+            }}</span>
           </li>
           <li class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full bg-red-500" aria-hidden="true"></span>
             <span class="text-gray-700 dark:text-gray-300">Declined:</span>
-            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{ summaries.declined }}</span>
+            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{
+              summaries.declined
+            }}</span>
           </li>
           <li class="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
             <span class="text-gray-700 dark:text-gray-300">Total Guests:</span>
-            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{ summaries.totalGuests }}</span>
+            <span class="font-semibold text-gray-800 dark:text-white ml-auto">{{
+              summaries.totalGuests
+            }}</span>
           </li>
-          <li v-if="summaries.mainGuests > 0 || summaries.companions > 0" class="flex items-center gap-2">
-            <div class="relative flex items-center gap-1 cursor-help"
-                 @mouseenter="showTooltip('guest-breakdown')"
-                 @mouseleave="hideTooltip"
-                 aria-describedby="guest-breakdown-tooltip">
+          <li
+            v-if="summaries.mainGuests > 0 || summaries.companions > 0"
+            class="flex items-center gap-2"
+          >
+            <div
+              class="relative flex items-center gap-1 cursor-help"
+              aria-describedby="guest-breakdown-tooltip"
+              @mouseenter="showTooltip('guest-breakdown')"
+              @mouseleave="hideTooltip"
+            >
               <span class="text-gray-700 dark:text-gray-300">Breakdown:</span>
               <Info class="w-3 h-3 text-gray-400" aria-hidden="true" />
 
@@ -259,11 +270,15 @@ onBeforeUnmount(() => {
                   <span>Companions:</span>
                   <span class="font-semibold">{{ summaries.companions }}</span>
                 </div>
-                <div class="absolute -bottom-1 left-4 w-2 h-2 bg-white dark:bg-gray-800 border-b border-r border-gray-200 dark:border-gray-700 rotate-45"></div>
+                <div
+                  class="absolute -bottom-1 left-4 w-2 h-2 bg-white dark:bg-gray-800 border-b border-r border-gray-200 dark:border-gray-700 rotate-45"
+                ></div>
               </div>
             </div>
             <div class="ml-auto flex items-center gap-1">
-              <span class="text-xs text-gray-500">{{ summaries.mainGuests }} + {{ summaries.companions }}</span>
+              <span class="text-xs text-gray-500"
+                >{{ summaries.mainGuests }} + {{ summaries.companions }}</span
+              >
             </div>
           </li>
         </ul>

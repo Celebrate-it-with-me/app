@@ -4,33 +4,27 @@
 
     <CWizard
       :steps="steps"
-      :nextValid="isValidNext"
+      :next-valid="isValidNext"
       :initial-step="currentStep"
       @active-step="handleStepChange"
       @submit="handleSubmit"
     >
       <template #current-Step>
-        <GuestInfoStep
-          v-if="currentStep === 0"
-          v-model="guestData"
-        />
+        <GuestInfoStep v-if="currentStep === 0" v-model="guestData" />
 
         <GuestCompanionsStep
           v-else-if="currentStep === 1"
           v-model:named="namedCompanions"
-          v-model:unnamedCount="unnamedCompanions"
+          v-model:unnamed-count="unnamedCompanions"
         />
 
-        <GuestPreferencesStep
-          v-else-if="currentStep === 2"
-          v-model="preferences"
-        />
+        <GuestPreferencesStep v-else-if="currentStep === 2" v-model="preferences" />
 
         <GuestSummaryStep
           v-else-if="currentStep === 3"
-          :guestData="guestData"
-          :namedCompanions="namedCompanions"
-          :unnamedCompanions="unnamedCompanions"
+          :guest-data="guestData"
+          :named-companions="namedCompanions"
+          :unnamed-companions="unnamedCompanions"
           :preferences="preferences"
         />
       </template>
@@ -61,20 +55,20 @@ const steps = [
   { title: 'Guest Info' },
   { title: 'Companions' },
   { title: 'Preferences' },
-  { title: 'Summary' },
+  { title: 'Summary' }
 ]
 
 const guestData = ref({
   name: '',
   email: '',
   phone: '',
-  menuSelected: null,
+  menuSelected: null
 })
 
 const preferences = ref({
   meal_preference: '',
   allergies: '',
-  notes: '',
+  notes: ''
 })
 
 const handleSubmit = async () => {
@@ -83,7 +77,7 @@ const handleSubmit = async () => {
       guest: guestData.value,
       namedCompanions: namedCompanions.value,
       unnamedCompanions: unnamedCompanions.value,
-      preferences: preferences.value,
+      preferences: preferences.value
     }
 
     const response = await guestStore.createGuest(payload)
@@ -92,21 +86,21 @@ const handleSubmit = async () => {
       await guestStore.loadGuests()
       notifications.addNotification({
         type: 'success',
-        message: 'Guest added successfully!',
+        message: 'Guest added successfully!'
       })
 
       resetWizard()
     } else {
       notifications.addNotification({
         type: 'error',
-        message: 'Something went wrong. Please try again.',
+        message: 'Something went wrong. Please try again.'
       })
     }
   } catch (error) {
     console.error(error)
     notifications.addNotification({
       type: 'error',
-      message: 'Unexpected error. Please try again later.',
+      message: 'Unexpected error. Please try again later.'
     })
   }
 }
@@ -120,16 +114,20 @@ const resetWizard = () => {
 }
 
 const isValidNext = computed(() => {
-  return !(currentStep.value === 0 && (!guestData.value.name));
+  return !(currentStep.value === 0 && !guestData.value.name)
 })
 
-const handleStepChange = (step) => {
+const handleStepChange = step => {
   currentStep.value = step
 }
 
-watch(() => menusStore.menus, (newValue) => {
-  if (newValue.length > 0) {
-    guestData.value.menuSelected = menusStore.mainMenu?.id ?? 0
-  }
-}, {deep: true, immediate: true})
+watch(
+  () => menusStore.menus,
+  newValue => {
+    if (newValue.length > 0) {
+      guestData.value.menuSelected = menusStore.mainMenu?.id ?? 0
+    }
+  },
+  { deep: true, immediate: true }
+)
 </script>

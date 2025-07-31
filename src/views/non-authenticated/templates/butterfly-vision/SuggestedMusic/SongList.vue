@@ -18,7 +18,7 @@ defineProps({
   mode: {
     type: String,
     required: true,
-    validator: (value) => ['creator', 'normal'].includes(value)
+    validator: value => ['creator', 'normal'].includes(value)
   },
   event: {
     type: Object,
@@ -27,7 +27,6 @@ defineProps({
 })
 
 const songsStore = useSuggestedMusicStore()
-
 </script>
 
 <template>
@@ -38,7 +37,7 @@ const songsStore = useSuggestedMusicStore()
         :key="song.id"
         :main-color="mainColor"
         :use-preview="usePreview"
-        :useVoteSystem="useVoteSystem"
+        :use-vote-system="useVoteSystem"
         :song="song"
         :mode="mode"
       />
@@ -46,6 +45,4 @@ const songsStore = useSuggestedMusicStore()
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

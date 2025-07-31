@@ -30,7 +30,7 @@ const starterMenuItems = computed(() => {
     return []
   }
 
-  return menuStore.currentMenu?.menu_items?.filter((item) => {
+  return menuStore.currentMenu?.menu_items?.filter(item => {
     return item.type === 'starter'
   })
 })
@@ -40,7 +40,7 @@ const mainMenuItems = computed(() => {
     return []
   }
 
-  return menuStore.currentMenu?.menu_items?.filter((item) => {
+  return menuStore.currentMenu?.menu_items?.filter(item => {
     return item.type === 'main'
   })
 })
@@ -49,7 +49,7 @@ const desertMenuItems = computed(() => {
     return []
   }
 
-  return menuStore.currentMenu?.menu_items?.filter((item) => {
+  return menuStore.currentMenu?.menu_items?.filter(item => {
     return item.type === 'dessert'
   })
 })
@@ -70,7 +70,7 @@ const goToEditMenu = async () => {
   return await router.push(`/dashboard/menus/edit/${menuStore.currentMenu.id}`)
 }
 
-const handleAddItem = async (item) => {
+const handleAddItem = async item => {
   try {
     addingItem.value = true
 
@@ -92,17 +92,13 @@ const handleAddItem = async (item) => {
     openItemForm.value = false
   }
 }
-
 </script>
 
 <template>
   <div class="space-y-8">
     <div class="flex items-center justify-between">
       <CHeading :level="2" weight="semibold">Event Menu</CHeading>
-      <CButton
-        variant="primary"
-        @click="addNewMenu"
-      >+ Add Menu</CButton>
+      <CButton variant="primary" @click="addNewMenu">+ Add Menu</CButton>
     </div>
 
     <section
@@ -118,65 +114,48 @@ const handleAddItem = async (item) => {
         </CHeading>
 
         <div class="mt-4 flex justify-center gap-x-2">
-          <CButton @click="handleAddMenuItem" >
-            Add Menu Item
-          </CButton>
+          <CButton @click="handleAddMenuItem"> Add Menu Item </CButton>
 
-          <CButton
-            @click="goToEditMenu"
-            variant="secondary"
-          >
-            Details
-          </CButton>
-
+          <CButton variant="secondary" @click="goToEditMenu"> Details </CButton>
         </div>
       </div>
 
-      <CLoading
-        v-if="loading"
-      />
+      <CLoading v-if="loading" />
 
-      <div class="menu-sections" v-if="starterMenuItems.length">
-        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
+      <div v-if="starterMenuItems.length" class="menu-sections">
+        <h3
+          class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide"
+        >
           Starters
         </h3>
-        <div
-          v-for="(item, index) in starterMenuItems"
-          :key="index"
-          class="mb-8"
-        >
+        <div v-for="(item, index) in starterMenuItems" :key="index" class="mb-8">
           <MenuItem :item="item" />
         </div>
       </div>
 
-      <div class="menu-sections" v-if="mainMenuItems.length">
-        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
+      <div v-if="mainMenuItems.length" class="menu-sections">
+        <h3
+          class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide"
+        >
           Main
         </h3>
-        <div
-          v-for="(item, index) in mainMenuItems"
-          :key="index"
-          class="mb-8"
-        >
+        <div v-for="(item, index) in mainMenuItems" :key="index" class="mb-8">
           <MenuItem :item="item" />
         </div>
       </div>
 
-      <div class="menu-sections" v-if="desertMenuItems.length">
-        <h3 class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide">
+      <div v-if="desertMenuItems.length" class="menu-sections">
+        <h3
+          class="text-xl font-bold text-primary border-b-2 border-primary pb-1 mb-4 uppercase tracking-wide"
+        >
           Dessert
         </h3>
-        <div
-          v-for="(item, index) in desertMenuItems"
-          :key="index"
-          class="mb-8"
-        >
+        <div v-for="(item, index) in desertMenuItems" :key="index" class="mb-8">
           <div class="space-y-4">
             <MenuItem :item="item" />
           </div>
         </div>
       </div>
-
     </section>
   </div>
   <CAddMenuItemModal
@@ -187,6 +166,4 @@ const handleAddItem = async (item) => {
   />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

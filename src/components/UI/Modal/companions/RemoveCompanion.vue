@@ -30,14 +30,12 @@ const removeCompanion = async () => {
         type: 'success',
         message: 'Companion removed successfully!'
       })
-
     } else {
       notificationStore.addNotification({
         type: 'error',
         message: 'Oops something went wrong!'
       })
     }
-
   } catch (error) {
     console.error(error)
   } finally {
@@ -49,24 +47,14 @@ const removeCompanion = async () => {
 <template>
   <div class="remove-companion-template w-full">
     <p>You are about to remove a companion. Are you sure you want to proceed?</p>
-    <div
-      class="w-full flex justify-end"
-    >
+    <div class="w-full flex justify-end">
       <button
         class="mt-4 text-white text-sm font-medium py-2 px-6 rounded-md bg-red-500 hover:bg-red-600 cursor-pointer"
-        @click="removeCompanion"
         :disabled="removing"
+        @click="removeCompanion"
       >
-      <span
-        v-if="removing"
-      >
-        Removing...
-      </span>
-        <span
-          v-else
-        >
-        Remove
-      </span>
+        <span v-if="removing"> Removing... </span>
+        <span v-else> Remove </span>
       </button>
     </div>
   </div>

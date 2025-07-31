@@ -10,14 +10,14 @@ const loading = ref(true)
 const templateStore = useTemplateStore()
 
 onMounted(async () => {
-  const { eventId, guestCode  } = route.params
+  const { eventId, guestCode } = route.params
   await getEventData(eventId, guestCode)
 })
 
 const getEventData = async (eventId, guestCode) => {
   try {
     loading.value = true
-    const response = await templateStore.getEventData({eventId, guestCode})
+    const response = await templateStore.getEventData({ eventId, guestCode })
 
     if (response.status === 200) {
       const { event, mainGuest } = response.data.data ?? {}
@@ -25,23 +25,18 @@ const getEventData = async (eventId, guestCode) => {
       templateStore.event = event
       templateStore.guest = mainGuest
     }
-
   } catch (e) {
     console.log(e)
   } finally {
     loading.value = false
   }
 }
-
 </script>
 
 <template>
-  <Suspense >
+  <Suspense>
     <template #default>
-      <MainLayout
-        v-if="!loading"
-        :key="templateStore.event?.id"
-      />
+      <MainLayout v-if="!loading" :key="templateStore.event?.id" />
     </template>
     <template #fallback>
       <CWMLoadingPage v-if="loading" />
@@ -49,6 +44,4 @@ const getEventData = async (eventId, guestCode) => {
   </Suspense>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

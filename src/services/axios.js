@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 import { useUserStore } from '@/stores/useUserStore'
 import router from '@/router'
 import { useNotificationStore } from '@/stores/useNotificationStore'
@@ -8,65 +8,65 @@ const CWM_API = axios.create({
   withCredentials: true,
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   }
-});
+})
 
 function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
 }
 
 CWM_API.interceptors.request.use(
-  (config) => {
-    const userStore = useUserStore();
+  config => {
+    const userStore = useUserStore()
 
-    const token = getCookie('XSRF-TOKEN');
+    const token = getCookie('XSRF-TOKEN')
     if (token) {
-      config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+      config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token)
     }
 
     if (userStore.token) {
-      config.headers.Authorization = `Bearer ${userStore.token}`;
+      config.headers.Authorization = `Bearer ${userStore.token}`
     }
 
-    return config;
+    return config
   },
-  (error) => {
-    return Promise.reject(error);
+  error => {
+    return Promise.reject(error)
   }
-);
+)
 
 CWM_API.interceptors.response.use(
-  (response) => {
-    return response;
+  response => {
+    return response
   },
-  async (error) => {
-    return await onError(error);
+  async error => {
+    return await onError(error)
   }
-);
+)
 
-const onError = async (error) => {
+const onError = async error => {
   if (error.response) {
     switch (error.response.status) {
       case 401:
         await handleUnauthorized()
-        break;
+        break
       case 403:
-        await router.push('/403');
-        console.log('Forbidden:', error.message);
-        break;
+        await router.push('/403')
+        console.log('Forbidden:', error.message)
+        break
       case 404:
-        console.log('Not Found:', error.message);
-        break;
+        console.log('Not Found:', error.message)
+        break
       case 419:
-        console.log('CSRF Token Mismatch:', error.message);
-        break;
+        console.log('CSRF Token Mismatch:', error.message)
+        break
     }
   }
-  return Promise.reject(error);
-};
+  return Promise.reject(error)
+}
 
 const handleUnauthorized = async () => {
   const userStore = useUserStore()

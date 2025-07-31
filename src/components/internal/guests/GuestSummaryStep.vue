@@ -16,33 +16,33 @@
       <h3 class="text-base font-semibold text-gray-800 dark:text-white mb-2">Companions</h3>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-          <thead class="bg-gray-100 dark:bg-gray-800 uppercase text-xs text-gray-600 dark:text-gray-400">
-          <tr>
-            <th scope="col" class="px-4 py-2">Companion Name</th>
-            <th scope="col" class="px-4 py-2">Email</th>
-            <th scope="col" class="px-4 py-2">Phone</th>
-            <th scope="col" class="px-4 py-2">Menu Selected</th>
-          </tr>
+        <table
+          class="min-w-full text-sm text-left text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
+        >
+          <thead
+            class="bg-gray-100 dark:bg-gray-800 uppercase text-xs text-gray-600 dark:text-gray-400"
+          >
+            <tr>
+              <th scope="col" class="px-4 py-2">Companion Name</th>
+              <th scope="col" class="px-4 py-2">Email</th>
+              <th scope="col" class="px-4 py-2">Phone</th>
+              <th scope="col" class="px-4 py-2">Menu Selected</th>
+            </tr>
           </thead>
           <tbody>
-          <template v-if="namedCompanions.length">
-            <template
-              v-for="(companion, index) in namedCompanions"
-              :key="index"
-
-            >
-              <GuestNamedCompanionTr
-                class="border-t border-gray-200 dark:border-gray-700"
-                :companion="companion"
-              />
+            <template v-if="namedCompanions.length">
+              <template v-for="(companion, index) in namedCompanions" :key="index">
+                <GuestNamedCompanionTr
+                  class="border-t border-gray-200 dark:border-gray-700"
+                  :companion="companion"
+                />
+              </template>
             </template>
-          </template>
-          <tr v-else>
-            <td colspan="3" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
-              No named companions
-            </td>
-          </tr>
+            <tr v-else>
+              <td colspan="3" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
+                No named companions
+              </td>
+            </tr>
           </tbody>
           <tfoot class="bg-gray-50 dark:bg-gray-900 text-sm">
             <tr class="border-t border-gray-200 dark:border-gray-700">
@@ -75,14 +75,12 @@ const props = defineProps({
   guestData: { type: Object, required: true },
   namedCompanions: { type: Array, required: true },
   unnamedCompanions: { type: Number, required: true },
-  preferences: { type: Object, required: true },
+  preferences: { type: Object, required: true }
 })
 
 const menusStore = useMenusStore()
 
 const guestDataMenu = computed(() => {
-  return menusStore.menus.find((menu) => menu.id === props.guestData.menuSelected)
+  return menusStore.menus.find(menu => menu.id === props.guestData.menuSelected)
 })
-
-
 </script>

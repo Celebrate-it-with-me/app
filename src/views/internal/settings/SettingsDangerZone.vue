@@ -6,7 +6,6 @@
     <TransferOwnershipCard />
     <RevokeApiTokensCard v-if="false" />
     <DeleteAccountCard />
-
   </div>
 </template>
 

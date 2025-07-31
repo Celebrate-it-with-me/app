@@ -10,15 +10,15 @@ export const useBudgetStore = defineStore('budgetStore', {
     error: null,
     categories: [],
     budgetCategories: [
-        { value: 1, label: 'Venue' },
-        { value: 2, label: 'Catering' },
-        { value: 3, label: 'Decoration' },
-        { value: 4, label: 'Entertainment' },
-        { value: 5, label: 'Photography' },
-        { value: 6, label: 'Outfits' },
-        { value: 7, label: 'Transportation' },
-        { value: 8, label: 'Miscellaneous' }
-    ],
+      { value: 1, label: 'Venue' },
+      { value: 2, label: 'Catering' },
+      { value: 3, label: 'Decoration' },
+      { value: 4, label: 'Entertainment' },
+      { value: 5, label: 'Photography' },
+      { value: 6, label: 'Outfits' },
+      { value: 7, label: 'Transportation' },
+      { value: 8, label: 'Miscellaneous' }
+    ]
   }),
   actions: {
     /**
@@ -167,8 +167,8 @@ export const useBudgetStore = defineStore('budgetStore', {
 
           // Log the structure of the first budget item if available
           if (this.budgetItems.length > 0) {
-            console.log('First budget item:', this.budgetItems[0]);
-            console.log('First budget item properties:', Object.keys(this.budgetItems[0]));
+            console.log('First budget item:', this.budgetItems[0])
+            console.log('First budget item properties:', Object.keys(this.budgetItems[0]))
           }
 
           const categorySet = new Set()
@@ -313,9 +313,9 @@ export const useBudgetStore = defineStore('budgetStore', {
      * @param {string|number} id - The ID of the budget item
      * @returns {Object|null} The budget item or null if not found
      */
-    getBudgetItemById: (state) => (id) => {
+    getBudgetItemById: state => id => {
       // Convert both IDs to strings for comparison to handle type mismatches
-      const idStr = String(id);
+      const idStr = String(id)
       return state.budgetItems.find(item => String(item.id) === idStr) || null
     },
 
@@ -323,7 +323,7 @@ export const useBudgetStore = defineStore('budgetStore', {
      * Check if event has a budget
      * @returns {boolean} True if event has a budget
      */
-    hasEventBudget: (state) => {
+    hasEventBudget: state => {
       return state.eventBudget !== null
     },
 
@@ -331,7 +331,7 @@ export const useBudgetStore = defineStore('budgetStore', {
      * Get budget cap
      * @returns {number} Budget cap
      */
-    budgetCap: (state) => {
+    budgetCap: state => {
       return state.eventBudget?.budgetCap || 0
     },
 
@@ -339,7 +339,7 @@ export const useBudgetStore = defineStore('budgetStore', {
      * Get total estimated cost
      * @returns {number} Total estimated cost
      */
-    totalEstimatedCost: (state) => {
+    totalEstimatedCost: state => {
       return state.budgetItems?.reduce((sum, item) => sum + (item.estimatedCost || 0), 0)
     },
 
@@ -347,7 +347,7 @@ export const useBudgetStore = defineStore('budgetStore', {
      * Get total actual cost
      * @returns {number} Total actual cost
      */
-    totalActualCost: (state) => {
+    totalActualCost: state => {
       return state.budgetItems?.reduce((sum, item) => sum + (item.actualCost || 0), 0)
     },
 
@@ -360,7 +360,14 @@ export const useBudgetStore = defineStore('budgetStore', {
       const totalActualCost = this.totalActualCost || 0
       const diff = budgetCap - totalActualCost
 
-      console.log('Budget Cap:', budgetCap, 'Total Actual Cost:', totalActualCost, 'Difference:', diff)
+      console.log(
+        'Budget Cap:',
+        budgetCap,
+        'Total Actual Cost:',
+        totalActualCost,
+        'Difference:',
+        diff
+      )
 
       if (diff > 0) return { status: 'Under Budget', class: 'text-green-500' }
       if (diff < 0) return { status: 'Over Budget', class: 'text-red-500' }
@@ -371,7 +378,7 @@ export const useBudgetStore = defineStore('budgetStore', {
      * Check if there are any budget items
      * @returns {boolean} True if there are budget items
      */
-    hasBudgetItems: (state) => {
+    hasBudgetItems: state => {
       return state.budgetItems.length > 0
     },
 
@@ -379,7 +386,7 @@ export const useBudgetStore = defineStore('budgetStore', {
      * Group budget items by category
      * @returns {Object} Budget items grouped by category
      */
-    budgetItemsByCategory: (state) => {
+    budgetItemsByCategory: state => {
       const grouped = {}
 
       // Initialize with empty arrays for each category

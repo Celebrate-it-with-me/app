@@ -13,28 +13,27 @@ export const useRsvpStore = defineStore('rsvpStore', {
     totalPages: 1,
     title: '',
     description: '',
-    customFields: {  },
+    customFields: {},
     confirmationDeadline: null,
     loaded: false
   }),
   actions: {
-    async loadGuests ()  {
+    async loadGuests() {
       const userStore = useUserStore()
       const notifications = useNotificationStore()
 
-      const response = await this.loadRsvpGuestsList(
-        {
-          eventId: userStore.activeEvent,
-          currentPage: this.pageSelected,
-          perPage: this.perPage,
-          status: this.statusSelected,
-          search: this.searchValue,
-        })
+      const response = await this.loadRsvpGuestsList({
+        eventId: userStore.activeEvent,
+        currentPage: this.pageSelected,
+        perPage: this.perPage,
+        status: this.statusSelected,
+        search: this.searchValue
+      })
 
       if (response.status !== 200) {
         notifications.addNotification({
           type: 'error',
-          message: 'Failed to load guests. Please try again later.',
+          message: 'Failed to load guests. Please try again later.'
         })
         return
       }
@@ -43,7 +42,6 @@ export const useRsvpStore = defineStore('rsvpStore', {
       this.pageSelected = response.data.meta?.current_page || 1
       this.totalPages = response.data.meta?.last_page || 1
     },
-
 
     setRsvp(rsvpGuests) {
       this.rsvpGuests = rsvpGuests.data
@@ -67,14 +65,7 @@ export const useRsvpStore = defineStore('rsvpStore', {
     loadRsvpTotals({ eventId }) {
       return RsvpService.loadRsvpTotals({ eventId })
     },
-    downloadFile({
-      eventId,
-      status,
-      searchValue,
-      exportType,
-      perPage,
-      currentPage
-                 }) {
+    downloadFile({ eventId, status, searchValue, exportType, perPage, currentPage }) {
       return RsvpService.downloadFile({
         eventId,
         status,
@@ -95,7 +86,6 @@ export const useRsvpStore = defineStore('rsvpStore', {
     async loadDashboardRsvpSummary({ eventId }) {
       return await RsvpService.loadDashboardRsvpSummary({ eventId })
     }
-
   },
   getters: {
     isLoaded() {

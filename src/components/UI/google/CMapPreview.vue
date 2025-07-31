@@ -1,10 +1,5 @@
 <template>
-  <div
-    v-if="lat && lng"
-    ref="mapRef"
-    class="w-full rounded-lg shadow-md"
-    :class="height"
-  />
+  <div v-if="lat && lng" ref="mapRef" class="w-full rounded-lg shadow-md" :class="height" />
 </template>
 
 <script setup>
@@ -29,7 +24,7 @@ const initMap = async () => {
 
   const loader = new Loader({
     apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: ['places'],
+    libraries: ['places']
   })
 
   await loader.load()
@@ -43,7 +38,7 @@ const initMap = async () => {
   if (!mapInstance.value) {
     mapInstance.value = new google.maps.Map(mapRef.value, {
       center: position,
-      zoom: 15,
+      zoom: 15
     })
   } else {
     mapInstance.value.setCenter(position)
@@ -53,7 +48,7 @@ const initMap = async () => {
 
   markerInstance.value = new google.maps.Marker({
     position,
-    map: mapInstance.value,
+    map: mapInstance.value
   })
 }
 

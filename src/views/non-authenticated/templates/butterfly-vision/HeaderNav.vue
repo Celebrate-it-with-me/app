@@ -16,7 +16,7 @@ const toggleMenu = () => {
   menuOpen.value = !menuOpen.value
 }
 
-const handleClick = (hash) => {
+const handleClick = hash => {
   menuOpen.value = false
   if (hash) {
     window.location.hash = hash
@@ -53,42 +53,42 @@ const handleClick = (hash) => {
           >
             <ul class="space-y-2">
               <li>
-                <a @click="handleClick('#sectionHome')" class="block p-3">
+                <a class="block p-3" @click="handleClick('#sectionHome')">
                   <p class="font-semibold">Home</p>
                 </a>
               </li>
               <li>
-                <a @click="handleClick('#sectionSTD')" class="block p-3">
+                <a class="block p-3" @click="handleClick('#sectionSTD')">
                   <div class="font-semibold">Save the Date</div>
                 </a>
               </li>
               <li>
-                <a @click="handleClick('#sectionItinerario')" class="block p-3">
+                <a class="block p-3" @click="handleClick('#sectionItinerario')">
                   <div class="font-semibold">Itinerario</div>
                 </a>
               </li>
               <li>
-                <a @click="handleClick('#sectionSweetMemories')" class="block p-3">
+                <a class="block p-3" @click="handleClick('#sectionSweetMemories')">
                   <div class="font-semibold">Sweet Memories</div>
                 </a>
               </li>
               <li>
-                <a @click="handleClick('#sectionRSVP')" class="block p-3 rounded-lg">
+                <a class="block p-3 rounded-lg" @click="handleClick('#sectionRSVP')">
                   <div class="font-semibold">RSVP</div>
                 </a>
               </li>
               <li>
-                <a @click="handleClick('#sectionSong')" class="block p-3 rounded-lg">
+                <a class="block p-3 rounded-lg" @click="handleClick('#sectionSong')">
                   <div class="font-semibold">Canciones</div>
                 </a>
               </li>
               <li>
-                <a @click="handleClick('#sectionComments')" class="block p-3 rounded-lg">
+                <a class="block p-3 rounded-lg" @click="handleClick('#sectionComments')">
                   <div class="font-semibold">Comentarios</div>
                 </a>
               </li>
               <li>
-                <a @click="handleClick('#sectionContact')" class="block p-3 rounded-lg">
+                <a class="block p-3 rounded-lg" @click="handleClick('#sectionContact')">
                   <div class="font-semibold">Contacto</div>
                 </a>
               </li>

@@ -1,11 +1,5 @@
 <template>
-  <CInput
-    :label="label"
-    :placeholder="placeholder"
-    :id="id"
-    ref="inputRef"
-    name="places"
-  />
+  <CInput :id="id" ref="inputRef" :label="label" :placeholder="placeholder" name="places" />
 </template>
 
 <script setup>
@@ -19,7 +13,7 @@ const props = defineProps({
   id: { type: String, default: 'places-autocomplete' },
   label: { type: String, default: 'Search Location' },
   placeholder: { type: String, default: 'Type the place name...' },
-  initialValue: { type: String, default: '' },
+  initialValue: { type: String, default: '' }
 })
 
 const inputRef = ref(null)
@@ -32,7 +26,7 @@ onMounted(async () => {
 
   const loader = new Loader({
     apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: ['places'],
+    libraries: ['places']
   })
 
   await loader.load()
@@ -41,8 +35,8 @@ onMounted(async () => {
   if (!input) return
 
   const autocomplete = new google.maps.places.Autocomplete(input, {
-    fields: [ 'place_id', 'name', 'geometry.location', 'address_components'],
-    types: ['establishment'],
+    fields: ['place_id', 'name', 'geometry.location', 'address_components'],
+    types: ['establishment']
   })
 
   autocomplete.addListener('place_changed', () => {

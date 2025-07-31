@@ -2,7 +2,7 @@ import { getActivePinia } from 'pinia'
 
 export const smartResetAllStores = () => {
   console.log('🧹 Running smartResetAllStores...')
-  getActivePinia()._s.forEach((store) => {
+  getActivePinia()._s.forEach(store => {
     const hasManualReset = typeof store.reset === 'function'
     const hasOptionReset = typeof store.$reset === 'function'
 

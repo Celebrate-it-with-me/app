@@ -25,7 +25,7 @@ const props = defineProps({
   mode: {
     type: String,
     required: true,
-    validator: (value) => ['creator', 'normal'].includes(value)
+    validator: value => ['creator', 'normal'].includes(value)
   }
 })
 
@@ -35,20 +35,20 @@ const templateStore = useTemplateStore()
 
 const mainColorComputed = computed(() => {
   if (!props.mainColor) {
-    return {backgroundColor: 'transparent' }
+    return { backgroundColor: 'transparent' }
   }
 
-  return {backgroundColor: props.mainColor}
-});
+  return { backgroundColor: props.mainColor }
+})
 
-const removeSong = async (song) => {
+const removeSong = async song => {
   try {
     const response = await SongsService.deleteSong(templateStore.event?.id, song.id)
 
     if (response.status === 200) {
       songsStore.removeSong(song.id)
       notification.addNotification({
-        message: "Song removed successfully!"
+        message: 'Song removed successfully!'
       })
       // Todo we need to move the songLists to the store
     } else {
@@ -57,12 +57,10 @@ const removeSong = async (song) => {
         message: 'Oops something went wrong!'
       })
     }
-
   } catch (e) {
     console.log(e)
   }
 }
-
 </script>
 
 <template>
@@ -70,9 +68,7 @@ const removeSong = async (song) => {
     class="relative rounded-xl flex justify-between items-center mt-2 space-x-6 transition hover:bg-gray-700"
     :style="mainColorComputed"
   >
-    <template
-      v-if="!usePreview"
-    >
+    <template v-if="!usePreview">
       <img
         :src="song.thumbnailUrl || 'https://via.placeholder.com/64'"
         alt="Album Art"
@@ -87,7 +83,6 @@ const removeSong = async (song) => {
       </div>
     </template>
 
-
     <iframe
       v-if="song.platformId"
       :src="`https://open.spotify.com/embed/track/${song.platformId}`"
@@ -98,15 +93,11 @@ const removeSong = async (song) => {
       allow="encrypted-media"
     ></iframe>
 
-
-    <div
-      class="remove-button"
-      v-if="song.suggestedBy === templateStore.guest.id"
-    >
+    <div v-if="song.suggestedBy === templateStore.guest.id" class="remove-button">
       <button
-        @click="removeSong(song)"
         class="rounded-full bg-transparent text-red-500 hover:text-red-700"
         title="Remove song"
+        @click="removeSong(song)"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -124,8 +115,6 @@ const removeSong = async (song) => {
         </svg>
       </button>
     </div>
-
-
   </li>
 </template>
 
@@ -140,5 +129,4 @@ const removeSong = async (song) => {
 li:hover .remove-button {
   display: block;
 }
-
 </style>

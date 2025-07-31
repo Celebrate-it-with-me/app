@@ -1,9 +1,7 @@
 <template>
   <section class="min-h-screen flex items-center justify-center bg-pink-50 dark:bg-gray-900 px-4">
     <CCard class="max-w-md w-full text-center p-8 shadow-xl">
-      <div v-if="loading" class="text-gray-500 dark:text-gray-300">
-        Confirming your email...
-      </div>
+      <div v-if="loading" class="text-gray-500 dark:text-gray-300">Confirming your email...</div>
 
       <div v-else-if="success" class="flex flex-col text-green-600 dark:text-green-400">
         Your email has been confirmed successfully!
@@ -55,7 +53,7 @@ const confirmEmail = async () => {
 
     const response = await userStore.confirmEmail(confirmUrl)
 
-    success.value = response.status === 200;
+    success.value = response.status === 200
   } catch (error) {
     console.error('Error confirming email:', error)
     success.value = false
@@ -63,5 +61,4 @@ const confirmEmail = async () => {
     loading.value = false
   }
 }
-
 </script>

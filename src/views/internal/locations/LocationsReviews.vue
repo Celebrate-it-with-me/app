@@ -3,7 +3,6 @@
     <template #title>Review & Confirm</template>
 
     <div class="space-y-8">
-
       <!-- Carousel -->
       <CCarousel
         v-if="images.length"
@@ -55,7 +54,4 @@ defineProps({
   locationData: { type: Object, required: true },
   images: { type: Array, required: true }
 })
-
-
-
 </script>

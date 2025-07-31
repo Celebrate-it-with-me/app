@@ -36,16 +36,16 @@ const isLoading = computed(() => activityStore.isLoading)
 // Map icon names from backend to actual Lucide components
 const iconMap = {
   'user-round': UserRound,
-  'image': Image,
-  'edit': Edit,
+  image: Image,
+  edit: Edit,
   'plus-circle': PlusCircle,
-  'music': Music2,
-  'activity': Activity,
-  'eye': Eye,
+  music: Music2,
+  activity: Activity,
+  eye: Eye,
   'party-popper': PartyPopper,
   'user-plus': UserPlus,
   'trash-2': Trash2,
-  'utensils': Utensils
+  utensils: Utensils
 }
 
 /**
@@ -53,7 +53,7 @@ const iconMap = {
  * @param {string} iconName - The name of the icon
  * @returns {Component} - The Lucide icon component
  */
-const getIconComponent = (iconName) => iconMap[iconName] ?? Activity
+const getIconComponent = iconName => iconMap[iconName] ?? Activity
 
 /**
  * Load activities from the API
@@ -103,9 +103,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100 overflow-hidden">
+  <section
+    class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100 overflow-hidden"
+  >
     <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-2 text-indigo-600 font-semibold text-sm bg-indigo-50 dark:bg-indigo-950 px-3 py-1 rounded-full">
+      <div
+        class="flex items-center gap-2 text-indigo-600 font-semibold text-sm bg-indigo-50 dark:bg-indigo-950 px-3 py-1 rounded-full"
+      >
         <Activity class="w-4 h-4" />
         Recent Activity
       </div>
@@ -121,7 +125,10 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Loading state -->
-    <div v-if="isLoading && activities.length === 0" class="py-8 flex flex-col items-center justify-center">
+    <div
+      v-if="isLoading && activities.length === 0"
+      class="py-8 flex flex-col items-center justify-center"
+    >
       <Loader2 class="w-8 h-8 text-indigo-500 animate-spin mb-2" />
       <p class="text-gray-500 text-sm">Loading activities...</p>
     </div>
@@ -131,8 +138,8 @@ onBeforeUnmount(() => {
       <AlertCircle class="w-8 h-8 text-red-500 mb-2" />
       <p class="text-red-500 text-sm font-medium">{{ errorMessage }}</p>
       <button
-        @click="loadActivities"
         class="mt-3 text-indigo-600 hover:text-indigo-800 text-sm font-medium"
+        @click="loadActivities"
       >
         Try again
       </button>
@@ -146,11 +153,7 @@ onBeforeUnmount(() => {
 
     <!-- Timeline -->
     <ul v-else class="space-y-4 text-sm min-h-[200px]">
-      <li
-        v-for="activity in activities"
-        :key="activity.id"
-        class="flex items-start gap-3"
-      >
+      <li v-for="activity in activities" :key="activity.id" class="flex items-start gap-3">
         <component
           :is="getIconComponent(activity.icon)"
           class="w-4 h-4 mt-0.5"

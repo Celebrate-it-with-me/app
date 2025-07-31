@@ -6,9 +6,9 @@ export default defineConfig({
   plugins: [
     vue({
       compilerOptions: {
-        isCustomElement: (tag) => tag.startsWith('add-')
-      },
-    }),
+        isCustomElement: tag => tag.startsWith('add-')
+      }
+    })
   ],
   resolve: {
     alias: {
@@ -21,12 +21,10 @@ export default defineConfig({
     }
   },
   server: {
-    allowedHosts: [
-      "dev.app.cwm.com"
-    ],
+    allowedHosts: ['dev.app.cwm.com'],
     host: true,
     port: 8080,
     strictPort: true,
     hmr: { overlay: false }
-  },
+  }
 })

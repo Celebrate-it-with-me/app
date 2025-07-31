@@ -20,15 +20,11 @@
         v-bind="$attrs"
         v-model="inputValue"
         :disabled="disabled"
-        @blur="handleFieldBlur"
         class="w-full bg-transparent px-1 py-2 text-sm text-gray-900 dark:text-white border-none focus:outline-none focus:ring-0"
+        @blur="handleFieldBlur"
       >
         <option disabled value="">Select an option</option>
-        <option
-          v-for="(option, index) in options"
-          :key="index"
-          :value="option.value"
-        >
+        <option v-for="(option, index) in options" :key="index" :value="option.value">
           {{ option.label }}
         </option>
       </select>
@@ -62,18 +58,15 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'update:blur', 'resetErrors'])
 
-const {
-  value: inputValue,
-  errorMessage,
-  handleBlur,
-  setValue,
-  meta
-} = useField(props.name)
+const { value: inputValue, errorMessage, handleBlur, setValue, meta } = useField(props.name)
 
 setValue(props.modelValue)
 
-watch(() => props.modelValue, (val) => setValue(val))
-watch(inputValue, (val) => {
+watch(
+  () => props.modelValue,
+  val => setValue(val)
+)
+watch(inputValue, val => {
   emit('update:modelValue', val)
   if (val) emit('resetErrors')
 })
@@ -86,7 +79,7 @@ const borderColorClass = computed(() => {
   return 'border-primary focus-within:border-primary'
 })
 
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   emit('update:blur', e.target.value)
   handleBlur(e)
 }

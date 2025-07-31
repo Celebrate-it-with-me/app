@@ -28,25 +28,27 @@ onMounted(() => {
   document.body.classList.remove('dark')
   showHideScrollButton()
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.intersectionRatio > 0.5) {
-        entry.target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        })
-      }
-    })
-  }, {
-    threshold: 0.5,
-    rootMargin: '0px'
-  })
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.intersectionRatio > 0.5) {
+          entry.target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          })
+        }
+      })
+    },
+    {
+      threshold: 0.5,
+      rootMargin: '0px'
+    }
+  )
 
   const sections = document.querySelectorAll('.main-section')
   sections.forEach(section => {
     observer.observe(section)
   })
-
 })
 
 const startTheVideo = () => {
@@ -74,95 +76,80 @@ const handleMoveToTop = () => {
 
 <template>
   <div class="bg-red-50/10 font-jost h-full min-h-screen">
-      <transition name="fade" mode="out-in">
-        <div v-if="!videoReproduced">
-          <video
-            ref="videoRef"
-            class="w-full h-screen object-cover block"
-            muted
-            playsinline
-            @ended="handleVideoEnd"
-            @click="startTheVideo"
-          >
-            <source
-              :src="mobileSrc"
-              type="video/mp4"
-            />
-          </video>
-        </div>
-        <main v-else class="">
-          <HeaderNav />
+    <transition name="fade" mode="out-in">
+      <div v-if="!videoReproduced">
+        <video
+          ref="videoRef"
+          class="w-full h-screen object-cover block"
+          muted
+          playsinline
+          @ended="handleVideoEnd"
+          @click="startTheVideo"
+        >
+          <source :src="mobileSrc" type="video/mp4" />
+        </video>
+      </div>
+      <main v-else class="">
+        <HeaderNav />
 
-          <HeroSection class="main-section" />
+        <HeroSection class="main-section" />
 
-          <SeparatorSection >
-            A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
-            mis 15 años de vida. Porque su presencia, siempre será mi mejor regalo.
-          </SeparatorSection>
+        <SeparatorSection>
+          A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
+          mis 15 años de vida. Porque su presencia, siempre será mi mejor regalo.
+        </SeparatorSection>
 
-          <SaveTheDate class="main-section" />
+        <SaveTheDate class="main-section" />
 
-          <SeparatorSection>
-            Los recuerdos más hermosos nacen con las personas más especiales.
-          </SeparatorSection>
+        <SeparatorSection>
+          Los recuerdos más hermosos nacen con las personas más especiales.
+        </SeparatorSection>
 
-          <CWMItinerario class="main-section" />
+        <CWMItinerario class="main-section" />
 
-          <SeparatorSection>
-            ¡Prepárate para reír, bailar y celebrar como nunca!
-          </SeparatorSection>
+        <SeparatorSection> ¡Prepárate para reír, bailar y celebrar como nunca! </SeparatorSection>
 
-          <SweetMemories
-            class="main-section"
-            :mode="'presentation'"
-          />
+        <SweetMemories class="main-section" :mode="'presentation'" />
 
-          <SeparatorSection>
-            Gracias por ser parte de mi historia. Ahora celebremos juntos.
-          </SeparatorSection>
+        <SeparatorSection>
+          Gracias por ser parte de mi historia. Ahora celebremos juntos.
+        </SeparatorSection>
 
-          <RSVP class="main-section" />
+        <RSVP class="main-section" />
 
-          <SeparatorSection>
-            La música, las memorias y ustedes harán de esta noche mágica.
-          </SeparatorSection>
+        <SeparatorSection>
+          La música, las memorias y ustedes harán de esta noche mágica.
+        </SeparatorSection>
 
-          <SuggestedMusic class="main-section"/>
+        <SuggestedMusic class="main-section" />
 
-          <SeparatorSection>
-            Que esta fiesta sea tan inolvidable como ustedes lo son para mí.
-          </SeparatorSection>
+        <SeparatorSection>
+          Que esta fiesta sea tan inolvidable como ustedes lo son para mí.
+        </SeparatorSection>
 
-          <EventComments
-            origin="event"
-            class="main-section"
-          />
+        <EventComments origin="event" class="main-section" />
 
-          <SeparatorSection>
-            Donde hay amor y alegría, el momento es perfecto.
-          </SeparatorSection>
+        <SeparatorSection> Donde hay amor y alegría, el momento es perfecto. </SeparatorSection>
 
-          <EventLocations />
+        <EventLocations />
 
-          <SeparatorSection >
-            Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
-            compartir con cada uno de ustedes. ¡Gracias por estar aquí!
-          </SeparatorSection>
+        <SeparatorSection>
+          Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
+          compartir con cada uno de ustedes. ¡Gracias por estar aquí!
+        </SeparatorSection>
 
-          <SwipeLeftIcon />
+        <SwipeLeftIcon />
 
-          <BackgroundMusic
-            origin="event"
-          />
+        <BackgroundMusic origin="event" />
 
-          <EventFooter />
-        </main>
-      </transition>
-    </div>
+        <EventFooter />
+      </main>
+    </transition>
+  </div>
 
   <button
-    id="scrollToTopBtn"
     v-if="showScrollBtn"
+    id="scrollToTopBtn"
     class="fixed w-10 h-10 bottom-5 right-5 bg-pink-300 border border-pink-400/50 text-white text-lg text-bold rounded-full shadow-lg hover:bg-pink-500/50 focus:outline-none"
     @click="handleMoveToTop"
   >
@@ -228,6 +215,4 @@ main {
 section {
   scroll-margin-top: 80px;
 }
-
-
 </style>
