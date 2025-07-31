@@ -1,8 +1,36 @@
 <template>
   <section
-    class="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white dark:from-gray-900 dark:to-gray-800 px-4"
+    class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-white to-purple-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900/20 px-4 overflow-hidden"
   >
-    <CCard class="max-w-md w-full p-8 shadow-xl">
+    <!-- Enhanced Background Elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div
+        class="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full blur-3xl opacity-60 animate-pulse"
+      ></div>
+      <div
+        class="absolute -bottom-40 -right-40 w-96 h-96 bg-gradient-to-l from-secondary/20 to-accent/20 rounded-full blur-3xl opacity-50 animate-pulse"
+        style="animation-delay: 2s"
+      ></div>
+      <div
+        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-pink-300/10 to-purple-300/10 rounded-full blur-2xl opacity-40"
+      ></div>
+
+      <!-- Floating Elements -->
+      <div
+        class="absolute top-20 right-20 w-4 h-4 bg-primary/30 rounded-full animate-bounce"
+        style="animation-delay: 1s"
+      ></div>
+      <div
+        class="absolute bottom-32 left-16 w-6 h-6 bg-secondary/40 rounded-full animate-bounce"
+        style="animation-delay: 3s"
+      ></div>
+      <div
+        class="absolute top-1/3 left-1/4 w-3 h-3 bg-accent/50 rounded-full animate-bounce"
+        style="animation-delay: 2s"
+      ></div>
+    </div>
+
+    <CCard class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30">
       <div class="text-center mb-8">
         <h1 class="text-3xl font-display font-bold text-primary">Join Celebrateitwithme</h1>
         <p class="text-sm text-text-light mt-2">
@@ -86,9 +114,10 @@
 
           <CButton
             :disabled="sending || (!captchaToken && !isLocalEnvironment)"
+            variant="primary"
             full
             type="submit"
-            class="mt-6"
+            class="mt-6 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 transition-all duration-300 focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
           >
             <span v-if="!sending">Sign Up</span>
             <span v-else class="flex items-center justify-center">
@@ -120,10 +149,10 @@
         <!-- Social Login Divider -->
         <div class="relative my-6">
           <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-gray-300"></div>
+            <div class="w-full border-t border-gray-300/50 dark:border-gray-600/50"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-2 bg-white text-gray-500">Or sign up with</span>
+            <span class="px-2 bg-transparent text-gray-500 dark:text-gray-400">Or continue with</span>
           </div>
         </div>
 
@@ -131,7 +160,7 @@
         <div class="grid grid-cols-2 gap-4 mb-6">
           <!-- Google Login Button -->
           <button
-            class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            class="flex items-center justify-center px-4 py-3 border border-gray-200/50 dark:border-gray-600/50 rounded-xl shadow-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white/90 dark:hover:bg-gray-700/90 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
             :disabled="sending"
             @click="initGoogleLogin"
           >
@@ -166,7 +195,7 @@
 
           <!-- Facebook Login Button -->
           <button
-            class="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            class="flex items-center justify-center px-4 py-3 border border-gray-200/50 dark:border-gray-600/50 rounded-xl shadow-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white/90 dark:hover:bg-gray-700/90 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
             :disabled="sending"
             @click="handleFacebookLogin"
           >
@@ -230,6 +259,7 @@ import CSelect from '@/components/UI/form2/CSelect.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
+import { detect } from 'detect-browser'
 import { useUserStore } from '@/stores/useUserStore'
 import { useRouter } from 'vue-router'
 import { onBeforeUnmount } from 'vue'
@@ -265,7 +295,8 @@ const validationSchema = computed(() => {
       email: zod.string().email({ message: 'Email is required' }),
       password: zod
         .string({ message: 'Password is required' })
-        .min(8, { message: 'Password must have at least 8 characters long' })
+        .min(8, { message: 'Password must have at least 8 characters long' }),
+      planSelected: zod.string().min(1, { message: 'Plan selection is required' })
     })
   )
 })
@@ -325,9 +356,12 @@ const onSubmit = async () => {
     }
 
     sending.value = true
+    const browser = detect()
+    const device = browser ? `${browser.name} ${browser.version}` : 'unknown'
 
     const response = await userStore.register({
       ...form,
+      device,
       hcaptcha_token: captchaToken.value
     })
 
@@ -339,6 +373,7 @@ const onSubmit = async () => {
     }
   } catch (e) {
     console.log('Ops Something happens!', e)
+    backendError.value = true
     backendErrorMessage.value = e.response?.data?.message ?? 'Oops, something went wrong!'
   } finally {
     sending.value = false

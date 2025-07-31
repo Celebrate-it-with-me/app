@@ -270,20 +270,20 @@
             reserved.
           </div>
           <div class="flex gap-8 text-sm">
-            <a
-              href="#"
+            <RouterLink
+              to="/privacy"
               class="text-gray-500 hover:text-primary transition-colors duration-300 hover:underline underline-offset-4"
-              >Privacy Policy</a
+              >Privacy Policy</RouterLink
             >
-            <a
-              href="#"
+            <RouterLink
+              to="/terms"
               class="text-gray-500 hover:text-primary transition-colors duration-300 hover:underline underline-offset-4"
-              >Terms of Service</a
+              >Terms of Service</RouterLink
             >
-            <a
-              href="#"
+            <RouterLink
+              to="/cookies"
               class="text-gray-500 hover:text-primary transition-colors duration-300 hover:underline underline-offset-4"
-              >Cookie Policy</a
+              >Cookie Policy</RouterLink
             >
           </div>
         </div>

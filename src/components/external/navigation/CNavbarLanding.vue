@@ -16,18 +16,30 @@
 
 <script setup>
 import CNavbar from '@/components/UI/navbar/CNavbar.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import LogoImage from '@/assets/images/commons/logo_primary.png'
 
-const links = ref([
+const route = useRoute()
+
+const allLinks = ref([
   { label: 'Features', href: '#features', isActive: false },
   { label: 'Pricing', href: '#pricing', isActive: false },
   { label: 'Gallery', href: '#gallery', isActive: false },
   { label: 'Testimonials', href: '#testimonials', isActive: false }
 ])
 
+// Hide navigation links on sign-in and sign-up pages
+const links = computed(() => {
+  const hiddenRoutes = ['sign-in', 'sign-up']
+  if (hiddenRoutes.includes(route.name)) {
+    return []
+  }
+  return allLinks.value
+})
+
 const handleUpdateActiveStatus = activeLink => {
-  links.value.forEach(link => {
+  allLinks.value.forEach(link => {
     link.isActive = link.href === activeLink.href
   })
 }
