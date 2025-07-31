@@ -67,7 +67,7 @@ const handleRequest = async () => {
       firstName: companionState.firstName,
       lastName: companionState.lastName,
       phoneNumber: companionState.phoneNumber,
-      email: companionState.email,
+      email: companionState.email
     })
   }
 
@@ -75,10 +75,9 @@ const handleRequest = async () => {
     firstName: companionState.firstName,
     lastName: companionState.lastName,
     phoneNumber: companionState.phoneNumber,
-    email: companionState.email,
+    email: companionState.email
   })
 }
-
 
 const onSubmit = async () => {
   try {
@@ -94,7 +93,6 @@ const onSubmit = async () => {
         type: 'success',
         message: 'Companion created successfully!'
       })
-
     } else {
       notificationStore.addNotification({
         type: 'error',
@@ -108,87 +106,69 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = (error) => {
+const onInvalidSubmit = error => {
   console.log(error)
 
-  errorMessage.value = error.message ||'Oops something went wrong. Please try again.'
+  errorMessage.value = error.message || 'Oops something went wrong. Please try again.'
 }
-
-
 </script>
 
 <template>
-<div
-  class="w-full"
->
-  <h2 class="text-2xl font-thin mb-12">
-    {{ mode.charAt(0).toUpperCase() + mode.slice(1) }} guest companion
-  </h2>
-  <Form
-    :validation-schema="companionValidationSchema"
-    @submit="onSubmit"
-    @invalid-submit="onInvalidSubmit"
-  >
-    <div
-      class="w-1/2 flex justify-between items-start gap-x-2"
+  <div class="w-full">
+    <h2 class="text-2xl font-thin mb-12">
+      {{ mode.charAt(0).toUpperCase() + mode.slice(1) }} guest companion
+    </h2>
+    <Form
+      :validation-schema="companionValidationSchema"
+      @submit="onSubmit"
+      @invalid-submit="onInvalidSubmit"
     >
-      <TextField
-        label="First Name"
-        placeholder="First Name"
-        name="firstName"
-        v-model="companionState.firstName"
-        show-error
-        :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
-      />
+      <div class="w-1/2 flex justify-between items-start gap-x-2">
+        <TextField
+          v-model="companionState.firstName"
+          label="First Name"
+          placeholder="First Name"
+          name="firstName"
+          show-error
+          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+        />
 
-      <TextField
-        label="Last Name"
-        placeholder="Last Name"
-        name="lastName"
-        v-model="companionState.lastName"
-        show-error
-        :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
-      />
-    </div>
-    <div
-      class="w-1/2 flex justify-between items-start mt-5 gap-x-2"
-    >
-      <EmailField
-        label="Email"
-        placeholder="Email"
-        name="email"
-        v-model="companionState.email"
-        show-error
-        :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
-      />
+        <TextField
+          v-model="companionState.lastName"
+          label="Last Name"
+          placeholder="Last Name"
+          name="lastName"
+          show-error
+          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+        />
+      </div>
+      <div class="w-1/2 flex justify-between items-start mt-5 gap-x-2">
+        <EmailField
+          v-model="companionState.email"
+          label="Email"
+          placeholder="Email"
+          name="email"
+          show-error
+          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+        />
 
-      <PhoneNumberField
-        label="Phone Number"
-        placeholder="Phone Number"
-        name="phoneNumber"
-        v-model="companionState.phoneNumber"
-        show-error
-        :show-icon="false"
-        :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
-      />
-    </div>
+        <PhoneNumberField
+          v-model="companionState.phoneNumber"
+          label="Phone Number"
+          placeholder="Phone Number"
+          name="phoneNumber"
+          show-error
+          :show-icon="false"
+          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+        />
+      </div>
 
-    <div
-      class="w-1/2 flex justify-end items-center gap-x-2 mt-5"
-    >
-      <fwb-button color="dark">Cancel</fwb-button>
-      <fwb-button
-        color="default"
-        :loading="companionState.loading"
-      >
-        Submit
-      </fwb-button>
-    </div>
-
-  </Form>
-</div>
-
-
+      <div class="w-1/2 flex justify-end items-center gap-x-2 mt-5">
+        <fwb-button color="dark">Cancel</fwb-button>
+        <fwb-button color="default" :loading="companionState.loading"> Submit </fwb-button>
+      </div>
+    </Form>
+  </div>
 </template>
 
 <style scoped></style>

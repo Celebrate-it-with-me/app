@@ -37,11 +37,11 @@ const hasEventBudget = computed(() => budgetStore.hasEventBudget)
 
 const showCreateBudgetForm = computed(() => {
   if (!hasEventBudget.value) {
-    return true;
+    return true
   }
 
-  return showBudgetForm.value;
-});
+  return showBudgetForm.value
+})
 
 // Methods
 const handleShowBudgetForm = () => {
@@ -51,53 +51,48 @@ const handleShowBudgetForm = () => {
 
 const fetchBudgetData = async () => {
   if (!activeEvent.value) {
-    budgetStore.error = 'No active event selected';
-    return;
+    budgetStore.error = 'No active event selected'
+    return
   }
 
   try {
-    await budgetStore.getEventBudget();
+    await budgetStore.getEventBudget()
 
     if (hasEventBudget.value) {
-      await budgetStore.loadBudgetItems();
+      await budgetStore.loadBudgetItems()
     }
   } catch (err) {
-    console.error('Error fetching budget data:', err);
+    console.error('Error fetching budget data:', err)
   }
 }
 
-
-const handleBudgetItemModal = async (data) => {
+const handleBudgetItemModal = async data => {
   // Ensure budget items are loaded before opening the modal
   if (hasEventBudget.value && budgetStore.budgetItems.length === 0) {
-    await budgetStore.loadBudgetItems();
+    await budgetStore.loadBudgetItems()
   }
 
   if (data.mode === 'edit' && data.item) {
     // Edit mode
-    editingItemId.value = data.item.id;
-    console.log('Setting editingItemId to:', data.item.id);
+    editingItemId.value = data.item.id
+    console.log('Setting editingItemId to:', data.item.id)
   } else {
     // Create mode
-    editingItemId.value = null;
+    editingItemId.value = null
   }
-  showBudgetItemModal.value = true;
+  showBudgetItemModal.value = true
 }
-
-
 
 // Lifecycle hooks
 onMounted(() => {
-  fetchBudgetData();
+  fetchBudgetData()
 })
 </script>
 
 <template>
   <section class="budget-view">
     <!-- Page Header -->
-    <BudgetTitles
-      @open-item-modal="() => handleBudgetItemModal({ mode: 'create' })"
-    />
+    <BudgetTitles @open-item-modal="() => handleBudgetItemModal({ mode: 'create' })" />
 
     <!-- Loading State -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-12">
@@ -111,35 +106,29 @@ onMounted(() => {
         <AlertCircle class="w-5 h-5" />
       </template>
       <p>{{ error }}</p>
-      <CButton @click="fetchBudgetData" variant="text" size="sm" class="mt-2">
+      <CButton variant="text" size="sm" class="mt-2" @click="fetchBudgetData">
         <RefreshCw class="w-4 h-4 mr-1" /> Try Again
       </CButton>
     </CAlert>
 
     <!-- Budget Creation Form -->
     <CreateEditEventBudget
-      :mode="budgetFormMode"
       v-if="showCreateBudgetForm"
-      @budgetUpdated="showBudgetForm = false"
-      @openBudgetForm="showBudgetForm = false"
+      :mode="budgetFormMode"
+      @budget-updated="showBudgetForm = false"
+      @open-budget-form="showBudgetForm = false"
     />
 
     <!-- Content when budget exists -->
     <template v-else>
       <!-- Budget Summary -->
-      <BudgetSummary
-        @show-budget-form="handleShowBudgetForm"
-      />
+      <BudgetSummary @show-budget-form="handleShowBudgetForm" />
 
       <!-- Empty State for Budget Items -->
-      <AddFirstBudgetItem
-        @open-item-modal="() => handleBudgetItemModal({ mode: 'create' })"
-      />
+      <AddFirstBudgetItem @open-item-modal="() => handleBudgetItemModal({ mode: 'create' })" />
 
       <!-- Budget Items by Category -->
-      <BudgetItemsByCategory
-        @openBudgetItemModal="handleBudgetItemModal"
-      />
+      <BudgetItemsByCategory @open-budget-item-modal="handleBudgetItemModal" />
     </template>
 
     <!-- Budget Item Modal -->
@@ -148,8 +137,8 @@ onMounted(() => {
       :show="showBudgetItemModal"
       :editing-item-id="editingItemId"
       @close="showBudgetItemModal = false"
-      @itemAdded="fetchBudgetData"
-      @itemUpdated="fetchBudgetData"
+      @item-added="fetchBudgetData"
+      @item-updated="fetchBudgetData"
     />
   </section>
 </template>
@@ -160,7 +149,13 @@ onMounted(() => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

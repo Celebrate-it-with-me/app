@@ -27,16 +27,12 @@ const togglePlayPause = () => {
   }
   isPlaying.value = !isPlaying.value
 }
-
 </script>
 
 <template>
-  <div
-    class="fixed bottom-5 right-5 flex items-center rounded-lg"
-  >
+  <div class="fixed bottom-5 right-5 flex items-center rounded-lg">
     <button
-      class="w-10 h-10 bg-gradient-to-r from-pink-400 to-red-400 flex items-center justify-center
-         rounded-full text-white opacity-30 hover:opacity-30 transition-opacity"
+      class="w-10 h-10 bg-gradient-to-r from-pink-400 to-red-400 flex items-center justify-center rounded-full text-white opacity-30 hover:opacity-30 transition-opacity"
       @click="togglePlayPause"
     >
       <span v-if="!isPlaying">▶</span>
@@ -51,5 +47,4 @@ const togglePlayPause = () => {
     font-size: 0.9rem;
   }
 }
-
 </style>

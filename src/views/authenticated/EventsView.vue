@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import CwmEvents from '@/components/authenticated/events/CWMEvents.vue'
 </script>
 
@@ -7,6 +6,4 @@ import CwmEvents from '@/components/authenticated/events/CWMEvents.vue'
   <CwmEvents />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

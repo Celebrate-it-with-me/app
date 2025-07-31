@@ -5,7 +5,7 @@ class TemplateService {
     return CWM_API.get(`template/event/${eventId}/guest/${guestCode}`)
   }
 
-  async saveRsvp({eventId, guest}) {
+  async saveRsvp({ eventId, guest }) {
     return CWM_API.post(`template/event/${eventId}/save-rsvp`, {
       guest
     })

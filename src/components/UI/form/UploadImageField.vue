@@ -1,8 +1,8 @@
 <script setup>
-import { computed, ref, watch, toRef } from 'vue';
-import { useField } from 'vee-validate';
+import { computed, ref, watch, toRef } from 'vue'
+import { useField } from 'vee-validate'
 
-const emit = defineEmits(['resetErrors', 'update:modelValue']);
+const emit = defineEmits(['resetErrors', 'update:modelValue'])
 const props = defineProps({
   label: { type: String, default: '' },
   classLabel: { type: String, default: ' ' },
@@ -16,9 +16,9 @@ const props = defineProps({
   description: { type: String },
   placeholder: { type: String, default: 'Click to Upload' },
   showImgName: { type: Boolean, default: false }
-});
+})
 
-const name = toRef(props, 'name');
+const name = toRef(props, 'name')
 
 // VeeValidate field
 const {
@@ -27,44 +27,44 @@ const {
   handleBlur,
   handleChange,
   setValue,
-  meta,
+  meta
 } = useField(name, {
-  initialValue: props.modelValue,
-});
+  initialValue: props.modelValue
+})
 
 // Watch modelValue and sync it with vee-validate
-watch(() => props.modelValue, setValue);
+watch(() => props.modelValue, setValue)
 
 // Watch vee-validate's value and emit modelValue updates
-watch(inputValue, (val) => {
-  emit('update:modelValue', val);
+watch(inputValue, val => {
+  emit('update:modelValue', val)
   if (val) {
-    emit('resetErrors');
+    emit('resetErrors')
   }
-});
+})
 
 const showErrorMessage = computed(() => {
-  return props.showError && errorMessage.value && meta.touched;
-});
+  return props.showError && errorMessage.value && meta.touched
+})
 
-const previewUrl = ref(null);
+const previewUrl = ref(null)
 
 // Handle file input
-const handleFileChange = (e) => {
-  const file = e.target.files[0];
+const handleFileChange = e => {
+  const file = e.target.files[0]
   if (file) {
     // Update VeeValidate and emit modelValue
-    inputValue.value = file;
+    inputValue.value = file
 
     // Generate preview URL
-    previewUrl.value = URL.createObjectURL(file);
+    previewUrl.value = URL.createObjectURL(file)
   }
-};
+}
 
 const handleRemoveImage = () => {
-  inputValue.value = null;
-  previewUrl.value = null;
-};
+  inputValue.value = null
+  previewUrl.value = null
+}
 </script>
 
 <template>
@@ -82,8 +82,7 @@ const handleRemoveImage = () => {
       :class="`
         ${classLabel}
         ${horizontal ? 'flex-0 mr-6 md:w-[100px] w-[60px] break-words' : ''}
-        ltr:inline-block rtl:block input-label`
-      "
+        ltr:inline-block rtl:block input-label`"
       :for="name"
     >
       {{ label }}
@@ -96,20 +95,19 @@ const handleRemoveImage = () => {
         class="relative border border-gray-300 p-3 rounded-md bg-white hover:border-blue-400 transition"
       >
         <input
+          :id="name"
           ref="fileInput"
           type="file"
-          :id="name"
           :disabled="disabled"
           :name="name"
-          @change="handleFileChange"
-          @blur="handleBlur"
           class="sr-only"
           accept="image/*"
+          @change="handleFileChange"
+          @blur="handleBlur"
         />
 
         <!-- Placeholder -->
         <div
-
           class="h-40 w-full flex items-center justify-center text-center text-gray-400 cursor-pointer"
           @click="$refs.fileInput.click()"
         >
@@ -125,8 +123,8 @@ const handleRemoveImage = () => {
         />
         <button
           type="button"
-          @click="previewUrl = null"
           class="mt-2 text-sm text-blue-500 hover:underline self-start"
+          @click="previewUrl = null"
         >
           Clear Image
         </button>
@@ -134,18 +132,12 @@ const handleRemoveImage = () => {
     </div>
 
     <!-- Error Message -->
-    <span
-      v-if="showErrorMessage"
-      class="text-danger-500 block text-sm mt-2"
-    >
+    <span v-if="showErrorMessage" class="text-danger-500 block text-sm mt-2">
       {{ errorMessage }}
     </span>
 
     <!-- Description -->
-    <span
-      v-if="description"
-      class="block text-secondary-500 font-light leading-4 text-xs mt-2"
-    >
+    <span v-if="description" class="block text-secondary-500 font-light leading-4 text-xs mt-2">
       {{ description }}
     </span>
   </div>

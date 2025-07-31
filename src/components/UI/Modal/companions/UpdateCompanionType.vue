@@ -44,15 +44,12 @@ const changeCompanionType = async () => {
         message: 'Oops something went wrong!'
       })
     }
-
   } catch (error) {
     console.error(error)
   } finally {
     updating.value = false
   }
 }
-
-
 </script>
 
 <template>
@@ -60,49 +57,39 @@ const changeCompanionType = async () => {
   <div class="select-companion-type flex flex-row gap-x-4">
     <RadioPlain
       id="option1"
+      v-model="companionType"
       name="companionType"
       value="no_companion"
       label="No Companion"
-      v-model="companionType"
     />
 
     <RadioPlain
       id="option2"
+      v-model="companionType"
       name="companionType"
       value="no_named"
       label="No Named"
-      v-model="companionType"
     />
 
     <RadioPlain
       id="option3"
+      v-model="companionType"
       name="companionType"
       value="named"
       label="Named"
-      v-model="companionType"
     />
   </div>
-  <div
-    class="flex flex-row justify-end gap-x-4"
-  >
-    <fwb-button
-      color="dark"
-      @click="cancelChangeType"
-    >
-      Cancel
-    </fwb-button>
+  <div class="flex flex-row justify-end gap-x-4">
+    <fwb-button color="dark" @click="cancelChangeType"> Cancel </fwb-button>
     <fwb-button
       color="default"
       :disabled="saveDisabled"
-      @click="changeCompanionType"
       :loading="updating"
+      @click="changeCompanionType"
     >
       Save
     </fwb-button>
   </div>
-
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

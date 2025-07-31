@@ -20,18 +20,15 @@ const eventSelectedName = computed(() => {
 </script>
 
 <template>
-<div class="w-full" v-if="wBText">
-  <p class="text-gray-400 text-md">
-    {{ wBText }}
-  </p>
+  <div v-if="wBText" class="w-full">
+    <p class="text-gray-400 text-md">
+      {{ wBText }}
+    </p>
 
-  <p class="text-gray-400 text-sm font-extralight">
-    {{ eventSelectedName }}
-  </p>
-
-</div>
+    <p class="text-gray-400 text-sm font-extralight">
+      {{ eventSelectedName }}
+    </p>
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

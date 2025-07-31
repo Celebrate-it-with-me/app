@@ -3,7 +3,7 @@ import SongsService from '../services/SongsService'
 
 export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
   state: () => ({
-    config:{
+    config: {
       id: null,
       title: 'Music Suggestions',
       subTitle: 'Please send us you preferred music',
@@ -13,7 +13,7 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
       useVoteSystem: true,
       searchLimit: 10
     },
-    selectedSongs: [],
+    selectedSongs: []
   }),
   actions: {
     async saveSuggestedConfig({ eventId }) {
@@ -25,7 +25,7 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
         mainColor: this.mainColor,
         secondaryColor: this.secondaryColor,
         useVoteSystem: this.useVoteSystem,
-        searchLimit: this.searchLimit,
+        searchLimit: this.searchLimit
       })
     },
 
@@ -38,7 +38,7 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
         mainColor: this.config.mainColor,
         secondaryColor: this.config.secondaryColor,
         useVoteSystem: this.config.useVoteSystem,
-        searchLimit: this.config.searchLimit,
+        searchLimit: this.config.searchLimit
       })
     },
 
@@ -47,9 +47,16 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
     },
 
     async addNewSong({ eventId, platformId, title, artist, album, thumbnailUrl, accessCode }) {
-      return await SongsService.create({eventId, platformId, title, artist, album, thumbnailUrl, accessCode})
+      return await SongsService.create({
+        eventId,
+        platformId,
+        title,
+        artist,
+        album,
+        thumbnailUrl,
+        accessCode
+      })
     },
-
 
     addSong(song) {
       if (!this.selectedSongs.some(s => s.id === song.id)) {
@@ -58,7 +65,7 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
     },
 
     removeSong(songId) {
-      this.selectedSongs = this.selectedSongs.filter((song) => song.id !== songId)
+      this.selectedSongs = this.selectedSongs.filter(song => song.id !== songId)
     },
 
     clearSelectedSongs() {
@@ -66,6 +73,6 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
     }
   },
   getters: {
-      songCount: () => this.selectedSongs.length,
-  },
+    songCount: () => this.selectedSongs.length
+  }
 })

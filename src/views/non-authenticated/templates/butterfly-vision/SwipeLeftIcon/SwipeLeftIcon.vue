@@ -27,10 +27,7 @@ onUnmounted(() => {
 
 <template>
   <transition name="fade">
-    <div
-      v-if="showSwipe"
-      class="swipe-left fixed w-36 h-36 left-5 z-50"
-    >
+    <div v-if="showSwipe" class="swipe-left fixed w-36 h-36 left-5 z-50">
       <img :src="SwipeLeft" alt="Swipe Left" class="w-1/2 h-auto rounded-lg" />
     </div>
   </transition>

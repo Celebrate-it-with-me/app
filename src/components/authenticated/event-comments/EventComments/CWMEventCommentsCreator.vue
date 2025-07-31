@@ -78,7 +78,6 @@ const initEventsCommentsConfig = async () => {
 
       mode.value = 'create'
     }
-
   } catch (error) {
     console.log(error)
   } finally {
@@ -120,7 +119,6 @@ const onSubmit = async () => {
       eventCommentsStore.config.buttonText = buttonText
       eventCommentsStore.config.maxComments = maxComments
 
-
       notificationStore.addNotification({
         type: 'success',
         message: 'Comments config successfully saved!'
@@ -133,8 +131,6 @@ const onSubmit = async () => {
         message: 'Oops something went wrong!'
       })
     }
-
-
   } catch (err) {
     console.log(err)
   } finally {
@@ -142,7 +138,7 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.log('onInvalidSubmit', errors)
 }
 </script>
@@ -170,9 +166,9 @@ const onInvalidSubmit = (errors) => {
       <div class="flex flex-col gap-6">
         <div>
           <TextField
+            v-model="eventCommentsStore.config.title"
             name="title"
             label="Title"
-            v-model="eventCommentsStore.config.title"
             show-error
             placeholder="Section Title"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
@@ -181,9 +177,9 @@ const onInvalidSubmit = (errors) => {
         <!-- STD Title -->
         <div>
           <TextField
+            v-model="eventCommentsStore.config.subTitle"
             name="subTitle"
             label="Sub Title"
-            v-model="eventCommentsStore.config.subTitle"
             show-error
             placeholder="Comments Section Subtitle Title"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
@@ -193,11 +189,11 @@ const onInvalidSubmit = (errors) => {
         <!-- STD Title -->
         <div>
           <ColorPickerField
+            v-model="eventCommentsStore.config.backgroundColor"
             label="Background Color"
-            classLabel="text-lg font-medium"
+            class-label="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             name="backgroundColor"
-            v-model="eventCommentsStore.config.backgroundColor"
             :colorpicker-options="{
               type: 'component',
               showPalette: true,
@@ -205,15 +201,15 @@ const onInvalidSubmit = (errors) => {
               preferredFormat: 'hex',
               showInitial: true
             }"
-            :showError="true"
+            :show-error="true"
           />
         </div>
 
         <div>
           <TextField
+            v-model="eventCommentsStore.config.commentsTitle"
             name="commentsTitle"
             label="Title"
-            v-model="eventCommentsStore.config.commentsTitle"
             show-error
             placeholder="Section Title"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
@@ -222,11 +218,11 @@ const onInvalidSubmit = (errors) => {
 
         <div>
           <ColorPickerField
+            v-model="eventCommentsStore.config.buttonColor"
             label="Button Color"
-            classLabel="text-lg font-medium"
+            class-label="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             name="buttonColor"
-            v-model="eventCommentsStore.config.buttonColor"
             :colorpicker-options="{
               type: 'component',
               showPalette: true,
@@ -234,28 +230,26 @@ const onInvalidSubmit = (errors) => {
               preferredFormat: 'hex',
               showInitial: true
             }"
-            :showError="true"
+            :show-error="true"
           />
         </div>
 
-
         <div>
           <TextField
+            v-model="eventCommentsStore.config.buttonText"
             name="buttonText"
             label="Button Text"
-            v-model="eventCommentsStore.config.buttonText"
             show-error
             placeholder="Button Text"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
           />
         </div>
 
-
         <div>
           <NumberField
+            v-model="eventCommentsStore.config.maxComments"
             name="maxComments"
             label="Max Comments"
-            v-model="eventCommentsStore.config.maxComments"
             show-error
             placeholder="Comments Section Max Comments"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"

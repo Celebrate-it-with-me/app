@@ -11,5 +11,4 @@
 <script setup>
 import CNavbarLanding from '@/components/external/navigation/CNavbarLanding.vue'
 import CFooter from '@/components/external/footer/CFooter.vue'
-
 </script>

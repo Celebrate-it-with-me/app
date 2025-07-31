@@ -8,7 +8,7 @@ export const useEventsStore = defineStore('eventsStore', {
     activeEvent: null,
     eventPermissions: null,
     eventPlans: [],
-    eventTypes: [],
+    eventTypes: []
   }),
   actions: {
     /**
@@ -121,12 +121,30 @@ export const useEventsStore = defineStore('eventsStore', {
     },
 
     /**
+     * Sets the event types for the current instance.
+     *
+     * @param {Array<string>} types - An array of event type strings to be assigned.
+     * @return {void} Does not return a value.
+     */
+    setEventTypes(types) {
+      this.eventTypes = types
+    },
+
+    /**
+     * Sets the event plans for the current instance.
+     * @param plans
+     */
+    setEventPlans(plans) {
+      this.eventPlans = plans
+    },
+
+    /**
      * Select an event by ID and update active event
      * @param {string|number} eventId - The ID of the event to select
      */
     selectEvent(eventId) {
       const userStore = useUserStore()
-      this.activeEvent = this.events.find((event) => event.id === eventId)
+      this.activeEvent = this.events.find(event => event.id === eventId)
       userStore.activeEvent = eventId // Fixed: was using activeEventId which doesn't exist
     },
 
@@ -266,7 +284,7 @@ export const useEventsStore = defineStore('eventsStore', {
      * Check if user has any events
      * @returns {boolean} True if user has events
      */
-    hasEvents(){
+    hasEvents() {
       return this.events.length > 0
     },
 
@@ -275,7 +293,7 @@ export const useEventsStore = defineStore('eventsStore', {
      * @returns {Array} List of active events
      */
     activeEvents() {
-      return this.events.filter((event) => ['draft', 'published'].includes(event.status))
+      return this.events.filter(event => ['draft', 'published'].includes(event.status))
     },
 
     /**
@@ -283,7 +301,7 @@ export const useEventsStore = defineStore('eventsStore', {
      * @returns {Array} List of inactive events
      */
     inactiveEvents() {
-      return this.events.filter((event) => ['archived', 'canceled'].includes(event.status))
+      return this.events.filter(event => ['archived', 'canceled'].includes(event.status))
     },
 
     /**
@@ -291,9 +309,9 @@ export const useEventsStore = defineStore('eventsStore', {
      * @param {Object} state - Store state
      * @returns {Function} Function that checks for a specific permission
      */
-    hasPermission: (state) => (permission) => {
+    hasPermission: state => permission => {
       if (state.eventPermissions && state.eventPermissions.length > 0) {
-        return state.eventPermissions.some((perm) => perm.name === permission)
+        return state.eventPermissions.some(perm => perm.name === permission)
       }
       return false
     },
@@ -303,9 +321,9 @@ export const useEventsStore = defineStore('eventsStore', {
      * @param {Object} state - Store state
      * @returns {Function} Function that checks for any of the specified permissions
      */
-    hasAnyPermission: (state) => (permissions) => {
+    hasAnyPermission: state => permissions => {
       if (state.eventPermissions && state.eventPermissions.length > 0) {
-        return state.eventPermissions.some((perm) => permissions.includes(perm.name))
+        return state.eventPermissions.some(perm => permissions.includes(perm.name))
       }
       return false
     }

@@ -25,7 +25,7 @@ const props = defineProps({
   mode: {
     type: String,
     required: true,
-    validator: (value) => ['creator', 'normal'].includes(value)
+    validator: value => ['creator', 'normal'].includes(value)
   }
 })
 
@@ -35,20 +35,20 @@ const notification = useNotificationStore()
 
 const mainColorComputed = computed(() => {
   if (!props.mainColor) {
-    return {backgroundColor: 'transparent' }
+    return { backgroundColor: 'transparent' }
   }
 
-  return {backgroundColor: props.mainColor}
-});
+  return { backgroundColor: props.mainColor }
+})
 
-const removeSong = async (song) => {
+const removeSong = async song => {
   try {
     const response = await SongsService.deleteSong(eventStore.currentEvent.id, song.id)
 
     if (response.status === 200) {
       songsStore.removeSong(song.id)
       notification.addNotification({
-        message: "Song removed successfully!"
+        message: 'Song removed successfully!'
       })
     } else {
       notification.addNotification({
@@ -56,12 +56,10 @@ const removeSong = async (song) => {
         message: 'Oops something went wrong!'
       })
     }
-
   } catch (e) {
     console.log(e)
   }
 }
-
 </script>
 
 <template>
@@ -69,9 +67,7 @@ const removeSong = async (song) => {
     class="rounded-xl flex justify-between items-center mt-2 space-x-6 transition hover:bg-gray-700"
     :style="mainColorComputed"
   >
-    <template
-      v-if="!usePreview"
-    >
+    <template v-if="!usePreview">
       <img
         :src="song.thumbnailUrl || 'https://via.placeholder.com/64'"
         alt="Album Art"
@@ -95,10 +91,7 @@ const removeSong = async (song) => {
       allowtransparency="true"
       allow="encrypted-media"
     ></iframe>
-
   </li>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

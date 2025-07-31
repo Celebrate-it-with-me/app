@@ -81,12 +81,12 @@ export const useActivityStore = defineStore('activityStore', {
      * @param {Object} state - Store state
      * @returns {boolean} True if data is stale or not fetched yet
      */
-    isDataStale: (state) => {
+    isDataStale: state => {
       if (!state.lastFetched) return true
 
       const staleThreshold = 5 * 60 * 1000 // 5 minutes in milliseconds
       const now = new Date()
       return now - state.lastFetched > staleThreshold
     }
-  },
+  }
 })

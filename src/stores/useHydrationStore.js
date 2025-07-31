@@ -22,7 +22,6 @@ export const useHydrationStore = defineStore('hydration', () => {
       const { data, status } = await HydrationService.hydrate(userId)
 
       if (status === 200) {
-
         useEventsStore().setEvents(data.events)
         useEventsStore().initActiveEvent(data.activeEvent)
         useEventsStore().initEventPermissions(data.userPermissions)
@@ -32,7 +31,8 @@ export const useHydrationStore = defineStore('hydration', () => {
         useRsvpStore().setRsvp(data.rsvp)
         useSaveTheDateStore().setSaveTheDate(data.saveTheDate)
         useLocationsStore().setLocations(data.locations)
-
+        useEventsStore().setEventTypes(data.eventTypes)
+        useEventsStore().setEventPlans(data.eventPlans)
       } else {
         // Todo: Handle Error, redirect to error page with support message
       }

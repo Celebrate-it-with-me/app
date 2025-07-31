@@ -8,21 +8,18 @@
     <div class="mx-auto py-10 space-y-10">
       <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-card mx-auto space-y-6">
         <div class="flex items-center gap-6 mb-8">
-          <CAvatarUploader
-            v-model="userAvatar"
-            @file-selected="handleFileSelected"
-          />
+          <CAvatarUploader v-model="userAvatar" @file-selected="handleFileSelected" />
         </div>
 
         <form class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <CInput v-model="user.name" label="Full Name" name="name"  id="name"/>
-            <CInput v-model="user.email" label="Email" name="email" disabled id="email"/>
+            <CInput id="name" v-model="user.name" label="Full Name" name="name" />
+            <CInput id="email" v-model="user.email" label="Email" name="email" disabled />
             <CPhoneInput
-              name="phone"
               id="user-phone"
-              label="Phone Number"
               v-model="user.phone"
+              name="phone"
+              label="Phone Number"
               show-error
             />
           </div>
@@ -34,8 +31,8 @@
             :loading="saving"
             :disabled="!isModified || saving"
             :class="{
-            'opacity-50 cursor-not-allowed': !isModified || saving
-          }"
+              'opacity-50 cursor-not-allowed': !isModified || saving
+            }"
           >
             Save Changes
           </CButton>
@@ -76,12 +73,13 @@ const profileSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       name: zod.string().min(1, 'Name is required.'),
-      avatar: zod.any().refine(
-        (file) =>
-          !file || file instanceof File || (typeof file === 'object' && 'name' in file),
-        'Avatar must be a valid file.'
-      ),
-      phone: zod.string().optional(),
+      avatar: zod
+        .any()
+        .refine(
+          file => !file || file instanceof File || (typeof file === 'object' && 'name' in file),
+          'Avatar must be a valid file.'
+        ),
+      phone: zod.string().optional()
     })
   )
 })
@@ -90,14 +88,14 @@ const user = reactive({
   name: '',
   email: '',
   phone: '',
-  avatar: '',
+  avatar: ''
 })
 
 const originalUser = reactive({
   name: '',
   email: '',
   phone: '',
-  avatar: '',
+  avatar: ''
 })
 
 onMounted(() => {
@@ -107,7 +105,7 @@ onMounted(() => {
   user.avatar = originalUser.avatar = userStore.avatar ?? ''
 })
 
-const handleFileSelected = (file) => {
+const handleFileSelected = file => {
   user.avatar = file
 }
 
@@ -118,7 +116,7 @@ const onSubmitProfile = async () => {
     const response = await userStore.updateProfile({
       name: user.name,
       phone: user.phone,
-      avatar: user.avatar,
+      avatar: user.avatar
     })
 
     if (response.status === 200) {
@@ -137,7 +135,7 @@ const onSubmitProfile = async () => {
   }
 }
 
-const onInvalidSubmitProfile = (errors) => {
+const onInvalidSubmitProfile = errors => {
   console.log('Form submission failed with errors:', errors)
 }
 </script>

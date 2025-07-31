@@ -1,10 +1,7 @@
 <template>
-  <CDetailsPanel
-    title="CountDown Styles"
-    :disabled="disabled"
-  >
+  <CDetailsPanel title="CountDown Styles" :disabled="disabled">
     <div class="grid grid-cols-1 md:grid-cols-1 gap-4 items-end">
-      <CHeading :level="4" size="xl" >Numbers</CHeading>
+      <CHeading :level="4" size="xl">Numbers</CHeading>
       <div class="md:col-span-2">
         <div class="flex items-center gap-2">
           <label
@@ -13,10 +10,7 @@
           >
             Font Size:
           </label>
-          <CFontSize
-            v-model="model.fontSize"
-            label=""
-          />
+          <CFontSize v-model="model.fontSize" label="" />
         </div>
       </div>
 
@@ -28,9 +22,7 @@
           >
             Color:
           </label>
-          <CColor
-            v-model="model.color"
-          />
+          <CColor v-model="model.color" />
         </div>
       </div>
 
@@ -42,9 +34,7 @@
           >
             Font Weight:
           </label>
-          <CFontWeight
-            v-model="model.fontWeight"
-          />
+          <CFontWeight v-model="model.fontWeight" />
         </div>
       </div>
 
@@ -58,9 +48,9 @@
           </label>
           <div class="w-[60%]">
             <CSelect
+              id="fontFamily"
               v-model="model.fontFamily"
               :options="fonts"
-              id="fontFamily"
               name="numbersFontFamily"
             />
           </div>
@@ -101,5 +91,4 @@ const fonts = [
   'Courier New, monospace',
   'Times New Roman, serif'
 ].map(f => ({ label: f, value: f }))
-
 </script>

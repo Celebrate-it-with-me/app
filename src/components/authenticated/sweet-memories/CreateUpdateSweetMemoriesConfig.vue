@@ -4,14 +4,13 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import TextField from '@/components/UI/form/TextField.vue'
 import { Form } from 'vee-validate'
-import "vue-color-kit/dist/vue-color-kit.css";
+import 'vue-color-kit/dist/vue-color-kit.css'
 import ColorPickerField from '@/components/UI/form/ColorPickerField.vue'
 import NumberField from '@/components/UI/form/NumberField.vue'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
 import { useUserStore } from '@/stores/useUserStore'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-
 
 const currentUserStore = useUserStore()
 const sweetMemoriesStore = useSweetMemoriesStore()
@@ -26,7 +25,7 @@ const validationSchema = computed(() => {
       title: zod.string().min(1, { message: 'Title is required' }),
       subTitle: zod.string().optional(),
       backgroundColor: zod.string().optional(),
-      maxPictures: zod.number({ message: 'Maximum pictures is required' }),
+      maxPictures: zod.number({ message: 'Maximum pictures is required' })
     })
   )
 })
@@ -68,13 +67,7 @@ const onSubmit = async () => {
 
     console.log('checking response', response)
     if (response.status >= 200 && response.status < 300) {
-      const {
-        id,
-        title,
-        subTitle,
-        backgroundColor,
-        maxPictures
-      } = response.data.data ?? {}
+      const { id, title, subTitle, backgroundColor, maxPictures } = response.data.data ?? {}
 
       sweetMemoriesStore.config.title = title
       sweetMemoriesStore.config.subTitle = subTitle
@@ -94,7 +87,6 @@ const onSubmit = async () => {
         message: 'Oops something went wrong!'
       })
     }
-
   } catch (e) {
     console.log(e)
   } finally {
@@ -102,10 +94,9 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.log(errors)
 }
-
 </script>
 
 <template>
@@ -153,39 +144,38 @@ const onInvalidSubmit = (errors) => {
 
         <div>
           <ColorPickerField
+            v-model="sweetMemoriesStore.config.backgroundColor"
             label="Background Color"
-            classLabel="text-lg font-medium"
+            class-label="text-lg font-medium"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
             name="backgroundColor"
-            v-model="sweetMemoriesStore.config.backgroundColor"
             :colorpicker-options="{
-                type: 'component',
-                showPalette: true,
-                showSelectionPalette: true,
-                preferredFormat: 'hex',
-                showInitial: true,
-              }"
-            :showError="true"
+              type: 'component',
+              showPalette: true,
+              showSelectionPalette: true,
+              preferredFormat: 'hex',
+              showInitial: true
+            }"
+            :show-error="true"
           />
         </div>
 
         <div class="col-span-2">
           <NumberField
+            v-model="sweetMemoriesStore.config.maxPictures"
             label="Max Pictures"
             name="maxPictures"
-            v-model="sweetMemoriesStore.config.maxPictures"
-            :showError="true"
+            :show-error="true"
             :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
           />
         </div>
-
       </div>
 
       <!-- Form Buttons -->
       <div class="mt-6 flex justify-end items-center gap-4">
         <button
-          :disabled="loading"
           v-if="mode === 'create'"
+          :disabled="loading"
           type="submit"
           class="w-full bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium py-2 px-6 rounded-md"
         >
@@ -193,13 +183,11 @@ const onInvalidSubmit = (errors) => {
             <CWMLoading />
             Saving...
           </span>
-          <span v-else>
-            Save Sweet Memories
-          </span>
+          <span v-else> Save Sweet Memories </span>
         </button>
         <button
-          :disabled="loading"
           v-else
+          :disabled="loading"
           type="submit"
           class="w-full bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium py-2 px-6 rounded-md"
         >
@@ -207,9 +195,7 @@ const onInvalidSubmit = (errors) => {
             <CWMLoading />
             Updating...
           </span>
-          <span v-else>
-            Update Sweet Memories
-          </span>
+          <span v-else> Update Sweet Memories </span>
         </button>
       </div>
     </Form>

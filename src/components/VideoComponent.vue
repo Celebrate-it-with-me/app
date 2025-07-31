@@ -2,7 +2,7 @@
 <template>
   <div class="video-background-page">
     <video ref="myVideo" autoplay muted playsinline class="video-background">
-      <source src="../../public/videos/beauty.mp4" type="video/mp4">
+      <source src="../../public/videos/beauty.mp4" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
     <div class="content">
@@ -11,18 +11,17 @@
   </div>
 </template>
 
-<script >
+<script>
 export default {
-
   mounted() {
     this.$refs.myVideo.onended = () => {
-      this.handleEndVideo();
+      this.handleEndVideo()
     }
   },
 
   methods: {
     handleEndVideo() {
-      this.$emit('videoEnded');
+      this.$emit('videoEnded')
     }
   }
 }

@@ -27,27 +27,29 @@ const setCompanionsQty = () => {
   emit('setCompanionsQty')
 }
 
-watch(noNamedCompanionQty, (value) => {
+watch(noNamedCompanionQty, value => {
   emit('update:modelValue', parseInt(value))
 })
 
-watch(() => props.resetQty, (newValue) => {
-  if(newValue) {
-    noNamedCompanionQty.value = 1
-    setted.value = false
+watch(
+  () => props.resetQty,
+  newValue => {
+    if (newValue) {
+      noNamedCompanionQty.value = 1
+      setted.value = false
 
-    emit('restartReset')
+      emit('restartReset')
+    }
   }
-})
-
+)
 </script>
 
 <template>
   <NumberPlain
     id="noNamedCompanionQty"
+    v-model="noNamedCompanionQty"
     label="Quantity"
     name="noNamedCompanionQty"
-    v-model="noNamedCompanionQty"
     :min="0"
     :step="1"
   />
@@ -55,14 +57,11 @@ watch(() => props.resetQty, (newValue) => {
   <button
     v-if="!setted"
     type="button"
-    class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium
-                   py-2 px-4 rounded-md mt-2"
+    class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium py-2 px-4 rounded-md mt-2"
     @click="setCompanionsQty"
   >
     Set
   </button>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

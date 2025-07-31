@@ -1,7 +1,5 @@
 <template>
-  <div>
-    {{ guestStore.currentGuest.firstName }} is attending without companions
-  </div>
+  <div>{{ guestStore.currentGuest.firstName }} is attending without companions</div>
 </template>
 
 <script setup>

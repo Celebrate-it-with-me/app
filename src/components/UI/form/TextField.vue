@@ -30,22 +30,18 @@ const props = defineProps({
 const types = ref(props.type)
 const name = toRef(props, 'name')
 
-const {
-  value: inputValue,
-  errorMessage,
-  handleBlur,
-  handleChange,
-  setValue,
-  meta
-} = useField(name)
+const { value: inputValue, errorMessage, handleBlur, handleChange, setValue, meta } = useField(name)
 
 setValue(props.modelValue)
 
-watch(() => props.modelValue, (newValue) => {
-  setValue(newValue)
-})
+watch(
+  () => props.modelValue,
+  newValue => {
+    setValue(newValue)
+  }
+)
 
-watch(inputValue, (val) => {
+watch(inputValue, val => {
   emit('update:modelValue', val)
   if (val) {
     emit('resetErrors')
@@ -56,7 +52,7 @@ const showErrorMessage = computed(() => {
   return props.showError && errorMessage.value && meta.touched
 })
 
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   emit('update:blur', e.target.value)
   handleBlur(e)
 }
@@ -75,11 +71,7 @@ const handleFieldBlur = (e) => {
       :class="`${showErrorMessage ? 'has-error' : ''}  ${horizontal ? 'flex' : ''}  ${validate ? 'is-valid' : ''} `"
       class="fromGroup relative"
     >
-
-      <div
-        :class="horizontal ? 'flex-1' : ''"
-        class="relative w-full mt-2"
-      >
+      <div :class="horizontal ? 'flex-1' : ''" class="relative w-full mt-2">
         <input
           :id="name"
           :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
@@ -97,29 +89,26 @@ const handleFieldBlur = (e) => {
       <span
         v-if="showErrorMessage"
         :class="
-        msgTooltip
-          ? ' inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
-          : ' text-danger-500 block text-sm'
-      "
+          msgTooltip
+            ? ' inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+            : ' text-danger-500 block text-sm'
+        "
         class="mt-2"
       >
-      {{ errorMessage }}
+        {{ errorMessage }}
       </span>
       <span
         v-if="validate"
         :class="
-        msgTooltip
-          ? ' inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
-          : ' text-success-500 block text-sm'
-      "
+          msgTooltip
+            ? ' inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
+            : ' text-success-500 block text-sm'
+        "
         class="mt-2"
       >
         {{ validate }}
       </span>
-      <span
-        v-if="description"
-        class="block text-secondary-500 font-light leading-4 text-xs mt-2"
-      >
+      <span v-if="description" class="block text-secondary-500 font-light leading-4 text-xs mt-2">
         {{ description }}
       </span>
     </div>

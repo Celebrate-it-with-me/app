@@ -1,21 +1,21 @@
 <template>
   <CHeading :level="4" weight="normal">Log Out Other Sessions</CHeading>
   <section class="bg-white dark:bg-gray-900 shadow-card rounded-2xl p-6 space-y-6">
-
     <div class="grid md:grid-cols-4 gap-6">
       <!-- Main (3/4) -->
       <div class="md:col-span-3 space-y-6">
         <p class="text-sm text-gray-600 dark:text-gray-300">
-          You may log out from all other browser sessions across your devices. Some recent sessions may take a few minutes to appear.
+          You may log out from all other browser sessions across your devices. Some recent sessions
+          may take a few minutes to appear.
         </p>
 
         <CInput
+          id="currentPasswordLogout"
+          v-model="form.currentPassword"
           type="password"
           label="Current Password"
           name="currentPassword"
-          v-model="form.currentPassword"
           show-error
-          id="currentPasswordLogout"
         />
 
         <div class="flex justify-end pt-4">
@@ -27,7 +27,9 @@
 
       <!-- Help (1/4) -->
       <div class="md:col-span-1">
-        <div class="bg-pink-50 dark:bg-gray-800 p-4 rounded-xl border border-pink-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300">
+        <div
+          class="bg-pink-50 dark:bg-gray-800 p-4 rounded-xl border border-pink-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300"
+        >
           <p class="mb-2 font-medium">About this feature</p>
           <ul class="list-disc list-inside space-y-1">
             <li>Use this if you suspect your account is open on unknown devices.</li>
@@ -63,19 +65,19 @@ const onLogoutOthers = async () => {
     if (response?.status === 200) {
       notifications.addNotification({
         type: 'success',
-        message: 'All other sessions have been logged out.',
+        message: 'All other sessions have been logged out.'
       })
       form.currentPassword = ''
     } else {
       notifications.addNotification({
         type: 'error',
-        message: 'Failed to log out other sessions. Please check your password.',
+        message: 'Failed to log out other sessions. Please check your password.'
       })
     }
   } catch (error) {
     notifications.addNotification({
       type: 'error',
-      message: 'An error occurred. Please try again.',
+      message: 'An error occurred. Please try again.'
     })
   } finally {
     saving.value = false

@@ -49,7 +49,7 @@ export const useMenusStore = defineStore('menusStore', {
 
     async setCurrentMenu(menuId) {
       console.log('checking menu id', menuId)
-      this.currentMenu = this.menus.find((menu) =>  + menu.id === + menuId)
+      this.currentMenu = this.menus.find(menu => +menu.id === +menuId)
     },
 
     async loadRouteMenu(id) {
@@ -86,7 +86,7 @@ export const useMenusStore = defineStore('menusStore', {
       return await MenusService.addMenuItem({
         menuItem,
         menuId,
-        eventId: userStore.activeEvent,
+        eventId: userStore.activeEvent
       })
     },
 
@@ -101,7 +101,7 @@ export const useMenusStore = defineStore('menusStore', {
 
       return await MenusService.removeMenuItem({
         menuItem,
-        eventId: userStore.activeEvent,
+        eventId: userStore.activeEvent
       })
     },
 
@@ -112,39 +112,38 @@ export const useMenusStore = defineStore('menusStore', {
     setMenuGuests(menuGuests) {
       this.guestsMenu = menuGuests.data
     }
-
   },
   getters: {
-    getMenus: (state) => {
+    getMenus: state => {
       return state.menus
     },
-    getMenuById: (state) => (id) => {
-      return state.menus.find((menu) => menu.id === id)
+    getMenuById: state => id => {
+      return state.menus.find(menu => menu.id === id)
     },
-    hasMenu: (state) => {
+    hasMenu: state => {
       return state.menus.length > 0
     },
     needMenu() {
-      const eventStore = useEventsStore();
+      const eventStore = useEventsStore()
 
       const menuFeature = eventStore.activeEvent?.eventFeatures.find(
-        (feature) => feature.name === 'menu'
-      );
+        feature => feature.name === 'menu'
+      )
 
-      const isMenuFeatureActive = menuFeature?.isActive ?? false;
+      const isMenuFeatureActive = menuFeature?.isActive ?? false
 
-      return isMenuFeatureActive && !this.hasMenu;
+      return isMenuFeatureActive && !this.hasMenu
     },
 
     mainMenu() {
-      return this.menus.find((menu) => menu.is_default)
+      return this.menus.find(menu => menu.is_default)
     },
 
     menusForSelect() {
-      return this.menus.map((menu) => {
+      return this.menus.map(menu => {
         return {
           label: menu.title,
-          value: menu.id,
+          value: menu.id
         }
       })
     }

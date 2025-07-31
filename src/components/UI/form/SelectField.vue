@@ -1,9 +1,9 @@
 <script setup>
-import { computed, toRef, watch } from 'vue';
-import { useField } from 'vee-validate';
+import { computed, toRef, watch } from 'vue'
+import { useField } from 'vee-validate'
 
 // Emits and props
-const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur']);
+const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur'])
 const props = defineProps({
   label: { type: String },
   classLabel: { type: String, default: ' ' },
@@ -19,11 +19,11 @@ const props = defineProps({
   msgTooltip: { type: Boolean, default: false },
   description: { type: String },
   showError: { type: Boolean, default: false },
-  items: { type: Array, default: () => [] }, // Dropdown options
-});
+  items: { type: Array, default: () => [] } // Dropdown options
+})
 
 // Define data
-const name = toRef(props, 'name');
+const name = toRef(props, 'name')
 const {
   value: inputValue,
   errorMessage,
@@ -31,35 +31,39 @@ const {
   setValue,
   meta
 } = useField(name, {
-  initialValue: props.modelValue, // Initialize vee-validate with modelValue
-});
+  initialValue: props.modelValue // Initialize vee-validate with modelValue
+})
 
 // Initialization: if props.modelValue is defined, make sure vee-validate syncs immediately
-watch(() => props.modelValue, (newValue) => {
-  console.log('Props modelValue updated:', newValue);
-  if (newValue !== inputValue.value) {
-    setValue(newValue); // Ensure vee-validate uses the correct value
-  }
-}, { immediate: true }); // Run immediately to manage initial value
+watch(
+  () => props.modelValue,
+  newValue => {
+    console.log('Props modelValue updated:', newValue)
+    if (newValue !== inputValue.value) {
+      setValue(newValue) // Ensure vee-validate uses the correct value
+    }
+  },
+  { immediate: true }
+) // Run immediately to manage initial value
 
 // Sync changes from <select> back to parent via v-model
-watch(inputValue, (val) => {
-  console.log('Input value updated:', val);
-  emit('update:modelValue', val); // Emit for v-model binding
+watch(inputValue, val => {
+  console.log('Input value updated:', val)
+  emit('update:modelValue', val) // Emit for v-model binding
   if (val) {
-    emit('resetErrors'); // Optional: Reset errors if a valid value is selected
+    emit('resetErrors') // Optional: Reset errors if a valid value is selected
   }
-});
+})
 
 // Compute error display
 const showErrorMessage = computed(() => {
-  return props.showError && errorMessage.value && meta.touched;
-});
+  return props.showError && errorMessage.value && meta.touched
+})
 
-const handleFieldBlur = (e) => {
-  emit('update:blur', e.target.value);
-  handleBlur(e);
-};
+const handleFieldBlur = e => {
+  emit('update:blur', e.target.value)
+  handleBlur(e)
+}
 </script>
 
 <template>
@@ -73,16 +77,16 @@ const handleFieldBlur = (e) => {
       {{ label }}
     </label>
     <select
-      v-model="inputValue"
       :id="name"
+      v-model="inputValue"
       :disabled="disabled"
       :class="`${classInput} w-full block focus:outline-none h-[38px] mt-1`"
       @blur="handleFieldBlur"
     >
       <option
         v-for="item in items"
-        :value="item.value"
         :key="item.value"
+        :value="item.value"
         :class="props.optionsClass"
       >
         {{ item.text }}
@@ -92,9 +96,11 @@ const handleFieldBlur = (e) => {
     <!-- Display error message -->
     <span
       v-if="showErrorMessage"
-      :class="msgTooltip
-        ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
-        : 'text-danger-500 block text-sm'"
+      :class="
+        msgTooltip
+          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+          : 'text-danger-500 block text-sm'
+      "
       class="mt-2"
     >
       {{ errorMessage }}

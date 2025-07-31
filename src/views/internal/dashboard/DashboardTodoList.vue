@@ -76,9 +76,11 @@ function formatDate(date) {
 }
 
 function clearCompletedTasks() {
-  todoStore.tasks.filter(task => task.completed).forEach(task => {
-    todoStore.removeTask(task.id)
-  })
+  todoStore.tasks
+    .filter(task => task.completed)
+    .forEach(task => {
+      todoStore.removeTask(task.id)
+    })
 }
 
 const priorityOptions = [
@@ -126,24 +128,27 @@ onBeforeUnmount(() => {
     aria-labelledby="todo-list-title"
   >
     <!-- Loading overlay -->
-    <div v-if="isLoading" class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10">
+    <div
+      v-if="isLoading"
+      class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10"
+    >
       <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-green-500"></div>
     </div>
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-5">
       <div
-        class="flex items-center gap-2 text-green-600 font-semibold text-sm bg-green-50 dark:bg-green-950 px-3 py-1.5 rounded-full"
         id="todo-list-title"
+        class="flex items-center gap-2 text-green-600 font-semibold text-sm bg-green-50 dark:bg-green-950 px-3 py-1.5 rounded-full"
       >
         <CheckSquare class="w-4 h-4" aria-hidden="true" />
         <span>Event Tasks</span>
       </div>
       <CButton
-        @click="isAddingTask = !isAddingTask"
         :variant="isAddingTask ? 'secondary' : 'primary'"
         size="sm"
         class="rounded-full flex items-center gap-1 transition-transform hover:scale-105"
+        @click="isAddingTask = !isAddingTask"
       >
         <Plus v-if="!isAddingTask" class="w-4 h-4" aria-hidden="true" />
         <span>{{ isAddingTask ? 'Cancel' : 'Add Task' }}</span>
@@ -154,11 +159,11 @@ onBeforeUnmount(() => {
     <div v-if="isAddingTask" class="mb-4 p-4 bg-gray-50 rounded-md">
       <div class="mb-3">
         <CInput
+          id="taskTitle"
           v-model="newTask.title"
           name="title"
           placeholder="Task title"
           class="w-full"
-          id="taskTitle"
         />
       </div>
 
@@ -184,46 +189,48 @@ onBeforeUnmount(() => {
 
         <div>
           <CSelect
+            id="taskPriority"
             v-model="newTask.priority"
             name="priority"
             :options="priorityOptions"
             class="w-full"
-            id="taskPriority"
           />
         </div>
       </div>
 
       <div class="flex justify-end">
-        <CButton
-          @click="addTask"
-          variant="primary"
-          :disabled="!newTask.title"
-        >
-          Save Task
-        </CButton>
+        <CButton variant="primary" :disabled="!newTask.title" @click="addTask"> Save Task </CButton>
       </div>
     </div>
 
     <!-- Tasks filter -->
     <div class="flex space-x-2 mb-4">
       <button
-        @click="filter = 'all'"
         class="px-3 py-1 text-sm rounded-md transition"
-        :class="filter === 'all' ? 'bg-primary-100 text-primary-800' : 'bg-gray-100 hover:bg-gray-200'"
+        :class="
+          filter === 'all' ? 'bg-primary-100 text-primary-800' : 'bg-gray-100 hover:bg-gray-200'
+        "
+        @click="filter = 'all'"
       >
         All
       </button>
       <button
-        @click="filter = 'active'"
         class="px-3 py-1 text-sm rounded-md transition"
-        :class="filter === 'active' ? 'bg-primary-100 text-primary-800' : 'bg-gray-100 hover:bg-gray-200'"
+        :class="
+          filter === 'active' ? 'bg-primary-100 text-primary-800' : 'bg-gray-100 hover:bg-gray-200'
+        "
+        @click="filter = 'active'"
       >
         Active
       </button>
       <button
-        @click="filter = 'completed'"
         class="px-3 py-1 text-sm rounded-md transition"
-        :class="filter === 'completed' ? 'bg-primary-100 text-primary-800' : 'bg-gray-100 hover:bg-gray-200'"
+        :class="
+          filter === 'completed'
+            ? 'bg-primary-100 text-primary-800'
+            : 'bg-gray-100 hover:bg-gray-200'
+        "
+        @click="filter = 'completed'"
       >
         Completed
       </button>
@@ -241,9 +248,9 @@ onBeforeUnmount(() => {
           <div class="flex items-start">
             <div class="flex-shrink-0 mt-0.5">
               <CCheckbox
-                :modelValue="task.completed"
-                @update:modelValue="toggleTaskCompletion(task.id)"
+                :model-value="task.completed"
                 class="h-4 w-4"
+                @update:model-value="toggleTaskCompletion(task.id)"
               />
             </div>
             <div class="ml-3 flex-grow">
@@ -251,13 +258,19 @@ onBeforeUnmount(() => {
                 <h3 class="font-medium" :class="{ 'line-through text-gray-400': task.completed }">
                   {{ task.title }}
                 </h3>
-                <Trash2 @click="removeTask(task.id)" class="w-4 h-4 text-gray-400 hover:text-red-500 cursor-pointer" />
+                <Trash2
+                  class="w-4 h-4 text-gray-400 hover:text-red-500 cursor-pointer"
+                  @click="removeTask(task.id)"
+                />
               </div>
               <p v-if="task.description" class="text-sm text-gray-500 mt-1">
                 {{ task.description }}
               </p>
               <div class="flex flex-wrap gap-2 mt-1.5">
-                <span v-if="task.dueDate" class="inline-flex items-center text-xs bg-gray-100 px-2 py-0.5 rounded">
+                <span
+                  v-if="task.dueDate"
+                  class="inline-flex items-center text-xs bg-gray-100 px-2 py-0.5 rounded"
+                >
                   {{ formatDate(task.dueDate) }}
                 </span>
                 <span
@@ -285,8 +298,8 @@ onBeforeUnmount(() => {
       <p>{{ activeTasksCount }} tasks remaining</p>
       <button
         v-if="completedTasksCount > 0"
-        @click="clearCompletedTasks"
         class="text-sm text-primary-600 hover:text-primary-800"
+        @click="clearCompletedTasks"
       >
         Clear completed
       </button>

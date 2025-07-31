@@ -32,7 +32,7 @@ const validationSchema = computed(() => {
         email: zod
           .string({ message: 'Email is required' })
           .email({ message: 'Must be a valid email' })
-          .refine((value) => value === userEmail.value, {
+          .refine(value => value === userEmail.value, {
             message: 'Email does not match the user email',
             path: ['email']
           }),
@@ -43,7 +43,7 @@ const validationSchema = computed(() => {
           .string({ message: 'Confirm Password is required' })
           .min(8, { message: 'Confirm Password must have at least 8 characters long' })
       })
-      .refine((data) => data.password === data.confirmPassword, {
+      .refine(data => data.password === data.confirmPassword, {
         message: 'Passwords must match',
         path: ['confirmPassword']
       })
@@ -102,13 +102,10 @@ const onSubmit = async () => {
       form.confirmPassword = ''
 
       await router.push('/password-updated')
-
     } else {
       backendError.value = true
-      backendErrorMessage.value =
-        response.response?.data?.message ?? 'Oops, something went wrong!'
+      backendErrorMessage.value = response.response?.data?.message ?? 'Oops, something went wrong!'
     }
-
   } catch (e) {
     console.log(e)
   } finally {
@@ -116,7 +113,7 @@ const onSubmit = async () => {
   }
 }
 
-const onInvalidSubmit = (errors) => {
+const onInvalidSubmit = errors => {
   console.log(errors)
 }
 </script>
@@ -171,32 +168,32 @@ const onInvalidSubmit = (errors) => {
         @invalid-submit="onInvalidSubmit"
       >
         <CInput
+          id="reset_password_email"
+          v-model="form.email"
           label="Email"
           type="email"
           placeholder="Enter your email"
-          v-model="form.email"
-          id="reset_password_email"
           name="email"
           show-error
         />
 
         <CInput
           id="reset_password_password"
+          v-model="form.password"
           name="password"
           label="New Password"
           type="password"
           placeholder="Enter your new password"
-          v-model="form.password"
           show-error
         />
 
         <CInput
           id="reset_password_confirm_password"
+          v-model="form.confirmPassword"
           name="confirmPassword"
           label="Confirm Password"
           type="password"
           placeholder="Confirm your new password"
-          v-model="form.confirmPassword"
           show-error
         />
 

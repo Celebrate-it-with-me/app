@@ -8,7 +8,7 @@ const props = defineProps({
   modelValue: { type: String, default: '' }, // Bound value
   disabled: { type: Boolean, default: false }, // Is the input disabled?
   placeholder: { type: String, default: '' }, // Placeholder text
-  label: { type: String, default: '' }, // Label for input
+  label: { type: String, default: '' } // Label for input
 })
 
 const localValue = ref(props.modelValue)
@@ -16,13 +16,13 @@ const localValue = ref(props.modelValue)
 // Watch for changes in `modelValue` from parent
 watch(
   () => props.modelValue,
-  (newValue) => {
+  newValue => {
     localValue.value = newValue
   }
 )
 
 // Emit changes to parent when user edits input
-const handleInput = (event) => {
+const handleInput = event => {
   emit('update:modelValue', event.target.value)
 }
 </script>
@@ -30,10 +30,7 @@ const handleInput = (event) => {
 <template>
   <div class="flex flex-col">
     <!-- Label -->
-    <label
-      :for="id"
-      class="mb-1 text-sm font-medium text-gray-900 dark:text-gray-300"
-    >
+    <label :for="id" class="mb-1 text-sm font-medium text-gray-900 dark:text-gray-300">
       {{ label }}
     </label>
 

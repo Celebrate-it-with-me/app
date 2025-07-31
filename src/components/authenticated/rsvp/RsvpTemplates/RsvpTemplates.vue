@@ -18,7 +18,7 @@ const RSVP_TEMPLATES = reactive([
         confirmationLabel: '',
         descriptionPosition: '',
         companionsSection: '',
-        mealSection: true,
+        mealSection: true
       }
     ]
   },
@@ -41,8 +41,8 @@ const RSVP_TEMPLATES = reactive([
   }
 ])
 
-const handleCurrentTemplate = (templateId) => {
-  RSVP_TEMPLATES.forEach((template) => {
+const handleCurrentTemplate = templateId => {
+  RSVP_TEMPLATES.forEach(template => {
     if (template.id === templateId) {
       template.selected = true
     } else {
@@ -50,7 +50,6 @@ const handleCurrentTemplate = (templateId) => {
     }
   })
 }
-
 </script>
 
 <template>
@@ -59,7 +58,6 @@ const handleCurrentTemplate = (templateId) => {
       class="w-full flex flex-col text-lg font-semibold p-5 text-gray-900 bg-white dark:text-white dark:bg-gray-800"
     >
       <CreateRsvp />
-
     </div>
   </div>
 </template>

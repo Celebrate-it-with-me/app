@@ -9,39 +9,33 @@
           :key="index"
           :index="index"
           :preview="preview"
-
           @file-removed="removeImage"
         />
       </div>
     </div>
     <!-- Error Messages -->
-    <div
-      v-if="errorMessage"
-      class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 mb-4"
-    >
+    <div v-if="errorMessage" class="mt-4 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 mb-4">
       {{ errorMessage }}
     </div>
 
     <!-- Drag & Drop Zone -->
     <div
+      :class="[
+        'w-full border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors',
+        isDragging ? 'border-purple-500 bg-purple-50' : 'border-gray-300 hover:border-purple-400'
+      ]"
       @dragover.prevent="handleDragOver"
       @dragleave.prevent="handleDragLeave"
       @drop.prevent="handleDrop"
-      :class="[
-        'w-full border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors',
-        isDragging
-          ? 'border-purple-500 bg-purple-50'
-          : 'border-gray-300 hover:border-purple-400'
-      ]"
       @click="triggerFileInput"
     >
       <input
-        type="file"
         ref="fileInput"
-        @change="handleFileSelect"
+        type="file"
         accept="image/*"
         multiple
         class="hidden"
+        @change="handleFileSelect"
       />
 
       <div class="flex flex-col items-center justify-center">
@@ -64,28 +58,22 @@
         <p class="mb-2 text-lg font-semibold text-gray-700">
           Drop your images here or click to upload
         </p>
-        <p class="text-sm text-gray-500">
-          Supported formats: PNG, JPG, GIF (Max 5MB)
-        </p>
+        <p class="text-sm text-gray-500">Supported formats: PNG, JPG, GIF (Max 5MB)</p>
       </div>
     </div>
 
     <div class="mt-4">
       <button
-        :disabled="!updatedNeeded"
         v-if="showUploadButton"
+        :disabled="!updatedNeeded"
         class="w-full bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium py-2 px-6 rounded-md"
         :class="{
           'opacity-50 cursor-not-allowed': !updatedNeeded
         }"
         @click="handleRequest"
       >
-        <span v-if="mode === 'create'">
-          Save Images
-        </span>
-        <span v-else>
-          Update Images
-        </span>
+        <span v-if="mode === 'create'"> Save Images </span>
+        <span v-else> Update Images </span>
       </button>
     </div>
   </div>
@@ -132,7 +120,7 @@ const updatedNeeded = computed(() => {
     return true
   }
 
-  return previews.value.some((image) => !image.isExisting)
+  return previews.value.some(image => !image.isExisting)
 })
 
 onMounted(() => {
@@ -140,7 +128,6 @@ onMounted(() => {
     previews.value = props.initialFiles
   }
 })
-
 
 // Methods
 const handleDragOver = () => {
@@ -151,7 +138,7 @@ const handleDragLeave = () => {
   isDragging.value = false
 }
 
-const validateFile = (file) => {
+const validateFile = file => {
   // Check file size
   if (file.size > props.maxFileSize) {
     errorMessage.value = `File ${file.name} is too large. Maximum size is ${formatFileSize(props.maxFileSize)}`
@@ -167,13 +154,13 @@ const validateFile = (file) => {
   return true
 }
 
-const removeImage = (index) => {
+const removeImage = index => {
   const removedFile = previews.value[index]
   previews.value.splice(index, 1)
   emit('file-removed', removedFile)
 }
 
-const handleFiles = (files) => {
+const handleFiles = files => {
   errorMessage.value = ''
 
   // Check max files limit
@@ -186,7 +173,7 @@ const handleFiles = (files) => {
     if (validateFile(file)) {
       const reader = new FileReader()
 
-      reader.onload = (e) => {
+      reader.onload = e => {
         previews.value.push({
           url: e.target.result,
           name: file.name,
@@ -204,13 +191,13 @@ const handleFiles = (files) => {
   emit('filesSelected', files)
 }
 
-const handleDrop = (event) => {
+const handleDrop = event => {
   isDragging.value = false
   const files = event.dataTransfer.files
   handleFiles(files)
 }
 
-const handleFileSelect = (event) => {
+const handleFileSelect = event => {
   const files = event.target.files
   handleFiles(files)
 }
@@ -231,14 +218,20 @@ const uploadImages = () => {
 }
 
 const updateImages = () => {
-  emit('updateImages', previews.value.filter((img) => !img.isExisting))
+  emit(
+    'updateImages',
+    previews.value.filter(img => !img.isExisting)
+  )
 }
 
-watch(() => props.initialFiles, (newValue) => {
-  previews.value = newValue
-}, {
-  deep: true,
-  immediate: true
-})
-
+watch(
+  () => props.initialFiles,
+  newValue => {
+    previews.value = newValue
+  },
+  {
+    deep: true,
+    immediate: true
+  }
+)
 </script>

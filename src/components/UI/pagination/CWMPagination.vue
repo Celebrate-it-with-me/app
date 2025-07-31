@@ -1,5 +1,4 @@
 <script setup>
-
 import { computed, ref, watch } from 'vue'
 
 const emit = defineEmits(['update:modelValue', 'update:perPage'])
@@ -28,34 +27,38 @@ const totalPages = computed(() => {
     return 1
   }
 
-  return Math.ceil( props.totalItems / perPage.value )
+  return Math.ceil(props.totalItems / perPage.value)
 })
 
-watch(() => props.modelValue, (newValue) => {
-  currentPage.value = newValue
-})
+watch(
+  () => props.modelValue,
+  newValue => {
+    currentPage.value = newValue
+  }
+)
 
-watch(currentPage, (newValue) => {
+watch(currentPage, newValue => {
   emit('update:modelValue', newValue)
 })
 
-watch(perPage, (newValue) => {
+watch(perPage, newValue => {
   emit('update:perPage', newValue)
   currentPage.value = 1
 })
 
-const changePage = (page) => {
+const changePage = page => {
   if (page < 1 || page > totalPages.value) {
     return // Prevent invalid page navigation
   }
   currentPage.value = page
 }
-
-
 </script>
 
 <template>
-  <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between gap-x-4 pt-4" aria-label="Table navigation">
+  <nav
+    class="flex items-center flex-column flex-wrap md:flex-row justify-between gap-x-4 pt-4"
+    aria-label="Table navigation"
+  >
     <!-- Pagination Controls -->
     <div class="flex items-center">
       <label for="perPage" class="sr-only">Items per page</label>
@@ -70,27 +73,29 @@ const changePage = (page) => {
       </select>
     </div>
     <div class="flex items-center gap-4">
-
-
       <!-- Info about pagination -->
       <div class="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0">
-      <span>
-        Showing
-        <span class="font-semibold text-gray-900 dark:text-white">
-          {{ perPage === 'All' ? 1 : (currentPage - 1) * perPage + 1 }}-{{ perPage === 'All' ? props.totalItems : Math.min(currentPage * perPage, props.totalItems) }}
+        <span>
+          Showing
+          <span class="font-semibold text-gray-900 dark:text-white">
+            {{ perPage === 'All' ? 1 : (currentPage - 1) * perPage + 1 }}-{{
+              perPage === 'All'
+                ? props.totalItems
+                : Math.min(currentPage * perPage, props.totalItems)
+            }}
+          </span>
+          of
+          <span class="font-semibold text-gray-900 dark:text-white">{{ props.totalItems }}</span>
         </span>
-        of
-        <span class="font-semibold text-gray-900 dark:text-white">{{ props.totalItems }}</span>
-      </span>
       </div>
 
       <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
         <!-- Previous Button -->
         <li>
           <button
-            @click="changePage(currentPage - 1)"
             :disabled="currentPage === 1"
             class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            @click="changePage(currentPage - 1)"
           >
             Previous
           </button>
@@ -99,10 +104,12 @@ const changePage = (page) => {
         <!-- Page Numbers -->
         <li v-for="page in totalPages" :key="page">
           <button
+            :class="
+              currentPage === page
+                ? 'flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                : 'flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+            "
             @click="changePage(page)"
-            :class="currentPage === page
-              ? 'flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-              : 'flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
           >
             {{ page }}
           </button>
@@ -111,9 +118,9 @@ const changePage = (page) => {
         <!-- Next Button -->
         <li>
           <button
-            @click="changePage(currentPage + 1)"
             :disabled="currentPage === totalPages"
             class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            @click="changePage(currentPage + 1)"
           >
             Next
           </button>
@@ -121,9 +128,6 @@ const changePage = (page) => {
       </ul>
     </div>
   </nav>
-
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

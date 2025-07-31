@@ -3,15 +3,20 @@ import { reactive, ref } from 'vue'
 
 const comments = reactive([
   { id: 1, author: 'Maria Gonzalez', message: '¡Felicidades! Estoy emocionada por la fiesta.' },
-  { id: 2, author: 'Juan Ramirez', message: 'Será un día muy especial. ¡Nos vemos pronto! lorem, Será un día muy especial. ¡Nos vemos pronto! lorem, Será un día muy especial. ¡Nos vemos pronto! lorem' },
+  {
+    id: 2,
+    author: 'Juan Ramirez',
+    message:
+      'Será un día muy especial. ¡Nos vemos pronto! lorem, Será un día muy especial. ¡Nos vemos pronto! lorem, Será un día muy especial. ¡Nos vemos pronto! lorem'
+  },
   { id: 3, author: 'Peter Ramirez', message: 'Será un día muy especial. ¡Nos vemos pronto!' },
   { id: 4, author: 'Peter Ramirez', message: 'Será un día muy especial. ¡Nos vemos pronto!' },
   { id: 5, author: 'Peter Ramirez', message: 'Será un día muy especial. ¡Nos vemos pronto!' },
-  { id: 6, author: 'Peter Ramirez', message: 'Será un día muy especial. ¡Nos vemos pronto!' },
+  { id: 6, author: 'Peter Ramirez', message: 'Será un día muy especial. ¡Nos vemos pronto!' }
 ])
 const newComment = ref({
   author: '',
-  message: '',
+  message: ''
 })
 
 // Function to add a new comment
@@ -24,7 +29,7 @@ const addComment = () => {
   comments.push({
     id: comments.length + 1,
     author: newComment.value.author,
-    message: newComment.value.message,
+    message: newComment.value.message
   })
 
   // Reset form
@@ -34,21 +39,15 @@ const addComment = () => {
 </script>
 
 <template>
-  <section
-    class="guest-comments w-full h-screen flex flex-col bg-gray-100 p-6 overflow-hidden"
-  >
+  <section class="guest-comments w-full h-screen flex flex-col bg-gray-100 p-6 overflow-hidden">
     <!-- Title -->
     <div class="comment-header text-center pb-4 flex-shrink-0">
       <h2 class="text-6xl font-gvibes font-bold text-gray-800">Deja tu Comentario</h2>
-      <p class="text-lg text-gray-600 mt-2">
-        Comparte tus emociones y deseos aquí 🎉
-      </p>
+      <p class="text-lg text-gray-600 mt-2">Comparte tus emociones y deseos aquí 🎉</p>
     </div>
 
     <!-- Scrollable Content Section -->
-    <div
-      class="flex-grow overflow-y-auto flex flex-col gap-6"
-    >
+    <div class="flex-grow overflow-y-auto flex flex-col gap-6">
       <!-- Leave a Comment Form -->
       <form
         class="comment-form w-full max-w-2xl bg-white shadow p-6 rounded-lg flex flex-col gap-4 mx-auto"
@@ -130,7 +129,9 @@ const addComment = () => {
 }
 
 .comment-item {
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .comment-item:hover {
@@ -144,7 +145,6 @@ const addComment = () => {
   justify-content: center;
   text-decoration: none;
 }
-
 
 /* Custom Scrollbar Styles */
 .flex-grow {
@@ -174,6 +174,4 @@ const addComment = () => {
 .flex-grow::-webkit-scrollbar-thumb:active {
   background: #be185d; /* Even darker pink when active (dragging) */
 }
-
-
 </style>

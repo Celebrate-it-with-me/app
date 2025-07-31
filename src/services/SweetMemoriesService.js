@@ -1,14 +1,7 @@
 import { CWM_API } from './axios'
 
 class SweetMemoriesService {
-  async createSweetMemoriesConfig({
-                               eventId,
-                               title,
-                               subTitle,
-                               backgroundColor,
-                               maxPictures,
-               }) {
-
+  async createSweetMemoriesConfig({ eventId, title, subTitle, backgroundColor, maxPictures }) {
     return await CWM_API.post(`event/${eventId}/sweet-memories-config`, {
       title,
       subTitle,
@@ -21,19 +14,12 @@ class SweetMemoriesService {
     return await CWM_API.get(`event/${eventId}/sweet-memories-config`)
   }
 
-  async updateSweetMemoriesConfig({
-                               eventId,
-                               id,
-                               title,
-                               subTitle,
-                               backgroundColor,
-                               maxPictures
-                             }){
+  async updateSweetMemoriesConfig({ eventId, id, title, subTitle, backgroundColor, maxPictures }) {
     return await CWM_API.put(`event/${eventId}/sweet-memories-config/${id}`, {
       title,
       subTitle,
       backgroundColor,
-      maxPictures,
+      maxPictures
     })
   }
 
@@ -51,7 +37,7 @@ class SweetMemoriesService {
 
   async loadMoreComments(eventId, page) {
     console.log('in load more comments')
-    return await CWM_API.get(`event/${eventId}/comments`,{
+    return await CWM_API.get(`event/${eventId}/comments`, {
       params: {
         page: page
       }
@@ -68,11 +54,7 @@ class SweetMemoriesService {
     })
   }
 
-  async updateSweetMemoriesImages({
-                                    eventId,
-                                    files
-                                  }){
-
+  async updateSweetMemoriesImages({ eventId, files }) {
     console.log('in update sweetMemoriesImages in service', files)
 
     const genericFormData = this.prepareFormData(files)
@@ -109,6 +91,30 @@ class SweetMemoriesService {
     return await CWM_API.patch(`sweet-memories-images/${imageId}`, {
       name
     })
+  }
+
+  //---- Sweet Memories V2 ---- //
+
+  async createSweetMemory({ eventId, title, description, year, visible, image }) {
+    const formData = new FormData()
+
+    image.forEach(img => {
+      formData.append('images[]', img)
+    })
+    formData.append('title', title)
+    formData.append('description', description)
+    formData.append('year', year)
+    formData.append('visible', visible)
+
+    return await CWM_API.post(`event/${eventId}/sweet-memories-v2`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  async loadSweetMemoriesV2({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/sweet-memories-v2`)
   }
 }
 

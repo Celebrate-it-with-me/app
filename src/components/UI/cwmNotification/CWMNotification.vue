@@ -9,11 +9,11 @@ const notificationStore = useNotificationStore()
 
 const notifications = computed(() => notificationStore.notifications)
 
-const removeNotification = (id) => {
+const removeNotification = id => {
   notificationStore.removeNotification(id)
 }
 
-const getClassesByType = (type) => {
+const getClassesByType = type => {
   switch (type) {
     case 'success':
       return `text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-200`
@@ -26,9 +26,7 @@ const getClassesByType = (type) => {
 </script>
 
 <template>
-  <div
-    class="fixed bottom-4 right-4 z-100"
-  >
+  <div class="fixed bottom-4 right-4 z-100">
     <div
       v-for="notification in notifications"
       :key="notification.id"

@@ -9,8 +9,20 @@ import CButton from '@/components/UI/buttons/CButton.vue'
 import CCard from '@/components/UI/cards/CCard.vue'
 
 import {
-  Calendar, Music, Waves, ImageIcon, MessageSquareText, MapIcon,
-  Users, Share2, Clock, CalendarDays, Link, ExternalLink, Edit3, UserCircle
+  Calendar,
+  Music,
+  Waves,
+  ImageIcon,
+  MessageSquareText,
+  MapIcon,
+  Users,
+  Share2,
+  Clock,
+  CalendarDays,
+  Link,
+  ExternalLink,
+  Edit3,
+  UserCircle
 } from 'lucide-vue-next'
 import CAddCollaboratorModal from '@/components/UI/modals/CAddCollaboratorModal.vue'
 
@@ -39,7 +51,6 @@ const getUserRole = computed(() => {
 
 const event = ref(null)
 const showCollaboratorModal = ref(false)
-
 
 const fetchEvent = async () => {
   const id = route.params.id
@@ -74,7 +85,7 @@ const openCollaboratorModal = () => {
   showCollaboratorModal.value = true
 }
 
-const removeCollaborator = (collaboratorId) => {
+const removeCollaborator = collaboratorId => {
   event.value.collaborators = event.value.collaborators.filter(c => c.id !== collaboratorId)
   notificationStore.addNotification({
     type: 'success',
@@ -120,24 +131,30 @@ const enabledFeatures = computed(() =>
         <div>
           <div class="flex items-center gap-2">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ event.eventName }}</h2>
-            <span
-              class="inline-block text-xs font-semibold px-2 py-1 rounded"
-              :class="statusClass"
-            >
+            <span class="inline-block text-xs font-semibold px-2 py-1 rounded" :class="statusClass">
               {{ event.status }}
             </span>
             <!-- User Role Badge -->
-            <div class="flex items-center bg-white dark:bg-gray-800 px-2 py-1 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 ml-2">
-              <UserCircle class="w-3.5 h-3.5 mr-1" :class="{
-                'text-purple-500': getUserRole === 'owner',
-                'text-blue-500': getUserRole === 'editor',
-                'text-gray-500': getUserRole === 'viewer'
-              }" />
-              <span class="text-xs font-medium capitalize" :class="{
-                'text-purple-500': getUserRole === 'owner',
-                'text-blue-500': getUserRole === 'editor',
-                'text-gray-500': getUserRole === 'viewer'
-              }">{{ getUserRole }}</span>
+            <div
+              class="flex items-center bg-white dark:bg-gray-800 px-2 py-1 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 ml-2"
+            >
+              <UserCircle
+                class="w-3.5 h-3.5 mr-1"
+                :class="{
+                  'text-purple-500': getUserRole === 'owner',
+                  'text-blue-500': getUserRole === 'editor',
+                  'text-gray-500': getUserRole === 'viewer'
+                }"
+              />
+              <span
+                class="text-xs font-medium capitalize"
+                :class="{
+                  'text-purple-500': getUserRole === 'owner',
+                  'text-blue-500': getUserRole === 'editor',
+                  'text-gray-500': getUserRole === 'viewer'
+                }"
+                >{{ getUserRole }}</span
+              >
             </div>
           </div>
           <div class="flex items-center gap-2 mt-2 text-sm text-gray-600 dark:text-gray-400">
@@ -147,11 +164,11 @@ const enabledFeatures = computed(() =>
         </div>
 
         <div class="flex gap-2 mt-4 md:mt-0">
-          <CButton variant="outline" @click="goToEdit" class="flex items-center gap-1">
+          <CButton variant="outline" class="flex items-center gap-1" @click="goToEdit">
             <Edit3 class="w-4 h-4" />
             <span>Edit</span>
           </CButton>
-          <CButton variant="gradient" @click="openPublicPage" class="flex items-center gap-1">
+          <CButton variant="gradient" class="flex items-center gap-1" @click="openPublicPage">
             <ExternalLink class="w-4 h-4" />
             <span>View Public</span>
           </CButton>
@@ -160,7 +177,9 @@ const enabledFeatures = computed(() =>
 
       <!-- Quick Stats -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <div
+          class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700"
+        >
           <div class="flex items-center gap-2 text-primary">
             <Users class="w-5 h-5" />
             <span class="font-medium">Guests</span>
@@ -168,7 +187,9 @@ const enabledFeatures = computed(() =>
           <p class="text-2xl font-bold mt-2">{{ event.guestCount || 0 }}</p>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <div
+          class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700"
+        >
           <div class="flex items-center gap-2 text-primary">
             <Share2 class="w-5 h-5" />
             <span class="font-medium">Shares</span>
@@ -176,13 +197,20 @@ const enabledFeatures = computed(() =>
           <p class="text-2xl font-bold mt-2">{{ event.shareCount || 0 }}</p>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+        <div
+          class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700"
+        >
           <div class="flex items-center gap-2 text-primary">
             <Clock class="w-5 h-5" />
             <span class="font-medium">Days Left</span>
           </div>
           <p class="text-2xl font-bold mt-2">
-            {{ Math.max(0, Math.ceil((new Date(event.startDate) - new Date()) / (1000 * 60 * 60 * 24))) }}
+            {{
+              Math.max(
+                0,
+                Math.ceil((new Date(event.startDate) - new Date()) / (1000 * 60 * 60 * 24))
+              )
+            }}
           </p>
         </div>
       </div>
@@ -198,12 +226,21 @@ const enabledFeatures = computed(() =>
       </p>
 
       <!-- Public URL -->
-      <div class="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-between">
+      <div
+        class="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center justify-between"
+      >
         <div class="flex items-center gap-2 text-sm">
           <Link class="w-4 h-4 text-primary" />
-          <span class="text-gray-700 dark:text-gray-300 truncate max-w-xs">{{ event.public_url || 'No public URL available' }}</span>
+          <span class="text-gray-700 dark:text-gray-300 truncate max-w-xs">{{
+            event.public_url || 'No public URL available'
+          }}</span>
         </div>
-        <CButton variant="outline" size="sm" @click="openPublicPage" class="flex items-center gap-1">
+        <CButton
+          variant="outline"
+          size="sm"
+          class="flex items-center gap-1"
+          @click="openPublicPage"
+        >
           <ExternalLink class="w-3 h-3" />
           <span>Open</span>
         </CButton>
@@ -232,7 +269,12 @@ const enabledFeatures = computed(() =>
       <template #title>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Collaborators</h3>
-          <CButton variant="outline" size="sm" @click="openCollaboratorModal" class="flex items-center gap-1">
+          <CButton
+            variant="outline"
+            size="sm"
+            class="flex items-center gap-1"
+            @click="openCollaboratorModal"
+          >
             <Users class="w-4 h-4" />
             <span>Add Collaborator</span>
           </CButton>
@@ -246,7 +288,9 @@ const enabledFeatures = computed(() =>
           class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hover:border-primary/30 transition-all duration-200"
         >
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold"
+            >
               {{ collaborator.name.charAt(0).toUpperCase() }}
             </div>
             <div>
@@ -257,18 +301,29 @@ const enabledFeatures = computed(() =>
           <div class="flex items-center gap-2">
             <span
               class="text-xs px-2 py-1 rounded-full font-medium"
-              :class="collaborator.role === 'editor'
-                ? 'bg-primary/10 text-primary'
-                : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'"
+              :class="
+                collaborator.role === 'editor'
+                  ? 'bg-primary/10 text-primary'
+                  : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
+              "
             >
               {{ collaborator.role }}
             </span>
             <button
-              @click="removeCollaborator(collaborator.id)"
               class="text-gray-400 hover:text-red-500 transition-colors duration-200"
+              @click="removeCollaborator(collaborator.id)"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clip-rule="evenodd"
+                />
               </svg>
             </button>
           </div>
@@ -277,7 +332,9 @@ const enabledFeatures = computed(() =>
       <div v-else class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 text-center">
         <Users class="w-12 h-12 mx-auto text-gray-400 mb-2" />
         <p class="text-gray-500 dark:text-gray-400">No collaborators yet</p>
-        <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">Add collaborators to work together on this event</p>
+        <p class="text-sm text-gray-400 dark:text-gray-500 mt-1">
+          Add collaborators to work together on this event
+        </p>
       </div>
     </CCard>
   </section>

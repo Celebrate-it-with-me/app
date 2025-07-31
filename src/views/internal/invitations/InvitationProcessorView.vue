@@ -23,11 +23,11 @@ onMounted(async () => {
   const invites = JSON.parse(localStorage.getItem('pending_invitations'))
 
   const invite = invites.find(
-    (i) => i.event.id === eventId && i.email === currentEmail && i.status === 'pending'
+    i => i.event.id === eventId && i.email === currentEmail && i.status === 'pending'
   )
 
   if (!invite) {
-    error.value = "No valid invitation found for your account."
+    error.value = 'No valid invitation found for your account.'
     loading.value = false
     return
   }
@@ -51,7 +51,7 @@ onMounted(async () => {
       router.push(`/dashboard/events/${eventId}/details`)
     }, 2000)
   } catch (e) {
-    error.value = "There was an error accepting the invitation. Please try again later."
+    error.value = 'There was an error accepting the invitation. Please try again later.'
   } finally {
     loading.value = false
   }

@@ -1,6 +1,13 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { MessageSquare, UserRound, PlusCircle, AlertCircle, Loader2, ArrowUpRight } from 'lucide-vue-next'
+import {
+  MessageSquare,
+  UserRound,
+  PlusCircle,
+  AlertCircle,
+  Loader2,
+  ArrowUpRight
+} from 'lucide-vue-next'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import { useCommentsStore } from '@/stores/useCommentsStore'
@@ -70,7 +77,7 @@ const addComment = async () => {
 /**
  * Format date for display
  */
-const formatDate = (dateString) => {
+const formatDate = dateString => {
   if (!dateString) return ''
 
   const date = new Date(dateString)
@@ -117,9 +124,13 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+  <section
+    class="bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 border border-gray-100 dark:border-gray-800"
+  >
     <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-2 text-purple-600 font-semibold text-sm bg-purple-50 dark:bg-purple-950 px-3 py-1 rounded-full">
+      <div
+        class="flex items-center gap-2 text-purple-600 font-semibold text-sm bg-purple-50 dark:bg-purple-950 px-3 py-1 rounded-full"
+      >
         <MessageSquare class="w-4 h-4" />
         Latest Comments
       </div>
@@ -143,18 +154,17 @@ onBeforeUnmount(() => {
         class="w-full mb-3"
       />
       <div class="flex justify-end">
-        <CButton
-          @click="addComment"
-          variant="primary"
-          :disabled="!newComment.trim()"
-        >
+        <CButton variant="primary" :disabled="!newComment.trim()" @click="addComment">
           Post Comment
         </CButton>
       </div>
     </div>
 
     <!-- Loading state -->
-    <div v-if="isLoading && comments.length === 0" class="py-8 flex flex-col items-center justify-center">
+    <div
+      v-if="isLoading && comments.length === 0"
+      class="py-8 flex flex-col items-center justify-center"
+    >
       <Loader2 class="w-8 h-8 text-purple-500 animate-spin mb-2" />
       <p class="text-gray-500 text-sm">Loading comments...</p>
     </div>
@@ -164,8 +174,8 @@ onBeforeUnmount(() => {
       <AlertCircle class="w-8 h-8 text-red-500 mb-2" />
       <p class="text-red-500 text-sm font-medium">{{ errorMessage }}</p>
       <button
-        @click="loadComments"
         class="mt-3 text-purple-600 hover:text-purple-800 text-sm font-medium"
+        @click="loadComments"
       >
         Try again
       </button>
@@ -176,8 +186,8 @@ onBeforeUnmount(() => {
       <MessageSquare class="w-8 h-8 text-gray-400 mb-2" />
       <p class="text-gray-500 text-sm">No comments yet</p>
       <button
-        @click="isAddingComment = true"
         class="mt-3 text-purple-600 hover:text-purple-800 text-sm font-medium"
+        @click="isAddingComment = true"
       >
         Add the first comment
       </button>
@@ -193,9 +203,16 @@ onBeforeUnmount(() => {
         <div class="flex items-start gap-3">
           <div class="flex-shrink-0">
             <div v-if="comment.user.avatar" class="w-8 h-8 rounded-full overflow-hidden">
-              <img :src="comment.user.avatar" alt="User avatar" class="w-full h-full object-cover" />
+              <img
+                :src="comment.user.avatar"
+                alt="User avatar"
+                class="w-full h-full object-cover"
+              />
             </div>
-            <div v-else class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+            <div
+              v-else
+              class="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center"
+            >
               <UserRound class="w-4 h-4 text-purple-600 dark:text-purple-300" />
             </div>
           </div>
@@ -218,7 +235,10 @@ onBeforeUnmount(() => {
 
     <!-- View all comments link -->
     <div class="mt-4 text-right">
-      <a @click="goToCommentsPage" class="text-purple-600 hover:text-purple-800 text-sm font-medium inline-flex items-center cursor-pointer">
+      <a
+        class="text-purple-600 hover:text-purple-800 text-sm font-medium inline-flex items-center cursor-pointer"
+        @click="goToCommentsPage"
+      >
         View All Comments
         <ArrowUpRight class="w-3 h-3 ml-1" />
       </a>

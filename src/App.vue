@@ -8,5 +8,3 @@ import 'animate.css'
   <RouterView />
   <CWMNotification />
 </template>
-
-

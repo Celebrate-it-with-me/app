@@ -7,7 +7,7 @@
       variantClasses,
       sizeClasses,
       disabled ? 'opacity-50 cursor-not-allowed' : '',
-      full ? 'w-full' : '',
+      full ? 'w-full' : ''
     ]"
     v-bind="$attrs"
   >

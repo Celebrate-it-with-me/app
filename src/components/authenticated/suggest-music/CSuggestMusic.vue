@@ -1,13 +1,11 @@
 <script setup>
 import CWMSuggestedMusic from '@/components/authenticated/suggest-music/SuggestedMusic/CWMSuggestedMusic.vue'
-import CWMSuggestedMusicCreator
-  from '@/components/authenticated/suggest-music/SuggestedMusic/CWMSuggestedMusicCreator.vue'
+import CWMSuggestedMusicCreator from '@/components/authenticated/suggest-music/SuggestedMusic/CWMSuggestedMusicCreator.vue'
 import { ref } from 'vue'
-
 
 const suggestedMusic = ref(false)
 
-const handleUpdatedMusic = (newValue) => {
+const handleUpdatedMusic = newValue => {
   suggestedMusic.value = newValue
 }
 </script>
@@ -17,12 +15,8 @@ const handleUpdatedMusic = (newValue) => {
     <div
       class="my-events-container mt-2 border-2 border-gray-200/10 p-10 rounded-md min-h-[300px] h-full"
     >
-      <div
-        class="flex flex-row gap-x-4 "
-      >
-        <CWMSuggestedMusicCreator
-          @update:updated-state="handleUpdatedMusic"
-        />
+      <div class="flex flex-row gap-x-4">
+        <CWMSuggestedMusicCreator @update:updated-state="handleUpdatedMusic" />
 
         <CWMSuggestedMusic
           :mode="'normal'"
@@ -38,6 +32,4 @@ const handleUpdatedMusic = (newValue) => {
   </section>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

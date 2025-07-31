@@ -172,7 +172,7 @@ export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
     }
   }
 
-  const acceptInvitation = async (invite) => {
+  const acceptInvitation = async invite => {
     isLoading.value = true
     try {
       const { data, status } = await CollaboratorsService.acceptInvitation({

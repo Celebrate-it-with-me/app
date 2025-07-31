@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import UserService from '../services/UserService'
-import { format } from "date-fns";
+import { format } from 'date-fns'
 import { useEventsStore } from './useEventsStore'
 import { smartResetAllStores } from '@/utils/reset'
 
@@ -92,13 +92,14 @@ export const useUserStore = defineStore('userStore', {
      * @returns {Promise} API response
      */
     async updatePreferences({
-                              language,
-                              timezone,
-                              dateFormat,
-                              visualTheme,
-                              notifyByEmail,
-                              notifyBySms,
-                              smartTips }) {
+      language,
+      timezone,
+      dateFormat,
+      visualTheme,
+      notifyByEmail,
+      notifyBySms,
+      smartTips
+    }) {
       return await UserService.updatePreferences({
         language,
         timezone,
@@ -137,9 +138,7 @@ export const useUserStore = defineStore('userStore', {
      * @returns {Promise} API response
      */
     async login({ email, password, remember, device, hcaptcha_token }) {
-      return await UserService.login(
-        { email, password, remember, device, hcaptcha_token }
-      )
+      return await UserService.login({ email, password, remember, device, hcaptcha_token })
     },
 
     /**
@@ -223,7 +222,11 @@ export const useUserStore = defineStore('userStore', {
      * @returns {Promise} API response
      */
     async changeUserPassword({ currentPassword, newPassword, newPasswordConfirmation }) {
-      return await UserService.changeUserPassword({ currentPassword, newPassword, newPasswordConfirmation })
+      return await UserService.changeUserPassword({
+        currentPassword,
+        newPassword,
+        newPasswordConfirmation
+      })
     },
 
     /**

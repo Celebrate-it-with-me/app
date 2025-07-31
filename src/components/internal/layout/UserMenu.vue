@@ -1,10 +1,10 @@
 <template>
   <div class="relative">
     <div
-      v-if='userAvatarUrl'
-      @click="toggleMenu()"
+      v-if="userAvatarUrl"
       ref="buttonRef"
       class="flex items-center gap-x-2"
+      @click="toggleMenu()"
     >
       <img
         :src="userAvatarUrl"
@@ -12,9 +12,7 @@
         alt="User Avatar"
       />
 
-      <div
-        class="hidden md:flex cursor-pointer"
-      >
+      <div class="hidden md:flex cursor-pointer">
         {{ userName }}
 
         <ChevronDown v-if="!open" />
@@ -25,8 +23,8 @@
     <button
       v-else
       ref="buttonRef"
-      @click="toggleMenu()"
       class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-semibold uppercase hover:opacity-90 focus:outline-none"
+      @click="toggleMenu()"
     >
       {{ initials }}
     </button>
@@ -43,10 +41,7 @@
         </div>
       </div>
 
-      <ul
-        class="text-sm text-gray-700 dark:text-gray-200 "
-        @click="closeMenu"
-      >
+      <ul class="text-sm text-gray-700 dark:text-gray-200" @click="closeMenu">
         <li>
           <RouterLink
             to="/settings/profile"
@@ -81,18 +76,17 @@
         </li>
       </ul>
 
-      <div class="flex items-center gap-3 px-4 py-3 border-t border-gray-100 dark:border-gray-700
-                  cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+      <div
+        class="flex items-center gap-3 px-4 py-3 border-t border-gray-100 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
       >
-          <p
-            @click="logout"
-            class="flex items-center gap-x-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            <LogOut class="w-4 h-4" />
-            Sign Out
-          </p>
+        <p
+          class="flex items-center gap-x-2 text-sm font-medium text-gray-900 dark:text-white"
+          @click="logout"
+        >
+          <LogOut class="w-4 h-4" />
+          Sign Out
+        </p>
       </div>
-
     </div>
   </div>
 </template>
@@ -118,11 +112,8 @@ const menuRef = ref(null)
 const buttonRef = ref(null)
 
 const userAvatarUrl = computed(() => {
-  return userStore.avatar
-    ? userStore.avatar
-    : null
+  return userStore.avatar ? userStore.avatar : null
 })
-
 
 const userName = computed(() => {
   return userStore.name ?? ''
@@ -141,17 +132,12 @@ const initials = computed(() => {
     .toUpperCase()
 })
 
-const handleClickOutside = (event) => {
+const handleClickOutside = event => {
   setTimeout(() => {
     const menu = menuRef.value
     const button = buttonRef.value
 
-    if (
-      menu &&
-      !menu.contains(event.target) &&
-      button &&
-      !button.contains(event.target)
-    ) {
+    if (menu && !menu.contains(event.target) && button && !button.contains(event.target)) {
       open.value = false
     }
   }, 0)

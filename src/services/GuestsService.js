@@ -17,13 +17,13 @@ class GuestsService {
 
   async updateCompanionType(guestId, companionType) {
     return CWM_API.patch(`guest/${guestId}`, {
-      companionType,
+      companionType
     })
   }
 
-  async updateCompanionQty(guestId, companionQty){
+  async updateCompanionQty(guestId, companionQty) {
     return CWM_API.patch(`guest/${guestId}`, {
-      companionQty,
+      companionQty
     })
   }
 
@@ -32,16 +32,16 @@ class GuestsService {
       firstName,
       lastName,
       email,
-      phoneNumber,
+      phoneNumber
     })
   }
 
-  async updateCompanion({ companionId, firstName, lastName, phoneNumber,email }) {
+  async updateCompanion({ companionId, firstName, lastName, phoneNumber, email }) {
     return CWM_API.put(`companion/${companionId}`, {
       firstName,
       lastName,
       email,
-      phoneNumber,
+      phoneNumber
     })
   }
 
@@ -56,7 +56,6 @@ class GuestsService {
   async getGuestData(guestId, eventId) {
     return CWM_API.get(`event/${eventId}/guests/${guestId}`, {})
   }
-
 }
 
 export default new GuestsService()

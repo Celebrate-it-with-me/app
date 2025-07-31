@@ -11,20 +11,10 @@ defineProps({
     type: String,
     required: false,
     default: 'lg',
-    validator: (val) => {
-      return [
-        'xs',
-        'sm',
-        'md',
-        'lg',
-        'xl',
-        '2xl',
-        '3xl',
-        '4xl',
-        '5xl',
-        '6xl',
-        '7xl'
-      ].indexOf(val) !== -1
+    validator: val => {
+      return (
+        ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl', '7xl'].indexOf(val) !== -1
+      )
     }
   }
 })
@@ -35,12 +25,7 @@ const closeModal = () => {
 </script>
 
 <template>
-  <fwb-modal
-    v-if="showModal"
-    :size="size"
-    @close="closeModal"
-    class="light"
-  >
+  <fwb-modal v-if="showModal" :size="size" class="light" @close="closeModal">
     <template #header>
       <slot name="header">
         <div class="flex items-center text-lg text-gray-500 dark:text-gray-400">
@@ -52,17 +37,15 @@ const closeModal = () => {
     <template #body>
       <slot name="body">
         <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-          With less than a month to go before the European Union enacts new consumer privacy laws for its citizens,
-          companies around the world are updating their terms of service agreements to comply.
+          With less than a month to go before the European Union enacts new consumer privacy laws
+          for its citizens, companies around the world are updating their terms of service
+          agreements to comply.
         </p>
       </slot>
-
     </template>
     <template #footer>
       <slot name="footer">
-        <div class="flex justify-between">
-
-        </div>
+        <div class="flex justify-between"></div>
       </slot>
     </template>
   </fwb-modal>

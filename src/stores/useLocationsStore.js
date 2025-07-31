@@ -2,12 +2,11 @@ import { defineStore } from 'pinia'
 import { useUserStore } from '@/stores/useUserStore'
 import LocationsService from '@/services/LocationsService'
 
-
 export const useLocationsStore = defineStore('locationsStore', {
   state: () => ({
     locations: [],
     searchValue: '',
-    currentLocation: null,
+    currentLocation: null
   }),
   actions: {
     async loadLocationsList() {
@@ -19,7 +18,6 @@ export const useLocationsStore = defineStore('locationsStore', {
         } else {
           console.error('Error loading locations:', response)
         }
-
       } catch (error) {
         console.error('Error loading locations:', error)
       }
@@ -28,9 +26,13 @@ export const useLocationsStore = defineStore('locationsStore', {
     setLocations(locations) {
       this.locations = locations
     },
-    async uploadLocationImages(locationId, formData){
+    async uploadLocationImages(locationId, formData) {
       const userStore = useUserStore()
-      return await LocationsService.uploadLocationImages(locationId, formData, userStore.activeEvent)
+      return await LocationsService.uploadLocationImages(
+        locationId,
+        formData,
+        userStore.activeEvent
+      )
     },
 
     async getPlaceImages(placeId) {
@@ -46,7 +48,7 @@ export const useLocationsStore = defineStore('locationsStore', {
       const userStore = useUserStore()
       return await LocationsService.loadLocations({
         eventId: userStore.activeEvent,
-        searchValue: this.searchValue,
+        searchValue: this.searchValue
       })
     },
 
@@ -82,7 +84,6 @@ export const useLocationsStore = defineStore('locationsStore', {
         formData
       })
     }
-
   },
   getters: {
     hasLocations() {

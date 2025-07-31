@@ -45,7 +45,7 @@ const {
 
 watch(() => props.modelValue, setValue)
 
-watch(inputValue, (val) => {
+watch(inputValue, val => {
   emit('update:modelValue', val)
   if (val) {
     emit('resetErrors')
@@ -56,7 +56,7 @@ const showErrorMessage = computed(() => {
   return props.showError && errorMessage.value && meta.touched
 })
 
-const handleFieldBlur = (e) => {
+const handleFieldBlur = e => {
   emit('update:blur', e.target.value)
   handleBlur(e)
 }
@@ -74,10 +74,7 @@ const handleFieldBlur = (e) => {
     >
       {{ label }}
     </label>
-    <div
-      :class="horizontal ? 'flex-1' : ''"
-      class="relative w-full mt-1"
-    >
+    <div :class="horizontal ? 'flex-1' : ''" class="relative w-full mt-1">
       <input
         :id="name"
         :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
@@ -114,10 +111,7 @@ const handleFieldBlur = (e) => {
     >
       {{ validate }}
     </span>
-    <span
-      v-if="description"
-      class="block text-secondary-500 font-light leading-4 text-xs mt-2"
-    >
+    <span v-if="description" class="block text-secondary-500 font-light leading-4 text-xs mt-2">
       {{ description }}
     </span>
   </div>

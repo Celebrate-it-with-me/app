@@ -6,7 +6,6 @@ import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import RsvpTemplates from '@/components/authenticated/rsvp/RsvpTemplates/RsvpTemplates.vue'
 
-
 const loading = ref(true)
 const eventStore = useEventsStore()
 const rsvpStore = useRsvpStore()
@@ -36,17 +35,13 @@ const loadRsvp = async () => {
         rsvpStore.customFields = rsvpData.customFields
         rsvpStore.confirmationDeadline = rsvpData.confirmationDeadline
       }
-
     }
-
   } catch (error) {
     console.log(error)
   } finally {
     loading.value = false
   }
 }
-
-
 </script>
 
 <template>
@@ -56,16 +51,12 @@ const loadRsvp = async () => {
     >
       <CWMLoading
         v-if="loading"
-        :loaderClasses="'w-full flex flex-row justify-center items-center'"
+        :loader-classes="'w-full flex flex-row justify-center items-center'"
         :loader-fill="'fill-gray-800'"
       />
-      <RsvpTemplates
-        v-else
-      />
+      <RsvpTemplates v-else />
     </div>
   </section>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
