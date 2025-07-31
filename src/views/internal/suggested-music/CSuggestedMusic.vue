@@ -163,7 +163,7 @@ const isSuggestedByGuest = song => {
 }
 
 // Play or pause a song preview
-const togglePlayPreview = (song) => {
+const togglePlayPreview = song => {
   // If we're already playing this song, stop it
   if (currentlyPlayingSong.value === song.platformId) {
     stopPreview()
@@ -178,7 +178,7 @@ const togglePlayPreview = (song) => {
 }
 
 // Play a song preview
-const playPreview = (song) => {
+const playPreview = song => {
   // Only play if we have a preview URL
   if (!song.previewUrl) return
 
@@ -218,7 +218,7 @@ const stopPreview = () => {
 }
 
 // Check if a song is currently playing
-const isPlaying = (song) => {
+const isPlaying = song => {
   return currentlyPlayingSong.value === song.platformId
 }
 </script>
@@ -376,9 +376,9 @@ const isPlaying = (song) => {
                     <!-- Play/Pause Button -->
                     <button
                       v-if="showPreviews && song.previewUrl"
-                      @click.stop="togglePlayPreview(song)"
                       class="absolute inset-0 flex items-center justify-center bg-red-600 bg-opacity-90 rounded-md hover:bg-opacity-100 transition-all border-4 border-white shadow-lg animate-pulse"
                       :title="isPlaying(song) ? 'Pause preview' : 'Play preview'"
+                      @click.stop="togglePlayPreview(song)"
                     >
                       <PlayCircle v-if="!isPlaying(song)" class="w-12 h-12 text-white" />
                       <PauseCircle v-else class="w-12 h-12 text-white" />

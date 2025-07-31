@@ -46,12 +46,12 @@ const mockData = ref({
 })
 
 // Format currency
-const formatCurrency = (value) => {
+const formatCurrency = value => {
   return '$' + value.toLocaleString()
 }
 
 // Format date
-const formatDate = (dateString) => {
+const formatDate = dateString => {
   const date = new Date(dateString)
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',
@@ -62,7 +62,7 @@ const formatDate = (dateString) => {
 }
 
 // Get icon and label for recent actions
-const getActionDetails = (action) => {
+const getActionDetails = action => {
   switch (action.type) {
     case 'rsvp_confirmed':
       return {
@@ -150,17 +150,19 @@ const menuPreferencesOptions = {
   legend: {
     position: 'bottom'
   },
-  responsive: [{
-    breakpoint: 480,
-    options: {
-      chart: {
-        height: 300
-      },
-      legend: {
-        position: 'bottom'
+  responsive: [
+    {
+      breakpoint: 480,
+      options: {
+        chart: {
+          height: 300
+        },
+        legend: {
+          position: 'bottom'
+        }
       }
     }
-  }]
+  ]
 }
 
 // Chart series for Menu Preferences
@@ -195,10 +197,12 @@ const guestEngagementOptions = {
 }
 
 // Chart series for Guest Engagement
-const guestEngagementSeries = [{
-  name: 'Engagement Count',
-  data: [90, 45, 75, 30, 20]
-}]
+const guestEngagementSeries = [
+  {
+    name: 'Engagement Count',
+    data: [90, 45, 75, 30, 20]
+  }
+]
 </script>
 
 <template>
@@ -265,8 +269,16 @@ const guestEngagementSeries = [{
         <div class="flex items-start justify-between">
           <div>
             <p class="text-gray-500 dark:text-gray-400 text-sm mb-1">Budget</p>
-            <p class="text-lg font-semibold">{{ formatCurrency(mockData.budget.actual) }} <span class="text-sm text-gray-500">/ {{ formatCurrency(mockData.budget.estimated) }}</span></p>
-            <p class="text-xs text-green-500 mt-1">{{ Math.round((mockData.budget.actual / mockData.budget.estimated) * 100) }}% of estimated</p>
+            <p class="text-lg font-semibold">
+              {{ formatCurrency(mockData.budget.actual) }}
+              <span class="text-sm text-gray-500"
+                >/ {{ formatCurrency(mockData.budget.estimated) }}</span
+              >
+            </p>
+            <p class="text-xs text-green-500 mt-1">
+              {{ Math.round((mockData.budget.actual / mockData.budget.estimated) * 100) }}% of
+              estimated
+            </p>
           </div>
           <div class="bg-green-100 dark:bg-green-900 p-2 rounded-lg">
             <DollarSign class="w-6 h-6 text-green-600 dark:text-green-300" />

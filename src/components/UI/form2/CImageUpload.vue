@@ -98,9 +98,7 @@ watch(
   val => {
     console.log('modelValue changed:', val, Array.isArray(val) && !initDone.value)
     if (Array.isArray(val) && val.length > 0 && !initDone.value) {
-      localImages.value = props.maxImages > 0
-        ? [...val].slice(0, props.maxImages)
-        : [...val]
+      localImages.value = props.maxImages > 0 ? [...val].slice(0, props.maxImages) : [...val]
       setValue(localImages.value)
       initDone.value = true
     }
