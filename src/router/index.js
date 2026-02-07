@@ -70,13 +70,13 @@ router.beforeEach(async (to, from, next) => {
   }
 
   const requiredPermission = to.meta?.requiredPermission ?? []
-  if (requiredPermission.length === 0) return next()
+  /*if (requiredPermission.length === 0) return next()
 
   const hasPermission = requiredPermission.some(perm => eventStore.eventPermissions?.includes(perm))
 
   if (!hasPermission) {
     return next({ name: 'not-authorized' })
-  }
+  }*/
 
   return next()
 })

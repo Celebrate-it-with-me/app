@@ -33,6 +33,7 @@
         />
 
         <CSelect
+          v-if="eventHasMenu"
           id="menuSelected"
           v-model="companion.menuSelected"
           name="menuSelected"
@@ -71,7 +72,7 @@
 <script setup>
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
-import { watch, toRefs, ref } from 'vue'
+import { watch, toRefs, ref, computed } from 'vue'
 import CSelect from '@/components/UI/form2/CSelect.vue'
 import { useMenusStore } from '@/stores/useMenusStore'
 
@@ -112,4 +113,6 @@ watch(
 watch(localUnnamedCount, val => {
   emit('update:unnamedCount', val)
 })
+
+const eventHasMenu = computed(() => menuStore.hasMenu)
 </script>

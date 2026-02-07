@@ -9,6 +9,15 @@ import HelpView from '@/views/external/HelpView.vue'
 
 const nonAuthRoutes = [
   {
+    path: 'auth/social/callback',
+    name: 'social-callback',
+    component: () => import('@/views/external/SocialCallbackView.vue'),
+    meta: {
+      title: 'Social Callback',
+      requiresAuth: false
+    }
+  },
+  {
     path: '',
     name: 'home',
     component: HomeView,

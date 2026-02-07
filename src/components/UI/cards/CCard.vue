@@ -1,5 +1,5 @@
 <template>
-  <div :class="['rounded-xl overflow-hidden transition-all duration-300', baseStyle, variantClass]">
+  <div :class="['rounded-xl transition-all duration-300', baseStyle, variantClass]">
     <slot name="image" />
     <slot name="header" />
     <div v-if="variant !== 'gallery'" :class="`${padding} space-y-3`">

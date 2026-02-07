@@ -44,7 +44,6 @@ const onSubmit = async () => {
         name: result?.user?.name ?? '',
         email: result?.user?.email ?? '',
         userId: result?.user?.id ?? '',
-        token: result?.token ?? '',
         lastLogin: result?.user?.last_login_session ?? null
       })
 

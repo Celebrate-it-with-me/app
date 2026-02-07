@@ -206,10 +206,19 @@ const guestEngagementSeries = [
 </script>
 
 <template>
-  <section class="analytics-view">
+  <section class="analytics-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Page Header -->
-    <div class="flex justify-between items-center mb-6">
-      <CHeading :level="3">Event Analytics</CHeading>
+    <div class="relative mb-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <CHeading :level="1" weight="black" class="text-4xl md:text-5xl text-gray-900 dark:text-white tracking-tight mb-3">
+            Event <span class="text-rose">Analytics</span>
+          </CHeading>
+          <p class="text-gray-500 dark:text-gray-400 max-w-xl text-lg leading-relaxed">
+            Track and visualize your event's performance and engagement.
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- Top Stats Cards -->

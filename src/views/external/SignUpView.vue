@@ -412,7 +412,6 @@ const handleGoogleLogin = async response => {
         name: data?.user?.name ?? '',
         email: data?.user?.email ?? '',
         userId: data?.user?.id ?? '',
-        token: data?.token ?? '',
         lastLogin: data?.user?.last_login_session ?? null,
         activeEvent: data?.user?.activeEvent ?? null,
         justLogin: true,

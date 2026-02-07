@@ -2,7 +2,7 @@
 import InternalSidebar from '@/components/internal/layout/InternalSidebar.vue'
 import HeaderBar from '@/components/internal/layout/InternalHeaderBar.vue'
 import InternalFooter from '@/components/internal/layout/InternalFooter.vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import CEventsModal from '@/components/UI/modals/CEventsModal.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
@@ -29,13 +29,15 @@ const shouldShowRouteView = computed(() => {
     return true
   }
 
-  return eventsStore.activeEvent
+  return eventsStore.events.length === 0 || eventsStore.activeEvent
 })
 
 onMounted(async () => {
   loading.value = true
   if (!hydrationStore.isHydrated) {
-    await hydrationStore.hydrateAll()
+    await nextTick(async () => {
+      await hydrationStore.hydrateAll()
+    })
   }
 
   await collaboratorsStore.loadInvitations()

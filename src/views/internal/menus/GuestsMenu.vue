@@ -18,6 +18,10 @@ const perPageOptions = [
 ]
 
 const totalPages = computed(() => {
+  if (!menuStore?.guestsMenu?.length) {
+    return 1;
+  }
+
   return Math.ceil(menuStore.guestsMenu.length / menuStore.perPage)
 })
 
@@ -67,7 +71,7 @@ watch(
 </script>
 
 <template>
-  <section v-if="!menuStore.guestsMenu.length">
+  <section v-if="!menuStore?.guestsMenu?.length">
     <CAlert variant="info"> There is no guest menu selection yet in this event.! </CAlert>
   </section>
   <section v-else class="mx-auto bg-white dark:bg-gray-900 p-8 rounded-xl shadow-md space-y-8">
@@ -78,7 +82,7 @@ watch(
       Export All to XLSX
     </button>
     <table
-      v-if="menuStore.menus.length"
+      v-if="menuStore?.menus?.length"
       class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
     >
       <thead class="bg-gray-50 dark:bg-gray-800">

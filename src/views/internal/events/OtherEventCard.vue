@@ -77,23 +77,25 @@ const isPast = computed(() => {
 <template>
   <CCard
     variant="feature"
-    class="hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-700 relative"
-    :class="{ 'opacity-60 grayscale': isPast }"
+    class="group hover:shadow-xl transition-all duration-500 border border-gray-100 dark:border-gray-700/50 relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm"
+    :class="{ 'opacity-60 grayscale scale-[0.98]': isPast }"
   >
     <!-- Past Event Badge -->
-    <span
+    <div
       v-if="isPast"
-      class="badge absolute top-2 right-2 bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full z-10"
-      >Past Event</span
+      class="absolute -top-2 right-4 bg-gray-100 dark:bg-gray-700 text-gray-500 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-sm z-10 border border-gray-200 dark:border-gray-600"
     >
+      Past Event
+    </div>
+
     <template #title>
-      <div class="flex justify-between items-center mb-2">
+      <div class="flex justify-between items-start mb-4">
         <!-- Role Badge (Status) -->
         <div
-          class="flex items-center bg-white dark:bg-gray-800 px-2 py-1 rounded-full shadow-sm border border-gray-200 dark:border-gray-700"
+          class="flex items-center bg-rose-light/20 dark:bg-rose-dark/10 px-2 py-1 rounded-md border border-rose/10"
         >
           <UserCircle
-            class="w-3 h-3 mr-1"
+            class="w-3.5 h-3.5 mr-1.5"
             :class="{
               'text-purple-500': userRole === 'owner',
               'text-blue-500': userRole === 'editor',
@@ -101,11 +103,11 @@ const isPast = computed(() => {
             }"
           />
           <span
-            class="text-xs font-medium capitalize"
+            class="text-[10px] font-bold uppercase tracking-tight"
             :class="{
-              'text-purple-500': userRole === 'owner',
-              'text-blue-500': userRole === 'editor',
-              'text-gray-500': userRole === 'viewer'
+              'text-purple-600 dark:text-purple-400': userRole === 'owner',
+              'text-blue-600 dark:text-blue-400': userRole === 'editor',
+              'text-gray-600 dark:text-gray-400': userRole === 'viewer'
             }"
             >{{ userRole }}</span
           >
@@ -114,70 +116,89 @@ const isPast = computed(() => {
         <!-- Three dots menu -->
         <div class="relative">
           <button
-            class="p-1.5 rounded-full text-gray-500 hover:text-rose hover:bg-rose-light focus:outline-none transition-colors"
+            class="p-2 rounded-full text-gray-400 hover:text-rose hover:bg-rose-light/50 dark:hover:bg-rose-dark/20 focus:outline-none transition-all duration-200"
             aria-label="Event options"
             @click="toggleMenu()"
           >
             <MoreVertical class="w-4 h-4" />
           </button>
-          <div
-            v-if="openMenu"
-            v-on-click-outside="() => (openMenu = false)"
-            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-20"
+          <Transition
+            enter-active-class="transition duration-100 ease-out"
+            enter-from-class="transform scale-95 opacity-0"
+            enter-to-class="transform scale-100 opacity-100"
+            leave-active-class="transition duration-75 ease-in"
+            leave-from-class="transform scale-100 opacity-100"
+            leave-to-class="transform scale-95 opacity-0"
           >
-            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200">
-              <li>
-                <button
-                  class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
-                  @click="editEvent(event)"
-                >
-                  <Edit class="w-4 h-4 mr-2 text-gray-500" />
-                  Edit Event
-                </button>
-              </li>
-              <li>
-                <button
-                  class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
-                  :disabled="isActiveEvent(event.id)"
-                  :class="{ 'opacity-50 cursor-not-allowed': isActiveEvent(event.id) }"
-                  @click="archiveEvent(event)"
-                >
-                  <Archive class="w-4 h-4 mr-2 text-gray-500" />
-                  Archive Event
-                </button>
-              </li>
-              <li>
-                <button
-                  class="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center text-red-500"
-                  :disabled="isActiveEvent(event.id)"
-                  :class="{ 'opacity-50 cursor-not-allowed': isActiveEvent(event.id) }"
-                  @click="cancelEvent(event)"
-                >
-                  <XCircle class="w-4 h-4 mr-2" />
-                  Cancel Event
-                </button>
-              </li>
-            </ul>
-          </div>
+            <div
+              v-if="openMenu"
+              v-on-click-outside="() => (openMenu = false)"
+              class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 z-30 py-1"
+            >
+              <ul class="text-sm text-gray-700 dark:text-gray-200">
+                <li>
+                  <button
+                    class="w-full text-left px-4 py-2.5 hover:bg-rose-light/30 dark:hover:bg-rose-dark/10 flex items-center transition-colors"
+                    @click="editEvent(event)"
+                  >
+                    <Edit class="w-4 h-4 mr-3 text-gray-400" />
+                    Edit Event
+                  </button>
+                </li>
+                <li>
+                  <button
+                    class="w-full text-left px-4 py-2.5 hover:bg-rose-light/30 dark:hover:bg-rose-dark/10 flex items-center transition-colors"
+                    :disabled="isActiveEvent(event.id)"
+                    :class="{ 'opacity-50 cursor-not-allowed': isActiveEvent(event.id) }"
+                    @click="archiveEvent(event)"
+                  >
+                    <Archive class="w-4 h-4 mr-3 text-gray-400" />
+                    Archive Event
+                  </button>
+                </li>
+                <div class="my-1 border-t border-gray-100 dark:border-gray-700"></div>
+                <li>
+                  <button
+                    class="w-full text-left px-4 py-2.5 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center text-red-500 transition-colors"
+                    :disabled="isActiveEvent(event.id)"
+                    :class="{ 'opacity-50 cursor-not-allowed': isActiveEvent(event.id) }"
+                    @click="cancelEvent(event)"
+                  >
+                    <XCircle class="w-4 h-4 mr-3" />
+                    Cancel Event
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </Transition>
         </div>
       </div>
 
-      <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200">{{ event.eventName }}</h3>
+      <h3
+        class="text-lg font-bold text-gray-800 dark:text-gray-100 group-hover:text-rose transition-colors duration-300"
+      >
+        {{ event.eventName }}
+      </h3>
     </template>
 
     <template #content>
-      <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-3">
+      <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4 h-10">
         {{ event.eventDescription }}
       </p>
 
-      <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-2">
-        <Calendar class="w-3.5 h-3.5 mr-1.5 text-rose" />
-        <span>{{ formatDate(event.startDate) }} – {{ formatDate(event.endDate) }}</span>
-      </div>
+      <div class="space-y-2 mb-2">
+        <div class="flex items-center text-xs font-medium text-gray-600 dark:text-gray-400">
+          <Calendar class="w-3.5 h-3.5 mr-2 text-rose/70" />
+          <span>{{ formatDate(event.startDate) }} – {{ formatDate(event.endDate) }}</span>
+        </div>
 
-      <div v-if="event.location" class="flex items-center text-xs text-gray-500 dark:text-gray-400">
-        <MapPin class="w-3.5 h-3.5 mr-1.5 text-rose" />
-        <span class="truncate">{{ event.location }}</span>
+        <div
+          v-if="event.location"
+          class="flex items-center text-xs font-medium text-gray-600 dark:text-gray-400"
+        >
+          <MapPin class="w-3.5 h-3.5 mr-2 text-rose/70" />
+          <span class="truncate">{{ event.location }}</span>
+        </div>
       </div>
     </template>
 
@@ -185,12 +206,8 @@ const isPast = computed(() => {
       <CButton
         variant="outline"
         :disabled="isPast"
-        class="w-full transition-colors"
-        :class="
-          isPast
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'border-rose text-rose hover:bg-rose-light'
-        "
+        class="w-full transition-all duration-300 border-rose/20 text-rose/80 hover:text-rose hover:border-rose hover:bg-rose-light/30 shadow-sm"
+        :class="{ 'opacity-50 cursor-not-allowed grayscale bg-gray-100': isPast }"
         @click="switchToEvent(event)"
       >
         <SwitchCamera class="w-4 h-4 mr-2" />

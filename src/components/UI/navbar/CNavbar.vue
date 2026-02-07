@@ -44,7 +44,7 @@
             <a class="group relative inline-flex items-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden">
               <span class="relative z-10 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4l4-4m0 0l-4-4m4 4H3" />
                 </svg>
                 Login
               </span>
@@ -138,7 +138,7 @@
               <a class="group relative flex items-center justify-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden">
                 <span class="relative z-10 flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4l4-4m0 0l-4-4m4 4H3" />
                   </svg>
                   Login
                 </span>

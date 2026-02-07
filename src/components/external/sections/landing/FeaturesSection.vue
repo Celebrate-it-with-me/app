@@ -36,8 +36,8 @@
           class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-sm mb-6"
         >
           <Rocket class="w-4 h-4 text-primary mr-2" />
-          <span class="text-sm font-semibold text-primary">Features</span>
-          <span class="text-sm text-gray-600 dark:text-gray-300">Everything you need</span>
+          <span class="text-sm font-semibold text-primary">Features </span>
+          <span class="text-sm text-gray-600 dark:text-gray-300">&nbsp;Everything you need</span>
         </div>
 
         <CHeading
@@ -45,16 +45,15 @@
           weight="bold"
           class="mb-6 text-4xl sm:text-5xl lg:text-6xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent"
         >
-          Everything You Need to Plan
+          Plan Your Daughter’s Dream
           <span
             class="block bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent"
-            >Perfect Events</span
+            >Quinceañera Stress-Free</span
           >
         </CHeading>
         <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-          Powerful AI-driven tools and intuitive features designed to make event planning
-          effortless, enjoyable, and absolutely
-          <span class="font-semibold text-primary">unforgettable</span>.
+          All the tools you need to organize a beautiful celebration without the overwhelm of
+          <span class="font-semibold text-primary">spreadsheets and group chats</span>.
         </p>
       </div>
 
@@ -87,11 +86,11 @@
             <h3
               class="text-2xl font-bold mb-4 text-gray-900 dark:text-white group-hover:text-primary transition-colors duration-300"
             >
-              Smart Event Planning
+              Never Miss a Step
             </h3>
             <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-              AI-powered planning tools, intelligent checklists, and automated timelines that adapt
-              to your event needs.
+              Keep your planning on track with a personalized checklist that guides you through
+              every milestone.
             </p>
 
             <!-- Enhanced Feature List -->
@@ -104,7 +103,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >AI-powered timeline generation</span
+                  >Customized Quinceañera planning timeline</span
                 >
               </div>
               <div class="flex items-center group/item">
@@ -115,7 +114,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >Smart task prioritization</span
+                  >Automatic reminders for important deadlines</span
                 >
               </div>
               <div class="flex items-center group/item">
@@ -126,7 +125,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >Automated vendor coordination</span
+                  >Easy-to-manage task list for family</span
                 >
               </div>
             </div>
@@ -158,11 +157,11 @@
             <h3
               class="text-2xl font-bold mb-4 text-gray-900 dark:text-white group-hover:text-secondary transition-colors duration-300"
             >
-              Guest Experience Hub
+              Manage Your Guest List
             </h3>
             <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-              Comprehensive guest management with beautiful invitations, real-time RSVPs, and
-              interactive seating charts.
+              Easily track RSVPs and organize your corte de honor without losing track of a single
+              detail.
             </p>
 
             <div class="space-y-3">
@@ -174,7 +173,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >Real-time RSVP dashboard</span
+                  >Track damas and chambelanes easily</span
                 >
               </div>
               <div class="flex items-center group/item">
@@ -185,7 +184,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >Drag & drop seating planner</span
+                  >Real-time RSVP updates and alerts</span
                 >
               </div>
               <div class="flex items-center group/item">
@@ -196,7 +195,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >Designer invitation templates</span
+                  >Simple drag-and-drop seating charts</span
                 >
               </div>
             </div>
@@ -228,11 +227,11 @@
             <h3
               class="text-2xl font-bold mb-4 text-gray-900 dark:text-white group-hover:text-accent transition-colors duration-300"
             >
-              Smart Budget Control
+              Stay Within Your Budget
             </h3>
             <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-              AI-driven budget optimization with real-time expense tracking, cost predictions, and
-              money-saving recommendations.
+              Plan the elegant celebration your daughter deserves while keeping your expenses
+              organized and under control.
             </p>
 
             <div class="space-y-3">
@@ -244,7 +243,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >Predictive budget analysis</span
+                  >Track every expense by category</span
                 >
               </div>
               <div class="flex items-center group/item">
@@ -255,7 +254,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >Automated expense categorization</span
+                  >Simple budget vs. actual spending</span
                 >
               </div>
               <div class="flex items-center group/item">
@@ -266,7 +265,7 @@
                 </div>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover/item:text-gray-900 dark:group-hover/item:text-white transition-colors duration-300"
-                  >Cost-saving recommendations</span
+                  >No more confusing spreadsheets</span
                 >
               </div>
             </div>
@@ -280,12 +279,13 @@
           <div
             class="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center mb-4 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300"
           >
-            <MessageSquare class="w-8 h-8 text-primary" />
+            <Music class="w-8 h-8 text-primary" />
           </div>
-          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">24/7 Expert Support</h3>
+          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            Pick the Perfect Playlist
+          </h3>
           <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-            Get personalized help from our event planning experts whenever you need it, day or
-            night.
+            Let your guests vote on their favorite songs to ensure the dance floor is always full.
           </p>
         </div>
 
@@ -293,12 +293,14 @@
           <div
             class="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-secondary/10 to-accent/10 flex items-center justify-center mb-4 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300"
           >
-            <ShieldCheck class="w-8 h-8 text-secondary" />
+            <Users class="w-8 h-8 text-secondary" />
           </div>
-          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Enterprise Security</h3>
+          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            Share the Planning Load
+          </h3>
           <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-            Your precious memories and data are protected with bank-level encryption and security
-            protocols.
+            Invite family members and colaboradores to help you manage tasks and share the
+            responsibility.
           </p>
         </div>
 
@@ -308,10 +310,9 @@
           >
             <Smartphone class="w-8 h-8 text-accent" />
           </div>
-          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Mobile-First Design</h3>
+          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Plan Anywhere, Anytime</h3>
           <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
-            Plan your perfect event on-the-go with our fully responsive mobile experience and native
-            apps.
+            Access your planning tools from your phone so you can check tasks while on the go.
           </p>
         </div>
       </div>
@@ -326,8 +327,8 @@ import {
   Users2,
   Wallet,
   CheckCircle2,
-  MessageSquare,
-  ShieldCheck,
+  Music,
+  Users,
   Smartphone,
   Rocket
 } from 'lucide-vue-next'

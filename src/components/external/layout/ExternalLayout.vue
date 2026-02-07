@@ -14,7 +14,6 @@
     <!-- Main content area with proper semantic structure -->
     <main id="main-content" class="flex-1 focus:outline-none" tabindex="-1">
       <!-- Loading indicator for better UX -->
-      <Transition name="page" mode="out-in">
         <router-view v-slot="{ Component }">
           <Suspense>
             <template #default>
@@ -27,7 +26,6 @@
             </template>
           </Suspense>
         </router-view>
-      </Transition>
     </main>
 
     <!-- Footer -->

@@ -1,9 +1,18 @@
 <template>
-  <div class="seating-view">
-    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">Seat Accommodation</h1>
-    <p class="text-gray-600 dark:text-gray-400 mb-6">
-      Manage your event's seating arrangements by creating tables and assigning guests.
-    </p>
+  <div class="seating-view max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Page Header -->
+    <div class="relative mb-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <CHeading :level="1" weight="black" class="text-4xl md:text-5xl text-gray-900 dark:text-white tracking-tight mb-3">
+            Seat <span class="text-purple-600 dark:text-purple-400">Accommodation</span>
+          </CHeading>
+          <p class="text-gray-500 dark:text-gray-400 max-w-xl text-lg leading-relaxed">
+            Manage your event's seating arrangements by creating tables and assigning guests.
+          </p>
+        </div>
+      </div>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Left Column: Tables Management -->
@@ -391,6 +400,7 @@ import { ref, computed } from 'vue'
 import CCard from '@/components/UI/cards/CCard.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
+import CHeading from '@/components/UI/headings/CHeading.vue'
 import CModal from '@/components/UI/modals/CModal.vue'
 
 // Mock data for guests

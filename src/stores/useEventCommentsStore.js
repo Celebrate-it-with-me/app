@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import EventCommentsService from '../services/EventCommentsService'
 import { useUserStore } from '@/stores/useUserStore'
+import { useEventsStore } from '@/stores/useEventsStore'
 
 export const useEventCommentsStore = defineStore('eventCommentsStore', {
   state: () => ({
@@ -17,6 +18,24 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
     mode: 'create'
   }),
   actions: {
+    setEventComments(eventComments) {
+      console.log('Checking comments object', eventComments)
+      this.eventComments = eventComments.data || []
+
+      this.pageSelected = eventComments?.meta?.current_page ?? 1
+      this.perPage = eventComments?.meta?.per_page ?? 10
+      this.totalPages = eventComments?.meta?.last_page ?? 1
+    },
+
+    async updateStatus({ commentId, status }) {
+      const user = useUserStore()
+      const response = await EventCommentsService.updateStatus({ eventId: user.activeEvent, commentId, status })
+      if (response.status === 200) {
+        const c = this.eventComments.find(x => x.id === commentId)
+        if (c) c.status = status
+      }
+    },
+
     async addComment({ eventId, userId, origin }) {
       return EventCommentsService.addComment({ eventId, userId, origin, ...this.currentComment })
     },
@@ -47,6 +66,62 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
         return true
       } else {
         console.error('Error loading new comments:', response.status, response.statusText)
+      }
+      return false
+    },
+
+    async toggleCommentPin(commentId) {
+      const eventStore = useEventsStore()
+      const response = await EventCommentsService.toggleCommentPin({
+        eventId: eventStore.activeEvent.id,
+        commentId: commentId
+      })
+
+      console.log(response)
+
+    },
+
+    async toggleCommentFavorite(commentId) {
+      const eventStore = useEventsStore()
+      const response = await EventCommentsService.toggleCommentFavorite({
+        eventId: eventStore.activeEvent.id,
+        commentId: commentId
+      })
+
+      console.log(response)
+
+    },
+
+    async loadCommentsPaginated() {
+      const userStore = useUserStore()
+
+      const response = await EventCommentsService.loadCommentsPaginated({
+        eventId: userStore.activeEvent,
+        currentPage: this.pageSelected,
+        perPage: this.perPage,
+        search: this.searchValue
+      })
+
+      if (response.status === 200) {
+        if (this.pageSelected === 1) {
+          this.eventComments = response.data?.data || []
+        } else {
+          this.eventComments = [...this.eventComments, ...(response.data?.data || [])]
+        }
+        this.pageSelected = response.data.meta?.current_page || 1
+        this.totalPages = response.data.meta?.last_page || 1
+
+        return true
+      } else {
+        console.error('Error loading new comments:', response.status, response.statusText)
+      }
+      return false
+    },
+
+    async loadNextPage() {
+      if (this.pageSelected < this.totalPages) {
+        this.pageSelected++
+        return await this.loadCommentsPaginated()
       }
       return false
     },

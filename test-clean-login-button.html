@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Login Button Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for testing the clean login button */
+        .shadow-glow {
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Primary color variables */
+        :root {
+            --primary: #ec4899;
+            --secondary: #8b5cf6;
+        }
+
+        .text-primary { color: var(--primary); }
+        .bg-primary { background-color: var(--primary); }
+        .border-primary { border-color: var(--primary); }
+        .from-primary { --tw-gradient-from: var(--primary); }
+        .to-secondary { --tw-gradient-to: var(--secondary); }
+        .hover\:text-primary:hover { color: var(--primary); }
+        .hover\:border-primary\/50:hover { border-color: rgba(236, 72, 153, 0.5); }
+        .hover\:bg-primary\/5:hover { background-color: rgba(236, 72, 153, 0.05); }
+        .focus\:ring-primary\/50:focus { --tw-ring-color: rgba(236, 72, 153, 0.5); }
+        .from-primary\/10 { --tw-gradient-from: rgba(236, 72, 153, 0.1); }
+        .to-secondary\/10 { --tw-gradient-to: rgba(139, 92, 246, 0.1); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto p-8">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Clean Login Button Design</h1>
+            <p class="text-gray-600 text-lg">Simple, consistent, and professional</p>
+        </div>
+
+        <!-- Before vs After Comparison -->
+        <div class="grid md:grid-cols-2 gap-8 mb-12">
+            <!-- Old Complex Design -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-red-200">
+                <h2 class="text-xl font-semibold mb-6 text-center text-red-600">❌ Previous Design (Too Complex)</h2>
+                <div class="bg-white border-b border-gray-200 shadow-sm p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="text-pink-500 font-bold text-xl">Celebrateitwithme</div>
+                        <div class="flex items-center gap-4">
+                            <!-- Old glassmorphism button -->
+                            <a class="group relative px-6 py-2.5 text-sm font-semibold text-gray-800 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:shadow-md hover:bg-white transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5">
+                                <span class="relative z-10 flex items-center gap-2">
+                                    <svg class="w-4 h-4 opacity-70 group-hover:opacity-100 transition-opacity duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    Login
+                                </span>
+                                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-primary/0 via-primary/5 to-secondary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            </a>
+                            <a class="px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-primary to-secondary text-white shadow-glow">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-red-500 text-center">
+                    Issues: Poor contrast on white background, overly complex styling, inconsistent with navbar design
+                </div>
+            </div>
+
+            <!-- New Clean Design -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg border-2 border-green-200">
+                <h2 class="text-xl font-semibold mb-6 text-center text-green-600">✅ New Design (Clean & Consistent)</h2>
+                <div class="bg-white border-b border-gray-200 shadow-sm p-4 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="text-pink-500 font-bold text-xl">Celebrateitwithme</div>
+                        <div class="flex items-center gap-4">
+                            <!-- New clean button -->
+                            <a class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary border border-gray-300 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                </svg>
+                                Login
+                            </a>
+                            <a class="px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-primary to-secondary text-white shadow-glow">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 text-sm text-green-600 text-center">
+                    Benefits: Clear contrast, consistent styling, matches navbar design, professional appearance
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Navbar Demo -->
+        <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800">🖥️ Full Navbar Context</h2>
+
+            <!-- Desktop Navbar -->
+            <div class="bg-white border-b border-gray-200 shadow-sm rounded-lg mb-6">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+                    <div class="flex items-center gap-2">
+                        <span class="text-pink-500 font-bold text-xl hover:text-pink-600 transition-colors duration-200 cursor-pointer">Celebrateitwithme</span>
+                    </div>
+
+                    <!-- Desktop Navigation -->
+                    <nav class="hidden md:flex items-center gap-2 text-sm font-medium">
+                        <a href="#features" class="relative px-4 py-2 rounded-lg transition-all duration-300 text-gray-700 hover:text-primary hover:bg-gray-50 hover:shadow-sm">
+                            <span class="relative z-10">Features</span>
+                        </a>
+                        <a href="#pricing" class="relative px-4 py-2 rounded-lg transition-all duration-300 text-primary bg-gradient-to-r from-primary/10 to-secondary/10 shadow-sm font-semibold">
+                            <span class="relative z-10">Pricing</span>
+                            <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></span>
+                        </a>
+                        <a href="#gallery" class="relative px-4 py-2 rounded-lg transition-all duration-300 text-gray-700 hover:text-primary hover:bg-gray-50 hover:shadow-sm">
+                            <span class="relative z-10">Gallery</span>
+                        </a>
+                    </nav>
+
+                    <!-- Desktop CTA -->
+                    <div class="hidden md:flex items-center gap-4">
+                        <a class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary border border-gray-300 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                            </svg>
+                            Login
+                        </a>
+                        <a class="px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-primary to-secondary text-white shadow-glow hover:shadow-lg transition-all duration-300">Get Started</a>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-gray-600">Notice how the login button now fits perfectly with the overall navbar design</p>
+        </div>
+
+        <!-- Mobile Version Demo -->
+        <div class="bg-white rounded-2xl p-8 shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800">📱 Mobile Version</h2>
+            <div class="max-w-sm mx-auto bg-white shadow-lg border border-gray-200 rounded-lg">
+                <div class="px-4 py-3 space-y-1">
+                    <a href="#features" class="block py-2 px-3 rounded-md text-gray-700 hover:bg-gray-100 hover:text-primary">
+                        <span class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-current opacity-0"></span>
+                            Features
+                        </span>
+                    </a>
+                    <a href="#pricing" class="block py-2 px-3 rounded-md text-primary bg-gradient-to-r from-primary/10 to-secondary/10 border-l-2 border-primary shadow-sm">
+                        <span class="flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-current opacity-100"></span>
+                            Pricing
+                        </span>
+                    </a>
+
+                    <div class="pt-4 pb-2 border-t border-gray-200 flex flex-col gap-2">
+                        <a class="flex items-center justify-center gap-2 py-2 px-4 text-sm font-medium text-gray-700 hover:text-primary border border-gray-300 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all duration-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                            </svg>
+                            Login
+                        </a>
+                        <a class="block py-2 px-3 text-center rounded-xl bg-gradient-to-r from-primary to-secondary text-white shadow-sm hover:shadow-md transition-all duration-200">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Principles -->
+        <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8">
+            <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800">✨ Design Improvements</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Consistent Design</h3>
+                    <p class="text-sm text-gray-600">Matches navbar styling with rounded-lg and similar spacing</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Better Contrast</h3>
+                    <p class="text-sm text-gray-600">Clear border and text on white background</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Simple & Clean</h3>
+                    <p class="text-sm text-gray-600">No unnecessary complexity or visual noise</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12 text-gray-600">
+            <p class="text-lg">🎉 Much better! Clean, professional, and consistent design.</p>
+            <p class="mt-2">The login button now integrates seamlessly with the navbar.</p>
+        </div>
+    </div>
+
+    <script>
+        // Test interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Clean Login Button Test Page Loaded');
+            console.log('🎯 Key Improvements:');
+            console.log('   - Consistent border and rounded-lg styling');
+            console.log('   - Better contrast with gray border on white background');
+            console.log('   - Simplified design without unnecessary complexity');
+            console.log('   - Proper login icon that makes sense');
+            console.log('   - Matches the overall navbar aesthetic');
+
+            // Add click handlers for demonstration
+            const loginButtons = document.querySelectorAll('a[href="#"], a');
+            loginButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('🔥 Clean login button clicked!');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

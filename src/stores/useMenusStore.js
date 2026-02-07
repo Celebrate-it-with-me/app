@@ -110,7 +110,7 @@ export const useMenusStore = defineStore('menusStore', {
     },
 
     setMenuGuests(menuGuests) {
-      this.guestsMenu = menuGuests.data
+      this.guestsMenu = menuGuests?.data || null
     }
   },
   getters: {
@@ -121,7 +121,7 @@ export const useMenusStore = defineStore('menusStore', {
       return state.menus.find(menu => menu.id === id)
     },
     hasMenu: state => {
-      return state.menus.length > 0
+      return state.menus?.length > 0
     },
     needMenu() {
       const eventStore = useEventsStore()
@@ -136,11 +136,11 @@ export const useMenusStore = defineStore('menusStore', {
     },
 
     mainMenu() {
-      return this.menus.find(menu => menu.is_default)
+      return this.menus?.find(menu => menu.is_default)
     },
 
     menusForSelect() {
-      return this.menus.map(menu => {
+      return this.menus?.map(menu => {
         return {
           label: menu.title,
           value: menu.id

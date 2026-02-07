@@ -52,91 +52,113 @@ const eventStatus = computed(() => {
 </script>
 
 <template>
-  <CCard variant="feature" class="border-l-4 border-l-rose overflow-visible relative">
-    <!-- Status Badge -->
-    <div
-      class="absolute -top-3 right-4 bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-md border border-gray-200 dark:border-gray-700"
-    >
-      <span :class="['text-xs font-medium', eventStatus.color]">{{ eventStatus.text }}</span>
+  <CCard
+    variant="feature"
+    class="border-l-4 border-l-rose overflow-visible relative hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
+  >
+    <!-- Header with status and role -->
+    <div class="flex justify-between items-start mb-4">
+      <div
+        class="inline-flex items-center bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm border border-gray-100 dark:border-gray-700"
+      >
+        <span :class="['text-[10px] font-bold tracking-wider uppercase', eventStatus.color]">{{
+          eventStatus.text
+        }}</span>
+      </div>
+
+      <div
+        class="inline-flex items-center bg-rose-light/20 dark:bg-rose-dark/10 px-2.5 py-1 rounded-lg border border-rose/10"
+      >
+        <UserCircle
+          class="w-3.5 h-3.5 mr-1.5"
+          :class="{
+            'text-purple-600': userRole === 'owner',
+            'text-blue-600': userRole === 'editor',
+            'text-gray-600': userRole === 'viewer'
+          }"
+        />
+        <span
+          class="text-[10px] font-bold capitalize tracking-tight"
+          :class="{
+            'text-purple-700 dark:text-purple-400': userRole === 'owner',
+            'text-blue-700 dark:text-blue-400': userRole === 'editor',
+            'text-gray-700 dark:text-gray-400': userRole === 'viewer'
+          }"
+          >{{ userRole }}</span
+        >
+      </div>
     </div>
 
-    <!-- Role Badge -->
-
     <template #title>
-      <div class="title-container flex items-center justify-start gap-x-2">
-        <h3 class="text-xl font-semibold text-rose-darken">{{ activeEvent.eventName }}</h3>
-        <div
-          class="bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-md border border-gray-200 dark:border-gray-700 flex items-center"
-        >
-          <UserCircle
-            class="w-3 h-3 mr-1"
-            :class="{
-              'text-purple-500': userRole === 'owner',
-              'text-blue-500': userRole === 'editor',
-              'text-gray-500': userRole === 'viewer'
-            }"
-          />
-          <span
-            class="text-xs font-medium capitalize"
-            :class="{
-              'text-purple-500': userRole === 'owner',
-              'text-blue-500': userRole === 'editor',
-              'text-gray-500': userRole === 'viewer'
-            }"
-            >{{ userRole }}</span
-          >
-        </div>
+      <div class="flex flex-col gap-1 mb-2">
+        <h3 class="text-2xl font-black text-rose-darken leading-tight tracking-tight">
+          {{ activeEvent.eventName }}
+        </h3>
       </div>
     </template>
 
     <template #content>
-      <p class="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-4">
-        {{ activeEvent.eventDescription }}
+      <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-6 italic leading-relaxed">
+        "{{ activeEvent.eventDescription }}"
       </p>
 
-      <div class="space-y-2">
-        <div class="flex items-center text-sm text-gray-600 dark:text-gray-300">
-          <Calendar class="w-4 h-4 mr-2 text-rose" />
-          <span
-            >{{ formatDate(activeEvent.startDate) }} – {{ formatDate(activeEvent.endDate) }}</span
-          >
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-4">
+        <div class="flex items-center group">
+          <div class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors">
+            <Calendar class="w-4 h-4 text-rose" />
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Date</span>
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ formatDate(activeEvent.startDate) }} – {{ formatDate(activeEvent.endDate) }}</span>
+          </div>
         </div>
 
         <div
           v-if="activeEvent.eventTime"
-          class="flex items-center text-sm text-gray-600 dark:text-gray-300"
+          class="flex items-center group"
         >
-          <Clock class="w-4 h-4 mr-2 text-rose" />
-          <span>{{ activeEvent.eventTime }}</span>
+          <div class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors">
+            <Clock class="w-4 h-4 text-rose" />
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Time</span>
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ activeEvent.eventTime }}</span>
+          </div>
         </div>
 
         <div
           v-if="activeEvent.location"
-          class="flex items-center text-sm text-gray-600 dark:text-gray-300"
+          class="flex items-center group md:col-span-2"
         >
-          <MapPin class="w-4 h-4 mr-2 text-rose" />
-          <span>{{ activeEvent.location }}</span>
+          <div class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors">
+            <MapPin class="w-4 h-4 text-rose" />
+          </div>
+          <div class="flex flex-col">
+            <span class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Location</span>
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{{ activeEvent.location }}</span>
+          </div>
         </div>
       </div>
     </template>
 
     <template #cta>
-      <div class="flex flex-col sm:flex-row gap-2">
+      <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-700/50">
         <CButton
-          class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white"
+          variant="gradient"
+          class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white px-8 py-2.5 rounded-xl shadow-lg shadow-rose/20 transition-all active:scale-95"
           @click="goToEvent"
         >
           <ExternalLink class="w-4 h-4 mr-2" />
-          Go to Event
+          Manage Event
         </CButton>
 
         <CButton
           variant="outline"
-          class="border-rose text-rose hover:bg-rose-light"
+          class="border-rose/20 text-rose hover:bg-rose/5 dark:hover:bg-rose/10 px-6 py-2.5 rounded-xl transition-all active:scale-95"
           @click="editEvent"
         >
           <Edit class="w-4 h-4 mr-2" />
-          Edit
+          Edit Details
         </CButton>
       </div>
     </template>

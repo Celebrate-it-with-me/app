@@ -1,353 +1,178 @@
 <template>
   <section
-    class="py-24 px-4 bg-gradient-to-br from-gray-50/50 via-white to-purple-50/30 dark:from-gray-900 dark:via-gray-800/30 dark:to-gray-900 relative overflow-hidden"
+    class="py-20 px-6 bg-white relative overflow-hidden"
   >
-    <!-- Enhanced Background Elements -->
-    <div class="absolute inset-0 overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div
-        class="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-r from-secondary/10 to-accent/10 rounded-full blur-3xl opacity-60 animate-pulse"
+        class="absolute -top-40 -left-40 w-96 h-96 bg-purple-50 rounded-full blur-3xl opacity-60"
       ></div>
       <div
-        class="absolute -bottom-40 -right-40 w-96 h-96 bg-gradient-to-l from-primary/10 to-secondary/10 rounded-full blur-3xl opacity-50 animate-pulse"
-        style="animation-delay: 2s"
-      ></div>
-      <div
-        class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-pink-200/10 to-purple-200/10 rounded-full blur-2xl opacity-40"
-      ></div>
-
-      <!-- Floating pricing elements -->
-      <div
-        class="absolute top-20 left-20 w-8 h-8 bg-primary/20 rounded-full animate-bounce"
-        style="animation-delay: 1s"
-      >
-        <div class="w-full h-full flex items-center justify-center">
-          <span class="text-primary/60 text-xs font-bold">$</span>
-        </div>
-      </div>
-      <div
-        class="absolute bottom-32 right-32 w-6 h-6 bg-secondary/30 rounded-lg rotate-45 animate-spin-slow"
-      ></div>
-      <div
-        class="absolute top-1/3 right-1/4 w-4 h-4 bg-accent/40 rounded-full animate-pulse"
-        style="animation-delay: 3s"
+        class="absolute -bottom-40 -right-40 w-96 h-96 bg-pink-50 rounded-full blur-3xl opacity-50"
       ></div>
     </div>
 
     <div class="relative z-10 max-w-7xl mx-auto">
       <!-- Header Section -->
-      <div class="text-center mb-20 animate-fadeIn">
-        <div
-          class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-secondary/10 to-primary/10 border border-secondary/20 backdrop-blur-sm mb-6"
-        >
-          <Gem class="w-4 h-4 text-secondary mr-2" />
-          <span class="text-sm font-semibold text-secondary">Pricing</span>
-          <span class="text-sm text-gray-600 dark:text-gray-300">Simple & transparent</span>
+      <div class="text-center mb-16">
+        <div class="inline-flex items-center px-4 py-2 rounded-full bg-purple-50 mb-6">
+          <Sparkles class="w-4 h-4 text-purple-600 mr-2" />
+          <span class="text-sm font-semibold text-purple-600">Pricing</span>
+          <span class="text-sm text-gray-600">&nbsp;• Simple & transparent</span>
         </div>
 
-        <CHeading
-          :level="2"
-          weight="bold"
-          class="mb-6 text-4xl sm:text-5xl lg:text-6xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 dark:from-white dark:via-gray-100 dark:to-white bg-clip-text text-transparent"
-        >
-          Simple, Transparent
-          <span
-            class="block bg-gradient-to-r from-secondary via-primary to-accent bg-clip-text text-transparent"
-            >Pricing</span
-          >
-        </CHeading>
-        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed mb-8">
-          Choose the perfect plan for your celebration. No hidden fees, no surprises - just
-          <span class="font-semibold text-primary">transparent pricing</span> that grows with your
-          needs.
-        </p>
-
-        <!-- Enhanced Pricing Toggle -->
-        <div
-          class="inline-flex items-center p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50"
-        >
-          <span
-            :class="[
-              'px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-300',
-              !isAnnual
-                ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-            ]"
-            >Monthly</span
-          >
-          <button
-            class="relative mx-2 inline-flex h-8 w-14 items-center rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 transition-all duration-300"
-            :class="
-              isAnnual
-                ? 'bg-gradient-to-r from-primary to-secondary'
-                : 'bg-gray-300 dark:bg-gray-600'
-            "
-            role="switch"
-            :aria-checked="isAnnual"
-            @click="isAnnual = !isAnnual"
-          >
-            <span
-              class="inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform duration-300"
-              :class="isAnnual ? 'translate-x-7' : 'translate-x-1'"
-            ></span>
-          </button>
-          <span
-            :class="[
-              'px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-300 relative',
-              isAnnual
-                ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg'
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-            ]"
-          >
-            Annual
-            <div
-              v-if="isAnnual"
-              class="absolute -top-2 -right-2 bg-gradient-to-r from-green-400 to-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse"
-            >
-              Save 20%
-            </div>
+        <h2 class="text-5xl font-black text-gray-900 mb-4">
+          Plan the Perfect Quinceañera for
+          <span class="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+            Your Daughter
           </span>
-        </div>
+        </h2>
+
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          From digital invitations to guest lists and RSVPs, get everything you need to manage her special day without the stress.
+        </p>
       </div>
 
-      <div class="grid gap-8 md:grid-cols-3 max-w-7xl mx-auto">
-        <!-- Basic Plan -->
-        <div
-          class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col h-full transform hover:-translate-y-1"
-        >
-          <div class="p-6 pb-0">
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Basic</h3>
-            <div class="mt-4 flex items-baseline">
-              <span class="text-5xl font-bold text-gray-900 dark:text-white">{{
-                isAnnual ? '$239' : '$299'
-              }}</span>
-              <span class="ml-1 text-xl text-gray-500 dark:text-gray-400">{{
-                isAnnual ? '/year' : '/event'
-              }}</span>
+      <!-- Pricing Cards Grid -->
+      <div class="grid gap-8 md:grid-cols-3 items-center">
+        <!-- Starter Plan -->
+        <div class="relative bg-white rounded-2xl shadow-lg p-8 border border-gray-200 flex flex-col h-full">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Starter</h3>
+          <div class="mb-6">
+            <span class="text-5xl font-black text-gray-900">Free</span>
+          </div>
+          <p class="text-gray-600 mb-6">Perfect to get started with your planning</p>
+
+          <div class="space-y-3 mb-8 flex-grow">
+            <div v-for="feature in starterFeatures" :key="feature" class="flex items-start">
+              <CheckCircle2 class="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+              <span class="text-gray-700 text-sm" :class="{ 'font-semibold': feature.includes('Note:') }">{{ feature }}</span>
             </div>
-            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              Perfect for small gatherings
-            </p>
           </div>
 
-          <div class="p-6 flex-grow">
-            <ul class="space-y-3 text-left">
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">Up to 100 guests</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">Basic planning tools</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">Digital invitations</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">Email support</span>
-              </li>
-            </ul>
+          <RouterLink to="/sign-up" class="w-full">
+            <button class="w-full py-4 rounded-lg font-semibold bg-gray-100 text-gray-800 hover:bg-gray-200 transition-all">
+              Create Free Event
+            </button>
+          </RouterLink>
+        </div>
+
+        <!-- Pro Plan -->
+        <div class="relative bg-gradient-to-br from-pink-500 to-purple-600 rounded-3xl shadow-2xl p-8 text-white transform scale-105 z-10 flex flex-col h-full">
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full border border-white/20">
+            <span class="text-sm font-semibold text-white">Most Popular</span>
           </div>
 
-          <div class="p-6 pt-0">
-            <RouterLink to="/sign-up">
-              <button
-                class="w-full py-3 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              >
-                Get Started
-              </button>
-            </RouterLink>
+          <h3 class="text-2xl font-bold mb-2">Pro</h3>
+          <div class="mb-6">
+            <span class="text-5xl font-black">$79</span>
+            <span class="text-white/80">/event</span>
           </div>
+          <p class="text-white/90 mb-6">Everything you need for your celebration</p>
+
+          <div class="space-y-3 mb-8 flex-grow">
+            <div v-for="feature in proFeatures" :key="feature" class="flex items-start">
+              <CheckCircle2 class="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+              <span class="text-white/90 text-sm">{{ feature }}</span>
+            </div>
+          </div>
+
+          <RouterLink to="/sign-up" class="w-full">
+            <button class="w-full py-4 rounded-lg font-semibold bg-white text-purple-600 hover:bg-gray-50 transition-all">
+              Upgrade to Pro
+            </button>
+          </RouterLink>
         </div>
 
         <!-- Premium Plan -->
-        <div
-          class="relative bg-gradient-to-br from-primary to-secondary rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-pink-400 flex flex-col h-full transform hover:-translate-y-2 z-10 scale-105"
-        >
-          <div
-            class="absolute top-0 right-0 bg-white dark:bg-gray-800 text-primary px-4 py-1 rounded-bl-lg font-medium text-sm"
-          >
-            Most Popular
+        <div class="relative bg-white rounded-2xl shadow-lg p-8 border border-gray-200 flex flex-col h-full">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
+          <div class="mb-6">
+            <span class="text-5xl font-black">$149</span>
+            <span class="text-gray-600">/event</span>
           </div>
+          <p class="text-gray-600 mb-6">For large, elegant celebrations</p>
 
-          <div class="p-6 pb-0">
-            <h3 class="text-xl font-semibold text-white">Premium</h3>
-            <div class="mt-4 flex items-baseline">
-              <span class="text-5xl font-bold text-white">{{ isAnnual ? '$399' : '$499' }}</span>
-              <span class="ml-1 text-xl text-white/80">{{ isAnnual ? '/year' : '/event' }}</span>
+          <div class="space-y-3 mb-8 flex-grow">
+            <div v-for="feature in premiumFeatures" :key="feature" class="flex items-start">
+              <CheckCircle2 class="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+              <span class="text-gray-700 text-sm">{{ feature }}</span>
             </div>
-            <p class="mt-2 text-sm text-white/80">Ideal for medium-sized events</p>
           </div>
 
-          <div class="p-6 flex-grow">
-            <ul class="space-y-3 text-left">
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-white mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-white/90">Up to 250 guests</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-white mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-white/90">Advanced planning tools</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-white mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-white/90">Custom invitations</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-white mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-white/90">Vendor management</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-white mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-white/90">Priority email & chat support</span>
-              </li>
-            </ul>
-          </div>
-
-          <div class="p-6 pt-0">
-            <RouterLink to="/sign-up">
-              <button
-                class="w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-100 text-primary font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
-              >
-                Get Started
-              </button>
-            </RouterLink>
-          </div>
+          <RouterLink to="/sign-up" class="w-full">
+            <button class="w-full py-4 rounded-lg font-semibold bg-gray-100 text-gray-800 hover:bg-gray-200 transition-all">
+              Get Premium
+            </button>
+          </RouterLink>
         </div>
+      </div>
 
-        <!-- Luxury Plan -->
-        <div
-          class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col h-full transform hover:-translate-y-1"
-        >
-          <div class="p-6 pb-0">
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Luxury</h3>
-            <div class="mt-4 flex items-baseline">
-              <span class="text-5xl font-bold text-gray-900 dark:text-white">{{
-                isAnnual ? '$799' : '$999'
-              }}</span>
-              <span class="ml-1 text-xl text-gray-500 dark:text-gray-400">{{
-                isAnnual ? '/year' : '/event'
-              }}</span>
+      <!-- Trust Signals Section -->
+      <div class="mt-16 bg-gray-50 rounded-2xl p-8">
+        <div class="grid md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <CheckCircle2 class="w-6 h-6 text-green-600" />
             </div>
-            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              For large, premium celebrations
-            </p>
+            <p class="text-sm font-semibold text-gray-900 mb-1">No Credit Card Required</p>
+            <p class="text-xs text-gray-600">Start free, upgrade anytime</p>
           </div>
 
-          <div class="p-6 flex-grow">
-            <ul class="space-y-3 text-left">
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">Unlimited guests</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">Full-service planning</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">Custom website</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">VIP support 24/7</span>
-              </li>
-              <li class="flex items-start">
-                <CheckCircle class="w-5 h-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                <span class="text-gray-600 dark:text-gray-300">Dedicated event consultant</span>
-              </li>
-            </ul>
+          <div>
+            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Shield class="w-6 h-6 text-blue-600" />
+            </div>
+            <p class="text-sm font-semibold text-gray-900 mb-1">14-Day Money Back</p>
+            <p class="text-xs text-gray-600">Risk-free guarantee</p>
           </div>
 
-          <div class="p-6 pt-0">
-            <RouterLink to="/sign-up">
-              <button
-                class="w-full py-3 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              >
-                Get Started
-              </button>
-            </RouterLink>
+          <div>
+            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Globe class="w-6 h-6 text-purple-600" />
+            </div>
+            <p class="text-sm font-semibold text-gray-900 mb-1">Fully Bilingual</p>
+            <p class="text-xs text-gray-600">English & Spanish support</p>
+          </div>
+
+          <div>
+            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <CreditCard class="w-6 h-6 text-pink-600" />
+            </div>
+            <p class="text-sm font-semibold text-gray-900 mb-1">Secure Payments</p>
+            <p class="text-xs text-gray-600">Your data is safe</p>
           </div>
         </div>
       </div>
 
       <!-- FAQ Section -->
-      <div class="max-w-4xl mx-auto mt-20">
-        <h3 class="text-2xl font-bold text-center mb-8 text-gray-900 dark:text-white">
+      <div class="mt-20">
+        <h3 class="text-3xl font-black text-center text-gray-900 mb-10">
           Frequently Asked Questions
         </h3>
 
-        <div class="space-y-4">
-          <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-            <button
-              class="flex justify-between items-center w-full px-4 py-3 text-left bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
-              @click="toggleFaq(0)"
-            >
-              <span class="font-medium text-gray-900 dark:text-white"
-                >Can I upgrade my plan later?</span
-              >
-              <ChevronDown
-                class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform"
-                :class="{ 'transform rotate-180': openFaqs[0] }"
-              />
-            </button>
-            <div
-              v-show="openFaqs[0]"
-              class="px-4 py-3 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300"
-            >
-              <p>
-                Yes, you can upgrade your plan at any time. The price difference will be prorated
-                based on the remaining time in your current plan.
-              </p>
-            </div>
-          </div>
+        <!-- 2 Columns on Desktop -->
+        <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          <details v-for="(faq, index) in faqs" :key="index" class="group bg-white rounded-lg p-5 shadow-sm border border-gray-200">
+            <summary class="font-semibold text-gray-900 cursor-pointer flex justify-between items-center list-none">
+              <span>{{ faq.question }}</span>
+              <ChevronDown class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0" />
+            </summary>
+            <p class="mt-4 text-gray-600 leading-relaxed text-sm">
+              {{ faq.answer }}
+            </p>
+          </details>
+        </div>
 
-          <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-            <button
-              class="flex justify-between items-center w-full px-4 py-3 text-left bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
-              @click="toggleFaq(1)"
-            >
-              <span class="font-medium text-gray-900 dark:text-white"
-                >Is there a free trial available?</span
-              >
-              <ChevronDown
-                class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform"
-                :class="{ 'transform rotate-180': openFaqs[1] }"
-              />
-            </button>
-            <div
-              v-show="openFaqs[1]"
-              class="px-4 py-3 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300"
-            >
-              <p>
-                We offer a 14-day free trial with access to all basic features. No credit card
-                required to start your trial.
-              </p>
-            </div>
-          </div>
-
-          <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-            <button
-              class="flex justify-between items-center w-full px-4 py-3 text-left bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none"
-              @click="toggleFaq(2)"
-            >
-              <span class="font-medium text-gray-900 dark:text-white">Do you offer refunds?</span>
-              <ChevronDown
-                class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform"
-                :class="{ 'transform rotate-180': openFaqs[2] }"
-              />
-            </button>
-            <div
-              v-show="openFaqs[2]"
-              class="px-4 py-3 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300"
-            >
-              <p>
-                We offer a 30-day money-back guarantee. If you're not satisfied with our service,
-                contact our support team for a full refund.
-              </p>
-            </div>
-          </div>
+        <!-- View All Link -->
+        <div class="text-center mt-8">
+          <a
+            href="#"
+            class="inline-flex items-center text-purple-600 font-semibold hover:text-purple-700 transition-colors"
+          >
+            View All Questions
+            <ArrowRight class="w-4 h-4 ml-2" />
+          </a>
         </div>
       </div>
     </div>
@@ -355,30 +180,77 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import CHeading from '@/components/UI/headings/CHeading.vue'
-import { CheckCircle, ChevronDown, Gem } from 'lucide-vue-next'
+import { Sparkles, CheckCircle2, Shield, Globe, CreditCard, ChevronDown, ArrowRight } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 
-const isAnnual = ref(false)
-const openFaqs = ref([false, false, false])
+const starterFeatures = [
+  '1 active event',
+  'Up to 50 guests',
+  'Beautiful digital invitation',
+  '3 professional themes',
+  'RSVP tracking',
+  'Guest comments',
+  'Music voting',
+  'Event details & location',
+  'Email support',
+  'Note: Includes "Powered by CWM" branding'
+]
 
-const toggleFaq = index => {
-  openFaqs.value[index] = !openFaqs.value[index]
-}
+const proFeatures = [
+  'Everything in Starter',
+  'Up to 200 guests',
+  '20+ premium themes',
+  'Custom colors & styles',
+  'Remove CWM branding',
+  'Menu planning',
+  'Seating chart (Early Access)',
+  'Budget tracker (Early Access)',
+  '3 collaborators',
+  'Guest list export (CSV)'
+]
+
+const premiumFeatures = [
+  'Everything in Pro',
+  'Unlimited guests',
+  'Unlimited collaborators',
+  'Advanced theme customization',
+  'Video integration',
+  'Priority email support',
+  'Custom branding options',
+  'Early access to new features'
+]
+
+const faqs = [
+  {
+    question: 'How does the free plan work?',
+    answer: 'The Starter plan is completely free forever. You can create 1 active event with up to 50 guests, beautiful digital invitations, RSVP tracking, music voting, and guest comments. No credit card required to get started.'
+  },
+  {
+    question: 'Can I upgrade my plan later?',
+    answer: 'Yes! You can upgrade from Starter to Pro or Premium at any time. Your existing event data and settings will be preserved. Upgrades take effect immediately.'
+  },
+  {
+    question: 'What happens after my quinceañera?',
+    answer: 'Your event page stays active for 6 months after the event date, so guests can continue viewing photos and leaving comments. You can download all your data (guest lists, RSVPs, etc.) at any time.'
+  },
+  {
+    question: 'Can family members help me plan?',
+    answer: 'Yes! Pro plans include 3 collaborators, and Premium includes unlimited collaborators. Family members can help manage guest lists, track RSVPs, and coordinate details—all in real-time.'
+  },
+  {
+    question: 'What if I have more than 200 guests?',
+    answer: 'Premium plans include unlimited guests. You can also add extra guest capacity to your Pro plan for $20 per 50 additional guests.'
+  },
+  {
+    question: 'Do you offer Spanish language support?',
+    answer: '¡Sí! Our platform is fully bilingual (English and Spanish). You can switch languages anytime, and our support team is fluent in both languages.'
+  }
+]
 </script>
 
 <style scoped>
-.animate-spin-slow {
-  animation: spin-slow 8s linear infinite;
-}
-
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Remove default summary arrow in some browsers */
+summary::-webkit-details-marker {
+  display: none;
 }
 </style>

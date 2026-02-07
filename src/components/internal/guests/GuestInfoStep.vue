@@ -27,6 +27,7 @@
       />
 
       <CSelect
+        v-if="evenHasMenu"
         id="menuSelected"
         v-model="localData.menuSelected"
         name="menuSelected"
@@ -44,6 +45,7 @@ import CInput from '@/components/UI/form2/CInput.vue'
 import CSelect from '@/components/UI/form2/CSelect.vue'
 import { useMenusStore } from '@/stores/useMenusStore'
 
+const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
   modelValue: {
     type: Object,
@@ -57,10 +59,11 @@ onMounted(async () => {
   await menuStore.loadMenus()
 })
 
-const emit = defineEmits(['update:modelValue'])
 const localData = reactive({ ...props.modelValue })
 
 watch(localData, val => {
   emit('update:modelValue', val)
 })
+
+const evenHasMenu = computed(() => menuStore.hasMenu)
 </script>

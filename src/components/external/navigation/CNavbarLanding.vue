@@ -24,9 +24,9 @@ const route = useRoute()
 
 const allLinks = ref([
   { label: 'Features', href: '#features', isActive: false },
-  { label: 'Pricing', href: '#pricing', isActive: false },
   { label: 'Gallery', href: '#gallery', isActive: false },
-  { label: 'Testimonials', href: '#testimonials', isActive: false }
+  { label: 'Testimonials', href: '#testimonials', isActive: false },
+  { label: 'Pricing', href: '#pricing', isActive: false }
 ])
 
 // Hide navigation links on sign-in and sign-up pages

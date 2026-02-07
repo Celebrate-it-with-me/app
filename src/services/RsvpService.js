@@ -61,6 +61,10 @@ class RsvpService {
   async loadDashboardRsvpSummary({ eventId }) {
     return CWM_API.get(`event/${eventId}/rsvp/summary`)
   }
+
+  async loadStats({ eventId }) {
+    return CWM_API.get(`event/${eventId}/rsvp/stats`)
+  }
 }
 
 export default new RsvpService()

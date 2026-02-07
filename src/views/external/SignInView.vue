@@ -21,6 +21,7 @@ const captchaToken = ref(null)
 const captchaSiteKey = import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY
 const isLocalEnvironment = ref(import.meta.env.VITE_APP_ENVIRONMENT === 'local')
 const isCaptchaRequired = computed(() => !isLocalEnvironment.value || captchaToken.value)
+const apiUrl = import.meta.env.VITE_API_URL
 
 const form = reactive({
   email: '',
@@ -78,7 +79,6 @@ const onSubmit = async () => {
         name: result?.user?.name ?? '',
         email: result?.user?.email ?? '',
         userId: result?.user?.id ?? '',
-        token: result?.token ?? '',
         lastLogin: result?.user?.last_login_session ?? null,
         activeEvent: result?.user?.activeEvent ?? null,
         justLogin: true,
@@ -110,162 +110,18 @@ const onInvalidSubmit = error => {
   console.log(error)
 }
 
-// Google login initialization and handler
-const googleInitialized = ref(false)
-const initGoogleLogin = () => {
-  if (window.google && !googleInitialized.value) {
-    window.google.accounts.id.initialize({
-      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-      callback: handleGoogleLogin
-    })
-    googleInitialized.value = true
-  }
-}
-
-const handleGoogleLogin = async response => {
-  try {
-    sending.value = true
-    backendError.value = false
-
-    const result = await userStore.googleLogin({
-      token: response.credential
-    })
-
-    if (result.status >= 200 && result.status < 300) {
-      const data = result.data ?? {}
-
-      userStore.initUserData({
-        name: data?.user?.name ?? '',
-        email: data?.user?.email ?? '',
-        userId: data?.user?.id ?? '',
-        token: data?.token ?? '',
-        lastLogin: data?.user?.last_login_session ?? null,
-        activeEvent: data?.user?.activeEvent ?? null,
-        justLogin: true,
-        avatar: data?.user?.avatar_url ?? '',
-        phone: data?.user?.phone ?? ''
-      })
-
-      const preferences = await userStore.getPreferences()
-
-      if (preferences && preferences.status === 200) {
-        userStore.setPreferences(preferences?.data?.data ?? {})
-      }
-
-      return await router.push('dashboard')
-    } else {
-      backendError.value = true
-      backendErrorMessage.value =
-        result.response?.data?.message ?? 'Google login failed. Please try again.'
-    }
-  } catch (e) {
-    console.error('Google login error:', e)
-    backendError.value = true
-    backendErrorMessage.value =
-      e.response?.data?.message ?? 'Google login failed. Please try again.'
-  } finally {
-    sending.value = false
-  }
+const handleGoogleLogin = () => {
+  window.location.href = `${apiUrl}oauth/google/redirect`
 }
 
 // Facebook login handler
 const handleFacebookLogin = async () => {
-  try {
-    sending.value = true
-    backendError.value = false
-
-    if (!window.FB) {
-      backendError.value = true
-      backendErrorMessage.value = 'Facebook SDK not loaded. Please try again later.'
-      sending.value = false
-      return
-    }
-
-    window.FB.login(
-      async response => {
-        if (response.authResponse) {
-          const result = await userStore.facebookLogin({
-            token: response.authResponse.accessToken
-          })
-
-          if (result.status >= 200 && result.status < 300) {
-            const data = result.data ?? {}
-
-            userStore.initUserData({
-              name: data?.user?.name ?? '',
-              email: data?.user?.email ?? '',
-              userId: data?.user?.id ?? '',
-              token: data?.token ?? '',
-              lastLogin: data?.user?.last_login_session ?? null,
-              activeEvent: data?.user?.activeEvent ?? null,
-              justLogin: true,
-              avatar: data?.user?.avatar_url ?? '',
-              phone: data?.user?.phone ?? ''
-            })
-
-            const preferences = await userStore.getPreferences()
-
-            if (preferences && preferences.status === 200) {
-              userStore.setPreferences(preferences?.data?.data ?? {})
-            }
-
-            return await router.push('dashboard')
-          } else {
-            backendError.value = true
-            backendErrorMessage.value =
-              result.response?.data?.message ?? 'Facebook login failed. Please try again.'
-          }
-        } else {
-          backendError.value = true
-          backendErrorMessage.value = 'Facebook login was cancelled or failed. Please try again.'
-        }
-        sending.value = false
-      },
-      { scope: 'email,public_profile' }
-    )
-  } catch (e) {
-    console.error('Facebook login error:', e)
-    backendError.value = true
-    backendErrorMessage.value =
-      e.response?.data?.message ?? 'Facebook login failed. Please try again.'
-    sending.value = false
-  }
+  console.log('Work in progress')
 }
 
 // Load social login SDKs
 onMounted(() => {
-  // Initialize Google login
-  const googleScript = document.createElement('script')
-  googleScript.src = 'https://accounts.google.com/gsi/client'
-  googleScript.async = true
-  googleScript.defer = true
-  googleScript.onload = initGoogleLogin
-  document.head.appendChild(googleScript)
 
-  // Initialize Facebook login
-  const facebookScript = document.createElement('script')
-  facebookScript.src = 'https://connect.facebook.net/en_US/sdk.js'
-  facebookScript.async = true
-  facebookScript.defer = true
-  facebookScript.onload = () => {
-    window.FB.init({
-      appId: import.meta.env.VITE_FACEBOOK_APP_ID,
-      cookie: true,
-      xfbml: true,
-      version: 'v16.0'
-    })
-  }
-  document.head.appendChild(facebookScript)
-
-  // Cleanup function
-  onBeforeUnmount(() => {
-    if (googleScript.parentNode) {
-      googleScript.parentNode.removeChild(googleScript)
-    }
-    if (facebookScript.parentNode) {
-      facebookScript.parentNode.removeChild(facebookScript)
-    }
-  })
 })
 </script>
 
@@ -301,7 +157,9 @@ onMounted(() => {
       ></div>
     </div>
 
-    <CCard class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30">
+    <CCard
+      class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30"
+    >
       <div class="text-center mb-8">
         <h1 class="text-3xl font-display font-bold text-primary">Welcome Back</h1>
         <p class="text-sm text-text-light mt-2">Sign in to continue planning your event</p>
@@ -416,12 +274,12 @@ onMounted(() => {
       </div>
 
       <!-- Social Login Buttons -->
-      <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="grid grid-cols-1 gap-4 mb-6">
         <!-- Google Login Button -->
         <button
           class="flex items-center justify-center px-4 py-3 border border-gray-200/50 dark:border-gray-600/50 rounded-xl shadow-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white/90 dark:hover:bg-gray-700/90 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
           :disabled="sending"
-          @click="initGoogleLogin"
+          @click="handleGoogleLogin"
         >
           <svg
             class="h-5 w-5 mr-2"
@@ -453,23 +311,6 @@ onMounted(() => {
         </button>
 
         <!-- Facebook Login Button -->
-        <button
-          class="flex items-center justify-center px-4 py-3 border border-gray-200/50 dark:border-gray-600/50 rounded-xl shadow-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white/90 dark:hover:bg-gray-700/90 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
-          :disabled="sending"
-          @click="handleFacebookLogin"
-        >
-          <svg
-            class="h-5 w-5 mr-2"
-            fill="#1877F2"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C18.34 21.21 22 17.06 22 12.06C22 6.53 17.5 2.04 12 2.04Z"
-            />
-          </svg>
-          Facebook
-        </button>
       </div>
 
       <p class="text-center text-sm text-text-light">

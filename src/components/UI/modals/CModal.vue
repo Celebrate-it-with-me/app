@@ -1,11 +1,11 @@
 <template>
-  <transition name="fade">
+  <transition name="modal">
     <div
       v-if="modelValue"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 px-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
     >
       <div
-        class="w-full max-w-lg rounded-xl shadow-xl overflow-hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+        class="w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800"
       >
         <!-- Header -->
         <div
@@ -64,12 +64,13 @@ function close() {
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.18s ease-out;
 }
-.fade-enter-from,
-.fade-leave-to {
+.modal-enter-from,
+.modal-leave-to {
   opacity: 0;
+  transform: scale(0.95);
 }
 </style>

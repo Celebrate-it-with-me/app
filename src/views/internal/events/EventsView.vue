@@ -1,166 +1,227 @@
 <template>
-  <section class="events-view">
-    <!-- Page Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-      <div>
-        <CHeading :level="2" weight="semibold" class="text-rose-darken">My Events</CHeading>
-        <p class="text-gray-500 dark:text-gray-400 mt-1">
-          Manage all your celebrations in one place
-        </p>
-      </div>
-      <CButton
-        variant="gradient"
-        class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white"
-        @click="createNewEvent"
-      >
-        <PlusCircle class="w-4 h-4 mr-2" />
-        Create New Event
-      </CButton>
-    </div>
-
-    <!-- Loading State -->
-    <div v-if="loading" class="flex flex-col items-center justify-center py-12">
-      <CWMLoading class="w-12 h-12 text-rose mb-4" />
-      <p class="text-gray-500 dark:text-gray-400">Loading your events...</p>
-    </div>
-
-    <!-- Error State -->
-    <CAlert v-else-if="error" variant="error" class="mb-6">
-      <template #icon>
-        <AlertCircle class="w-5 h-5" />
-      </template>
-      <p>{{ error }}</p>
-      <CButton variant="text" size="sm" class="mt-2" @click="fetchEvents">
-        <RefreshCw class="w-4 h-4 mr-1" /> Try Again
-      </CButton>
-    </CAlert>
-
-    <!-- Empty State -->
-    <div
-      v-else-if="!hasEvents"
-      class="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-card border border-gray-200 dark:border-gray-700"
-    >
-      <CalendarDays class="w-16 h-16 mx-auto text-rose mb-4" />
-      <CHeading :level="4" class="mb-2">No Events Yet</CHeading>
-      <p class="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
-        Create your first event to start planning your celebration. You can add details, invite
-        guests, and more.
-      </p>
-      <CButton
-        variant="gradient"
-        class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white"
-        @click="createNewEvent"
-      >
-        <PlusCircle class="w-4 h-4 mr-2" />
-        Create Your First Event
-      </CButton>
-    </div>
-
-    <!-- Content when events exist -->
-    <template v-else>
-      <!-- Active Event Section -->
-      <div v-if="activeEvent" class="mb-10">
-        <div class="flex items-center mb-4">
-          <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-          <CHeading :level="5" class="text-rose">Active Event</CHeading>
+  <div class="events-view-container min-h-screen bg-gray-50 flex">
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto px-8 py-10">
+      <!-- Page Header -->
+      <header class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+        <div>
+          <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">
+            Your <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">Celebrations</span>
+          </h1>
+          <p class="text-gray-500 font-medium">Manage {{ events.length }} events across your dashboard.</p>
         </div>
+        <button
+          @click="createNewEvent"
+          class="btn-primary flex items-center gap-2"
+        >
+          <PlusCircle class="w-5 h-5" />
+          <span>Create New Event</span>
+        </button>
+      </header>
 
-        <ActiveEventCard :active-event="activeEvent" :user-role="getUserRole(activeEvent)" />
+      <!-- Loading State -->
+      <div v-if="loading" class="flex flex-col items-center justify-center py-20 bg-white/30 rounded-3xl backdrop-blur-sm border border-gray-100">
+        <CWMLoading class="w-16 h-16 text-purple-600 mb-6" />
+        <p class="text-gray-500 font-medium animate-pulse">Synchronizing your events...</p>
       </div>
 
-      <!-- Other Events Section -->
-      <div v-if="otherEvents.length > 0" class="mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center">
-            <CHeading :level="5" class="text-gray-700 dark:text-gray-300">Other Events</CHeading>
-            <CBadge variant="secondary" class="ml-2">{{ otherEvents.length }}</CBadge>
-          </div>
+      <!-- Error State -->
+      <div v-else-if="error" class="bg-red-50 text-red-700 p-6 rounded-2xl border border-red-100 mb-8 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+          <AlertCircle class="w-6 h-6" />
+          <p class="font-medium">{{ error }}</p>
+        </div>
+        <button @click="fetchEvents" class="flex items-center gap-2 bg-white px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all">
+          <RefreshCw class="w-4 h-4" /> Try Again
+        </button>
+      </div>
 
-          <!-- Filter/Sort Options (can be expanded later) -->
-          <div class="flex items-center">
-            <button class="text-gray-500 hover:text-rose focus:outline-none">
-              <SlidersHorizontal class="w-4 h-4" />
+      <!-- Empty State -->
+      <div v-else-if="events.length === 0" class="bg-white rounded-3xl p-12 text-center shadow-xl border border-gray-100 max-w-2xl mx-auto mt-10">
+        <div class="w-24 h-24 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-6">
+          <CalendarDays class="w-12 h-12 text-purple-600" />
+        </div>
+        <h3 class="text-2xl font-bold mb-3 text-gray-900">No Events Found</h3>
+        <p class="text-gray-500 mb-8 text-lg">
+          It looks like you haven't created any events yet. Start planning your first big celebration today!
+        </p>
+        <button @click="createNewEvent" class="btn-primary flex items-center gap-2 mx-auto">
+          <PlusCircle class="w-6 h-6" /> Create Your First Event
+        </button>
+      </div>
+
+      <!-- Content when events exist -->
+      <template v-else>
+        <!-- Stats Dashboard -->
+        <EventsStats
+          :total-events="events.length"
+          :public-events="publicEvents.length"
+          :total-guests="totalGuestsCount"
+          :avg-response="avgResponse"
+        />
+
+        <!-- Search & Filters -->
+        <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm mb-10 flex flex-wrap gap-4 items-center">
+          <div class="relative flex-1 min-w-[300px]">
+            <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search events by name..."
+              class="w-full pl-12 pr-4 py-3 bg-gray-50 border-transparent focus:bg-white focus:border-purple-300 rounded-xl transition-all"
+            />
+          </div>
+          <div class="flex gap-2">
+            <select v-model="statusFilter" class="bg-gray-50 border-none rounded-xl px-4 py-3 font-medium text-gray-600 focus:ring-2 focus:ring-purple-200">
+              <option value="all">All Status</option>
+              <option value="live">Live</option>
+              <option value="draft">Draft</option>
+              <option value="past">Past</option>
+            </select>
+            <button class="btn-secondary flex items-center gap-2">
+              <SlidersHorizontal class="w-5 h-5" />
+              <span>Advanced Filters</span>
             </button>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <OtherEventCard
-            v-for="event in otherEvents"
-            :key="event.id"
-            :event="event"
-            :user-role="getUserRole(event)"
-            @switch-event="switchToEvent"
-          />
-        </div>
-      </div>
-    </template>
-  </section>
+        <section v-if="activeEvent" class="mb-12">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <h2 class="text-xl font-bold text-gray-800 uppercase tracking-wider text-sm">Active Event</h2>
+          </div>
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <EventCard
+              :event="activeEvent"
+            />
+          </div>
+        </section>
+
+        <section v-if="publicEvents.length" class="mb-12">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <h2 class="text-xl font-bold text-gray-800 uppercase tracking-wider text-sm">Currently Published</h2>
+          </div>
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <EventCard
+              v-for="event in publicEvents"
+              :key="event.id"
+              :event="event"
+              @switch-to-active="switchToEvent"
+            />
+          </div>
+        </section>
+
+        <!-- All Events Section -->
+        <section>
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-800">All Other Events</h2>
+            <span class="text-gray-400 font-medium">{{ allOtherEvents.length }} Events Total</span>
+          </div>
+          <div
+            v-if="allOtherEvents.length"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <EventCard
+              v-for="event in allOtherEvents"
+              :key="event.id"
+              :event="event"
+              @switch-to-active="switchToEvent"
+            />
+          </div>
+          <div
+            v-else
+            class="flex items-center justify-center h-full"
+          >
+            <div class="text-center">
+              <h2 class="text-xl font-bold text-gray-800">No Other Events Found</h2>
+              <p class="text-gray-500">You have no other events to display.</p>
+            </div>
+          </div>
+        </section>
+      </template>
+    </main>
+  </div>
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
-import { useEventsStore } from '@/stores/useEventsStore'
-import { useUserStore } from '@/stores/useUserStore'
-import { useRouter } from 'vue-router'
-import { useNotification } from '@kyvg/vue3-notification'
+import { ref, computed, onMounted } from 'vue';
+import { useEventsStore } from '@/stores/useEventsStore';
+import { useRouter } from 'vue-router';
+import { useNotification } from '@kyvg/vue3-notification';
 
 // UI Components
-import CHeading from '@/components/UI/headings/CHeading.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
-import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
-import CAlert from '@/components/UI/alerts/CAlert.vue'
-import CBadge from '@/components/UI/badges/CBadge.vue'
-
-// Event Card Components
-import OtherEventCard from '@/views/internal/events/OtherEventCard.vue'
-import ActiveEventCard from '@/views/internal/events/ActiveEventCard.vue'
+import CWMLoading from '@/components/UI/loading/CWMLoading.vue';
+import EventsStats from './EventsStats.vue';
+import EventCard from './EventCard.vue';
 
 // Icons
 import {
-  PlusCircle,
-  CalendarDays,
-  AlertCircle,
-  RefreshCw,
-  SlidersHorizontal
-} from 'lucide-vue-next'
+  PlusCircle, LayoutDashboard, Users, Palette, Search, SlidersHorizontal,
+  CalendarDays, AlertCircle, RefreshCw
+} from 'lucide-vue-next';
 
-const eventsStore = useEventsStore()
-const userStore = useUserStore()
-const router = useRouter()
-const { notify } = useNotification()
+const eventsStore = useEventsStore();
+const router = useRouter();
+const { notify } = useNotification();
 
 // State
-const loading = ref(true)
-const error = ref(null)
+const loading = ref(true);
+const error = ref(null);
+const searchQuery = ref('');
+const statusFilter = ref('all');
 
-const getUserRole = event => {
-  return event.userRole
-}
+const avgResponse = computed(() => {
+  if (!events.value.length) return 0;
+  const totalResponses = events.value.reduce((sum, event) => sum + (event.rsvpResponse || 0), 0);
+  return totalResponses / totalGuestsCount.value;
+});
+
 
 // Computed properties
-const activeEvent = computed(() => eventsStore.activeEvent)
-const otherEvents = computed(() =>
-  eventsStore.events.filter(e => e.id !== eventsStore.activeEvent?.id)
-)
-const hasEvents = computed(() => eventsStore.events.length > 0)
+const events = computed(() => eventsStore.events);
+
+const totalGuestsCount = computed(() => {
+  return events.value.reduce((sum, event) => sum + (event.guestsCount || 0), 0);
+});
+
+const publicEvents = computed(() => {
+  return events.value.filter(e => e.status === 'published' && e.id !== activeEvent.value?.id);
+});
+
+const allOtherEvents = computed(() => {
+  return events.value.filter(e => e.status !== 'published' && e.id !== activeEvent.value?.id);
+});
+
+const activeEvent = computed(() => eventsStore.activeEvent ?? null)
+
+const filteredEvents = computed(() => {
+  return events.value.filter(e => {
+    const matchesSearch = e.eventName.toLowerCase().includes(searchQuery.value.toLowerCase());
+    // Basic status logic for filtering
+    const isLive = e.status === 'published';
+    const matchesStatus = statusFilter.value === 'all' ||
+                         (statusFilter.value === 'live' && isLive) ||
+                         (statusFilter.value === 'draft' && !isLive);
+    return matchesSearch && matchesStatus;
+  });
+});
 
 // Methods
 const fetchEvents = async () => {
-  loading.value = true
-  error.value = null
+  loading.value = true;
+  error.value = null;
 
   try {
-    // This is a placeholder - replace with actual fetch logic if needed
-    // If events are already loaded in the store, this might not be necessary
-    await new Promise(resolve => setTimeout(resolve, 500)) // Simulate loading
-    loading.value = false
+    // Simulate loading/fetch if needed
+    await new Promise(resolve => setTimeout(resolve, 500));
+    loading.value = false;
   } catch (err) {
-    error.value = 'Failed to load events. Please try again.'
-    loading.value = false
-    console.error('Error fetching events:', err)
+    error.value = 'Failed to load events. Please try again.';
+    loading.value = false;
+    console.error('Error fetching events:', err);
   }
-}
+};
 
 const switchToEvent = async event => {
   try {
@@ -184,28 +245,28 @@ const switchToEvent = async event => {
 }
 
 const createNewEvent = () => {
-  router.push('/dashboard/events/create')
-}
+  router.push('/dashboard/events/create');
+};
 
-// Lifecycle hooks
 onMounted(() => {
-  fetchEvents()
-})
+  fetchEvents();
+});
 </script>
 
 <style scoped>
-.events-view {
+.events-view-container {
   animation: fadeIn 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg transform hover:-translate-y-0.5 transition-all;
+}
+.btn-secondary {
+  @apply bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-xl hover:border-purple-300 font-medium transition-all;
 }
 </style>

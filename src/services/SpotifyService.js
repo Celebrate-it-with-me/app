@@ -1,10 +1,13 @@
 // services/SpotifyService.js
 const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID
-const client_secret = import.meta.env.VITE_SPOTIFY_CLIEN_SECRET
+const client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET
 
-// Get Authorization
+/**
+ * Get Spotify Authorization Token
+ */
 async function getToken() {
   const base64Credentials = btoa(`${client_id}:${client_secret}`)
+
   const response = await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',
     body: new URLSearchParams({ grant_type: 'client_credentials' }),
@@ -14,18 +17,43 @@ async function getToken() {
     }
   })
 
-  return response.json()
-}
-
-// Fetch Songs Based on Query
-async function searchSongs(query) {
-  const { access_token } = await getToken()
-  const response = await fetch(
-    `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=5`,
-    { headers: { Authorization: `Bearer ${access_token}` } }
-  )
+  if (!response.ok) {
+    throw new Error('Failed to get Spotify token')
+  }
 
   return response.json()
 }
 
-export default { searchSongs }
+/**
+ * Search songs on Spotify
+ * @param {string} query - Search query
+ * @param {number} limit - Number of results (default: 5)
+ */
+async function searchSongs(query, limit = 5) {
+  try {
+    const { access_token } = await getToken()
+
+    const response = await fetch(
+      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${access_token}`
+        }
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to search songs on Spotify')
+    }
+
+    return response.json()
+  } catch (error) {
+    console.error('Spotify search error:', error)
+    throw error
+  }
+}
+
+export default {
+  searchSongs,
+  getToken
+}
