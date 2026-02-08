@@ -280,6 +280,8 @@ export const useEventsStore = defineStore('eventsStore', {
     }
   },
   getters: {
+    eventsCount: state => state.events.length,
+
     /**
      * Check if user has any events
      * @returns {boolean} True if user has events
@@ -332,7 +334,7 @@ export const useEventsStore = defineStore('eventsStore', {
       return false
     },
 
-    activeEventName: (state) => {
+    activeEventName: state => {
       return state.activeEvent?.eventName || ''
     }
   }

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Title from '@/components/UI/Title.vue'
-import SignUpForm from '@/components/non-authenticated/sign-up/SignUpForm.vue'
 import SignInForm from '@/components/non-authenticated/sign-in/SignInForm.vue'
 </script>
 

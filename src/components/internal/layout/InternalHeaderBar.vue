@@ -1,6 +1,10 @@
 <template>
-  <header class="w-full h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 relative">
-    <div class="absolute inset-0 bg-gradient-to-r from-purple-50/20 to-pink-50/20 dark:from-purple-900/5 dark:to-pink-900/5"></div>
+  <header
+    class="w-full h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 relative"
+  >
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-purple-50/20 to-pink-50/20 dark:from-purple-900/5 dark:to-pink-900/5"
+    ></div>
 
     <div class="relative w-full h-full flex items-center justify-between px-6">
       <div class="flex items-center gap-4">
@@ -10,42 +14,17 @@
           @click="toggleMobileSidebar"
         >
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
           </svg>
         </button>
 
         <!-- Clean Event Info (sin punto verde) -->
-        <div v-if="eventStore.activeEvent" class="flex items-center gap-3">
-          <!-- Event name -->
-          <div class="flex flex-col">
-            <span class="text-lg font-semibold text-gray-900 dark:text-white">
-              {{ eventName }}
-            </span>
-            <div
-              v-if="userStore.activeEvent"
-              class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400"
-            >
-              <span class="flex items-center gap-1">
-                <Users class="w-3 h-3" />
-                {{ guestCount }} assistant
-              </span>
-              <span v-if="eventDate" class="flex items-center gap-1">
-                <Clock class="w-3 h-3" />
-                {{ eventDate }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- No Event State -->
-        <div v-else class="flex items-center gap-2">
-          <div class="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-500 rounded-lg flex items-center justify-center">
-            <Calendar class="w-4 h-4 text-white" />
-          </div>
-          <span class="text-lg font-semibold text-gray-500 dark:text-gray-400">
-            No Active Event
-          </span>
-        </div>
+        <EventSwitcher />
       </div>
 
       <!-- Right Section -->
@@ -57,11 +36,16 @@
         >
           <Search class="w-4 h-4" />
           <span>Search</span>
-          <kbd class="px-1.5 py-0.5 text-xs font-mono bg-white dark:bg-gray-700 rounded border text-gray-500">⌘K</kbd>
+          <kbd
+            class="px-1.5 py-0.5 text-xs font-mono bg-white dark:bg-gray-700 rounded border text-gray-500"
+            >⌘K</kbd
+          >
         </button>
 
         <!-- Mobile search -->
-        <button class="lg:hidden p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+        <button
+          class="lg:hidden p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+        >
           <Search class="w-5 h-5" />
         </button>
 
@@ -77,17 +61,19 @@
 
           <!-- Quick Add Dropdown (version rica anterior) -->
           <div
-            ref="quickActionRef"
             v-if="showQuickAdd"
+            ref="quickActionRef"
             class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-200 dark:border-gray-700 z-50"
           >
             <div class="p-2">
-              <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2 px-2">Quick Add</h3>
+              <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2 px-2">
+                Quick Add
+              </h3>
               <button
                 v-for="action in quickActions"
                 :key="action.name"
-                @click="action.action"
                 class="w-full flex items-center gap-2 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+                @click="action.action"
               >
                 <component :is="action.icon" class="w-4 h-4" />
                 {{ action.name }}
@@ -116,31 +102,53 @@
             ref="notificationMenuRef"
             class="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-800 shadow-2xl rounded-2xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
           >
-            <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div
+              class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700"
+            >
               <div class="flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
-                <button class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300">
+                <button
+                  class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
+                >
                   Mark all read
                 </button>
               </div>
             </div>
 
             <div class="max-h-80 overflow-y-auto">
-              <div v-for="(notification, index) in notifications" :key="index"
-                   class="flex items-start gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <component :is="getNotificationIcon(notification.type)" class="w-4 h-4 text-white" />
+              <div
+                v-for="(notification, index) in notifications"
+                :key="index"
+                class="flex items-start gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+              >
+                <div
+                  class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0"
+                >
+                  <component
+                    :is="getNotificationIcon(notification.type)"
+                    class="w-4 h-4 text-white"
+                  />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm text-gray-900 dark:text-white font-medium">{{ notification.title }}</p>
-                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ notification.message }}</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-500 mt-2">{{ notification.time }}</p>
+                  <p class="text-sm text-gray-900 dark:text-white font-medium">
+                    {{ notification.title }}
+                  </p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {{ notification.message }}
+                  </p>
+                  <p class="text-xs text-gray-500 dark:text-gray-500 mt-2">
+                    {{ notification.time }}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-700">
-              <button class="w-full text-sm text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors">
+            <div
+              class="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-700"
+            >
+              <button
+                class="w-full text-sm text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 transition-colors"
+              >
                 View All Notifications
               </button>
             </div>
@@ -151,10 +159,12 @@
         <div class="relative">
           <button
             ref="userButtonRef"
-            @click="toggleUserMenu"
             class="flex items-center gap-2 p-1 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-all duration-200"
+            @click="toggleUserMenu"
           >
-            <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-sm">
+            <div
+              class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-sm"
+            >
               <span class="text-xs font-bold text-white">{{ userInitials }}</span>
             </div>
             <ChevronDown class="w-4 h-4 text-gray-500 dark:text-gray-400 hidden md:block" />
@@ -165,9 +175,13 @@
             ref="userMenuRef"
             class="absolute right-0 mt-2 w-72 bg-white dark:bg-gray-800 shadow-2xl rounded-2xl border border-gray-200 dark:border-gray-700 z-50 overflow-hidden"
           >
-            <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-4 border-b border-gray-200 dark:border-gray-700">
+            <div
+              class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-4 border-b border-gray-200 dark:border-gray-700"
+            >
               <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                <div
+                  class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg"
+                >
                   <span class="text-sm font-bold text-white">{{ userInitials }}</span>
                 </div>
                 <div>
@@ -192,8 +206,8 @@
 
             <div class="border-t border-gray-200 dark:border-gray-700 p-2">
               <button
-                @click="logout"
                 class="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200"
+                @click="logout"
               >
                 <LogOut class="w-4 h-4" />
                 Sign Out
@@ -209,17 +223,28 @@
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useEventsStore } from '@/stores/useEventsStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { useGuestsStore } from '@/stores/useGuestStore'
 import {
-  Users, Calendar, Search, Plus, Bell, ChevronDown,
-  User, Settings, Shield, LogOut, UserPlus, MapPin, Music, Camera,
-  MessageCircle, CheckSquare, Clock
+  Calendar,
+  Search,
+  Plus,
+  Bell,
+  ChevronDown,
+  User,
+  Settings,
+  Shield,
+  LogOut,
+  UserPlus,
+  MapPin,
+  Music,
+  Camera,
+  MessageCircle,
+  CheckSquare
 } from 'lucide-vue-next'
+import EventSwitcher from '@/components/internal/layout/EventSwitcher.vue'
 
 const router = useRouter()
-const eventStore = useEventsStore()
 const userStore = useUserStore()
 const guestStore = useGuestsStore()
 
@@ -239,35 +264,16 @@ const showUserMenu = ref(false)
 const showQuickAdd = ref(false)
 
 // Computed properties
-const eventName = computed(() => eventStore.activeEvent?.eventName || 'No Event Selected')
 const userName = computed(() => userStore.name || 'User')
 const userEmail = computed(() => userStore.email || '')
 const userInitials = computed(() => {
   const name = userName.value
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-})
-
-/**
- * Total Assistants
- * @type {ComputedRef<number|*>}
- */
-const guestCount = computed(() => {
-  return guestStore.totalAssistant || 0
-})
-
-const eventDate = computed(() => {
-  if (!eventStore.activeEvent?.startDate) return null
-  const date = new Date(eventStore.activeEvent.startDate)
-  const today = new Date()
-  const diffTime = date - today
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-  if (diffDays < 0) return 'Event passed'
-  if (diffDays === 0) return 'Today'
-  if (diffDays === 1) return 'Tomorrow'
-  if (diffDays <= 7) return `${diffDays} days`
-
-  return null
+  return name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
 })
 
 const hasUnreadNotifications = computed(() => {
@@ -343,7 +349,7 @@ const logout = async () => {
   await router.push({ name: 'sign-in' })
 }
 
-const getNotificationIcon = (type) => {
+const getNotificationIcon = type => {
   const icons = {
     guest: UserPlus,
     event: Calendar,
@@ -354,26 +360,33 @@ const getNotificationIcon = (type) => {
 }
 
 // Click outside handlers
-const handleClickOutside = (event) => {
-  if (notificationMenuRef.value && !notificationMenuRef.value.contains(event.target) &&
-    notificationButtonRef.value && !notificationButtonRef.value.contains(event.target)) {
+const handleClickOutside = event => {
+  if (
+    notificationMenuRef.value &&
+    !notificationMenuRef.value.contains(event.target) &&
+    notificationButtonRef.value &&
+    !notificationButtonRef.value.contains(event.target)
+  ) {
     showNotifications.value = false
   }
-  if (userMenuRef.value && !userMenuRef.value.contains(event.target) &&
-    userButtonRef.value && !userButtonRef.value.contains(event.target)) {
+  if (
+    userMenuRef.value &&
+    !userMenuRef.value.contains(event.target) &&
+    userButtonRef.value &&
+    !userButtonRef.value.contains(event.target)
+  ) {
     showUserMenu.value = false
   }
 
-  if (quickActionRef.value && !quickActionRef.value.contains(event.target) &&
-    quickActionButtonRef.value && !quickActionButtonRef.value.contains(event.target)) {
+  if (
+    quickActionRef.value &&
+    !quickActionRef.value.contains(event.target) &&
+    quickActionButtonRef.value &&
+    !quickActionButtonRef.value.contains(event.target)
+  ) {
     showQuickAdd.value = false
   }
 }
-
-const countTotalAssistant = async () => {
-  await guestStore.countTotalAssistant()
-}
-
 
 onMounted(async () => {
   document.addEventListener('click', handleClickOutside)
@@ -385,10 +398,12 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 
-watch(() => userStore.activeEvent, async (newValue) => {
-  if (newValue) {
-    await guestStore.countTotalAssistant()
+watch(
+  () => userStore.activeEvent,
+  async newValue => {
+    if (newValue) {
+      await guestStore.countTotalAssistant()
+    }
   }
-})
-
+)
 </script>
