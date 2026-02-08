@@ -1,72 +1,101 @@
 import { CWM_API } from './axios'
 
 class SongsService {
-  async create({ eventId, platformId, title, artist, album, thumbnailUrl, accessCode }) {
+  /**
+   * Create a new suggested song (organizer)
+   * POST /event/{eventId}/suggest-music
+   */
+  async create({ eventId, platformId, title, artist, album, thumbnailUrl, previewUrl }) {
     return CWM_API.post(`event/${eventId}/suggest-music`, {
       platformId,
       title,
       artist,
       album,
       thumbnailUrl,
-      accessCode
+      previewUrl
     })
   }
 
-  async getSuggestedSongs(eventId, pageSelected = 1) {
-    console.log('getSuggestedSongs', eventId, pageSelected)
+  /**
+   * Get suggested songs for an event (organizer view)
+   * GET /event/{eventId}/suggest-music
+   */
+  async getSuggestedSongs(eventId, options = {}) {
+    const { perPage = 10, orderBy = 'recent', search = '' } = options
+
     return CWM_API.get(`event/${eventId}/suggest-music`, {
       params: {
-        pageSelected
+        perPage,
+        orderBy,
+        search
       }
     })
   }
 
+  /**
+   * Delete a suggested song (organizer)
+   * DELETE /event/{eventId}/suggest-music/{songId}
+   */
   async deleteSong(eventId, songId) {
-    return CWM_API.delete(`suggest-music/${songId}`)
+    return CWM_API.delete(`event/${eventId}/suggest-music/${songId}`)
   }
 
-  async voteSong({ songId, direction }) {
-    return CWM_API.post(`suggest-music/${songId}/vote`, {
-      direction: direction
+  /**
+   * Vote on a song (guest with accessCode)
+   * POST /event/{eventId}/suggest-music/{songId}/vote
+   */
+  async voteSong(eventId, songId, direction, accessCode) {
+    return CWM_API.post(`event/${eventId}/suggest-music/${songId}/vote`, {
+      direction,
+      accessCode
     })
   }
 
+  /**
+   * Get available votes for a guest
+   * GET /event/{eventId}/suggest-music/votes/available
+   */
+  async getAvailableVotes(eventId, accessCode) {
+    return CWM_API.get(`event/${eventId}/suggest-music/votes/available`, {
+      params: {
+        accessCode
+      }
+    })
+  }
+
+  /**
+   * Get user's vote on a specific song
+   * GET /event/{eventId}/suggest-music/{songId}/vote
+   */
+  async getUserVote(eventId, songId, accessCode) {
+    return CWM_API.get(`event/${eventId}/suggest-music/${songId}/vote`, {
+      params: {
+        accessCode
+      }
+    })
+  }
+
+  // ===============================================
+  // CONFIG METHODS (Deprecated - kept for legacy)
+  // TODO: Remove when migrated to eventTheme
+  // ===============================================
+
+  /**
+   * @deprecated Use eventTheme instead
+   */
   async saveSuggestedConfig({
-    useSuggestedMusic,
-    title,
-    subTitle,
-    usePreview,
-    mainColor,
-    secondaryColor,
-    useVoteSystem,
-    searchLimit,
-    eventId
-  }) {
-    return await CWM_API.post(`event/${eventId}/suggest-music-config`, {
+                              useSuggestedMusic,
+                              title,
+                              subTitle,
+                              usePreview,
+                              mainColor,
+                              secondaryColor,
+                              useVoteSystem,
+                              searchLimit,
+                              eventId
+                            }) {
+    return CWM_API.post(`event/${eventId}/suggest-music-config`, {
       useSuggestedMusic,
-      title,
-      subTitle,
-      usePreview,
-      mainColor,
-      secondaryColor,
-      useVoteSystem,
-      searchLimit,
-      eventId
-    })
-  }
-
-  async updateSuggestedConfig({
-    id,
-    title,
-    subTitle,
-    usePreview,
-    mainColor,
-    secondaryColor,
-    useVoteSystem,
-    searchLimit
-  }) {
-    console.log('checking id', id)
-    return await CWM_API.put(`suggest-music-config/${id}`, {
       title,
       subTitle,
       usePreview,
@@ -77,6 +106,33 @@ class SongsService {
     })
   }
 
+  /**
+   * @deprecated Use eventTheme instead
+   */
+  async updateSuggestedConfig({
+                                id,
+                                title,
+                                subTitle,
+                                usePreview,
+                                mainColor,
+                                secondaryColor,
+                                useVoteSystem,
+                                searchLimit
+                              }) {
+    return CWM_API.put(`suggest-music-config/${id}`, {
+      title,
+      subTitle,
+      usePreview,
+      mainColor,
+      secondaryColor,
+      useVoteSystem,
+      searchLimit
+    })
+  }
+
+  /**
+   * @deprecated Use eventTheme instead
+   */
   async getSuggestedConfig(eventId) {
     return CWM_API.get(`event/${eventId}/suggest-music-config`)
   }

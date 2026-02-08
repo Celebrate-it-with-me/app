@@ -1,6 +1,6 @@
 <template>
   <section
-    class="relative py-20 overflow-hidden bg-gradient-to-br from-pink-50 via-white to-purple-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900/20"
+    class="relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-purple-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900/20"
   >
     <!-- Enhanced Background Elements -->
     <div class="absolute inset-0 overflow-hidden">
@@ -39,8 +39,7 @@
             class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-sm"
           >
             <Sparkles class="w-4 h-4 text-primary mr-2" />
-            <span class="text-sm font-semibold text-primary">New</span>
-            <span class="text-sm text-gray-600 dark:text-gray-300">AI-Powered Event Planning</span>
+            <span class="text-sm font-semibold text-primary">🌟 Trusted by 5,000+ Mamás</span>
           </div>
 
           <!-- Main Heading -->
@@ -48,26 +47,24 @@
             <h1
               class="text-5xl sm:text-6xl lg:text-7xl font-display font-bold leading-tight text-gray-900 dark:text-white"
             >
-              Make Your
+              Plan Her Dream
               <span class="relative inline-block">
                 <span
                   class="bg-gradient-to-r from-primary via-secondary to-accent text-transparent bg-clip-text animate-gradient"
                 >
-                  Special Day
+                  Quinceañera
                 </span>
                 <div
                   class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary/50 to-secondary/50 rounded-full transform scale-x-0 animate-scale-x"
                 ></div>
               </span>
-              <br />
-              <span class="text-gray-700 dark:text-gray-200">Unforgettable</span>
             </h1>
           </div>
 
           <!-- Description -->
           <p class="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
-            Transform your quinceañeras, birthdays, and special celebrations with our
-            <span class="font-semibold text-primary">AI-powered</span> event management platform.
+            Everything you need to plan an unforgettable quinceañera
+            —from guest lists to the last dance.
           </p>
 
           <!-- Feature Pills -->
@@ -77,7 +74,7 @@
             >
               <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
-                >Smart Planning</span
+                >Budget Tracking</span
               >
             </div>
             <div
@@ -88,7 +85,7 @@
                 style="animation-delay: 0.5s"
               ></div>
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
-                >Budget Friendly</span
+                >Guest Management</span
               >
             </div>
             <div
@@ -98,7 +95,7 @@
                 class="w-2 h-2 bg-purple-500 rounded-full mr-2 animate-pulse"
                 style="animation-delay: 1s"
               ></div>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">24/7 Support</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Bilingual Support</span>
             </div>
           </div>
 
@@ -117,7 +114,7 @@
               href="#pricing"
               class="group px-8 py-4 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-lg rounded-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 relative overflow-hidden"
             >
-              <span class="relative z-10">Watch Demo</span>
+              <span class="relative z-10">See How It Works →</span>
               <div
                 class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               ></div>

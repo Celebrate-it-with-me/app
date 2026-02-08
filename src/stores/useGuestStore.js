@@ -7,11 +7,26 @@ export const useGuestsStore = defineStore('guestsStore', {
     guests: [],
     totalItems: 0,
     pageSelected: 1,
-    perPage: 5,
+    perPage: 10,
     currentGuest: null,
-    searchValue: ''
+    searchValue: '',
+    totalAssistant: 0,
   }),
   actions: {
+    async countTotalAssistant() {
+      const userStore = useUserStore()
+
+      if (userStore.activeEvent) {
+        const response = await GuestsService.countTotalAssistant({
+          eventId: userStore.activeEvent
+        })
+
+        this.totalAssistant = response?.data?.total || 0
+      } else {
+        this.totalAssistant = 0
+      }
+    },
+
     async loadGuestData(guestId) {
       const userStore = useUserStore()
       return await GuestsService.getGuestData(guestId, userStore.activeEvent)
@@ -59,9 +74,9 @@ export const useGuestsStore = defineStore('guestsStore', {
     },
 
     setGuests(guestsData) {
-      this.guests = guestsData.data
-      this.totalItems = guestsData.meta?.total ?? 0
-      this.pageSelected = guestsData.meta?.current_page ?? 1
+      this.guests = guestsData.data || []
+      this.totalItems = guestsData?.meta?.total ?? 10
+      this.pageSelected = guestsData?.meta?.current_page ?? 1
     },
 
     updateCurrentGuest() {
@@ -76,6 +91,13 @@ export const useGuestsStore = defineStore('guestsStore', {
     async loadGuests() {
       const userStore = useUserStore()
 
+      console.log('=== FRONTEND PAGINATION DEBUG ===', {
+        eventId: userStore.activeEvent,
+        perPage: this.perPage,
+        pageSelected: this.pageSelected,
+        searchValue: this.searchValue
+      })
+
       const response = await GuestsService.getMyEventGuests({
         eventId: userStore.activeEvent,
         perPage: this.perPage,
@@ -84,6 +106,13 @@ export const useGuestsStore = defineStore('guestsStore', {
       })
 
       if (response.status === 200) {
+        console.log('=== RESPONSE DEBUG ===', {
+          data_length: response.data?.data?.length ?? 0,
+          meta: response.data?.meta,
+          first_guest: response.data?.data?.[0]?.name ?? 'none',
+          last_guest: response.data?.data?.[response.data?.data?.length - 1]?.name ?? 'none'
+        })
+
         this.guests = response.data?.data ?? []
         this.totalItems = response.data?.meta?.total ?? 0
         this.pageSelected = response.data?.meta?.current_page ?? 1

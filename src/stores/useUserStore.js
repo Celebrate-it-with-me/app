@@ -11,7 +11,6 @@ export const useUserStore = defineStore('userStore', {
     phone: '',
     avatar: '',
     userId: '',
-    token: null,
     lastLogin: null,
     activeEvent: null,
     justLogin: false,
@@ -246,7 +245,6 @@ export const useUserStore = defineStore('userStore', {
       this.name = name
       this.email = email
       this.userId = userId
-      this.token = token
       this.lastLogin = lastLogin
       this.activeEvent = activeEvent
       this.justLogin = justLogin
@@ -303,7 +301,7 @@ export const useUserStore = defineStore('userStore', {
         this.userId = id
         this.lastLogin = null
         this.activeEvent = activeEvent
-        this.justLogin = false
+        this.justLogin = true
         this.avatar = avatar
         this.phone = phone
       }
@@ -327,7 +325,7 @@ export const useUserStore = defineStore('userStore', {
      * @returns {boolean} True if user is authenticated
      */
     isAuthenticated(state) {
-      return state.token != null
+      return state.userId != null
     },
 
     /**

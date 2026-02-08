@@ -4,9 +4,19 @@ import SignInView from '@/views/external/SignInView.vue'
 import ConfirmEmailView from '@/views/external/ConfirmEmailView.vue'
 import TermsView from '@/views/external/TermsView.vue'
 import PrivacyView from '@/views/external/PrivacyView.vue'
+import CookiesView from '@/views/external/CookiesView.vue'
 import HelpView from '@/views/external/HelpView.vue'
 
 const nonAuthRoutes = [
+  {
+    path: 'auth/social/callback',
+    name: 'social-callback',
+    component: () => import('@/views/external/SocialCallbackView.vue'),
+    meta: {
+      title: 'Social Callback',
+      requiresAuth: false
+    }
+  },
   {
     path: '',
     name: 'home',
@@ -62,6 +72,14 @@ const nonAuthRoutes = [
     component: PrivacyView,
     meta: {
       title: 'Privacy Policy'
+    }
+  },
+  {
+    path: '/cookies',
+    name: 'cookies',
+    component: CookiesView,
+    meta: {
+      title: 'Cookie Policy'
     }
   },
   {

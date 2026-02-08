@@ -93,10 +93,38 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
 
     async createSweetMemory(memory) {
       const userStore = useUserStore()
-      return await SweetMemoriesService.createSweetMemory({
+      const response = await SweetMemoriesService.createSweetMemory({
         eventId: userStore.activeEvent,
         ...memory
       })
+      if (response.status >= 200 && response.status < 300) {
+        await this.loadMemories()
+      }
+      return response
+    },
+
+    async updateSweetMemory(memory) {
+      const userStore = useUserStore()
+      const response = await SweetMemoriesService.updateSweetMemory({
+        eventId: userStore.activeEvent,
+        ...memory
+      })
+      if (response.status >= 200 && response.status < 300) {
+        await this.loadMemories()
+      }
+      return response
+    },
+
+    async deleteSweetMemory(memoryId) {
+      const userStore = useUserStore()
+      const response = await SweetMemoriesService.deleteSweetMemory({
+        eventId: userStore.activeEvent,
+        id: memoryId
+      })
+      if (response.status >= 200 && response.status < 300) {
+        await this.loadMemories()
+      }
+      return response
     },
 
     async loadMemories() {
@@ -107,6 +135,7 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
 
       if (response.status === 200) {
         this.memories = response.data.data || []
+        // Mapear para que coincida con lo que espera la vista si es necesario
         return { success: true, memories: this.memories }
       } else {
         return { success: false, error: response }

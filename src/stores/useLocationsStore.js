@@ -4,27 +4,27 @@ import LocationsService from '@/services/LocationsService'
 
 export const useLocationsStore = defineStore('locationsStore', {
   state: () => ({
-    locations: [],
+    location: {},
     searchValue: '',
     currentLocation: null
   }),
   actions: {
-    async loadLocationsList() {
+    async fetchLocation() {
       try {
-        const response = await this.loadLocations()
+        const response = await this.loadLocation()
 
         if (response.status === 200) {
-          this.locations = response?.data?.data ?? []
+          this.location = response?.data?.data ?? []
         } else {
-          console.error('Error loading locations:', response)
+          console.error('Error loading location:', response)
         }
       } catch (error) {
-        console.error('Error loading locations:', error)
+        console.error('Error loading location:', error)
       }
     },
 
-    setLocations(locations) {
-      this.locations = locations
+    setLocation(location) {
+      this.location = location
     },
     async uploadLocationImages(locationId, formData) {
       const userStore = useUserStore()
@@ -44,9 +44,9 @@ export const useLocationsStore = defineStore('locationsStore', {
       })
     },
 
-    async loadLocations() {
+    async loadLocation() {
       const userStore = useUserStore()
-      return await LocationsService.loadLocations({
+      return await LocationsService.loadLocation({
         eventId: userStore.activeEvent,
         searchValue: this.searchValue
       })
@@ -86,8 +86,12 @@ export const useLocationsStore = defineStore('locationsStore', {
     }
   },
   getters: {
-    hasLocations() {
-      return this.locations.length > 0
+    hasLocation() {
+      if (!this.location) {
+        return false
+      }
+
+      return Object.keys(this.location).length > 0
     }
   }
 })

@@ -56,6 +56,10 @@ class GuestsService {
   async getGuestData(guestId, eventId) {
     return CWM_API.get(`event/${eventId}/guests/${guestId}`, {})
   }
+
+  async countTotalAssistant({ eventId }) {
+    return CWM_API.get(`event/${eventId}/guests/count`, {})
+  }
 }
 
 export default new GuestsService()

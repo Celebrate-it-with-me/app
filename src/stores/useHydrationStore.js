@@ -8,51 +8,54 @@ import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
 import { useGuestsStore } from '@/stores/useGuestStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { useLocationsStore } from '@/stores/useLocationsStore'
+import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
 
-export const useHydrationStore = defineStore('hydration', () => {
-  const isHydrated = ref(false)
-  const isLoading = ref(false)
+export const useHydrationStore = defineStore('hydration',  {
+  state: () => ({
+    isHydrated: false,
+    isLoading: false,
+  }),
+  persist: false,
+  actions: {
+    async hydrateAll() {
+      try {
+        this.isLoading = true
+        const userStore = useUserStore()
+        const userId = userStore.userId
 
-  async function hydrateAll() {
-    try {
-      isLoading.value = true
-      const userStore = useUserStore()
-      const userId = userStore.userId
+        const { data, status } = await HydrationService.hydrate(userId)
+        if (status === 200) {
+          console.log('checking event data', data.events)
+          useEventsStore().setEvents(data.events)
+          useEventsStore().initActiveEvent(data.activeEvent)
+          useEventsStore().initEventPermissions(data.userPermissions)
 
-      const { data, status } = await HydrationService.hydrate(userId)
+          useMenusStore().setMenus(data.menus)
+          useMenusStore().setMenuGuests(data.menuGuests)
 
-      if (status === 200) {
-        useEventsStore().setEvents(data.events)
-        useEventsStore().initActiveEvent(data.activeEvent)
-        useEventsStore().initEventPermissions(data.userPermissions)
-        useMenusStore().setMenus(data.menus)
-        useMenusStore().setMenuGuests(data.menuGuests)
-        useGuestsStore().setGuests(data.guests)
-        useRsvpStore().setRsvp(data.rsvp)
-        useSaveTheDateStore().setSaveTheDate(data.saveTheDate)
-        useLocationsStore().setLocations(data.locations)
-        useEventsStore().setEventTypes(data.eventTypes)
-        useEventsStore().setEventPlans(data.eventPlans)
-      } else {
-        // Todo: Handle Error, redirect to error page with support message
+          useGuestsStore().setGuests(data.guests)
+          useRsvpStore().setRsvp(data.rsvp)
+          useEventCommentsStore().setEventComments(data.comments)
+
+          useSaveTheDateStore().setSaveTheDate(data.saveTheDate)
+          useLocationsStore().setLocation(data.location)
+
+          useEventsStore().setEventTypes(data.eventTypes)
+          useEventsStore().setEventPlans(data.eventPlans)
+        } else {
+          // Todo: Handle Error, redirect to error page with support message
+        }
+      } catch (error) {
+        this.isLoading = false
+      } finally {
+        this.isLoading = false
+        this.isHydrated = true
       }
-    } catch (error) {
-      isLoading.value = false
-    } finally {
-      isLoading.value = false
-      isHydrated.value = true
+    },
+
+    reset() {
+      this.isHydrated = false
+      this.isLoading = false
     }
-  }
-
-  const reset = () => {
-    isHydrated.value = false
-    isLoading.value = false
-  }
-
-  return {
-    isHydrated,
-    isLoading,
-    hydrateAll,
-    reset
-  }
+  },
 })

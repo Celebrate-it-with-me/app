@@ -57,13 +57,11 @@ class EventCommentsService {
         baseURL: import.meta.env.VITE_API_URL
       })
 
-      const response = await CWM_API.post(`event/${eventId}/comments`, {
+      return await CWM_API.post(`event/${eventId}/comments`, {
         userId,
         origin,
         comment
       })
-
-      return response
     } catch (error) {
       // Log detallado del error
       console.error('Error details:', {
@@ -88,7 +86,17 @@ class EventCommentsService {
   }
 
   async loadNewComments({ eventId, currentPage, perPage, search }) {
-    return await CWM_API.get(`event/${eventId}/event-comments`, {
+    return await CWM_API.get(`event/${eventId}/comments`, {
+      params: {
+        page: currentPage,
+        perPage,
+        search
+      }
+    })
+  }
+
+  async loadCommentsPaginated({ eventId, currentPage, perPage, search}){
+    return await CWM_API.get(`event/${eventId}/comments/paginated`, {
       params: {
         page: currentPage,
         perPage,
@@ -98,19 +106,33 @@ class EventCommentsService {
   }
 
   async addNewComment({ eventId, comment }) {
-    return await CWM_API.post(`event/${eventId}/event-comments`, {
+    return await CWM_API.post(`event/${eventId}/comments`, {
       comment,
-      origin: 'admin'
     })
   }
 
   async toggleCommentVisibility({ eventId, commentId }) {
-    return await CWM_API.patch(`event/${eventId}/event-comments/${commentId}/toggle-visibility`)
+    return await CWM_API.patch(`event/${eventId}/comments/${commentId}/status`)
+  }
+
+  async updateStatus({ eventId, commentId, status }){
+    return await CWM_API.patch(`event/${eventId}/comments/${commentId}/status`, {
+      status
+    })
   }
 
   async deleteComment({ eventId, commentId }) {
-    return await CWM_API.delete(`event/${eventId}/event-comments/${commentId}`)
+    return await CWM_API.delete(`event/${eventId}/comments/${commentId}`)
   }
+
+  async toggleCommentPin({ eventId, commentId}){
+    return await CWM_API.patch(`event/${eventId}/comments/${commentId}/pin`)
+  }
+
+  async toggleCommentFavorite({ eventId, commentId }){
+    return await CWM_API.patch(`event/${eventId}/comments/${commentId}/favorite`)
+  }
+
 }
 
 export default new EventCommentsService()

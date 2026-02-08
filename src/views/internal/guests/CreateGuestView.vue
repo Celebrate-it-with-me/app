@@ -18,10 +18,10 @@
           v-model:unnamed-count="unnamedCompanions"
         />
 
-        <GuestPreferencesStep v-else-if="currentStep === 2" v-model="preferences" />
+<!--        <GuestPreferencesStep v-else-if="currentStep === 2" v-model="preferences" />-->
 
         <GuestSummaryStep
-          v-else-if="currentStep === 3"
+          v-else-if="currentStep === 2"
           :guest-data="guestData"
           :named-companions="namedCompanions"
           :unnamed-companions="unnamedCompanions"
@@ -54,7 +54,6 @@ const menusStore = useMenusStore()
 const steps = [
   { title: 'Guest Info' },
   { title: 'Companions' },
-  { title: 'Preferences' },
   { title: 'Summary' }
 ]
 
@@ -124,7 +123,7 @@ const handleStepChange = step => {
 watch(
   () => menusStore.menus,
   newValue => {
-    if (newValue.length > 0) {
+    if (newValue?.length > 0) {
       guestData.value.menuSelected = menusStore.mainMenu?.id ?? 0
     }
   },

@@ -1,8 +1,8 @@
 import { CWM_API } from './axios'
 
 class LocationsService {
-  async loadLocations({ eventId, perPage, pageSelected, searchValue }) {
-    return CWM_API.get(`event/${eventId}/locations`, {
+  async loadLocation({ eventId, perPage, pageSelected, searchValue }) {
+    return CWM_API.get(`event/${eventId}/location`, {
       params: {
         perPage,
         pageSelected,
@@ -12,7 +12,7 @@ class LocationsService {
   }
 
   async addLocation({ eventId, formData }) {
-    return CWM_API.post(`event/${eventId}/locations`, formData, {
+    return CWM_API.post(`event/${eventId}/location`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -20,15 +20,15 @@ class LocationsService {
   }
 
   async deleteLocation({ eventId, locationId }) {
-    return CWM_API.delete(`event/${eventId}/locations/${locationId}`)
+    return CWM_API.delete(`event/${eventId}/location/${locationId}`)
   }
 
   async getLocation({ eventId, locationId }) {
-    return CWM_API.get(`event/${eventId}/locations/${locationId}`)
+    return CWM_API.get(`event/${eventId}/location/${locationId}`)
   }
 
   async teLocation({ eventId, locationId, formData }) {
-    return CWM_API.post(`event/${eventId}/locations/${locationId}?_method=PUT`, formData, {
+    return CWM_API.post(`event/${eventId}/location/${locationId}?_method=PUT`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -36,11 +36,11 @@ class LocationsService {
   }
 
   async getPlaceImages({ eventId, placeId }) {
-    return CWM_API.get(`event/${eventId}/locations/${placeId}/images`)
+    return CWM_API.get(`event/${eventId}/location/${placeId}/images`)
   }
 
   uploadLocationImages(locationId, formData, eventId) {
-    return CWM_API.post(`event/${eventId}/locations/${locationId}/images`, formData, {
+    return CWM_API.post(`event/${eventId}/location/${locationId}/images`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

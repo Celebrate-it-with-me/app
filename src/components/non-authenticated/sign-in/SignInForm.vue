@@ -44,7 +44,6 @@ const onSubmit = async () => {
         name: result?.user?.name ?? '',
         email: result?.user?.email ?? '',
         userId: result?.user?.id ?? '',
-        token: result?.token ?? '',
         lastLogin: result?.user?.last_login_session ?? null
       })
 
@@ -67,68 +66,95 @@ const onInvalidSubmit = errors => {
 </script>
 
 <template>
-  <div class="sign-up-form w-1/2 bg-gray-800 rounded p-10">
-    <h3 class="font-semibold text-xl mb-10 text-white">Login to Reconnect!</h3>
-    <Form
-      :validation-schema="registerValidationSchema"
-      @submit="onSubmit"
-      @invalid-submit="onInvalidSubmit"
-    >
-      <div v-if="backendError" class="text-red-500 text-sm font-semibold mb-10">
-        <p>
-          {{ backendErrorMessage }}
-        </p>
-      </div>
+  <div class="w-full max-w-md mx-auto">
+    <div class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-8 md:p-10 relative overflow-hidden">
+      <!-- Card inner glow effect -->
+      <div class="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-3xl"></div>
 
-      <!-- Email -->
-      <div class="mb-4">
-        <EmailField
-          id="email"
-          v-model="localState.email"
-          name="email"
-          label="Email"
-          :class-label="'block text-gray-300 font-medium mb-2'"
-          show-error
-          required
-          :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4 py-2
-                    focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-          placeholder="Enter your email"
-        />
-      </div>
+      <div class="relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h3 class="text-2xl md:text-3xl font-display font-bold text-gray-900 dark:text-white mb-2">
+            Login to Reconnect!
+          </h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            Welcome back to your celebration journey
+          </p>
+        </div>
 
-      <!-- Password -->
-      <div class="mb-6">
-        <PasswordField
-          id="password"
-          v-model="localState.password"
-          name="password"
-          label="Password"
-          :class-label="'block text-gray-300 font-medium mb-2'"
-          show-error
-          required
-          :class-input="`w-full bg-gray-900 text-white border-gray-700 border rounded-lg px-4 py-2
-                    focus:outline-none focus:border-none focus:ring-2 focus:ring-gray-700`"
-          placeholder="Enter your password"
-        />
-      </div>
-
-      <!-- Submit Button -->
-      <div>
-        <button
-          type="submit"
-          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-400"
+        <Form
+          :validation-schema="registerValidationSchema"
+          @submit="onSubmit"
+          @invalid-submit="onInvalidSubmit"
         >
-          Login
-        </button>
+          <!-- Error Message -->
+          <div v-if="backendError" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl">
+            <p class="text-red-600 dark:text-red-400 text-sm font-medium">
+              {{ backendErrorMessage }}
+            </p>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-6">
+            <EmailField
+              id="email"
+              v-model="localState.email"
+              name="email"
+              label="Email"
+              :class-label="'block text-gray-700 dark:text-gray-300 font-semibold mb-3 text-sm'"
+              show-error
+              required
+              :class-input="`w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-900 dark:text-white border border-gray-200/50 dark:border-gray-700/50 rounded-xl px-5 py-4 text-lg
+                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 shadow-inner placeholder-gray-500 dark:placeholder-gray-400`"
+              placeholder="Enter your email address"
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="mb-8">
+            <PasswordField
+              id="password"
+              v-model="localState.password"
+              name="password"
+              label="Password"
+              :class-label="'block text-gray-700 dark:text-gray-300 font-semibold mb-3 text-sm'"
+              show-error
+              required
+              :class-input="`w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-900 dark:text-white border border-gray-200/50 dark:border-gray-700/50 rounded-xl px-5 py-4 text-lg
+                        focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 shadow-inner placeholder-gray-500 dark:placeholder-gray-400`"
+              placeholder="Enter your password"
+            />
+          </div>
+
+          <!-- Submit Button -->
+          <div class="mb-6">
+            <button
+              type="submit"
+              :disabled="localState.sending"
+              class="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-bold text-lg px-8 py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            >
+              <span v-if="!localState.sending">Login</span>
+              <span v-else class="flex items-center justify-center">
+                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                Logging in...
+              </span>
+            </button>
+          </div>
+
+          <!-- Sign Up Link -->
+          <div class="text-center">
+            <p class="text-gray-600 dark:text-gray-400 text-sm">
+              Don't have an account?
+              <router-link
+                :to="'sign-up'"
+                class="font-semibold text-primary hover:text-primary-dark transition-colors duration-200 ml-1"
+              >
+                Click here to sign up!
+              </router-link>
+            </p>
+          </div>
+        </Form>
       </div>
-      <div class="flex flex-row justify-end">
-        <p class="text-sm text-white font-thin mt-2">
-          Don't have an account?
-          <router-link :to="'sign-up'" tag="a" class="text-yellow-300">
-            Click here to sign up!
-          </router-link>
-        </p>
-      </div>
-    </Form>
+    </div>
   </div>
 </template>

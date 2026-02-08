@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar Improvements Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for testing the navbar improvements */
+        .shadow-glow {
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
+        }
+
+        /* Primary color variables for testing */
+        :root {
+            --primary: #ec4899;
+            --secondary: #8b5cf6;
+        }
+
+        .text-primary { color: var(--primary); }
+        .bg-primary { background-color: var(--primary); }
+        .border-primary { border-color: var(--primary); }
+        .from-primary { --tw-gradient-from: var(--primary); }
+        .to-secondary { --tw-gradient-to: var(--secondary); }
+        .hover\:text-primary:hover { color: var(--primary); }
+        .hover\:border-primary\/50:hover { border-color: rgba(236, 72, 153, 0.5); }
+        .hover\:bg-primary\/5:hover { background-color: rgba(236, 72, 153, 0.05); }
+        .focus\:ring-primary\/50:focus { --tw-ring-color: rgba(236, 72, 153, 0.5); }
+        .from-primary\/10 { --tw-gradient-from: rgba(236, 72, 153, 0.1); }
+        .to-secondary\/10 { --tw-gradient-to: rgba(139, 92, 246, 0.1); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto p-8">
+        <h1 class="text-3xl font-bold mb-8 text-center">Navbar Improvements Test</h1>
+
+        <!-- Test Desktop Navigation Links -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Desktop Navigation Links</h2>
+            <nav class="flex items-center gap-2 text-sm font-medium" role="navigation" aria-label="Main navigation">
+                <a href="#features" class="relative px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 text-gray-700 hover:text-primary hover:bg-gray-50 hover:shadow-sm">
+                    <span class="relative z-10">Features</span>
+                </a>
+                <a href="#pricing" class="relative px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 text-primary bg-gradient-to-r from-primary/10 to-secondary/10 shadow-sm font-semibold">
+                    <span class="relative z-10">Pricing</span>
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full" aria-hidden="true"></span>
+                </a>
+                <a href="#gallery" class="relative px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 text-gray-700 hover:text-primary hover:bg-gray-50 hover:shadow-sm">
+                    <span class="relative z-10">Gallery</span>
+                </a>
+                <a href="#testimonials" class="relative px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 text-gray-700 hover:text-primary hover:bg-gray-50 hover:shadow-sm">
+                    <span class="relative z-10">Testimonials</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Test Enhanced Login Link -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Enhanced Login Link</h2>
+            <a class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary border border-gray-300 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2">Login</a>
+        </div>
+
+        <!-- Test Mobile Menu Button -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Mobile Menu Button</h2>
+            <button class="p-2 text-gray-700 hover:text-primary hover:bg-gray-100 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2" aria-label="Toggle menu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Test Enhanced Logo -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Enhanced Logo</h2>
+            <span class="text-pink-500 font-bold text-xl hover:text-pink-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-md px-1" tabindex="0">Celebrateitwithme</span>
+        </div>
+
+        <!-- Test Mobile Navigation Links -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Mobile Navigation Links</h2>
+            <div class="bg-white shadow-lg border border-gray-200 rounded-lg p-4 space-y-1" role="navigation" aria-label="Mobile navigation menu">
+                <a href="#features" class="block py-2 px-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 text-gray-700 hover:bg-gray-100 hover:text-primary hover:translate-x-1">
+                    <span class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-current opacity-0 transition-opacity duration-200" aria-hidden="true"></span>
+                        Features
+                    </span>
+                </a>
+                <a href="#pricing" class="block py-2 px-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 text-primary bg-gradient-to-r from-primary/10 to-secondary/10 border-l-2 border-primary shadow-sm">
+                    <span class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-current opacity-100 transition-opacity duration-200" aria-hidden="true"></span>
+                        Pricing
+                    </span>
+                </a>
+                <a href="#gallery" class="block py-2 px-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 text-gray-700 hover:bg-gray-100 hover:text-primary hover:translate-x-1">
+                    <span class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-current opacity-0 transition-opacity duration-200" aria-hidden="true"></span>
+                        Gallery
+                    </span>
+                </a>
+            </div>
+        </div>
+
+        <div class="text-center text-gray-600">
+            <p>✅ All navbar improvements have been successfully implemented!</p>
+            <p class="mt-2">Test the hover effects, focus states, and keyboard navigation (Tab, Enter, Space keys).</p>
+        </div>
+    </div>
+
+    <script>
+        // Test keyboard navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Navbar improvements test page loaded successfully');
+            console.log('🎯 Test the following features:');
+            console.log('   - Hover effects on all navigation elements');
+            console.log('   - Focus states using Tab key navigation');
+            console.log('   - Keyboard activation using Enter and Space keys');
+            console.log('   - Scale animations and color transitions');
+            console.log('   - Accessibility features (ARIA labels, roles)');
+        });
+    </script>
+</body>
+</html>

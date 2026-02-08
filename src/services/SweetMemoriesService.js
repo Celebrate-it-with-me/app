@@ -93,20 +93,54 @@ class SweetMemoriesService {
     })
   }
 
-  //---- Sweet Memories V2 ---- //
-
-  async createSweetMemory({ eventId, title, description, year, visible, image }) {
+  //---- Sweet Memories V2 (Updated to match backend) ---- //
+  async createSweetMemory({ eventId, title, description, year, visible, image, order }) {
     const formData = new FormData()
 
-    image.forEach(img => {
-      formData.append('images[]', img)
-    })
-    formData.append('title', title)
-    formData.append('description', description)
-    formData.append('year', year)
-    formData.append('visible', visible)
+    if (image && image.length > 0) {
+      image.forEach((img, index) => {
+        if (img instanceof File) {
+          formData.append(`files[${index}]`, img)
+          formData.append(`metadata[${index}][name]`, img.name)
+          formData.append(`metadata[${index}][size]`, img.size)
+        }
+      })
+    }
 
-    return await CWM_API.post(`event/${eventId}/sweet-memories-v2`, formData, {
+    formData.append('title', title || '')
+    formData.append('description', description || '')
+    formData.append('year', year || '')
+    formData.append('visible', visible ? 1 : 0)
+    formData.append('order', order || 0)
+
+    return await CWM_API.post(`event/${eventId}/sweet-memories-images`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+  }
+
+  async updateSweetMemory({ eventId, id, title, description, year, visible, image, order }) {
+    const formData = new FormData()
+
+    if (image && image.length > 0) {
+      image.forEach((img, index) => {
+        if (img instanceof File) {
+          formData.append(`files[${index}]`, img)
+          formData.append(`metadata[${index}][name]`, img.name)
+          formData.append(`metadata[${index}][size]`, img.size)
+        }
+      })
+    }
+
+    formData.append('title', title || '')
+    formData.append('description', description || '')
+    formData.append('year', year || '')
+    formData.append('visible', visible ? 1 : 0)
+    formData.append('order', order || 0)
+    formData.append('_method', 'PUT')
+
+    return await CWM_API.post(`event/${eventId}/sweet-memories-images/${id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -114,7 +148,11 @@ class SweetMemoriesService {
   }
 
   async loadSweetMemoriesV2({ eventId }) {
-    return await CWM_API.get(`event/${eventId}/sweet-memories-v2`)
+    return await CWM_API.get(`event/${eventId}/sweet-memories-images`)
+  }
+
+  async deleteSweetMemory({ eventId, id }) {
+    return await CWM_API.delete(`event/${eventId}/sweet-memories-images/${id}`)
   }
 }
 

@@ -304,6 +304,10 @@ export const useEventsStore = defineStore('eventsStore', {
       return this.events.filter(event => ['archived', 'canceled'].includes(event.status))
     },
 
+    activeEventHasMenu() {
+      return this.activeEvent && this.activeEvent.menu && this.activeEvent.menu.length > 0
+    },
+
     /**
      * Check if user has a specific permission
      * @param {Object} state - Store state
@@ -326,6 +330,10 @@ export const useEventsStore = defineStore('eventsStore', {
         return state.eventPermissions.some(perm => permissions.includes(perm.name))
       }
       return false
+    },
+
+    activeEventName: (state) => {
+      return state.activeEvent?.eventName || ''
     }
   }
 })

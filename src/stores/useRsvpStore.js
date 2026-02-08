@@ -15,9 +15,33 @@ export const useRsvpStore = defineStore('rsvpStore', {
     description: '',
     customFields: {},
     confirmationDeadline: null,
-    loaded: false
+    loaded: false,
+    stats: {}
   }),
   actions: {
+    async fetchStats() {
+      const userStore = useUserStore()
+
+      if (userStore.activeEvent) {
+        const response = await RsvpService.loadStats({
+          eventId: userStore.activeEvent,
+        })
+
+        if (response.status !== 200) {
+          notifications.addNotification({
+            type: 'error',
+            message: 'Failed to load event stats. Please try again later.'
+          })
+          return
+        }
+
+        this.stats = response.data
+      } else {
+        this.stats = {}
+      }
+
+    },
+
     async loadGuests() {
       const userStore = useUserStore()
       const notifications = useNotificationStore()
@@ -44,10 +68,11 @@ export const useRsvpStore = defineStore('rsvpStore', {
     },
 
     setRsvp(rsvpGuests) {
-      this.rsvpGuests = rsvpGuests.data
-      this.pageSelected = rsvpGuests.meta?.current_page ?? 1
-      this.perPage = rsvpGuests.meta?.per_page ?? 10
-      this.totalPages = rsvpGuests.meta?.last_page ?? 1
+      this.rsvpGuests = rsvpGuests.data || []
+
+      this.pageSelected = rsvpGuests?.meta?.current_page ?? 1
+      this.perPage = rsvpGuests?.meta?.per_page ?? 10
+      this.totalPages = rsvpGuests?.meta?.last_page ?? 1
     },
 
     loadRsvp({ eventId }) {

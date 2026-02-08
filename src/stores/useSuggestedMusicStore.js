@@ -3,76 +3,158 @@ import SongsService from '../services/SongsService'
 
 export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
   state: () => ({
-    config: {
-      id: null,
-      title: 'Music Suggestions',
-      subTitle: 'Please send us you preferred music',
-      usePreview: false,
-      mainColor: '#1f2937',
-      secondaryColor: '#111827',
-      useVoteSystem: true,
-      searchLimit: 10
-    },
-    selectedSongs: []
+    selectedSongs: [],
+    loading: false,
+    error: null
   }),
+
   actions: {
-    async saveSuggestedConfig({ eventId }) {
-      return await SongsService.saveSuggestedConfig({
-        eventId,
-        title: this.title,
-        subTitle: this.subTitle,
-        usePreview: this.usePreview,
-        mainColor: this.mainColor,
-        secondaryColor: this.secondaryColor,
-        useVoteSystem: this.useVoteSystem,
-        searchLimit: this.searchLimit
-      })
+    /**
+     * Get suggested songs for an event (organizer view)
+     * @param {number} eventId
+     * @param {object} options - { perPage, orderBy, search }
+     */
+    async getSuggestedSongs(eventId, options = {}) {
+      try {
+        this.loading = true
+        this.error = null
+        return await SongsService.getSuggestedSongs(eventId, options)
+      } catch (error) {
+        this.error = error.message
+        throw error
+      } finally {
+        this.loading = false
+      }
     },
 
-    async updateSuggestedConfig() {
-      return await SongsService.updateSuggestedConfig({
-        id: this.config.id,
-        title: this.config.title,
-        subTitle: this.config.subTitle,
-        usePreview: this.config.usePreview,
-        mainColor: this.config.mainColor,
-        secondaryColor: this.config.secondaryColor,
-        useVoteSystem: this.config.useVoteSystem,
-        searchLimit: this.config.searchLimit
-      })
+    /**
+     * Add a new song (organizer)
+     * @param {object} songData
+     */
+    async addNewSong(songData) {
+      try {
+        this.loading = true
+        this.error = null
+        return await SongsService.create(songData)
+      } catch (error) {
+        this.error = error.message
+        throw error
+      } finally {
+        this.loading = false
+      }
     },
 
-    async getSuggestedSongs(eventId) {
-      return await SongsService.getSuggestedSongs(eventId)
+    /**
+     * Delete a song (organizer)
+     * @param {number} eventId
+     * @param {number} songId
+     */
+    async deleteSong(eventId, songId) {
+      try {
+        this.loading = true
+        this.error = null
+        return await SongsService.deleteSong(eventId, songId)
+      } catch (error) {
+        this.error = error.message
+        throw error
+      } finally {
+        this.loading = false
+      }
     },
 
-    async addNewSong({ eventId, platformId, title, artist, album, thumbnailUrl, accessCode }) {
-      return await SongsService.create({
-        eventId,
-        platformId,
-        title,
-        artist,
-        album,
-        thumbnailUrl,
-        accessCode
-      })
+    /**
+     * Vote on a song (guest with accessCode)
+     * @param {number} eventId
+     * @param {number} songId
+     * @param {string} direction - 'up' or 'down'
+     * @param {string} accessCode
+     */
+    async voteSong(eventId, songId, direction, accessCode) {
+      try {
+        this.loading = true
+        this.error = null
+        return await SongsService.voteSong(eventId, songId, direction, accessCode)
+      } catch (error) {
+        this.error = error.message
+        throw error
+      } finally {
+        this.loading = false
+      }
     },
 
+    /**
+     * Get available votes for a guest
+     * @param {number} eventId
+     * @param {string} accessCode
+     */
+    async getAvailableVotes(eventId, accessCode) {
+      try {
+        return await SongsService.getAvailableVotes(eventId, accessCode)
+      } catch (error) {
+        this.error = error.message
+        throw error
+      }
+    },
+
+    /**
+     * Add a song to local state (after successful API call)
+     * @param {object} song
+     */
     addSong(song) {
       if (!this.selectedSongs.some(s => s.id === song.id)) {
         this.selectedSongs.push(song)
       }
     },
 
+    /**
+     * Remove a song from local state (after successful API call)
+     * @param {number} songId
+     */
     removeSong(songId) {
       this.selectedSongs = this.selectedSongs.filter(song => song.id !== songId)
     },
 
+    /**
+     * Clear all selected songs
+     */
     clearSelectedSongs() {
-      this.selectedsongs = []
+      this.selectedSongs = []
+    },
+
+    /**
+     * Set songs from API response
+     * @param {array} songs
+     */
+    setSongs(songs) {
+      this.selectedSongs = songs
     }
   },
+
   getters: {
-    songCount: () => this.selectedSongs.length
+    songCount: (state) => state.selectedSongs.length,
+
+    totalVotes: (state) => {
+      return state.selectedSongs.reduce((total, song) => {
+        const upVotes = song.votes?.up || 0
+        const downVotes = song.votes?.down || 0
+        return total + upVotes + downVotes
+      }, 0)
+    },
+
+    topSong: (state) => {
+      if (state.selectedSongs.length === 0) return null
+
+      return state.selectedSongs.reduce((top, song) => {
+        const currentNetScore = (song.votes?.up || 0) - (song.votes?.down || 0)
+        const topNetScore = (top.votes?.up || 0) - (top.votes?.down || 0)
+        return currentNetScore > topNetScore ? song : top
+      })
+    },
+
+    guestSuggestedCount: (state) => {
+      return state.selectedSongs.filter(song =>
+        song.suggestedBy?.isOrganizer === false
+      ).length
+    }
   }
 })
