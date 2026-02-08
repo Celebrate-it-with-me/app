@@ -14,6 +14,7 @@ export const useUserStore = defineStore('userStore', {
     lastLogin: null,
     activeEvent: null,
     justLogin: false,
+    isFirstLogin: false,
     preferences: {
       language: '',
       timezone: '',
@@ -234,14 +235,23 @@ export const useUserStore = defineStore('userStore', {
      * @param {string} userData.name - User name
      * @param {string} userData.email - User email
      * @param {string} userData.userId - User ID
-     * @param {string} userData.token - Authentication token
      * @param {Object} userData.lastLogin - Last login information
      * @param {string|number} userData.activeEvent - Active event ID
      * @param {boolean} userData.justLogin - Flag indicating if user just logged in
      * @param {string} userData.avatar - User avatar URL
      * @param {string} userData.phone - User phone number
      */
-    initUserData({ name, email, userId, token, lastLogin, activeEvent, justLogin, avatar, phone }) {
+    initUserData({
+      name,
+      email,
+      userId,
+      lastLogin,
+      activeEvent,
+      justLogin,
+      avatar,
+      phone,
+      isFirstLogin
+    }) {
       this.name = name
       this.email = email
       this.userId = userId
@@ -250,6 +260,7 @@ export const useUserStore = defineStore('userStore', {
       this.justLogin = justLogin
       this.avatar = avatar
       this.phone = phone
+      this.isFirstLogin = isFirstLogin
     },
 
     /**

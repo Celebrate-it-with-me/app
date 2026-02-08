@@ -1,6 +1,6 @@
 <script setup>
 import { Form } from 'vee-validate'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import PasswordField from '@/components/UI/form/PasswordField.vue'
 import { toTypedSchema } from '@vee-validate/zod'
@@ -44,7 +44,8 @@ const onSubmit = async () => {
         name: result?.user?.name ?? '',
         email: result?.user?.email ?? '',
         userId: result?.user?.id ?? '',
-        lastLogin: result?.user?.last_login_session ?? null
+        lastLogin: result?.user?.last_login_session ?? null,
+        isFirstLogin: result?.user?.is_first_login ?? false
       })
 
       return await router.push('dashboard')
@@ -67,19 +68,23 @@ const onInvalidSubmit = errors => {
 
 <template>
   <div class="w-full max-w-md mx-auto">
-    <div class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-8 md:p-10 relative overflow-hidden">
+    <div
+      class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/20 p-8 md:p-10 relative overflow-hidden"
+    >
       <!-- Card inner glow effect -->
-      <div class="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-3xl"></div>
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-3xl"
+      ></div>
 
       <div class="relative z-10">
         <!-- Header -->
         <div class="text-center mb-8">
-          <h3 class="text-2xl md:text-3xl font-display font-bold text-gray-900 dark:text-white mb-2">
+          <h3
+            class="text-2xl md:text-3xl font-display font-bold text-gray-900 dark:text-white mb-2"
+          >
             Login to Reconnect!
           </h3>
-          <p class="text-gray-600 dark:text-gray-300">
-            Welcome back to your celebration journey
-          </p>
+          <p class="text-gray-600 dark:text-gray-300">Welcome back to your celebration journey</p>
         </div>
 
         <Form
@@ -88,7 +93,10 @@ const onInvalidSubmit = errors => {
           @invalid-submit="onInvalidSubmit"
         >
           <!-- Error Message -->
-          <div v-if="backendError" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl">
+          <div
+            v-if="backendError"
+            class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl"
+          >
             <p class="text-red-600 dark:text-red-400 text-sm font-medium">
               {{ backendErrorMessage }}
             </p>
@@ -135,7 +143,9 @@ const onInvalidSubmit = errors => {
             >
               <span v-if="!localState.sending">Login</span>
               <span v-else class="flex items-center justify-center">
-                <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                <div
+                  class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"
+                ></div>
                 Logging in...
               </span>
             </button>
