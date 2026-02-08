@@ -8,6 +8,7 @@ import { useGuestsStore } from '@/stores/useGuestStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { useLocationsStore } from '@/stores/useLocationsStore'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
+import { useAuthStore } from '@/stores/useAuthStore'
 
 export const useHydrationStore = defineStore('hydration', {
   state: () => ({
@@ -19,6 +20,9 @@ export const useHydrationStore = defineStore('hydration', {
     async hydrateAll() {
       try {
         this.isLoading = true
+        const authStore = useAuthStore()
+        await authStore.ensureReady()
+
         const userStore = useUserStore()
         const userId = userStore.userId
 
