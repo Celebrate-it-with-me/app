@@ -7,7 +7,6 @@ import ExternalCleanLayout from '@/components/external/layout/ExternalCleanLayou
 import { externalCleanRoutes } from '@/router/externalCleanRoutes'
 import InternalLayout from '@/components/internal/layout/InternalLayout.vue'
 import { useUserStore } from '@/stores/useUserStore'
-import { useEventsStore } from '@/stores/useEventsStore'
 import { useHydrationStore } from '@/stores/useHydrationStore'
 
 const router = createRouter({
@@ -51,7 +50,6 @@ router.beforeEach(async (to, from, next) => {
   document.title = `Celebrate it with me - ${to.meta?.title}` || 'CWM'
 
   const userStore = useUserStore()
-  const eventStore = useEventsStore()
   const hydrationStore = useHydrationStore()
 
   if (!to.meta?.requiresAuth) return next()
@@ -68,15 +66,6 @@ router.beforeEach(async (to, from, next) => {
       return next({ name: 'sign-in' })
     }
   }
-
-  const requiredPermission = to.meta?.requiredPermission ?? []
-  /*if (requiredPermission.length === 0) return next()
-
-  const hasPermission = requiredPermission.some(perm => eventStore.eventPermissions?.includes(perm))
-
-  if (!hasPermission) {
-    return next({ name: 'not-authorized' })
-  }*/
 
   return next()
 })

@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 import HydrationService from '@/services/HydrationService'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useMenusStore } from '@/stores/useMenusStore'
@@ -9,23 +8,26 @@ import { useGuestsStore } from '@/stores/useGuestStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { useLocationsStore } from '@/stores/useLocationsStore'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
+import { useAuthStore } from '@/stores/useAuthStore'
 
-export const useHydrationStore = defineStore('hydration',  {
+export const useHydrationStore = defineStore('hydration', {
   state: () => ({
     isHydrated: false,
-    isLoading: false,
+    isLoading: false
   }),
   persist: false,
   actions: {
     async hydrateAll() {
       try {
         this.isLoading = true
+        const authStore = useAuthStore()
+        await authStore.ensureReady()
+
         const userStore = useUserStore()
         const userId = userStore.userId
 
         const { data, status } = await HydrationService.hydrate(userId)
         if (status === 200) {
-          console.log('checking event data', data.events)
           useEventsStore().setEvents(data.events)
           useEventsStore().initActiveEvent(data.activeEvent)
           useEventsStore().initEventPermissions(data.userPermissions)
@@ -57,5 +59,5 @@ export const useHydrationStore = defineStore('hydration',  {
       this.isHydrated = false
       this.isLoading = false
     }
-  },
+  }
 })

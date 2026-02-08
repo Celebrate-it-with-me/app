@@ -3,26 +3,23 @@ import InternalSidebar from '@/components/internal/layout/InternalSidebar.vue'
 import HeaderBar from '@/components/internal/layout/InternalHeaderBar.vue'
 import InternalFooter from '@/components/internal/layout/InternalFooter.vue'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
-import CEventsModal from '@/components/UI/modals/CEventsModal.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
-import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useHydrationStore } from '@/stores/useHydrationStore'
 import CPageLoaderV2 from '@/components/UI/loading/CPageLoaderV2.vue'
 import { useCollaboratorsStore } from '@/stores/useCollaboratorsStore'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const eventsStore = useEventsStore()
 const hydrationStore = useHydrationStore()
-const showEventsModal = ref(false)
 const loading = ref(false)
-const notificationStore = useNotificationStore()
 const sidebarExpanded = ref(true)
 const mobileSidebarOpen = ref(false)
 const collaboratorsStore = useCollaboratorsStore()
 const route = useRoute()
+const router = useRouter()
 
 const shouldShowRouteView = computed(() => {
   if (route.name === 'invitations-processor') {
@@ -41,16 +38,25 @@ onMounted(async () => {
   }
 
   await collaboratorsStore.loadInvitations()
-  loading.value = false
 
   if (userStore.justLogin === true) {
-    triggerEventsModal()
     userStore.justLogin = false
   }
+
+  await determinatePostLoginRoute()
+  loading.value = false
 })
 
-const triggerEventsModal = () => {
-  showEventsModal.value = true
+const determinatePostLoginRoute = async () => {
+  if (!userStore.activeEvent) {
+    if (eventsStore.hasEvents) {
+      await eventsStore.setActiveEvent(eventsStore.events[0])
+
+      return await router.push('/dashboard')
+    } else {
+      return await router.push('/dashboard/events/create')
+    }
+  }
 }
 
 watch(
@@ -131,7 +137,6 @@ watch(
           </CAlert>
           <router-view v-else />
           <!-- Modals -->
-          <CEventsModal v-model="showEventsModal" />
         </main>
         <InternalFooter />
       </div>
