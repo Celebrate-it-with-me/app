@@ -55,7 +55,8 @@ router.beforeEach(async (to, from, next) => {
   if (!to.meta?.requiresAuth) return next()
 
   if (!userStore.isAuthenticated) {
-    return next({ name: 'sign-in' })
+    hydrationStore.reset()
+    return next({ name: 'sign-in', query: { redirect: to.fullPath } })
   }
 
   if (!hydrationStore.isHydrated) {
@@ -63,8 +64,13 @@ router.beforeEach(async (to, from, next) => {
       await hydrationStore.hydrateAll()
     } catch (e) {
       console.error('Hydration failed:', e)
-      return next({ name: 'sign-in' })
+      await userStore.logOut()
+      return next({ name: 'sign-in', query: { redirect: to.fullPath } })
     }
+  }
+
+  if (!userStore.isAuthenticated) {
+    return next({ name: 'sign-in', query: { redirect: to.fullPath } })
   }
 
   return next()

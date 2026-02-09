@@ -74,7 +74,8 @@ const handleUnauthorized = async () => {
 
   await userStore.logOut()
 
-  await router.push({ name: 'sign-in' })
+  const currentPath = router.currentRoute.value.fullPath
+  await router.push({ name: 'sign-in', query: { redirect: currentPath } })
 }
 
 export { CWM_API }
