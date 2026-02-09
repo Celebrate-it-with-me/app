@@ -1,4 +1,4 @@
-import DashboardView from '../views/internal/dashboard/DashboardView.vue'
+import DashboardView from '../views/internal/dashboard/Dashboard.vue'
 import { useUserStore } from '@/stores/useUserStore'
 import EventsView from '@/views/internal/events/EventsView.vue'
 import CSweetMemories from '@/components/authenticated/sweet-memories/CSweetMemories.vue'
