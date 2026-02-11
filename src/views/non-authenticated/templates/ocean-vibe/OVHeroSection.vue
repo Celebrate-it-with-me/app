@@ -2,6 +2,7 @@
 import bgImage from '@/assets/images/Hero/1.jpg'
 import { computed } from 'vue'
 import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useParallaxBackground } from '@/composables/useParallaxBackground'
 
 const templateStore = useTemplateStore()
 
@@ -9,26 +10,35 @@ const guest = computed(() => templateStore.guest)
 const haveCompanions = computed(() => {
   return guest.value?.companions?.length > 0
 })
+
+useParallaxBackground('#homeParallaxBg', 0.75)
 </script>
 
 <template>
   <section
     id="sectionHome"
-    class="hero-section flex flex-col items-center justify-center w-full min-h-screen z-10 mt-0 md:mt-12"
+    class="hero-section flex flex-col items-center justify-center w-full z-10 mt-0 md:mt-12"
   >
-    <!-- Hero Section -->
-    <div class="hero relative w-full h-screen overflow-hidden">
-      <!-- Parallax Background -->
-      <div
-        class="parallax-bg absolute inset-0 bg-fixed bg-cover bg-center sm:bg-contain flex flex-col items-center justify-between pt-20 pb-1"
-        :style="`background-image: url(${bgImage});`"
-      >
+    <div class="hero relative w-full overflow-hidden">
+      <!-- Parallax background layer (moved via transform) -->
+      <div class="parallax-layer absolute inset-0">
+        <div
+          id="homeParallaxBg"
+          class="parallax-bg absolute inset-0 bg-cover bg-center bg-no-repeat"
+          :style="`background-image: url(${bgImage});`"
+        ></div>
+
         <!-- Overlay for readability -->
         <div
           class="absolute inset-0 bg-gradient-to-b from-[#123B5A]/30 via-transparent to-[#F6FBFD]/60 pointer-events-none"
         ></div>
+      </div>
 
-        <div class="top-hero relative z-10 flex flex-col items-center justify-center w-full">
+      <!-- Foreground content (fills the hero height) -->
+      <div
+        class="foreground absolute inset-0 z-10 flex flex-col items-center justify-between pt-20 pb-6"
+      >
+        <div class="top-hero flex flex-col items-center justify-center w-full">
           <div class="relative inline-block">
             <div class="absolute -inset-x-8 -inset-y-4 rounded-[2.5rem] bg-white/40 blur-2xl"></div>
             <p
@@ -37,6 +47,7 @@ const haveCompanions = computed(() => {
               Isabella Pareja
             </p>
           </div>
+
           <div
             class="inline-flex px-4 py-1 rounded-full bg-white/55 backdrop-blur-sm border border-[#D9C2A3]/35 animate-fadeIn animate__animated animate__bounceInRight"
           >
@@ -45,16 +56,18 @@ const haveCompanions = computed(() => {
         </div>
 
         <div
-          class="bottom-hero relative z-10 max-w-xl w-[92%] md:w-auto mb-8 flex flex-col items-center justify-center animate__animated animate__bounce bg-white/55 backdrop-blur-md rounded-2xl border border-white/40 shadow-lg shadow-[#123B5A]/10 p-6 md:p-10 gap-2 md:gap-3"
+          class="bottom-hero max-w-xl w-[92%] md:w-auto flex flex-col items-center justify-center animate__animated animate__bounce bg-white/55 backdrop-blur-md rounded-2xl border border-white/40 shadow-lg shadow-[#123B5A]/10 p-6 md:p-10 gap-2 md:gap-3"
         >
           <p class="text-2xl font-normal text-[#2F6F8F] font-gvibes">
             <span v-if="haveCompanions"> Es nuestro Placer Invitarlos </span>
             <span v-else> Es nuestro placer Invitarte </span>
           </p>
+
           <div class="guest-section text-center">
             <h4 class="text-lg text-[#123B5A] font-semibold break-words">
-              {{ guest.name }}
+              {{ guest?.name }}
             </h4>
+
             <ul v-if="haveCompanions" class="mt-1 text-[#123B5A]/80 text-sm break-words">
               <li v-for="companion in guest.companions" :key="companion.id">
                 {{ companion.name }}
@@ -67,4 +80,28 @@ const haveCompanions = computed(() => {
   </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Use explicit height so children using absolute/100% behave consistently on iOS */
+.hero {
+  height: 100svh;
+}
+
+@supports not (height: 100svh) {
+  .hero {
+    height: 100vh;
+  }
+}
+
+/* Parallax layers */
+.parallax-layer {
+  pointer-events: none;
+}
+
+/* Make the background slightly taller to avoid empty gaps when translating */
+.parallax-bg {
+  height: 120%;
+  top: -10%;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+</style>
