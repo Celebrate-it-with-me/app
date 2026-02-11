@@ -86,9 +86,7 @@ const fetchSuggestions = debounce(async () => {
 </script>
 
 <template>
-  <div
-    class="mt-8 w-full max-w-4xl relative rounded-2xl bg-white/75 backdrop-blur-md p-6 border border-[#7FB9C9]/30 shadow-[0_18px_50px_-25px_rgba(7,26,42,0.45)]"
-  >
+  <div class="mt-8 w-full max-w-4xl relative rounded-2xl bg-white/75 backdrop-blur-md p-6 border border-[#7FB9C9]/30 shadow-[0_18px_50px_-25px_rgba(7,26,42,0.45)]">
     <!-- Search Input -->
     <div class="relative">
       <!-- Search Icon -->
@@ -108,10 +106,7 @@ const fetchSuggestions = debounce(async () => {
       <button
         v-if="searchQuery"
         class="absolute right-4 top-1/2 -translate-y-1/2 text-[#2F6F8F] hover:text-[#123B5A] transition"
-        @click="
-          searchQuery = ''
-          suggestions = []
-        "
+        @click="searchQuery = ''; suggestions = []"
       >
         <CloseIcon class="h-5 w-5" />
       </button>
