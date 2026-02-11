@@ -99,8 +99,8 @@ useParallaxBackground('#homeParallaxBg', 0.75)
 
 /* Make the background slightly taller to avoid empty gaps when translating */
 .parallax-bg {
-  height: 120%;
-  top: -10%;
+  height: 160%;
+  top: -30%;
   will-change: transform;
   transform: translate3d(0, 0, 0);
 }

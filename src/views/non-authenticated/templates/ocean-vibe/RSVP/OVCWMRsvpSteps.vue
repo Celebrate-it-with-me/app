@@ -1,13 +1,23 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 import OVMainGuestStep from '@/views/non-authenticated/templates/ocean-vibe/RSVP/Companions/OVMainGuestStep.vue'
 import OVCompanionsStep from '@/views/non-authenticated/templates/ocean-vibe/RSVP/Companions/OVCompanionsStep.vue'
 import OVGuestInformationCheck from '@/views/non-authenticated/templates/ocean-vibe/RSVP/Companions/OVGuestInformationCheck.vue'
 
 const activeStep = ref(1)
 
+const scrollToTop = () => {
+  nextTick(() => {
+    const element = document.getElementById('sectionRSVP')
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  })
+}
+
 const handleStep = newStep => {
   activeStep.value = newStep
+  scrollToTop()
 }
 </script>
 
