@@ -9,7 +9,7 @@ import * as zod from 'zod'
 import { detect } from 'detect-browser'
 import { useUserStore } from '@/stores/useUserStore'
 import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { onBeforeUnmount } from 'vue'
 
 const sending = ref(false)
@@ -17,6 +17,7 @@ const userStore = useUserStore()
 const backendError = ref(false)
 const backendErrorMessage = ref('')
 const router = useRouter()
+const route = useRoute()
 const captchaToken = ref(null)
 const captchaSiteKey = import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY
 const isLocalEnvironment = ref(import.meta.env.VITE_APP_ENVIRONMENT === 'local')
@@ -92,6 +93,11 @@ const onSubmit = async () => {
         userStore.setPreferences(preferences?.data?.data ?? {})
       }
 
+      const redirectPath = route.query.redirect
+      if (redirectPath) {
+        return await router.push(redirectPath)
+      }
+
       return await router.push('dashboard')
     } else {
       backendError.value = true
@@ -111,7 +117,12 @@ const onInvalidSubmit = error => {
 }
 
 const handleGoogleLogin = () => {
-  window.location.href = `${apiUrl}oauth/google/redirect`
+  const redirectPath = route.query.redirect
+  let url = `${apiUrl}oauth/google/redirect`
+  if (redirectPath) {
+    url += `?redirect=${encodeURIComponent(redirectPath)}`
+  }
+  window.location.href = url
 }
 
 // Facebook login handler

@@ -39,11 +39,17 @@ onMounted(async () => {
 
   await collaboratorsStore.loadInvitations()
 
-  if (userStore.justLogin === true) {
-    userStore.justLogin = false
-  }
+  if (userStore.isAuthenticated) {
+    if (userStore.justLogin === true) {
+      userStore.justLogin = false
+    }
 
-  await determinatePostLoginRoute()
+    // Only auto-determine route if we are at the root dashboard path or similar generic entries
+    // and not already on a specific sub-route
+    if (route.path === '/dashboard' || route.path === '/dashboard/') {
+      await determinatePostLoginRoute()
+    }
+  }
   loading.value = false
 })
 
