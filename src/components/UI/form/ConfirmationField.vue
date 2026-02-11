@@ -58,35 +58,40 @@ const handleFieldBlur = e => {
       {{ label }}
     </label>
 
-    <fieldset class="flex flex-row gap-4">
+    <fieldset class="flex flex-col sm:flex-row gap-4">
       <legend class="sr-only">{{ label }}</legend>
-      <div v-for="option in options" :key="option.value" class="flex items-center space-x-3">
+      <div v-for="option in options" :key="option.value" class="flex-1">
         <label
           :for="`${name}-${option.value}`"
-          class="cursor-pointer text-dark-blue flex items-center space-x-3"
+          :class="[
+            'cursor-pointer flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all h-full',
+            inputValue === option.value
+              ? 'border-blue-800 bg-blue-50 text-blue-800'
+              : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+          ]"
+          @click.prevent="
+            () => {
+              inputValue = option.value
+              handleChange(option.value)
+            }
+          "
         >
-          <div class="relative">
-            <input
-              :id="`${name}-${option.value}`"
-              type="radio"
-              :name="name"
-              :value="option.value"
-              :checked="inputValue === option.value"
-              class="opacity-0 absolute w-5 h-5 cursor-pointer"
-              @blur="handleFieldBlur"
-              @change="handleChange"
-            />
-            <span
-              class="w-5 h-5 border-2 border-gray-300 rounded-full flex items-center justify-center"
-              :class="{ 'border-purple-400 bg-purple-400': inputValue === option.value }"
-            >
-              <span
-                class="w-2.5 h-2.5 bg-purple-600 rounded-full"
-                :class="{ hidden: inputValue !== option.value }"
-              ></span>
-            </span>
+          <input
+            :id="`${name}-${option.value}`"
+            type="radio"
+            :name="name"
+            :value="option.value"
+            :checked="inputValue === option.value"
+            class="sr-only"
+            @blur="handleFieldBlur"
+          />
+          <div
+            class="w-6 h-6 rounded-full border-2 mb-2 flex items-center justify-center"
+            :class="inputValue === option.value ? 'border-blue-800' : 'border-gray-300'"
+          >
+            <div v-if="inputValue === option.value" class="w-3 h-3 rounded-full bg-blue-800"></div>
           </div>
-          <span>{{ option.label }}</span>
+          <span class="text-sm font-bold text-center">{{ option.label }}</span>
         </label>
       </div>
     </fieldset>

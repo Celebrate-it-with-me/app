@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
-import { ArrowLeftIcon } from '@heroicons/vue/16/solid'
-import { ArrowRightIcon } from '@heroicons/vue/16/solid'
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
@@ -47,24 +46,28 @@ const changePage = page => {
 </script>
 
 <template>
-  <div class="pagination-container w-[90%] flex flex-row justify-between mt-1">
+  <div class="pagination-container w-full max-w-4xl flex flex-row justify-between mt-6 items-center px-2">
     <div
-      class="previous-section font-normal flex flex-row items-center gap-x-2"
+      class="previous-section font-bold flex flex-row items-center gap-x-1 transition-colors"
       :class="
-        currentPage === 1 ? 'text-gray-200 cursor-not-allowed' : 'text-gray-700 cursor-pointer'
+        currentPage === 1
+          ? 'text-[#7FB9C9]/40 cursor-not-allowed'
+          : 'text-[#2F6F8F] cursor-pointer hover:text-[#123B5A]'
       "
       @click="changePage(currentPage - 1)"
     >
-      <ArrowLeftIcon class="w-6 h-6" />
-      Previous
+      <ChevronLeft class="w-5 h-5" />
+      <span class="hidden sm:inline">Anterior</span>
     </div>
-    <div class="number-containers flex gap-x-2">
-      <span v-for="page in totalPages" :key="page" :class="currentPage === page" class="">
+
+    <div class="number-containers flex gap-x-1">
+      <span v-for="page in totalPages" :key="page">
         <button
+          class="flex items-center justify-center w-8 h-8 rounded-full text-sm transition-all"
           :class="
             currentPage === page
-              ? 'flex items-center justify-center px-3 h-8 font-normal text-gray-700 border-b border-gray-900'
-              : 'flex items-center justify-center px-3 h-8 leading-tight text-gray-400 bg-white'
+              ? 'bg-gradient-to-r from-[#123B5A] to-[#2F6F8F] text-white font-bold shadow-sm'
+              : 'text-[#2F6F8F] hover:bg-[#7FB9C9]/10'
           "
           @click="changePage(page)"
         >
@@ -72,17 +75,18 @@ const changePage = page => {
         </button>
       </span>
     </div>
+
     <div
-      class="next-section font-normal flex flex-row items-center gap-x-2"
+      class="next-section font-bold flex flex-row items-center gap-x-1 transition-colors"
       :class="
         currentPage === totalPages
-          ? 'text-gray-200 cursor-not-allowed'
-          : 'text-gray-700 cursor-pointer'
+          ? 'text-[#7FB9C9]/40 cursor-not-allowed'
+          : 'text-[#2F6F8F] cursor-pointer hover:text-[#123B5A]'
       "
       @click="changePage(currentPage + 1)"
     >
-      Next
-      <ArrowRightIcon class="w-6 h-6" />
+      <span class="hidden sm:inline">Siguiente</span>
+      <ChevronRight class="w-5 h-5" />
     </div>
   </div>
 </template>

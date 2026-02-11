@@ -1,12 +1,23 @@
-import EventPublicView from '../views/non-authenticated/EventPublicView.vue'
+import FirstEventPublicView from '@/views/non-authenticated/FirstEventPublicView.vue'
+import SecondEventPublicView from '@/views/non-authenticated/SecondEventPublicView.vue'
 
 const eventsRoutes = [
   {
-    path: '/event/:eventId/guest/:guestCode',
+    path: '/event/5/guest/:guestCode',
     name: 'Event Public Page',
-    component: EventPublicView,
+    component: FirstEventPublicView,
     meta: {
-      title: 'My Event Page'
+      title: 'Isabella Canedo Quinceanera',
+      requiresAuth: false
+    }
+  },
+  {
+    path: '/event/6/guest/:guestCode',
+    name: 'Event Page',
+    component: SecondEventPublicView,
+    meta: {
+      title: 'Isabella Quinceanera',
+      requiresAuth: false
     }
   }
 ]

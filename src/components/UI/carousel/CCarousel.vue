@@ -20,20 +20,20 @@
         class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
         @click="prevPhoto"
       >
-        <ChevronLeft class="w-5 h-5" />
+        <ChevronLeft class="w-5 h-5 text-red-800" />
       </button>
 
       <button
         class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
         @click="nextPhoto"
       >
-        <ChevronRight class="w-5 h-5" />
+        <ChevronRight class="w-5 h-5 text-red-800" />
       </button>
     </template>
 
     <div v-if="showDots && images.length > 1" class="flex justify-center mt-4 space-x-2">
       <button
-        v-for="(photo, index) in images"
+        v-for="index in images"
         :key="index"
         :class="['w-2.5 h-2.5 rounded-full', currentPhoto === index ? 'bg-primary' : 'bg-gray-300']"
         @click="goToPhoto(index)"

@@ -31,7 +31,12 @@ onMounted(async () => {
         userStore.setPreferences(preferences?.data?.data ?? {})
       }
 
-      await router.push({ name: 'dashboard' })
+      const redirectPath = route.query.redirect
+      if (redirectPath) {
+        await router.push(redirectPath)
+      } else {
+        await router.push({ name: 'dashboard' })
+      }
     } else {
       await router.push({ name: 'sign-in', query: { message: 'Session could not be established' } })
     }

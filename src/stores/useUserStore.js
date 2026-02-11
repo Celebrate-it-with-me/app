@@ -336,7 +336,7 @@ export const useUserStore = defineStore('userStore', {
      * @returns {boolean} True if user is authenticated
      */
     isAuthenticated(state) {
-      return state.userId != null
+      return state.userId != null && state.userId !== ''
     },
 
     /**
