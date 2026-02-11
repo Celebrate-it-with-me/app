@@ -29,7 +29,11 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
 
     async updateStatus({ commentId, status }) {
       const user = useUserStore()
-      const response = await EventCommentsService.updateStatus({ eventId: user.activeEvent, commentId, status })
+      const response = await EventCommentsService.updateStatus({
+        eventId: user.activeEvent,
+        commentId,
+        status
+      })
       if (response.status === 200) {
         const c = this.eventComments.find(x => x.id === commentId)
         if (c) c.status = status
@@ -45,6 +49,12 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
 
       return EventCommentsService.loadComments({
         eventId: userStore.activeEvent
+      })
+    },
+
+    async loadPublicComments(eventId) {
+      return EventCommentsService.loadPublicComments({
+        eventId
       })
     },
 
@@ -78,7 +88,6 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
       })
 
       console.log(response)
-
     },
 
     async toggleCommentFavorite(commentId) {
@@ -89,7 +98,6 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
       })
 
       console.log(response)
-
     },
 
     async loadCommentsPaginated() {
@@ -135,8 +143,20 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
       })
     },
 
+    async addNewCommentPublic(eventId, accessCode, comment) {
+      return EventCommentsService.addNewCommentPublic({
+        eventId,
+        accessCode,
+        comment
+      })
+    },
+
     async loadMoreComments(eventId, page) {
       return EventCommentsService.loadMoreComments(eventId, page)
+    },
+
+    async loadMoreCommentsPublic(eventId, page) {
+      return EventCommentsService.loadMoreCommentsPublic(eventId, page)
     },
 
     async toggleCommentVisibility(commentId) {

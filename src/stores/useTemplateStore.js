@@ -48,14 +48,17 @@ export const useTemplateStore = defineStore('templateStore', {
       })
     },
 
-    async refreshGuestData({ eventId, guestCode }) {
+    async refreshGuestData() {
       return await templateService.refreshGuestData({
-        eventId,
-        guestCode
+        eventId: this.event?.id || 0,
+        guestCode: this.guest?.accessCode || ''
       })
     }
   },
   getters: {
+    eventId() {
+      return this.event?.id || 0
+    },
     meals() {
       return this.event?.mealsAvailable ?? []
     },
@@ -70,6 +73,10 @@ export const useTemplateStore = defineStore('templateStore', {
 
     eventOrganizerEmail() {
       return this.event?.organizer?.email ?? ''
+    },
+
+    hasLocation() {
+      return Object.keys(this.event?.eventLocations ?? {}).length > 0
     }
   }
 })

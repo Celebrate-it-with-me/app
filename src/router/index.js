@@ -47,30 +47,36 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  document.title = `Celebrate it with me - ${to.meta?.title}` || 'CWM'
-
   const userStore = useUserStore()
   const hydrationStore = useHydrationStore()
 
-  if (!to.meta?.requiresAuth) return next()
+  // 1. Set document title
+  document.title = to.meta?.title ? `Celebrate it with me - ${to.meta.title}` : 'CWM'
 
+  const requiresAuth = to.meta?.requiresAuth ?? false
+
+  // 2. Public route handling
+  if (!requiresAuth) {
+    return next()
+  }
+
+  // 3. Authentication check
   if (!userStore.isAuthenticated) {
+    console.log('redirecting en not Autenticated')
     hydrationStore.reset()
     return next({ name: 'sign-in', query: { redirect: to.fullPath } })
   }
 
+  // 4. Data hydration if authenticated
   if (!hydrationStore.isHydrated) {
     try {
       await hydrationStore.hydrateAll()
-    } catch (e) {
-      console.error('Hydration failed:', e)
+    } catch (error) {
+      console.log('redirecting en isHydrated')
+      console.error('Hydration failed during navigation:', error)
       await userStore.logOut()
       return next({ name: 'sign-in', query: { redirect: to.fullPath } })
     }
-  }
-
-  if (!userStore.isAuthenticated) {
-    return next({ name: 'sign-in', query: { redirect: to.fullPath } })
   }
 
   return next()
