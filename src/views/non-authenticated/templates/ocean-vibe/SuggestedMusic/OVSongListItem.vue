@@ -57,15 +57,15 @@ const requestDeleteSong = () => {
 
 <template>
   <li
-    class="group relative mt-3 overflow-hidden rounded-xl border border-[#7FB9C9]/30 bg-white/75 backdrop-blur-md shadow-sm transition-all duration-300 hover:shadow-[0_8px_30px_rgb(7,26,42,0.15)] hover:border-[#2F6F8F]/40 hover:-translate-y-0.5"
+    class="group relative mt-2 overflow-hidden rounded-xl border border-[#7FB9C9]/30 bg-white/75 backdrop-blur-md shadow-sm transition-all duration-300 hover:shadow-[0_8px_30px_rgb(7,26,42,0.15)] hover:border-[#2F6F8F]/40 hover:-translate-y-0.5"
   >
     <!-- Content -->
-    <div class="relative flex items-center gap-4 px-4 py-3">
+    <div class="relative flex items-center gap-3 px-4 py-2">
       <!-- Thumbnail -->
       <img
         :src="song.thumbnailUrl || 'https://via.placeholder.com/64'"
         alt="Album Art"
-        class="h-14 w-14 shrink-0 rounded-lg object-cover shadow-sm ring-1 ring-black/5"
+        class="h-12 w-12 shrink-0 rounded-lg object-cover shadow-sm ring-1 ring-black/5"
       />
 
       <!-- Title / Artist -->
@@ -84,7 +84,7 @@ const requestDeleteSong = () => {
         </p>
 
         <!-- Votes row -->
-        <div v-if="useVoteSystem" class="mt-2 flex items-center gap-2">
+        <div v-if="useVoteSystem" class="mt-1 flex items-center gap-2">
           <button
             type="button"
             class="inline-flex items-center gap-1.5 rounded-full bg-white/50 px-2.5 py-1 text-xs text-[#123B5A] border border-[#7FB9C9]/30 transition hover:bg-[#7FB9C9]/10 active:scale-[0.95]"

@@ -93,8 +93,8 @@ const cancelDeleteSong = () => {
 </script>
 
 <template>
-  <div v-if="songsStore.selectedSongs.length > 0" class="h-full mt-6 w-full max-w-4xl">
-    <ul class="space-y-3">
+  <div v-if="songsStore.selectedSongs.length > 0" class="h-full mt-2 w-full max-w-4xl">
+    <ul class="space-y-2">
       <OVSongListItem
         v-for="song in songsStore.selectedSongs"
         :key="song.id"
