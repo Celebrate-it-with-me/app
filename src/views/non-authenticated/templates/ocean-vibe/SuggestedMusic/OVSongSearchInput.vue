@@ -63,6 +63,11 @@ const saveSelectedSong = async song => {
   }
 }
 
+const resetSuggestions = () => {
+  searchQuery.value = ''
+  suggestions.value = []
+}
+
 const fetchSuggestions = debounce(async () => {
   if (searchQuery.value && !skipFetch) {
     try {
@@ -108,10 +113,7 @@ const fetchSuggestions = debounce(async () => {
       <button
         v-if="searchQuery"
         class="absolute right-4 top-1/2 -translate-y-1/2 text-[#2F6F8F] hover:text-[#123B5A] transition"
-        @click="
-          searchQuery = ''
-          suggestions = []
-        "
+        @click="resetSuggestions()"
       >
         <CloseIcon class="h-5 w-5" />
       </button>
