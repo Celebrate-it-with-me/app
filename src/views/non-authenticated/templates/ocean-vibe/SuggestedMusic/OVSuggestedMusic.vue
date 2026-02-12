@@ -23,7 +23,7 @@ const suggestedMusic = computed(() => {
   <div
     v-if="suggestedMusic?.isEnabled"
     id="sectionSong"
-    class="suggested-music w-full flex flex-col justify-start items-center h-full min-h-screen mb-20 md:pt-20"
+    class="suggested-music w-full flex flex-col justify-start items-center h-full min-h-[50vh] mb-10 md:pt-20"
     :style="{ backgroundColor: suggestedMusic.backgroundColor }"
   >
     <OVCWMSuggestedMusic

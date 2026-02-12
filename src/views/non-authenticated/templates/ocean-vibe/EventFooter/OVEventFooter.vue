@@ -11,7 +11,7 @@ const currentYear = computed(() => new Date().getFullYear())
   >
     <!-- Event Details -->
     <div class="event-details text-center">
-      <h3 class="text-2xl font-gvibes font-bold">Isabella Pareja Quinces</h3>
+      <h3 class="text-2xl font-gvibes font-bold">Isabella Pareja's Quinces</h3>
     </div>
 
     <!-- Disclosures Section -->

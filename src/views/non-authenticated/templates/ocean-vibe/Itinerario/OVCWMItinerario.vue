@@ -3,7 +3,7 @@ import { Martini, Sparkles, Utensils, Music } from 'lucide-vue-next'
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 import bgItinerario from '@/assets/images/Itinerario/4.jpg'
-import bgItinerarioLarge from '@/assets/images/img/itinerario_bg_large.jpg'
+import bgItinerarioLarge from '@/assets/images/Itinerario/4.jpg'
 
 /**
  * Desktop detection that actually reacts to resize.

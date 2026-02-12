@@ -253,11 +253,6 @@ const onInvalidSubmit = error => {
                     <p class="font-bold text-[#123B5A] text-base truncate">
                       {{ comment.author?.name || 'Invitado' }}
                     </p>
-                    <span
-                      class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-widest bg-[#E0F2F1] text-[#2F6F8F] border border-[#7FB9C9]/20 shadow-sm"
-                    >
-                      GUEST
-                    </span>
                     <div
                       v-if="comment.isPinned"
                       class="flex items-center text-blue-500"
