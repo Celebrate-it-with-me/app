@@ -25,7 +25,7 @@ const background = computed(() => {
 </script>
 
 <template>
-  <div :class="['separator-container py-10 px-5', background]">
+  <div :class="['separator-container py-6 px-5', background]">
     <p class="separator-text text-center">
       <slot></slot>
     </p>

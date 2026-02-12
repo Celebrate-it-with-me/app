@@ -42,7 +42,22 @@ useParallaxBackground('#homeParallaxBg', 0.75)
           <div class="relative inline-block">
             <div class="absolute -inset-x-8 -inset-y-4 rounded-[2.5rem] bg-white/40 blur-2xl"></div>
             <p
-              class="relative text-5xl font-bold leading-[1.15] py-2 mt-2 font-gvibes animate__animated animate__bounceInLeft text-transparent bg-clip-text bg-gradient-to-b from-[#7fd0e6] via-[#1f5573] to-[#0e2f4a] drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)]"
+              class="relative text-5xl font-bold leading-[1.15] py-2 mt-2 font-gvibes animate__animated animate__bounceInLeft text-transparent bg-clip-text"
+              style="
+                background-image: linear-gradient(
+                  to right,
+                  #0e2f4a 0%,
+                  #1f5573 15%,
+                  #7fd0e6 30%,
+                  #aee7ff 50%,
+                  #7fd0e6 70%,
+                  #1f5573 85%,
+                  #0e2f4a 100%
+                );
+                text-shadow:
+                  0 0 10px rgba(159, 229, 255, 0.45),
+                  0 0 24px rgba(127, 208, 230, 0.35);
+              "
             >
               Isabella Pareja
             </p>

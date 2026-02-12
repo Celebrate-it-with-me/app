@@ -101,12 +101,12 @@ watch(
 <template>
   <div class="event-handle w-full max-w-6xl px-4 flex flex-col items-center relative">
     <h2
-      class="text-5xl md:text-7xl font-gvibes font-bold leading-[1.4] pt-8 md:pt-12 text-transparent bg-clip-text bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] text-center"
+      class="text-4xl md:text-7xl font-gvibes font-bold leading-[1.2] pt-4 md:pt-12 text-transparent bg-clip-text bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] text-center"
     >
       {{ title }}
     </h2>
     <h4
-      class="music-subtitle relative mt-2 text-xl md:text-2xl font-bold text-[#123B5A] text-center"
+      class="music-subtitle relative mt-1 text-lg md:text-2xl font-bold text-[#123B5A] text-center"
     >
       {{ subTitle }}
     </h4>
@@ -126,7 +126,7 @@ watch(
       :main-color="mainColor"
       :use-preview="usePreview"
       :use-vote-system="useVoteSystem"
-      class="relative z-10"
+      class="relative z-10 w-full"
       @update:list="handleUpdatedList"
     />
 

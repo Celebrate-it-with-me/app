@@ -1,6 +1,6 @@
 // services/SpotifyService.js
-const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID
-const client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET
+const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID?.trim()
+const client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET?.trim()
 
 /**
  * Get Spotify Authorization Token

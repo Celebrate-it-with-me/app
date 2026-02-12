@@ -46,7 +46,9 @@ const changePage = page => {
 </script>
 
 <template>
-  <div class="pagination-container w-full max-w-4xl flex flex-row justify-between mt-6 items-center px-2">
+  <div
+    class="pagination-container w-full max-w-4xl flex flex-row justify-between mt-2 items-center px-2"
+  >
     <div
       class="previous-section font-bold flex flex-row items-center gap-x-1 transition-colors"
       :class="
@@ -60,10 +62,10 @@ const changePage = page => {
       <span class="hidden sm:inline">Anterior</span>
     </div>
 
-    <div class="number-containers flex gap-x-1">
+    <div class="number-containers flex gap-x-0.5">
       <span v-for="page in totalPages" :key="page">
         <button
-          class="flex items-center justify-center w-8 h-8 rounded-full text-sm transition-all"
+          class="flex items-center justify-center w-7 h-7 rounded-full text-xs transition-all"
           :class="
             currentPage === page
               ? 'bg-gradient-to-r from-[#123B5A] to-[#2F6F8F] text-white font-bold shadow-sm'
