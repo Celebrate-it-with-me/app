@@ -47,7 +47,7 @@
 import CCarousel from '@/components/UI/carousel/CCarousel.vue'
 import CMapPreview from '@/components/UI/google/CMapPreview.vue'
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const templateStore = useTemplateStore()
 
@@ -65,8 +65,6 @@ const imagesUrl = computed(() => {
 
 const googleMapsUrl = computed(() => {
   const name = location.value?.name || ''
-  const lat = location.value?.latitude || ''
-  const lng = location.value?.longitude || ''
 
   const q = encodeURIComponent(`${name}`)
   return `https://www.google.com/maps/search/?api=1&query=${q}`

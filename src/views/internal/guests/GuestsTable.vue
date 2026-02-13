@@ -1,6 +1,9 @@
 <template>
   <div class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
-    <div v-if="hasGuests" class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+    <div
+      v-if="hasGuests"
+      class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6"
+    >
       <div class="flex items-center gap-4 w-full md:w-auto">
         <CInput
           id="search-guests"
@@ -20,9 +23,9 @@
       <div v-else>
         <!-- CHANGED: Added stats at top -->
         <GuestListStats
+          v-model="showOnlyWithCompanions"
           :total-guests="totalGuests"
           :total-attendees="totalAttendees"
-          v-model="showOnlyWithCompanions"
           @filter-companions="handleFilterChange"
         />
 
@@ -80,8 +83,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
+import { ref, watch, computed } from 'vue'
 import { useGuestsStore } from '@/stores/useGuestStore'
 import CLoading from '@/components/UI/loading/CLoading.vue'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
@@ -90,12 +92,11 @@ import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
 import CPagination from '@/components/UI/pagination/CPagination.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CSelect from '@/components/UI/form2/CSelect.vue'
-import { Users } from 'lucide-vue-next'
 // CHANGED: Added new UI components
 import GuestCard from '@/components/guests/GuestCard.vue'
 import GuestListStats from '@/components/guests/GuestListStats.vue'
 
-const props = defineProps({
+defineProps({
   menuRequired: {
     type: Boolean,
     default: false
@@ -114,15 +115,17 @@ const confirmDeleteModal = ref(false)
 // CHANGED: Added computed properties for stats
 const totalGuests = computed(() => guestStore.guests?.length || 0)
 const totalAttendees = computed(() => {
-  return guestStore.guests?.reduce((sum, guest) => {
-    return sum + 1 + (guest.companions?.length || 0)
-  }, 0) || 0
+  return (
+    guestStore.guests?.reduce((sum, guest) => {
+      return sum + 1 + (guest.companions?.length || 0)
+    }, 0) || 0
+  )
 })
 
 // CHANGED: Added filter state and handler
 const showOnlyWithCompanions = ref(false)
 
-const handleFilterChange = async (value) => {
+const handleFilterChange = async value => {
   showOnlyWithCompanions.value = value
   // The backend might not support ?has_companions=true yet,
   // but we refresh data as per requirement.
@@ -203,5 +206,4 @@ const confirmDeleteById = guestId => {
     confirmDelete(guest)
   }
 }
-
 </script>

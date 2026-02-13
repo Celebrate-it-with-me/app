@@ -85,6 +85,18 @@
         <!-- Notifications (version rica anterior) -->
         <div class="relative">
           <button
+            class="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            aria-label="Toggle Theme"
+            @click="toggleTheme"
+          >
+            <Sun v-if="theme === 'dark'" class="w-5 h-5" />
+            <Moon v-else class="w-5 h-5" />
+          </button>
+        </div>
+
+        <!-- Notifications (version rica anterior) -->
+        <div class="relative">
+          <button
             ref="notificationButtonRef"
             class="relative p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
             @click="toggleNotifications"
@@ -240,13 +252,17 @@ import {
   Music,
   Camera,
   MessageCircle,
-  CheckSquare
+  CheckSquare,
+  Sun,
+  Moon
 } from 'lucide-vue-next'
+import { useTheme } from '@/composables/useTheme'
 import EventSwitcher from '@/components/internal/layout/EventSwitcher.vue'
 
 const router = useRouter()
 const userStore = useUserStore()
 const guestStore = useGuestsStore()
+const { theme, toggleTheme } = useTheme()
 
 const emit = defineEmits(['toggle-mobile-sidebar'])
 

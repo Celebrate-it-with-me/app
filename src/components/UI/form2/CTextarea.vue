@@ -22,7 +22,7 @@
         :placeholder="placeholder"
         :disabled="disabled"
         :rows="rows"
-        class="w-full resize-none bg-transparent border-none outline-none px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-extralight"
+        class="w-full resize-none bg-transparent border-none outline-none px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 placeholder:font-extralight"
         @blur="handleFieldBlur"
       />
     </div>
@@ -30,7 +30,7 @@
     <p v-if="showErrorMessage" class="mt-1 text-xs text-red-500">
       {{ errorMessage }}
     </p>
-    <p v-if="description" class="mt-1 text-xs text-gray-500">
+    <p v-if="description" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
       {{ description }}
     </p>
   </div>
@@ -41,13 +41,13 @@ import { computed, watch } from 'vue'
 import { useField } from 'vee-validate'
 
 const props = defineProps({
-  id: String,
+  id: { type: String, required: true },
   name: { type: String, required: true },
-  placeholder: String,
-  label: String,
-  modelValue: String,
-  disabled: Boolean,
-  description: String,
+  placeholder: { type: String, required: true },
+  label: { type: String, required: true },
+  modelValue: { type: String, required: true },
+  disabled: { type: String, required: true },
+  description: { type: String, required: true },
   rows: { type: Number, default: 2 },
   showError: { type: Boolean, default: false }
 })

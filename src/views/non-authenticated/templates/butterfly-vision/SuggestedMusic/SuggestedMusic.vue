@@ -1,7 +1,7 @@
 <script setup>
 import CWMSuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/CWMSuggestedMusic.vue'
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const templateStore = useTemplateStore()
 

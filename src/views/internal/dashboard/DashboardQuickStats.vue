@@ -9,11 +9,17 @@ const props = defineProps({
   },
   planningData: {
     type: Object,
-    required: false
+    required: false,
+    default: () => {
+      return {}
+    }
   },
   budgetData: {
     type: Object,
-    required: false
+    required: false,
+    default: () => {
+      return {}
+    }
   }
 })
 
@@ -21,27 +27,26 @@ const router = useRouter()
 
 const handleGuestsClick = () => {
   if (props.rsvpData.total > 0) {
-    router.push('/rsvp');
+    router.push('/rsvp')
   } else {
-    router.push('/guests');
+    router.push('/guests')
   }
-};
+}
 
 const handleBudgetClick = () => {
-  router.push('/budget');
-};
+  router.push('/budget')
+}
 
 const handlePlanningClick = () => {
-  scrollToSection('planning');
-};
+  scrollToSection('planning')
+}
 
-const scrollToSection = (sectionId) => {
-  const element = document.getElementById(sectionId);
+const scrollToSection = sectionId => {
+  const element = document.getElementById(sectionId)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-};
-
+}
 </script>
 
 <template>
@@ -59,42 +64,34 @@ const scrollToSection = (sectionId) => {
           <ArrowRight class="w-4 h-4 text-gray-400" />
         </div>
 
-        <h3 class="text-xs font-medium text-gray-500 uppercase mb-1">
-          GUESTS
-        </h3>
+        <h3 class="text-xs font-medium text-gray-500 uppercase mb-1">GUESTS</h3>
 
         <div class="text-3xl font-bold text-gray-900 mb-1.5">
           {{ rsvpData.total }}
         </div>
 
         <div class="flex items-center gap-2 text-xs">
-            <span class="text-green-600 font-medium">
-              {{ rsvpData.confirmed }} Confirmed
-            </span>
+          <span class="text-green-600 font-medium"> {{ rsvpData.confirmed }} Confirmed </span>
           <span class="text-gray-400">•</span>
-          <span class="text-yellow-600 font-medium">
-              {{ rsvpData.pending }} Pending
-            </span>
+          <span class="text-yellow-600 font-medium"> {{ rsvpData.pending }} Pending </span>
         </div>
       </template>
 
       <template v-else>
         <div class="text-center py-2">
-          <div class="inline-flex items-center justify-center w-12 h-12 bg-purple-50 rounded-full mb-2">
+          <div
+            class="inline-flex items-center justify-center w-12 h-12 bg-purple-50 rounded-full mb-2"
+          >
             <Users class="w-6 h-6 text-purple-300" />
           </div>
 
-          <h3 class="text-sm font-bold text-gray-900 mb-1">
-            No Guests Yet
-          </h3>
+          <h3 class="text-sm font-bold text-gray-900 mb-1">No Guests Yet</h3>
 
-          <p class="text-xs text-gray-600 mb-2">
-            Build your guest list
-          </p>
+          <p class="text-xs text-gray-600 mb-2">Build your guest list</p>
 
           <button
-            @click.stop="router.push('/guests')"
             class="w-full px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm font-semibold inline-flex items-center justify-center gap-1.5"
+            @click.stop="router.push('/guests')"
           >
             <UserPlus class="w-4 h-4" />
             Add First Guest
@@ -117,13 +114,9 @@ const scrollToSection = (sectionId) => {
           <ArrowRight class="w-4 h-4 text-gray-400" />
         </div>
 
-        <h3 class="text-xs font-medium text-gray-500 uppercase mb-1">
-          PLANNING PROGRESS
-        </h3>
+        <h3 class="text-xs font-medium text-gray-500 uppercase mb-1">PLANNING PROGRESS</h3>
 
-        <div class="text-3xl font-bold text-gray-900 mb-2">
-          {{ planningData.progress }}%
-        </div>
+        <div class="text-3xl font-bold text-gray-900 mb-2">{{ planningData.progress }}%</div>
 
         <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
           <div
@@ -135,21 +128,19 @@ const scrollToSection = (sectionId) => {
 
       <template v-else>
         <div class="text-center py-2">
-          <div class="inline-flex items-center justify-center w-12 h-12 bg-green-50 rounded-full mb-2">
+          <div
+            class="inline-flex items-center justify-center w-12 h-12 bg-green-50 rounded-full mb-2"
+          >
             <CheckSquare class="w-6 h-6 text-green-300" />
           </div>
 
-          <h3 class="text-sm font-bold text-gray-900 mb-1">
-            Planning Not Started
-          </h3>
+          <h3 class="text-sm font-bold text-gray-900 mb-1">Planning Not Started</h3>
 
-          <p class="text-xs text-gray-600 mb-2">
-            Stay organized
-          </p>
+          <p class="text-xs text-gray-600 mb-2">Stay organized</p>
 
           <button
-            @click.stop="scrollToSection('planning')"
             class="w-full px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold inline-flex items-center justify-center gap-1.5"
+            @click.stop="scrollToSection('planning')"
           >
             <Rocket class="w-4 h-4" />
             Get Started
@@ -172,9 +163,7 @@ const scrollToSection = (sectionId) => {
           <ArrowRight class="w-4 h-4 text-gray-400" />
         </div>
 
-        <h3 class="text-xs font-medium text-gray-500 uppercase mb-1">
-          BUDGET
-        </h3>
+        <h3 class="text-xs font-medium text-gray-500 uppercase mb-1">BUDGET</h3>
 
         <div class="text-3xl font-bold text-gray-900 mb-1.5">
           ${{ budgetData.paid.toLocaleString() }}
@@ -182,29 +171,31 @@ const scrollToSection = (sectionId) => {
 
         <p class="text-xs text-gray-600">
           of ${{ budgetData.total.toLocaleString() }} •
-          <span :class="budgetData.progress > 90 ? 'text-red-600 font-semibold' : 'text-gray-700 font-medium'">
-              {{ budgetData.progress }}% used
-            </span>
+          <span
+            :class="
+              budgetData.progress > 90 ? 'text-red-600 font-semibold' : 'text-gray-700 font-medium'
+            "
+          >
+            {{ budgetData.progress }}% used
+          </span>
         </p>
       </template>
 
       <template v-else>
         <div class="text-center py-2">
-          <div class="inline-flex items-center justify-center w-12 h-12 bg-pink-50 rounded-full mb-2">
+          <div
+            class="inline-flex items-center justify-center w-12 h-12 bg-pink-50 rounded-full mb-2"
+          >
             <DollarSign class="w-6 h-6 text-pink-300" />
           </div>
 
-          <h3 class="text-sm font-bold text-gray-900 mb-1">
-            No Budget Set
-          </h3>
+          <h3 class="text-sm font-bold text-gray-900 mb-1">No Budget Set</h3>
 
-          <p class="text-xs text-gray-600 mb-2">
-            Track expenses
-          </p>
+          <p class="text-xs text-gray-600 mb-2">Track expenses</p>
 
           <button
-            @click.stop="router.push('/budget')"
             class="w-full px-3 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors text-sm font-semibold inline-flex items-center justify-center gap-1.5"
+            @click.stop="router.push('/budget')"
           >
             <Plus class="w-4 h-4" />
             Create Budget
@@ -215,6 +206,4 @@ const scrollToSection = (sectionId) => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

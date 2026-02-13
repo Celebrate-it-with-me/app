@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import TemplateService from '../services/TemplateService'
-import templateService from '../services/TemplateService'
+import TemplateService from '../../services/PublicEvents/TemplateService'
+import templateService from '../../services/PublicEvents/TemplateService'
 
 export const useTemplateStore = defineStore('templateStore', {
   state: () => ({
@@ -77,6 +77,10 @@ export const useTemplateStore = defineStore('templateStore', {
 
     hasLocation() {
       return Object.keys(this.event?.eventLocations ?? {}).length > 0
+    },
+
+    accessCode() {
+      return this.guest?.accessCode || ''
     }
   }
 })

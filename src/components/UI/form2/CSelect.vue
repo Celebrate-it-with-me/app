@@ -34,7 +34,7 @@
       {{ errorMessage }}
     </p>
 
-    <p v-if="description" class="mt-1 text-xs text-gray-500">
+    <p v-if="description" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
       {{ description }}
     </p>
   </div>
@@ -47,11 +47,11 @@ import { useField } from 'vee-validate'
 const props = defineProps({
   id: { type: String, required: true },
   name: { type: String, required: true },
-  label: { type: String },
+  label: { type: String, required: true },
   modelValue: { type: [String, Number], default: '' },
   placeholder: { type: String, default: '' },
   disabled: { type: Boolean, default: false },
-  description: { type: String },
+  description: { type: String, required: true },
   options: { type: Array, required: true },
   showError: { type: Boolean, default: false }
 })

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, reactive } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import CFRSVPTitles from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFRSVPTitles.vue'
 import CFCWMRSVPComponent from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFCWMRSVPComponent.vue'
 import CFCWMRSVPConfirmed from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFCWMRSVPConfirmed.vue'

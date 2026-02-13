@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const emit = defineEmits(['setCurrentCompanion'])
 const templateStore = useTemplateStore()

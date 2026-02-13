@@ -47,7 +47,7 @@
 import CCarousel from '@/components/UI/carousel/CCarousel.vue'
 import CMapPreview from '@/components/UI/google/CMapPreview.vue'
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const templateStore = useTemplateStore()
 

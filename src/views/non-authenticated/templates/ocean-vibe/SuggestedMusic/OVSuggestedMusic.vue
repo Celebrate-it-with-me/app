@@ -1,9 +1,11 @@
 <script setup>
-import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { computed, onMounted, watch } from 'vue'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import OVCWMSuggestedMusic from '@/views/non-authenticated/templates/ocean-vibe/SuggestedMusic/OVCWMSuggestedMusic.vue'
+import { useSuggestedMusicPublicStore } from '@/stores/publicEvents/useSuggestedMusicPublicStore'
 
 const templateStore = useTemplateStore()
+const suggestedMusicStore = useSuggestedMusicPublicStore()
 
 const suggestedMusic = computed(() => {
   return {
@@ -17,13 +19,30 @@ const suggestedMusic = computed(() => {
     useVoteSystem: true
   }
 })
+
+const getAvailableVotes = async (eventId, guestCode) => {
+  if (guestCode) {
+    return await suggestedMusicStore.getAvailableVotes(eventId, guestCode)
+  }
+}
+
+watch(
+  () => templateStore.accessCode,
+  async newValue => {
+    await getAvailableVotes(templateStore.eventId, newValue)
+  }
+)
+
+onMounted(async () => {
+  await getAvailableVotes(templateStore.eventId, templateStore.accessCode)
+})
 </script>
 
 <template>
   <div
     v-if="suggestedMusic?.isEnabled"
     id="sectionSong"
-    class="suggested-music w-full flex flex-col justify-start items-center h-full min-h-[50vh] mb-10 md:pt-20"
+    class="suggested-music w-full flex flex-col justify-start items-center min-h-[50vh] pb-10 md:pt-20"
     :style="{ backgroundColor: suggestedMusic.backgroundColor }"
   >
     <OVCWMSuggestedMusic

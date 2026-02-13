@@ -3,11 +3,12 @@ import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { ref } from 'vue'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { Music } from 'lucide-vue-next'
 import OVSongListItem from '@/views/non-authenticated/templates/ocean-vibe/SuggestedMusic/OVSongListItem.vue'
 import OVSongPreviewModal from '@/views/non-authenticated/templates/ocean-vibe/SuggestedMusic/OVSongPreviewModal.vue'
 import OVConfirmDeleteSongModal from '@/views/non-authenticated/templates/ocean-vibe/SuggestedMusic/OVConfirmDeleteSongModal.vue'
+import { useSuggestedMusicPublicStore } from '@/stores/publicEvents/useSuggestedMusicPublicStore'
 
 const emit = defineEmits(['update:List'])
 const props = defineProps({
@@ -37,6 +38,7 @@ const props = defineProps({
 const songsStore = useSuggestedMusicStore()
 const notification = useNotificationStore()
 const templateStore = useTemplateStore()
+const suggestedMusicPublicStore = useSuggestedMusicPublicStore()
 
 const isPlayerOpen = ref(false)
 const selectedSong = ref(null)
@@ -86,6 +88,23 @@ const confirmDeleteSong = async () => {
   songToDelete.value = null
 }
 
+const handleVote = async ({ song, direction }) => {
+  if (!templateStore.guest?.accessCode) {
+    notification.addNotification({
+      type: 'warning',
+      message: 'Debes ingresar con tu código de acceso para votar'
+    })
+    return
+  }
+
+  await suggestedMusicPublicStore.makeVote({
+    eventId: props.event?.id ?? 0,
+    accessCode: templateStore.guest?.accessCode,
+    songId: song.id,
+    direction
+  })
+}
+
 const cancelDeleteSong = () => {
   showDeleteModal.value = false
   songToDelete.value = null
@@ -105,6 +124,7 @@ const cancelDeleteSong = () => {
         :mode="mode"
         @play="openSongModal"
         @request-delete="requestDeleteSong"
+        @vote="handleVote"
       />
     </ul>
 

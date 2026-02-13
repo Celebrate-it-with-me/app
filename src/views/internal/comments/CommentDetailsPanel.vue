@@ -1,5 +1,7 @@
 <template>
-  <div class="h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+  <div
+    class="h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+  >
     <template v-if="comment">
       <!-- Header -->
       <div class="p-6 border-b border-gray-100">
@@ -23,18 +25,18 @@
 
           <div class="flex items-center gap-2">
             <button
-              @click="$emit('toggle-pin', comment)"
               class="p-2 hover:bg-gray-100 rounded-xl transition-all"
               :class="comment.is_pinned ? 'text-amber-500' : 'text-gray-400'"
               :title="comment.is_pinned ? 'Unpin' : 'Pin'"
+              @click="$emit('toggle-pin', comment)"
             >
               <Pin :class="['w-5 h-5', comment.is_pinned ? 'fill-amber-500' : '']" />
             </button>
             <button
-              @click="$emit('toggle-favorite', comment)"
               class="p-2 hover:bg-gray-100 rounded-xl transition-all"
               :class="comment.is_favorite ? 'text-pink-500' : 'text-gray-400'"
               :title="comment.is_favorite ? 'Unfavorite' : 'Favorite'"
+              @click="$emit('toggle-favorite', comment)"
             >
               <Star :class="['w-5 h-5', comment.is_favorite ? 'fill-pink-500' : '']" />
             </button>
@@ -44,15 +46,15 @@
         <!-- Status Control -->
         <div class="flex items-center gap-2 p-1 bg-gray-50 rounded-xl w-fit">
           <button
-            v-for="status in ['visible', 'hidden', ]"
+            v-for="status in ['visible', 'hidden']"
             :key="status"
-            @click="$emit('update-status', { id: comment.id, status })"
             class="px-4 py-1.5 text-xs font-bold rounded-lg transition-all capitalize"
             :class="[
               comment.status?.toLowerCase() === status
                 ? getStatusActiveClass(status)
                 : 'text-gray-500 hover:text-gray-700'
             ]"
+            @click="$emit('update-status', { id: comment.id, status })"
           >
             {{ status }}
           </button>
@@ -67,19 +69,23 @@
 
         <div class="mt-8 flex items-center justify-between pt-6 border-t border-gray-100">
           <div class="flex items-center gap-4">
-             <button class="text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center gap-1.5">
-               <ExternalLink class="w-4 h-4" />
-               Open public page
-             </button>
-             <button class="text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center gap-1.5">
-               <Copy class="w-4 h-4" />
-               Copy guest link
-             </button>
+            <button
+              class="text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center gap-1.5"
+            >
+              <ExternalLink class="w-4 h-4" />
+              Open public page
+            </button>
+            <button
+              class="text-sm font-medium text-gray-500 hover:text-gray-700 flex items-center gap-1.5"
+            >
+              <Copy class="w-4 h-4" />
+              Copy guest link
+            </button>
           </div>
 
           <button
-            @click="$emit('delete', comment)"
             class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-all"
+            @click="$emit('delete', comment)"
           >
             <Trash2 class="w-4 h-4" />
             Delete Comment
@@ -118,15 +124,20 @@ defineEmits(['update-status', 'toggle-pin', 'toggle-favorite', 'delete'])
 const eventStore = useEventsStore()
 
 const authorIsOrganizer = computed(() => {
-  return eventStore.activeEvent?.organizer?.id === props.comment?.author?.id;
+  return eventStore.activeEvent?.organizer?.id === props.comment?.author?.id
 })
 
-const getInitials = (name) => {
+const getInitials = name => {
   if (!name) return '?'
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
+  return name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .substring(0, 2)
 }
 
-const formatDate = (dateStr) => {
+const formatDate = dateStr => {
   if (!dateStr) return ''
   const date = new Date(dateStr)
   return new Intl.DateTimeFormat('en-US', {
@@ -135,19 +146,16 @@ const formatDate = (dateStr) => {
   }).format(date)
 }
 
-const statusLabel = computed(() => {
-  const s = props.comment.status
-  if (!s) return 'Unknown'
-  return s.charAt(0).toUpperCase() + s.slice(1)
-})
-
-
-const getStatusActiveClass = (status) => {
+const getStatusActiveClass = status => {
   switch (status) {
-    case 'visible': return 'bg-white text-green-600 shadow-sm'
-    case 'pending': return 'bg-white text-amber-600 shadow-sm'
-    case 'hidden': return 'bg-white text-red-600 shadow-sm'
-    default: return 'bg-white text-purple-600 shadow-sm'
+    case 'visible':
+      return 'bg-white text-green-600 shadow-sm'
+    case 'pending':
+      return 'bg-white text-amber-600 shadow-sm'
+    case 'hidden':
+      return 'bg-white text-red-600 shadow-sm'
+    default:
+      return 'bg-white text-purple-600 shadow-sm'
   }
 }
 </script>

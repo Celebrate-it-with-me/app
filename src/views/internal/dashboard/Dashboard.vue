@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useBudgetStore } from '@/stores/useBudgetStore'
-import { useTodoStore } from '@/stores/useTodoStore'
 import { useActivityStore } from '@/stores/useActivityStore'
 import {
   Users,
@@ -18,8 +17,6 @@ import {
   Plus,
   Send,
   MapPin,
-  ChevronRight,
-  CheckCircle2,
   Clock,
   Sparkles
 } from 'lucide-vue-next'
@@ -29,7 +26,6 @@ const router = useRouter()
 const eventsStore = useEventsStore()
 const rsvpStore = useRsvpStore()
 const budgetStore = useBudgetStore()
-const todoStore = useTodoStore()
 const activityStore = useActivityStore()
 
 // Computed (Real Data)
@@ -83,7 +79,6 @@ const budget = computed(() => {
 const showMenuWidget = computed(() => activeEvent.value?.has_menu === true)
 
 const rsvpRate = computed(() => rsvpStats.value.rsvp_rate)
-const confirmedGuests = computed(() => rsvpStats.value.confirmed)
 const pendingGuests = computed(() => rsvpStats.value.total - rsvpStats.value.confirmed)
 const unseatedGuests = computed(() => (activeEvent.value?.guest_count || 60) - seatedGuests.value)
 const totalSpent = computed(() => budget.value.spent)
@@ -271,7 +266,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-6 py-8 space-y-8 bg-gray-50 min-h-screen">
+  <div class="max-w-7xl mx-auto px-6 py-8 space-y-8 bg-gray-50 dark:bg-gray-900 min-h-screen">
     <!-- Section 1: Event Health Hero -->
     <section
       class="relative overflow-hidden bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-8 text-white shadow-xl"
@@ -308,61 +303,73 @@ onMounted(async () => {
 
     <!-- Section 2: Quick Stats Grid -->
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+      >
         <div class="flex items-center gap-4">
-          <div class="p-3 bg-pink-100 rounded-lg">
-            <Users class="w-6 h-6 text-pink-600" />
+          <div class="p-3 bg-pink-100 dark:bg-pink-900/30 rounded-lg">
+            <Users class="w-6 h-6 text-pink-600 dark:text-pink-400" />
           </div>
           <div>
-            <p class="text-sm text-gray-600 font-semibold">Guests</p>
-            <p class="text-2xl font-bold text-gray-900">{{ rsvpStats.total }}</p>
-            <p class="text-xs text-gray-500">
+            <p class="text-sm text-gray-600 dark:text-gray-400 font-semibold">Guests</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ rsvpStats.total }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
               {{ rsvpStats.confirmed }} Confirmed / {{ rsvpStats.pending }} Pending
             </p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+      >
         <div class="flex items-center gap-4">
-          <div class="p-3 bg-purple-100 rounded-lg">
-            <DollarSign class="w-6 h-6 text-purple-600" />
+          <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+            <DollarSign class="w-6 h-6 text-purple-600 dark:text-purple-400" />
           </div>
           <div>
-            <p class="text-sm text-gray-600 font-semibold">Budget Spent</p>
-            <p class="text-2xl font-bold text-gray-900">${{ budget.spent.toLocaleString() }}</p>
-            <p class="text-xs text-gray-500">of ${{ budget.total.toLocaleString() }} goal</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 font-semibold">Budget Spent</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              ${{ budget.spent.toLocaleString() }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              of ${{ budget.total.toLocaleString() }} goal
+            </p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+      >
         <div class="flex items-center gap-4">
-          <div class="p-3 bg-green-100 rounded-lg">
-            <CheckSquare class="w-6 h-6 text-green-600" />
+          <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+            <CheckSquare class="w-6 h-6 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <p class="text-sm text-gray-600 font-semibold">Tasks</p>
-            <p class="text-2xl font-bold text-gray-900">8/15</p>
-            <p class="text-xs text-gray-500">Completed so far</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 font-semibold">Tasks</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">8/15</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Completed so far</p>
           </div>
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-gray-200 p-6 hover:shadow-md transition-shadow">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow"
+      >
         <div class="flex items-center gap-4">
-          <div class="p-3 bg-yellow-100 rounded-lg">
-            <Clock class="w-6 h-6 text-yellow-600" />
+          <div class="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
+            <Clock class="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
           </div>
           <div>
-            <p class="text-sm text-gray-600 font-semibold">Days Left</p>
-            <p class="text-2xl font-bold text-gray-900">{{ daysUntilEvent }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 font-semibold">Days Left</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ daysUntilEvent }}</p>
             <div class="flex items-center gap-1">
               <span
                 class="w-2 h-2 rounded-full"
                 :class="daysUntilEvent < 30 ? 'bg-red-500' : 'bg-green-500'"
               ></span>
-              <p class="text-xs text-gray-500">
+              <p class="text-xs text-gray-500 dark:text-gray-400">
                 {{ daysUntilEvent < 30 ? 'Getting close!' : 'Plenty of time' }}
               </p>
             </div>
@@ -380,18 +387,18 @@ onMounted(async () => {
         <Plus class="w-5 h-5" /> Add Guest
       </button>
       <button
-        class="bg-white border border-gray-200 text-gray-700 rounded-lg px-4 py-3 font-semibold hover:bg-gray-50 transition-all flex items-center gap-2"
+        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-2"
       >
         <Send class="w-5 h-5" /> Send Invites
       </button>
       <button
-        class="bg-white border border-gray-200 text-gray-700 rounded-lg px-4 py-3 font-semibold hover:bg-gray-50 transition-all flex items-center gap-2"
+        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-2"
         @click="navigateTo('/dashboard/budget')"
       >
         <DollarSign class="w-5 h-5" /> Update Budget
       </button>
       <button
-        class="bg-white border border-gray-200 text-gray-700 rounded-lg px-4 py-3 font-semibold hover:bg-gray-50 transition-all flex items-center gap-2"
+        class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-lg px-4 py-3 font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center gap-2"
         @click="navigateTo('/dashboard/locations')"
       >
         <MapPin class="w-5 h-5" /> View Location
@@ -403,13 +410,18 @@ onMounted(async () => {
       <!-- LEFT COLUMN (3/5) -->
       <div class="md:col-span-3 space-y-6">
         <!-- RSVP Overview Widget -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        >
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2">
               <Users class="w-5 h-5 text-pink-500" />
-              <h3 class="text-lg font-bold">Guest RSVPs</h3>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Guest RSVPs</h3>
             </div>
-            <a href="/dashboard/rsvp" class="text-sm text-pink-600 hover:text-pink-700 font-medium">
+            <a
+              href="/dashboard/rsvp"
+              class="text-sm text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 font-medium"
+            >
               View All →
             </a>
           </div>
@@ -417,28 +429,36 @@ onMounted(async () => {
           <!-- Quick stats -->
           <div class="grid grid-cols-3 gap-4 mb-6">
             <div>
-              <p class="text-2xl font-bold text-gray-900">{{ rsvpStats.confirmed }}</p>
-              <p class="text-xs text-gray-600">Confirmed</p>
+              <p class="text-2xl font-bold text-gray-900 dark:text-white">
+                {{ rsvpStats.confirmed }}
+              </p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">Confirmed</p>
             </div>
             <div>
-              <p class="text-2xl font-bold text-gray-400">{{ rsvpStats.pending }}</p>
-              <p class="text-xs text-gray-600">Pending</p>
+              <p class="text-2xl font-bold text-gray-400 dark:text-gray-500">
+                {{ rsvpStats.pending }}
+              </p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">Pending</p>
             </div>
             <div>
-              <p class="text-2xl font-bold text-pink-600">{{ rsvpStats.rsvp_rate }}%</p>
-              <p class="text-xs text-gray-600">Response Rate</p>
+              <p class="text-2xl font-bold text-pink-600 dark:text-pink-400">
+                {{ rsvpStats.rsvp_rate }}%
+              </p>
+              <p class="text-xs text-gray-600 dark:text-gray-400">Response Rate</p>
             </div>
           </div>
 
           <!-- Trend Chart -->
           <div class="mb-6">
-            <p class="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider">
+            <p
+              class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider"
+            >
               Confirmation Trend
             </p>
             <div class="space-y-2">
               <div v-for="week in rsvpTrend" :key="week.label" class="flex items-center gap-3">
-                <span class="text-xs text-gray-500 w-16">{{ week.label }}</span>
-                <div class="flex-1 h-8 bg-gray-100 rounded-lg overflow-hidden">
+                <span class="text-xs text-gray-500 dark:text-gray-400 w-16">{{ week.label }}</span>
+                <div class="flex-1 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
                   <div
                     class="h-full bg-gradient-to-r from-pink-400 to-pink-600 flex items-center justify-end px-2 transition-all duration-1000"
                     :style="`width: ${week.percentage}%`"
@@ -452,14 +472,16 @@ onMounted(async () => {
 
           <!-- Recent confirmations -->
           <div>
-            <p class="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider">
+            <p
+              class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider"
+            >
               Recent Confirmations
             </p>
             <div class="space-y-3">
               <div
                 v-for="guest in recentConfirmations"
                 :key="guest.id"
-                class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
               >
                 <div class="flex items-center gap-3">
                   <div
@@ -469,14 +491,16 @@ onMounted(async () => {
                     {{ guest.name[0] }}
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900">{{ guest.name }}</p>
-                    <p class="text-xs text-gray-500">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ guest.name }}
+                    </p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">
                       {{ guest.guests }} guest(s) • {{ guest.timeAgo }}
                     </p>
                   </div>
                 </div>
                 <span
-                  class="px-2 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-full"
+                  class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full"
                 >
                   CONFIRMED
                 </span>
@@ -486,47 +510,68 @@ onMounted(async () => {
         </div>
 
         <!-- Menu Status Widget (Conditional) -->
-        <div v-if="showMenuWidget" class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div
+          v-if="showMenuWidget"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        >
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2">
               <UtensilsCrossed class="w-5 h-5 text-pink-500" />
-              <h3 class="text-lg font-bold">Menu Selection</h3>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Menu Selection</h3>
             </div>
             <a
               href="/dashboard/menus"
-              class="text-sm text-pink-600 hover:text-pink-700 font-medium"
+              class="text-sm text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 font-medium"
             >
               Manage →
             </a>
           </div>
 
           <div class="space-y-3 mb-6">
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span class="text-sm text-gray-700 font-medium">Appetizers</span>
-              <span class="text-lg font-bold text-gray-900">{{ menu.appetizers }}</span>
+            <div
+              class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+            >
+              <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Appetizers</span>
+              <span class="text-lg font-bold text-gray-900 dark:text-white">{{
+                menu.appetizers
+              }}</span>
             </div>
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span class="text-sm text-gray-700 font-medium">Main Courses</span>
-              <span class="text-lg font-bold text-gray-900">{{ menu.mains }}</span>
+            <div
+              class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+            >
+              <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Main Courses</span>
+              <span class="text-lg font-bold text-gray-900 dark:text-white">{{ menu.mains }}</span>
             </div>
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-              <span class="text-sm text-gray-700 font-medium">Desserts</span>
-              <span class="text-lg font-bold text-gray-900">{{ menu.desserts }}</span>
+            <div
+              class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+            >
+              <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">Desserts</span>
+              <span class="text-lg font-bold text-gray-900 dark:text-white">{{
+                menu.desserts
+              }}</span>
             </div>
           </div>
 
-          <div class="pt-4 border-t">
-            <p class="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider">
+          <div class="pt-4 border-t border-gray-100 dark:border-gray-700">
+            <p
+              class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider"
+            >
               Dietary Restrictions
             </p>
             <div class="flex flex-wrap gap-2">
-              <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+              <span
+                class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-medium rounded-full"
+              >
                 {{ dietaryRestrictions.vegetarian }} Vegetarian
               </span>
-              <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+              <span
+                class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium rounded-full"
+              >
                 {{ dietaryRestrictions.vegan }} Vegan
               </span>
-              <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
+              <span
+                class="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-medium rounded-full"
+              >
                 {{ dietaryRestrictions.allergies }} Allergies
               </span>
             </div>
@@ -534,15 +579,17 @@ onMounted(async () => {
         </div>
 
         <!-- Seating Progress Widget -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        >
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2">
               <LayoutGrid class="w-5 h-5 text-pink-500" />
-              <h3 class="text-lg font-bold">Seating Chart</h3>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Seating Chart</h3>
             </div>
             <a
               href="/dashboard/seating"
-              class="text-sm text-pink-600 hover:text-pink-700 font-medium"
+              class="text-sm text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 font-medium"
             >
               Manage →
             </a>
@@ -550,12 +597,14 @@ onMounted(async () => {
 
           <div class="mb-6">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-sm text-gray-600"
+              <span class="text-sm text-gray-600 dark:text-gray-400"
                 >{{ seatedGuests }}/{{ rsvpStats.total }} guests seated</span
               >
-              <span class="text-sm font-semibold text-gray-900">{{ seatingPercentage }}%</span>
+              <span class="text-sm font-semibold text-gray-900 dark:text-white"
+                >{{ seatingPercentage }}%</span
+              >
             </div>
-            <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
                 class="h-full bg-gradient-to-r from-pink-500 to-purple-600 transition-all duration-1000"
                 :style="`width: ${seatingPercentage}%`"
@@ -564,7 +613,9 @@ onMounted(async () => {
           </div>
 
           <div>
-            <p class="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider">
+            <p
+              class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider"
+            >
               Tables Overview
             </p>
             <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
@@ -574,8 +625,8 @@ onMounted(async () => {
                 class="aspect-square rounded-lg flex items-center justify-center text-[10px] font-bold transition-all duration-300"
                 :class="
                   table.filled
-                    ? 'bg-pink-100 text-pink-700 border-2 border-pink-300 shadow-sm'
-                    : 'bg-gray-100 text-gray-400 border-2 border-gray-200'
+                    ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400 border-2 border-pink-300 dark:border-pink-800 shadow-sm'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-2 border-gray-200 dark:border-gray-700'
                 "
               >
                 T{{ table.number }}
@@ -583,11 +634,13 @@ onMounted(async () => {
             </div>
           </div>
 
-          <div class="mt-4 pt-4 border-t flex justify-between text-sm">
-            <span class="text-gray-600 font-medium"
+          <div
+            class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between text-sm"
+          >
+            <span class="text-gray-600 dark:text-gray-400 font-medium"
               >{{ filledTables }}/{{ totalTables }} tables filled</span
             >
-            <span class="text-gray-600 font-medium"
+            <span class="text-gray-600 dark:text-gray-400 font-medium"
               >{{ rsvpStats.total - seatedGuests }} seats left</span
             >
           </div>
@@ -601,20 +654,24 @@ onMounted(async () => {
           v-if="nextStep"
           class="sticky top-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl p-0.5 mb-6 z-10"
         >
-          <div class="bg-white rounded-[11px] p-5">
+          <div class="bg-white dark:bg-gray-800 rounded-[11px] p-5">
             <!-- Header -->
             <div class="flex items-center gap-2 mb-3">
-              <Sparkles class="w-4 h-4 text-blue-600" />
-              <h4 class="font-bold text-sm text-gray-900">Your Next Step</h4>
+              <Sparkles class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <h4 class="font-bold text-sm text-gray-900 dark:text-white">Your Next Step</h4>
             </div>
 
             <!-- Step Content -->
             <div class="mb-4">
               <div class="flex items-center gap-2 mb-2">
-                <component :is="nextStep.icon" class="w-4 h-4 text-gray-600" />
-                <h5 class="font-semibold text-sm text-gray-900">{{ nextStep.title }}</h5>
+                <component :is="nextStep.icon" class="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                <h5 class="font-semibold text-sm text-gray-900 dark:text-white">
+                  {{ nextStep.title }}
+                </h5>
               </div>
-              <p class="text-sm text-gray-600 mb-3">{{ nextStep.description }}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                {{ nextStep.description }}
+              </p>
 
               <!-- Urgency Badge -->
               <div
@@ -649,16 +706,26 @@ onMounted(async () => {
         </div>
 
         <!-- Budget Breakdown Widget -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        >
           <div class="flex items-center gap-2 mb-6">
             <TrendingUp class="w-5 h-5 text-pink-500" />
-            <h3 class="text-lg font-bold">Budget Breakdown</h3>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Budget Breakdown</h3>
           </div>
 
           <div v-if="budget.spent > 0" class="space-y-6">
             <div class="relative w-40 h-40 mx-auto">
               <svg viewBox="0 0 100 100" class="transform -rotate-90 w-full h-full">
-                <circle cx="50" cy="50" r="40" fill="none" stroke="#f3f4f6" stroke-width="15" />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="40"
+                  fill="none"
+                  stroke="#f3f4f6"
+                  stroke-width="15"
+                  class="dark:stroke-gray-700"
+                />
                 <!-- Venue (40%) -->
                 <circle
                   cx="50"
@@ -708,8 +775,12 @@ onMounted(async () => {
                 />
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <p class="text-[10px] text-gray-500 font-bold uppercase">Total Spent</p>
-                <p class="text-xl font-bold text-gray-900">${{ budget.spent.toLocaleString() }}</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase">
+                  Total Spent
+                </p>
+                <p class="text-xl font-bold text-gray-900 dark:text-white">
+                  ${{ budget.spent.toLocaleString() }}
+                </p>
               </div>
             </div>
 
@@ -717,17 +788,21 @@ onMounted(async () => {
               <div
                 v-for="category in budgetCategories"
                 :key="category.name"
-                class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
               >
                 <div class="flex items-center gap-2">
                   <div class="w-3 h-3 rounded-full" :style="`background: ${category.color}`"></div>
-                  <span class="text-sm text-gray-700 font-medium">{{ category.name }}</span>
+                  <span class="text-sm text-gray-700 dark:text-gray-300 font-medium">{{
+                    category.name
+                  }}</span>
                 </div>
                 <div class="text-right">
-                  <p class="text-sm font-bold text-gray-900">
+                  <p class="text-sm font-bold text-gray-900 dark:text-white">
                     ${{ category.amount.toLocaleString() }}
                   </p>
-                  <p class="text-[10px] text-gray-500 font-bold">{{ category.percentage }}%</p>
+                  <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">
+                    {{ category.percentage }}%
+                  </p>
                 </div>
               </div>
             </div>
@@ -750,49 +825,63 @@ onMounted(async () => {
         </div>
 
         <!-- Music Summary Widget -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        >
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2">
               <Music class="w-5 h-5 text-pink-500" />
-              <h3 class="text-lg font-bold">Event Playlist</h3>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Event Playlist</h3>
             </div>
             <a
               href="/dashboard/suggested-music"
-              class="text-sm text-pink-600 hover:text-pink-700 font-medium"
+              class="text-sm text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 font-medium"
             >
               Manage →
             </a>
           </div>
 
           <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-              <p class="text-3xl font-bold text-purple-600">{{ songCount }}</p>
-              <p class="text-[10px] text-gray-600 font-bold uppercase mt-1">Songs</p>
+            <div class="text-center p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
+              <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ songCount }}</p>
+              <p class="text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase mt-1">
+                Songs
+              </p>
             </div>
-            <div class="text-center p-4 bg-pink-50 rounded-lg">
-              <p class="text-3xl font-bold text-pink-600">{{ playlistDuration }}</p>
-              <p class="text-[10px] text-gray-600 font-bold uppercase mt-1">Hours</p>
+            <div class="text-center p-4 bg-pink-50 dark:bg-pink-900/30 rounded-lg">
+              <p class="text-3xl font-bold text-pink-600 dark:text-pink-400">
+                {{ playlistDuration }}
+              </p>
+              <p class="text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase mt-1">
+                Hours
+              </p>
             </div>
           </div>
 
           <div v-if="songCount > 0">
-            <p class="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-wider">
+            <p
+              class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-3 uppercase tracking-wider"
+            >
               Recently Added
             </p>
             <div class="space-y-2">
               <div
                 v-for="song in recentSongs"
                 :key="song.id"
-                class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors group"
+                class="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors group"
               >
                 <div
-                  class="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors"
+                  class="w-8 h-8 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center group-hover:bg-pink-200 dark:group-hover:bg-pink-900/50 transition-colors"
                 >
-                  <Music class="w-4 h-4 text-pink-600" />
+                  <Music class="w-4 h-4 text-pink-600 dark:text-pink-400" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm font-bold text-gray-900 truncate">{{ song.title }}</p>
-                  <p class="text-[10px] text-gray-500 font-medium">{{ song.artist }}</p>
+                  <p class="text-sm font-bold text-gray-900 dark:text-white truncate">
+                    {{ song.title }}
+                  </p>
+                  <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
+                    {{ song.artist }}
+                  </p>
                 </div>
                 <span class="text-[10px] text-gray-400 font-bold">{{ song.duration }}</span>
               </div>
@@ -812,15 +901,18 @@ onMounted(async () => {
         </div>
 
         <!-- Gallery Preview Widget (Conditional) -->
-        <div v-if="photoCount > 0" class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div
+          v-if="photoCount > 0"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+        >
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
               <Camera class="w-5 h-5 text-pink-500" />
-              <h3 class="text-lg font-bold">Sweet Memories</h3>
+              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Sweet Memories</h3>
             </div>
             <a
               href="/dashboard/memories"
-              class="text-sm text-pink-600 hover:text-pink-700 font-medium"
+              class="text-sm text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 font-medium"
             >
               View All ({{ photoCount }}) →
             </a>
@@ -830,14 +922,14 @@ onMounted(async () => {
             <div
               v-for="photo in recentPhotos"
               :key="photo.id"
-              class="aspect-square rounded-lg overflow-hidden bg-gray-100 hover:opacity-90 cursor-pointer transition-all duration-300 hover:scale-[1.02]"
+              class="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 hover:opacity-90 cursor-pointer transition-all duration-300 hover:scale-[1.02]"
             >
               <img :src="photo.thumbnail" :alt="photo.caption" class="w-full h-full object-cover" />
             </div>
           </div>
 
           <div class="text-center">
-            <p class="text-[10px] text-gray-400 font-bold uppercase">
+            <p class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase">
               Last updated {{ lastPhotoTime }}
             </p>
           </div>

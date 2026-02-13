@@ -2,7 +2,8 @@
 import InternalSidebar from '@/components/internal/layout/InternalSidebar.vue'
 import HeaderBar from '@/components/internal/layout/InternalHeaderBar.vue'
 import InternalFooter from '@/components/internal/layout/InternalFooter.vue'
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue'
+import { useTheme } from '@/composables/useTheme'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useHydrationStore } from '@/stores/useHydrationStore'
@@ -12,6 +13,7 @@ import CAlert from '@/components/UI/alerts/CAlert.vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const userStore = useUserStore()
+const { initTheme, removeTheme } = useTheme()
 const eventsStore = useEventsStore()
 const hydrationStore = useHydrationStore()
 const loading = ref(false)
@@ -30,6 +32,8 @@ const shouldShowRouteView = computed(() => {
 })
 
 onMounted(async () => {
+  // Initialize Admin theme
+  initTheme()
   loading.value = true
   if (!hydrationStore.isHydrated) {
     await nextTick(async () => {
@@ -65,29 +69,10 @@ const determinatePostLoginRoute = async () => {
   }
 }
 
-watch(
-  () => userStore?.preferences?.visualTheme,
-  () => {
-    const theme = userStore?.preferences?.visualTheme
-    switch (theme) {
-      case 'dark':
-        document.documentElement.classList.add('dark')
-        break
-      case 'light':
-        document.documentElement.classList.remove('dark')
-        break
-      case 'system':
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          document.documentElement.classList.add('dark')
-        } else {
-          document.documentElement.classList.remove('dark')
-        }
-        break
-      default:
-        document.documentElement.classList.remove('light')
-    }
-  }
-)
+onUnmounted(() => {
+  // Remove Admin theme class when leaving Admin layout to avoid leaking to public pages
+  removeTheme()
+})
 </script>
 <template>
   <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-text font-[Poppins]">

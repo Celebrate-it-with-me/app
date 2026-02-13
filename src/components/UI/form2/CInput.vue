@@ -15,7 +15,7 @@
         disabled ? 'opacity-50 cursor-not-allowed' : ''
       ]"
     >
-      <slot name="icon" />
+      <slot name="icon" class="text-gray-400 dark:text-gray-500" />
       <input
         :id="id"
         v-bind="$attrs"
@@ -23,7 +23,7 @@
         :type="type"
         :placeholder="placeholder"
         :disabled="disabled"
-        class="pl-1 w-full bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400 placeholder:font-extralight"
+        class="pl-1 w-full bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 placeholder:font-extralight"
         @blur="handleFieldBlur"
       />
     </div>
@@ -32,7 +32,7 @@
       {{ errorMessage }}
     </p>
 
-    <p v-if="description" class="mt-1 text-xs text-gray-500">
+    <p v-if="description" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
       {{ description }}
     </p>
   </div>

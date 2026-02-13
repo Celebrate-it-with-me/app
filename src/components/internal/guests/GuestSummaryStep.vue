@@ -7,21 +7,15 @@
         <li><strong>Name:</strong> {{ guestData.name }}</li>
         <li><strong>Email:</strong> {{ guestData.email || 'N/A' }}</li>
         <li><strong>Phone:</strong> {{ guestData.phone || 'N/A' }}</li>
-        <li
-          v-if="eventHasMenu"
-        >
-          <strong>
-            Menu:
-          </strong>
-            {{ guestDataMenu.title || 'N/A' }}
+        <li v-if="eventHasMenu">
+          <strong> Menu: </strong>
+          {{ guestDataMenu.title || 'N/A' }}
         </li>
       </ul>
     </div>
 
     <!-- Companions -->
-    <div
-      v-if="hasCompanions"
-    >
+    <div v-if="hasCompanions">
       <h3 class="text-base font-semibold text-gray-800 dark:text-white mb-2">Companions</h3>
 
       <div class="overflow-x-auto">
@@ -35,13 +29,7 @@
               <th scope="col" class="px-4 py-2">Companion Name</th>
               <th scope="col" class="px-4 py-2">Email</th>
               <th scope="col" class="px-4 py-2">Phone</th>
-              <th
-                v-if="eventHasMenu"
-                scope="col"
-                class="px-4 py-2"
-              >
-                Menu Selected
-              </th>
+              <th v-if="eventHasMenu" scope="col" class="px-4 py-2">Menu Selected</th>
             </tr>
           </thead>
           <tbody>
@@ -56,14 +44,17 @@
             <tr v-else>
               <td
                 :colspan="eventHasMenu ? 3 : 2"
-                class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
+                class="px-4 py-3 text-center text-gray-500 dark:text-gray-400"
+              >
                 No named companions
               </td>
             </tr>
           </tbody>
           <tfoot class="bg-gray-50 dark:bg-gray-900 text-sm">
             <tr class="border-t border-gray-200 dark:border-gray-700">
-              <td :colspan="eventHasMenu ? 3 : 2" class="px-4 py-2 font-semibold">Unnamed Companions</td>
+              <td :colspan="eventHasMenu ? 3 : 2" class="px-4 py-2 font-semibold">
+                Unnamed Companions
+              </td>
               <td class="px-4 py-2 text-right">{{ unnamedCompanions || 0 }}</td>
             </tr>
           </tfoot>
@@ -86,9 +77,7 @@
           />
         </svg>
         <h4 class="text-sm font-medium text-gray-800 dark:text-white mb-1">No Companions</h4>
-        <p class="text-xs text-gray-500 dark:text-gray-400">
-          This guest is attending solo
-        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">This guest is attending solo</p>
       </div>
     </div>
   </section>
@@ -114,6 +103,7 @@ const guestDataMenu = computed(() => {
 
 const eventHasMenu = computed(() => menusStore.hasMenu)
 
-const hasCompanions = computed(() => props.namedCompanions.length > 0 || props.unnamedCompanions > 0)
-
+const hasCompanions = computed(
+  () => props.namedCompanions.length > 0 || props.unnamedCompanions > 0
+)
 </script>

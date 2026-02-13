@@ -18,7 +18,7 @@
           v-model:unnamed-count="unnamedCompanions"
         />
 
-<!--        <GuestPreferencesStep v-else-if="currentStep === 2" v-model="preferences" />-->
+        <!--        <GuestPreferencesStep v-else-if="currentStep === 2" v-model="preferences" />-->
 
         <GuestSummaryStep
           v-else-if="currentStep === 2"
@@ -38,7 +38,6 @@ import CWizard from '@/components/UI/wizard/CWizard.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'
 import GuestInfoStep from '@/components/internal/guests/GuestInfoStep.vue'
 import GuestCompanionsStep from '@/components/internal/guests/GuestCompanionsStep.vue'
-import GuestPreferencesStep from '@/components/internal/guests/GuestPreferencesStep.vue'
 import GuestSummaryStep from '@/components/internal/guests/GuestSummaryStep.vue'
 import { useGuestsStore } from '@/stores/useGuestStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
@@ -51,11 +50,7 @@ const guestStore = useGuestsStore()
 const notifications = useNotificationStore()
 const menusStore = useMenusStore()
 
-const steps = [
-  { title: 'Guest Info' },
-  { title: 'Companions' },
-  { title: 'Summary' }
-]
+const steps = [{ title: 'Guest Info' }, { title: 'Companions' }, { title: 'Summary' }]
 
 const guestData = ref({
   name: '',

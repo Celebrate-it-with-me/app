@@ -310,7 +310,9 @@
           >
             <Smartphone class="w-8 h-8 text-accent" />
           </div>
-          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">Plan Anywhere, Anytime</h3>
+          <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">
+            Plan Anywhere, Anytime
+          </h3>
           <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
             Access your planning tools from your phone so you can check tasks while on the go.
           </p>

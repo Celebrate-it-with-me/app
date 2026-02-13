@@ -5,7 +5,10 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">
-            Sweet <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">Memories</span>
+            Sweet
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
+              >Memories</span
+            >
           </h1>
           <p class="text-gray-500 font-medium">
             Create a timeline of special moments to share the honoree's story
@@ -15,26 +18,39 @@
     </div>
 
     <!-- Stats Dashboard -->
-    <div v-if="!showForm && sweetMemoriesStorage.memories.length > 0" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div
+      v-if="!showForm && sweetMemoriesStorage.memories.length > 0"
+      class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"
+    >
       <!-- Total Memories Card -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+      <div
+        class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+      >
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
             <Camera class="w-6 h-6 text-purple-600" />
           </div>
           <div>
-            <div class="text-2xl font-bold text-gray-900">{{ sweetMemoriesStorage.memories.length }}</div>
+            <div class="text-2xl font-bold text-gray-900">
+              {{ sweetMemoriesStorage.memories.length }}
+            </div>
             <div class="text-sm text-gray-600">Total Memories</div>
           </div>
         </div>
       </div>
 
       <!-- Total Reactions Card (MOCK data) -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+      <div
+        class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+      >
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center">
             <svg class="w-6 h-6 text-pink-600" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+              <path
+                fill-rule="evenodd"
+                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                clip-rule="evenodd"
+              />
             </svg>
           </div>
           <div>
@@ -45,12 +61,29 @@
       </div>
 
       <!-- Total Views Card (MOCK data) -->
-      <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+      <div
+        class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+      >
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center">
-            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            <svg
+              class="w-6 h-6 text-indigo-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
             </svg>
           </div>
           <div>
@@ -72,19 +105,35 @@
             placeholder="Search memories..."
             class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
           />
-          <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          <svg
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         </div>
 
         <!-- Year Filter -->
-        <select v-model="yearFilter" class="bg-white border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+        <select
+          v-model="yearFilter"
+          class="bg-white border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+        >
           <option value="">All Years</option>
           <option v-for="year in availableYears" :key="year" :value="year">{{ year }}</option>
         </select>
 
         <!-- Sort Order -->
-        <select v-model="sortOrder" class="bg-white border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all">
+        <select
+          v-model="sortOrder"
+          class="bg-white border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+        >
           <option value="newest">Newest First</option>
           <option value="oldest">Oldest First</option>
           <option value="most-loved">Most Loved</option>
@@ -92,7 +141,7 @@
       </div>
     </div>
 
-<!-- Show form when adding/editing a memory -->
+    <!-- Show form when adding/editing a memory -->
     <CSweetMemoriesForm
       v-if="showForm"
       :initial-memory="currentMemory"
@@ -123,7 +172,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
 import { Camera } from 'lucide-vue-next'
-import CHeading from '@/components/UI/headings/CHeading.vue'
 
 import CSweetMemoriesForm from '@/views/internal/sweet-memories/CSweetMemoriesForm.vue'
 import CSweetMemoriesList from '@/views/internal/sweet-memories/CSweetMemoriesList.vue'
@@ -189,16 +237,11 @@ const editMemory = memory => {
   showForm.value = true
 }
 
-const saveMemory = async memory => {
-  // El componente hijo CSweetMemoriesForm ya realizó la llamada a la API y el store actualizó los datos.
-  // Aquí solo cerramos el formulario.
+const saveMemory = async () => {
   showForm.value = false
 }
 
 const deleteMemory = async memory => {
-  // El componente hijo o la lista ya manejan la confirmación y la llamada al store si es necesario,
-  // pero aquí parece que se centraliza la eliminación.
-  // Si se llama desde el formulario, cerramos el formulario tras eliminar.
   if (confirm('Are you sure you want to delete this memory?')) {
     const response = await sweetMemoriesStorage.deleteSweetMemory(memory.id)
     if (response.status >= 200 && response.status < 300) {

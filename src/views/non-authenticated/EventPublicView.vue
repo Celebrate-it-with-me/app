@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import CWMLoadingPage from '@/components/UI/loading/CWMLoadingPage.vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import MainLayout from '@/views/non-authenticated/templates/butterfly-vision/MainLayout.vue'
 
 const route = useRoute()

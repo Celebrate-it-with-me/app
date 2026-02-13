@@ -1,6 +1,6 @@
 <script setup>
 import { Mail, Phone, User, CheckCircle, UserCheck } from 'lucide-vue-next'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { computed } from 'vue'
 
 const templateStore = useTemplateStore()
