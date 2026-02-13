@@ -1,22 +1,17 @@
 <template>
-  <section
-    id="testimonials"
-    class="py-20 bg-gradient-to-br from-purple-50 to-pink-50 scroll-mt-16"
-  >
+  <section id="testimonials" class="py-20 bg-gradient-to-br from-purple-50 to-pink-50 scroll-mt-16">
     <div class="max-w-6xl mx-auto px-6">
       <!-- Section Header -->
       <div class="text-center mb-16">
         <h2 class="text-4xl md:text-5xl font-black text-gray-900 mb-4">
           Why Choose
-          <span
-            class="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent"
-          >
+          <span class="bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
             Celebrate It With Me
           </span>
         </h2>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          Finally, a planning platform that understands the heart of a Quinceañera.
-          CWM gives you the tools to honor tradition without the stress.
+          Finally, a planning platform that understands the heart of a Quinceañera. CWM gives you
+          the tools to honor tradition without the stress.
         </p>
       </div>
 

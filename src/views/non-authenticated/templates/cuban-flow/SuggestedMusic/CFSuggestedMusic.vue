@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import CFCWMSuggestedMusic from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFCWMSuggestedMusic.vue'
 
 const templateStore = useTemplateStore()

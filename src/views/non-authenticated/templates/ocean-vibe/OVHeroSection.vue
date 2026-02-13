@@ -1,7 +1,7 @@
 <script setup>
 import bgImage from '@/assets/images/Hero/1.jpg'
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { useParallaxBackground } from '@/composables/useParallaxBackground'
 
 const templateStore = useTemplateStore()

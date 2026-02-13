@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue'
 import { Play, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-vue-next'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
+import { useSuggestedMusicPublicStore } from '@/stores/publicEvents/useSuggestedMusicPublicStore'
 
 const emit = defineEmits(['play', 'vote', 'request-delete'])
 
@@ -26,6 +27,9 @@ const props = defineProps({
 })
 
 const templateStore = useTemplateStore()
+const suggestedMusicPublicStore = useSuggestedMusicPublicStore()
+
+const userVote = computed(() => suggestedMusicPublicStore.userVotes[props.song.id] || null)
 
 const canRemove = computed(() => {
   const suggestedBy = props.song?.suggestedBy
@@ -87,21 +91,33 @@ const requestDeleteSong = () => {
         <div v-if="useVoteSystem" class="mt-1 flex items-center gap-2">
           <button
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-full bg-white/50 px-2.5 py-1 text-xs text-[#123B5A] border border-[#7FB9C9]/30 transition hover:bg-[#7FB9C9]/10 active:scale-[0.95]"
+            class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs border border-[#7FB9C9]/30 transition active:scale-[0.95]"
+            :class="[
+              userVote === 'up'
+                ? 'bg-[#123B5A] text-white'
+                : 'bg-white/50 text-[#123B5A] hover:bg-[#7FB9C9]/10'
+            ]"
             title="Upvote"
+            :disabled="!templateStore.guest?.accessCode"
             @click="onVote('up')"
           >
-            <ThumbsUp class="h-3.5 w-3.5" />
+            <ThumbsUp class="h-3.5 w-3.5" :class="{ 'fill-current': userVote === 'up' }" />
             <span class="tabular-nums font-medium">{{ song.votes?.up ?? 0 }}</span>
           </button>
 
           <button
             type="button"
-            class="inline-flex items-center gap-1.5 rounded-full bg-white/50 px-2.5 py-1 text-xs text-[#2F6F8F] border border-[#7FB9C9]/30 transition hover:bg-[#7FB9C9]/10 active:scale-[0.95]"
+            class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs border border-[#7FB9C9]/30 transition active:scale-[0.95]"
+            :class="[
+              userVote === 'down'
+                ? 'bg-[#2F6F8F] text-white'
+                : 'bg-white/50 text-[#2F6F8F] hover:bg-[#7FB9C9]/10'
+            ]"
             title="Downvote"
+            :disabled="!templateStore.guest?.accessCode"
             @click="onVote('down')"
           >
-            <ThumbsDown class="h-3.5 w-3.5" />
+            <ThumbsDown class="h-3.5 w-3.5" :class="{ 'fill-current': userVote === 'down' }" />
             <span class="tabular-nums font-medium">{{ song.votes?.down ?? 0 }}</span>
           </button>
         </div>

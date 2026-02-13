@@ -1,27 +1,11 @@
 <script setup>
-import { useTemplateStore } from '@/stores/useTemplateStore'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import SaveTheDateCountDown from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateCountDown.vue'
 import SaveTheDateAddToCalendar from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDateAddToCalendar.vue'
 
-const templateStore = useTemplateStore()
 const h2TitleRef = ref(null)
 const isH2TitleInView = ref(false)
 let observer
-
-const saveTheDate = computed(() => {
-  return templateStore.event?.saveTheDate
-})
-
-const generalStyles = computed(() => {
-  let styles = {}
-
-  if (saveTheDate.value.backgroundColor) {
-    styles.backgroundColor = saveTheDate.value.backgroundColor
-  }
-
-  return styles
-})
 
 onMounted(() => {
   observer = new IntersectionObserver(entries => {
@@ -137,18 +121,6 @@ onUnmounted(() => {
 
 .font-gvibes {
   font-family: 'Great Vibes', sans-serif;
-}
-
-.glow-gold-text {
-  color: #ffd700; /* Gold */
-  text-shadow:
-    0 0 5px #ffd700,
-    0 0 10px #ffa500,
-    0 0 20px #ffd700,
-    0 0 40px #ff8c00;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-align: center;
 }
 
 .text-6xl {

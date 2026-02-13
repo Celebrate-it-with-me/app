@@ -1,7 +1,7 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 
 export function useClickOutside(elementRef, callback) {
-  const handleClickOutside = (event) => {
+  const handleClickOutside = event => {
     if (elementRef.value && !elementRef.value.contains(event.target)) {
       callback()
     }
@@ -14,5 +14,4 @@ export function useClickOutside(elementRef, callback) {
   onBeforeUnmount(() => {
     document.removeEventListener('click', handleClickOutside)
   })
-
 }

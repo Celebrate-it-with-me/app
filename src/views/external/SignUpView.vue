@@ -30,7 +30,9 @@
       ></div>
     </div>
 
-    <CCard class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30">
+    <CCard
+      class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30"
+    >
       <div class="text-center mb-8">
         <h1 class="text-3xl font-display font-bold text-primary">Join Celebrateitwithme</h1>
         <p class="text-sm text-text-light mt-2">
@@ -75,6 +77,7 @@
             placeholder="Choose your plan"
             name="planSelected"
             show-error
+            description=""
           />
 
           <CInput
@@ -152,7 +155,9 @@
             <div class="w-full border-t border-gray-300/50 dark:border-gray-600/50"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-2 bg-transparent text-gray-500 dark:text-gray-400">Or continue with</span>
+            <span class="px-2 bg-transparent text-gray-500 dark:text-gray-400"
+              >Or continue with</span
+            >
           </div>
         </div>
 
@@ -279,7 +284,6 @@ const sending = ref(false)
 const captchaToken = ref(null)
 const captchaSiteKey = import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY
 const isLocalEnvironment = ref(import.meta.env.VITE_APP_ENVIRONMENT === 'local')
-const isCaptchaRequired = computed(() => !isLocalEnvironment.value || captchaToken.value)
 
 const form = reactive({
   name: '',

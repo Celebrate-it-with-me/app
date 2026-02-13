@@ -6,7 +6,7 @@ import CFConfirmDeleteSongModal from '@/views/non-authenticated/templates/cuban-
 import CFSongListItem from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFSongListItem.vue'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const emit = defineEmits(['update:List'])
 const props = defineProps({

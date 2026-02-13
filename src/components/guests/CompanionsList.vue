@@ -22,12 +22,12 @@
 </template>
 
 <script setup>
-import { CornerDownRight, Mail, Phone } from 'lucide-vue-next';
+import { CornerDownRight, Mail, Phone } from 'lucide-vue-next'
 
 defineProps({
   companions: {
     type: Array,
     default: () => []
   }
-});
+})
 </script>

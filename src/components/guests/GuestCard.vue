@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 mb-3 hover:shadow-md transition-shadow cursor-pointer overflow-hidden">
+  <div
+    class="bg-white rounded-lg border border-gray-200 mb-3 hover:shadow-md transition-shadow cursor-pointer overflow-hidden"
+  >
     <!-- Main Guest Row -->
     <div
       class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4"
@@ -67,41 +69,20 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import {
-  ChevronRight,
-  ChevronDown,
-  Users,
-  Mail,
-  Phone,
-  Eye,
-  Trash2
-} from 'lucide-vue-next';
-import CompanionsList from './CompanionsList.vue';
+import { ref } from 'vue'
+import { ChevronRight, ChevronDown, Users, Mail, Phone, Eye, Trash2 } from 'lucide-vue-next'
+import CompanionsList from './CompanionsList.vue'
 
-const props = defineProps({
+defineProps({
   guest: {
     type: Object,
     required: true
   }
-});
+})
 
-const emit = defineEmits(['show-details', 'delete-guest']);
+const emit = defineEmits(['show-details', 'delete-guest'])
 
-const isExpanded = ref(false);
+const isExpanded = ref(false)
 </script>
 
-<style scoped>
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.3s ease;
-  max-height: 500px;
-  overflow: hidden;
-}
-
-.expand-enter-from,
-.expand-leave-to {
-  max-height: 0;
-  opacity: 0;
-}
-</style>
+<style scoped></style>

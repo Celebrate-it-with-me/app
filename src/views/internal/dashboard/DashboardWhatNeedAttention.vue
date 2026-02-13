@@ -1,6 +1,9 @@
 <script setup>
 import { AlertTriangle, CheckSquare, DollarSign, Flame, Mail, Users } from 'lucide-vue-next'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   daysUntilEvent: {
@@ -22,12 +25,12 @@ const props = defineProps({
 })
 
 const urgentAlerts = computed(() => {
-  const alerts = [];
-  const days = props.daysUntilEvent;
-  const guests = props.rsvpData.total;
-  const pending = props.rsvpData.pending;
-  const planning = props.planningData.progress;
-  const budget = props.budgetData.total;
+  const alerts = []
+  const days = props.daysUntilEvent
+  const guests = props.rsvpData.total
+  const pending = props.rsvpData.pending
+  const planning = props.planningData.progress
+  const budget = props.budgetData.total
 
   // CRITICAL: Event TODAY with no guests
   if (days === 0 && guests === 0) {
@@ -43,7 +46,7 @@ const urgentAlerts = computed(() => {
       subtitle: 'You need to add guests immediately to start tracking attendance',
       actionLabel: 'Add Guests Now',
       action: () => router.push('/guests')
-    });
+    })
   }
 
   // CRITICAL: Event soon (< 7 days) with many pending
@@ -60,7 +63,7 @@ const urgentAlerts = computed(() => {
       subtitle: 'Send reminders to get final headcount before event day',
       actionLabel: 'Send Reminders',
       action: () => router.push('/rsvp?filter=pending')
-    });
+    })
   }
 
   // HIGH: No guests at all
@@ -77,7 +80,7 @@ const urgentAlerts = computed(() => {
       subtitle: 'Start building your guest list to track RSVPs and plan seating',
       actionLabel: 'Add First Guest',
       action: () => router.push('/guests')
-    });
+    })
   }
 
   // MEDIUM: Planning not started
@@ -94,7 +97,7 @@ const urgentAlerts = computed(() => {
       subtitle: 'Complete your planning tasks to stay organized and on track',
       actionLabel: 'Start Planning',
       action: () => scrollToSection('planning')
-    });
+    })
   }
 
   // MEDIUM: No budget set
@@ -111,19 +114,18 @@ const urgentAlerts = computed(() => {
       subtitle: 'Set up your budget to track expenses and stay within limits',
       actionLabel: 'Create Budget',
       action: () => router.push('/budget')
-    });
+    })
   }
 
-  return alerts.slice(0, 3);
-});
+  return alerts.slice(0, 3)
+})
 
-const scrollToSection = (sectionId) => {
-  const element = document.getElementById(sectionId);
+const scrollToSection = sectionId => {
+  const element = document.getElementById(sectionId)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-};
-
+}
 </script>
 
 <template>
@@ -138,9 +140,9 @@ const scrollToSection = (sectionId) => {
         v-for="(alert, index) in urgentAlerts"
         :key="index"
         :class="[
-            'alert-card p-3 rounded-lg border-l-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all hover:shadow-md border shadow-sm',
-            alert.bgClass
-          ]"
+          'alert-card p-3 rounded-lg border-l-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all hover:shadow-md border shadow-sm',
+          alert.bgClass
+        ]"
       >
         <div class="flex items-center gap-3 flex-1">
           <component :is="alert.icon" :class="['w-5 h-5 flex-shrink-0', alert.iconClass]" />
@@ -154,11 +156,11 @@ const scrollToSection = (sectionId) => {
           </div>
         </div>
         <button
-          @click="alert.action"
           :class="[
-              'w-full sm:w-auto px-4 py-2 rounded-lg font-semibold text-sm transition-colors whitespace-nowrap shadow-sm ml-0 sm:ml-3',
-              alert.buttonClass
-            ]"
+            'w-full sm:w-auto px-4 py-2 rounded-lg font-semibold text-sm transition-colors whitespace-nowrap shadow-sm ml-0 sm:ml-3',
+            alert.buttonClass
+          ]"
+          @click="alert.action"
         >
           {{ alert.actionLabel }}
         </button>
@@ -167,6 +169,4 @@ const scrollToSection = (sectionId) => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

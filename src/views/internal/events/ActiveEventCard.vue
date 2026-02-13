@@ -3,7 +3,7 @@ import CCard from '@/components/UI/cards/CCard.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
-import { Calendar, Clock, MapPin, ExternalLink, Edit, UserCircle } from 'lucide-vue-next'
+import { Calendar, Clock, Edit, ExternalLink, MapPin, UserCircle } from 'lucide-vue-next'
 
 const router = useRouter()
 const props = defineProps({
@@ -37,8 +37,8 @@ const daysUntilEvent = computed(() => {
   const today = new Date()
   const eventDate = new Date(props.activeEvent.startDate)
   const diffTime = eventDate - today
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays
+
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 })
 
 const eventStatus = computed(() => {
@@ -104,45 +104,62 @@ const eventStatus = computed(() => {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-4">
         <div class="flex items-center group">
-          <div class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors">
+          <div
+            class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors"
+          >
             <Calendar class="w-4 h-4 text-rose" />
           </div>
           <div class="flex flex-col">
-            <span class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Date</span>
-            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ formatDate(activeEvent.startDate) }} – {{ formatDate(activeEvent.endDate) }}</span>
+            <span
+              class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider"
+              >Date</span
+            >
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200"
+              >{{ formatDate(activeEvent.startDate) }} – {{ formatDate(activeEvent.endDate) }}</span
+            >
           </div>
         </div>
 
-        <div
-          v-if="activeEvent.eventTime"
-          class="flex items-center group"
-        >
-          <div class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors">
+        <div v-if="activeEvent.eventTime" class="flex items-center group">
+          <div
+            class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors"
+          >
             <Clock class="w-4 h-4 text-rose" />
           </div>
           <div class="flex flex-col">
-            <span class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Time</span>
-            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ activeEvent.eventTime }}</span>
+            <span
+              class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider"
+              >Time</span
+            >
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{
+              activeEvent.eventTime
+            }}</span>
           </div>
         </div>
 
-        <div
-          v-if="activeEvent.location"
-          class="flex items-center group md:col-span-2"
-        >
-          <div class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors">
+        <div v-if="activeEvent.location" class="flex items-center group md:col-span-2">
+          <div
+            class="p-2.5 bg-rose/5 dark:bg-rose/10 rounded-xl mr-3.5 group-hover:bg-rose/10 transition-colors"
+          >
             <MapPin class="w-4 h-4 text-rose" />
           </div>
           <div class="flex flex-col">
-            <span class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider">Location</span>
-            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{{ activeEvent.location }}</span>
+            <span
+              class="text-[10px] uppercase font-bold text-gray-400 dark:text-gray-500 tracking-wider"
+              >Location</span
+            >
+            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200 truncate">{{
+              activeEvent.location
+            }}</span>
           </div>
         </div>
       </div>
     </template>
 
     <template #cta>
-      <div class="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+      <div
+        class="flex flex-wrap items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-700/50"
+      >
         <CButton
           variant="gradient"
           class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white px-8 py-2.5 rounded-xl shadow-lg shadow-rose/20 transition-all active:scale-95"
@@ -165,11 +182,4 @@ const eventStatus = computed(() => {
   </CCard>
 </template>
 
-<style scoped>
-.card-menu {
-  position: absolute;
-  top: -9.5rem;
-  right: -10px;
-  z-index: 10;
-}
-</style>
+<style scoped></style>

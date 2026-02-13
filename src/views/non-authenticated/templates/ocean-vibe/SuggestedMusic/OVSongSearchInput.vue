@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import SpotifyService from '@/services/SpotifyService'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const emit = defineEmits(['update:List'])
 const props = defineProps({

@@ -1,5 +1,5 @@
 <script setup>
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { computed } from 'vue'
 import NoCompanions from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/NoCompanions.vue'
 import Companions from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/Companions.vue'

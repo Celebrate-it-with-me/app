@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
 import CFSweetMemoriesGallery from '@/views/non-authenticated/templates/cuban-flow/SweetMemories/CFSweetMemoriesGallery.vue'
 

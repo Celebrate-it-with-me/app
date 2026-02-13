@@ -13,7 +13,7 @@ import CFEventComments from '@/views/non-authenticated/templates/cuban-flow/Even
 import CFEventLocations from '@/views/non-authenticated/templates/cuban-flow/location/CFEventLocations.vue'
 import CFSwipeLeftIcon from '@/views/non-authenticated/templates/cuban-flow/SwipeLeftIcon/CFSwipeLeftIcon.vue'
 import CFEventFooter from '@/views/non-authenticated/templates/cuban-flow/EventFooter/CFEventFooter.vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const showScrollBtn = ref(false)
 const videoReproduced = ref(false)
@@ -79,7 +79,7 @@ const handleMoveToTop = () => {
 <template>
   <div class="bg-red-50/10 font-jost h-full min-h-screen">
     <transition name="fade" mode="out-in">
-      <div v-if="/*!videoReproduced*/false">
+      <div v-if="/*!videoReproduced*/ false">
         <video
           ref="videoRef"
           class="w-full h-screen object-cover block"

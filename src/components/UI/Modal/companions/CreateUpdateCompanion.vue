@@ -14,7 +14,8 @@ const emit = defineEmits(['processedCompanion'])
 const props = defineProps({
   companion: {
     type: [Object, null],
-    required: false
+    required: false,
+    default: null
   },
   mode: {
     type: String,

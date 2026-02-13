@@ -43,14 +43,14 @@
 </template>
 
 <script setup>
-import { Calendar, Zap, Users, CheckCircle } from 'lucide-vue-next';
+import { Calendar, Zap, Users, CheckCircle } from 'lucide-vue-next'
 
 defineProps({
-  totalEvents: Number,
-  publicEvents: Number,
-  totalGuests: Number,
-  avgResponse: Number
-});
+  totalEvents: { type: Number, required: true },
+  publicEvents: { type: Number, required: true },
+  totalGuests: { type: Number, required: true },
+  avgResponse: { type: Number, required: true }
+})
 </script>
 
 <style scoped>

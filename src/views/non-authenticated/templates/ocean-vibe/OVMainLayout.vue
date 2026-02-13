@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { ArrowUp } from 'lucide-vue-next'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import OVHeaderNav from '@/views/non-authenticated/templates/ocean-vibe/OVHeaderNav.vue'
 import OVHeroSection from '@/views/non-authenticated/templates/ocean-vibe/OVHeroSection.vue'
 import OVSeparatorSection from '@/views/non-authenticated/templates/ocean-vibe/OVSeparatorSection.vue'

@@ -13,13 +13,13 @@
 </template>
 
 <script setup>
-import { CornerDownRight } from 'lucide-vue-next';
-import RsvpStatusBadge from './RsvpStatusBadge.vue';
+import { CornerDownRight } from 'lucide-vue-next'
+import RsvpStatusBadge from './RsvpStatusBadge.vue'
 
 defineProps({
   companions: {
     type: Array,
     default: () => []
   }
-});
+})
 </script>

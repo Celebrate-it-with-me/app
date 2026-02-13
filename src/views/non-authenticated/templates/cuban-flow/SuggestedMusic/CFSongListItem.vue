@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { Play, ThumbsDown, ThumbsUp, Trash2 } from 'lucide-vue-next'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const emit = defineEmits(['play', 'vote', 'request-delete'])
 

@@ -28,19 +28,23 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl p-4">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl p-4"
+          >
             <!-- Email row -->
             <div v-if="guestData.email" class="flex items-center justify-between group">
               <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
                 <div class="p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
                   <Mail class="w-4 h-4 text-purple-500" />
                 </div>
-                <span class="truncate max-w-[150px]" :title="guestData.email">{{ guestData.email }}</span>
+                <span class="truncate max-w-[150px]" :title="guestData.email">{{
+                  guestData.email
+                }}</span>
               </div>
               <button
-                @click="emailGuest"
                 class="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
                 title="Send email"
+                @click="emailGuest"
               >
                 <SendIcon class="w-4 h-4" />
               </button>
@@ -55,9 +59,9 @@
                 <span>{{ guestData.phone }}</span>
               </div>
               <button
-                @click="callGuest"
                 class="p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
                 title="Call guest"
+                @click="callGuest"
               >
                 <PhoneCall class="w-4 h-4" />
               </button>
@@ -70,7 +74,9 @@
               <Clock class="w-3.5 h-3.5 text-gray-400" />
               <span v-if="guestData.rsvpStatus === 'pending'"> Awaiting confirmation </span>
               <span v-else-if="guestData.rsvpStatus === 'attending'"> Confirmed attendance </span>
-              <span v-else-if="guestData.rsvpStatus === 'not-attending'"> Declined attendance </span>
+              <span v-else-if="guestData.rsvpStatus === 'not-attending'">
+                Declined attendance
+              </span>
               <span v-else> Unknown status </span>
             </div>
 
@@ -102,8 +108,8 @@
           class="border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden"
         >
           <button
-            @click="isCompanionsExpanded = !isCompanionsExpanded"
             class="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            @click="isCompanionsExpanded = !isCompanionsExpanded"
           >
             <div class="flex items-center gap-2">
               <Users class="w-4 h-4 text-gray-500" />
@@ -117,7 +123,10 @@
             />
           </button>
 
-          <div v-show="isCompanionsExpanded" class="p-2 space-y-1 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 max-h-48 overflow-y-auto">
+          <div
+            v-show="isCompanionsExpanded"
+            class="p-2 space-y-1 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 max-h-48 overflow-y-auto"
+          >
             <div
               v-for="companion in guestData.companions"
               :key="companion.id"
@@ -141,12 +150,18 @@
             <h5 class="text-sm font-semibold text-gray-700 dark:text-gray-200">Share Invitation</h5>
           </div>
 
-          <div class="bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl p-4 space-y-4">
+          <div
+            class="bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl p-4 space-y-4"
+          >
             <!-- Invitation Link -->
             <div v-if="guestData.invitationUrl">
-              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2"> Invitation Link </label>
+              <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
+                Invitation Link
+              </label>
               <div class="flex items-center gap-2">
-                <div class="flex-1 flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+                <div
+                  class="flex-1 flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"
+                >
                   <LinkIcon class="w-3.5 h-3.5 text-gray-400" />
                   <input
                     :value="truncatedUrl"
@@ -155,9 +170,9 @@
                   />
                 </div>
                 <button
-                  @click="copyLink"
                   class="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
                   title="Copy Link"
+                  @click="copyLink"
                 >
                   <Copy class="w-4 h-4" />
                 </button>
@@ -165,7 +180,10 @@
             </div>
 
             <!-- QR Code -->
-            <div v-if="guestData.invitationQR" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm">
+            <div
+              v-if="guestData.invitationQR"
+              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm"
+            >
               <img
                 :src="qrCodeDataUrl"
                 alt="QR Code"
@@ -174,8 +192,8 @@
               <div class="flex flex-col">
                 <span class="text-[10px] text-gray-500 mb-1">Scan to RSVP</span>
                 <button
-                  @click="downloadQR"
                   class="text-xs text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+                  @click="downloadQR"
                 >
                   <Download class="w-3 h-3" />
                   Download
@@ -187,10 +205,16 @@
 
         <!-- Interaction History -->
         <section v-if="guestData.rsvpLogs?.length" class="px-1">
-          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">Interaction History</p>
-          <div class="relative pl-4 space-y-4 before:content-[''] before:absolute before:left-[3px] before:top-2 before:bottom-2 before:w-[1px] before:bg-gray-200 dark:before:bg-gray-800">
+          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
+            Interaction History
+          </p>
+          <div
+            class="relative pl-4 space-y-4 before:content-[''] before:absolute before:left-[3px] before:top-2 before:bottom-2 before:w-[1px] before:bg-gray-200 dark:before:bg-gray-800"
+          >
             <div v-for="log in guestData.rsvpLogs" :key="log.id" class="relative">
-              <span class="absolute -left-[16.5px] top-1.5 w-2 h-2 rounded-full border-2 border-white dark:border-gray-900 bg-gray-300"></span>
+              <span
+                class="absolute -left-[16.5px] top-1.5 w-2 h-2 rounded-full border-2 border-white dark:border-gray-900 bg-gray-300"
+              ></span>
               <div class="text-xs">
                 <p class="text-gray-700 dark:text-gray-300">{{ log.message }}</p>
                 <p class="text-gray-400 mt-0.5">{{ log.created_at }}</p>
@@ -206,8 +230,8 @@
         <!-- Send + Close on the right -->
         <div class="flex items-center gap-2 sm:gap-3">
           <button
-            @click="close"
             class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            @click="close"
           >
             Close
           </button>
@@ -230,11 +254,9 @@ import {
   Clock,
   Calendar,
   Users,
-  CornerDownRight,
   Link as LinkIcon,
   Copy,
   Download,
-  Edit,
   ChevronDown
 } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -244,7 +266,7 @@ import { useRsvpStore } from '@/stores/useRsvpStore'
 const emit = defineEmits(['close', 'resend', 'confirmationReverted', 'send'])
 const props = defineProps({
   modelValue: Boolean,
-  guest: Object
+  guest: { type: Object, required: true }
 })
 
 const showModal = ref(false)
@@ -310,11 +332,6 @@ const downloadQR = () => {
   link.click()
 }
 
-// NEW: Edit guest
-const editGuest = () => {
-  // Assuming there's a logic for editing, maybe emit an event or navigate
-  console.log('Edit guest:', props.guest.id)
-}
 
 const loadGuestData = async () => {
   loadingGuestData.value = true

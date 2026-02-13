@@ -1,10 +1,16 @@
 <script setup>
 import CWMBackgroundMusicCreator from '@/components/authenticated/background-music/BackgroundMusic/CWMBackgroundMusicCreator.vue'
 import CWMBackgroundMusicShow from '@/components/authenticated/background-music/BackgroundMusic/CWMBackgroundMusicShow.vue'
-import { onMounted, ref } from 'vue'
-import { useBackgroundMusicStore } from '@/stores/useBackgroundMusicStore'
-import { useNotificationStore } from '@/stores/useNotificationStore'
-import { useUserStore } from '@/stores/useUserStore'
+import { onMounted } from 'vue'
+import { useDeprecationWarning } from '@/composables/useDeprecationWarning'
+
+onMounted(() => {
+  console.log('CWMBackgroundMusic component mounted')
+  useDeprecationWarning(
+    'CWMBackgroundMusic',
+    'This component is deprecated and will be removed in a future release. Please use CWMBackgroundMusicNew instead.'
+  )
+})
 </script>
 
 <template>

@@ -10,7 +10,6 @@ import { detect } from 'detect-browser'
 import { useUserStore } from '@/stores/useUserStore'
 import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { onBeforeUnmount } from 'vue'
 
 const sending = ref(false)
 const userStore = useUserStore()
@@ -21,7 +20,6 @@ const route = useRoute()
 const captchaToken = ref(null)
 const captchaSiteKey = import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY
 const isLocalEnvironment = ref(import.meta.env.VITE_APP_ENVIRONMENT === 'local')
-const isCaptchaRequired = computed(() => !isLocalEnvironment.value || captchaToken.value)
 const apiUrl = import.meta.env.VITE_API_URL
 
 const form = reactive({
@@ -125,15 +123,7 @@ const handleGoogleLogin = () => {
   window.location.href = url
 }
 
-// Facebook login handler
-const handleFacebookLogin = async () => {
-  console.log('Work in progress')
-}
-
-// Load social login SDKs
-onMounted(() => {
-
-})
+onMounted(() => {})
 </script>
 
 <template>
