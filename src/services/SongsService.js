@@ -107,6 +107,17 @@ class SongsService {
   }
 
   /**
+   * Export suggested songs
+   * GET /event/{eventId}/suggest-music/export
+   */
+  async exportPlaylist(eventId, format) {
+    return CWM_API.get(`event/${eventId}/suggest-music/export`, {
+      params: { format },
+      responseType: 'blob'
+    })
+  }
+
+  /**
    * Get user's vote on a specific song
    * GET /event/{eventId}/suggest-music/{songId}/vote
    */

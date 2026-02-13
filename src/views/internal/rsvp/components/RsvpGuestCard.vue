@@ -1,10 +1,7 @@
 <template>
   <!-- CHANGED: Improved card layout with better spacing and hover effects -->
   <div class="guest-card">
-    <div
-      class="guest-card-main"
-      @click="isExpanded = !isExpanded"
-    >
+    <div class="guest-card-main" @click="isExpanded = !isExpanded">
       <div class="flex items-center gap-3">
         <div @click.stop>
           <CCheckbox
@@ -14,14 +11,8 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <ChevronDown
-            v-if="isExpanded"
-            class="w-5 h-5 text-purple-600"
-          />
-          <ChevronRight
-            v-else
-            class="w-5 h-5 text-purple-600"
-          />
+          <ChevronDown v-if="isExpanded" class="w-5 h-5 text-purple-600" />
+          <ChevronRight v-else class="w-5 h-5 text-purple-600" />
         </div>
 
         <div class="flex-1">
@@ -50,7 +41,7 @@
 
         <!-- Date and Actions -->
         <div class="flex items-center gap-3">
-          <button @click.stop="$emit('show-details', guest)" class="btn-secondary">
+          <button class="btn-secondary" @click.stop="$emit('show-details', guest)">
             <Eye class="w-4 h-4" />
             Details
           </button>
@@ -58,9 +49,9 @@
           <!-- NEW: RSVP Confirmation Button (Only for organizers) -->
           <button
             v-if="guest.rsvpStatus === 'pending'"
-            @click.stop="openRsvpConfirmationModal"
             class="btn-rsvp-confirm"
             :disabled="loading"
+            @click.stop="openRsvpConfirmationModal"
           >
             <CheckSquare class="w-4 h-4" />
             Confirm
@@ -71,19 +62,15 @@
             <!-- For pending status -->
             <button
               v-if="guest.rsvpStatus === 'pending'"
-              @click.stop="$emit('send-invitation', guest.id)"
               class="btn-primary"
+              @click.stop="$emit('send-invitation', guest.id)"
             >
               <Mail class="w-4 h-4" />
               Send Invitation
             </button>
 
             <!-- For attending or not-attending -->
-            <button
-              v-else
-              @click.stop="$emit('resend-invitation', guest.id)"
-              class="btn-secondary"
-            >
+            <button v-else class="btn-secondary" @click.stop="$emit('resend-invitation', guest.id)">
               <RefreshCw class="w-4 h-4" />
               Resend
             </button>
@@ -110,22 +97,21 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 import {
   ChevronRight,
   ChevronDown,
   Users,
   Mail,
   Phone,
-  Calendar,
   Eye,
   RefreshCw,
   CheckSquare
-} from 'lucide-vue-next';
-import CCheckbox from '@/components/UI/form2/CCheckbox.vue';
-import RsvpStatusBadge from './RsvpStatusBadge.vue';
-import RsvpCompanionsList from './RsvpCompanionsList.vue';
-import OrganizerRsvpConfirmationModal from './OrganizerRsvpConfirmationModal.vue';
+} from 'lucide-vue-next'
+import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
+import RsvpStatusBadge from './RsvpStatusBadge.vue'
+import RsvpCompanionsList from './RsvpCompanionsList.vue'
+import OrganizerRsvpConfirmationModal from './OrganizerRsvpConfirmationModal.vue'
 
 const props = defineProps({
   guest: {
@@ -136,44 +122,34 @@ const props = defineProps({
     type: Boolean,
     default: false
   }
-});
+})
 
-const emit = defineEmits(['toggle-select', 'show-details', 'send-invitation', 'resend-invitation', 'rsvp-updated']);
+const emit = defineEmits([
+  'toggle-select',
+  'show-details',
+  'send-invitation',
+  'resend-invitation',
+  'rsvp-updated'
+])
 
-const isExpanded = ref(false);
-const showRsvpModal = ref(false);
-const loading = ref(false);
-
-
-// CHANGED: Added displayDate computed for better empty states
-const displayDate = computed(() => {
-  if (!props.guest.rsvpStatusDate) {
-    return props.guest.rsvpStatus === 'pending'
-      ? 'Awaiting response'
-      : 'No response yet';
-  }
-  return props.guest.rsvpStatusDate;
-});
-
-// CHANGED: Added dateClass for styling empty states
-const dateClass = computed(() => {
-  return !props.guest.rsvpStatusDate ? 'text-gray-400 italic' : 'text-gray-500';
-});
+const isExpanded = ref(false)
+const showRsvpModal = ref(false)
+const loading = ref(false)
 
 // NEW: Modal handlers
 const openRsvpConfirmationModal = () => {
-  showRsvpModal.value = true;
-};
+  showRsvpModal.value = true
+}
 
 const closeRsvpConfirmationModal = () => {
-  showRsvpModal.value = false;
-};
+  showRsvpModal.value = false
+}
 
-const handleRsvpConfirmed = (updatedGuestData) => {
+const handleRsvpConfirmed = updatedGuestData => {
   // Emit event to parent component to update the guest data
-  emit('rsvp-updated', updatedGuestData);
-  closeRsvpConfirmationModal();
-};
+  emit('rsvp-updated', updatedGuestData)
+  closeRsvpConfirmationModal()
+}
 </script>
 
 <style scoped>
@@ -213,17 +189,5 @@ const handleRsvpConfirmed = (updatedGuestData) => {
 
 .invitation-actions {
   @apply flex gap-2;
-}
-
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.3s ease-out;
-  max-height: 500px;
-}
-
-.expand-enter-from,
-.expand-leave-to {
-  max-height: 0;
-  opacity: 0;
 }
 </style>

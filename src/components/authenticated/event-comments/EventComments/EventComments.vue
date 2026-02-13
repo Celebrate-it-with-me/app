@@ -9,7 +9,7 @@ import { useUserStore } from '@/stores/useUserStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { vInfiniteScroll } from '@vueuse/components'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const props = defineProps({
   origin: {

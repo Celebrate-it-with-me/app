@@ -7,7 +7,7 @@ function sleep(ms) {
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    isReady: false,
+    isReady: false
   }),
   actions: {
     async ensureReady() {

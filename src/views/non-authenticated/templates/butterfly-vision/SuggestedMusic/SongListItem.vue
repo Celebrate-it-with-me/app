@@ -3,7 +3,7 @@ import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { computed } from 'vue'
 import SongsService from '@/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const props = defineProps({
   mainColor: {

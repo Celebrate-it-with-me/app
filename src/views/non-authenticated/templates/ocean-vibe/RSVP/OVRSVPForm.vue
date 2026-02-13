@@ -6,7 +6,7 @@ import * as zod from 'zod'
 import TextField from '@/components/UI/form/TextField.vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import SelectField from '@/components/UI/form/SelectField.vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const templateStore = useTemplateStore()
 const { guest } = templateStore

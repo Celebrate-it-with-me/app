@@ -1,6 +1,12 @@
 <template>
-  <div class="h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-    <div v-if="comments.length > 0" class="flex-grow overflow-y-auto custom-scrollbar" @scroll="handleScroll">
+  <div
+    class="h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+  >
+    <div
+      v-if="comments.length > 0"
+      class="flex-grow overflow-y-auto custom-scrollbar"
+      @scroll="handleScroll"
+    >
       <CommentInboxRow
         v-for="comment in comments"
         :key="comment.id"
@@ -37,7 +43,10 @@ const props = defineProps({
     type: Array,
     required: true
   },
-  selectedId: [String, Number],
+  selectedId: {
+    type: [String, Number],
+    required: true
+  },
   loadingMore: {
     type: Boolean,
     default: false
@@ -50,7 +59,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select', 'toggle-pin', 'toggle-favorite', 'more', 'load-more'])
 
-const handleScroll = (event) => {
+const handleScroll = event => {
   const { scrollTop, scrollHeight, clientHeight } = event.target
   if (scrollTop + clientHeight >= scrollHeight - 50) {
     if (!props.loadingMore && props.hasMore) {

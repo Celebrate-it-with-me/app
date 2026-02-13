@@ -5,10 +5,14 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">
-            RSVP Guest <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">List</span>
+            RSVP Guest
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
+              >List</span
+            >
           </h1>
           <p class="text-gray-500 font-medium">
-            Monitor and manage your guest responses. Track who's attending and their specific requirements.
+            Monitor and manage your guest responses. Track who's attending and their specific
+            requirements.
           </p>
         </div>
       </div>
@@ -16,12 +20,9 @@
 
     <section class="rsvp-table-section">
       <div v-if="!rsvpGuests.length && !rsvpStore.statusSelected && !rsvpStore.searchValue">
-          <NoRsvp />
+        <NoRsvp />
       </div>
-      <div
-        v-else
-        class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6"
-      >
+      <div v-else class="bg-white dark:bg-gray-900 shadow-lg rounded-xl p-6">
         <!-- CHANGED: Added RsvpStats component -->
         <RsvpStats
           :attending="attendingStats"
@@ -71,7 +72,10 @@
         </div>
 
         <!-- Bulk Selection Row -->
-        <div v-if="rsvpStore.rsvpGuests.length" class="flex items-center gap-4 mb-4 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-100 dark:border-gray-700">
+        <div
+          v-if="rsvpStore.rsvpGuests.length"
+          class="flex items-center gap-4 mb-4 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg border border-gray-100 dark:border-gray-700"
+        >
           <CCheckbox v-model="selectAll" @update:model-value="toggleSelectAll" />
           <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
             Select All ({{ displayedGuests.length }} guests)
@@ -96,9 +100,7 @@
         </div>
         <div v-else>
           <CAlert variant="info">
-            <p>
-              No guests found matching your criteria.
-            </p>
+            <p>No guests found matching your criteria.</p>
           </CAlert>
         </div>
         <div
@@ -111,6 +113,8 @@
               v-model="rsvpStore.perPage"
               :options="perPageOptions"
               name="perPage"
+              description=""
+              label=""
             />
           </div>
           <div>
@@ -143,7 +147,6 @@
 <script setup>
 import { ref, watch, computed, onMounted } from 'vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
-import CHeading from '@/components/UI/headings/CHeading.vue'
 import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
 import CSelect from '@/components/UI/form2/CSelect.vue'
 import CRsvpDetailsModal from '@/components/UI/modals/CRsvpDetailsModal.vue'
@@ -153,7 +156,6 @@ import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useUserStore } from '@/stores/useUserStore'
 import CPagination from '@/components/UI/pagination/CPagination.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
-import RsvpTotals from '@/views/internal/rsvp/components/RsvpTotals.vue'
 import RsvpDownload from '@/views/internal/rsvp/components/RsvpDownload.vue'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
 import NoRsvp from '@/views/internal/rsvp/components/NoRsvp.vue'
@@ -181,76 +183,69 @@ const isSendingInvitation = ref(false)
 const userStore = useUserStore()
 const rsvpStore = useRsvpStore()
 
-const filterOptions = [
-  { value: '', label: 'All' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'attending', label: 'Confirmed' },
-  { value: 'not-attending', label: 'Declined' }
-]
-
 const rsvpGuests = computed(() => {
   return rsvpStore.rsvpGuests ?? []
 })
 
 // CHANGED: Extract stats objects directly (not just numbers)
 const attendingStats = computed(() => {
-  return rsvpStore.stats?.data?.attending || { guests: 0, companions: 0, total: 0 };
-});
+  return rsvpStore.stats?.data?.attending || { guests: 0, companions: 0, total: 0 }
+})
 
 const pendingStats = computed(() => {
-  return rsvpStore.stats?.data?.pending || { guests: 0, companions: 0, total: 0 };
-});
+  return rsvpStore.stats?.data?.pending || { guests: 0, companions: 0, total: 0 }
+})
 
 const notAttendingStats = computed(() => {
-  return rsvpStore.stats?.data?.not_attending || { guests: 0, companions: 0, total: 0 };
-});
+  return rsvpStore.stats?.data?.not_attending || { guests: 0, companions: 0, total: 0 }
+})
 
 const totalsStats = computed(() => {
-  return rsvpStore.stats?.data?.totals || { guests: 0, companions: 0, people: 0, responded: 0 };
-});
+  return rsvpStore.stats?.data?.totals || { guests: 0, companions: 0, people: 0, responded: 0 }
+})
 
 const responseRate = computed(() => {
-  return rsvpStore.stats?.data?.response_rate || 0;
-});
+  return rsvpStore.stats?.data?.response_rate || 0
+})
 
 // CHANGED: Added filter state
-const showOnlyWithCompanions = ref(false);
+const showOnlyWithCompanions = ref(false)
 
 const handleRsvpUpdated = async () => {
   await rsvpStore.loadGuests()
 }
 
-const handleStatusFilterChange = (status) => {
-  rsvpStore.statusSelected = status === 'all' ? '' : status;
+const handleStatusFilterChange = status => {
+  rsvpStore.statusSelected = status === 'all' ? '' : status
   // This will trigger the watcher on rsvpStore.statusSelected
-};
+}
 
-const handleToggleCompanions = (value) => {
-  showOnlyWithCompanions.value = value;
+const handleToggleCompanions = value => {
+  showOnlyWithCompanions.value = value
   // If actual filtering by companions is needed in backend, it should be implemented in rsvpStore
   // For now, we follow the instruction to keep data flow as is, but we might need a computed for UI filtering
-};
+}
 
 // Filtered guests based on "Show only with companions" toggle
 const displayedGuests = computed(() => {
-  let filtered = rsvpGuests.value;
+  let filtered = rsvpGuests.value
   if (showOnlyWithCompanions.value) {
-    filtered = filtered.filter(g => (g.companions_count || 0) > 0);
+    filtered = filtered.filter(g => (g.companions_count || 0) > 0)
   }
-  return filtered;
-});
+  return filtered
+})
 
 const toggleSelectAll = checked => {
   selectAll.value = checked
   selectedGuests.value = checked ? displayedGuests.value.map(g => g.id) : []
 }
 
-const handleToggleSelect = (guestId) => {
-  const index = selectedGuests.value.indexOf(guestId);
+const handleToggleSelect = guestId => {
+  const index = selectedGuests.value.indexOf(guestId)
   if (index > -1) {
-    selectedGuests.value.splice(index, 1);
+    selectedGuests.value.splice(index, 1)
   } else {
-    selectedGuests.value.push(guestId);
+    selectedGuests.value.push(guestId)
   }
 }
 
@@ -265,7 +260,7 @@ const sendInvitations = () => {
 }
 
 // CHANGED: Updated handleSendInvitation and handleResendInvitation to open modal
-const handleSendInvitation = (guestId) => {
+const handleSendInvitation = guestId => {
   const guest = rsvpGuests.value.find(g => g.id === guestId)
   if (guest) {
     guestsToInvite.value = [guest]
@@ -273,7 +268,7 @@ const handleSendInvitation = (guestId) => {
   }
 }
 
-const handleResendInvitation = (guestId) => {
+const handleResendInvitation = guestId => {
   const guest = rsvpGuests.value.find(g => g.id === guestId)
   if (guest) {
     guestsToInvite.value = [guest]
@@ -281,7 +276,7 @@ const handleResendInvitation = (guestId) => {
   }
 }
 
-const handleOpenSendModalFromDetails = (guestData) => {
+const handleOpenSendModalFromDetails = guestData => {
   guestsToInvite.value = [guestData]
   showSendModal.value = true
 }
@@ -350,7 +345,6 @@ watch(
     await reloadGuests()
   }
 )
-
 
 onMounted(() => {
   rsvpStore.fetchStats()

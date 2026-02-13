@@ -2,7 +2,7 @@
 import { computed, reactive } from 'vue'
 import RSVPTitles from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVPTitles.vue'
 import CWMRSVPComponent from '@/views/non-authenticated/templates/butterfly-vision/RSVP/CWMRSVPComponent.vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import CWMRSVPConfirmed from '@/views/non-authenticated/templates/butterfly-vision/RSVP/CWMRSVPConfirmed.vue'
 
 const rsvpConfig = reactive({

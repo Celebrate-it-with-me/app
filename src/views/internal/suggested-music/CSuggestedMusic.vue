@@ -26,7 +26,10 @@ import {
   User,
   Filter,
   SortDesc,
-  Play
+  Play,
+  Download,
+  ChevronDown,
+  Loader2
 } from 'lucide-vue-next'
 import { useClickOutside } from '@/composables/useClickOutside'
 
@@ -36,6 +39,9 @@ const userStore = useUserStore()
 
 // State
 const loading = ref(false)
+const exporting = ref(false)
+const showExportDropdown = ref(false)
+const exportDropdownRef = ref(null)
 const searchQuery = ref('')
 const searchResults = ref([])
 const searchContainerRef = ref(null)
@@ -62,6 +68,10 @@ onMounted(async () => {
 
 useClickOutside(searchContainerRef, () => {
   searchResults.value = []
+})
+
+useClickOutside(exportDropdownRef, () => {
+  showExportDropdown.value = false
 })
 
 // Stats Computeds
@@ -100,10 +110,11 @@ const filteredAndSortedSongs = computed(() => {
   // Apply local search
   if (localSearch.value.trim()) {
     const search = localSearch.value.toLowerCase()
-    songs = songs.filter(song =>
-      song.title.toLowerCase().includes(search) ||
-      song.artist.toLowerCase().includes(search) ||
-      song.album.toLowerCase().includes(search)
+    songs = songs.filter(
+      song =>
+        song.title.toLowerCase().includes(search) ||
+        song.artist.toLowerCase().includes(search) ||
+        song.album.toLowerCase().includes(search)
     )
   }
 
@@ -221,7 +232,7 @@ const addSong = async song => {
 }
 
 // Remove a song from the suggested songs list
-const confirmRemoveSong = (songId) => {
+const confirmRemoveSong = songId => {
   songIdToRemove.value = songId
   showRemoveConfirm.value = true
 }
@@ -256,26 +267,26 @@ const removeSong = async songId => {
 }
 
 // Check if a song is "top voted" (high net score)
-const isTopVoted = (song) => {
+const isTopVoted = song => {
   if (!song.votes) return false
   const netScore = (song.votes.up || 0) - (song.votes.down || 0)
   return netScore >= 10
 }
 
 // Get net score for a song
-const getNetScore = (song) => {
+const getNetScore = song => {
   if (!song.votes) return 0
   return (song.votes.up || 0) - (song.votes.down || 0)
 }
 
 // View song details
-const viewSongDetails = (song) => {
+const viewSongDetails = song => {
   selectedSongForDetails.value = song
   showVoteDetailsModal.value = true
 }
 
 // Player Modal Functions
-const openPlayer = (song) => {
+const openPlayer = song => {
   selectedSongForPlayer.value = song
   showPlayerModal.value = true
 }
@@ -283,6 +294,46 @@ const openPlayer = (song) => {
 const closePlayer = () => {
   showPlayerModal.value = false
   selectedSongForPlayer.value = null
+}
+
+const exportPlaylist = async format => {
+  try {
+    exporting.value = true
+    showExportDropdown.value = false
+    const response = await SongsService.exportPlaylist(userStore.activeEvent, format)
+
+    const blob = new Blob([response.data], { type: response.headers['content-type'] })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+
+    // Try to get filename from content-disposition
+    const contentDisposition = response.headers['content-disposition']
+    let fileName = `playlist.${format}`
+    if (contentDisposition) {
+      const fileNameMatch = contentDisposition.match(/filename="?([^"]+)"?/)
+      if (fileNameMatch?.[1]) fileName = fileNameMatch[1]
+    }
+
+    link.setAttribute('download', fileName)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+
+    notificationStore.addNotification({
+      type: 'success',
+      message: 'Playlist exported successfully'
+    })
+  } catch (error) {
+    console.error('Error exporting playlist:', error)
+    notificationStore.addNotification({
+      type: 'error',
+      message: 'Failed to export playlist'
+    })
+  } finally {
+    exporting.value = false
+  }
 }
 </script>
 
@@ -293,22 +344,81 @@ const closePlayer = () => {
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">
-            Suggested <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">Music</span>
+            Suggested
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
+              >Music</span
+            >
           </h1>
-          <p class="text-gray-500 font-medium">
-            Manage music suggestions for your event
-          </p>
+          <p class="text-gray-500 font-medium">Manage music suggestions for your event</p>
+        </div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <!-- Export Dropdown -->
+          <div ref="exportDropdownRef" class="relative">
+            <CButton
+              variant="outline"
+              :disabled="exporting || loading"
+              class="flex items-center gap-2"
+              @click="showExportDropdown = !showExportDropdown"
+            >
+              <template v-if="exporting">
+                <Loader2 class="w-4 h-4 animate-spin" />
+                Exporting...
+              </template>
+              <template v-else>
+                <Download class="w-4 h-4" />
+                Export Playlist
+                <ChevronDown class="w-4 h-4 ml-1" />
+              </template>
+            </CButton>
+
+            <transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
+            >
+              <div
+                v-if="showExportDropdown"
+                class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
+              >
+                <div class="py-1" role="menu" aria-orientation="vertical">
+                  <button
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                    role="menuitem"
+                    @click="exportPlaylist('xlsx')"
+                  >
+                    Excel (.xlsx)
+                  </button>
+                  <button
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                    role="menuitem"
+                    @click="exportPlaylist('csv')"
+                  >
+                    CSV (.csv)
+                  </button>
+                  <button
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center"
+                    role="menuitem"
+                    @click="exportPlaylist('pdf')"
+                  >
+                    PDF (.pdf)
+                  </button>
+                </div>
+              </div>
+            </transition>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Stats Dashboard -->
-    <div
-      v-if="!loading"
-      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-    >
+    <div v-if="!loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <!-- Total Songs Card -->
-      <CCard class="relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-600 border-0">
+      <CCard
+        class="relative overflow-hidden bg-gradient-to-br from-purple-500 to-purple-600 border-0"
+      >
         <div class="p-6 text-white">
           <div class="flex items-center justify-between mb-4">
             <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
@@ -340,7 +450,9 @@ const closePlayer = () => {
       </CCard>
 
       <!-- Top Song Card -->
-      <CCard class="relative overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-600 border-0">
+      <CCard
+        class="relative overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-600 border-0"
+      >
         <div class="p-6 text-white">
           <div class="flex items-center justify-between mb-4">
             <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
@@ -361,7 +473,9 @@ const closePlayer = () => {
       </CCard>
 
       <!-- Guest Suggested Card -->
-      <CCard class="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-600 border-0">
+      <CCard
+        class="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-600 border-0"
+      >
         <div class="p-6 text-white">
           <div class="flex items-center justify-between mb-4">
             <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
@@ -462,7 +576,9 @@ const closePlayer = () => {
               <!-- Sort Dropdown -->
               <div class="sm:w-64">
                 <div class="relative">
-                  <SortDesc class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <SortDesc
+                    class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                  />
                   <select
                     v-model="sortBy"
                     class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white appearance-none cursor-pointer"
@@ -473,8 +589,18 @@ const closePlayer = () => {
                     <option value="alphabetical">A-Z Title</option>
                   </select>
                   <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    <svg
+                      class="w-4 h-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -535,9 +661,11 @@ const closePlayer = () => {
             <Music class="w-12 h-12 mx-auto mb-3 text-gray-400" />
             <p class="text-lg">No songs found</p>
             <p class="text-sm mt-1">
-              {{ suggestedMusicStore.selectedSongs.length === 0
-              ? 'Add songs using the search above'
-              : 'Try adjusting your filters or search' }}
+              {{
+                suggestedMusicStore.selectedSongs.length === 0
+                  ? 'Add songs using the search above'
+                  : 'Try adjusting your filters or search'
+              }}
             </p>
           </div>
 
@@ -590,20 +718,10 @@ const closePlayer = () => {
                           {{ song.suggestedBy?.name || 'Unknown' }}
                         </span>
                       </span>
-                      <CBadge
-                        v-if="song.suggestedBy?.isOrganizer"
-                        variant="primary"
-                        size="sm"
-                      >
+                      <CBadge v-if="song.suggestedBy?.isOrganizer" variant="primary" size="sm">
                         Organizer
                       </CBadge>
-                      <CBadge
-                        v-else
-                        variant="secondary"
-                        size="sm"
-                      >
-                        Guest
-                      </CBadge>
+                      <CBadge v-else variant="secondary" size="sm"> Guest </CBadge>
                     </div>
 
                     <!-- Votes Row -->
@@ -630,7 +748,13 @@ const closePlayer = () => {
 
                       <!-- Net Score Badge -->
                       <CBadge
-                        :variant="getNetScore(song) > 0 ? 'success' : getNetScore(song) < 0 ? 'error' : 'gray'"
+                        :variant="
+                          getNetScore(song) > 0
+                            ? 'success'
+                            : getNetScore(song) < 0
+                              ? 'error'
+                              : 'gray'
+                        "
                         class="font-semibold"
                       >
                         Net: {{ getNetScore(song) > 0 ? '+' : '' }}{{ getNetScore(song) }}
@@ -676,12 +800,7 @@ const closePlayer = () => {
     </template>
 
     <!-- Player Modal -->
-    <CModal
-      v-model="showPlayerModal"
-      size="lg"
-      show-close-icon
-      @close="closePlayer"
-    >
+    <CModal v-model="showPlayerModal" size="lg" show-close-icon @close="closePlayer">
       <template #title>Now Playing</template>
       <div v-if="selectedSongForPlayer" class="space-y-6">
         <!-- Spotify Embed Player -->
@@ -691,7 +810,6 @@ const closePlayer = () => {
             :src="`https://open.spotify.com/embed/track/${selectedSongForPlayer.platformId}`"
             width="100%"
             height="352"
-            frameborder="0"
             allowtransparency="true"
             allow="encrypted-media"
             class="rounded-lg"
@@ -708,29 +826,24 @@ const closePlayer = () => {
         <div class="text-center text-sm text-gray-500 dark:text-gray-400">
           <p>🎵 Powered by Spotify</p>
           <p class="text-xs mt-1">
-            {{ selectedSongForPlayer.previewUrl
-            ? 'Playing 30-second preview'
-            : 'Full playback requires Spotify Premium' }}
+            {{
+              selectedSongForPlayer.previewUrl
+                ? 'Playing 30-second preview'
+                : 'Full playback requires Spotify Premium'
+            }}
           </p>
         </div>
       </div>
 
       <template #footer>
         <div class="flex justify-end w-full">
-          <CButton variant="outline" @click="closePlayer">
-            Close
-          </CButton>
+          <CButton variant="outline" @click="closePlayer"> Close </CButton>
         </div>
       </template>
     </CModal>
 
     <!-- Vote Details Modal -->
-    <CModal
-      v-model="showVoteDetailsModal"
-      title="Vote Details"
-      size="lg"
-      show-close-icon
-    >
+    <CModal v-model="showVoteDetailsModal" title="Vote Details" size="lg" show-close-icon>
       <div v-if="selectedSongForDetails" class="space-y-6">
         <!-- Song Info Header -->
         <div class="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
@@ -754,17 +867,41 @@ const closePlayer = () => {
 
         <!-- Vote Summary Cards -->
         <div class="grid grid-cols-3 gap-4">
-          <div class="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-900/30 text-center">
-            <p class="text-xs font-semibold text-green-600 dark:text-green-400 uppercase tracking-wider mb-1">Up Votes</p>
-            <p class="text-2xl font-bold text-green-700 dark:text-green-300">{{ selectedSongForDetails.votes?.up || 0 }}</p>
+          <div
+            class="p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-900/30 text-center"
+          >
+            <p
+              class="text-xs font-semibold text-green-600 dark:text-green-400 uppercase tracking-wider mb-1"
+            >
+              Up Votes
+            </p>
+            <p class="text-2xl font-bold text-green-700 dark:text-green-300">
+              {{ selectedSongForDetails.votes?.up || 0 }}
+            </p>
           </div>
-          <div class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-center">
-            <p class="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider mb-1">Down Votes</p>
-            <p class="text-2xl font-bold text-red-700 dark:text-red-300">{{ selectedSongForDetails.votes?.down || 0 }}</p>
+          <div
+            class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-center"
+          >
+            <p
+              class="text-xs font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider mb-1"
+            >
+              Down Votes
+            </p>
+            <p class="text-2xl font-bold text-red-700 dark:text-red-300">
+              {{ selectedSongForDetails.votes?.down || 0 }}
+            </p>
           </div>
-          <div class="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-900/30 text-center">
-            <p class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1">Net Score</p>
-            <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">{{ getNetScore(selectedSongForDetails) }}</p>
+          <div
+            class="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-900/30 text-center"
+          >
+            <p
+              class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1"
+            >
+              Net Score
+            </p>
+            <p class="text-2xl font-bold text-purple-700 dark:text-purple-300">
+              {{ getNetScore(selectedSongForDetails) }}
+            </p>
           </div>
         </div>
 
@@ -775,43 +912,81 @@ const closePlayer = () => {
             Vote Breakdown
           </h4>
 
-          <div v-if="selectedSongForDetails.voteDetails && selectedSongForDetails.voteDetails.length > 0" class="overflow-hidden border border-gray-100 dark:border-gray-700 rounded-xl">
+          <div
+            v-if="
+              selectedSongForDetails.voteDetails && selectedSongForDetails.voteDetails.length > 0
+            "
+            class="overflow-hidden border border-gray-100 dark:border-gray-700 rounded-xl"
+          >
             <div class="max-h-96 overflow-y-auto">
               <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-800 sticky top-0 z-10">
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Guest</th>
-                  <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vote</th>
-                  <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
-                </tr>
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    >
+                      Guest
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    >
+                      Vote
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+                    >
+                      Date
+                    </th>
+                  </tr>
                 </thead>
-                <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
-                <tr v-for="(vote, idx) in selectedSongForDetails.voteDetails" :key="idx" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="h-8 w-8 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold mr-3">
-                        {{ vote.guestName?.charAt(0) || 'G' }}
+                <tbody
+                  class="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800"
+                >
+                  <tr
+                    v-for="(vote, idx) in selectedSongForDetails.voteDetails"
+                    :key="idx"
+                    class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  >
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div
+                          class="h-8 w-8 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold mr-3"
+                        >
+                          {{ vote.guestName?.charAt(0) || 'G' }}
+                        </div>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{
+                          vote.guestName
+                        }}</span>
                       </div>
-                      <span class="text-sm font-medium text-gray-900 dark:text-white">{{ vote.guestName }}</span>
-                    </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-center">
-                    <CBadge :variant="vote.type === 'UP' ? 'success' : 'error'" size="sm">
-                      <component :is="vote.type === 'UP' ? ArrowUp : ArrowDown" class="w-3 h-3 mr-1" />
-                      {{ vote.type }}
-                    </CBadge>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500 dark:text-gray-400">
-                    {{ vote.date }}
-                  </td>
-                </tr>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                      <CBadge :variant="vote.type === 'UP' ? 'success' : 'error'" size="sm">
+                        <component
+                          :is="vote.type === 'UP' ? ArrowUp : ArrowDown"
+                          class="w-3 h-3 mr-1"
+                        />
+                        {{ vote.type }}
+                      </CBadge>
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-right text-sm text-gray-500 dark:text-gray-400"
+                    >
+                      {{ vote.date }}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
           <!-- Empty State for Votes -->
-          <div v-else class="text-center py-10 bg-gray-50 dark:bg-gray-800/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
+          <div
+            v-else
+            class="text-center py-10 bg-gray-50 dark:bg-gray-800/30 rounded-xl border border-dashed border-gray-200 dark:border-gray-700"
+          >
             <Users class="w-10 h-10 mx-auto mb-2 text-gray-400 opacity-50" />
             <p class="text-gray-500 dark:text-gray-400">No votes recorded yet for this song.</p>
           </div>
@@ -820,9 +995,7 @@ const closePlayer = () => {
 
       <template #footer>
         <div class="flex justify-end w-full">
-          <CButton variant="outline" @click="showVoteDetailsModal = false">
-            Close
-          </CButton>
+          <CButton variant="outline" @click="showVoteDetailsModal = false"> Close </CButton>
         </div>
       </template>
     </CModal>

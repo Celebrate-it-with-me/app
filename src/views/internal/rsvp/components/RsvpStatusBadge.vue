@@ -10,70 +10,70 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { CheckCircle, Clock, XCircle } from 'lucide-vue-next';
+import { computed } from 'vue'
+import { CheckCircle, Clock, XCircle } from 'lucide-vue-next'
 
 const props = defineProps({
   status: {
     type: String,
     required: true,
-    validator: (value) => ['attending', 'pending', 'not-attending'].includes(value)
+    validator: value => ['attending', 'pending', 'not-attending'].includes(value)
   },
   compact: {
     type: Boolean,
     default: false
   }
-});
+})
 
 const statusClasses = computed(() => {
   switch (props.status) {
     case 'attending':
-      return 'bg-green-50 text-green-700 border border-green-200';
+      return 'bg-green-50 text-green-700 border border-green-200'
     case 'pending':
-      return 'bg-yellow-50 text-yellow-700 border border-yellow-200';
+      return 'bg-yellow-50 text-yellow-700 border border-yellow-200'
     case 'not-attending':
-      return 'bg-red-50 text-red-700 border border-red-200';
+      return 'bg-red-50 text-red-700 border border-red-200'
     default:
-      return 'bg-gray-50 text-gray-700 border border-gray-200';
+      return 'bg-gray-50 text-gray-700 border border-gray-200'
   }
-});
+})
 
 const statusIcon = computed(() => {
   switch (props.status) {
     case 'attending':
-      return CheckCircle;
+      return CheckCircle
     case 'pending':
-      return Clock;
+      return Clock
     case 'not-attending':
-      return XCircle;
+      return XCircle
     default:
-      return Clock;
+      return Clock
   }
-});
+})
 
 const statusText = computed(() => {
   switch (props.status) {
     case 'attending':
-      return 'Attending';
+      return 'Attending'
     case 'pending':
-      return 'Pending';
+      return 'Pending'
     case 'not-attending':
-      return 'Not Attending';
+      return 'Not Attending'
     default:
-      return props.status;
+      return props.status
   }
-});
+})
 
 const compactText = computed(() => {
   switch (props.status) {
     case 'attending':
-      return 'Yes';
+      return 'Yes'
     case 'pending':
-      return 'Wait';
+      return 'Wait'
     case 'not-attending':
-      return 'No';
+      return 'No'
     default:
-      return '';
+      return ''
   }
-});
+})
 </script>

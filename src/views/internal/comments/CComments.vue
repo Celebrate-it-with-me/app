@@ -5,10 +5,14 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">
-            Event <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600">Comments</span>
+            Event
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
+              >Comments</span
+            >
           </h1>
           <p class="text-gray-500 font-medium">
-            Manage comments from your event guests. You can view, hide, or delete comments as needed.
+            Manage comments from your event guests. You can view, hide, or delete comments as
+            needed.
           </p>
         </div>
 
@@ -28,19 +32,23 @@
     <!-- Main Content Area -->
     <div class="flex-grow min-h-0">
       <!-- Loading State -->
-      <div v-if="loading" class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm">
+      <div
+        v-if="loading"
+        class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm"
+      >
         <CWMLoading class="w-12 h-12 text-rose mb-4" />
         <p class="text-gray-500 font-medium">Loading comments...</p>
       </div>
 
       <!-- Empty State (No comments at all) -->
-      <div v-else-if="!eventComments.length && !isCreating" class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm">
+      <div
+        v-else-if="!eventComments.length && !isCreating"
+        class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm"
+      >
         <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
           <MessageCircle class="w-12 h-12 text-gray-400" />
         </div>
-        <h3 class="text-2xl font-bold text-gray-900 mb-2">
-          No comments yet
-        </h3>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">No comments yet</h3>
         <p class="text-gray-500 mb-8 text-center max-w-md">
           Add comments to communicate with your guests or keep notes about the event.
         </p>
@@ -51,19 +59,19 @@
       </div>
 
       <!-- Create Comment View (Full width or detail panel depending on state) -->
-      <div v-else-if="isCreating && (!eventComments.length || isDetailOpenOnMobile)" class="h-full max-h-[700px]">
+      <div
+        v-else-if="isCreating && (!eventComments.length || isDetailOpenOnMobile)"
+        class="h-full max-h-[700px]"
+      >
         <!-- Mobile/Empty Back Button -->
         <button
-          @click="isCreating = false"
           class="mb-4 flex items-center gap-2 text-gray-600 font-bold"
+          @click="isCreating = false"
         >
           <ChevronLeft class="w-5 h-5" />
           Back to list
         </button>
-        <CommentCreatePanel
-          @comment-added="handleCommentCreated"
-          @cancel="isCreating = false"
-        />
+        <CommentCreatePanel @comment-added="handleCommentCreated" @cancel="isCreating = false" />
       </div>
 
       <!-- Inbox Layout -->
@@ -71,8 +79,8 @@
         <!-- Filters Bar -->
         <CommentsFiltersBar
           v-model:search="searchQuery"
-          v-model:statusFilter="statusFilter"
-          v-model:sortOrder="sortOrder"
+          v-model:status-filter="statusFilter"
+          v-model:sort-order="sortOrder"
         />
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow min-h-0">
@@ -96,13 +104,17 @@
           <!-- Column B: Details / Create Panel (Drawer-like on mobile) -->
           <div
             class="lg:col-span-7 h-full overflow-hidden"
-            :class="{ 'fixed inset-0 z-50 p-4 bg-gray-100 lg:relative lg:inset-auto lg:p-0 lg:bg-transparent': isDetailOpenOnMobile || (isCreating && !isDetailOpenOnMobile), 'hidden lg:block': !isDetailOpenOnMobile && !isCreating }"
+            :class="{
+              'fixed inset-0 z-50 p-4 bg-gray-100 lg:relative lg:inset-auto lg:p-0 lg:bg-transparent':
+                isDetailOpenOnMobile || (isCreating && !isDetailOpenOnMobile),
+              'hidden lg:block': !isDetailOpenOnMobile && !isCreating
+            }"
           >
             <!-- Mobile Back Button -->
             <button
               v-if="isDetailOpenOnMobile || isCreating"
-              @click="isCreating ? (isCreating = false) : closeDetailOnMobile()"
               class="lg:hidden mb-4 flex items-center gap-2 text-gray-600 font-bold"
+              @click="isCreating ? (isCreating = false) : closeDetailOnMobile()"
             >
               <ChevronLeft class="w-5 h-5" />
               Back to list
@@ -189,9 +201,8 @@ const filteredComments = computed(() => {
   // Search
   if (searchQuery.value) {
     const q = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(c =>
-      c.authorName.toLowerCase().includes(q) ||
-      c.comment.toLowerCase().includes(q)
+    filtered = filtered.filter(
+      c => c.authorName.toLowerCase().includes(q) || c.comment.toLowerCase().includes(q)
     )
   }
 
@@ -252,7 +263,7 @@ const loadComments = async () => {
   }
 }
 
-const selectComment = (id) => {
+const selectComment = id => {
   selectedCommentId.value = id
   isDetailOpenOnMobile.value = true
   isCreating.value = false
@@ -281,7 +292,7 @@ const handleUpdateStatus = async ({ id, status }) => {
   }
 }
 
-const handleTogglePin = async (comment) => {
+const handleTogglePin = async comment => {
   try {
     await commentsStore.toggleCommentPin(comment.id)
     // Update local state to preserve scroll position
@@ -293,13 +304,12 @@ const handleTogglePin = async (comment) => {
     // Given it's organizer view, usually they want to see it pinned at the top.
     // Let's reload only the first page if we want to reset view, but that breaks infinite scroll state.
     // For now, let's keep it simple and just update the flag.
-
   } catch (e) {
     console.log(e)
   }
 }
 
-const handleToggleFavorite = async (comment) => {
+const handleToggleFavorite = async comment => {
   try {
     await commentsStore.toggleCommentFavorite(comment.id)
 
@@ -312,7 +322,7 @@ const handleToggleFavorite = async (comment) => {
   }
 }
 
-const handleDeleteComment = (comment) => {
+const handleDeleteComment = comment => {
   console.log('checking delete comment', comment)
   commentToDelete.value = comment
   showDeleteConfirm.value = true
@@ -322,7 +332,9 @@ const confirmDelete = async () => {
   if (commentToDelete.value) {
     await commentsStore.deleteComment(commentToDelete.value.id)
     // Remove from local state
-    commentsStore.eventComments = commentsStore.eventComments.filter(c => c.id !== commentToDelete.value.id)
+    commentsStore.eventComments = commentsStore.eventComments.filter(
+      c => c.id !== commentToDelete.value.id
+    )
 
     showDeleteConfirm.value = false
     commentToDelete.value = null
@@ -341,7 +353,7 @@ watch([searchQuery, statusFilter, sortOrder], () => {
   loadComments()
 })
 
-watch(filteredComments, (newVal) => {
+watch(filteredComments, newVal => {
   if (newVal.length > 0 && !newVal.find(c => c.id === selectedCommentId.value)) {
     selectedCommentId.value = newVal[0].id
   } else if (newVal.length === 0) {
@@ -356,18 +368,13 @@ watch(filteredComments, (newVal) => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Custom scrollbar for the main view if needed */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-gray-200 rounded-full;
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

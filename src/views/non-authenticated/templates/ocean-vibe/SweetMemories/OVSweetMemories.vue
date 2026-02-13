@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import OVSweetMemoriesGallery from '@/views/non-authenticated/templates/ocean-vibe/SweetMemories/OVSweetMemoriesGallery.vue'
 
 defineProps({

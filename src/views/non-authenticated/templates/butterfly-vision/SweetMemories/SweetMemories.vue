@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import SweetMemoriesGallery from '@/views/non-authenticated/templates/butterfly-vision/SweetMemories/SweetMemoriesGallery.vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
 
 const props = defineProps({

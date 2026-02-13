@@ -3,7 +3,7 @@ import { computed, reactive, ref } from 'vue'
 import { PlusCircle, X, Send } from 'lucide-vue-next'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
-import { Form, Field, ErrorMessage } from 'vee-validate'
+import { Form } from 'vee-validate'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
 
 // UI Components
@@ -57,11 +57,17 @@ const handleCancel = () => {
 </script>
 
 <template>
-  <div class="h-full flex flex-col bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300">
+  <div
+    class="h-full flex flex-col bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300"
+  >
     <!-- Header -->
-    <div class="p-6 border-b border-gray-50 flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-white">
+    <div
+      class="p-6 border-b border-gray-50 flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-white"
+    >
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600">
+        <div
+          class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center text-purple-600"
+        >
           <PlusCircle class="w-6 h-6" />
         </div>
         <div>
@@ -70,8 +76,8 @@ const handleCancel = () => {
         </div>
       </div>
       <button
-        @click="handleCancel"
         class="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
+        @click="handleCancel"
       >
         <X class="w-5 h-5" />
       </button>
@@ -81,11 +87,14 @@ const handleCancel = () => {
     <div class="flex-grow p-6 overflow-y-auto">
       <Form
         :validation-schema="validationSchema"
-        @submit="createNewComment"
         class="h-full flex flex-col"
+        @submit="createNewComment"
       >
         <div class="flex-grow mb-6">
-          <label for="new-comment" class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">
+          <label
+            for="new-comment"
+            class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider"
+          >
             Comment Content
           </label>
           <div class="relative">
@@ -98,9 +107,7 @@ const handleCancel = () => {
               show-error
             />
           </div>
-          <p class="mt-2 text-sm text-gray-400">
-            {{ newComment.text.length }}/2000 characters
-          </p>
+          <p class="mt-2 text-sm text-gray-400">{{ newComment.text.length }}/2000 characters</p>
         </div>
 
         <!-- Actions -->
@@ -120,7 +127,10 @@ const handleCancel = () => {
             class="px-8 h-12 rounded-xl shadow-lg shadow-purple-500/20"
           >
             <Send v-if="!loading" class="w-4 h-4 mr-2" />
-            <span v-else class="w-4 h-4 mr-2 animate-spin border-2 border-white/30 border-t-white rounded-full"></span>
+            <span
+              v-else
+              class="w-4 h-4 mr-2 animate-spin border-2 border-white/30 border-t-white rounded-full"
+            ></span>
             {{ loading ? 'Posting...' : 'Post Comment' }}
           </CButton>
         </div>
@@ -132,11 +142,17 @@ const handleCancel = () => {
       <div class="flex gap-3 text-purple-700">
         <div class="flex-shrink-0 mt-0.5">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
         </div>
         <p class="text-xs leading-relaxed">
-          <strong>Note:</strong> New comments are set to <span class="font-bold">Visible</span> by default. You can change the visibility or pin the comment once it's created.
+          <strong>Note:</strong> New comments are set to <span class="font-bold">Visible</span> by
+          default. You can change the visibility or pin the comment once it's created.
         </p>
       </div>
     </div>

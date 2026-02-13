@@ -131,9 +131,9 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
   },
 
   getters: {
-    songCount: (state) => state.selectedSongs.length,
+    songCount: state => state.selectedSongs.length,
 
-    totalVotes: (state) => {
+    totalVotes: state => {
       return state.selectedSongs.reduce((total, song) => {
         const upVotes = song.votes?.up || 0
         const downVotes = song.votes?.down || 0
@@ -141,7 +141,7 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
       }, 0)
     },
 
-    topSong: (state) => {
+    topSong: state => {
       if (state.selectedSongs.length === 0) return null
 
       return state.selectedSongs.reduce((top, song) => {
@@ -151,10 +151,8 @@ export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
       })
     },
 
-    guestSuggestedCount: (state) => {
-      return state.selectedSongs.filter(song =>
-        song.suggestedBy?.isOrganizer === false
-      ).length
+    guestSuggestedCount: state => {
+      return state.selectedSongs.filter(song => song.suggestedBy?.isOrganizer === false).length
     }
   }
 })

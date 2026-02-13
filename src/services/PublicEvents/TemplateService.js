@@ -1,4 +1,4 @@
-import { CWM_API } from './axios'
+import { CWM_API } from '../axios'
 
 class TemplateService {
   async getEventData({ eventId, guestCode }) {

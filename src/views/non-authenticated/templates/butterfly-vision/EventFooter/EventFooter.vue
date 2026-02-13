@@ -1,8 +1,5 @@
 <script setup>
-import { useTemplateStore } from '@/stores/useTemplateStore'
 import { computed } from 'vue'
-
-const templateStore = useTemplateStore()
 
 const currentYear = computed(() => new Date().getFullYear())
 </script>

@@ -19,7 +19,7 @@ const perPageOptions = [
 
 const totalPages = computed(() => {
   if (!menuStore?.guestsMenu?.length) {
-    return 1;
+    return 1
   }
 
   return Math.ceil(menuStore.guestsMenu.length / menuStore.perPage)

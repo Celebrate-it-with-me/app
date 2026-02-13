@@ -26,6 +26,7 @@ import SeatingView from '@/views/internal/seating/SeatingView.vue'
 import CSuggestedMusic from '@/views/internal/suggested-music/CSuggestedMusic.vue'
 import CSweetMemoriesAdmin from '@/views/internal/sweet-memories/CSweetMemories.vue'
 import CTimeline from '@/components/internal/timeline/CTimeline.vue'
+import CWMBackgroundMusic from '@/components/authenticated/background-music/CWMBackgroundMusic.vue'
 
 const authRoutes = [
   {
@@ -324,6 +325,16 @@ const authRoutes = [
       requiredPermission: []
     }
   },
+
+  {
+    path: 'background-music',
+    name: 'background-music',
+    component: CWMBackgroundMusic,
+    meta: {
+      title: 'Background Music'
+    }
+  },
+
   {
     path: '/dashboard/timeline',
     name: 'timeline',

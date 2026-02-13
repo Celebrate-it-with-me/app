@@ -10,7 +10,7 @@ export const useGuestsStore = defineStore('guestsStore', {
     perPage: 10,
     currentGuest: null,
     searchValue: '',
-    totalAssistant: 0,
+    totalAssistant: 0
   }),
   actions: {
     async countTotalAssistant() {

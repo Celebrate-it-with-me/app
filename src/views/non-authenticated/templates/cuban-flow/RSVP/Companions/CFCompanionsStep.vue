@@ -1,5 +1,5 @@
 <script setup>
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { computed } from 'vue'
 import CFNoCompanions from '@/views/non-authenticated/templates/cuban-flow/RSVP/Companions/CFNoCompanions.vue'
 import CFCompanions from '@/views/non-authenticated/templates/cuban-flow/RSVP/Companions/CFCompanions.vue'

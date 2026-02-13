@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { useRoute } from 'vue-router'
 
 const emit = defineEmits(['goBack', 'submit'])

@@ -18,7 +18,11 @@ const openAddBudgetItemModal = () => {
   <div class="relative mb-12">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div>
-        <CHeading :level="1" weight="black" class="text-4xl md:text-5xl text-gray-900 dark:text-white tracking-tight mb-3">
+        <CHeading
+          :level="1"
+          weight="black"
+          class="text-4xl md:text-5xl text-gray-900 dark:text-white tracking-tight mb-3"
+        >
           Event <span class="text-purple-600 dark:text-purple-400">Budget</span>
         </CHeading>
         <p class="text-gray-500 dark:text-gray-400 max-w-xl text-lg leading-relaxed">

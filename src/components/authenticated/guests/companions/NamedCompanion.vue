@@ -2,7 +2,7 @@
 import TextField from '@/components/UI/form/TextField.vue'
 import { Form } from 'vee-validate'
 import PhoneNumberField from '@/components/UI/form/PhoneNumberField.vue'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive } from 'vue'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 

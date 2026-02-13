@@ -2,7 +2,7 @@
 
 <template>
   <div
-    class="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white dark:from-gray-900 dark:to-gray-800 px-4"
+    class="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white px-4"
   >
     <router-view />
   </div>

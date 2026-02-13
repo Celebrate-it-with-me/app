@@ -2,14 +2,10 @@
   <!-- 20-line ultra-simple CTA -->
   <section class="py-24 bg-gradient-to-br from-pink-500 to-purple-600">
     <div class="max-w-3xl mx-auto px-6 text-center">
-
-      <h2 class="text-5xl font-black text-white mb-6">
-        Ready When You Are
-      </h2>
+      <h2 class="text-5xl font-black text-white mb-6">Ready When You Are</h2>
 
       <p class="text-xl text-white/90 mb-10">
-        Start planning your daughter's quinceañera for free.
-        No credit card, no commitment.
+        Start planning your daughter's quinceañera for free. No credit card, no commitment.
       </p>
 
       <router-link
@@ -18,15 +14,10 @@
       >
         Create Free Event →
       </router-link>
-
     </div>
   </section>
 </template>
 
 <script setup>
-import CCard from '@/components/UI/cards/CCard.vue'
-import CHeading from '@/components/UI/headings/CHeading.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
-import { CheckCircle, Lock, Zap } from 'lucide-vue-next'
 import { RouterLink } from 'vue-router'
 </script>

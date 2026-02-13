@@ -5,12 +5,21 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
       <div class="flex items-center gap-2">
         <slot name="logo">
-          <span class="text-pink-500 font-bold text-xl hover:text-pink-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-md px-1" tabindex="0"> {{ logo }}</span>
+          <span
+            class="text-pink-500 font-bold text-xl hover:text-pink-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-md px-1"
+            tabindex="0"
+          >
+            {{ logo }}</span
+          >
         </slot>
       </div>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden md:flex items-center gap-2 text-sm font-medium" role="navigation" aria-label="Main navigation">
+      <nav
+        class="hidden md:flex items-center gap-2 text-sm font-medium"
+        role="navigation"
+        aria-label="Main navigation"
+      >
         <template v-for="(link, index) in selfLinks" :key="index">
           <a
             :href="link.href"
@@ -41,14 +50,23 @@
       <div class="hidden md:flex items-center gap-4">
         <slot name="extra">
           <RouterLink v-if="loginLink" :to="`/${loginLink}`">
-            <a class="group relative inline-flex items-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden">
+            <a
+              class="group relative inline-flex items-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden"
+            >
               <span class="relative z-10 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4l4-4m0 0l-4-4m4 4H3" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4l4-4m0 0l-4-4m4 4H3"
+                  />
                 </svg>
                 Login
               </span>
-              <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div
+                class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              ></div>
             </a>
           </RouterLink>
 
@@ -109,7 +127,12 @@
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <div v-if="isMenuOpen" class="md:hidden bg-white dark:bg-gray-800 shadow-lg border-t border-gray-200 dark:border-gray-700" role="navigation" aria-label="Mobile navigation menu">
+      <div
+        v-if="isMenuOpen"
+        class="md:hidden bg-white dark:bg-gray-800 shadow-lg border-t border-gray-200 dark:border-gray-700"
+        role="navigation"
+        aria-label="Mobile navigation menu"
+      >
         <div class="px-4 py-3 space-y-1">
           <template v-for="(link, index) in selfLinks" :key="index">
             <a
@@ -127,7 +150,11 @@
               @keydown.space.prevent="scrollToSection(link)"
             >
               <span class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 rounded-full bg-current opacity-0 transition-opacity duration-200" :class="{ 'opacity-100': link.isActive }" aria-hidden="true"></span>
+                <span
+                  class="w-1.5 h-1.5 rounded-full bg-current opacity-0 transition-opacity duration-200"
+                  :class="{ 'opacity-100': link.isActive }"
+                  aria-hidden="true"
+                ></span>
                 {{ link.label }}
               </span>
             </a>
@@ -135,14 +162,23 @@
 
           <div class="pt-4 pb-2 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-2">
             <RouterLink v-if="loginLink" :to="`/${loginLink}`">
-              <a class="group relative flex items-center justify-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden">
+              <a
+                class="group relative flex items-center justify-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden"
+              >
                 <span class="relative z-10 flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4l4-4m0 0l-4-4m4 4H3" />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4m-5-4l4-4m0 0l-4-4m4 4H3"
+                    />
                   </svg>
                   Login
                 </span>
-                <div class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div
+                  class="absolute inset-0 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                ></div>
               </a>
             </RouterLink>
 
@@ -172,9 +208,18 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
-  loginLink: String,
-  ctaText: String,
-  ctaHref: String
+  loginLink: {
+    type: String,
+    required: true
+  },
+  ctaText: {
+    type: String,
+    required: true
+  },
+  ctaHref: {
+    type: String,
+    required: true
+  }
 })
 
 const activeHash = ref('')

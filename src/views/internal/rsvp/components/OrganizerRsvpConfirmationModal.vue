@@ -1,4 +1,3 @@
-
 <template>
   <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal-content">
@@ -8,7 +7,7 @@
           <h3 class="text-xl font-bold text-gray-900">RSVP Confirmation</h3>
           <p class="text-sm text-gray-600 mt-1">{{ guest.name }}</p>
         </div>
-        <button @click="$emit('close')" class="close-btn">
+        <button class="close-btn" @click="$emit('close')">
           <X class="w-5 h-5" />
         </button>
       </div>
@@ -25,7 +24,10 @@
           <div class="guest-form-content">
             <!-- RSVP Status Options -->
             <div class="status-options">
-              <label class="radio-option" :class="{ active: formData.guest.rsvp_status === 'attending' }">
+              <label
+                class="radio-option"
+                :class="{ active: formData.guest.rsvp_status === 'attending' }"
+              >
                 <input
                   v-model="formData.guest.rsvp_status"
                   type="radio"
@@ -36,7 +38,10 @@
                 <span>Confirm</span>
               </label>
 
-              <label class="radio-option" :class="{ active: formData.guest.rsvp_status === 'not-attending' }">
+              <label
+                class="radio-option"
+                :class="{ active: formData.guest.rsvp_status === 'not-attending' }"
+              >
                 <input
                   v-model="formData.guest.rsvp_status"
                   type="radio"
@@ -50,9 +55,7 @@
 
             <!-- Notes -->
             <div class="notes-section">
-              <label class="block text-sm font-medium text-gray-700 mb-2">
-                Notes (Optional)
-              </label>
+              <label class="block text-sm font-medium text-gray-700 mb-2"> Notes (Optional) </label>
               <textarea
                 v-model="formData.guest.notes"
                 class="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
@@ -67,24 +70,22 @@
         <div v-if="companionsData.length > 0" class="companions-section">
           <div class="section-header">
             <Users class="w-5 h-5 text-purple-600" />
-            <h4 class="font-semibold text-gray-800">
-              Companions ({{ companionsData.length }})
-            </h4>
+            <h4 class="font-semibold text-gray-800">Companions ({{ companionsData.length }})</h4>
 
             <!-- Bulk Actions -->
             <div class="bulk-actions">
               <button
-                @click="bulkApplyToCompanions('attending')"
                 class="bulk-btn bulk-confirm"
                 title="Confirm all companions"
+                @click="bulkApplyToCompanions('attending')"
               >
                 <CheckCircle class="w-3 h-3" />
                 Confirm All
               </button>
               <button
-                @click="bulkApplyToCompanions('not_attending')"
                 class="bulk-btn bulk-decline"
                 title="Decline all companions"
+                @click="bulkApplyToCompanions('not_attending')"
               >
                 <XCircle class="w-3 h-3" />
                 Decline All
@@ -94,11 +95,7 @@
 
           <!-- Companions List -->
           <div class="companions-list">
-            <div
-              v-for="companion in companionsData"
-              :key="companion.id"
-              class="companion-item"
-            >
+            <div v-for="companion in companionsData" :key="companion.id" class="companion-item">
               <div class="companion-header">
                 <div class="companion-info">
                   <span class="companion-name">{{ companion.name }}</span>
@@ -109,7 +106,10 @@
               <div class="companion-form-content">
                 <!-- Companion RSVP Status Options -->
                 <div class="status-options compact">
-                  <label class="radio-option small" :class="{ active: companion.rsvp_status === 'attending' }">
+                  <label
+                    class="radio-option small"
+                    :class="{ active: companion.rsvp_status === 'attending' }"
+                  >
                     <input
                       v-model="companion.rsvp_status"
                       type="radio"
@@ -120,7 +120,10 @@
                     <span>Confirm</span>
                   </label>
 
-                  <label class="radio-option small" :class="{ active: companion.rsvp_status === 'not-attending' }">
+                  <label
+                    class="radio-option small"
+                    :class="{ active: companion.rsvp_status === 'not-attending' }"
+                  >
                     <input
                       v-model="companion.rsvp_status"
                       type="radio"
@@ -149,21 +152,15 @@
 
       <!-- Footer -->
       <div class="modal-footer">
-        <button @click="$emit('close')" class="btn-secondary" :disabled="saving">
-          Cancel
-        </button>
-        <button
-          @click="saveConfirmation"
-          class="btn-primary"
-          :disabled="saving"
-        >
+        <button class="btn-secondary" :disabled="saving" @click="$emit('close')">Cancel</button>
+        <button class="btn-primary" :disabled="saving" @click="saveConfirmation">
           <span v-if="saving">
-            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block mr-2"></div>
+            <div
+              class="animate-spin rounded-full h-4 w-4 border-b-2 border-white inline-block mr-2"
+            ></div>
             Saving...
           </span>
-          <span v-else>
-            Save Changes
-          </span>
+          <span v-else> Save Changes </span>
         </button>
       </div>
     </div>
@@ -182,16 +179,16 @@ const props = defineProps({
     type: Object,
     required: true
   }
-});
+})
 
-const emit = defineEmits(['close', 'confirmed']);
+const emit = defineEmits(['close', 'confirmed'])
 
 // Stores
-const organizerRsvpStore = useOrganizerRsvpStore();
-const notificationStore = useNotificationStore();
+const organizerRsvpStore = useOrganizerRsvpStore()
+const notificationStore = useNotificationStore()
 
 // State
-const saving = ref(false);
+const saving = ref(false)
 
 // Form Data - Initialize with guest data
 const formData = reactive({
@@ -199,10 +196,10 @@ const formData = reactive({
     rsvp_status: props.guest.rsvpStatus || 'pending',
     notes: props.guest.notes || ''
   }
-});
+})
 
 // Companions Data - Initialize with guest companions
-const companionsData = ref([]);
+const companionsData = ref([])
 
 // Initialize data on mount
 onMounted(() => {
@@ -212,19 +209,19 @@ onMounted(() => {
     name: companion.name,
     rsvp_status: companion.rsvpStatus || 'pending',
     notes: companion.notes || ''
-  }));
-});
+  }))
+})
 
 // Bulk apply to companions
-const bulkApplyToCompanions = (status) => {
+const bulkApplyToCompanions = status => {
   companionsData.value.forEach(companion => {
-    companion.rsvp_status = status;
-  });
-};
+    companion.rsvp_status = status
+  })
+}
 
 // Save confirmation
 const saveConfirmation = async () => {
-  saving.value = true;
+  saving.value = true
 
   try {
     const payload = {
@@ -234,27 +231,27 @@ const saveConfirmation = async () => {
         rsvp_status: companion.rsvp_status,
         notes: companion.notes
       }))
-    };
+    }
 
-    const response = await organizerRsvpStore.confirmRsvp(props.guest.id, payload);
+    const response = await organizerRsvpStore.confirmRsvp(props.guest.id, payload)
 
     if (response.success) {
       notificationStore.addNotification({
         type: 'success',
         message: 'RSVP confirmation updated successfully!'
-      });
-      emit('confirmed', response.guest);
+      })
+      emit('confirmed', response.guest)
     }
   } catch (error) {
-    console.error('Error saving RSVP confirmation:', error);
+    console.error('Error saving RSVP confirmation:', error)
     notificationStore.addNotification({
       type: 'error',
       message: 'Failed to save RSVP confirmation'
-    });
+    })
   } finally {
-    saving.value = false;
+    saving.value = false
   }
-};
+}
 </script>
 
 <style scoped>
@@ -283,7 +280,8 @@ const saveConfirmation = async () => {
 }
 
 /* Sections */
-.main-guest-section, .companions-section {
+.main-guest-section,
+.companions-section {
   @apply mb-6;
 }
 
@@ -291,7 +289,8 @@ const saveConfirmation = async () => {
   @apply flex items-center gap-3 mb-4 pb-2 border-b border-gray-100;
 }
 
-.guest-form-content, .companion-form-content {
+.guest-form-content,
+.companion-form-content {
   @apply space-y-4;
 }
 

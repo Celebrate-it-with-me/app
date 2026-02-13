@@ -21,10 +21,11 @@ export const useRsvpStore = defineStore('rsvpStore', {
   actions: {
     async fetchStats() {
       const userStore = useUserStore()
+      const notifications = useNotificationStore()
 
       if (userStore.activeEvent) {
         const response = await RsvpService.loadStats({
-          eventId: userStore.activeEvent,
+          eventId: userStore.activeEvent
         })
 
         if (response.status !== 200) {
@@ -39,7 +40,6 @@ export const useRsvpStore = defineStore('rsvpStore', {
       } else {
         this.stats = {}
       }
-
     },
 
     async loadGuests() {

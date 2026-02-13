@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-gray-900 text-text font-[Poppins] min-h-screen flex flex-col">
+  <div class="bg-white text-text font-[Poppins] min-h-screen flex flex-col">
     <!-- Skip to main content for accessibility -->
     <a
       href="#main-content"
@@ -14,18 +14,18 @@
     <!-- Main content area with proper semantic structure -->
     <main id="main-content" class="flex-1 focus:outline-none" tabindex="-1">
       <!-- Loading indicator for better UX -->
-        <router-view v-slot="{ Component }">
-          <Suspense>
-            <template #default>
-              <component :is="Component" />
-            </template>
-            <template #fallback>
-              <div class="flex items-center justify-center min-h-[50vh]">
-                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-              </div>
-            </template>
-          </Suspense>
-        </router-view>
+      <router-view v-slot="{ Component }">
+        <Suspense>
+          <template #default>
+            <component :is="Component" />
+          </template>
+          <template #fallback>
+            <div class="flex items-center justify-center min-h-[50vh]">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          </template>
+        </Suspense>
+      </router-view>
     </main>
 
     <!-- Footer -->
@@ -35,12 +35,17 @@
     <Transition name="fade">
       <button
         v-if="showBackToTop"
-        @click="scrollToTop"
         class="fixed bottom-6 right-6 bg-primary hover:bg-primary-dark text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 z-40"
         aria-label="Back to top"
+        @click="scrollToTop"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 10l7-7m0 0l7 7m-7-7v18"
+          />
         </svg>
       </button>
     </Transition>

@@ -6,6 +6,8 @@ import { useNotificationStore } from '@/stores/useNotificationStore'
 import CWMSimplePagination from '@/components/UI/pagination/CWMSimplePagination.vue'
 import OVSongSearchInput from '@/views/non-authenticated/templates/ocean-vibe/SuggestedMusic/OVSongSearchInput.vue'
 import OVSongList from '@/views/non-authenticated/templates/ocean-vibe/SuggestedMusic/OVSongList.vue'
+import { useSuggestedMusicPublicStore } from '@/stores/publicEvents/useSuggestedMusicPublicStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const props = defineProps({
   title: {
@@ -44,6 +46,8 @@ const props = defineProps({
 })
 
 const songsStore = useSuggestedMusicStore()
+const suggestedMusicPublicStore = useSuggestedMusicPublicStore()
+const templateStore = useTemplateStore()
 const loading = ref(false)
 const notification = useNotificationStore()
 const totalItems = ref(0)
@@ -65,6 +69,14 @@ const getSuggestedSongs = async () => {
     if (response.status === 200) {
       songsStore.selectedSongs = response?.data?.data ?? []
       totalItems.value = response.data?.meta?.total ?? 0
+
+      // Fetch user votes for the new list if accessCode exists
+      const accessCode = templateStore.guest?.accessCode
+      if (accessCode && props.useVoteSystem) {
+        songsStore.selectedSongs.forEach(song => {
+          suggestedMusicPublicStore.getUserVote(props.event.id, song.id, accessCode)
+        })
+      }
     } else {
       notification.addNotification({
         type: 'error',
@@ -101,7 +113,7 @@ watch(
 <template>
   <div class="event-handle w-full max-w-6xl px-4 flex flex-col items-center relative">
     <h2
-      class="text-4xl md:text-7xl font-gvibes font-bold leading-[1.2] pt-4 md:pt-12 text-transparent bg-clip-text bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] text-center"
+      class="text-4xl md:text-7xl font-gvibes font-bold leading-[1.2] pt-8 md:pt-16 text-transparent bg-clip-text bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] text-center"
     >
       {{ title }}
     </h2>
@@ -110,6 +122,21 @@ watch(
     >
       {{ subTitle }}
     </h4>
+
+    <div
+      v-if="useVoteSystem && templateStore.guest?.accessCode"
+      class="mt-2 mb-4 flex items-center gap-2 rounded-full bg-[#123B5A]/10 px-4 py-1.5 text-sm font-medium text-[#123B5A]"
+    >
+      <span>Votos disponibles:</span>
+      <span class="text-lg font-bold">{{ suggestedMusicPublicStore.availableVotes }}</span>
+    </div>
+
+    <div
+      v-if="useVoteSystem && !templateStore.guest?.accessCode"
+      class="mt-2 mb-4 px-4 py-1.5 text-sm text-[#123B5A]/60 italic"
+    >
+      Inicia sesión con tu código de acceso para poder votar.
+    </div>
 
     <OVSongSearchInput
       :event="event"
@@ -134,6 +161,7 @@ watch(
       v-if="songsStore.selectedSongs.length"
       v-model="pageSelected"
       :total-items="totalItems"
+      class="mt-6 mb-8"
     />
   </div>
 </template>

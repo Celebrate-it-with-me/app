@@ -63,8 +63,8 @@
 
           <!-- Description -->
           <p class="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 max-w-2xl leading-relaxed">
-            Everything you need to plan an unforgettable quinceañera
-            —from guest lists to the last dance.
+            Everything you need to plan an unforgettable quinceañera —from guest lists to the last
+            dance.
           </p>
 
           <!-- Feature Pills -->
@@ -95,7 +95,9 @@
                 class="w-2 h-2 bg-purple-500 rounded-full mr-2 animate-pulse"
                 style="animation-delay: 1s"
               ></div>
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Bilingual Support</span>
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Bilingual Support</span
+              >
             </div>
           </div>
 

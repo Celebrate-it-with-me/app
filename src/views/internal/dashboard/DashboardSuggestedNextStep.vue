@@ -1,36 +1,46 @@
 <script setup>
-import { CheckCircle, CheckSquare, DollarSign, Lightbulb, ListChecks, Mail, UserPlus, Users } from 'lucide-vue-next'
+import {
+  CheckCircle,
+  CheckSquare,
+  DollarSign,
+  Lightbulb,
+  Mail,
+  UserPlus,
+  Users
+} from 'lucide-vue-next'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   daysUntilEvent: {
     type: Number,
     required: true,
-    validator: (value) => value >= 0
+    validator: value => value >= 0
   },
   rsvpData: {
     type: Object,
-    required: true,
+    required: true
   },
   planningData: {
     type: Object,
-    required: true,
+    required: true
   },
   budgetData: {
     type: Object,
-    required: true,
-  },
+    required: true
+  }
 })
 
-
 const suggestedActions = computed(() => {
-  const actions = [];
-  const days = props.daysUntilEvent;
-  const guests = props.rsvpData.total;
-  const confirmed = props.rsvpData.confirmed;
-  const pending = props.rsvpData.pending;
-  const planning = props.planningData.progress;
-  const budget = props.budgetData.total;
+  const actions = []
+  const days = props.daysUntilEvent
+  const guests = props.rsvpData.total
+  const confirmed = props.rsvpData.confirmed
+  const pending = props.rsvpData.pending
+  const planning = props.planningData.progress
+  const budget = props.budgetData.total
 
   // Priority 1: No guests at all
   if (guests === 0) {
@@ -45,7 +55,7 @@ const suggestedActions = computed(() => {
       subtitle: 'Start building your guest list to track RSVPs',
       actionLabel: 'Add Guests',
       action: () => router.push('/guests')
-    });
+    })
   }
 
   // Priority 2: Many pending RSVPs
@@ -61,7 +71,7 @@ const suggestedActions = computed(() => {
       subtitle: days < 7 ? 'Event is soon - get responses ASAP' : 'Get your guest list finalized',
       actionLabel: 'Send Invites',
       action: () => router.push('/rsvp?filter=pending')
-    });
+    })
   }
 
   // Priority 3: Planning not started
@@ -77,12 +87,12 @@ const suggestedActions = computed(() => {
       subtitle: 'Complete tasks to stay organized and on track',
       actionLabel: 'Get Started',
       action: () => scrollToSection('planning')
-    });
+    })
   }
 
   // Priority 4: Incomplete planning
-  else if (planning > 0 && planning < 100) {
-    const incompleteCount = planningData.value.items.filter(i => !i.completed).length;
+  /*else if (planning > 0 && planning < 100) {
+    const incompleteCount = planningData.value.items.filter(i => !i.completed).length
     if (incompleteCount > 0) {
       actions.push({
         priority: 4,
@@ -95,9 +105,9 @@ const suggestedActions = computed(() => {
         subtitle: `You're ${planning}% done - keep going!`,
         actionLabel: 'Review Tasks',
         action: () => scrollToSection('planning')
-      });
+      })
     }
-  }
+  }*/
 
   // Priority 5: No budget
   if (budget === 0 && days > 14) {
@@ -112,7 +122,7 @@ const suggestedActions = computed(() => {
       subtitle: 'Track expenses and stay within your limits',
       actionLabel: 'Create Budget',
       action: () => router.push('/budget')
-    });
+    })
   }
 
   // Priority 6: Confirm headcount (if event soon)
@@ -128,25 +138,22 @@ const suggestedActions = computed(() => {
       subtitle: `${confirmed} guests confirmed - notify your vendors`,
       actionLabel: 'Confirm',
       action: () => handleConfirmHeadcount()
-    });
+    })
   }
 
-  return actions
-    .sort((a, b) => a.priority - b.priority)
-    .slice(0, 3);
-});
+  return actions.sort((a, b) => a.priority - b.priority).slice(0, 3)
+})
 
-const scrollToSection = (sectionId) => {
-  const element = document.getElementById(sectionId);
+const scrollToSection = sectionId => {
+  const element = document.getElementById(sectionId)
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-};
+}
 
 const handleConfirmHeadcount = () => {
-  router.push('/dashboard/locations');
-};
-
+  router.push('/dashboard/locations')
+}
 </script>
 
 <template>
@@ -161,15 +168,17 @@ const handleConfirmHeadcount = () => {
         v-for="(action, index) in suggestedActions"
         :key="index"
         :class="[
-            'suggestion-item flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 rounded-lg border-l-4 transition-all hover:shadow-md border shadow-sm gap-3',
-            action.borderClass,
-            action.bgClass
-          ]"
+          'suggestion-item flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 rounded-lg border-l-4 transition-all hover:shadow-md border shadow-sm gap-3',
+          action.borderClass,
+          action.bgClass
+        ]"
       >
         <div class="flex items-center gap-3 flex-1 min-w-0">
-            <span class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-white/50 text-gray-700 font-bold text-xs shadow-sm">
-              {{ index + 1 }}
-            </span>
+          <span
+            class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-white/50 text-gray-700 font-bold text-xs shadow-sm"
+          >
+            {{ index + 1 }}
+          </span>
           <component :is="action.icon" :class="['w-5 h-5 flex-shrink-0', action.iconClass]" />
           <div class="flex-1 min-w-0">
             <p class="font-semibold text-sm text-gray-900 truncate">
@@ -181,8 +190,8 @@ const handleConfirmHeadcount = () => {
           </div>
         </div>
         <button
-          @click="action.action"
           class="w-full sm:w-auto px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors text-sm font-bold shadow-sm whitespace-nowrap ml-0 sm:ml-3"
+          @click="action.action"
         >
           {{ action.actionLabel }}
         </button>
@@ -194,16 +203,10 @@ const handleConfirmHeadcount = () => {
       <div class="inline-flex items-center justify-center w-12 h-12 bg-green-50 rounded-full mb-2">
         <CheckCircle class="w-6 h-6 text-green-500" />
       </div>
-      <h3 class="text-base font-bold text-gray-900 mb-1">
-        All Caught Up! 🎉
-      </h3>
-      <p class="text-sm text-gray-600">
-        No urgent actions needed right now.
-      </p>
+      <h3 class="text-base font-bold text-gray-900 mb-1">All Caught Up! 🎉</h3>
+      <p class="text-sm text-gray-600">No urgent actions needed right now.</p>
     </div>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

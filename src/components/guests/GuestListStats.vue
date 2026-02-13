@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 p-4 mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div
+    class="bg-white rounded-lg border border-gray-200 p-4 mb-4 flex flex-col md:flex-row md:items-center justify-between gap-4"
+  >
     <div class="flex items-center gap-6">
       <div class="flex items-center gap-2">
         <Users class="w-5 h-5 text-purple-600" />
@@ -20,9 +22,11 @@
           type="checkbox"
           class="sr-only peer"
           :checked="modelValue"
-          @change="$emit('update:modelValue', $event.target.checked); $emit('filter-companions', $event.target.checked)"
-        >
-        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+          @change="handleChangeCheckbox($event)"
+        />
+        <div
+          class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"
+        ></div>
         <span class="ml-3 text-sm font-medium text-gray-700 flex items-center gap-2">
           <Filter class="w-4 h-4 text-purple-600" />
           Show only with companions
@@ -33,7 +37,7 @@
 </template>
 
 <script setup>
-import { Users, Filter } from 'lucide-vue-next';
+import { Users, Filter } from 'lucide-vue-next'
 
 defineProps({
   totalGuests: {
@@ -52,7 +56,12 @@ defineProps({
     type: Boolean,
     default: false
   }
-});
+})
 
-defineEmits(['filter-companions', 'update:modelValue']);
+const emit = defineEmits(['filter-companions', 'update:modelValue'])
+
+const handleChangeCheckbox = event => {
+  emit('update:modelValue', event.target.checked)
+  emit('filter-companions', event.target.checked)
+}
 </script>

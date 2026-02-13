@@ -192,6 +192,8 @@
                     name="eventType"
                     :options="eventTypes"
                     show-error
+                    description=""
+                    label=""
                   />
                 </div>
 
@@ -240,6 +242,9 @@
                     name="eventDescription"
                     placeholder="Share the story behind this celebration..."
                     show-error
+                    description=""
+                    disabled=""
+                    label=""
                   />
                   <p class="text-xs text-gray-500 dark:text-gray-400">
                     Tell guests what makes this event special
@@ -682,9 +687,7 @@ import CWizard from '@/components/UI/wizard/CWizard.vue'
 
 import { useEventsStore } from '@/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import {
-  DEFAULT_ERROR_MESSAGE
-} from '@/constants/constants'
+import { DEFAULT_ERROR_MESSAGE } from '@/constants/constants'
 import {
   Calendar,
   Cake,

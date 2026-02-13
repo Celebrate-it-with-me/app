@@ -7,7 +7,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { CheckCircle2, XCircle } from 'lucide-vue-next'
 import ConfirmationField from '@/components/UI/form/ConfirmationField.vue'
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import GuestMenuSelection from '@/views/non-authenticated/templates/butterfly-vision/RSVP/Companions/GuestMenuSelection.vue'
 
 const emit = defineEmits(['confirmed'])

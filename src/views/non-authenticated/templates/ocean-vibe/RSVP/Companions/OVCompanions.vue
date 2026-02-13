@@ -1,5 +1,5 @@
 <script setup>
-import { useTemplateStore } from '@/stores/useTemplateStore'
+import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { computed, ref } from 'vue'
 import OVCompanionsList from '@/views/non-authenticated/templates/ocean-vibe/RSVP/Companions/OVCompanionsList.vue'
 import OVConfirmCompanion from '@/views/non-authenticated/templates/ocean-vibe/RSVP/Companions/OVConfirmCompanion.vue'
