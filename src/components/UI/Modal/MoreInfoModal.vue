@@ -1,9 +1,8 @@
 <script setup>
 import CWMModal from '@/components/UI/Modal/CWMModal.vue'
 import { computed, ref, watch } from 'vue'
-import { useGuestsStore } from '@/stores/useGuestStore'
-import { useEventsStore } from '@/stores/useEventsStore'
-import { FwbButton } from 'flowbite-vue'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 const emit = defineEmits(['closeModal'])
 const props = defineProps({

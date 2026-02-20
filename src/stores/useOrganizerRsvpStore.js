@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import OrganizerRsvpService from '@/services/OrganizerRsvpService'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 export const useOrganizerRsvpStore = defineStore('organizerRsvp', {
   state: () => ({

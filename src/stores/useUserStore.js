@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import UserService from '../services/UserService'
 import { format } from 'date-fns'
-import { useEventsStore } from './useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { smartResetAllStores } from '@/utils/reset'
 
 export const useUserStore = defineStore('userStore', {

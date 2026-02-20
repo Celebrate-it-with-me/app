@@ -25,14 +25,6 @@ const router = createRouter({
       children: [...nonAuthRoutes]
     },
     {
-      path: '/403',
-      name: 'not-authorized',
-      component: () => import('@/views/internal/errors/C403.vue'),
-      meta: {
-        title: 'Not Authorized'
-      }
-    },
-    {
       path: '',
       name: 'Authenticated',
       component: InternalLayout,

@@ -1,6 +1,6 @@
 <script setup>
 import { PlusIcon } from '@heroicons/vue/16/solid'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import EventLi from '@/components/authenticated/events/EventLi.vue'
 import CWMButton from '@/components/UI/form/CWMButton.vue'
 import TextField from '@/components/UI/form/TextField.vue'

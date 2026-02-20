@@ -2,7 +2,7 @@
 import CWMModal from '@/components/UI/Modal/CWMModal.vue'
 import { computed, ref, watch } from 'vue'
 import { FwbButton } from 'flowbite-vue'
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import UpdateCompanionType from '@/components/UI/Modal/companions/UpdateCompanionType.vue'
 import NoCompanion from '@/components/UI/Modal/companions/NoCompanion.vue'
 import NoNamedCompanion from '@/components/UI/Modal/companions/NoNamedCompanion.vue'

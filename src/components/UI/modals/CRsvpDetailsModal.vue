@@ -245,7 +245,7 @@
 import CModal from '@/components/UI/modals/CModal.vue'
 import CLoading from '@/components/UI/loading/CLoading.vue'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
-import RsvpStatusBadge from '@/views/internal/rsvp/components/RsvpStatusBadge.vue'
+import RsvpStatusBadge from '@/modules/rsvp/components/RsvpStatusBadge.vue'
 import {
   Mail,
   Send as SendIcon,
@@ -260,7 +260,7 @@ import {
   ChevronDown
 } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { useRsvpStore } from '@/stores/useRsvpStore'
 
 const emit = defineEmits(['close', 'resend', 'confirmationReverted', 'send'])
@@ -331,7 +331,6 @@ const downloadQR = () => {
   link.download = `qr-${guestData.value.name.replace(/\s+/g, '-')}.png`
   link.click()
 }
-
 
 const loadGuestData = async () => {
   loadingGuestData.value = true

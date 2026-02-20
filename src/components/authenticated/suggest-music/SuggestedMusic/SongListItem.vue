@@ -1,9 +1,9 @@
 <script setup>
 import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { computed } from 'vue'
-import SongsService from '@/services/SongsService'
+import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 const props = defineProps({
   mainColor: {

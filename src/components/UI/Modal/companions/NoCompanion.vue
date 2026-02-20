@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 
 const guestStore = useGuestsStore()
 </script>

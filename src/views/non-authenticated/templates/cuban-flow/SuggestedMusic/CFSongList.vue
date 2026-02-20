@@ -4,7 +4,7 @@ import CFSongPreviewModal from '@/views/non-authenticated/templates/cuban-flow/S
 import { ref } from 'vue'
 import CFConfirmDeleteSongModal from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFConfirmDeleteSongModal.vue'
 import CFSongListItem from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFSongListItem.vue'
-import SongsService from '@/services/SongsService'
+import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 

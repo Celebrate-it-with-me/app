@@ -85,7 +85,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useMenusStore } from '@/stores/useMenusStore'
+import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
 import GuestNamedCompanionTr from '@/components/internal/guests/GuestNamedCompanionTr.vue'
 
 const props = defineProps({

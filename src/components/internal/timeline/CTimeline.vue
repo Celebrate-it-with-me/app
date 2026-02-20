@@ -139,6 +139,7 @@
             name="icon"
             label="Activity Icon (Optional)"
             :options="availableIcons"
+            description=""
           />
 
           <!-- Icon Preview -->
@@ -155,6 +156,7 @@
           label="Description (Optional)"
           placeholder="Add any details or notes about this activity"
           :rows="3"
+          description=""
         />
 
         <div v-if="validationError" class="text-red-500 text-sm mt-2">

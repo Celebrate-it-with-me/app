@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import RadioPlain from '@/components/UI/plain-ui/RadioPlain.vue'
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { FwbButton } from 'flowbite-vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 

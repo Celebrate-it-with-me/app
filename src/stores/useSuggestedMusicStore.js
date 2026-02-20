@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import SongsService from '../services/SongsService'
+import SongsService from '../modules/suggested-music/services/SongsService'
 
 export const useSuggestedMusicStore = defineStore('suggestedMusicStore', {
   state: () => ({
