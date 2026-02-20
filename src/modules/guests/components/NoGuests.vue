@@ -3,7 +3,7 @@ import { Plus } from 'lucide-vue-next'
 import CCard from '@/components/UI/cards/CCard.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import { Users2 as UserIcon } from 'lucide-vue-next'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useRouter } from 'vue-router'
 
 defineEmits(['addFirstMemory'])

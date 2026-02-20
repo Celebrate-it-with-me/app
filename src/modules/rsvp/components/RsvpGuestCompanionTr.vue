@@ -1,7 +1,7 @@
 <script setup>
 import { UserRoundIcon } from 'lucide-vue-next'
 
-const props = defineProps({
+defineProps({
   companion: {
     type: Object,
     required: true
