@@ -3,14 +3,14 @@ import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import CWMLoadingPage from '@/components/UI/loading/CWMLoadingPage.vue'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-import CFMainLayout from '@/views/non-authenticated/templates/cuban-flow/CFMainLayout.vue'
+import HNMainLayout from '@/views/non-authenticated/templates/habana-nights/HNMainLayout.vue'
 
 const route = useRoute()
 const loading = ref(true)
 const templateStore = useTemplateStore()
 
 onMounted(async () => {
-  let eventId = 6
+  let eventId = 5
   const { guestCode } = route.params
 
   await getEventData(eventId, guestCode)
@@ -38,7 +38,7 @@ const getEventData = async (eventId, guestCode) => {
 <template>
   <Suspense>
     <template #default>
-      <CFMainLayout v-if="!loading" :key="templateStore.event?.id" />
+      <HNMainLayout v-if="!loading" :key="templateStore.event?.id" />
     </template>
     <template #fallback>
       <CWMLoadingPage v-if="loading" />
