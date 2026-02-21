@@ -211,6 +211,22 @@ export function useRsvpView() {
     await rsvpStore.fetchStats()
   })
 
+  const handlePageChange = newPage => {
+    rsvpStore.pageSelected = newPage
+  }
+
+  const handlePerPageChange = newPerPage => {
+    rsvpStore.perPage = newPerPage
+    rsvpStore.pageSelected = 1 // Reset to first page when changing per page
+  }
+
+  const handleSearchChange = newSearch => {
+    rsvpStore.searchValue = newSearch
+    rsvpStore.pageSelected = 1 // Reset to first page when searching
+  }
+
+
+
   return {
     perPageOptions,
     selectedGuests,
@@ -257,6 +273,9 @@ export function useRsvpView() {
     handleSendInvitationAction,
     handleCloseSendModal,
     reloadGuests,
-    handleConfirmationReverted
+    handleConfirmationReverted,
+    handlePerPageChange,
+    handlePageChange,
+    handleSearchChange
   }
 }
