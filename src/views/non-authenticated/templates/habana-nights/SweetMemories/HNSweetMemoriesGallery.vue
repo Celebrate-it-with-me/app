@@ -7,9 +7,10 @@ import lgZoom from 'lightgallery/plugins/zoom'
 import 'lightgallery/css/lightgallery.css'
 import 'lightgallery/css/lg-thumbnail.css'
 import 'lightgallery/css/lg-zoom.css'
+import HNSweetMemoriesItemGallery
+  from '@/views/non-authenticated/templates/habana-nights/SweetMemories/HNSweetMemoriesItemGallery.vue'
 
 // If you are using scss you can skip the css imports below and use scss instead
-import CFSweetMemoriesItemGallery from '@/views/non-authenticated/templates/cuban-flow/SweetMemories/CFSweetMemoriesItemGallery.vue'
 
 const props = defineProps({
   memories: {
@@ -61,7 +62,7 @@ const gallerySettings = {
       @on-init="onInit"
       @on-before-slide="onBeforeSlide"
     >
-      <CFSweetMemoriesItemGallery
+      <HNSweetMemoriesItemGallery
         v-for="(item, index) in memories"
         :key="index"
         :gallery-item="item"

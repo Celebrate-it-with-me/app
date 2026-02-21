@@ -1,9 +1,9 @@
 <script setup>
 import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
-import CFSongPreviewModal from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFSongPreviewModal.vue'
+import CFSongPreviewModal from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFSongPreviewModal.vue'
 import { ref } from 'vue'
-import CFConfirmDeleteSongModal from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFConfirmDeleteSongModal.vue'
-import CFSongListItem from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFSongListItem.vue'
+import CFConfirmDeleteSongModal from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFConfirmDeleteSongModal.vue'
+import CFSongListItem from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFSongListItem.vue'
 import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'

@@ -4,8 +4,8 @@ import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import CWMSimplePagination from '@/components/UI/pagination/CWMSimplePagination.vue'
-import CFSongList from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFSongList.vue'
-import CFSongSearchInput from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFSongSearchInput.vue'
+import CFSongList from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFSongList.vue'
+import CFSongSearchInput from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFSongSearchInput.vue'
 
 const props = defineProps({
   title: {

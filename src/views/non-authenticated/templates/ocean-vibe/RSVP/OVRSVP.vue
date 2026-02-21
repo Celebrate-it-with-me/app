@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive } from 'vue'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-import CFCWMRSVPConfirmed from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFCWMRSVPConfirmed.vue'
+import CFCWMRSVPConfirmed from '@/views/non-authenticated/templates/habana-nights/RSVP/CFCWMRSVPConfirmed.vue'
 import OVRSVPTitles from '@/views/non-authenticated/templates/ocean-vibe/RSVP/OVRSVPTitles.vue'
 import OVCWMRSVPComponent from '@/views/non-authenticated/templates/ocean-vibe/RSVP/OVCWMRSVPComponent.vue'
 

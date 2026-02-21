@@ -1,7 +1,9 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
-import CFSaveTheDateAddToCalendar from '@/views/non-authenticated/templates/cuban-flow/SaveTheDate/CFSaveTheDateAddToCalendar.vue'
-import CFSaveTheDateCountDown from '@/views/non-authenticated/templates/cuban-flow/SaveTheDate/CFSaveTheDateCountDown.vue'
+import HNSaveTheDateCountDown
+  from '@/views/non-authenticated/templates/habana-nights/SaveTheDate/HNSaveTheDateCountDown.vue'
+import HNSaveTheDateAddToCalendar
+  from '@/views/non-authenticated/templates/habana-nights/SaveTheDate/HNSaveTheDateAddToCalendar.vue'
 
 const h2TitleRef = ref(null)
 const isH2TitleInView = ref(false)
@@ -44,7 +46,7 @@ onUnmounted(() => {
       </h3>
 
       <div class="std-countdown mt-10 z-10">
-        <CFSaveTheDateCountDown
+        <HNSaveTheDateCountDown
           :numbers="{
             font: 'jost',
             color: '#111827',
@@ -65,7 +67,7 @@ onUnmounted(() => {
       </div>
 
       <div class="std-addToCalendar mt-10 z-10">
-        <CFSaveTheDateAddToCalendar
+        <HNSaveTheDateAddToCalendar
           :button-style="{
             bgColor: 'transparent',
             fontColor: '#111827',

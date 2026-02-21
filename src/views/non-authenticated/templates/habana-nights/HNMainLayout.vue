@@ -1,19 +1,20 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { templateRef } from '@vueuse/core'
-import CFHeaderNav from '@/views/non-authenticated/templates/cuban-flow/CFHeaderNav.vue'
-import CFHeroSection from '@/views/non-authenticated/templates/cuban-flow/CFHeroSection.vue'
-import CFSeparatorSection from '@/views/non-authenticated/templates/cuban-flow/CFSeparatorSection.vue'
-import CFSaveTheDate from '@/views/non-authenticated/templates/cuban-flow/SaveTheDate/CFSaveTheDate.vue'
-import CFCWMItinerario from '@/views/non-authenticated/templates/cuban-flow/Itinerario/CFCWMItinerario.vue'
-import CFSweetMemories from '@/views/non-authenticated/templates/cuban-flow/SweetMemories/CFSweetMemories.vue'
-import CFRSVP from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFRSVP.vue'
-import CFSuggestedMusic from '@/views/non-authenticated/templates/cuban-flow/SuggestedMusic/CFSuggestedMusic.vue'
-import CFEventComments from '@/views/non-authenticated/templates/cuban-flow/EventComments/CFEventComments.vue'
-import CFEventLocations from '@/views/non-authenticated/templates/cuban-flow/location/CFEventLocations.vue'
-import CFSwipeLeftIcon from '@/views/non-authenticated/templates/cuban-flow/SwipeLeftIcon/CFSwipeLeftIcon.vue'
-import CFEventFooter from '@/views/non-authenticated/templates/cuban-flow/EventFooter/CFEventFooter.vue'
+
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
+import HNEventFooter from '@/views/non-authenticated/templates/habana-nights/EventFooter/HNEventFooter.vue'
+import HNSwipeLeftIcon from '@/views/non-authenticated/templates/habana-nights/SwipeLeftIcon/HNSwipeLeftIcon.vue'
+import HNSeparatorSection from '@/views/non-authenticated/templates/habana-nights/HNSeparatorSection.vue'
+import HNEventLocations from '@/views/non-authenticated/templates/habana-nights/location/HNEventLocations.vue'
+import HNEventComments from '@/views/non-authenticated/templates/habana-nights/EventComments/HNEventComments.vue'
+import HNSuggestedMusic from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/HNSuggestedMusic.vue'
+import HNRSVP from '@/views/non-authenticated/templates/habana-nights/RSVP/HNRSVP.vue'
+import HNSweetMemories from '@/views/non-authenticated/templates/habana-nights/SweetMemories/HNSweetMemories.vue'
+import HNCWMItinerario from '@/views/non-authenticated/templates/habana-nights/Itinerario/HNCWMItinerario.vue'
+import HNSaveTheDate from '@/views/non-authenticated/templates/habana-nights/SaveTheDate/HNSaveTheDate.vue'
+import HNHeroSection from '@/views/non-authenticated/templates/habana-nights/HNHeroSection.vue'
+import HNHeaderNav from '@/views/non-authenticated/templates/habana-nights/HNHeaderNav.vue'
 
 const showScrollBtn = ref(false)
 const videoReproduced = ref(false)
@@ -92,61 +93,61 @@ const handleMoveToTop = () => {
         </video>
       </div>
       <main v-else class="">
-        <CFHeaderNav />
+        <HNHeaderNav />
 
-        <CFHeroSection class="main-section" />
+        <HNHeroSection class="main-section" />
 
-        <CFSeparatorSection>
+        <HNSeparatorSection>
           A todos los seres más queridos que forman parte de mi vida, quiero que celebren conmigo
           mis 15 años de vida. Porque su presencia, siempre será mi mejor regalo.
-        </CFSeparatorSection>
+        </HNSeparatorSection>
 
-        <CFSaveTheDate class="main-section" />
+        <HNSaveTheDate class="main-section" />
 
-        <CFSeparatorSection>
+        <HNSeparatorSection>
           Los recuerdos más hermosos nacen con las personas más especiales.
-        </CFSeparatorSection>
+        </HNSeparatorSection>
 
-        <CFCWMItinerario class="main-section" />
+        <HNCWMItinerario class="main-section" />
 
-        <CFSeparatorSection>
+        <HNSeparatorSection>
           ¡Prepárate para reír, bailar y celebrar como nunca!
-        </CFSeparatorSection>
+        </HNSeparatorSection>
 
-        <CFSweetMemories class="main-section" :mode="'presentation'" />
+        <HNSweetMemories class="main-section" :mode="'presentation'" />
 
-        <CFSeparatorSection>
+        <HNSeparatorSection>
           Gracias por ser parte de mi historia. Ahora celebremos juntos.
-        </CFSeparatorSection>
+        </HNSeparatorSection>
 
-        <CFRSVP class="main-section" />
+        <HNRSVP class="main-section" />
 
-        <CFSeparatorSection>
+        <HNSeparatorSection>
           La música, las memorias y ustedes harán de esta noche mágica.
-        </CFSeparatorSection>
+        </HNSeparatorSection>
 
-        <CFSuggestedMusic class="main-section" />
+        <HNSuggestedMusic class="main-section" />
 
-        <CFSeparatorSection>
+        <HNSeparatorSection>
           Que esta fiesta sea tan inolvidable como ustedes lo son para mí.
-        </CFSeparatorSection>
+        </HNSeparatorSection>
 
-        <CFEventComments origin="event" class="main-section" />
+        <HNEventComments origin="event" class="main-section" />
 
-        <CFSeparatorSection v-if="eventStore.hasLocation">
+        <HNSeparatorSection v-if="eventStore.hasLocation">
           Donde hay amor y alegría, el momento es perfecto.
-        </CFSeparatorSection>
+        </HNSeparatorSection>
 
-        <CFEventLocations v-if="eventStore.hasLocation" />
+        <HNEventLocations v-if="eventStore.hasLocation" />
 
-        <CFSeparatorSection>
+        <HNSeparatorSection>
           Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
           compartir con cada uno de ustedes. ¡Gracias por estar aquí!
-        </CFSeparatorSection>
+        </HNSeparatorSection>
 
-        <CFSwipeLeftIcon />
+        <HNSwipeLeftIcon />
 
-        <CFEventFooter />
+        <HNEventFooter />
       </main>
     </transition>
   </div>

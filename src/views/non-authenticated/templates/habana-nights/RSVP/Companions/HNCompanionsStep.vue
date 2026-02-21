@@ -1,8 +1,8 @@
 <script setup>
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { computed } from 'vue'
-import CFNoCompanions from '@/views/non-authenticated/templates/cuban-flow/RSVP/Companions/CFNoCompanions.vue'
-import CFCompanions from '@/views/non-authenticated/templates/cuban-flow/RSVP/Companions/CFCompanions.vue'
+import CFNoCompanions from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/CFNoCompanions.vue'
+import CFCompanions from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/CFCompanions.vue'
 
 const emit = defineEmits(['goToPrevious', 'goToNext'])
 const templateStore = useTemplateStore()

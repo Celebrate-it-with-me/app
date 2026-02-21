@@ -2,7 +2,8 @@
 import { computed } from 'vue'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
-import CFSweetMemoriesGallery from '@/views/non-authenticated/templates/cuban-flow/SweetMemories/CFSweetMemoriesGallery.vue'
+import HNSweetMemoriesGallery
+  from '@/views/non-authenticated/templates/habana-nights/SweetMemories/HNSweetMemoriesGallery.vue'
 
 const props = defineProps({
   mode: {
@@ -72,7 +73,7 @@ const formatImages = images => {
     </div>
 
     <div v-if="sweetMemoriesImages.length > 0" class="w-full max-w-7xl mx-auto mt-8">
-      <CFSweetMemoriesGallery :memories="sweetMemoriesImages" class="fade-in-up" />
+      <HNSweetMemoriesGallery :memories="sweetMemoriesImages" class="fade-in-up" />
     </div>
     <div v-else class="text-center py-12">
       <p class="text-gray-500 text-lg">Aún no hay recuerdos para mostrar. ❤️</p>

@@ -1,5 +1,5 @@
 <script setup>
-import CFCWMRsvpSteps from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFCWMRsvpSteps.vue'
+import CFCWMRsvpSteps from '@/views/non-authenticated/templates/habana-nights/RSVP/CFCWMRsvpSteps.vue'
 
 defineProps({
   formTitle: {

@@ -1,9 +1,9 @@
 <script setup>
 import { computed, reactive } from 'vue'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-import CFRSVPTitles from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFRSVPTitles.vue'
-import CFCWMRSVPComponent from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFCWMRSVPComponent.vue'
-import CFCWMRSVPConfirmed from '@/views/non-authenticated/templates/cuban-flow/RSVP/CFCWMRSVPConfirmed.vue'
+import HNRSVPTitles from '@/views/non-authenticated/templates/habana-nights/RSVP/HNRSVPTitles.vue'
+import HNCWMRSVPComponent from '@/views/non-authenticated/templates/habana-nights/RSVP/HNCWMRSVPComponent.vue'
+import HNCWMRSVPConfirmed from '@/views/non-authenticated/templates/habana-nights/RSVP/HNCWMRSVPConfirmed.vue'
 
 const rsvpConfig = reactive({
   isEnabled: true,
@@ -33,13 +33,13 @@ const rsvpCompleted = computed(() => {
     class="w-full flex flex-col justify-evenly items-center py-16 bg-gradient-to-br from-red-800/15 via-white to-blue-800/15"
   >
     <div class="max-w-5xl mx-auto w-full px-4 flex flex-col items-center">
-      <CFRSVPTitles :title="rsvpConfig.title" :sub-title="rsvpConfig.subTitle" />
-      <CFCWMRSVPComponent
+      <HNRSVPTitles :title="rsvpConfig.title" :sub-title="rsvpConfig.subTitle" />
+      <HNCWMRSVPComponent
         v-if="!rsvpCompleted"
         :form-title="rsvpConfig.formTitle"
         :rsvp-extra-box="rsvpConfig.rsvpExtraBox"
       />
-      <CFCWMRSVPConfirmed v-else />
+      <HNCWMRSVPConfirmed v-else />
     </div>
   </div>
 </template>

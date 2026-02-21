@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import CFMainGuestStep from '@/views/non-authenticated/templates/cuban-flow/RSVP/Companions/CFMainGuestStep.vue'
-import CFCompanionsStep from '@/views/non-authenticated/templates/cuban-flow/RSVP/Companions/CFCompanionsStep.vue'
-import CFGuestInformationCheck from '@/views/non-authenticated/templates/cuban-flow/RSVP/Companions/CFGuestInformationCheck.vue'
+import CFMainGuestStep from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/CFMainGuestStep.vue'
+import CFCompanionsStep from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/CFCompanionsStep.vue'
+import CFGuestInformationCheck from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/CFGuestInformationCheck.vue'
 
 const activeStep = ref(1)
 

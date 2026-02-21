@@ -1,8 +1,8 @@
 <script setup>
-import CWMHamburger from '@/views/non-authenticated/templates/butterfly-vision/SVGs/CWMHamburger.vue'
 
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import HNCWMHamburger from '@/views/non-authenticated/templates/habana-nights/SVGs/HNCWMHamburger.vue'
 
 const route = useRoute()
 const menuOpen = ref(false)
@@ -33,7 +33,7 @@ const handleClick = hash => {
       <div
         class="hamburger-container p-2 border border-rose-200 rounded-lg flex items-center justify-center bg-rose-100/30 focus:outline-none"
       >
-        <CWMHamburger color="#800080" width="24" height="24" @click="toggleMenu" />
+        <HNCWMHamburger color="#800080" width="24" height="24" @click="toggleMenu" />
       </div>
     </div>
     <Transition
