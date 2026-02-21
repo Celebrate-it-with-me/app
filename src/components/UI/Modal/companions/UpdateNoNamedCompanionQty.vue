@@ -1,5 +1,5 @@
 <script setup>
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { onMounted, ref } from 'vue'
 import NumberPlain from '@/components/UI/plain-ui/NumberPlain.vue'
 import { FwbButton } from 'flowbite-vue'

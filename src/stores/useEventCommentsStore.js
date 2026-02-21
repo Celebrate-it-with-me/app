@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import EventCommentsService from '../services/EventCommentsService'
 import { useUserStore } from '@/stores/useUserStore'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 export const useEventCommentsStore = defineStore('eventCommentsStore', {
   state: () => ({

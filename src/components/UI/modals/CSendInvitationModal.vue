@@ -124,7 +124,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import CModal from '@/components/UI/modals/CModal.vue'
-import RsvpStatusBadge from '@/views/internal/rsvp/components/RsvpStatusBadge.vue'
+import RsvpStatusBadge from '@/modules/rsvp/components/RsvpStatusBadge.vue'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { Mail, Phone, Info } from 'lucide-vue-next'
 

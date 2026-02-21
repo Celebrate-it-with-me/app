@@ -485,7 +485,7 @@ import {
 } from 'lucide-vue-next'
 import { useUserStore } from '@/stores/useUserStore'
 import { computed, ref, watch } from 'vue'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 const isExpanded = ref(true)
 

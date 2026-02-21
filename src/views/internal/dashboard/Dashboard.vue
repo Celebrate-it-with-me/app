@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useRsvpStore } from '@/stores/useRsvpStore'
-import { useBudgetStore } from '@/stores/useBudgetStore'
+import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useActivityStore } from '@/stores/useActivityStore'
 import {
   Users,

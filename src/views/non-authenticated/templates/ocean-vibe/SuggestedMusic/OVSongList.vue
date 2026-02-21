@@ -1,7 +1,7 @@
 <script setup>
 import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { ref } from 'vue'
-import SongsService from '@/services/SongsService'
+import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { Music } from 'lucide-vue-next'

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { Bot, Loader2, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { Splide, SplideSlide } from '@splidejs/vue-splide'

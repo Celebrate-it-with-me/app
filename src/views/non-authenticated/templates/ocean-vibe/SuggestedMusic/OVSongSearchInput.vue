@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 import { Search, X as CloseIcon } from 'lucide-vue-next'
 import debounce from 'lodash.debounce'
-import SongsService from '@/services/SongsService'
+import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import SpotifyService from '@/services/SpotifyService'
+import SpotifyService from '@/modules/suggested-music/services/SpotifyService'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const emit = defineEmits(['update:List'])

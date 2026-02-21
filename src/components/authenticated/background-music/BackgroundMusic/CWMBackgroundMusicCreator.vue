@@ -13,7 +13,7 @@ import {
 } from '@/constants/constants'
 import { useBackgroundMusicStore } from '@/stores/useBackgroundMusicStore'
 import UploadAudioField from '@/components/UI/form/UploadAudioField.vue'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const bgMusicErrors = ref()

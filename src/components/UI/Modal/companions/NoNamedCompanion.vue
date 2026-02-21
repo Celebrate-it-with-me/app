@@ -1,6 +1,6 @@
 <script setup>
 import { FwbButton } from 'flowbite-vue'
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { ref } from 'vue'
 import UpdateNoNamedCompanionQty from '@/components/UI/Modal/companions/UpdateNoNamedCompanionQty.vue'
 

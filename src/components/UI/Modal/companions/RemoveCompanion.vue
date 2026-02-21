@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import GuestsService from '@/services/GuestsService'
-import { useGuestsStore } from '@/stores/useGuestStore'
+import GuestsService from '@/modules/guests/services/GuestsService'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const emit = defineEmits(['removedCompanion'])

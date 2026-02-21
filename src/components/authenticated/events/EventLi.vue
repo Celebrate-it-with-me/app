@@ -1,6 +1,6 @@
 <script setup>
 import { CheckIcon } from '@heroicons/vue/16/solid'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { computed } from 'vue'
 
 const eventsStore = useEventsStore()

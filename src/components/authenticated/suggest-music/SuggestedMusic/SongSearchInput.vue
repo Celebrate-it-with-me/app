@@ -3,8 +3,8 @@ import { computed, ref } from 'vue'
 import debounce from 'lodash.debounce'
 import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import SpotifyService from '@/services/SpotifyService'
-import { useEventsStore } from '@/stores/useEventsStore'
+import SpotifyService from '@/modules/suggested-music/services/SpotifyService'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 const props = defineProps({
   mainColor: {

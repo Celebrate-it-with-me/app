@@ -1,7 +1,7 @@
 <script setup>
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { onMounted, ref } from 'vue'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useRsvpStore } from '@/stores/useRsvpStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import RsvpTemplates from '@/components/authenticated/rsvp/RsvpTemplates/RsvpTemplates.vue'

@@ -7,7 +7,7 @@ import * as zod from 'zod'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import PhoneNumberField from '@/components/UI/form/PhoneNumberField.vue'
 import { FwbButton } from 'flowbite-vue'
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const emit = defineEmits(['processedCompanion'])

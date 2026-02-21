@@ -1,7 +1,7 @@
 <script setup>
 import CWMModal from '@/components/UI/Modal/CWMModal.vue'
 import { ref, watch } from 'vue'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const emit = defineEmits(['closeModal'])

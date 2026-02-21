@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import STDService from '../services/STDService'
-import { useEventsStore } from './useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useUserStore } from './useUserStore'
 
 export const useSaveTheDateStore = defineStore('stdStore', {
