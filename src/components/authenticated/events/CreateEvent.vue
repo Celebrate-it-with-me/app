@@ -12,7 +12,7 @@ import {
   EVENT_STATUSES as statuses,
   EVENT_VISIBILITIES as visibilities
 } from '@/constants/constants'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import ToggleField from '@/components/UI/form/ToggleField.vue'

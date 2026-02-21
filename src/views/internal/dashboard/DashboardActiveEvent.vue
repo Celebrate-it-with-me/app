@@ -45,7 +45,7 @@
 <script setup>
 import { Calendar, Clock, AlertCircle, Flame } from 'lucide-vue-next'
 import { computed } from 'vue'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { format, parse, differenceInHours } from 'date-fns'
 
 const props = defineProps({

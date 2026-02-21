@@ -2,9 +2,9 @@
 import { computed, onMounted, watch } from 'vue'
 import { differenceInDays, parse } from 'date-fns'
 
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useRsvpStore } from '@/stores/useRsvpStore'
-import { useBudgetStore } from '@/stores/useBudgetStore'
+import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useTodoStore } from '@/stores/useTodoStore'
 import { useActivityStore } from '@/stores/useActivityStore'
 import DashboardActiveEvent from '@/views/internal/dashboard/DashboardActiveEvent.vue'

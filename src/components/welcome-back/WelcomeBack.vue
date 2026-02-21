@@ -1,7 +1,7 @@
 <script setup>
 import { useUserStore } from '@/stores/useUserStore'
 import { computed } from 'vue'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 const userStore = useUserStore()
 const eventStore = useEventsStore()

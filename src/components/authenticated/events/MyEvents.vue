@@ -4,7 +4,7 @@ import CreateEvent from '@/components/authenticated/events/CreateEvent.vue'
 import ShowEvent from '@/components/authenticated/events/ShowEvent.vue'
 import MyEventsList from '@/components/authenticated/events/MyEventsList.vue'
 import { computed, onMounted, ref } from 'vue'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 // Data
 const activeView = ref('none')

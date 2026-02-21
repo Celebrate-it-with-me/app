@@ -50,7 +50,8 @@ const props = defineProps({
   type: {
     type: String,
     default: 'text',
-    validator: value => ['text', 'password', 'email', 'number', 'tel', 'url'].includes(value)
+    validator: value =>
+      ['text', 'password', 'email', 'number', 'tel', 'url', 'date'].includes(value)
   },
   modelValue: { type: [String, Number], default: '' },
   disabled: { type: Boolean, default: false },

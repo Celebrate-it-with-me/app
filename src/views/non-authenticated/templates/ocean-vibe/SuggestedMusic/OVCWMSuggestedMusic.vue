@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
-import SongsService from '@/services/SongsService'
+import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import CWMSimplePagination from '@/components/UI/pagination/CWMSimplePagination.vue'
 import OVSongSearchInput from '@/views/non-authenticated/templates/ocean-vibe/SuggestedMusic/OVSongSearchInput.vue'

@@ -1,9 +1,9 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { Clock, Users, ChevronDown, Check, Plus, Calendar } from 'lucide-vue-next'
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useUserStore } from '@/stores/useUserStore'
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { useClickOutside } from '@/composables/useClickOutside'
 
 const eventStore = useEventsStore()

@@ -2,9 +2,9 @@
 import CButton from '@/components/UI/buttons/CButton.vue'
 import { Sparkles } from 'lucide-vue-next'
 import { ref } from 'vue'
-import { useDressCodeStore } from '@/stores/useDressCodeStore'
+import { useDressCodeStore } from '@/modules/dress-code/stores/useDressCodeStore'
 
-const emit = defineEmits(['imagesGenerated'])
+const emit = defineEmits(['imagesGenerated', 'images-generated'])
 const props = defineProps({
   dressType: {
     type: String,

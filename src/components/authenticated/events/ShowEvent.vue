@@ -1,5 +1,5 @@
 <script setup>
-import { useEventsStore } from '@/stores/useEventsStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { computed, ref } from 'vue'
 import DeleteEventModal from '@/components/UI/Modal/DeleteEventModal.vue'
 

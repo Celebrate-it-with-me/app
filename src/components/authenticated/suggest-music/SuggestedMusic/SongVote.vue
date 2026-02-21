@@ -1,7 +1,7 @@
 <script setup>
 import { HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/vue/16/solid'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import SongsService from '@/services/SongsService'
+import SongsService from '@/modules/suggested-music/services/SongsService'
 
 const notification = useNotificationStore()
 

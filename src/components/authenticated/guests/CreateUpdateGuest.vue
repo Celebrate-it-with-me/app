@@ -7,8 +7,8 @@ import { Form } from 'vee-validate'
 import 'vue-color-kit/dist/vue-color-kit.css'
 import GuestCompanions from '@/components/authenticated/guests/companions/GuestCompanions.vue'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
-import { useEventsStore } from '@/stores/useEventsStore'
-import GuestsService from '@/services/GuestsService'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
+import GuestsService from '@/modules/guests/services/GuestsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const emit = defineEmits(['updatedGuest', 'showGuestList'])

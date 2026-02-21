@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
-import SongsService from '@/services/SongsService'
+import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import SongSearchInput from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SongSearchInput.vue'
 import SongList from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SongList.vue'

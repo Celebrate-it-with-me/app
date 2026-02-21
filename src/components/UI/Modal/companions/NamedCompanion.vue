@@ -1,7 +1,7 @@
 <script setup>
 import { FwbButton, FwbDropdown, FwbListGroup, FwbListGroupItem } from 'flowbite-vue'
 import { computed, ref } from 'vue'
-import { useGuestsStore } from '@/stores/useGuestStore'
+import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import RemoveCompanion from '@/components/UI/Modal/companions/RemoveCompanion.vue'
 import CreateUpdateCompanion from '@/components/UI/Modal/companions/CreateUpdateCompanion.vue'
 
