@@ -1,9 +1,9 @@
 <script setup>
 import { computed, reactive } from 'vue'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-import CFCWMRSVPConfirmed from '@/views/non-authenticated/templates/habana-nights/RSVP/CFCWMRSVPConfirmed.vue'
 import OVRSVPTitles from '@/views/non-authenticated/templates/ocean-vibe/RSVP/OVRSVPTitles.vue'
 import OVCWMRSVPComponent from '@/views/non-authenticated/templates/ocean-vibe/RSVP/OVCWMRSVPComponent.vue'
+import OVCWMRSVPConfirmed from '@/views/non-authenticated/templates/ocean-vibe/RSVP/OVCWMRSVPConfirmed.vue'
 
 const rsvpConfig = reactive({
   isEnabled: true,
@@ -45,7 +45,7 @@ const rsvpCompleted = computed(() => {
         :form-title="rsvpConfig.formTitle"
         :rsvp-extra-box="rsvpConfig.rsvpExtraBox"
       />
-      <CFCWMRSVPConfirmed v-else />
+      <OVCWMRSVPConfirmed v-else />
     </div>
   </div>
 </template>

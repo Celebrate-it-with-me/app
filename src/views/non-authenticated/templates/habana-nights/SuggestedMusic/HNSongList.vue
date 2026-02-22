@@ -1,12 +1,12 @@
 <script setup>
 import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
-import CFSongPreviewModal from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFSongPreviewModal.vue'
 import { ref } from 'vue'
-import CFConfirmDeleteSongModal from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFConfirmDeleteSongModal.vue'
-import CFSongListItem from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFSongListItem.vue'
 import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
+import HNSongListItem from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/HNSongListItem.vue'
+import HNSongPreviewModal from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/HNSongPreviewModal.vue'
+import HNConfirmDeleteSongModal from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/HNConfirmDeleteSongModal.vue'
 
 const emit = defineEmits(['update:List'])
 const props = defineProps({
@@ -92,9 +92,9 @@ const cancelDeleteSong = () => {
 </script>
 
 <template>
-  <div v-if="songsStore.selectedSongs.length > 0" class="h-full mt-2 w-[90%]">
+  <div v-if="songsStore.selectedSongs.length > 0" class="h-full mt-2 w-full">
     <ul>
-      <CFSongListItem
+      <HNSongListItem
         v-for="song in songsStore.selectedSongs"
         :key="song.id"
         :main-color="mainColor"
@@ -107,8 +107,8 @@ const cancelDeleteSong = () => {
       />
     </ul>
 
-    <CFSongPreviewModal :open="isPlayerOpen" :song="selectedSong" @close="closeSongModal" />
-    <CFConfirmDeleteSongModal
+    <HNSongPreviewModal :open="isPlayerOpen" :song="selectedSong" @close="closeSongModal" />
+    <HNConfirmDeleteSongModal
       :open="showDeleteModal"
       :song="songToDelete"
       @confirm="confirmDeleteSong"

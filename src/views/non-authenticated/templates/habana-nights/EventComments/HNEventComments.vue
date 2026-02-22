@@ -43,7 +43,7 @@ const buttonTextComputed = computed(() => {
 })
 
 const commentsTitle = computed(() => {
-  return 'Que tu crees!?'
+  return 'Palabras para Recordar!'
 })
 const commentsSubtitle = computed(() => {
   return 'Dejale tus comentarios, buenos deseos o saludos a Isabella'
@@ -155,118 +155,112 @@ const onInvalidSubmit = error => {
 <template>
   <section
     id="sectionComments"
-    class="w-full min-h-screen flex flex-col px-6 pt-16 md:pt-24 pb-24 overflow-hidden bg-red-50"
+    class="hn-comments-section relative w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-10 py-16 lg:py-20 overflow-hidden"
   >
-    <!-- Header -->
-    <div class="text-center pb-6 flex-shrink-0">
-      <h2
-        class="text-5xl md:text-6xl font-gvibes font-bold text-transparent bg-clip-text bg-gradient-to-l from-blue-800 to-red-800 drop-shadow-sm"
-      >
-        {{ commentsTitle }}
-      </h2>
-
-      <p class="text-base md:text-lg text-gray-700 mt-3 max-w-2xl mx-auto">
-        {{ commentsSubtitle }}
-      </p>
-    </div>
-
-    <div class="flex flex-col gap-8">
-      <!-- Form -->
-      <Form
-        :validation-schema="eventCommentValidationSchema"
-        class="w-full max-w-2xl mx-auto bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-200 flex flex-col gap-4"
-        @submit="addComment"
-        @invalid-submit="onInvalidSubmit"
-      >
-        <p class="text-sm text-gray-700 font-semibold">Tu mensaje</p>
-
-        <TextAreaField
-          v-model="commentStore.currentComment.comment"
-          name="comment"
-          placeholder="Escribe tu comentario aquí..."
-          :show-error="meta.submitCount > 0 || meta.touched"
-          :rows="3"
-          :class-input="`
-            w-full
-            bg-white
-            border border-gray-300
-            rounded-xl
-            px-4 py-3
-            text-gray-800
-            placeholder:text-gray-400
-            focus:outline-none
-            focus:ring-2
-            focus:ring-blue-800/20
-            focus:border-blue-800
-            resize-none
-          `"
-        />
-
-        <button
-          type="submit"
-          class="w-full py-3 rounded-xl font-semibold text-white shadow-md bg-gradient-to-l from-blue-800 to-red-800 hover:opacity-95 active:opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
-          :disabled="creatingComment"
-        >
-          <CWMLoading v-if="creatingComment" />
-          <span v-else>{{ buttonTextComputed }}</span>
-        </button>
-
-        <!-- Optional helper text for older users (clarity) -->
-        <p class="text-xs text-gray-500">Presiona “Enviar” para dejar tu mensaje.</p>
-      </Form>
-
-      <!-- Comments list -->
-      <div class="w-full max-w-4xl mx-auto">
-        <div v-if="commentStore.eventComments.length > 0">
-          <div
-            v-infinite-scroll="[onLoadMore, { distance: 10 }]"
-            class="comments-list flex flex-col gap-3 overflow-y-auto pr-1"
-          >
-            <div
-              v-for="comment in sortedComments"
-              :key="comment.id"
-              class="p-4 border rounded-2xl shadow-sm transition-all duration-200 hover:shadow-md"
-              :class="[
-                comment.isPinned ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-white'
-              ]"
-            >
-              <div class="flex items-center justify-between mb-1">
-                <div class="flex items-center gap-2">
-                  <p class="font-bold text-gray-800 text-sm">
-                    {{ comment.author?.name || 'Invitado' }}
-                  </p>
-                  <span
-                    v-if="comment.author?.type"
-                    class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-500"
-                  >
-                    {{ comment.author.type }}
-                  </span>
-                  <div v-if="comment.isPinned" class="flex items-center text-blue-600">
-                    <Pin class="w-3 h-3 fill-current" />
-                  </div>
-                  <div v-if="comment.isFavorite" class="flex items-center text-pink-500">
-                    <Heart class="w-3 h-3 fill-current" />
-                  </div>
-                </div>
-                <p class="text-[10px] text-gray-400 font-medium">
-                  {{ comment.createdAt }}
-                </p>
-              </div>
-
-              <p class="text-gray-700 text-sm leading-snug">
-                {{ comment.comment }}
-              </p>
-            </div>
-
-            <div v-if="loadingMore" class="flex justify-center py-4">
-              <CWMLoading />
-            </div>
-          </div>
+    <div class="relative z-10 mx-auto w-full max-w-4xl">
+      <div class="hn-comments-glass w-full">
+        <!-- Header -->
+        <div class="text-center pb-6 flex-shrink-0">
+          <h2 class="hn-comments-title">
+            {{ commentsTitle }}
+          </h2>
+          <div class="hn-title-divider"></div>
+          <p class="hn-comments-subtitle">
+            {{ commentsSubtitle }}
+          </p>
         </div>
 
-        <!-- Empty state -->
-        <div v-else class="text-center text-gray-600 italic mt-4">
-          Aún no hay mensajes. Sé el primero en dejarle un saludo ❤️💙
+        <div class="flex flex-col gap-8">
+          <!-- Form -->
+          <Form
+            :validation-schema="eventCommentValidationSchema"
+            class="hn-comment-form w-full"
+            @submit="addComment"
+            @invalid-submit="onInvalidSubmit"
+          >
+            <p class="text-sm text-[#D4AF37] font-semibold font-montserrat mb-2">Tu mensaje</p>
+
+            <TextAreaField
+              v-model="commentStore.currentComment.comment"
+              name="comment"
+              placeholder="Escribe tu comentario aquí..."
+              :show-error="meta.submitCount > 0 || meta.touched"
+              :rows="3"
+              :class-input="`
+                hn-textarea-input
+                w-full
+                rounded-xl
+                px-4 py-3
+                resize-none
+              `"
+            />
+
+            <button
+              type="submit"
+              class="hn-submit-btn w-full py-3 rounded-xl font-semibold text-white mt-4"
+              :disabled="creatingComment"
+            >
+              <CWMLoading v-if="creatingComment" />
+              <span v-else>{{ buttonTextComputed }}</span>
+            </button>
+
+            <p class="text-xs text-gray-400 mt-2 font-montserrat">
+              Presiona "Enviar" para dejar tu mensaje.
+            </p>
+          </Form>
+
+          <!-- Comments list -->
+          <div class="w-full">
+            <div v-if="commentStore.eventComments.length > 0">
+              <div
+                v-infinite-scroll="[onLoadMore, { distance: 10 }]"
+                class="comments-list flex flex-col gap-3 overflow-y-auto pr-1"
+              >
+                <div
+                  v-for="comment in sortedComments"
+                  :key="comment.id"
+                  class="hn-comment-card p-4 rounded-xl transition-all duration-300"
+                  :class="[comment.isPinned ? 'hn-comment-pinned' : '']"
+                >
+                  <div class="flex items-center justify-between mb-1">
+                    <div class="flex items-center gap-2">
+                      <p class="font-bold text-[#D4AF37] text-sm font-montserrat">
+                        {{ comment.author?.name || 'Invitado' }}
+                      </p>
+                      <span
+                        v-if="comment.author?.type"
+                        class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[rgba(212,175,55,0.15)] text-[#D4AF37]"
+                      >
+                        {{ comment.author.type }}
+                      </span>
+                      <div v-if="comment.isPinned" class="flex items-center text-[#D4AF37]">
+                        <Pin class="w-3 h-3 fill-current" />
+                      </div>
+                      <div v-if="comment.isFavorite" class="flex items-center text-[#E85D4A]">
+                        <Heart class="w-3 h-3 fill-current" />
+                      </div>
+                    </div>
+                    <p class="text-[10px] text-gray-400 font-medium font-montserrat">
+                      {{ comment.createdAt }}
+                    </p>
+                  </div>
+
+                  <p class="text-gray-200 text-sm leading-snug font-montserrat">
+                    {{ comment.comment }}
+                  </p>
+                </div>
+
+                <div v-if="loadingMore" class="flex justify-center py-4">
+                  <CWMLoading />
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty state -->
+            <div v-else class="text-center text-gray-400 italic mt-4 font-montserrat">
+              Aún no hay mensajes. Sé el primero en dejarle un saludo ❤️💙
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -274,18 +268,145 @@ const onInvalidSubmit = error => {
 </template>
 
 <style scoped>
-.whatsapp-links a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
+.hn-comments-section {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+}
+
+.hn-comments-glass {
+  background: rgba(17, 24, 39, 0.52);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  padding: 2.25rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .hn-comments-glass {
+    padding: 2.75rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hn-comments-glass {
+    padding: 3.25rem 2.5rem;
+  }
+}
+
+.hn-comments-title {
+  font-family: 'Cinzel', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #d4af37;
+  text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+@media (min-width: 768px) {
+  .hn-comments-title {
+    font-size: 3rem;
+  }
+}
+
+.hn-title-divider {
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  margin: 1rem auto;
+}
+
+.hn-comments-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .hn-comments-subtitle {
+    font-size: 1.125rem;
+  }
+}
+
+.hn-comment-form {
+  background: rgba(17, 24, 39, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.hn-textarea-input {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  color: #f1f5f9 !important;
+  font-family: 'Montserrat', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.hn-textarea-input::placeholder {
+  color: rgba(148, 163, 184, 0.6) !important;
+}
+
+.hn-textarea-input:focus {
+  border-color: rgba(212, 175, 55, 0.5) !important;
+  box-shadow:
+    0 0 0 3px rgba(212, 175, 55, 0.15),
+    inset 0 0 20px rgba(212, 175, 55, 0.05) !important;
+  outline: none !important;
+}
+
+.hn-submit-btn {
+  background: linear-gradient(135deg, #d4af37 0%, #e85d4a 100%);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  transition: all 0.3s ease;
+}
+
+.hn-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.hn-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hn-comment-card {
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.hn-comment-card:hover {
+  border-color: rgba(212, 175, 55, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 0 15px rgba(212, 175, 55, 0.08);
+}
+
+.hn-comment-pinned {
+  border-color: rgba(212, 175, 55, 0.4);
+  background: rgba(212, 175, 55, 0.08);
 }
 
 .comments-list {
   max-height: 500px;
+}
 
-  @media screen and (max-width: 1024px) {
+@media screen and (max-width: 1024px) {
+  .comments-list {
     max-height: 400px;
   }
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', sans-serif;
 }
 </style>

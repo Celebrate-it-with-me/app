@@ -40,119 +40,230 @@ const submit = async e => {
 
 <template>
   <div class="w-full">
-    <div class="flex flex-col gap-10 text-gray-700">
+    <div class="flex flex-col gap-8">
       <!-- Main Guest Info -->
       <div class="w-full">
-        <h3 class="text-xl font-bold mb-4 text-blue-800 border-b border-gray-100 pb-2">
-          Información del Invitado Principal:
-        </h3>
-        <div class="overflow-hidden rounded-xl border border-gray-200">
-          <table class="w-full table-auto text-sm">
-            <tbody class="divide-y divide-gray-100">
-              <tr>
-                <td class="px-6 py-4 font-bold text-gray-500 bg-gray-50 w-1/3">Nombre:</td>
-                <td class="px-6 py-4 font-medium text-gray-900">{{ guestInfo?.name }}</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 font-bold text-gray-500 bg-gray-50">Email:</td>
-                <td class="px-6 py-4 font-medium text-gray-900">{{ guestInfo?.email ?? 'N/A' }}</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 font-bold text-gray-500 bg-gray-50">Teléfono:</td>
-                <td class="px-6 py-4 font-medium text-gray-900">{{ guestInfo?.phone ?? 'N/A' }}</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 font-bold text-gray-500 bg-gray-50">Asistirá:</td>
-                <td class="px-6 py-4">
-                  <span
-                    class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
-                    :class="{
-                      'text-green-700 bg-green-100': guestInfo?.rsvpStatus === 'attending',
-                      'text-red-700 bg-red-100': guestInfo?.rsvpStatus === 'not-attending',
-                      'text-yellow-700 bg-yellow-100': guestInfo?.rsvpStatus === 'pending'
-                    }"
-                  >
-                    {{
-                      guestInfo?.rsvpStatus === 'attending'
-                        ? 'Asistirá'
-                        : guestInfo?.rsvpStatus === 'not-attending'
-                          ? 'No asistirá'
-                          : 'Pendiente'
-                    }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <h3 class="hn-section-title">Información del Invitado Principal</h3>
+        <div class="hn-info-card">
+          <div class="hn-info-row">
+            <span class="hn-info-label">Nombre</span>
+            <span class="hn-info-value">{{ guestInfo?.name }}</span>
+          </div>
+          <div class="hn-info-row">
+            <span class="hn-info-label">Email</span>
+            <span class="hn-info-value">{{ guestInfo?.email ?? 'N/A' }}</span>
+          </div>
+          <div class="hn-info-row">
+            <span class="hn-info-label">Teléfono</span>
+            <span class="hn-info-value">{{ guestInfo?.phone ?? 'N/A' }}</span>
+          </div>
+          <div class="hn-info-row">
+            <span class="hn-info-label">Asistirá</span>
+            <span
+              :class="[
+                'hn-status-chip',
+                guestInfo?.rsvpStatus === 'attending'
+                  ? 'hn-status-attending'
+                  : guestInfo?.rsvpStatus === 'not-attending'
+                    ? 'hn-status-not-attending'
+                    : 'hn-status-pending'
+              ]"
+            >
+              {{
+                guestInfo?.rsvpStatus === 'attending'
+                  ? 'Asistirá'
+                  : guestInfo?.rsvpStatus === 'not-attending'
+                    ? 'No asistirá'
+                    : 'Pendiente'
+              }}
+            </span>
+          </div>
         </div>
       </div>
 
       <div v-if="hasCompanions" class="w-full">
-        <h3 class="text-xl font-bold mb-4 text-blue-800 border-b border-gray-100 pb-2">
-          Lista de Acompañantes:
-        </h3>
-        <div class="overflow-hidden rounded-xl border border-gray-200">
-          <table class="w-full table-auto text-sm">
-            <thead class="bg-gray-50 text-gray-500 uppercase text-xs">
-              <tr>
-                <th class="px-6 py-3 text-left font-bold">Nombre</th>
-                <th class="px-6 py-3 text-left font-bold">Estado</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-              <tr
-                v-for="companion in companions"
-                :key="companion.id"
-                class="bg-white hover:bg-gray-50 transition-colors"
-              >
-                <td class="px-6 py-4 font-semibold text-gray-900">
-                  {{ companion.name ?? 'Sin nombre' }}
-                </td>
-                <td class="px-6 py-4">
-                  <span
-                    :class="[
-                      'inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider',
-                      companion.rsvpStatus === 'attending'
-                        ? 'text-green-700 bg-green-100'
-                        : companion.rsvpStatus === 'not-attending'
-                          ? 'text-red-700 bg-red-100'
-                          : 'text-yellow-700 bg-yellow-100'
-                    ]"
-                  >
-                    {{
-                      companion.rsvpStatus === 'attending'
-                        ? 'Asistirá'
-                        : companion.rsvpStatus === 'not-attending'
-                          ? 'No asistirá'
-                          : 'Pendiente'
-                    }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <h3 class="hn-section-title">Lista de Acompañantes</h3>
+        <div class="hn-info-card">
+          <div v-for="companion in companions" :key="companion.id" class="hn-companion-review-row">
+            <span class="text-[#F8F1E7] font-['Montserrat',sans-serif] font-medium text-sm">
+              {{ companion.name ?? 'Sin nombre' }}
+            </span>
+            <span
+              :class="[
+                'hn-status-chip',
+                companion.rsvpStatus === 'attending'
+                  ? 'hn-status-attending'
+                  : companion.rsvpStatus === 'not-attending'
+                    ? 'hn-status-not-attending'
+                    : 'hn-status-pending'
+              ]"
+            >
+              {{
+                companion.rsvpStatus === 'attending'
+                  ? 'Asistirá'
+                  : companion.rsvpStatus === 'not-attending'
+                    ? 'No asistirá'
+                    : 'Pendiente'
+              }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Buttons -->
-    <div class="mt-12 flex flex-col sm:flex-row justify-between items-center gap-4">
-      <button
-        class="w-full sm:w-auto px-10 py-3 border border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition-all order-2 sm:order-1"
-        @click="goBack"
-      >
-        Atrás
-      </button>
+    <div class="mt-10 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <button class="hn-btn-secondary order-2 sm:order-1" @click="goBack">Atrás</button>
 
-      <button
-        class="w-full sm:w-auto px-10 py-3 bg-gradient-to-l from-blue-800 to-red-800 text-white rounded-xl font-bold shadow-lg hover:opacity-90 transition-all transform hover:-translate-y-0.5 order-1 sm:order-2"
-        :disabled="loading"
-        @click.prevent="submit"
-      >
+      <button class="hn-btn-primary order-1 sm:order-2" :disabled="loading" @click.prevent="submit">
         {{ loading ? 'Guardando...' : 'Confirmar RSVP' }}
       </button>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.hn-section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #d4af37;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.hn-info-card {
+  background: rgba(17, 24, 39, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.hn-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.hn-info-row:last-child {
+  border-bottom: none;
+}
+
+.hn-info-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+}
+
+.hn-info-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: #f8f1e7;
+}
+
+.hn-companion-review-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.875rem 1.25rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.hn-companion-review-row:last-child {
+  border-bottom: none;
+}
+
+.hn-status-chip {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hn-status-attending {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.hn-status-not-attending {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.hn-status-pending {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.hn-btn-primary {
+  width: 100%;
+  padding: 0.875rem 2.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
+  color: #0b1220;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 48px;
+}
+
+.hn-btn-primary:hover {
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+  transform: translateY(-1px);
+}
+
+.hn-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.hn-btn-secondary {
+  width: 100%;
+  padding: 0.875rem 2.5rem;
+  background: transparent;
+  color: #f8f1e7;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 48px;
+}
+
+.hn-btn-secondary:hover {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.1);
+}
+
+@media (min-width: 640px) {
+  .hn-btn-primary,
+  .hn-btn-secondary {
+    width: auto;
+  }
+}
+</style>

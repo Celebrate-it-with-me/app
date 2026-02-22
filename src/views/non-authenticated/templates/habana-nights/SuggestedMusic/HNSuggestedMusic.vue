@@ -1,40 +1,88 @@
 <script setup>
 import { computed } from 'vue'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-import CFCWMSuggestedMusic from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFCWMSuggestedMusic.vue'
+import HNCWMSuggestedMusic from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/HNCWMSuggestedMusic.vue'
+
+import bgMusicImg from '@/assets/images/SuggestedMusic/bgsm_6049.png'
 
 const templateStore = useTemplateStore()
 
 const suggestedMusic = computed(() => {
   return {
     isEnabled: true,
-    backgroundColor: '#fff',
-    title: 'Music',
-    subTitle: 'Compartan sus canciones favoritas para que suenen en el evento',
-    mainColor: '#FECACA',
-    secondaryColor: '#B3A383FF',
+    backgroundColor: 'transparent',
+    title: 'Suggested Music',
+    subTitle: 'Sugiere canciones para que suenen durante la noche',
+    mainColor: '#D4AF37',
+    secondaryColor: '#E85D4A',
     usePreview: true,
     useVoteSystem: true
   }
 })
+
+const bgMusicStyle = computed(() => ({
+  backgroundImage: `url(${bgMusicImg})`
+}))
 </script>
 
 <template>
-  <div
+  <section
     v-if="suggestedMusic?.isEnabled"
     id="sectionSong"
-    class="suggested-music w-full flex flex-col justify-start items-center h-full min-h-screen mb-20 md:pt-20"
-    :style="{ backgroundColor: suggestedMusic.backgroundColor }"
+    class="hn-music-section relative w-full"
+    :style="bgMusicStyle"
+    aria-label="Suggested Music"
   >
-    <CFCWMSuggestedMusic
-      :mode="'normal'"
-      :event="templateStore.event"
-      :title="suggestedMusic.title"
-      :sub-title="suggestedMusic.subTitle"
-      :main-color="suggestedMusic.mainColor"
-      :secondary-color="suggestedMusic.secondaryColor"
-      :use-preview="suggestedMusic.usePreview"
-      :use-vote-system="suggestedMusic.useVoteSystem"
-    />
-  </div>
+    <div class="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-10 py-16 lg:py-20">
+      <div class="hn-music-glass w-full">
+        <HNCWMSuggestedMusic
+          :mode="'normal'"
+          :event="templateStore.event"
+          :title="suggestedMusic.title"
+          :sub-title="suggestedMusic.subTitle"
+          :main-color="suggestedMusic.mainColor"
+          :secondary-color="suggestedMusic.secondaryColor"
+          :use-preview="suggestedMusic.usePreview"
+          :use-vote-system="suggestedMusic.useVoteSystem"
+        />
+      </div>
+    </div>
+  </section>
 </template>
+
+<style scoped>
+.hn-music-section {
+  min-height: 100vh;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  /* Slightly reduce brightness and saturation */
+  filter: brightness(0.82) saturate(0.65);
+}
+
+/* Keep glass styling as-is */
+.hn-music-glass {
+  background: rgba(17, 24, 39, 0.52);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  padding: 2.25rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .hn-music-glass {
+    padding: 2.75rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hn-music-glass {
+    padding: 3.25rem 2.5rem;
+  }
+}
+</style>

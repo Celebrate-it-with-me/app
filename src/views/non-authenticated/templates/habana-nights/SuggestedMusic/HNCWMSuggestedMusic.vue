@@ -4,8 +4,8 @@ import { useSuggestedMusicStore } from '@/stores/useSuggestedMusicStore'
 import SongsService from '@/modules/suggested-music/services/SongsService'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import CWMSimplePagination from '@/components/UI/pagination/CWMSimplePagination.vue'
-import CFSongList from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFSongList.vue'
-import CFSongSearchInput from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/CFSongSearchInput.vue'
+import HNSongSearchInput from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/HNSongSearchInput.vue'
+import HNSongList from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/HNSongList.vue'
 
 const props = defineProps({
   title: {
@@ -99,41 +99,146 @@ watch(
 </script>
 
 <template>
-  <div class="event-handle w-[90%] md:w-[70%] rounded-lg flex flex-col items-center">
-    <h2
-      class="text-6xl font-gvibes font-bold gap-10 text-transparent bg-clip-text bg-gradient-to-r from-red-800 to-blue-800 text-center"
-    >
-      {{ title }}
-    </h2>
-    <h4
-      class="music-subtitle relative text-2xl font-normal text-dark-blue text-center moments-title"
-    >
-      {{ subTitle }}
-    </h4>
+  <div class="hn-music-shell w-full">
+    <!-- Meta bar -->
+    <div class="hn-music-meta mb-6">
+      <span class="hn-music-meta-text">Selección Musical</span>
+      <span class="hn-music-meta-dot">•</span>
+      <span class="hn-music-meta-text">Sugerencias de Invitados</span>
+    </div>
 
-    <CFSongSearchInput
-      :event="event"
-      :main-color="mainColor"
-      :secondary-color="secondaryColor"
-      :mode="mode"
-      @update:list="handleUpdatedList"
-    />
+    <!-- Title -->
+    <div class="hn-music-header mb-8">
+      <h2 class="hn-music-title">
+        {{ title }}
+      </h2>
+      <p class="hn-music-subtitle">
+        {{ subTitle }}
+      </p>
+    </div>
 
-    <CFSongList
-      :event="event"
-      :mode="mode"
-      :main-color="mainColor"
-      :use-preview="usePreview"
-      :use-vote-system="useVoteSystem"
-      @update:list="handleUpdatedList"
-    />
+    <!-- Search -->
+    <div class="hn-music-search mb-6">
+      <HNSongSearchInput
+        :event="event"
+        :main-color="mainColor"
+        :secondary-color="secondaryColor"
+        :mode="mode"
+        @update:list="handleUpdatedList"
+      />
+    </div>
 
-    <CWMSimplePagination
-      v-if="songsStore.selectedSongs.length"
-      v-model="pageSelected"
-      :total-items="totalItems"
-    />
+    <!-- List -->
+    <div class="hn-music-list">
+      <HNSongList
+        :event="event"
+        :mode="mode"
+        :main-color="mainColor"
+        :use-preview="usePreview"
+        :use-vote-system="useVoteSystem"
+        @update:list="handleUpdatedList"
+      />
+    </div>
+
+    <!-- Pagination (contained and separated) -->
+    <div v-if="songsStore.selectedSongs.length" class="hn-music-pagination mt-8 pt-6">
+      <CWMSimplePagination v-model="pageSelected" :total-items="totalItems" />
+    </div>
+
+    <!-- Loading (optional visual hint, no logic change) -->
+    <div v-if="loading" class="hn-music-loading" aria-live="polite">Loading…</div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.hn-music-shell {
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+/* Meta bar */
+.hn-music-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.hn-music-meta-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.hn-music-meta-dot {
+  margin: 0 0.75rem;
+  color: rgba(212, 175, 55, 0.5);
+}
+
+/* Title block */
+.hn-music-header {
+  text-align: center;
+}
+
+.hn-music-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f8f1e7;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
+.hn-music-title::after {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 2px;
+  margin: 0.9rem auto 0;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0),
+    rgba(212, 175, 55, 0.9),
+    rgba(212, 175, 55, 0)
+  );
+  opacity: 0.9;
+}
+
+.hn-music-subtitle {
+  max-width: 42rem;
+  margin: 0.9rem auto 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(148, 163, 184, 0.95);
+}
+
+/* Keep spacing consistent */
+.hn-music-search,
+.hn-music-list {
+  width: 100%;
+}
+
+/* Pagination containment */
+.hn-music-pagination {
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Loading */
+.hn-music-loading {
+  margin-top: 1rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(148, 163, 184, 0.9);
+}
+</style>

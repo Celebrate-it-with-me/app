@@ -1,8 +1,8 @@
 <script setup>
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { computed } from 'vue'
-import CFNoCompanions from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/CFNoCompanions.vue'
-import CFCompanions from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/CFCompanions.vue'
+import HNNoCompanions from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/HNNoCompanions.vue'
+import HNCompanions from '@/views/non-authenticated/templates/habana-nights/RSVP/Companions/HNCompanions.vue'
 
 const emit = defineEmits(['goToPrevious', 'goToNext'])
 const templateStore = useTemplateStore()
@@ -22,13 +22,13 @@ const handleNext = () => {
 
 <template>
   <div class="w-full">
-    <CFNoCompanions
+    <HNNoCompanions
       v-if="!hasCompanions"
       @go-to-previous="handlePrevious"
       @go-to-next="handleNext"
     />
 
-    <CFCompanions v-if="hasCompanions" @go-to-previous="handlePrevious" @go-to-next="handleNext" />
+    <HNCompanions v-if="hasCompanions" @go-to-previous="handlePrevious" @go-to-next="handleNext" />
   </div>
 </template>
 

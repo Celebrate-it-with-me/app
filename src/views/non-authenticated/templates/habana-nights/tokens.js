@@ -9,8 +9,9 @@ export const habanaTokens = {
   },
 
   typography: {
-    heading: 'Playfair Display, serif',
-    body: 'Inter, sans-serif'
+    heading: "'Cinzel', serif",
+    script: "'Allura', cursive",
+    body: "'Montserrat', sans-serif"
   },
 
   radius: {

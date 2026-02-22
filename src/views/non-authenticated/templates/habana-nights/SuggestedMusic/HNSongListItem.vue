@@ -6,18 +6,9 @@ import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 const emit = defineEmits(['play', 'vote', 'request-delete'])
 
 const props = defineProps({
-  usePreview: {
-    type: Boolean,
-    required: true
-  },
-  song: {
-    type: Object,
-    required: true
-  },
-  useVoteSystem: {
-    type: Boolean,
-    required: true
-  },
+  usePreview: { type: Boolean, required: true },
+  song: { type: Object, required: true },
+  useVoteSystem: { type: Boolean, required: true },
   mode: {
     type: String,
     required: true,
@@ -30,8 +21,6 @@ const templateStore = useTemplateStore()
 const canRemove = computed(() => {
   const suggestedBy = props.song?.suggestedBy
   if (!suggestedBy) return false
-
-  // Guests can only remove songs they suggested themselves
   return suggestedBy.entity === 'guest' && suggestedBy.id === templateStore.guest.id
 })
 
@@ -42,94 +31,67 @@ const artistLine = computed(() => {
   return album ? `${artist} — ${album}` : artist
 })
 
-const onPlay = () => {
-  emit('play', props.song)
-}
-
-const onVote = direction => {
-  emit('vote', { song: props.song, direction })
-}
-
-const requestDeleteSong = () => {
-  emit('request-delete', props.song)
-}
+const onPlay = () => emit('play', props.song)
+const onVote = direction => emit('vote', { song: props.song, direction })
+const requestDeleteSong = () => emit('request-delete', props.song)
 </script>
 
 <template>
-  <li
-    class="group relative mt-2 overflow-hidden rounded-xl border border-blue-100/70 shadow-sm transition hover:shadow-md"
-  >
-    <!-- Soft gradient background (blue <-> red) -->
-    <div class="absolute inset-0 bg-gradient-to-r from-blue-50/90 via-white to-red-50/80"></div>
+  <li class="hn-song group relative mt-4 w-full overflow-hidden rounded-2xl">
+    <!-- Base glass -->
+    <div class="absolute inset-0 hn-layer hn-song-bg"></div>
+
+    <!-- Glow -->
+    <div class="absolute inset-0 hn-layer hn-song-glow"></div>
+
+    <!-- Border -->
+    <div class="absolute inset-0 hn-layer hn-song-border"></div>
 
     <!-- Content -->
-    <div class="relative flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3">
+    <div class="relative flex items-center gap-4 px-4 py-4">
       <!-- Thumbnail -->
       <img
         :src="song.thumbnailUrl || 'https://via.placeholder.com/64'"
-        alt="Album Art"
-        class="h-12 w-12 shrink-0 rounded-lg object-cover ring-1 ring-black/5"
+        alt=""
+        class="hn-thumb h-14 w-14 shrink-0 rounded-xl object-cover"
       />
 
-      <!-- Title / Artist -->
+      <!-- Info -->
       <div class="min-w-0 flex-1">
-        <p class="truncate text-sm font-semibold text-slate-900">
+        <p class="hn-title truncate">
           {{ song.title }}
         </p>
 
-        <p class="truncate text-xs text-slate-600">
+        <p class="hn-sub truncate">
           {{ artistLine }}
         </p>
 
-        <!-- Suggested by (optional, compact) -->
-        <p v-if="song.suggestedBy?.name" class="mt-1 text-[11px] text-slate-500">
-          Suggested by <span class="font-medium text-slate-700">{{ song.suggestedBy.name }}</span>
+        <p v-if="song.suggestedBy?.name" class="hn-byline mt-1 truncate">
+          Suggested by
+          <span class="hn-byline-strong">{{ song.suggestedBy.name }}</span>
         </p>
 
-        <!-- Votes row -->
-        <div v-if="useVoteSystem" class="mt-2 flex items-center gap-2">
-          <button
-            type="button"
-            class="inline-flex items-center gap-1 rounded-md bg-blue-50 px-2 py-1 text-xs text-blue-700 ring-1 ring-blue-100 transition hover:bg-blue-100 active:scale-[0.98]"
-            title="Upvote"
-            @click="onVote('up')"
-          >
+        <!-- Votes -->
+        <div v-if="useVoteSystem" class="mt-3 flex gap-2">
+          <button class="hn-chip" @click="onVote('up')">
             <ThumbsUp class="h-4 w-4" />
-            <span class="tabular-nums">{{ song.votes?.up ?? 0 }}</span>
+            <span class="hn-chip-num">{{ song.votes?.up ?? 0 }}</span>
           </button>
 
-          <button
-            type="button"
-            class="inline-flex items-center gap-1 rounded-md bg-red-50 px-2 py-1 text-xs text-red-700 ring-1 ring-red-100 transition hover:bg-red-100 active:scale-[0.98]"
-            title="Downvote"
-            @click="onVote('down')"
-          >
+          <button class="hn-chip hn-chip--muted" @click="onVote('down')">
             <ThumbsDown class="h-4 w-4" />
-            <span class="tabular-nums">{{ song.votes?.down ?? 0 }}</span>
+            <span class="hn-chip-num">{{ song.votes?.down ?? 0 }}</span>
           </button>
         </div>
       </div>
 
       <!-- Actions -->
-      <div class="flex items-center gap-2">
-        <!-- Play -->
-        <button
-          type="button"
-          class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/70 text-slate-700 ring-1 ring-slate-200 transition hover:bg-white hover:text-slate-900 active:scale-[0.98]"
-          title="Play"
-          @click="onPlay"
-        >
+      <div class="flex items-center gap-3">
+        <button class="hn-icon-btn" @click="onPlay">
           <Play class="h-5 w-5" />
         </button>
 
-        <!-- Remove (only if same guest) -->
-        <button
-          v-if="canRemove"
-          type="button"
-          class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/70 text-red-600 ring-1 ring-red-200 transition hover:bg-white hover:text-red-700 active:scale-[0.98]"
-          title="Remove"
-          @click="requestDeleteSong"
-        >
+        <button v-if="canRemove" class="hn-icon-btn hn-icon-btn--danger" @click="requestDeleteSong">
           <Trash2 class="h-5 w-5" />
         </button>
       </div>
@@ -137,4 +99,118 @@ const requestDeleteSong = () => {
   </li>
 </template>
 
-<style scoped></style>
+<style scoped>
+.hn-song {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Make all overlay layers inherit the same radius */
+.hn-layer {
+  border-radius: inherit;
+}
+
+/* Glass base */
+.hn-song-bg {
+  background: rgba(17, 24, 39, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Glow */
+.hn-song-glow {
+  background:
+    radial-gradient(60% 80% at 20% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+    radial-gradient(55% 70% at 80% 45%, rgba(232, 93, 74, 0.12) 0%, transparent 62%);
+  pointer-events: none;
+}
+
+/* Border */
+.hn-song-border {
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Hover */
+.hn-song:hover .hn-song-border {
+  border-color: rgba(212, 175, 55, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 26px 55px rgba(0, 0, 0, 0.45);
+}
+
+/* Thumbnail */
+.hn-thumb {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Typography */
+.hn-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #f8f1e7;
+}
+
+.hn-sub {
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.95);
+}
+
+.hn-byline {
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.75);
+}
+
+.hn-byline-strong {
+  color: rgba(212, 175, 55, 0.95);
+  font-weight: 600;
+}
+
+/* Chips */
+.hn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  background: rgba(212, 175, 55, 0.08);
+  color: rgba(212, 175, 55, 0.95);
+  font-size: 0.8rem;
+}
+
+.hn-chip--muted {
+  border-color: rgba(148, 163, 184, 0.22);
+  background: rgba(148, 163, 184, 0.08);
+  color: rgba(148, 163, 184, 0.95);
+}
+
+.hn-chip-num {
+  font-weight: 700;
+}
+
+/* Icon buttons */
+.hn-icon-btn {
+  height: 42px;
+  width: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  background: rgba(11, 18, 32, 0.35);
+  color: #f8f1e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 160ms ease;
+}
+
+.hn-icon-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.hn-icon-btn--danger {
+  border-color: rgba(232, 93, 74, 0.28);
+}
+</style>

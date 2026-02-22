@@ -1,5 +1,5 @@
 <script setup>
-import CFCWMRsvpSteps from '@/views/non-authenticated/templates/habana-nights/RSVP/CFCWMRsvpSteps.vue'
+import HNCWMRsvpSteps from '@/views/non-authenticated/templates/habana-nights/RSVP/HNCWMRsvpSteps.vue'
 
 defineProps({
   formTitle: {
@@ -18,7 +18,7 @@ defineProps({
 
 <template>
   <section class="rsvp-section w-full flex justify-center items-center">
-    <CFCWMRsvpSteps />
+    <HNCWMRsvpSteps />
   </section>
 </template>
 

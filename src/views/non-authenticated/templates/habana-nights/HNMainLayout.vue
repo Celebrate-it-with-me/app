@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { templateRef } from '@vueuse/core'
 
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
@@ -16,6 +16,21 @@ import HNSaveTheDate from '@/views/non-authenticated/templates/habana-nights/Sav
 import HNHeroSection from '@/views/non-authenticated/templates/habana-nights/HNHeroSection.vue'
 import HNHeaderNav from '@/views/non-authenticated/templates/habana-nights/HNHeaderNav.vue'
 
+import { habanaTokens } from './tokens'
+import HNDressCode from '@/views/non-authenticated/templates/habana-nights/DressCode/HNDressCode.vue'
+
+const cssVars = {
+  '--hn-bg': habanaTokens.colors.bg,
+  '--hn-surface': habanaTokens.colors.surface,
+  '--hn-gold': habanaTokens.colors.gold,
+  '--hn-coral': habanaTokens.colors.coral,
+  '--hn-cream': habanaTokens.colors.cream,
+  '--hn-muted': habanaTokens.colors.muted,
+  // If you later add these to tokens, they’ll work immediately:
+  '--hn-font-heading': habanaTokens.typography.heading,
+  '--hn-font-body': habanaTokens.typography.body
+}
+
 const showScrollBtn = ref(false)
 const videoReproduced = ref(false)
 const showButterflyLogo = ref(true)
@@ -25,52 +40,59 @@ const eventStore = useTemplateStore()
 const isMobile = ref(false)
 const mobileSrc = new URL('@/assets/videos/mobile_intro.mp4', import.meta.url).href
 
+const FONT_LINK_ID = 'hn-fonts'
+
+// Main scroll container (because <main> is scrollable, not window)
+const mainRef = templateRef('mainRef')
+
+const onMainScroll = () => {
+  const el = mainRef.value
+  if (!el) return
+  showScrollBtn.value = el.scrollTop > 200
+}
+
 onMounted(() => {
   isMobile.value = window.innerWidth < 768
   document.body.classList.remove('dark')
-  showHideScrollButton()
 
-  const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        // Only auto-scroll if it's a section entry and we're not inside a form/input
-        if (entry.intersectionRatio > 0.5 && !document.activeElement?.closest('form')) {
-          entry.target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          })
-        }
-      })
-    },
-    {
-      threshold: 0.5,
-      rootMargin: '0px'
-    }
-  )
+  // Attach scroll listener to <main>
+  const el = mainRef.value
+  if (el) {
+    el.addEventListener('scroll', onMainScroll, { passive: true })
+    onMainScroll()
+  }
 
-  const sections = document.querySelectorAll('.main-section')
-  sections.forEach(section => {
-    observer.observe(section)
-  })
+  if (document.getElementById(FONT_LINK_ID)) return
+
+  const link = document.createElement('link')
+  link.id = FONT_LINK_ID
+  link.rel = 'stylesheet'
+  link.href =
+    'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Allura&family=Montserrat:wght@400;500;600&display=swap'
+  document.head.appendChild(link)
+})
+
+onUnmounted(() => {
+  const el = mainRef.value
+  if (el) el.removeEventListener('scroll', onMainScroll)
+
+  const link = document.getElementById(FONT_LINK_ID)
+  if (link) link.remove()
 })
 
 const startTheVideo = () => {
   showButterflyLogo.value = false
-  videoInstance.value.play()
+  if (videoInstance.value) videoInstance.value.play()
 }
 
 const handleVideoEnd = () => {
   videoReproduced.value = true
 }
 
-const showHideScrollButton = () => {
-  window.addEventListener('scroll', () => {
-    showScrollBtn.value = window.scrollY > 200
-  })
-}
-
 const handleMoveToTop = () => {
-  window.scrollTo({
+  const el = mainRef.value
+  if (!el) return
+  el.scrollTo({
     top: 0,
     behavior: 'smooth'
   })
@@ -78,7 +100,7 @@ const handleMoveToTop = () => {
 </script>
 
 <template>
-  <div class="bg-red-50/10 font-jost h-full min-h-screen">
+  <div :style="cssVars" class="hn-theme h-full min-h-screen bg-[var(--hn-bg)] text-white">
     <transition name="fade" mode="out-in">
       <div v-if="/*!videoReproduced*/ false">
         <video
@@ -92,7 +114,8 @@ const handleMoveToTop = () => {
           <source :src="mobileSrc" type="video/mp4" />
         </video>
       </div>
-      <main v-else class="">
+
+      <main v-else ref="mainRef" class="">
         <HNHeaderNav />
 
         <HNHeroSection class="main-section" />
@@ -138,6 +161,12 @@ const handleMoveToTop = () => {
           Donde hay amor y alegría, el momento es perfecto.
         </HNSeparatorSection>
 
+        <HNDressCode />
+
+        <HNSeparatorSection v-if="eventStore.hasLocation">
+          Donde hay amor y alegría, el momento es perfecto.
+        </HNSeparatorSection>
+
         <HNEventLocations v-if="eventStore.hasLocation" />
 
         <HNSeparatorSection>
@@ -150,16 +179,17 @@ const handleMoveToTop = () => {
         <HNEventFooter />
       </main>
     </transition>
-  </div>
 
-  <button
-    v-if="showScrollBtn"
-    id="scrollToTopBtn"
-    class="fixed w-10 h-10 bottom-5 right-5 bg-pink-300 border border-pink-400/50 text-white text-lg text-bold rounded-full shadow-lg hover:bg-pink-500/50 focus:outline-none"
-    @click="handleMoveToTop"
-  >
-    ↑
-  </button>
+    <button
+      v-if="showScrollBtn"
+      id="scrollToTopBtn"
+      class="fixed w-10 h-10 bottom-5 right-5 bg-[var(--hn-coral)] border border-[color:rgba(212,175,55,0.45)] text-white text-lg font-bold rounded-full shadow-lg hover:bg-[var(--hn-gold)] hover:text-black focus:outline-none"
+      type="button"
+      @click="handleMoveToTop"
+    >
+      ↑
+    </button>
+  </div>
 </template>
 
 <style>
@@ -168,7 +198,6 @@ body {
   margin: 0;
   width: 100%;
   height: 100%;
-  background-color: white;
 }
 
 .logo-butterfly img {
@@ -219,5 +248,16 @@ main {
 
 section {
   scroll-margin-top: 80px;
+}
+
+.hn-theme,
+.hn-theme * {
+  font-family: 'Cinzel', sans-serif !important;
+}
+.hn-heading {
+  font-family: 'Cinzel', serif !important;
+}
+.hn-script {
+  font-family: 'Allura', cursive !important;
 }
 </style>
