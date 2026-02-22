@@ -243,7 +243,6 @@
                     placeholder="Share the story behind this celebration..."
                     show-error
                     description=""
-                    disabled=""
                     label=""
                   />
                   <p class="text-xs text-gray-500 dark:text-gray-400">
