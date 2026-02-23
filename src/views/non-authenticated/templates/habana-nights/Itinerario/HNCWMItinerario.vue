@@ -285,6 +285,7 @@ const getAccentClass = accent => `hn-accent--${accent}`
   padding: 2rem 1.5rem;
   background: rgba(17, 24, 39, 0.52);
   border: 1px solid rgba(179, 16, 210, 0.22);
+  opacity: 0.8;
   box-shadow:
     0 24px 80px rgba(0, 0, 0, 0.5),
     0 0 80px rgba(179, 16, 210, 0.07),
@@ -297,6 +298,7 @@ const getAccentClass = accent => `hn-accent--${accent}`
 @media (min-width: 1024px) {
   .hn-it__frame {
     padding: 2.5rem 2.5rem;
+    opacity: 1;
     max-width: 560px;
   }
 }
