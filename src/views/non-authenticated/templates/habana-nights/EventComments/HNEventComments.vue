@@ -155,8 +155,10 @@ const onInvalidSubmit = error => {
 <template>
   <section
     id="sectionComments"
-    class="hn-comments-section relative w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-10 py-16 lg:py-20 overflow-hidden"
+    class="hn-parallax-section hn-comments-section relative w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-10 py-16 lg:py-20 overflow-hidden"
   >
+    <!-- Background layer for parallax -->
+    <div class="hn-parallax-bg hn-comments-bg absolute inset-0"></div>
     <div class="relative z-10 mx-auto w-full max-w-4xl">
       <div class="hn-comments-glass w-full">
         <!-- Header -->
@@ -269,6 +271,10 @@ const onInvalidSubmit = error => {
 
 <style scoped>
 .hn-comments-section {
+  background: #0f172a;
+}
+
+.hn-comments-bg {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
 }
 

@@ -10,7 +10,7 @@ const rsvpConfig = reactive({
   isEnabled: true,
   backgroundColor: 'transparent',
   title: 'R S V P',
-  subTitle: 'Confirme su asistencia y la de sus acompañantes',
+  subTitle: 'Confirme su asistencia antes del 15 de marzo',
   formTitle: 'Asistiras?',
   rsvpExtraBox: {
     isEnabled: true,
@@ -28,16 +28,16 @@ const rsvpCompleted = computed(() => {
 </script>
 
 <template>
-  <div
+  <section
     v-if="rsvpConfig?.isEnabled"
     id="sectionRSVP"
-    class="hn-rsvp-section relative overflow-hidden w-full min-h-screen flex flex-col lg:flex-row"
+    class="hn-parallax-section hn-rsvp-section relative overflow-hidden w-full min-h-screen flex flex-col lg:flex-row"
   >
     <!-- ============================================================
          CAPA 1 — Atmósfera global (cubre TODO el ancho de la sección)
          El humo, el grain y la vignette son iguales en ambos lados.
          ============================================================ -->
-    <div class="absolute inset-0 z-0 hn-global-smoke" aria-hidden="true"></div>
+    <div class="hn-parallax-bg absolute inset-0 z-0 hn-global-smoke" aria-hidden="true"></div>
     <div class="absolute inset-0 z-0 hn-global-vignette" aria-hidden="true"></div>
     <div class="absolute inset-0 z-0 hn-grain pointer-events-none" aria-hidden="true"></div>
 
@@ -86,7 +86,7 @@ const rsvpCompleted = computed(() => {
         <HNCWMRSVPConfirmed v-else />
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <style scoped>

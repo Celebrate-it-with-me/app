@@ -29,10 +29,11 @@ const bgMusicStyle = computed(() => ({
   <section
     v-if="suggestedMusic?.isEnabled"
     id="sectionSong"
-    class="hn-music-section relative w-full"
-    :style="bgMusicStyle"
+    class="hn-parallax-section hn-music-section relative w-full"
     aria-label="Suggested Music"
   >
+    <!-- Background layer for parallax -->
+    <div class="hn-parallax-bg hn-music-bg absolute inset-0" :style="bgMusicStyle"></div>
     <div class="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-10 py-16 lg:py-20">
       <div class="hn-music-glass w-full">
         <HNCWMSuggestedMusic
@@ -53,12 +54,13 @@ const bgMusicStyle = computed(() => ({
 <style scoped>
 .hn-music-section {
   min-height: 100vh;
+  overflow: hidden;
+}
 
+.hn-music-bg {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-
-  /* Slightly reduce brightness and saturation */
   filter: brightness(0.82) saturate(0.65);
 }
 

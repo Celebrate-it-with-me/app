@@ -10,12 +10,13 @@ const props = defineProps({
 const isHovered = ref(false)
 
 const config = {
-  label: "Melissa Quince's",
-  name: '[Reminder] Melissa Quince`s Birthday',
-  description: 'Melissa Quince`s Birthday Party',
-  startDate: '2025-01-07',
-  startTime: '10:15',
-  endTime: '23:30',
+  label: "Isabella Quince's",
+  name: '[Reminder] Isabella Quince`s Birthday',
+  description: 'Isabella Quince`s Birthday Party',
+  startDate: '2026-04-18',
+  startTime: '19:00',
+  endDate: '2026-04-19',
+  endTime: '01:00',
   options: ['Google', 'iCal', 'Apple', 'Outlook.com'],
   timeZone: 'America/New_York'
 }

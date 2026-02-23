@@ -1,7 +1,7 @@
 <template>
-  <section class="relative w-full px-4 py-10">
+  <section class="hn-parallax-section relative w-full px-4 py-10 overflow-hidden">
     <!-- Cinematic background layers -->
-    <div class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="hn-parallax-bg pointer-events-none absolute inset-0 overflow-hidden">
       <!-- Deep base -->
       <div class="absolute inset-0 bg-[#070D18]" />
 

@@ -8,7 +8,8 @@ const props = defineProps({
   title: { type: String, default: 'DRESS CODE' },
   subtitle: { type: String, default: 'GALA MODERNA' },
   tagline: { type: String, default: 'Una noche de elegancia, ritmo y distinción.' },
-  reservedColors: { type: String, default: 'Rosado • Azul • Blanco' }
+  // eslint-disable-next-line vue/require-valid-default-prop
+  reservedColors: { type: Array, default: ['Rojo', 'Dorado'] }
 })
 
 const manStyle = computed(() => ({
@@ -18,17 +19,24 @@ const manStyle = computed(() => ({
 const womanStyle = computed(() => ({
   backgroundImage: `url(${womanImg})`
 }))
+
+const getColorClass = color => {
+  const c = color.toLowerCase()
+  if (c.includes('rojo')) return 'hn-color-rojo'
+  if (c.includes('dorado')) return 'hn-color-dorado'
+  return ''
+}
 </script>
 
 <template>
   <section
     v-if="props.isEnabled"
     id="sectionDressCode"
-    class="hn-dress-section relative w-full overflow-hidden"
+    class="hn-parallax-section hn-dress-section relative w-full overflow-hidden"
     aria-label="Dress Code"
   >
     <!-- Background -->
-    <div class="absolute inset-0 z-0 hn-dress-bg" aria-hidden="true"></div>
+    <div class="hn-parallax-bg absolute inset-0 z-0 hn-dress-bg" aria-hidden="true"></div>
     <div class="absolute inset-0 z-0 hn-dress-smoke" aria-hidden="true"></div>
     <div class="absolute inset-0 z-0 hn-dress-vignette" aria-hidden="true"></div>
 
@@ -58,20 +66,18 @@ const womanStyle = computed(() => ({
             <div class="hn-panel">
               <h3 class="hn-panel-title">Caballeros</h3>
               <ul class="hn-list">
-                <li>Traje oscuro (negro, azul marino o carbón)</li>
-                <li>Camisa clara (blanca o marfil)</li>
+                <li>Traje Formal</li>
+                <li>Camisa</li>
                 <li>Zapatos de vestir</li>
-                <li>Corbata o pajarita (opcional)</li>
               </ul>
             </div>
 
             <div class="hn-panel">
               <h3 class="hn-panel-title">Damas</h3>
               <ul class="hn-list">
-                <li>Vestido largo o cóctel elegante</li>
-                <li>Tacones o stilettos</li>
-                <li>Brillo sutil y accesorios finos</li>
-                <li>Chal o blazer ligero (opcional)</li>
+                <li>Vestido largo</li>
+                <li>Tacones</li>
+                <li>Brillo sutil y/o accesorios finos</li>
               </ul>
             </div>
           </div>
@@ -80,9 +86,16 @@ const womanStyle = computed(() => ({
           <div class="mt-10 flex justify-center">
             <div class="hn-pill">
               <span class="hn-pill-label">Colores reservados:</span>
-              <span class="hn-pill-value">{{ props.reservedColors }}</span>
+              <span v-for="(color, index) in reservedColors" :key="index" class="hn-pill-value">
+                <span v-if="index !== 0" class="hn-pill-dot">•</span>
+                <span :class="getColorClass(color)">{{ color }}</span>
+              </span>
             </div>
           </div>
+          <p class="hn-dress-note">
+            Estos colores están reservados exclusivamente para la quinceañera. Agradecemos no
+            utilizarlos durante la celebración.
+          </p>
         </div>
       </div>
     </div>
@@ -91,6 +104,30 @@ const womanStyle = computed(() => ({
 
 <style scoped>
 /* Section base */
+
+.hn-color-rojo {
+  color: #8b1e2d;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.15);
+}
+
+.hn-color-dorado {
+  color: #d4af37;
+}
+
+.hn-dress-note {
+  margin-top: 0.85rem;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: rgba(148, 163, 184, 0.85);
+}
+
+.hn-pill-dot {
+  margin: 0 0.35rem;
+  color: rgba(212, 175, 55, 0.6);
+}
+
 .hn-dress-section {
   min-height: 100vh;
   background: linear-gradient(180deg, #0f1728 0%, #111a2e 100%);
@@ -109,9 +146,9 @@ const womanStyle = computed(() => ({
     radial-gradient(60% 70% at 70% 35%, rgba(232, 93, 74, 0.3) 0%, transparent 60%),
     radial-gradient(50% 65% at 78% 62%, rgba(232, 93, 74, 0.16) 0%, transparent 70%),
     radial-gradient(70% 80% at 55% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 70%);
-  filter: blur(34px);
+  filter: blur(28px);
   mix-blend-mode: screen;
-  opacity: 0.9;
+  opacity: 0.65;
 }
 
 .hn-dress-vignette {

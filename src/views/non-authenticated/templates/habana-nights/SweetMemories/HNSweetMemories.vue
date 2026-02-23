@@ -36,16 +36,16 @@ const sweetMemoriesImages = computed(() => {
 </script>
 
 <template>
-  <section id="sectionSweetMemories" class="hn-sm relative w-full min-h-screen overflow-hidden">
-    <!-- Background image (cinematic Havana Nights) -->
-    <div class="hn-sm__bg" />
-
-    <!-- Global cinematic overlay to control contrast and add gold warmth -->
+  <section
+    id="sectionSweetMemories"
+    class="hn-parallax-section hn-sm relative w-full min-h-screen overflow-hidden"
+  >
+    <div class="hn-parallax-bg hn-sm__bg" />
     <div class="hn-sm__overlay" />
     <div class="hn-sm__vignette" />
 
-    <div class="relative z-10 w-full px-4 md:px-8 lg:px-16 py-16 md:py-24">
-      <!-- Header / Title Card -->
+    <div class="hn-sm__content relative z-10 w-full px-4 md:px-8 lg:px-16 py-16 md:py-24">
+      <!-- Header -->
       <div class="hn-sm__headerWrap">
         <div class="hn-sm__headerCard">
           <h2 class="hn-sm__title">SWEET MEMORIES</h2>
@@ -56,7 +56,17 @@ const sweetMemoriesImages = computed(() => {
 
       <!-- Gallery -->
       <div v-if="sweetMemoriesImages.length > 0" class="mt-10 md:mt-14">
-        <HNSweetMemoriesGallery class="hn-sm__gallery" :memories="sweetMemoriesImages" />
+        <div class="hn-sm__galleryWrap">
+          <HNSweetMemoriesGallery class="hn-sm__gallery" :memories="sweetMemoriesImages" />
+        </div>
+
+        <!-- ✅ Subtle swipe hint (mobile/touch) -->
+        <div class="hn-sm__swipeHint" aria-hidden="true">
+          <span class="hn-sm__swipeLine"></span>
+          <span class="hn-sm__swipeText">Desliza para ver más</span>
+          <span class="hn-sm__swipeChev">‹ ›</span>
+          <span class="hn-sm__swipeLine"></span>
+        </div>
       </div>
 
       <!-- Empty -->
@@ -71,12 +81,18 @@ const sweetMemoriesImages = computed(() => {
 </template>
 
 <style>
-/* ===== Section shell ===== */
 .hn-sm {
   background: var(--hn-bg, #0b1220);
+  overflow-x: hidden;
 }
 
-/* ===== Background layers ===== */
+.hn-sm *,
+.hn-sm *::before,
+.hn-sm *::after {
+  box-sizing: border-box;
+}
+
+/* Background layers */
 .hn-sm__bg {
   position: absolute;
   inset: 0;
@@ -91,7 +107,6 @@ const sweetMemoriesImages = computed(() => {
 .hn-sm__overlay {
   position: absolute;
   inset: 0;
-  /* Midnight + Gold warmth (keeps cinematic but not too dark) */
   background:
     radial-gradient(900px 520px at 30% 25%, rgba(212, 175, 55, 0.16), transparent 60%),
     radial-gradient(900px 520px at 75% 45%, rgba(232, 93, 74, 0.1), transparent 65%),
@@ -106,20 +121,28 @@ const sweetMemoriesImages = computed(() => {
   pointer-events: none;
 }
 
-/* ===== Header ===== */
+/* Content */
+.hn-sm__content {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Header */
 .hn-sm__headerWrap {
   width: 100%;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .hn-sm__headerCard {
-  width: min(980px, 96vw);
+  width: min(980px, 100%);
+  margin-left: auto;
+  margin-right: auto;
   border-radius: 26px;
   padding: 26px 22px;
   text-align: center;
 
-  /* More blur + better contrast (less competition with bright lamps in bg) */
   backdrop-filter: blur(18px);
   background: linear-gradient(180deg, rgba(17, 24, 39, 0.66), rgba(17, 24, 39, 0.46));
   border: 1px solid rgba(212, 175, 55, 0.28);
@@ -135,12 +158,19 @@ const sweetMemoriesImages = computed(() => {
   }
 }
 
+@media (max-width: 767px) {
+  .hn-sm__headerCard {
+    width: calc(100% - 24px);
+    max-width: 560px;
+  }
+}
+
 .hn-sm__title {
   margin: 0;
   font-family: var(--hn-font-heading, ui-serif);
   font-weight: 800;
   letter-spacing: 0.18em;
-  font-size: clamp(1.6rem, 4.2vw, 2.5rem);
+  font-size: clamp(1.45rem, 4.6vw, 2.5rem);
   line-height: 1.1;
   text-transform: uppercase;
 
@@ -150,6 +180,13 @@ const sweetMemoriesImages = computed(() => {
   color: transparent;
 
   text-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+@media (max-width: 380px) {
+  .hn-sm__title {
+    letter-spacing: 0.14em;
+  }
 }
 
 .hn-sm__divider {
@@ -175,9 +212,15 @@ const sweetMemoriesImages = computed(() => {
   text-transform: uppercase;
 }
 
-/* ===== Gallery wrapper (lets the gallery feel "embedded" in the scene) ===== */
+/* Gallery */
+.hn-sm__galleryWrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .hn-sm__gallery {
-  width: min(1200px, 96vw);
+  width: min(1200px, 100%);
   margin-left: auto;
   margin-right: auto;
 
@@ -193,7 +236,62 @@ const sweetMemoriesImages = computed(() => {
     inset 0 1px 0 rgba(248, 241, 231, 0.06);
 }
 
-/* ===== Empty state ===== */
+@media (max-width: 767px) {
+  .hn-sm__gallery {
+    width: calc(100% - 24px);
+    max-width: 560px;
+  }
+}
+
+/* ✅ Swipe hint (only on mobile / touch-ish) */
+.hn-sm__swipeHint {
+  margin-top: 16px;
+  width: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0.75;
+  user-select: none;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .hn-sm__swipeHint {
+    display: flex;
+  }
+}
+
+.hn-sm__swipeLine {
+  width: 52px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0),
+    rgba(212, 175, 55, 0.55),
+    rgba(212, 175, 55, 0)
+  );
+}
+
+.hn-sm__swipeText {
+  font-family: var(--hn-font-body, ui-sans-serif);
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(248, 241, 231, 0.68);
+  white-space: nowrap;
+}
+
+.hn-sm__swipeChev {
+  font-family: var(--hn-font-body, ui-sans-serif);
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.18em;
+  color: rgba(212, 175, 55, 0.75);
+}
+
+/* Empty state */
 .hn-sm__empty {
   width: min(720px, 92vw);
   margin: 0 auto;
