@@ -3,7 +3,6 @@
 <template>
   <section class="hn-separator">
     <div class="hn-separator-inner">
-
       <div class="hn-separator-line"></div>
 
       <p class="hn-separator-text">
@@ -25,20 +24,49 @@
   text-align: center;
 }
 
-/* Cinematic depth (spotlight + vignette) */
+/* Cinematic depth (premium spotlight without "circle" in mobile) */
 .hn-separator::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(
-      circle at 50% 42%,
-      rgba(248, 241, 231, 0.1) 0%,
-      rgba(11, 18, 32, 0.08) 38%,
-      rgba(11, 18, 32, 0.62) 100%
-    ),
-    linear-gradient(180deg, rgba(11, 18, 32, 0.78), rgba(11, 18, 32, 0.62));
+    /* Soft top glaze */
+    linear-gradient(180deg, rgba(11, 18, 32, 0.86), rgba(11, 18, 32, 0.66)),
+    /* Wide, cinematic spotlight (elliptical so it never looks like a circle on mobile) */
+      radial-gradient(
+        ellipse 160% 85% at 50% 44%,
+        rgba(248, 241, 231, 0.085) 0%,
+        rgba(248, 241, 231, 0.045) 18%,
+        rgba(11, 18, 32, 0.12) 42%,
+        rgba(11, 18, 32, 0.72) 100%
+      ),
+    /* Subtle vignette for depth */
+      radial-gradient(
+        ellipse 120% 120% at 50% 50%,
+        rgba(11, 18, 32, 0) 35%,
+        rgba(11, 18, 32, 0.55) 100%
+      );
   z-index: 0;
+}
+
+/* Mobile refinement: even wider + softer center, no visible "spot" */
+@media (max-width: 640px) {
+  .hn-separator::before {
+    background:
+      linear-gradient(180deg, rgba(11, 18, 32, 0.9), rgba(11, 18, 32, 0.72)),
+      radial-gradient(
+        ellipse 220% 75% at 50% 42%,
+        rgba(248, 241, 231, 0.065) 0%,
+        rgba(248, 241, 231, 0.032) 22%,
+        rgba(11, 18, 32, 0.18) 48%,
+        rgba(11, 18, 32, 0.78) 100%
+      ),
+      radial-gradient(
+        ellipse 140% 140% at 50% 50%,
+        rgba(11, 18, 32, 0) 30%,
+        rgba(11, 18, 32, 0.6) 100%
+      );
+  }
 }
 
 .hn-separator-inner {

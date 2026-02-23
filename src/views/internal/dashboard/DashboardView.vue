@@ -3,7 +3,7 @@ import { computed, onMounted, watch } from 'vue'
 import { differenceInDays, parse } from 'date-fns'
 
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { useRsvpStore } from '@/stores/useRsvpStore'
+import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useTodoStore } from '@/stores/useTodoStore'
 import { useActivityStore } from '@/stores/useActivityStore'

@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
-import { useRsvpStore } from '@/stores/useRsvpStore'
+import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 
 export function useRsvpDownload(props) {
   const exportType = ref('')

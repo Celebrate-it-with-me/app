@@ -194,6 +194,7 @@ const onInvalidSubmit = error => {
                 rounded-xl
                 px-4 py-3
                 resize-none
+                text-[#0F172AD9]
               `"
             />
 
@@ -348,9 +349,27 @@ const onInvalidSubmit = error => {
 .hn-textarea-input {
   background: rgba(15, 23, 42, 0.6) !important;
   border: 1px solid rgba(212, 175, 55, 0.25) !important;
-  color: #f1f5f9 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  caret-color: rgba(212, 175, 55, 0.95) !important;
   font-family: 'Montserrat', sans-serif;
   transition: all 0.3s ease;
+}
+
+.hn-textarea-input :deep(textarea) {
+  background: rgba(15, 23, 42, 0.6) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+}
+
+.hn-textarea-input::selection {
+  background: rgba(212, 175, 55, 0.25) !important;
+}
+
+.hn-textarea-input:-webkit-autofill,
+.hn-textarea-input:-webkit-autofill:hover,
+.hn-textarea-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.92) !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(15, 23, 42, 0.85) inset !important;
 }
 
 .hn-textarea-input::placeholder {
@@ -398,7 +417,7 @@ const onInvalidSubmit = error => {
 }
 
 .hn-comment-pinned {
-  border-color: rgba(212, 175, 55, 0.4);
+  border-color: rgba(69, 49, 0, 0.4);
   background: rgba(212, 175, 55, 0.08);
 }
 
