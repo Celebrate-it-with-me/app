@@ -48,12 +48,13 @@
 
             <CInput
               id="search-value"
-              v-model="searchValue"
+              :model-value="searchValue"
               name="searchValue"
               type="text"
               placeholder="Search by name"
               class="w-64 mb-4"
               :disabled="isLoading"
+              @update:model-value="handleSearchChange"
             />
           </div>
 
@@ -114,12 +115,13 @@
           <div>
             <CSelect
               id="per-page"
-              v-model="perPage"
+              :model-value="perPage"
               :options="perPageOptions"
               name="perPage"
               description=""
               label=""
               :disabled="isLoading"
+              @update:model-value="handlePerPageChange"
             />
           </div>
           <div>
@@ -128,6 +130,7 @@
               :current-page="pageSelected"
               :disabled="isLoading"
               @update:current-page="pageSelected = $event"
+              @update:current-page="handlePageChange"
             />
           </div>
         </div>
@@ -216,6 +219,9 @@ const {
   handleSendInvitationAction,
   handleCloseSendModal,
   reloadGuests,
-  handleConfirmationReverted
+  handleConfirmationReverted,
+  handlePerPageChange,
+  handlePageChange,
+  handleSearchChange
 } = useRsvpView()
 </script>
