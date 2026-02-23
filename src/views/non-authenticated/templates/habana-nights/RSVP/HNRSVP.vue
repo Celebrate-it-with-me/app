@@ -159,10 +159,17 @@ const rsvpCompleted = computed(() => {
   border: 1px solid rgba(212, 175, 55, 0.25);
   border-radius: 12px;
   padding: 2.5rem;
+  opacity: 0.55;
   box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.6),
     0 0 120px rgba(232, 93, 74, 0.08),
     0 0 80px rgba(212, 175, 55, 0.05);
+}
+
+@media (min-width: 1024px) {
+  .hn-glass-panel {
+    opacity: 1;
+  }
 }
 
 /* META BAR */
