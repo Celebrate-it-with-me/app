@@ -7,7 +7,7 @@
           <h1 class="text-4xl font-black text-gray-900 tracking-tight mb-2">
             RSVP Guest
             <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
-              >List 123</span
+              >List</span
             >
           </h1>
           <p class="text-gray-500 font-medium">
