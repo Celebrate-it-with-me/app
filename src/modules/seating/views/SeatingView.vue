@@ -58,7 +58,6 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
 import SeatingCreateTable from '@/modules/seating/components/SeatingCreateTable.vue'
 import SeatingTablesList from '@/modules/seating/components/SeatingTablesList.vue'
 import SeatingTableDetails from '@/modules/seating/components/SeatingTableDetails.vue'
@@ -67,37 +66,19 @@ import SeatingEditTableModal from '@/modules/seating/components/SeatingEditTable
 import SeatingDeleteTableModal from '@/modules/seating/components/SeatingDeleteTableModal.vue'
 import SeatingRemoveGuestModal from '@/modules/seating/components/SeatingRemoveGuestModal.vue'
 import SeatingToast from '@/modules/seating/components/SeatingToast.vue'
-import { useSeatingStore } from '@/modules/seating/stores/useSeatingStore'
+import { useSettingsView } from '@/modules/seating/composables/useSettingsView'
 
-const seatingStore = useSeatingStore()
-
-// Modal state
-const showEditModal = ref(false)
-const showDeleteModal = ref(false)
-const showRemoveGuestModal = ref(false)
-
-const editingTable = ref({ id: null, name: '', capacity: '', assignedGuests: [] })
-const tableToDelete = ref(null)
-const guestToRemove = ref(null)
-
-const openEditModal = table => {
-  editingTable.value = { ...table }
-  showEditModal.value = true
-}
-
-const openDeleteModal = table => {
-  tableToDelete.value = table
-  showDeleteModal.value = true
-}
-
-const openRemoveGuestModal = guest => {
-  guestToRemove.value = guest
-  showRemoveGuestModal.value = true
-}
-
-onMounted(async () => {
-  await seatingStore.loadEventTables()
-})
+const {
+  showEditModal,
+  showDeleteModal,
+  showRemoveGuestModal,
+  editingTable,
+  tableToDelete,
+  guestToRemove,
+  openEditModal,
+  openDeleteModal,
+  openRemoveGuestModal
+} = useSettingsView()
 </script>
 
 <style scoped>
