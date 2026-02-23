@@ -162,6 +162,18 @@ const handleMoveToTop = () => {
 </template>
 
 <style>
+main {
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-type: none !important;
+  scroll-behavior: smooth; /* optional, keep if you like */
+}
+
+.main-section {
+  scroll-snap-align: none !important;
+  scroll-snap-stop: normal !important;
+}
+
 .hn-intro-overlay {
   position: absolute;
   inset: 0;

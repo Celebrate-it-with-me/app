@@ -275,7 +275,6 @@ watch(
   gap: 12px;
   overflow-x: auto;
   padding: 10px 4px 4px;
-  scroll-snap-type: x mandatory;
 }
 
 .hn-sm__strip::-webkit-scrollbar {
