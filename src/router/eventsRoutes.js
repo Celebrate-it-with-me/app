@@ -3,7 +3,7 @@ import SecondEventPublicView from '@/views/non-authenticated/SecondEventPublicVi
 
 const eventsRoutes = [
   {
-    path: '/event/6/guest/:guestCode',
+    path: '/event/14/guest/:guestCode',
     name: 'Event Public Page',
     component: FirstEventPublicView,
     meta: {
