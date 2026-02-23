@@ -140,6 +140,19 @@ watch(
       />
     </div>
 
+    <div v-if="!loading && !songsStore.selectedSongs.length" class="hn-music-empty">
+      <div class="hn-music-empty-inner">
+        <div class="hn-music-empty-badge">Aún no hay sugerencias</div>
+
+        <h3 class="hn-music-empty-title">Sé el primero en poner el mood 🎷</h3>
+        <p class="hn-music-empty-text">
+          Usa el buscador de arriba para sugerir una canción. Aparecerá aquí para que todos la vean.
+        </p>
+
+        <div class="hn-music-empty-hint">Tip: busca por artista, canción o álbum.</div>
+      </div>
+    </div>
+
     <!-- Pagination (contained and separated) -->
     <div v-if="songsStore.selectedSongs.length" class="hn-music-pagination mt-8 pt-6">
       <CWMSimplePagination v-model="pageSelected" :total-items="totalItems" />
@@ -151,6 +164,61 @@ watch(
 </template>
 
 <style scoped>
+.hn-music-empty {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border-radius: 16px;
+  border: 1px dashed rgba(212, 175, 55, 0.22);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.hn-music-empty-inner {
+  text-align: center;
+  padding: 1.25rem 1rem;
+}
+
+.hn-music-empty-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.95);
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+.hn-music-empty-title {
+  margin-top: 0.9rem;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  color: rgba(248, 241, 231, 0.95);
+}
+
+.hn-music-empty-text {
+  margin-top: 0.6rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(148, 163, 184, 0.95);
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hn-music-empty-hint {
+  margin-top: 0.85rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(148, 163, 184, 0.8);
+}
+
 .hn-music-shell {
   width: 100%;
   max-width: 56rem;

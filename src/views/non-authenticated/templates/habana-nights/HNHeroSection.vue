@@ -452,4 +452,30 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
     filter: blur(24px);
   }
 }
+
+@media (max-width: 640px) {
+  .hero-companions-list {
+    max-height: min(160px, 22svh);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 6px;
+  }
+
+  /* Optional: make the scrollbar area feel intentional */
+  .hero-companions-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .hero-companions-list::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.35);
+    border-radius: 999px;
+  }
+
+  .hero-companions-list::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.06);
+    border-radius: 999px;
+  }
+}
+
+
 </style>

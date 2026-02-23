@@ -53,6 +53,7 @@
               type="text"
               placeholder="Search by name"
               class="w-64 mb-4"
+              :disabled="isLoading"
               @update:model-value="handleSearchChange"
             />
           </div>
@@ -86,7 +87,10 @@
           </span>
         </div>
 
-        <div v-if="displayedGuests.length" class="space-y-3">
+        <div v-if="isLoading" class="flex justify-center py-8">
+          <CLoading :size="8" />
+        </div>
+        <div v-else-if="displayedGuests.length" class="space-y-3">
           <RsvpGuestCard
             v-for="guest in displayedGuests"
             :key="guest.id"
@@ -116,6 +120,7 @@
               name="perPage"
               description=""
               label=""
+              :disabled="isLoading"
               @update:model-value="handlePerPageChange"
             />
           </div>
@@ -123,6 +128,8 @@
             <CPagination
               :total-pages="totalPages"
               :current-page="pageSelected"
+              :disabled="isLoading"
+              @update:current-page="pageSelected = $event"
               @update:current-page="handlePageChange"
             />
           </div>
@@ -155,6 +162,7 @@ import CSendInvitationModal from '@/components/UI/modals/CSendInvitationModal.vu
 import CPagination from '@/components/UI/pagination/CPagination.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CAlert from '@/components/UI/alerts/CAlert.vue'
+import CLoading from '@/components/UI/loading/CLoading.vue'
 
 // CHANGED: Import new UI components
 import RsvpStats from '@/modules/rsvp/components/RsvpStats.vue'
@@ -191,6 +199,7 @@ const {
   totalsStats,
   responseRate,
   activeEvent,
+  isLoading,
 
   // Filtered guests based on "Show only with companions" toggle
   displayedGuests,

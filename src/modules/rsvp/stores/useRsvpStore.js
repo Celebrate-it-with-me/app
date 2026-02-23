@@ -16,7 +16,8 @@ export const useRsvpStore = defineStore('rsvpStore', {
     customFields: {},
     confirmationDeadline: null,
     loaded: false,
-    stats: {}
+    stats: {},
+    loading: false
   }),
   actions: {
     async fetchStats() {
@@ -46,25 +47,33 @@ export const useRsvpStore = defineStore('rsvpStore', {
       const userStore = useUserStore()
       const notifications = useNotificationStore()
 
-      const response = await this.loadRsvpGuestsList({
-        eventId: userStore.activeEvent,
-        currentPage: this.pageSelected,
-        perPage: this.perPage,
-        status: this.statusSelected,
-        search: this.searchValue
-      })
-
-      if (response.status !== 200) {
-        notifications.addNotification({
-          type: 'error',
-          message: 'Failed to load guests. Please try again later.'
+      this.loading = true
+      try {
+        const response = await this.loadRsvpGuestsList({
+          eventId: userStore.activeEvent,
+          currentPage: this.pageSelected,
+          perPage: this.perPage,
+          status: this.statusSelected,
+          search: this.searchValue
         })
-        return
-      }
 
-      this.rsvpGuests = response.data.data ?? []
-      this.pageSelected = response.data.meta?.current_page || 1
-      this.totalPages = response.data.meta?.last_page || 1
+        if (response.status !== 200) {
+          notifications.addNotification({
+            type: 'error',
+            message: 'Failed to load guests. Please try again later.'
+          })
+          return
+        }
+
+        this.rsvpGuests = response.data.data ?? []
+        const newPage = response.data.meta?.current_page || 1
+        if (this.pageSelected !== newPage) {
+          this.pageSelected = newPage
+        }
+        this.totalPages = response.data.meta?.last_page || 1
+      } finally {
+        this.loading = false
+      }
     },
 
     setRsvp(rsvpGuests) {

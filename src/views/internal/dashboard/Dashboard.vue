@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { useRsvpStore } from '@/stores/useRsvpStore'
+import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useActivityStore } from '@/stores/useActivityStore'
 import {

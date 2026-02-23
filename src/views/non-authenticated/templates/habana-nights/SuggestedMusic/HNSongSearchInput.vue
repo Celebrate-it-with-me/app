@@ -89,8 +89,6 @@ const fetchSuggestions = debounce(async () => {
     <!-- Label / hint -->
     <div class="hn-search-hint mb-3">
       <span class="hn-search-kicker">Spotify Search</span>
-      <span class="hn-search-dot">•</span>
-      <span class="hn-search-kicker">Add your pick</span>
     </div>
 
     <!-- Input -->

@@ -138,13 +138,57 @@ const handleMoveToTop = () => {
         </HNSeparatorSection>
 
         <HNSaveTheDate class="main-section" />
+
+        <HNSeparatorSection>
+          Será un recuerdo para atesorar, lleno de instantes mágicos que juntos vamos a crear.
+        </HNSeparatorSection>
+
         <HNCWMItinerario class="main-section" />
+
+        <HNSeparatorSection>
+          Que entre risas, abrazos y bailes celebremos el regalo de estar juntos en esta noche tan
+          especial.
+        </HNSeparatorSection>
+
         <HNSweetMemories class="main-section" :mode="'presentation'" />
+
+        <HNSeparatorSection>
+          Desde su primer respirar hasta verla soñar, cada año nos enseñó a amar y hoy la vemos
+          florecer y brillar.
+        </HNSeparatorSection>
+
         <HNRSVP class="main-section" />
+
+        <HNSeparatorSection>
+          La música, las memorias y ustedes harán de esta noche mágica.
+        </HNSeparatorSection>
+
         <HNSuggestedMusic class="main-section" />
+
+        <HNSeparatorSection>
+          Que esta fiesta sea tan inolvidable como ustedes lo son para mí.
+        </HNSeparatorSection>
+
         <HNEventComments origin="event" class="main-section" />
+
+        <HNSeparatorSection v-if="eventStore.hasLocation">
+          Donde hay amor y alegría, el momento es perfecto.
+        </HNSeparatorSection>
+
         <HNDressCode />
+
+        <HNSeparatorSection v-if="eventStore.hasLocation">
+          Brillamos con estilo… ahora descubramos el escenario.
+        </HNSeparatorSection>
+
         <HNEventLocations v-if="eventStore.hasLocation" />
+
+        <HNSeparatorSection>
+          Esta noche no es solo una celebración, es el comienzo de una nueva etapa que quiero
+          compartir con cada uno de ustedes. ¡Gracias por estar aquí!
+        </HNSeparatorSection>
+
+        <HNSwipeLeftIcon />
         <HNEventFooter />
         <HNBackgroundMusic />
       </main>
