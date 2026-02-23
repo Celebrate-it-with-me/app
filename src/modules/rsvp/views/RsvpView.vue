@@ -129,7 +129,6 @@
               :total-pages="totalPages"
               :current-page="pageSelected"
               :disabled="isLoading"
-              @update:current-page="pageSelected = $event"
               @update:current-page="handlePageChange"
             />
           </div>
