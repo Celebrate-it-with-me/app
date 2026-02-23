@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onMounted, onBeforeUnmount, reactive, ref } from 'vue'
-import { useRsvpStore } from '@/stores/useRsvpStore'
+import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 import { useUserStore } from '@/stores/useUserStore'
 import CBadge from '@/components/UI/badges/CBadge.vue'
 import { PieChart, Loader2, AlertCircle, FileBarChart, Info } from 'lucide-vue-next'

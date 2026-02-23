@@ -72,7 +72,7 @@ const bgMusicStyle = computed(() => ({
   border: 1px solid rgba(212, 175, 55, 0.22);
   border-radius: 12px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
+  overflow: visible;
   padding: 2.25rem 1.25rem;
 }
 

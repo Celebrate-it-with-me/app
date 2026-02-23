@@ -52,20 +52,36 @@ export function useRsvpView() {
     return userStore.activeEvent || 0
   })
 
-  const statusSelected = computed(() => {
-    return rsvpStore.statusSelected || ''
+  const isLoading = computed(() => {
+    return rsvpStore.loading
   })
 
-  const searchValue = computed(() => {
-    return rsvpStore.searchValue || ''
+  const statusSelected = computed({
+    get: () => rsvpStore.statusSelected || '',
+    set: value => {
+      rsvpStore.statusSelected = value
+    }
   })
 
-  const pageSelected = computed(() => {
-    return rsvpStore.pageSelected || 1
+  const searchValue = computed({
+    get: () => rsvpStore.searchValue || '',
+    set: value => {
+      rsvpStore.searchValue = value
+    }
   })
 
-  const perPage = computed(() => {
-    return rsvpStore.perPage || 10
+  const pageSelected = computed({
+    get: () => rsvpStore.pageSelected || 1,
+    set: value => {
+      rsvpStore.pageSelected = value
+    }
+  })
+
+  const perPage = computed({
+    get: () => rsvpStore.perPage || 10,
+    set: value => {
+      rsvpStore.perPage = value
+    }
   })
 
   const totalPages = computed(() => {
@@ -232,6 +248,7 @@ export function useRsvpView() {
     totalsStats,
     responseRate,
     activeEvent,
+    isLoading,
 
     statusSelected,
     searchValue,

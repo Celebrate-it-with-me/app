@@ -261,7 +261,7 @@ import {
 } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
-import { useRsvpStore } from '@/stores/useRsvpStore'
+import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 
 const emit = defineEmits(['close', 'resend', 'confirmationReverted', 'send'])
 const props = defineProps({

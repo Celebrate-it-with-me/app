@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { useRsvpStore } from '@/stores/useRsvpStore'
+import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
