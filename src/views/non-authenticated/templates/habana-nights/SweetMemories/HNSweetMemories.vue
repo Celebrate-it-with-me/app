@@ -14,10 +14,7 @@ const sweetMemoriesStore = useSweetMemoriesStore()
 const formatImages = images => {
   return (images ?? []).map((memory, index) => {
     const img = props.mode === 'create' ? memory.url : memory.imagePath
-    const title =
-      props.mode === 'create'
-        ? memory.name || `Sweet Memory ${index + 1}`
-        : memory.imageOriginalName || `Sweet Memory ${index + 1}`
+    const title = memory.title ?? `Sweet Memory ${index + 1}`
 
     return {
       image: img,
