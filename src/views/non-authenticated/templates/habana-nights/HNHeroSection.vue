@@ -7,19 +7,12 @@ const templateStore = useTemplateStore()
 
 const guest = computed(() => templateStore.guest)
 const companions = computed(() => guest.value?.companions ?? [])
-
 const companionsCount = computed(() => companions.value.length)
 const haveCompanions = computed(() => companionsCount.value > 0)
 
 // Layout modes
 const isCrowded = computed(() => companionsCount.value >= 4) // enable 2 columns
 const isScrollMode = computed(() => companionsCount.value >= 7) // force early scroll + hint
-
-// Background reframe when content is heavy
-const heroBgStyle = computed(() => ({
-  backgroundImage: `url(${bgImage})`,
-  backgroundPosition: isCrowded.value ? '50% 75%' : '50% 50%'
-}))
 
 // Optional: real overflow detection (kept as safety net)
 const companionsListEl = ref(null)
@@ -52,7 +45,6 @@ onUnmounted(() => {
 
 watch(companionsCount, () => computeOverflow())
 
-// Show hint earlier by business rule (>= 7) OR real overflow
 const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOverflowing.value)
 </script>
 
@@ -66,8 +58,12 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
     }"
   >
     <div class="hero relative w-full overflow-hidden">
-      <!-- Background -->
-      <div class="hero-bg absolute inset-0 bg-cover" :style="heroBgStyle" aria-hidden="true">
+      <!-- Background (CSS handles position/zoom) -->
+      <div
+        class="hero-bg absolute inset-0 bg-cover bg-center"
+        :style="{ backgroundImage: `url(${bgImage})` }"
+        aria-hidden="true"
+      >
         <div class="absolute inset-0 hero-overlay pointer-events-none"></div>
         <div class="absolute inset-0 hero-vignette pointer-events-none"></div>
         <div class="absolute inset-0 hero-grain pointer-events-none"></div>
@@ -211,11 +207,24 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
   }
 }
 
-/* Background layers */
+/* Background base */
 .hero-bg {
   transform: translate3d(0, 0px, 0);
+  background-repeat: no-repeat;
 }
 
+/* ✅ Desktop stays as-is (bg-cover + bg-center from Tailwind) */
+
+/* ✅ Mobile custom framing (works because we add slight zoom) */
+@media (max-width: 640px) {
+  /* Default mobile framing (even with few companions) */
+  .hero-bg {
+    background-size: 200%;
+    background-position: 50% 90%;
+  }
+}
+
+/* Background layers */
 .hero-overlay {
   background: linear-gradient(
     180deg,
@@ -363,7 +372,7 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
   }
 }
 
-/* Existing card styles */
+/* Card styles (keep your existing ones) */
 .hero-top-card {
   background: rgba(17, 24, 39, 0.24);
   backdrop-filter: blur(6px);
@@ -517,34 +526,6 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
     letter-spacing: 0.11em;
   }
 
-  .hero-grain {
-    opacity: 0.045;
-  }
-
-  .hero-overlay {
-    background: linear-gradient(
-      180deg,
-      rgba(11, 18, 32, 0.48) 0%,
-      rgba(11, 18, 32, 0.18) 38%,
-      rgba(11, 18, 32, 0.72) 100%
-    );
-  }
-
-  .hero-vignette {
-    background: radial-gradient(
-      circle at 50% 35%,
-      rgba(248, 241, 231, 0.07) 0%,
-      rgba(11, 18, 32, 0) 46%,
-      rgba(11, 18, 32, 0.56) 100%
-    );
-  }
-
-  .hn-ambient-glow {
-    opacity: 0.42;
-    filter: blur(24px);
-  }
-
-  /* Default cap (<= 6 companions usually fine) */
   .hero-companions {
     max-height: min(190px, 26svh);
     display: flex;
@@ -558,32 +539,14 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
     -webkit-overflow-scrolling: touch;
     padding-right: 6px;
   }
-
-  .hero-companions-list::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .hero-companions-list::-webkit-scrollbar-thumb {
-    background: rgba(212, 175, 55, 0.35);
-    border-radius: 999px;
-  }
-
-  .hero-companions-list::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.06);
-    border-radius: 999px;
-  }
 }
 
-/* Two columns on mobile only when crowded */
-@media (max-width: 640px) {
-  .hero-companions-list--two-cols {
-    grid-template-columns: 1fr 1fr;
-    column-gap: 14px;
-    row-gap: 6px;
-  }
+.hero-companions-list--two-cols {
+  grid-template-columns: 1fr 1fr;
+  column-gap: 14px;
+  row-gap: 6px;
 }
 
-/* Scroll hint */
 .hero-scroll-hint {
   margin-top: 8px;
   font-size: 10px;
@@ -593,7 +556,6 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
   text-align: center;
 }
 
-/* Crowded mode: reclaim vertical space */
 .hero-section.is-crowded .hero-top-pad {
   padding-top: calc(76px + env(safe-area-inset-top));
 }
@@ -607,7 +569,6 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
   font-size: 16px;
 }
 
-/* Scroll mode (>= 7): force tighter cap earlier so hero image stays visible */
 @media (max-width: 640px) {
   .hero-section.is-scroll-mode .hero-companions {
     max-height: min(140px, 18svh);
@@ -625,6 +586,36 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
 
   .hero-section.is-scroll-mode .hero-divider {
     width: 44px;
+  }
+}
+
+@media (min-width: 641px) {
+  .hero-section.is-scroll-mode .hero-companions {
+    max-height: min(220px, 28svh);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-section.is-scroll-mode .hero-companions-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 6px;
+  }
+
+  .hero-section.is-scroll-mode .hero-companions-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .hero-section.is-scroll-mode .hero-companions-list::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.35);
+    border-radius: 999px;
+  }
+
+  .hero-section.is-scroll-mode .hero-companions-list::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.06);
+    border-radius: 999px;
   }
 }
 </style>
