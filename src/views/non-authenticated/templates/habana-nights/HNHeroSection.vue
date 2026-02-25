@@ -1,23 +1,73 @@
 <script setup>
 import bgImage from '@/assets/images/img/hero_2644.jpg'
-import { computed } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
 const templateStore = useTemplateStore()
 
 const guest = computed(() => templateStore.guest)
-const haveCompanions = computed(() => guest.value?.companions?.length > 0)
+const companions = computed(() => guest.value?.companions ?? [])
+
+const companionsCount = computed(() => companions.value.length)
+const haveCompanions = computed(() => companionsCount.value > 0)
+
+// Layout modes
+const isCrowded = computed(() => companionsCount.value >= 4) // enable 2 columns
+const isScrollMode = computed(() => companionsCount.value >= 5) // force early scroll + hint
+
+// Background reframe when content is heavy
+const heroBgStyle = computed(() => ({
+  backgroundImage: `url(${bgImage})`,
+  backgroundPosition: isCrowded.value ? '50% 75%' : '50% 50%'
+}))
+
+// Optional: real overflow detection (kept as safety net)
+const companionsListEl = ref(null)
+const isActuallyOverflowing = ref(false)
+
+const computeOverflow = async () => {
+  await nextTick()
+  const el = companionsListEl.value
+  if (!el) return
+  isActuallyOverflowing.value = el.scrollHeight > el.clientHeight + 1
+}
+
+let ro = null
+
+onMounted(() => {
+  computeOverflow()
+
+  if ('ResizeObserver' in window) {
+    ro = new ResizeObserver(() => computeOverflow())
+    if (companionsListEl.value) ro.observe(companionsListEl.value)
+  }
+
+  window.addEventListener('resize', computeOverflow, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', computeOverflow)
+  if (ro) ro.disconnect()
+})
+
+watch(companionsCount, () => computeOverflow())
+
+// Show hint earlier by business rule (>= 7) OR real overflow
+const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOverflowing.value)
 </script>
 
 <template>
-  <section id="sectionHome" class="hero-section relative w-full z-10 mt-0 md:mt-12">
+  <section
+    id="sectionHome"
+    class="hero-section relative w-full z-10 mt-0 md:mt-12"
+    :class="{
+      'is-crowded': isCrowded,
+      'is-scroll-mode': isScrollMode
+    }"
+  >
     <div class="hero relative w-full overflow-hidden">
       <!-- Background -->
-      <div
-        class="hero-bg absolute inset-0 bg-cover bg-center"
-        :style="`background-image: url(${bgImage});`"
-        aria-hidden="true"
-      >
+      <div class="hero-bg absolute inset-0 bg-cover" :style="heroBgStyle" aria-hidden="true">
         <div class="absolute inset-0 hero-overlay pointer-events-none"></div>
         <div class="absolute inset-0 hero-vignette pointer-events-none"></div>
         <div class="absolute inset-0 hero-grain pointer-events-none"></div>
@@ -57,21 +107,35 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
           <div class="hero-invite-wrap w-full max-w-[720px]">
             <div class="hn-ambient-glow hn-ambient-glow--coral" aria-hidden="true"></div>
 
-            <div class="hero-invite-card w-full px-6 py-5 hn-glass-card hn-pressable">
+            <div
+              class="hero-invite-card w-full hn-glass-card hn-pressable"
+              :class="isScrollMode ? 'px-5 py-4' : isCrowded ? 'px-5 py-4' : 'px-6 py-5'"
+            >
               <div class="text-center">
                 <p class="hero-invite-title">
                   <span v-if="haveCompanions">ES NUESTRO PLACER INVITARLOS</span>
                   <span v-else>ES NUESTRO PLACER INVITARTE</span>
                 </p>
 
-                <div class="mt-3 flex items-center justify-center gap-3">
+                <div
+                  class="flex items-center justify-center gap-3"
+                  :class="isScrollMode ? 'mt-2' : isCrowded ? 'mt-2' : 'mt-3'"
+                >
                   <span class="hero-dot"></span>
                   <span class="hero-mini">A CELEBRAR UNA NOCHE INOLVIDABLE</span>
                   <span class="hero-dot"></span>
                 </div>
               </div>
 
-              <div class="mt-5 hero-guest-wrap">
+              <div
+                :class="
+                  isScrollMode
+                    ? 'mt-4 hero-guest-wrap'
+                    : isCrowded
+                      ? 'mt-4 hero-guest-wrap'
+                      : 'mt-5 hero-guest-wrap'
+                "
+              >
                 <div class="hero-guest-pill">
                   <p class="hero-guest-label">INVITADO</p>
                   <p class="hero-guest-name">
@@ -81,15 +145,32 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
 
                 <div v-if="haveCompanions" class="hero-companions">
                   <p class="hero-companions-title">ACOMPAÑANTES</p>
-                  <ul class="hero-companions-list">
-                    <li v-for="companion in guest.companions" :key="companion.id">
+
+                  <ul
+                    ref="companionsListEl"
+                    class="hero-companions-list"
+                    :class="[
+                      isCrowded ? 'hero-companions-list--two-cols' : '',
+                      isScrollMode ? 'hero-companions-list--scroll-early' : ''
+                    ]"
+                  >
+                    <li v-for="companion in companions" :key="companion.id">
                       {{ companion.name }}
                     </li>
                   </ul>
+
+                  <p v-if="shouldShowScrollHint" class="hero-scroll-hint">
+                    SCROLL PARA VER A TODOS
+                  </p>
                 </div>
               </div>
 
-              <div data-reveal="up" data-reveal-delay="210" class="mt-5 hero-footer">
+              <div
+                data-reveal="up"
+                data-reveal-delay="210"
+                class="hero-footer"
+                :class="isScrollMode ? 'mt-4' : isCrowded ? 'mt-4' : 'mt-5'"
+              >
                 <div class="hero-divider"></div>
                 <p class="hero-footer-text">DESLIZA PARA VER LOS DETALLES DEL EVENTO</p>
                 <div class="hero-divider"></div>
@@ -122,6 +203,12 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
 
 .hero-bottom-pad {
   padding-bottom: calc(40px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 640px) {
+  .hero-bottom-pad {
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
 }
 
 /* Background layers */
@@ -388,6 +475,7 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
   color: rgba(15, 23, 42, 0.86);
 }
 
+/* Footer */
 .hero-footer {
   display: flex;
   align-items: center;
@@ -418,10 +506,12 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
   }
 }
 
+/* Mobile: caps + scroll */
 @media (max-width: 640px) {
   .hero-name {
     font-size: 38px;
   }
+
   .hero-invite-title {
     font-size: 16px;
     letter-spacing: 0.11em;
@@ -430,6 +520,7 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
   .hero-grain {
     opacity: 0.045;
   }
+
   .hero-overlay {
     background: linear-gradient(
       180deg,
@@ -438,6 +529,7 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
       rgba(11, 18, 32, 0.72) 100%
     );
   }
+
   .hero-vignette {
     background: radial-gradient(
       circle at 50% 35%,
@@ -451,17 +543,22 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
     opacity: 0.42;
     filter: blur(24px);
   }
-}
 
-@media (max-width: 640px) {
+  /* Default cap (<= 6 companions usually fine) */
+  .hero-companions {
+    max-height: min(190px, 26svh);
+    display: flex;
+    flex-direction: column;
+  }
+
   .hero-companions-list {
-    max-height: min(160px, 22svh);
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding-right: 6px;
   }
 
-  /* Optional: make the scrollbar area feel intentional */
   .hero-companions-list::-webkit-scrollbar {
     width: 6px;
   }
@@ -477,5 +574,57 @@ const haveCompanions = computed(() => guest.value?.companions?.length > 0)
   }
 }
 
+/* Two columns on mobile only when crowded */
+@media (max-width: 640px) {
+  .hero-companions-list--two-cols {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 14px;
+    row-gap: 6px;
+  }
+}
 
+/* Scroll hint */
+.hero-scroll-hint {
+  margin-top: 8px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(15, 23, 42, 0.55);
+  text-align: center;
+}
+
+/* Crowded mode: reclaim vertical space */
+.hero-section.is-crowded .hero-top-pad {
+  padding-top: calc(76px + env(safe-area-inset-top));
+}
+
+.hero-section.is-crowded .hero-invite-title {
+  font-size: 15px;
+  letter-spacing: 0.105em;
+}
+
+.hero-section.is-crowded .hero-guest-name {
+  font-size: 16px;
+}
+
+/* Scroll mode (>= 7): force tighter cap earlier so hero image stays visible */
+@media (max-width: 640px) {
+  .hero-section.is-scroll-mode .hero-companions {
+    max-height: min(140px, 18svh);
+  }
+
+  .hero-section.is-scroll-mode .hero-companions-list {
+    font-size: 12px;
+    row-gap: 5px;
+  }
+
+  .hero-section.is-scroll-mode .hero-footer-text {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  .hero-section.is-scroll-mode .hero-divider {
+    width: 44px;
+  }
+}
 </style>
