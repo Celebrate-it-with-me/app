@@ -13,7 +13,7 @@ const haveCompanions = computed(() => companionsCount.value > 0)
 
 // Layout modes
 const isCrowded = computed(() => companionsCount.value >= 4) // enable 2 columns
-const isScrollMode = computed(() => companionsCount.value >= 5) // force early scroll + hint
+const isScrollMode = computed(() => companionsCount.value >= 7) // force early scroll + hint
 
 // Background reframe when content is heavy
 const heroBgStyle = computed(() => ({
