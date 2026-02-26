@@ -44,8 +44,6 @@ onUnmounted(() => {
 })
 
 watch(companionsCount, () => computeOverflow())
-
-const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOverflowing.value)
 </script>
 
 <template>
@@ -154,10 +152,6 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
                       {{ companion.name }}
                     </li>
                   </ul>
-
-                  <p v-if="shouldShowScrollHint" class="hero-scroll-hint">
-                    SCROLL PARA VER A TODOS
-                  </p>
                 </div>
               </div>
 
@@ -517,12 +511,17 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
 
 /* Mobile: caps + scroll */
 @media (max-width: 640px) {
+  .hero-subtitle,
+  .hero-mini,
+  .hero-dot {
+    display: none;
+  }
   .hero-name {
-    font-size: 38px;
+    font-size: 30px;
   }
 
   .hero-invite-title {
-    font-size: 16px;
+    font-size: 12px;
     letter-spacing: 0.11em;
   }
 
@@ -561,7 +560,7 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
 }
 
 .hero-section.is-crowded .hero-invite-title {
-  font-size: 15px;
+  font-size: 12px;
   letter-spacing: 0.105em;
 }
 
@@ -580,6 +579,7 @@ const shouldShowScrollHint = computed(() => isScrollMode.value || isActuallyOver
   }
 
   .hero-section.is-scroll-mode .hero-footer-text {
+    display: none;
     font-size: 10px;
     letter-spacing: 0.12em;
   }
