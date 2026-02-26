@@ -8,7 +8,7 @@ const props = defineProps({
   title: { type: String, default: 'DRESS CODE' },
   subtitle: { type: String, default: 'GALA MODERNA' },
   tagline: { type: String, default: 'Una noche de elegancia, ritmo y distinción.' },
-  // eslint-disable-next-line vue/require-valid-default-prop
+   
   reservedColors: { type: Array, default: ['Rojo', 'Dorado'] }
 })
 

@@ -32,6 +32,7 @@ const shouldShowRouteView = computed(() => {
 })
 
 onMounted(async () => {
+  console.log('InternalLayout mounted')
   // Initialize Admin theme
   initTheme()
   loading.value = true
