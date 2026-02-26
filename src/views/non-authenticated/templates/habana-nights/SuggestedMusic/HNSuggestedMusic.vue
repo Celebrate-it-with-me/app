@@ -16,7 +16,7 @@ const suggestedMusic = computed(() => {
     mainColor: '#D4AF37',
     secondaryColor: '#E85D4A',
     usePreview: true,
-    useVoteSystem: true
+    useVoteSystem: false
   }
 })
 
