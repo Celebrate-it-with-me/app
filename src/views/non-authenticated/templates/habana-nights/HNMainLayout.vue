@@ -153,7 +153,7 @@ const handleMoveToTop = () => {
         <HNSweetMemories class="main-section" :mode="'presentation'" />
 
         <HNSeparatorSection>
-          Desde su primer respirar hasta verla soñar, cada año nos enseñó a amar y hoy la vemos
+          Desde mi primer respirar hasta verme soñar, cada año me enseñó a amar y hoy me veo
           florecer y brillar.
         </HNSeparatorSection>
 
@@ -178,7 +178,7 @@ const handleMoveToTop = () => {
         <HNDressCode />
 
         <HNSeparatorSection v-if="eventStore.hasLocation">
-          Brillamos con estilo… ahora descubramos el escenario.
+          Brillemos con estilo… ahora descubramos el escenario.
         </HNSeparatorSection>
 
         <HNEventLocations v-if="eventStore.hasLocation" />
