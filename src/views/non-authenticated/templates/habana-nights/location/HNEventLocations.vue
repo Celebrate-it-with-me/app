@@ -1,11 +1,66 @@
+<script setup>
+import { computed } from 'vue'
+import CCarousel from '@/components/UI/carousel/CCarousel.vue'
+import CMapPreview from '@/components/UI/google/CMapPreview.vue'
+
+const props = defineProps({
+  config: { type: Object, default: () => ({}) }
+})
+
+const location = computed(() => props.config?.event?.eventLocations || null)
+
+const images = computed(() => location.value?.images || [])
+
+const imagesUrl = computed(() => images.value.map(i => i.path).filter(Boolean))
+
+const isEnabled = computed(() => props.config?.sections?.location?.isEnabled ?? true)
+
+const hasLocation = computed(() => isEnabled.value && !!location.value)
+
+const locationName = computed(() => location.value?.name || 'A curated destination')
+
+const fullAddress = computed(() => {
+  const parts = [
+    location.value?.address,
+    location.value?.city,
+    location.value?.state,
+    location.value?.zipCode,
+    location.value?.country
+  ].filter(Boolean)
+
+  return parts.length ? parts.join(', ') : 'Address details coming soon.'
+})
+
+const lat = computed(() => Number(location.value?.latitude))
+const lng = computed(() => Number(location.value?.longitude))
+const hasCoordinates = computed(() => Number.isFinite(lat.value) && Number.isFinite(lng.value))
+
+const googleMapsUrl = computed(() => {
+  const name = location.value?.name || ''
+  const query = [
+    name,
+    location.value?.address,
+    location.value?.city,
+    location.value?.state,
+    location.value?.zipCode,
+    location.value?.country
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query || name)}`
+})
+</script>
+
 <template>
-  <section class="hn-parallax-section relative w-full px-4 py-10 overflow-hidden">
+  <section
+    v-if="hasLocation"
+    class="hn-parallax-section relative w-full px-4 py-10 overflow-hidden"
+  >
     <!-- Cinematic background layers -->
     <div class="hn-parallax-bg pointer-events-none absolute inset-0 overflow-hidden">
-      <!-- Deep base -->
       <div class="absolute inset-0 bg-[#070D18]" />
 
-      <!-- Gold glow (top/center) -->
       <div
         class="absolute -top-24 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full blur-3xl opacity-40"
         style="
@@ -17,7 +72,6 @@
         "
       />
 
-      <!-- Warm red glow (lower/right) -->
       <div
         class="absolute -bottom-40 right-[-160px] h-[520px] w-[520px] rounded-full blur-3xl opacity-30"
         style="
@@ -29,7 +83,6 @@
         "
       />
 
-      <!-- Subtle vignette -->
       <div
         class="absolute inset-0"
         style="
@@ -97,10 +150,9 @@
             0 0 40px rgba(230, 196, 138, 0.08);
         "
       >
-        <!-- Top media: Carousel or elegant placeholder -->
+        <!-- Top media -->
         <div class="relative">
-          <div v-if="images.length" class="relative">
-            <!-- Premium frame -->
+          <div v-if="imagesUrl.length" class="relative">
             <div class="absolute inset-0 pointer-events-none">
               <div
                 class="absolute inset-0"
@@ -143,7 +195,6 @@
             </div>
           </div>
 
-          <!-- Subtle divider line -->
           <div
             class="absolute bottom-0 left-6 right-6 h-[1px] opacity-60"
             style="
@@ -159,7 +210,6 @@
 
         <!-- Content -->
         <div class="p-6 md:p-8 space-y-6">
-          <!-- Address block -->
           <div class="space-y-2 text-center md:text-left">
             <p class="text-white/85 text-base md:text-lg font-montserrat leading-relaxed">
               {{ fullAddress }}
@@ -170,7 +220,6 @@
             </p>
           </div>
 
-          <!-- CTA -->
           <div class="flex justify-center md:justify-start">
             <a
               :href="googleMapsUrl"
@@ -185,12 +234,10 @@
             </a>
           </div>
 
-          <!-- Map preview (cinematic frame) -->
           <div class="relative rounded-2xl overflow-hidden border border-white/10">
             <div v-if="hasCoordinates" class="relative">
               <CMapPreview :lat="lat" :lng="lng" class="w-full h-[260px] md:h-[320px]" />
 
-              <!-- Map overlays to match cinematic style -->
               <div class="pointer-events-none absolute inset-0">
                 <div
                   class="absolute inset-0"
@@ -229,65 +276,8 @@
           </div>
         </div>
 
-        <!-- Outer subtle glow edge -->
         <div class="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-white/10" />
       </div>
     </div>
   </section>
 </template>
-
-<script setup>
-import { computed } from 'vue'
-import CCarousel from '@/components/UI/carousel/CCarousel.vue'
-import CMapPreview from '@/components/UI/google/CMapPreview.vue'
-import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-
-const templateStore = useTemplateStore()
-
-const location = computed(() => {
-  return templateStore.event?.eventLocations ?? {}
-})
-
-const images = computed(() => {
-  return templateStore.event?.eventLocations?.images ?? []
-})
-
-const imagesUrl = computed(() => {
-  return images.value.map(image => image.path)
-})
-
-const locationName = computed(() => {
-  return location.value?.name || 'A curated destination'
-})
-
-const fullAddress = computed(() => {
-  const parts = [
-    location.value?.address,
-    location.value?.city,
-    location.value?.state,
-    location.value?.zipCode,
-    location.value?.country
-  ].filter(Boolean)
-
-  return parts.length ? parts.join(', ') : 'Address details coming soon.'
-})
-
-const lat = computed(() => Number(location.value?.latitude))
-const lng = computed(() => Number(location.value?.longitude))
-
-const hasCoordinates = computed(() => Number.isFinite(lat.value) && Number.isFinite(lng.value))
-
-const googleMapsUrl = computed(() => {
-  const name = location.value?.name || ''
-  const address = location.value?.address || ''
-  const city = location.value?.city || ''
-  const state = location.value?.state || ''
-  const zip = location.value?.zipCode || ''
-  const country = location.value?.country || ''
-
-  const query = [name, address, city, state, zip, country].filter(Boolean).join(' ')
-  const q = encodeURIComponent(query || name)
-
-  return `https://www.google.com/maps/search/?api=1&query=${q}`
-})
-</script>

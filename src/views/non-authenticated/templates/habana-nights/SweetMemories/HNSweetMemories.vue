@@ -1,14 +1,13 @@
 <script setup>
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
-import HNSweetMemoriesGallery from '@/views/non-authenticated/templates/habana-nights/SweetMemories/HNSweetMemoriesGallery.vue'
+import HNSweetMemoriesGallery from '@/views/non-authenticated/templates/habana-nights-v2/SweetMemories/HNSweetMemoriesGallery.vue'
 
 const props = defineProps({
-  mode: { type: String, default: 'create' }
+  mode: { type: String, default: 'create' },
+  config: { type: Object, default: () => ({}) }
 })
 
-const templateStore = useTemplateStore()
 const sweetMemoriesStore = useSweetMemoriesStore()
 
 const formatImages = images => {
@@ -28,7 +27,9 @@ const formatImages = images => {
 
 const sweetMemoriesImages = computed(() => {
   if (props.mode === 'create') return formatImages(sweetMemoriesStore.memoriesImages)
-  return formatImages(templateStore.event?.sweetMemoriesImages)
+  return formatImages(
+    props.config?.event?.sweetMemoriesImages ?? props.config?.sweetMemoriesImages ?? []
+  )
 })
 </script>
 
@@ -42,7 +43,6 @@ const sweetMemoriesImages = computed(() => {
     <div class="hn-sm__vignette" />
 
     <div class="hn-sm__content relative z-10 w-full px-4 md:px-8 lg:px-16 py-16 md:py-24">
-      <!-- Header -->
       <div class="hn-sm__headerWrap">
         <div class="hn-sm__headerCard">
           <h2 class="hn-sm__title">SWEET MEMORIES</h2>
@@ -51,13 +51,11 @@ const sweetMemoriesImages = computed(() => {
         </div>
       </div>
 
-      <!-- Gallery -->
       <div v-if="sweetMemoriesImages.length > 0" class="mt-10 md:mt-14">
         <div class="hn-sm__galleryWrap">
           <HNSweetMemoriesGallery class="hn-sm__gallery" :memories="sweetMemoriesImages" />
         </div>
 
-        <!-- ✅ Subtle swipe hint (mobile/touch) -->
         <div class="hn-sm__swipeHint" aria-hidden="true">
           <span class="hn-sm__swipeLine"></span>
           <span class="hn-sm__swipeText">Desliza para ver más</span>
@@ -66,7 +64,6 @@ const sweetMemoriesImages = computed(() => {
         </div>
       </div>
 
-      <!-- Empty -->
       <div v-else class="mt-12 text-center">
         <div class="hn-sm__empty">
           <p class="hn-sm__emptyTitle">Aún no hay recuerdos para mostrar</p>

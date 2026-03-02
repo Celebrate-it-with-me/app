@@ -4,24 +4,24 @@ import manImg from '@/assets/images/DressCode/man_formal_6043.png'
 import womanImg from '@/assets/images/DressCode/woman_formal_6044.png'
 
 const props = defineProps({
-  isEnabled: { type: Boolean, default: true },
-  title: { type: String, default: 'DRESS CODE' },
-  subtitle: { type: String, default: 'GALA MODERNA' },
-  tagline: { type: String, default: 'Una noche de elegancia, ritmo y distinción.' },
-   
-  reservedColors: { type: Array, default: ['Rojo', 'Dorado'] }
+  config: { type: Object, default: () => ({}) }
 })
 
-const manStyle = computed(() => ({
-  backgroundImage: `url(${manImg})`
-}))
+const dress = computed(() => props.config?.sections?.dressCode || {})
 
-const womanStyle = computed(() => ({
-  backgroundImage: `url(${womanImg})`
-}))
+const isEnabled = computed(() => dress.value?.isEnabled ?? true)
+const title = computed(() => dress.value?.title ?? 'DRESS CODE')
+const subtitle = computed(() => dress.value?.subtitle ?? 'GALA MODERNA')
+const tagline = computed(
+  () => dress.value?.tagline ?? 'Una noche de elegancia, ritmo y distinción.'
+)
+const reservedColors = computed(() => dress.value?.reservedColors ?? ['Rojo', 'Dorado'])
+
+const manStyle = computed(() => ({ backgroundImage: `url(${manImg})` }))
+const womanStyle = computed(() => ({ backgroundImage: `url(${womanImg})` }))
 
 const getColorClass = color => {
-  const c = color.toLowerCase()
+  const c = String(color || '').toLowerCase()
   if (c.includes('rojo')) return 'hn-color-rojo'
   if (c.includes('dorado')) return 'hn-color-dorado'
   return ''
@@ -30,38 +30,32 @@ const getColorClass = color => {
 
 <template>
   <section
-    v-if="props.isEnabled"
+    v-if="isEnabled"
     id="sectionDressCode"
     class="hn-parallax-section hn-dress-section relative w-full overflow-hidden"
     aria-label="Dress Code"
   >
-    <!-- Background -->
     <div class="hn-parallax-bg absolute inset-0 z-0 hn-dress-bg" aria-hidden="true"></div>
     <div class="absolute inset-0 z-0 hn-dress-smoke" aria-hidden="true"></div>
     <div class="absolute inset-0 z-0 hn-dress-vignette" aria-hidden="true"></div>
 
-    <!-- Content -->
     <div
       class="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-10 py-14 sm:py-16 lg:py-20"
     >
       <div class="hn-dress-card relative overflow-hidden">
-        <!-- Silhouettes INSIDE the card -->
         <div class="hn-sil hn-sil-man" :style="manStyle" aria-hidden="true"></div>
         <div class="hn-sil hn-sil-woman" :style="womanStyle" aria-hidden="true"></div>
 
-        <!-- Soft readability overlay inside the card -->
         <div class="hn-card-overlay" aria-hidden="true"></div>
 
         <div class="relative z-10">
-          <!-- Header -->
           <header class="hn-dress-header text-center">
-            <h2 class="hn-dress-title">{{ props.title }}</h2>
-            <p class="hn-dress-subtitle">{{ props.subtitle }}</p>
-            <p class="hn-dress-tagline">{{ props.tagline }}</p>
+            <h2 class="hn-dress-title">{{ title }}</h2>
+            <p class="hn-dress-subtitle">{{ subtitle }}</p>
+            <p class="hn-dress-tagline">{{ tagline }}</p>
             <span class="hn-dress-divider" aria-hidden="true"></span>
           </header>
 
-          <!-- Content grid -->
           <div class="hn-dress-grid mt-10">
             <div class="hn-panel">
               <h3 class="hn-panel-title">Caballeros</h3>
@@ -82,16 +76,17 @@ const getColorClass = color => {
             </div>
           </div>
 
-          <!-- Reserved colors pill -->
           <div class="mt-10 flex justify-center">
             <div class="hn-pill">
               <span class="hn-pill-label">Colores reservados:</span>
+
               <span v-for="(color, index) in reservedColors" :key="index" class="hn-pill-value">
                 <span v-if="index !== 0" class="hn-pill-dot">•</span>
                 <span :class="getColorClass(color)">{{ color }}</span>
               </span>
             </div>
           </div>
+
           <p class="hn-dress-note">
             Estos colores están reservados exclusivamente para la quinceañera. Agradecemos no
             utilizarlos durante la celebración.

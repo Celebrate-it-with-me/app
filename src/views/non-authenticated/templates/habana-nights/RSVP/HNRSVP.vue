@@ -1,10 +1,13 @@
 <script setup>
 import { computed, reactive } from 'vue'
-import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-import HNRSVPTitles from '@/views/non-authenticated/templates/habana-nights/RSVP/HNRSVPTitles.vue'
-import HNCWMRSVPComponent from '@/views/non-authenticated/templates/habana-nights/RSVP/HNCWMRSVPComponent.vue'
-import HNCWMRSVPConfirmed from '@/views/non-authenticated/templates/habana-nights/RSVP/HNCWMRSVPConfirmed.vue'
+import HNRSVPTitles from '@/views/non-authenticated/templates/habana-nights-v2/RSVP/HNRSVPTitles.vue'
+import HNCWMRSVPComponent from '@/views/non-authenticated/templates/habana-nights-v2/RSVP/HNCWMRSVPComponent.vue'
+import HNCWMRSVPConfirmed from '@/views/non-authenticated/templates/habana-nights-v2/RSVP/HNCWMRSVPConfirmed.vue'
 import rsvpBg from '@/assets/images/RSVP/IMG_6044.png'
+
+const props = defineProps({
+  config: { type: Object, default: () => ({}) }
+})
 
 const rsvpConfig = reactive({
   isEnabled: true,
@@ -20,10 +23,10 @@ const rsvpConfig = reactive({
   }
 })
 
-const templateStore = useTemplateStore()
+const guest = computed(() => props.config?.guest || null)
 
 const rsvpCompleted = computed(() => {
-  return templateStore.guest?.rsvpStatusDate !== null
+  return guest.value?.rsvpStatusDate != null
 })
 </script>
 
@@ -33,18 +36,11 @@ const rsvpCompleted = computed(() => {
     id="sectionRSVP"
     class="hn-parallax-section hn-rsvp-section relative overflow-hidden w-full min-h-screen flex flex-col lg:flex-row"
   >
-    <!-- ============================================================
-         CAPA 1 — Atmósfera global (cubre TODO el ancho de la sección)
-         El humo, el grain y la vignette son iguales en ambos lados.
-         ============================================================ -->
     <div class="hn-parallax-bg absolute inset-0 z-0 hn-global-smoke" aria-hidden="true"></div>
     <div class="absolute inset-0 z-0 hn-global-vignette" aria-hidden="true"></div>
     <div class="absolute inset-0 z-0 hn-grain pointer-events-none" aria-hidden="true"></div>
 
-    <!-- ============================================================
-         CAPA 2 — Foto (desktop): encima del fondo global, izquierda
-         ============================================================ -->
-    <!-- MOBILE: foto de fondo -->
+    <!-- MOBILE bg -->
     <div
       class="lg:hidden absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
       :style="{ backgroundImage: `url(${rsvpBg})` }"
@@ -52,22 +48,15 @@ const rsvpCompleted = computed(() => {
     ></div>
     <div class="lg:hidden absolute inset-0 z-0 bg-[#0B1220]/80" aria-hidden="true"></div>
 
-    <!-- DESKTOP: <img> real para respetar transparencia del PNG -->
+    <!-- DESKTOP img -->
     <img :src="rsvpBg" class="hn-photo-img hidden lg:block" alt="" aria-hidden="true" />
-
-    <!-- Fade que disuelve la foto en el fondo global compartido -->
     <div class="hn-photo-fade hidden lg:block" aria-hidden="true"></div>
 
-    <!-- ============================================================
-         LAYOUT: espacio reservado izquierda + contenido derecha
-         ============================================================ -->
     <div class="hidden lg:block lg:w-1/2" aria-hidden="true"></div>
 
-    <!-- RIGHT SIDE: sin background propio, hereda el fondo global -->
     <div
       class="relative z-10 w-full lg:w-1/2 min-h-screen flex items-center justify-center p-4 lg:p-10"
     >
-      <!-- Glass Panel -->
       <div class="relative z-10 hn-glass-panel w-full max-w-xl">
         <div class="hn-meta-bar mb-6">
           <span class="hn-meta-text">Confirmación</span>
@@ -90,6 +79,7 @@ const rsvpCompleted = computed(() => {
 </template>
 
 <style scoped>
+/* deja tu CSS igual */
 .hn-rsvp-section {
   background: linear-gradient(180deg, #0f1728 0%, #111a2e 100%);
 }
@@ -128,7 +118,6 @@ const rsvpCompleted = computed(() => {
   width: 62%;
   height: 100%;
   z-index: 3;
-
   background:
     linear-gradient(
       to right,
@@ -147,11 +136,9 @@ const rsvpCompleted = computed(() => {
       rgba(15, 23, 40, 1) 88%
     ),
     linear-gradient(to bottom, rgba(0, 0, 0, 0) 62%, rgba(0, 0, 0, 0.22) 100%);
-
   pointer-events: none;
 }
 
-/* GLASS PANEL */
 .hn-glass-panel {
   background: rgba(17, 24, 39, 0.5);
   backdrop-filter: blur(16px);
@@ -172,7 +159,6 @@ const rsvpCompleted = computed(() => {
   }
 }
 
-/* META BAR */
 .hn-meta-bar {
   display: flex;
   justify-content: center;
@@ -194,7 +180,6 @@ const rsvpCompleted = computed(() => {
   color: rgba(212, 175, 55, 0.5);
 }
 
-/* GRAIN */
 .hn-grain {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   opacity: 0.03;

@@ -2,6 +2,14 @@
 import { Martini, Sparkles, Utensils, Music, Disc3 } from 'lucide-vue-next'
 import itinerarioBg from '@/assets/images/Itinerario/IMG_6061.png'
 
+defineProps({
+  config: {
+    type: Object,
+    required: false,
+    default: () => ({})
+  }
+})
+
 const timeline = [
   { time: '7:00 PM', range: '7:00pm – 8:00pm', title: 'Cocktail', icon: Martini, accent: 'coral' },
   { time: '8:00 PM', range: '8:00pm – 9:30pm', title: 'Ceremonia', icon: Sparkles, accent: 'gold' },

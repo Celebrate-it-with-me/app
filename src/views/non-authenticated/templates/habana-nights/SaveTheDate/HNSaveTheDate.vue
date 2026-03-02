@@ -1,87 +1,78 @@
 <script setup>
+import { computed } from 'vue'
 import HNSaveTheDateCountDown from '@/views/non-authenticated/templates/habana-nights/SaveTheDate/HNSaveTheDateCountDown.vue'
 import HNSaveTheDateAddToCalendar from '@/views/non-authenticated/templates/habana-nights/SaveTheDate/HNSaveTheDateAddToCalendar.vue'
+
+const props = defineProps({
+  config: {
+    type: Object,
+    default: () => ({})
+  }
+})
+
+const section = computed(() => props.config?.sections?.saveTheDate ?? {})
+
+const isEnabled = computed(() => section.value?.isEnabled ?? true)
+
+const eyebrow = computed(() => section.value?.eyebrow ?? 'SAVE THE DATE')
+const title = computed(() => section.value?.title ?? 'Reserve esta fecha')
+const subtitle = computed(
+  () => section.value?.subtitle ?? 'Una noche mágica está por llegar y tú no puedes faltar.'
+)
+const microcopy = computed(
+  () => section.value?.microcopy ?? 'Desliza para ver los detalles del evento'
+)
 </script>
 
 <template>
-  <section id="sectionSTD" class="hn-std relative w-full min-h-screen overflow-hidden">
-    <!-- Background -->
+  <section
+    v-if="isEnabled"
+    id="sectionSTD"
+    class="hn-std relative w-full min-h-screen overflow-hidden"
+  >
     <div class="hn-std__bg" />
-
-    <!-- Gold glow layer -->
     <div class="hn-std__goldGlow" />
-
-    <!-- Soft vignette -->
     <div class="hn-std__vignette" />
 
-    <!-- Content -->
     <div class="hn-std__content px-5 py-16 md:py-24">
       <div class="hn-std__cardWrap">
-        <!-- Ambient glow behind card -->
         <div class="hn-std__ambient" aria-hidden="true"></div>
 
         <div data-reveal="up" data-reveal-delay="0" class="hn-std__card hn-pressable hn-shimmer">
           <!-- Eyebrow -->
           <div data-reveal="up" data-reveal-delay="40" class="hn-std__eyebrow">
             <span class="hn-std__dot" />
-            <span class="hn-std__eyebrowText">SAVE THE DATE</span>
+            <span class="hn-std__eyebrowText">{{ eyebrow }}</span>
             <span class="hn-std__dot" />
           </div>
 
           <!-- Title -->
           <h2 data-reveal="up" data-reveal-delay="80" class="hn-std__title hn-script">
-            Reserve esta fecha
+            {{ title }}
           </h2>
 
           <!-- Subtitle -->
           <p data-reveal="up" data-reveal-delay="120" class="hn-std__subtitle">
-            Una noche mágica está por llegar y tú no puedes faltar.
+            {{ subtitle }}
           </p>
 
-          <!-- Divider -->
           <div data-reveal="up" data-reveal-delay="150" class="hn-std__divider" />
 
           <!-- Countdown -->
           <div data-reveal="up" data-reveal-delay="180" class="hn-std__countdown mt-8 md:mt-10">
-            <HNSaveTheDateCountDown
-              :numbers="{
-                font: 'var(--hn-font-heading)',
-                color: 'var(--hn-cream)',
-                size: 'var(--hn-std-num-size)',
-                style: 'normal',
-                weight: '600',
-                letterSpacing: 'var(--hn-std-num-tracking)'
-              }"
-              :text="{
-                font: 'var(--hn-font-body)',
-                color: 'rgba(248,241,231,0.78)',
-                size: 'var(--hn-std-label-size)',
-                style: 'normal',
-                weight: '600',
-                letterSpacing: 'var(--hn-std-label-tracking)'
-              }"
-            />
+            <HNSaveTheDateCountDown :config="config" />
           </div>
 
           <!-- CTA -->
           <div data-reveal="up" data-reveal-delay="220" class="mt-10 md:mt-12">
             <div class="hn-std__ctaWrap">
-              <HNSaveTheDateAddToCalendar
-                :button-style="{
-                  bgColor: 'transparent',
-                  fontColor: 'rgba(248,241,231,0.92)',
-                  hoverColor: 'var(--hn-gold)',
-                  fontFamily: 'var(--hn-font-body)',
-                  borderRadius: '14px',
-                  borderColor: 'rgba(212,175,55,0.55)'
-                }"
-              />
+              <HNSaveTheDateAddToCalendar :config="config" />
             </div>
           </div>
 
-          <!-- Footer microcopy -->
+          <!-- Micro -->
           <p data-reveal="up" data-reveal-delay="260" class="hn-std__micro mt-10">
-            Desliza para ver los detalles del evento
+            {{ microcopy }}
           </p>
         </div>
       </div>

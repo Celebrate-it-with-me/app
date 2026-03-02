@@ -1,20 +1,77 @@
 <script setup>
-import bgImage from '@/assets/images/img/hero_2644.jpg'
+import bgImageDefault from '@/assets/images/img/hero_2644.jpg'
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 
+const props = defineProps({
+  config: {
+    type: Object,
+    required: false,
+    default: () => ({})
+  }
+})
+
 const templateStore = useTemplateStore()
 
+/**
+ * HERO CONFIG (standard)
+ * config.sections.hero = {
+ *   isEnabled?: boolean
+ *   backgroundImage?: string (optional) // later: allow url from config
+ *   topCard?: { name, date, subtitle }
+ *   invite?: { titleSingular, titlePlural, miniText }
+ *   guest?: { label, companionsLabel }
+ *   footer?: { text }
+ *   thresholds?: { crowdedFrom, scrollFrom }
+ * }
+ */
+const hero = computed(() => props.config?.sections?.hero || {})
+
+const isEnabled = computed(() => hero.value?.isEnabled ?? true)
+
+// Background (for now: keep your local asset default)
+const bgImage = computed(() => hero.value?.backgroundImage || bgImageDefault)
+
+// Top card
+const topName = computed(() => hero.value?.topCard?.name ?? 'Isabella Canedo')
+const topDate = computed(() => hero.value?.topCard?.date ?? '04 · 18 · 2026')
+const topSubtitle = computed(() => hero.value?.topCard?.subtitle ?? 'MIS QUINCE')
+
+// Invite texts
+const inviteTitleSingular = computed(
+  () => hero.value?.invite?.titleSingular ?? 'ES NUESTRO PLACER INVITARTE'
+)
+const inviteTitlePlural = computed(
+  () => hero.value?.invite?.titlePlural ?? 'ES NUESTRO PLACER INVITARLOS'
+)
+const inviteMiniText = computed(
+  () => hero.value?.invite?.miniText ?? 'A CELEBRAR UNA NOCHE INOLVIDABLE'
+)
+
+// Guest labels
+const guestLabel = computed(() => hero.value?.guest?.label ?? 'INVITADO')
+const companionsLabel = computed(() => hero.value?.guest?.companionsLabel ?? 'ACOMPAÑANTES')
+
+// Footer
+const footerText = computed(
+  () => hero.value?.footer?.text ?? 'DESLIZA PARA VER LOS DETALLES DEL EVENTO'
+)
+
+// Thresholds
+const crowdedFrom = computed(() => Number(hero.value?.thresholds?.crowdedFrom ?? 4))
+const scrollFrom = computed(() => Number(hero.value?.thresholds?.scrollFrom ?? 7))
+
+// Data
 const guest = computed(() => templateStore.guest)
 const companions = computed(() => guest.value?.companions ?? [])
 const companionsCount = computed(() => companions.value.length)
 const haveCompanions = computed(() => companionsCount.value > 0)
 
 // Layout modes
-const isCrowded = computed(() => companionsCount.value >= 4) // enable 2 columns
-const isScrollMode = computed(() => companionsCount.value >= 7) // force early scroll + hint
+const isCrowded = computed(() => companionsCount.value >= crowdedFrom.value)
+const isScrollMode = computed(() => companionsCount.value >= scrollFrom.value)
 
-// Optional: real overflow detection (kept as safety net)
+// Optional: real overflow detection (safety net)
 const companionsListEl = ref(null)
 const isActuallyOverflowing = ref(false)
 
@@ -48,6 +105,7 @@ watch(companionsCount, () => computeOverflow())
 
 <template>
   <section
+    v-if="isEnabled"
     id="sectionHome"
     class="hero-section relative w-full z-10 mt-0 md:mt-12"
     :class="{
@@ -79,15 +137,15 @@ watch(companionsCount, () => computeOverflow())
             <div class="hn-ambient-glow hn-ambient-glow--gold" aria-hidden="true"></div>
 
             <div class="hero-top-card text-center px-6 py-6 hn-glass-card hn-pressable hn-shimmer">
-              <p class="hn-script hero-name">Isabella Canedo</p>
+              <p class="hn-script hero-name">{{ topName }}</p>
 
               <div class="mt-3 flex items-center justify-center gap-4">
                 <div class="hero-line"></div>
-                <p class="hero-date">04 · 18 · 2026</p>
+                <p class="hero-date">{{ topDate }}</p>
                 <div class="hero-line"></div>
               </div>
 
-              <p class="mt-3 hero-subtitle">MIS QUINCE</p>
+              <p class="mt-3 hero-subtitle">{{ topSubtitle }}</p>
             </div>
           </div>
         </div>
@@ -107,8 +165,8 @@ watch(companionsCount, () => computeOverflow())
             >
               <div class="text-center">
                 <p class="hero-invite-title">
-                  <span v-if="haveCompanions">ES NUESTRO PLACER INVITARLOS</span>
-                  <span v-else>ES NUESTRO PLACER INVITARTE</span>
+                  <span v-if="haveCompanions">{{ inviteTitlePlural }}</span>
+                  <span v-else>{{ inviteTitleSingular }}</span>
                 </p>
 
                 <div
@@ -116,7 +174,7 @@ watch(companionsCount, () => computeOverflow())
                   :class="isScrollMode ? 'mt-2' : isCrowded ? 'mt-2' : 'mt-3'"
                 >
                   <span class="hero-dot"></span>
-                  <span class="hero-mini">A CELEBRAR UNA NOCHE INOLVIDABLE</span>
+                  <span class="hero-mini">{{ inviteMiniText }}</span>
                   <span class="hero-dot"></span>
                 </div>
               </div>
@@ -131,14 +189,14 @@ watch(companionsCount, () => computeOverflow())
                 "
               >
                 <div class="hero-guest-pill">
-                  <p class="hero-guest-label">INVITADO</p>
+                  <p class="hero-guest-label">{{ guestLabel }}</p>
                   <p class="hero-guest-name">
                     {{ guest?.name || '—' }}
                   </p>
                 </div>
 
                 <div v-if="haveCompanions" class="hero-companions">
-                  <p class="hero-companions-title">ACOMPAÑANTES</p>
+                  <p class="hero-companions-title">{{ companionsLabel }}</p>
 
                   <ul
                     ref="companionsListEl"
@@ -152,6 +210,9 @@ watch(companionsCount, () => computeOverflow())
                       {{ companion.name }}
                     </li>
                   </ul>
+
+                  <!-- Optional hint later: if you want to show only when overflowing -->
+                  <!-- <p v-if="isActuallyOverflowing" class="hero-scroll-hint">Desliza para ver más</p> -->
                 </div>
               </div>
 
@@ -162,7 +223,7 @@ watch(companionsCount, () => computeOverflow())
                 :class="isScrollMode ? 'mt-4' : isCrowded ? 'mt-4' : 'mt-5'"
               >
                 <div class="hero-divider"></div>
-                <p class="hero-footer-text">DESLIZA PARA VER LOS DETALLES DEL EVENTO</p>
+                <p class="hero-footer-text">{{ footerText }}</p>
                 <div class="hero-divider"></div>
               </div>
             </div>

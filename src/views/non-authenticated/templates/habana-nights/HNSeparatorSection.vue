@@ -1,20 +1,29 @@
-<script setup></script>
+<script setup>
+const props = defineProps({
+  kicker: { type: String, default: '' },
+  compact: { type: Boolean, default: false }
+})
+</script>
 
 <template>
-  <section class="hn-separator">
+  <section class="hn-separator" :class="{ 'hn-separator--compact': props.compact }">
     <div class="hn-separator-inner">
-      <div class="hn-separator-line"></div>
+      <p v-if="props.kicker" class="hn-separator-kicker">
+        {{ props.kicker }}
+      </p>
+
+      <div class="hn-separator-line" aria-hidden="true"></div>
 
       <p class="hn-separator-text">
         <slot />
       </p>
 
-      <div class="hn-separator-line"></div>
+      <div class="hn-separator-line" aria-hidden="true"></div>
     </div>
   </section>
 </template>
 
-<style>
+<style scoped>
 .hn-separator {
   position: relative;
   padding: 60px 20px;
@@ -22,35 +31,46 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+  overflow: hidden;
 }
 
-/* Cinematic depth (premium spotlight without "circle" in mobile) */
+/* Optional compact mode */
+.hn-separator--compact {
+  padding: 44px 18px;
+}
+
+/* Cinematic depth */
 .hn-separator::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    /* Soft top glaze */
     linear-gradient(180deg, rgba(11, 18, 32, 0.86), rgba(11, 18, 32, 0.66)),
-    /* Wide, cinematic spotlight (elliptical so it never looks like a circle on mobile) */
-      radial-gradient(
-        ellipse 160% 85% at 50% 44%,
-        rgba(248, 241, 231, 0.085) 0%,
-        rgba(248, 241, 231, 0.045) 18%,
-        rgba(11, 18, 32, 0.12) 42%,
-        rgba(11, 18, 32, 0.72) 100%
-      ),
-    /* Subtle vignette for depth */
-      radial-gradient(
-        ellipse 120% 120% at 50% 50%,
-        rgba(11, 18, 32, 0) 35%,
-        rgba(11, 18, 32, 0.55) 100%
-      );
+    radial-gradient(
+      ellipse 160% 85% at 50% 44%,
+      rgba(248, 241, 231, 0.085) 0%,
+      rgba(248, 241, 231, 0.045) 18%,
+      rgba(11, 18, 32, 0.12) 42%,
+      rgba(11, 18, 32, 0.72) 100%
+    ),
+    radial-gradient(
+      ellipse 120% 120% at 50% 50%,
+      rgba(11, 18, 32, 0) 35%,
+      rgba(11, 18, 32, 0.55) 100%
+    );
   z-index: 0;
 }
 
-/* Mobile refinement: even wider + softer center, no visible "spot" */
+/* Mobile refinement: wider + softer center */
 @media (max-width: 640px) {
+  .hn-separator {
+    padding: 68px 18px;
+  }
+
+  .hn-separator--compact {
+    padding: 52px 18px;
+  }
+
   .hn-separator::before {
     background:
       linear-gradient(180deg, rgba(11, 18, 32, 0.9), rgba(11, 18, 32, 0.72)),
@@ -80,7 +100,8 @@
 }
 
 .hn-separator-kicker {
-  font-family: var(--hn-font-body), sans-serif;
+  margin: 0;
+  font-family: var(--hn-font-body, ui-sans-serif), sans-serif;
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -88,27 +109,22 @@
 }
 
 .hn-separator-text {
-  font-family: var(--hn-font-body), sans-serif;
+  margin: 0;
+  font-family: var(--hn-font-body, ui-sans-serif), sans-serif;
   font-size: 15px;
   line-height: 2.02;
   letter-spacing: 0.04em;
-  text-transform: none;
   color: rgba(248, 241, 231, 0.88);
 }
 
 .hn-separator-line {
   width: 120px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--hn-gold), transparent);
+  background: linear-gradient(90deg, transparent, var(--hn-gold, #d4af37), transparent);
   opacity: 0.85;
 }
 
-/* Mobile refinement */
 @media (max-width: 640px) {
-  .hn-separator {
-    padding: 68px 18px;
-  }
-
   .hn-separator-inner {
     max-width: 560px;
     gap: 16px;

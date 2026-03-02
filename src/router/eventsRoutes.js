@@ -19,6 +19,11 @@ const eventsRoutes = [
       title: 'Isabella Quinceanera',
       requiresAuth: false
     }
+  },
+  {
+    path: '/public-v2/:slug',
+    name: 'public-event-v2',
+    component: () => import('@/views/non-authenticated/PublicEventView.vue')
   }
 ]
 

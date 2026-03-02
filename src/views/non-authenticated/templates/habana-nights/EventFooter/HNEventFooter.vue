@@ -1,49 +1,62 @@
 <script setup>
 import { computed } from 'vue'
 
+const props = defineProps({
+  config: { type: Object, default: () => ({}) }
+})
+
 const currentYear = computed(() => new Date().getFullYear())
+
+const footer = computed(() => props.config?.sections?.footer || {})
+
+const isEnabled = computed(() => footer.value?.isEnabled ?? true)
+
+const title = computed(() => footer.value?.title ?? 'Celebrate It With Me')
+const legalLines = computed(() => {
+  return (
+    footer.value?.legalLines ?? [
+      'This website and its materials are provided for personal, non-commercial use only.',
+      'All content, images, and trademarks are property of their respective owners.'
+    ]
+  )
+})
+
+const contactEmail = computed(() => footer.value?.contactEmail ?? 'info@celebrateitwithme.com')
+const copyrightText = computed(() => footer.value?.copyrightText ?? 'Celebrate It with Me')
 </script>
 
 <template>
-  <footer class="hn-footer relative w-full overflow-hidden py-14 px-4">
-    <!-- Atmosphere (very subtle) -->
+  <footer v-if="isEnabled" class="hn-footer relative w-full overflow-hidden py-14 px-4">
     <div class="hn-footer__smoke absolute inset-0" aria-hidden="true"></div>
 
     <div class="relative z-10 max-w-4xl mx-auto text-center">
-      <!-- Event Title -->
-      <h3 class="hn-footer__title">Isabella Canedo Quinces</h3>
+      <h3 class="hn-footer__title">{{ title }}</h3>
 
-      <!-- Divider -->
       <div class="hn-footer__divider"></div>
 
-      <!-- Legal -->
       <div class="hn-footer__legal">
-        <p>This website and its materials are provided for personal, non-commercial use only.</p>
-        <p>All content, images, and trademarks are property of their respective owners.</p>
+        <p v-for="(line, idx) in legalLines" :key="idx">
+          {{ line }}
+        </p>
+
         <p>
           Contact:
-          <a href="mailto:info@celebrateitwithme.com" class="hn-footer__link">
-            info@celebrateitwithme.com
+          <a :href="`mailto:${contactEmail}`" class="hn-footer__link">
+            {{ contactEmail }}
           </a>
         </p>
       </div>
 
-      <!-- Copyright -->
-      <div class="hn-footer__copyright">© {{ currentYear }} Celebrate It with Me</div>
+      <div class="hn-footer__copyright">© {{ currentYear }} {{ copyrightText }}</div>
     </div>
   </footer>
 </template>
 
 <style scoped>
-/* =========================================
-   Cinematic Editorial Minimal Footer
-   ========================================= */
-
 .hn-footer {
   background: linear-gradient(180deg, #0f1728 0%, #0b1020 100%);
 }
 
-/* Subtle purple atmosphere */
 .hn-footer__smoke {
   background:
     radial-gradient(50% 60% at 60% 30%, rgba(179, 16, 210, 0.18) 0%, transparent 70%),
@@ -53,9 +66,8 @@ const currentYear = computed(() => new Date().getFullYear())
   pointer-events: none;
 }
 
-/* Title */
 .hn-footer__title {
-  font-family: var(--hn-font-heading);
+  font-family: var(--hn-font-heading, ui-serif);
   font-size: clamp(1.4rem, 4vw, 1.9rem);
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -72,7 +84,6 @@ const currentYear = computed(() => new Date().getFullYear())
   color: transparent;
 }
 
-/* Thin cinematic divider */
 .hn-footer__divider {
   width: 140px;
   height: 1px;
@@ -80,9 +91,8 @@ const currentYear = computed(() => new Date().getFullYear())
   background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.6), transparent);
 }
 
-/* Legal text */
 .hn-footer__legal {
-  font-family: var(--hn-font-body);
+  font-family: var(--hn-font-body, ui-sans-serif);
   font-size: 0.8rem;
   line-height: 1.6;
   color: rgba(248, 241, 231, 0.55);
@@ -94,7 +104,6 @@ const currentYear = computed(() => new Date().getFullYear())
   margin-top: 0.4rem;
 }
 
-/* Link */
 .hn-footer__link {
   color: rgba(212, 175, 55, 0.85);
   text-decoration: none;
@@ -109,7 +118,6 @@ const currentYear = computed(() => new Date().getFullYear())
   border-bottom-color: rgba(212, 175, 55, 0.6);
 }
 
-/* Copyright */
 .hn-footer__copyright {
   margin-top: 2rem;
   font-size: 0.7rem;

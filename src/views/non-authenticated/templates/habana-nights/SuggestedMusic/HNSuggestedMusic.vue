@@ -1,28 +1,28 @@
 <script setup>
 import { computed } from 'vue'
-import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-import HNCWMSuggestedMusic from '@/views/non-authenticated/templates/habana-nights/SuggestedMusic/HNCWMSuggestedMusic.vue'
-
+import HNCWMSuggestedMusic from '@/views/non-authenticated/templates/habana-nights-v2/SuggestedMusic/HNCWMSuggestedMusic.vue'
 import bgMusicImg from '@/assets/images/SuggestedMusic/bgsm_6049.png'
 
-const templateStore = useTemplateStore()
-
-const suggestedMusic = computed(() => {
-  return {
-    isEnabled: true,
-    backgroundColor: 'transparent',
-    title: 'Suggested Music',
-    subTitle: 'Sugiere canciones para que suenen durante la noche',
-    mainColor: '#D4AF37',
-    secondaryColor: '#E85D4A',
-    usePreview: true,
-    useVoteSystem: false
-  }
+const props = defineProps({
+  config: { type: Object, default: () => ({}) }
 })
+
+const suggestedMusic = computed(() => ({
+  isEnabled: true,
+  backgroundColor: 'transparent',
+  title: 'Suggested Music',
+  subTitle: 'Sugiere canciones para que suenen durante la noche',
+  mainColor: '#D4AF37',
+  secondaryColor: '#E85D4A',
+  usePreview: true,
+  useVoteSystem: false
+}))
 
 const bgMusicStyle = computed(() => ({
   backgroundImage: `url(${bgMusicImg})`
 }))
+
+const event = computed(() => props.config?.event || null)
 </script>
 
 <template>
@@ -32,13 +32,13 @@ const bgMusicStyle = computed(() => ({
     class="hn-parallax-section hn-music-section relative w-full"
     aria-label="Suggested Music"
   >
-    <!-- Background layer for parallax -->
     <div class="hn-parallax-bg hn-music-bg absolute inset-0" :style="bgMusicStyle"></div>
+
     <div class="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-10 py-16 lg:py-20">
       <div class="hn-music-glass w-full">
         <HNCWMSuggestedMusic
           :mode="'normal'"
-          :event="templateStore.event"
+          :event="event"
           :title="suggestedMusic.title"
           :sub-title="suggestedMusic.subTitle"
           :main-color="suggestedMusic.mainColor"
@@ -52,6 +52,7 @@ const bgMusicStyle = computed(() => ({
 </template>
 
 <style scoped>
+/* deja tu CSS igual */
 .hn-music-section {
   min-height: 100vh;
   overflow: hidden;
@@ -64,7 +65,6 @@ const bgMusicStyle = computed(() => ({
   filter: brightness(0.82) saturate(0.65);
 }
 
-/* Keep glass styling as-is */
 .hn-music-glass {
   background: rgba(17, 24, 39, 0.52);
   backdrop-filter: blur(16px);

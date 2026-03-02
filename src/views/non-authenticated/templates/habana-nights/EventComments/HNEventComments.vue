@@ -4,74 +4,66 @@ import { Pin, Heart } from 'lucide-vue-next'
 import { useEventCommentsStore } from '@/modules/comments/stores/useEventCommentsStore'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
-import { Form } from 'vee-validate'
+import { Form, useForm } from 'vee-validate'
 import TextAreaField from '@/components/UI/form/TextAreaField.vue'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import CWMLoading from '@/components/UI/loading/CWMLoading.vue'
 import { vInfiniteScroll } from '@vueuse/components'
-import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
-import { useForm } from 'vee-validate'
+
+const props = defineProps({
+  origin: { type: String, default: 'admin' },
+  config: { type: Object, default: () => ({}) }
+})
 
 const { meta } = useForm()
 
-defineProps({
-  origin: {
-    type: String,
-    required: false,
-    default: 'admin'
-  }
-})
-
 const page = ref(1)
-const eventCommentValidationSchema = computed(() => {
-  return toTypedSchema(
+const commentStore = useEventCommentsStore()
+const notificationStore = useNotificationStore()
+
+const creatingComment = ref(false)
+const loadingComments = ref(false)
+const loadingMore = ref(false)
+const totalItems = ref(0)
+
+const eventId = computed(() => props.config?.event?.id || props.config?.eventId || null)
+const accessCode = computed(() => props.config?.guest?.accessCode || 0)
+
+const eventCommentValidationSchema = computed(() =>
+  toTypedSchema(
     zod.object({
       comment: zod.string()
     })
   )
-})
-const commentStore = useEventCommentsStore()
-const templateStore = useTemplateStore()
-const creatingComment = ref(false)
-const loadingComments = ref(false)
-const notificationStore = useNotificationStore()
-const loadingMore = ref(false)
-const totalItems = ref(0)
+)
 
-const buttonTextComputed = computed(() => {
-  return 'Enviar!'
-})
-
-const commentsTitle = computed(() => {
-  return 'Palabras para Recordar!'
-})
-const commentsSubtitle = computed(() => {
-  return 'Dejale tus comentarios, buenos deseos o saludos a Isabella'
-})
+const buttonTextComputed = computed(() => 'Enviar!')
+const commentsTitle = computed(() => 'Palabras para Recordar!')
+const commentsSubtitle = computed(
+  () => 'Dejale tus comentarios, buenos deseos o saludos a Isabella'
+)
 
 onMounted(async () => {
   await loadComments()
 })
 
 const loadComments = async (updatePage = true) => {
+  if (!eventId.value) return
+
   try {
     loadingComments.value = true
 
-    const response = await commentStore.loadPublicComments(templateStore.eventId)
+    const response = await commentStore.loadPublicComments(eventId.value)
 
     if (response.status === 200) {
       commentStore.eventComments = response.data?.data ?? []
 
-      if (updatePage) {
-        page.value = (response.data?.meta?.current_page ?? 1) + 1
-      }
+      if (updatePage) page.value = (response.data?.meta?.current_page ?? 1) + 1
       totalItems.value = response.data?.meta?.total ?? 0
-    } else {
-      notificationStore.addNotification({
-        type: 'error',
-        message: 'Oops something went wrong!.'
-      })
+      return
     }
+
+    notificationStore.addNotification({ type: 'error', message: 'Oops something went wrong!.' })
   } catch (e) {
     console.log(e)
   } finally {
@@ -79,22 +71,26 @@ const loadComments = async (updatePage = true) => {
   }
 }
 
-const onLoadMore = async () => {
-  try {
-    if (canLoadMore.value) {
-      loadingMore.value = true
-      const response = await commentStore.loadMoreCommentsPublic(templateStore.eventId, page.value)
+const canLoadMore = computed(() => {
+  return !loadingMore.value && commentStore.eventComments.length < totalItems.value
+})
 
-      if (response.status === 200) {
-        commentStore.eventComments = [...commentStore.eventComments, ...(response.data?.data ?? [])]
-        page.value += 1
-      } else {
-        notificationStore.addNotification({
-          type: 'error',
-          message: 'Oops something went wrong!.'
-        })
-      }
+const onLoadMore = async () => {
+  if (!eventId.value) return
+
+  try {
+    if (!canLoadMore.value) return
+
+    loadingMore.value = true
+    const response = await commentStore.loadMoreCommentsPublic(eventId.value, page.value)
+
+    if (response.status === 200) {
+      commentStore.eventComments = [...commentStore.eventComments, ...(response.data?.data ?? [])]
+      page.value += 1
+      return
     }
+
+    notificationStore.addNotification({ type: 'error', message: 'Oops something went wrong!.' })
   } catch (e) {
     console.error(e)
   } finally {
@@ -102,17 +98,15 @@ const onLoadMore = async () => {
   }
 }
 
-const canLoadMore = computed(() => {
-  return !loadingMore.value && commentStore.eventComments.length < totalItems.value
-})
-
 const addComment = async () => {
+  if (!eventId.value) return
+
   try {
     creatingComment.value = true
 
     const response = await commentStore.addNewCommentPublic(
-      templateStore.eventId,
-      templateStore.guest?.accessCode || 0,
+      eventId.value,
+      accessCode.value,
       commentStore.currentComment.comment
     )
 
@@ -123,12 +117,10 @@ const addComment = async () => {
         type: 'success',
         message: 'Comment successfully added.!'
       })
-    } else {
-      notificationStore.addNotification({
-        type: 'error',
-        message: 'Oops something went wrong!.'
-      })
+      return
     }
+
+    notificationStore.addNotification({ type: 'error', message: 'Oops something went wrong!.' })
   } catch (error) {
     console.error(error)
   } finally {
@@ -138,11 +130,8 @@ const addComment = async () => {
 
 const sortedComments = computed(() => {
   return [...commentStore.eventComments].sort((a, b) => {
-    // 1. Pinned primero
     if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1
-    // 2. Favorites después
     if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1
-    // 3. Por ID descendente (más recientes primero si no son pinned/fav)
     return b.id - a.id
   })
 })
@@ -157,23 +146,17 @@ const onInvalidSubmit = error => {
     id="sectionComments"
     class="hn-parallax-section hn-comments-section relative w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-10 py-16 lg:py-20 overflow-hidden"
   >
-    <!-- Background layer for parallax -->
     <div class="hn-parallax-bg hn-comments-bg absolute inset-0"></div>
+
     <div class="relative z-10 mx-auto w-full max-w-4xl">
       <div class="hn-comments-glass w-full">
-        <!-- Header -->
         <div class="text-center pb-6 flex-shrink-0">
-          <h2 class="hn-comments-title">
-            {{ commentsTitle }}
-          </h2>
+          <h2 class="hn-comments-title">{{ commentsTitle }}</h2>
           <div class="hn-title-divider"></div>
-          <p class="hn-comments-subtitle">
-            {{ commentsSubtitle }}
-          </p>
+          <p class="hn-comments-subtitle">{{ commentsSubtitle }}</p>
         </div>
 
         <div class="flex flex-col gap-8">
-          <!-- Form -->
           <Form
             :validation-schema="eventCommentValidationSchema"
             class="hn-comment-form w-full"
@@ -212,7 +195,6 @@ const onInvalidSubmit = error => {
             </p>
           </Form>
 
-          <!-- Comments list -->
           <div class="w-full">
             <div v-if="commentStore.eventComments.length > 0">
               <div
@@ -230,19 +212,23 @@ const onInvalidSubmit = error => {
                       <p class="font-bold text-[#D4AF37] text-sm font-montserrat">
                         {{ comment.author?.name || 'Invitado' }}
                       </p>
+
                       <span
                         v-if="comment.author?.type"
                         class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[rgba(212,175,55,0.15)] text-[#D4AF37]"
                       >
                         {{ comment.author.type }}
                       </span>
+
                       <div v-if="comment.isPinned" class="flex items-center text-[#D4AF37]">
                         <Pin class="w-3 h-3 fill-current" />
                       </div>
+
                       <div v-if="comment.isFavorite" class="flex items-center text-[#E85D4A]">
                         <Heart class="w-3 h-3 fill-current" />
                       </div>
                     </div>
+
                     <p class="text-[10px] text-gray-400 font-medium font-montserrat">
                       {{ comment.createdAt }}
                     </p>
@@ -259,7 +245,6 @@ const onInvalidSubmit = error => {
               </div>
             </div>
 
-            <!-- Empty state -->
             <div v-else class="text-center text-gray-400 italic mt-4 font-montserrat">
               Aún no hay mensajes. Sé el primero en dejarle un saludo ❤️💙
             </div>

@@ -1,9 +1,36 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 
-defineProps({
-  numbers: { type: Object, required: true },
-  text: { type: Object, required: true }
+const props = defineProps({
+  config: { type: Object, default: () => ({}) }
+})
+
+const section = computed(() => props.config?.sections?.saveTheDate ?? {})
+
+const numbers = computed(() => {
+  return (
+    section.value?.countdown?.numbers ?? {
+      font: 'var(--hn-font-heading)',
+      color: 'var(--hn-cream)',
+      size: 'var(--hn-std-num-size)',
+      style: 'normal',
+      weight: '600',
+      letterSpacing: 'var(--hn-std-num-tracking)'
+    }
+  )
+})
+
+const text = computed(() => {
+  return (
+    section.value?.countdown?.text ?? {
+      font: 'var(--hn-font-body)',
+      color: 'rgba(248,241,231,0.78)',
+      size: 'var(--hn-std-label-size)',
+      style: 'normal',
+      weight: '600',
+      letterSpacing: 'var(--hn-std-label-tracking)'
+    }
+  )
 })
 
 const calculateTimeLeft = () => {
