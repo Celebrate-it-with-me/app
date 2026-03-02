@@ -28,6 +28,7 @@ export default [
         document: 'readonly',
         navigator: 'readonly',
         location: 'readonly',
+        Audio: 'readonly',
 
         // Web APIs
         URL: 'readonly',
