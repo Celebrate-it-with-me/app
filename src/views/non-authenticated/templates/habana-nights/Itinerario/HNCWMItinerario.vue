@@ -3,17 +3,17 @@ import { Martini, Sparkles, Utensils, Music, Disc3 } from 'lucide-vue-next'
 import itinerarioBg from '@/assets/images/Itinerario/IMG_6061.png'
 
 const timeline = [
-  { time: '7:00 PM', range: '7:00pm – 8:00pm', title: 'Cocktail', icon: Martini, accent: 'coral' },
-  { time: '8:00 PM', range: '8:00pm – 9:30pm', title: 'Ceremonia', icon: Sparkles, accent: 'gold' },
-  { time: '9:30 PM', range: '9:30pm – 10:30pm', title: 'Cena', icon: Utensils, accent: 'purple' },
+  { time: '7:00 PM', range: '6:00pm – 7:00pm', title: 'Cocktail', icon: Martini, accent: 'coral' },
+  { time: '8:00 PM', range: '7:00pm – 8:30pm', title: 'Ceremonia', icon: Sparkles, accent: 'gold' },
+  { time: '9:30 PM', range: '8:30pm – 9:30pm', title: 'Cena', icon: Utensils, accent: 'purple' },
   {
     time: '10:30 PM',
-    range: '10:30pm – 11:00pm',
+    range: '9:30pm – 10:00pm',
     title: 'Baile Sorpresa',
     icon: Music,
     accent: 'coral'
   },
-  { time: '11:00 PM', range: 'Desde 11:00pm', title: 'Hora Loca', icon: Disc3, accent: 'gold' }
+  { time: '11:00 PM', range: 'Desde 10:00pm', title: 'Hora Loca', icon: Disc3, accent: 'gold' }
 ]
 
 const getAccentClass = accent => `hn-accent--${accent}`
