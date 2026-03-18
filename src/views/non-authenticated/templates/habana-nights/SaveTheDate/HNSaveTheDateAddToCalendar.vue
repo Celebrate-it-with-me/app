@@ -16,7 +16,7 @@ const config = {
   startDate: '2026-04-18',
   startTime: '18:00',
   endDate: '2026-04-18',
-  endTime: '24:00',
+  endTime: '23:59',
   options: ['Google', 'iCal', 'Apple', 'Outlook.com'],
   timeZone: 'America/New_York'
 }
