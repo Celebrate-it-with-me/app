@@ -98,7 +98,7 @@ const onSubmit = async () => {
         message: 'Failed to update email. Please try again.'
       })
     }
-  } catch () {
+  } catch {
     notifications.addNotification({
       type: 'error',
       message: 'An error occurred while updating email.'
