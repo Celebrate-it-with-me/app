@@ -14,9 +14,9 @@ const config = {
   name: '[Reminder] Isabella Quince`s Birthday',
   description: 'Isabella Quince`s Birthday Party',
   startDate: '2026-04-18',
-  startTime: '19:00',
-  endDate: '2026-04-19',
-  endTime: '01:00',
+  startTime: '18:00',
+  endDate: '2026-04-18',
+  endTime: '23:59',
   options: ['Google', 'iCal', 'Apple', 'Outlook.com'],
   timeZone: 'America/New_York'
 }
