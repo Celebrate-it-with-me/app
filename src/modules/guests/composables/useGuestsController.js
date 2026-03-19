@@ -1,4 +1,5 @@
 import { ref, computed, watch } from 'vue'
+import debounce from 'lodash.debounce'
 import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 
 export function useGuestsController(emit) {
@@ -77,8 +78,20 @@ export function useGuestsController(emit) {
     }
   }
 
+  const debouncedLoadGuests = debounce(async () => {
+    await loadGuests()
+  }, 500)
+
   watch(
-    () => [guestStore.perPage, guestStore.searchValue],
+    () => guestStore.searchValue,
+    () => {
+      guestStore.pageSelected = 1
+      debouncedLoadGuests()
+    }
+  )
+
+  watch(
+    () => guestStore.perPage,
     async () => {
       guestStore.pageSelected = 1
       await loadGuests()
