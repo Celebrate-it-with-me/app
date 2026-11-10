@@ -51,8 +51,8 @@ const formatImages = images => {
           : memory.imageOriginalName || `Sweet Memory ${index + 1}`,
       subHtml:
         props.mode === 'create'
-          ? `<h4>${memory.name}</h4>` || `<h4>Sweet Memory ${index + 1}</h4>`
-          : `<h4>${memory.imageOriginalName}</h4>` || `<h4>Sweet Memory ${index + 1}</h4>`,
+          ? `<h4>${memory.name || `Sweet Memory ${index + 1}`}</h4>`
+          : `<h4>${memory.imageOriginalName || `Sweet Memory ${index + 1}`}</h4>`,
       alt:
         props.mode === 'create'
           ? memory.name || `Sweet Memory ${index + 1}`

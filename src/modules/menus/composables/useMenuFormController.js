@@ -51,8 +51,8 @@ export function useMenuFormController() {
       if (result) {
         menuState.title = menuStore.menu?.title ?? ''
         menuState.description = menuStore.menu?.description ?? ''
-        menuState.allow_multiple_choices = !!menuStore.menu?.allow_multiple_choices ?? false
-        menuState.allow_custom_request = !!menuStore.menu?.allow_custom_request ?? false
+        menuState.allow_multiple_choices = !!menuStore.menu?.allow_multiple_choices
+        menuState.allow_custom_request = !!menuStore.menu?.allow_custom_request
       } else {
         notification.addNotification({
           type: 'error',

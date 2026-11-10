@@ -56,7 +56,7 @@ export const useOrganizerRsvpStore = defineStore('organizerRsvp', {
         this.error = err.response?.data?.message || 'Failed to confirm RSVP'
         console.error('Error confirming RSVP:', err)
 
-        throw new Error(this.error)
+        throw new Error(this.error, { cause: err })
       } finally {
         this.isSaving = false
       }
@@ -93,7 +93,7 @@ export const useOrganizerRsvpStore = defineStore('organizerRsvp', {
         this.error = err.response?.data?.message || 'Failed to get RSVP status'
         console.error('Error getting RSVP status:', err)
 
-        throw new Error(this.error)
+        throw new Error(this.error, { cause: err })
       } finally {
         this.isLoading = false
       }
@@ -137,7 +137,7 @@ export const useOrganizerRsvpStore = defineStore('organizerRsvp', {
         this.error = err.response?.data?.message || 'Failed to bulk update companions'
         console.error('Error bulk updating companions:', err)
 
-        throw new Error(this.error)
+        throw new Error(this.error, { cause: err })
       } finally {
         this.isSaving = false
       }
