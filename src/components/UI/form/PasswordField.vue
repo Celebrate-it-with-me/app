@@ -28,10 +28,6 @@ const props = defineProps({
 
 const name = toRef(props, 'name')
 
-const toggleType = () => {
-  types.value = props.type === 'text' ? 'password' : 'text'
-}
-
 const {
   value: inputValue,
   errorMessage,

@@ -22,43 +22,43 @@ const currentTabs = computed(() => {
 
     if (eventStore.currentEvent) {
       if (tab.id === 3) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.saveTheDate ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.saveTheDate
       }
 
       if (tab.id === 4) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.rsvp ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.rsvp
       }
 
       if (tab.id === 5) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.sweetMemories ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.sweetMemories
       }
 
       if (tab.id === 6) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.music ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.music
       }
 
       if (tab.id === 7) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.preview ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.preview
       }
 
       if (tab.id === 8) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.budget ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.budget
       }
 
       if (tab.id === 9) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.seatsAccommodation ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.seatsAccommodation
       }
 
       if (tab.id === 10) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.analytics ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.analytics
       }
 
       if (tab.id === 11) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.backgroundMusic ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.backgroundMusic
       }
 
       if (tab.id === 12) {
-        isDisabled = !eventStore.currentEvent?.eventFeature?.eventComments ?? false
+        isDisabled = !eventStore.currentEvent?.eventFeature?.eventComments
       }
     }
 

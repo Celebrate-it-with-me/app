@@ -35,7 +35,7 @@ const gallerySettings = {
 }
 
 const activeIndex = ref(0)
-const mainRef = ref<any>(null)
+const mainRef = ref(null)
 
 const slides = computed(() => props.memories ?? [])
 
@@ -49,11 +49,11 @@ const goNext = () => {
   mainRef.value?.splide?.go('>')
 }
 
-const onMainMoved = (_splide: any, newIndex: number) => {
+const onMainMoved = (_splide, newIndex) => {
   activeIndex.value = newIndex
 }
 
-const setActive = (index: number) => {
+const setActive = index => {
   activeIndex.value = index
   mainRef.value?.splide?.go(index)
 }
