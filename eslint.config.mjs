@@ -3,6 +3,7 @@ import js from '@eslint/js'
 import vue from 'eslint-plugin-vue'
 import vueParser from 'vue-eslint-parser'
 import prettier from 'eslint-config-prettier'
+import globals from 'globals'
 
 export default [
   {
@@ -18,29 +19,10 @@ export default [
       sourceType: 'module',
       parser: vueParser,
       globals: {
-        module: 'readonly',
-        require: 'readonly',
-        process: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
-        // Browser globals
-        window: 'readonly',
-        document: 'readonly',
-        navigator: 'readonly',
-        location: 'readonly',
-
-        // Web APIs
-        URL: 'readonly',
-        IntersectionObserver: 'readonly',
-
-        // Timers
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearInterval: 'readonly',
-
-        // Console
-        console: 'readonly'
+        ...globals.browser,
+        ...globals.node,
+        // Loaded at runtime by the Google Maps JS API loader
+        google: 'readonly'
       },
       parserOptions: {
         ecmaVersion: 2023,
