@@ -1,6 +1,6 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import * as zod from 'zod'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 

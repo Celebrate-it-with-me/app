@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { Pin, Heart } from 'lucide-vue-next'
 import { useEventCommentsStore } from '@/modules/comments/stores/useEventCommentsStore'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'
 import TextAreaField from '@/components/UI/form/TextAreaField.vue'

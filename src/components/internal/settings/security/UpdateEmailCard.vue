@@ -52,7 +52,7 @@
 import { reactive, ref } from 'vue'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CHeading from '@/components/UI/headings/CHeading.vue'

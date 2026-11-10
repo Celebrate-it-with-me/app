@@ -6,7 +6,7 @@ import CButton from '@/components/UI/buttons/CButton.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CTextarea from '@/components/UI/form2/CTextarea.vue'
 import CToggle from '@/components/UI/form2/CToggle.vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
@@ -69,10 +69,7 @@ const validationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       title: zod
-        .string({
-          required_error: 'Title is required',
-          invalid_type_error: 'Title must be a string'
-        })
+        .string({ error: issue => (issue.input === undefined ? 'Title is required' : 'Title must be a string') })
         .min(1, 'Title is required')
         .max(100, 'Title cannot exceed 100 characters'),
       year: zod.string().optional().nullable(),

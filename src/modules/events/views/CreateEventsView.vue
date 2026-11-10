@@ -673,7 +673,7 @@
 <script setup>
 import { Form } from 'vee-validate'
 import { computed, reactive, ref, onMounted, watch } from 'vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 
 import CInput from '@/components/UI/form2/CInput.vue'
@@ -998,10 +998,7 @@ const eventValidationSchema = computed(() => {
     zod
       .object({
         eventName: zod.string().min(1, 'Event name is required.'),
-        eventType: zod.number({
-          required_error: 'Event type is required.',
-          invalid_type_error: 'Invalid event type.'
-        }),
+        eventType: zod.number({ error: issue => (issue.input === undefined ? 'Event type is required.' : 'Invalid event type.') }),
         startDate: zod.string().min(1, 'Start date is required.'),
         endDate: zod.string().min(1, 'End date is required.')
       })

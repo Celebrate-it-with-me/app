@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { Form } from 'vee-validate'
 import TextField from '@/components/UI/form/TextField.vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import PhoneNumberField from '@/components/UI/form/PhoneNumberField.vue'
@@ -39,8 +39,8 @@ const notificationStore = useNotificationStore()
 const companionValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      firstName: zod.string().min(1, { required_error: 'First Name is required.' }),
-      lastName: zod.string().min(1, { required_error: 'Last Name is required.' }),
+      firstName: zod.string().min(1, 'First Name is required.'),
+      lastName: zod.string().min(1, 'Last Name is required.'),
       email: zod.string().email('Invalid email address').or(zod.literal('')).optional(),
       phoneNumber: zod.string().optional()
     })

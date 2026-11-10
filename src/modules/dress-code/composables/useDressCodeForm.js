@@ -1,6 +1,6 @@
 import { useDressCodeStore } from '@/modules/dress-code/stores/useDressCodeStore'
 import { computed, onMounted, reactive, ref } from 'vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 
 export function useDressCodeForm(emit) {

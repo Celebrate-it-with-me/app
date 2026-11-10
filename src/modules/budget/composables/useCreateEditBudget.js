@@ -1,7 +1,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 
 export function useCreateEditBudget(props, emit) {

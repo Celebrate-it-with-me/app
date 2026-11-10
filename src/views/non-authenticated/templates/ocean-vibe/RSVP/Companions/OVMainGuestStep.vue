@@ -1,7 +1,7 @@
 <script setup>
 import { Form } from 'vee-validate'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { CheckCircle2, XCircle } from 'lucide-vue-next'
 import TextField from '@/components/UI/form/TextField.vue'
@@ -31,9 +31,7 @@ const mainGuestValidationSchema = computed(() => {
         .string()
         .regex(/^[0-9]*$/, { message: 'El número de teléfono debe ser numérico' })
         .optional(),
-      rsvpStatus: zod.enum(['attending', 'not-attending'], {
-        required_error: 'Por favor, seleccione una opción de confirmación'
-      })
+      rsvpStatus: zod.enum(['attending', 'not-attending'], { error: issue => (issue.input === undefined ? 'Por favor, seleccione una opción de confirmación' : undefined) })
     })
   )
 })

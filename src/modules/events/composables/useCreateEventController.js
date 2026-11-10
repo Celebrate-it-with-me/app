@@ -3,7 +3,7 @@ import { useEventsStore } from '../stores/useEventsStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useRoute, useRouter } from 'vue-router'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import {
   Calendar,
@@ -164,10 +164,7 @@ export function useCreateEventController() {
       zod
         .object({
           eventName: zod.string().min(1, 'Event name is required.'),
-          eventType: zod.number({
-            required_error: 'Event type is required.',
-            invalid_type_error: 'Invalid event type.'
-          }),
+          eventType: zod.number({ error: issue => (issue.input === undefined ? 'Event type is required.' : 'Invalid event type.') }),
           startDate: zod.string().min(1, 'Start date is required.'),
           endDate: zod.string().min(1, 'End date is required.')
         })

@@ -4,7 +4,7 @@ import TextField from '@/components/UI/form/TextField.vue'
 import { computed, reactive, ref, watch } from 'vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import PasswordField from '@/components/UI/form/PasswordField.vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { useUserStore } from '@/stores/useUserStore'
 
