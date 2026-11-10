@@ -2,7 +2,7 @@
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CCheckbox from '@/components/UI/form2/CCheckbox.vue'
 import { UserIcon } from 'lucide-vue-next'
-import RsvpGuestCompanionTr from '@/views/internal/rsvp/components/RsvpGuestCompanionTr.vue'
+import RsvpGuestCompanionTr from './RsvpGuestCompanionTr.vue'
 import { ref } from 'vue'
 
 const showCompanionsList = ref(true)
