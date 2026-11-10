@@ -1,4 +1,5 @@
 import { computed, onMounted, ref, watch } from 'vue'
+import debounce from 'lodash.debounce'
 import { useUserStore } from '@/stores/useUserStore'
 import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 
@@ -236,12 +237,10 @@ export function useRsvpView() {
     rsvpStore.pageSelected = 1 // Reset to first page when changing per page
   }
 
-  const handleSearchChange = newSearch => {
+  const handleSearchChange = debounce(newSearch => {
     rsvpStore.searchValue = newSearch
     rsvpStore.pageSelected = 1 // Reset to first page when searching
-  }
-
-
+  }, 500)
 
   return {
     perPageOptions,
