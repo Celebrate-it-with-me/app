@@ -28,7 +28,7 @@ watch(() => route.fullPath, () => (open.value = false))
         <QuinviteLogo class="h-8" />
       </router-link>
 
-      <nav class="hidden items-center gap-6 md:flex" :aria-label="t('nav.primary')">
+      <nav class="hidden items-center gap-6 lg:flex" :aria-label="t('nav.primary')">
         <router-link
           v-for="link in links"
           :key="link.label"
@@ -39,7 +39,7 @@ watch(() => route.fullPath, () => (open.value = false))
         </router-link>
       </nav>
 
-      <div class="hidden items-center gap-3 md:flex">
+      <div class="hidden items-center gap-3 lg:flex">
         <LocaleSwitch />
         <UiButton variant="ghost" size="sm" to="/sign-in">{{ t('common.signIn') }}</UiButton>
         <UiButton size="sm" to="/sign-up">{{ t('common.createEvent') }}</UiButton>
@@ -47,7 +47,7 @@ watch(() => route.fullPath, () => (open.value = false))
 
       <button
         type="button"
-        class="flex h-10 w-10 items-center justify-center rounded-lg text-ink-700 hover:bg-cream-200 md:hidden"
+        class="flex h-10 w-10 items-center justify-center rounded-lg text-ink-700 hover:bg-cream-200 lg:hidden"
         :aria-label="t('nav.menu')"
         :aria-expanded="open"
         aria-controls="public-mobile-menu"
@@ -58,7 +58,7 @@ watch(() => route.fullPath, () => (open.value = false))
       </button>
     </div>
 
-    <div v-if="open" id="public-mobile-menu" class="ui-enter border-t border-line bg-cream-50 px-4 py-4 md:hidden">
+    <div v-if="open" id="public-mobile-menu" class="ui-enter border-t border-line bg-cream-50 px-4 py-4 lg:hidden">
       <nav class="flex flex-col" :aria-label="t('nav.mobile')">
         <router-link
           v-for="link in links"

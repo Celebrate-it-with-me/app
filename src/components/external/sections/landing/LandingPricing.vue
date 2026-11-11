@@ -13,7 +13,7 @@ const { t, tm } = useI18n()
         <h2 class="font-heading text-3xl text-ink-900 sm:text-4xl">{{ t('pricing.title') }}</h2>
         <p class="mt-3 text-lg text-ink-500 text-balance">{{ t('pricing.subtitle') }}</p>
       </div>
-      <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
+      <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2 md:items-start">
         <div class="flex flex-col rounded-2xl border border-line bg-cream-50 p-7">
           <h3 class="font-body text-lg font-semibold text-ink-900">{{ t('pricing.free.name') }}</h3>
           <p class="mt-3 flex items-baseline gap-2">

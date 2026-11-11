@@ -1,26 +1,41 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiButton } from '@/ui'
 
 /** Fixed bottom bar on phones, shown once the hero's own button has scrolled away. */
 const props = defineProps({ watch: { type: String, default: '#como-funciona' } })
 const { t } = useI18n()
-const visible = ref(false)
-let observer
+const pastHero = ref(false)
+const footerInView = ref(false)
+const visible = computed(() => pastHero.value && !footerInView.value)
+let heroObserver
+let footerObserver
 
 onMounted(() => {
+  if (!('IntersectionObserver' in window)) return
   const target = document.querySelector(props.watch)
-  if (!target || !('IntersectionObserver' in window)) return
-  observer = new IntersectionObserver(
-    ([entry]) => {
-      visible.value = entry.boundingClientRect.top < 0 || entry.isIntersecting
-    },
-    { rootMargin: '0px 0px -100% 0px' }
-  )
-  observer.observe(target)
+  if (target) {
+    heroObserver = new IntersectionObserver(
+      ([entry]) => {
+        pastHero.value = entry.boundingClientRect.top < 0 || entry.isIntersecting
+      },
+      { rootMargin: '0px 0px -100% 0px' }
+    )
+    heroObserver.observe(target)
+  }
+  const footer = document.querySelector('footer')
+  if (footer) {
+    footerObserver = new IntersectionObserver(([entry]) => {
+      footerInView.value = entry.isIntersecting
+    })
+    footerObserver.observe(footer)
+  }
 })
-onUnmounted(() => observer?.disconnect())
+onUnmounted(() => {
+  heroObserver?.disconnect()
+  footerObserver?.disconnect()
+})
 </script>
 
 <template>

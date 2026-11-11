@@ -36,17 +36,25 @@ const SIZES = {
   lg: 'h-13 px-6 text-lg gap-2.5'
 }
 
+/** Full-width buttons may carry long labels on phones: let them wrap instead of overflowing. */
+const BLOCK_SIZES = {
+  sm: 'min-h-9 px-3 py-1.5 text-sm gap-1.5',
+  md: 'min-h-11 px-4 py-2 text-base gap-2',
+  lg: 'min-h-13 px-6 py-2.5 text-lg gap-2.5'
+}
+
 const ICON_SIZES = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-13 w-13' }
 
 const tag = computed(() => (props.to ? 'router-link' : props.href ? 'a' : 'button'))
 
 const classes = computed(() =>
   cx(
-    'inline-flex items-center justify-center rounded-lg font-semibold whitespace-nowrap',
+    'inline-flex items-center justify-center rounded-lg font-semibold leading-tight',
+    props.block ? 'whitespace-normal text-center' : 'whitespace-nowrap',
     'transition-[background-color,color,transform] duration-150 select-none active:scale-[0.97]',
     'disabled:cursor-not-allowed',
     VARIANTS[props.variant] ?? VARIANTS.primary,
-    props.icon ? ICON_SIZES[props.size] : SIZES[props.size],
+    props.icon ? ICON_SIZES[props.size] : props.block ? BLOCK_SIZES[props.size] : SIZES[props.size],
     props.block && 'w-full'
   )
 )
