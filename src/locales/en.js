@@ -126,37 +126,42 @@ export default {
     ]
   },
   pricing: {
-    title: 'One clear price',
-    subtitle: 'Start free. Pay once, only if you decide to unlock the full event.',
+    title: 'Start free. Celebrate your way.',
+    subtitle: 'Create your invitation and try Quinvite. When you need more, unlock your event with a single payment.',
     free: {
       name: 'Free',
+      tagline: 'Your first step to planning her big day.',
       price: '$0',
-      note: 'no card, no deadline',
+      note: 'No credit card',
+      intro: 'Includes:',
       items: [
         'Up to 30 guests',
         'Basic designs',
-        'One-tap RSVP (you share the link)',
+        'RSVP from the link you share',
         'Guest list and budget'
       ],
       cta: 'Create my event for free'
     },
     full: {
       name: 'Full event',
+      badge: 'To organize it all',
+      tagline: 'Her whole celebration, in one place.',
       price: '$79',
-      note: 'one payment per event',
-      badge: 'Recommended',
+      currency: 'USD',
+      note: 'One payment per event · No subscription',
+      intro: 'Everything in Free, plus:',
       items: [
         'Unlimited guests',
-        'Quinvite sends the invitation and reminders on WhatsApp',
-        'Padrinos with tracking',
+        'Invitations and reminders sent on WhatsApp',
         'Premium designs, no watermark',
-        'Collaborators (the quinceañera, the planner)',
+        'Padrinos tracking',
+        'Collaborators to organize together',
         'Menu, music and tables'
       ],
-      cta: 'Start free and unlock later',
-      helper: 'You pay when you unlock, not when you sign up.'
+      cta: 'Start free',
+      helper: 'Unlock the full event whenever you want. Nothing is charged when you sign up.'
     },
-    fine: 'Prices in US dollars. You can stay on free as long as you like.'
+    fine: 'You can stay on the free plan as long as you like.'
   },
   faq: {
     title: 'Frequently asked questions',

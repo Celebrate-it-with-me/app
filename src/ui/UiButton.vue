@@ -4,7 +4,7 @@ import { LoaderCircle } from 'lucide-vue-next'
 import { cx } from './utils'
 
 const props = defineProps({
-  /** primary | secondary | ghost | danger | link | ivory */
+  /** primary | secondary | ghost | danger | link | ivory | wine */
   variant: { type: String, default: 'primary' },
   /** sm | md | lg */
   size: { type: String, default: 'md' },
@@ -28,6 +28,8 @@ const VARIANTS = {
   ghost: 'bg-transparent text-ink-700 hover:bg-cream-200 active:bg-cream-300 disabled:text-ink-400',
   danger: 'bg-danger-500 text-white shadow-soft hover:bg-danger-700 disabled:opacity-60',
   link: 'bg-transparent text-rose-600 underline-offset-4 hover:underline px-0 disabled:text-ink-400',
+  /** Deep wine face with ivory text, for the plan that unlocks everything. */
+  wine: 'bg-wine-800 text-cream-50 shadow-soft hover:bg-wine-900 active:bg-wine-900 disabled:opacity-60',
   /** For wine/dark surfaces: ivory face, wine text, ivory focus ring. */
   ivory:
     'bg-cream-100 text-wine-900 shadow-soft hover:bg-white active:bg-cream-200 focus-visible:outline-cream-100 disabled:opacity-60'

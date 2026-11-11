@@ -126,37 +126,42 @@ export default {
     ]
   },
   pricing: {
-    title: 'Un precio claro',
-    subtitle: 'Empiezas gratis. Pagas una sola vez, solo si decides desbloquear el evento completo.',
+    title: 'Empieza gratis. Celebra a tu manera.',
+    subtitle: 'Crea tu invitación y prueba Quinvite. Cuando necesites más, desbloquea tu evento con un solo pago.',
     free: {
       name: 'Gratis',
+      tagline: 'Tu primer paso para organizar su gran día.',
       price: '$0',
-      note: 'sin tarjeta, sin plazo',
+      note: 'Sin tarjeta de crédito',
+      intro: 'Incluye:',
       items: [
         'Hasta 30 invitados',
         'Diseños básicos',
-        'Confirman con un toque (tú compartes el enlace)',
+        'Confirmación de asistencia desde el enlace que compartes',
         'Lista de invitados y presupuesto'
       ],
       cta: 'Crear mi evento gratis'
     },
     full: {
       name: 'Evento completo',
+      badge: 'Para organizarlo todo',
+      tagline: 'Tu celebración completa, en un solo lugar.',
       price: '$79',
-      note: 'un solo pago por evento',
-      badge: 'Recomendado',
+      currency: 'USD',
+      note: 'Pago único por evento · Sin suscripción',
+      intro: 'Todo lo del plan gratis, más:',
       items: [
         'Invitados ilimitados',
-        'Quinvite envía la invitación y los recordatorios por WhatsApp',
-        'Padrinos con seguimiento',
+        'Envío de invitaciones y recordatorios por WhatsApp',
         'Diseños premium sin marca de agua',
-        'Colaboradores (la quinceañera, el planner)',
+        'Seguimiento de padrinos',
+        'Colaboradores para organizar juntos',
         'Menú, música y mesas'
       ],
-      cta: 'Empezar gratis y desbloquear después',
-      helper: 'Pagas al desbloquear, no al registrarte.'
+      cta: 'Empezar gratis',
+      helper: 'Desbloquea el evento completo cuando quieras. No se cobra al registrarte.'
     },
-    fine: 'Precio en dólares. Puedes seguir en gratis todo el tiempo que quieras.'
+    fine: 'Puedes quedarte en el plan gratis todo el tiempo que quieras.'
   },
   faq: {
     title: 'Preguntas frecuentes',
