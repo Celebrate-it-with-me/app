@@ -1,32 +1,127 @@
 @import 'tailwindcss';
 
-/* Keep the JS theme (colors, fonts, radius, shadows, spacing). */
+/* Legacy theme (spacing, shadows) still used by screens that are not migrated yet. */
 @config '../tailwind.config.js';
 
 @plugin 'flowbite/plugin';
 
-/* Classes used inside these packages. */
+/* Classes used inside these packages (removed when Flowbite is retired). */
 @source '../node_modules/flowbite';
 @source '../node_modules/flowbite-vue';
 
-/* Dark mode by the .dark class (was darkMode: 'class' in the JS config). */
+/* Dark mode by the .dark class. Legacy only: new screens are light-only in phase 1. */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
- * Tailwind 4 compatibility with the v3 defaults the app was built on:
- * - borders default to gray-200 instead of currentColor
- * - buttons keep the pointer cursor
- * - placeholders keep gray-400
- * - `ring` defaults to blue-500
+ * Quinvite design tokens
+ * ----------------------
+ * Warm and elegant, light mode only. Every new screen uses these tokens through
+ * Tailwind utilities (bg-cream-100, text-ink-900, border-line, bg-rose-600, font-heading...).
+ * `font-display` is a legacy alias (old Poppins screens); new code uses `font-heading`.
+ * Prepared for a future dark mode: swap the values of the semantic tokens below,
+ * never hard-code hex values in components.
  */
 @theme {
-  --default-ring-color: var(--color-blue-500);
+  /* Typography */
+  --font-heading: 'Fraunces', 'Georgia', 'Times New Roman', serif;
+  --font-body: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+
+  /* Surfaces (cream) */
+  --color-cream-50: #fdfbf8;
+  --color-cream-100: #fbf7f2;
+  --color-cream-200: #f5eee6;
+  --color-cream-300: #ede3d8;
+
+  /* Text (ink) */
+  --color-ink-900: #2b2420;
+  --color-ink-700: #4a413c;
+  --color-ink-500: #6f6460;
+  --color-ink-400: #9a8f89;
+  --color-ink-300: #c2b8b1;
+
+  /* Lines */
+  --color-line: #e9dfd5;
+  --color-line-strong: #d8cbbe;
+
+  /* Accent: rosa viejo */
+  --color-rose-50: #fcf2f4;
+  --color-rose-100: #f8e3e8;
+  --color-rose-200: #f0c6d0;
+  --color-rose-300: #e3a1b1;
+  --color-rose-400: #d27a91;
+  --color-rose-500: #c45b74;
+  --color-rose-600: #b04a62;
+  --color-rose-700: #933a50;
+  --color-rose-800: #76303f;
+
+  /* Secondary accent: soft gold */
+  --color-gold-100: #f6ecd4;
+  --color-gold-300: #e6cf93;
+  --color-gold-500: #c9a24e;
+  --color-gold-700: #9a7a2e;
+
+  /* Feedback */
+  --color-success-50: #eef6f0;
+  --color-success-500: #3e7d5a;
+  --color-success-700: #2e5f43;
+  --color-warning-50: #fdf4e3;
+  --color-warning-500: #b7791f;
+  --color-warning-700: #8a5a15;
+  --color-danger-50: #fbedec;
+  --color-danger-500: #b3362e;
+  --color-danger-700: #8a2922;
+  --color-info-50: #eaf1f8;
+  --color-info-500: #3c6e9e;
+  --color-info-700: #2c5276;
+
+  /* Legacy aliases so bg-primary / text-primary on old screens pick the new accent. */
+  --color-primary: var(--color-rose-600);
+  --color-primary-light: var(--color-rose-400);
+  --color-primary-dark: var(--color-rose-700);
+
+  /* Shape */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+
+  /* Elevation: soft, warm shadows */
+  --shadow-soft: 0 1px 2px rgba(43, 36, 32, 0.04), 0 8px 24px -12px rgba(43, 36, 32, 0.12);
+  --shadow-card: 0 1px 3px rgba(43, 36, 32, 0.05), 0 12px 32px -16px rgba(43, 36, 32, 0.16);
+  --shadow-pop: 0 4px 12px rgba(43, 36, 32, 0.08), 0 24px 48px -16px rgba(43, 36, 32, 0.24);
+
+  --default-ring-color: var(--color-rose-400);
 }
 
 @layer base {
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-cream-100);
+    color: var(--color-ink-900);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--color-ink-900);
+  }
+
   input::placeholder,
   textarea::placeholder {
-    color: var(--color-gray-400);
+    color: var(--color-ink-400);
   }
 
   *,
@@ -34,11 +129,46 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--color-line, currentColor);
   }
 
   button:not(:disabled),
   [role='button']:not(:disabled) {
     cursor: pointer;
   }
+
+  :focus-visible {
+    outline: 2px solid var(--color-rose-400);
+    outline-offset: 2px;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* Enter/leave animations for overlays (Reka sets data-state on open/close). */
+@keyframes ui-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes ui-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@utility animate-in {
+  animation: ui-in 180ms ease-out;
+}
+@utility animate-out {
+  animation: ui-out 140ms ease-in forwards;
 }
