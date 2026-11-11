@@ -1,6 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
-import { templateRef } from '@vueuse/core'
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 
 import { useTemplateStore } from '@/stores/publicEvents/useTemplateStore'
 import { useRevealOnScroll } from '@/views/non-authenticated/templates/composables/useRevealOnScroll'
@@ -36,13 +35,14 @@ const cssVars = {
 const showScrollBtn = ref(false)
 const videoReproduced = ref(false)
 const showIntroOverlay = ref(true)
-const videoInstance = templateRef('videoRef')
+const videoInstance = useTemplateRef('videoRef')
 const eventStore = useTemplateStore()
 
 const mobileSrc = new URL('@/assets/videos/Intro_6044.mp4', import.meta.url).href
 
 const FONT_LINK_ID = 'hn-fonts'
-const mainRef = templateRef('mainRef')
+// The template ref key must differ from the variable name (Vue warns otherwise)
+const mainRef = useTemplateRef('mainElement')
 
 const onMainScroll = () => {
   const el = mainRef.value
@@ -130,7 +130,7 @@ const handleMoveToTop = () => {
       </div>
 
       <!-- ================= MAIN SITE ================= -->
-      <main v-else ref="mainRef">
+      <main v-else ref="mainElement">
         <HNHeaderNav />
         <HNHeroSection class="main-section" />
         <HNSeparatorSection>

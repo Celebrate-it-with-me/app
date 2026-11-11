@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import HeaderNav from '@/views/non-authenticated/templates/butterfly-vision/HeaderNav.vue'
 import HeroSection from '@/views/non-authenticated/templates/butterfly-vision/HeroSection.vue'
 import SaveTheDate from '@/views/non-authenticated/templates/butterfly-vision/SaveTheDate/SaveTheDate.vue'
@@ -7,7 +7,6 @@ import SweetMemories from '@/views/non-authenticated/templates/butterfly-vision/
 import SuggestedMusic from '@/views/non-authenticated/templates/butterfly-vision/SuggestedMusic/SuggestedMusic.vue'
 import RSVP from '@/views/non-authenticated/templates/butterfly-vision/RSVP/RSVP.vue'
 import EventFooter from '@/views/non-authenticated/templates/butterfly-vision/EventFooter/EventFooter.vue'
-import { templateRef } from '@vueuse/core'
 import SeparatorSection from '@/views/non-authenticated/templates/butterfly-vision/SeparatorSection.vue'
 import CWMItinerario from '@/views/non-authenticated/templates/butterfly-vision/Itinerario/CWMItinerario.vue'
 import EventComments from '@/components/authenticated/event-comments/EventComments/EventComments.vue'
@@ -18,7 +17,7 @@ import BackgroundMusic from '@/views/non-authenticated/templates/butterfly-visio
 const showScrollBtn = ref(false)
 const videoReproduced = ref(false)
 const showButterflyLogo = ref(true)
-const videoInstance = templateRef('videoRef')
+const videoInstance = useTemplateRef('videoRef')
 
 const isMobile = ref(false)
 const mobileSrc = new URL('@/assets/videos/mobile_intro.mp4', import.meta.url).href
