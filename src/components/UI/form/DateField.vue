@@ -1,7 +1,7 @@
 <script setup>
 import { computed, toRef, watch } from 'vue'
 import { useField } from 'vee-validate'
-import VueDatePicker from '@vuepic/vue-datepicker'
+import { VueDatePicker } from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur'])
@@ -130,18 +130,16 @@ const inputClasses = computed(() => {
     </label>
     <div class="relative w-full mt-1" :class="horizontal ? 'flex-1' : ''">
       <VueDatePicker
-        :id="name"
         v-model="inputValue"
+        :input-attrs="{ id: name }"
         :placeholder="placeholder"
         :dark="true"
-        :format="dateFormat"
-        :enable-time-picker="alsoTime"
+        :formats="{ input: dateFormat }"
+        :time-config="{ enableTimePicker: alsoTime, enableSeconds: false }"
         :week-start="0"
-        :enable-seconds="false"
         :disabled="disabled"
         :readonly="isReadonly"
         :ui="{ input: inputClasses }"
-        :parse="str => parseStringToDate(str)"
         @blur="handleBlur"
       />
     </div>

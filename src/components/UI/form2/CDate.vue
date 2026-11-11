@@ -11,13 +11,13 @@
     <div class="relative flex items-center w-full border-b transition" :class="borderColorClass">
       <VueDatePicker
         v-model="localValue"
-        :format="format"
+        :formats="{ input: format }"
         :placeholder="placeholder"
         :disabled="disabled"
-        :enable-time-picker="alsoTime"
-        :hide-input-icon="true"
+        :time-config="{ enableTimePicker: alsoTime }"
+        :input-attrs="{ hideInputIcon: true }"
         auto-apply
-        input-class-name="custom-datepicker-input"
+        :ui="{ input: 'custom-datepicker-input' }"
         @blur="handleFieldBlur"
       />
     </div>
@@ -29,7 +29,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useField } from 'vee-validate'
-import VueDatePicker from '@vuepic/vue-datepicker'
+import { VueDatePicker } from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 const props = defineProps({

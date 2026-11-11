@@ -24,7 +24,7 @@
     "@heroicons/vue": "^2.2.0",
     "@kyvg/vue3-notification": "^3.2.1",
     "@splidejs/vue-splide": "^0.6.12",
-    "@vuepic/vue-datepicker": "^11.0.1",
+    "@vuepic/vue-datepicker": "^14.0.0",
     "@vueuse/components": "^15.0.0",
     "@vueuse/core": "^15.0.0",
     "add-to-calendar-button": "^2.8.1",
