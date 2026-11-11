@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue'
-import { useLocationsStore } from '@/stores/useLocationsStore'
+import { useLocationsStore } from '@/modules/locations/stores/useLocationsStore'
 
 export function useLocationImages(props, emit) {
   const renderKey = ref(0)

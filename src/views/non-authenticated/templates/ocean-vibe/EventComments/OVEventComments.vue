@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { Pin, Heart, Send, MessageSquareText } from 'lucide-vue-next'
-import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
+import { useEventCommentsStore } from '@/modules/comments/stores/useEventCommentsStore'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'

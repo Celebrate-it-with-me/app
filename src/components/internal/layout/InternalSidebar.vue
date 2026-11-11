@@ -620,13 +620,6 @@ const menuItems = [
     icon: Music,
     featureName: 'music',
     category: 'experience'
-  },
-  {
-    label: 'Analytics',
-    to: '/dashboard/analytics',
-    icon: ChartNoAxesCombined,
-    featureName: 'budget',
-    category: 'analytics'
   }
 ]
 

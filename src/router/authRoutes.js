@@ -1,13 +1,10 @@
 import DashboardView from '../views/internal/dashboard/Dashboard.vue'
 import { useUserStore } from '@/stores/useUserStore'
-import CSweetMemories from '@/components/authenticated/sweet-memories/CSweetMemories.vue'
 import SettingsLayout from '@/components/internal/layout/SettingsLayout.vue'
 import SettingsProfile from '@/views/internal/settings/SettingsProfile.vue'
 import SettingsPreferences from '@/views/internal/settings/SettingsPreferences.vue'
 import SettingsSecurity from '@/views/internal/settings/SettingsSecurity.vue'
 import SettingsDangerZone from '@/views/internal/settings/SettingsDangerZone.vue'
-import CWMAnalytics from '@/components/authenticated/analytics/CWMAnalytics.vue'
-import CWMBackgroundMusic from '@/components/authenticated/background-music/CWMBackgroundMusic.vue'
 import commentsRoutes from '@/modules/comments/routes/comment.routes'
 import suggestedMusicRoutes from '@/modules/suggested-music/routes/suggestedMusic.routes'
 import sweetMemoriesRoutes from '@/modules/sweet-memories/routes/sweetMemories.routes'
@@ -81,26 +78,6 @@ const authRoutes = [
     ]
   },
   {
-    path: '/dashboard/sweet-memories',
-    name: 'sweet-memories',
-    component: CSweetMemories,
-    meta: {
-      title: 'Sweet Memories',
-      requiresAuth: true,
-      requiredPermission: ['view_sweet_memories']
-    }
-  },
-  {
-    path: '/dashboard/analytics',
-    name: 'analytics-dashboard',
-    component: CWMAnalytics,
-    meta: {
-      title: 'Event Analytics',
-      requiresAuth: true,
-      requiredPermission: []
-    }
-  },
-  {
     path: '/dashboard/events/:id/invitations',
     name: 'invitations-processor',
     component: () => import('@/views/internal/invitations/InvitationProcessorView.vue'),
@@ -108,15 +85,6 @@ const authRoutes = [
       title: 'Invitations Processor',
       requiresAuth: true,
       requiredPermission: []
-    }
-  },
-
-  {
-    path: 'background-music',
-    name: 'background-music',
-    component: CWMBackgroundMusic,
-    meta: {
-      title: 'Background Music'
     }
   },
   ...commentsRoutes,
