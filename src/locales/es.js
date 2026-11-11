@@ -188,9 +188,10 @@ export default {
     ]
   },
   cta: {
-    title: '¿Lista para empezar?',
-    text: 'Crea el evento hoy. La invitación puede estar en el celular de toda la familia en cinco minutos.',
-    button: 'Crear mi evento gratis'
+    title: 'Su gran día empieza con una invitación.',
+    text: 'Crea su invitación digital, compártela con tu familia y lleva las confirmaciones en un solo lugar.',
+    button: 'Crear mi evento gratis',
+    note: 'Gratis hasta 30 invitados.'
   },
   footer: {
     tagline: 'Hecho con cariño para las familias que celebran.',

@@ -188,9 +188,10 @@ export default {
     ]
   },
   cta: {
-    title: 'Ready to start?',
-    text: 'Create the event today. The invitation can be on the whole family’s phones in five minutes.',
-    button: 'Create my event for free'
+    title: 'Her big day starts with an invitation.',
+    text: 'Create her digital invitation, share it with your family and keep every RSVP in one place.',
+    button: 'Create my event for free',
+    note: 'Free up to 30 guests.'
   },
   footer: {
     tagline: 'Made with care for families who celebrate.',

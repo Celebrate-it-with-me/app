@@ -4,7 +4,7 @@ import { LoaderCircle } from 'lucide-vue-next'
 import { cx } from './utils'
 
 const props = defineProps({
-  /** primary | secondary | ghost | danger | link */
+  /** primary | secondary | ghost | danger | link | ivory */
   variant: { type: String, default: 'primary' },
   /** sm | md | lg */
   size: { type: String, default: 'md' },
@@ -27,7 +27,10 @@ const VARIANTS = {
     'bg-white text-ink-900 border border-line-strong shadow-soft hover:bg-cream-100 active:bg-cream-200 disabled:text-ink-400',
   ghost: 'bg-transparent text-ink-700 hover:bg-cream-200 active:bg-cream-300 disabled:text-ink-400',
   danger: 'bg-danger-500 text-white shadow-soft hover:bg-danger-700 disabled:opacity-60',
-  link: 'bg-transparent text-rose-600 underline-offset-4 hover:underline px-0 disabled:text-ink-400'
+  link: 'bg-transparent text-rose-600 underline-offset-4 hover:underline px-0 disabled:text-ink-400',
+  /** For wine/dark surfaces: ivory face, wine text, ivory focus ring. */
+  ivory:
+    'bg-cream-100 text-wine-900 shadow-soft hover:bg-white active:bg-cream-200 focus-visible:outline-cream-100 disabled:opacity-60'
 }
 
 const SIZES = {
@@ -47,6 +50,13 @@ const ICON_SIZES = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-13 w-13' }
 
 const tag = computed(() => (props.to ? 'router-link' : props.href ? 'a' : 'button'))
 
+/** Only pass what each tag needs: an explicit `href: undefined` would wipe RouterLink's own href. */
+const linkAttrs = computed(() => {
+  if (props.to) return { to: props.to }
+  if (props.href) return { href: props.href }
+  return {}
+})
+
 const classes = computed(() =>
   cx(
     'inline-flex items-center justify-center rounded-lg font-semibold leading-tight',
@@ -63,8 +73,7 @@ const classes = computed(() =>
 <template>
   <component
     :is="tag"
-    :to="to || undefined"
-    :href="href || undefined"
+    v-bind="linkAttrs"
     :type="tag === 'button' ? type : undefined"
     :disabled="tag === 'button' ? disabled || loading : undefined"
     :aria-disabled="disabled || loading || undefined"
