@@ -104,10 +104,10 @@ const authRoutes = [
   {
     path: '/logout',
     name: 'logout',
-    beforeEnter: async (to, from, next) => {
+    beforeEnter: async () => {
       const user = useUserStore()
       await user.logOut()
-      await next({ name: 'sign-in' })
+      return { name: 'sign-in' }
     }
   }
 ]
