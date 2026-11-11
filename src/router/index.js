@@ -33,7 +33,18 @@ const router = createRouter({
       path: '',
       name: 'Event Pages Routes',
       children: [...eventsRoutes]
-    }
+    },
+    // Live showcase of the UI kit (src/ui). Development only.
+    ...(import.meta.env.DEV
+      ? [
+          {
+            path: '/dev/ui',
+            name: 'dev-ui-kit',
+            component: () => import('@/views/dev/UiKitView.vue'),
+            meta: { title: 'UI kit', requiresAuth: false }
+          }
+        ]
+      : [])
   ]
 })
 

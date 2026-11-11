@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import CWMNotification from '@/components/UI/cwmNotification/CWMNotification.vue'
+import { UiToaster } from '@/ui'
 import 'animate.css'
 </script>
 
 <template>
   <RouterView />
   <CWMNotification />
+  <UiToaster />
 </template>

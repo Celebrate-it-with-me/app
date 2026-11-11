@@ -1,14 +1,10 @@
-// Tailwind 4: loaded from src/style.css with @config. Only the theme lives here;
-// content paths (@source), dark mode (@custom-variant) and plugins (@plugin) are in the CSS.
+// Tailwind 4: loaded from src/style.css with @config.
+// Only legacy values used by screens not migrated yet live here. New tokens (colors, fonts,
+// radius, shadows) are in src/style.css under @theme. Remove entries as screens are migrated.
 module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: '#EC4899',
-          light: '#F472B6',
-          dark: '#DB2777'
-        },
         secondary: {
           DEFAULT: '#8B5CF6',
           light: '#C4B5FD',
@@ -22,15 +18,10 @@ module.exports = {
         }
       },
       fontFamily: {
-        display: ['"Poppins"', 'sans-serif'],
-        body: ['"Open Sans"', 'sans-serif']
-      },
-      borderRadius: {
-        xl: '1.25rem',
-        '2xl': '2rem'
+        // Legacy screens used font-display for body text; keep it a sans until they are migrated.
+        display: ['Poppins', 'Figtree', 'sans-serif']
       },
       boxShadow: {
-        card: '0 4px 40px rgba(0,0,0,0.1)',
         glow: '0 0 15px rgba(236, 72, 153, 0.6)'
       },
       spacing: {
@@ -38,5 +29,5 @@ module.exports = {
         half: '60px'
       }
     }
-  },
+  }
 }
