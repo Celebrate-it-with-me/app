@@ -109,6 +109,17 @@ export default {
       }
     ]
   },
+  designs: {
+    title: 'Designs that turn heads',
+    subtitle: 'Every quince has its own world. Pick one, add her photos and colors, done.',
+    free: 'Free',
+    premium: 'Full event',
+    items: [
+      { name: 'Valentina', date: '06 · 14', place: 'Salón Cristal · Miami', title: 'Classic', text: 'Cream, gold and an elegant serif.', premium: false },
+      { name: 'Camila', date: '03 · 22', place: 'Las Palmas Garden · Hialeah', title: 'Garden', text: 'Soft greens and flowers in the corners.', premium: true },
+      { name: 'Isabella', date: '11 · 08', place: 'Hotel Colonial · Doral', title: 'Night', text: 'Midnight blue, stars and gold.', premium: true }
+    ]
+  },
   pricing: {
     title: 'One clear price',
     subtitle: 'Start free. Pay once, only if you decide to unlock the full event.',

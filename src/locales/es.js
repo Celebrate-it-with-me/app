@@ -109,6 +109,17 @@ export default {
       }
     ]
   },
+  designs: {
+    title: 'Diseños que dan envidia',
+    subtitle: 'Cada quince tiene su mundo. Elige uno, pon sus fotos y sus colores, y listo.',
+    free: 'Gratis',
+    premium: 'Evento completo',
+    items: [
+      { name: 'Valentina', date: '14 · 06', place: 'Salón Cristal · Miami', title: 'Clásica', text: 'Crema, dorado y una serif elegante.', premium: false },
+      { name: 'Camila', date: '22 · 03', place: 'Jardín Las Palmas · Hialeah', title: 'Jardín', text: 'Verdes suaves y flores en las esquinas.', premium: true },
+      { name: 'Isabella', date: '08 · 11', place: 'Hotel Colonial · Doral', title: 'Noche', text: 'Azul noche, estrellas y oro.', premium: true }
+    ]
+  },
   pricing: {
     title: 'Un precio claro',
     subtitle: 'Empiezas gratis. Pagas una sola vez, solo si decides desbloquear el evento completo.',

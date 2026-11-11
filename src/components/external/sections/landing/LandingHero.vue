@@ -2,13 +2,15 @@
 import { useI18n } from 'vue-i18n'
 import { UiButton } from '@/ui'
 import InvitationMock from './InvitationMock.vue'
+import PapelPicado from '@/components/external/art/PapelPicado.vue'
 
 const { t } = useI18n()
 </script>
 
 <template>
   <section class="relative overflow-hidden">
-    <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-14 pt-8 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:py-24">
+    <PapelPicado class="absolute inset-x-0 top-0 opacity-70" :count="16" />
+    <div class="relative mx-auto grid max-w-6xl items-center gap-10 px-4 pb-14 pt-20 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:py-24">
       <div class="order-first flex justify-center pt-4 lg:order-last lg:justify-end lg:pt-0">
         <InvitationMock />
       </div>
