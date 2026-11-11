@@ -1,20 +1,19 @@
-<script setup lang="ts">
-import HeroSection from '@/components/external/sections/landing/HeroSection.vue'
-import FeaturesSection from '@/components/external/sections/landing/FeaturesSection.vue'
-import PricingSection from '@/components/external/sections/landing/PricingSection.vue'
-import TestimonialsSection from '@/components/external/sections/landing/TestimonialsSection.vue'
-import CallToActionSection from '@/components/external/sections/landing/CallToActionSection.vue'
-import ExitIntentModal from '@/components/external/sections/landing/ExitIntentModal.vue'
+<script setup>
+import LandingHero from '@/components/external/sections/landing/LandingHero.vue'
+import LandingHowItWorks from '@/components/external/sections/landing/LandingHowItWorks.vue'
+import LandingFeatures from '@/components/external/sections/landing/LandingFeatures.vue'
+import LandingPricing from '@/components/external/sections/landing/LandingPricing.vue'
+import LandingFaq from '@/components/external/sections/landing/LandingFaq.vue'
+import LandingCta from '@/components/external/sections/landing/LandingCta.vue'
 </script>
 
 <template>
-  <div class="scroll-smooth">
-    <HeroSection />
-    <FeaturesSection id="features" class="scroll-mt-16" />
-    <TestimonialsSection id="testimonials" class="scroll-mt-16" />
-    <PricingSection id="pricing" class="scroll-mt-16" />
-    <CallToActionSection />
-
-    <ExitIntentModal />
+  <div>
+    <LandingHero />
+    <LandingHowItWorks />
+    <LandingFeatures />
+    <LandingPricing />
+    <LandingFaq />
+    <LandingCta />
   </div>
 </template>

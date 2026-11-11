@@ -13,7 +13,7 @@ const nonAuthRoutes = [
     name: 'social-callback',
     component: () => import('@/views/external/SocialCallbackView.vue'),
     meta: {
-      title: 'Social Callback',
+      titleKey: 'titles.signIn',
       requiresAuth: false
     }
   },
@@ -22,7 +22,7 @@ const nonAuthRoutes = [
     name: 'home',
     component: HomeView,
     meta: {
-      title: 'Home'
+      titleKey: 'titles.home'
     }
   },
   {
@@ -30,7 +30,7 @@ const nonAuthRoutes = [
     name: 'sign-up',
     component: SignUpView,
     meta: {
-      title: 'Sign up'
+      titleKey: 'titles.signUp'
     }
   },
   {
@@ -38,7 +38,7 @@ const nonAuthRoutes = [
     name: 'invite-accept',
     component: () => import('@/views/external/InviteAcceptView.vue'),
     meta: {
-      title: 'Accept Invite',
+      titleKey: 'titles.invite',
       requiresAuth: false
     }
   },
@@ -47,7 +47,7 @@ const nonAuthRoutes = [
     name: 'confirm-email',
     component: ConfirmEmailView,
     meta: {
-      title: 'Confirm Email'
+      titleKey: 'titles.confirmEmail'
     }
   },
   {
@@ -55,7 +55,7 @@ const nonAuthRoutes = [
     name: 'sign-in',
     component: SignInView,
     meta: {
-      title: 'Sign up'
+      titleKey: 'titles.signIn'
     }
   },
   {
@@ -63,7 +63,7 @@ const nonAuthRoutes = [
     name: 'terms',
     component: TermsView,
     meta: {
-      title: 'Terms of Service'
+      titleKey: 'titles.terms'
     }
   },
   {
@@ -71,7 +71,7 @@ const nonAuthRoutes = [
     name: 'privacy',
     component: PrivacyView,
     meta: {
-      title: 'Privacy Policy'
+      titleKey: 'titles.privacy'
     }
   },
   {
@@ -79,7 +79,7 @@ const nonAuthRoutes = [
     name: 'cookies',
     component: CookiesView,
     meta: {
-      title: 'Cookie Policy'
+      titleKey: 'titles.cookies'
     }
   },
   {
@@ -87,7 +87,7 @@ const nonAuthRoutes = [
     name: 'help',
     component: HelpView,
     meta: {
-      title: 'Help Center'
+      titleKey: 'titles.help'
     }
   }
 ]

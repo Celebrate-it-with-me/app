@@ -8,7 +8,7 @@ const externalCleanRoutes = [
     name: 'forgot-password',
     component: ForgotPasswordView,
     meta: {
-      title: 'Home'
+      titleKey: 'titles.forgot'
     }
   },
   {
@@ -16,7 +16,7 @@ const externalCleanRoutes = [
     name: 'confirm-reset',
     component: ConfirmResetPasswordView,
     meta: {
-      title: 'Confirm Reset Password'
+      titleKey: 'titles.reset'
     }
   },
   {
@@ -24,7 +24,7 @@ const externalCleanRoutes = [
     name: 'password-updated',
     component: PasswordUpdatedView,
     meta: {
-      title: 'Password Updated'
+      titleKey: 'titles.passwordUpdated'
     }
   }
 ]

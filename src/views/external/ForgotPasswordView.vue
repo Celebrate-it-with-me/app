@@ -1,112 +1,60 @@
 <script setup>
-import CCard from '@/components/UI/cards/CCard.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
-import { Form } from 'vee-validate'
-import CInput from '@/components/UI/form2/CInput.vue'
-import { computed, reactive, ref } from 'vue'
-import { toTypedSchema } from '@/utils/zodTypedSchema'
+import { ref } from 'vue'
+import { useForm } from 'vee-validate'
+import { useI18n } from 'vue-i18n'
 import * as zod from 'zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { useUserStore } from '@/stores/useUserStore'
+import { UiField, UiInput, UiButton } from '@/ui'
+import AuthCard from '@/components/external/auth/AuthCard.vue'
 
-const backendError = ref(false)
-const backendErrorMessage = ref('')
-const sending = ref(false)
+const { t } = useI18n()
 const userStore = useUserStore()
-const resetLinkSent = ref(false)
+const sending = ref(false)
+const sent = ref(false)
+const backendError = ref('')
 
-const form = reactive({
-  email: ''
-})
-
-const validationSchema = computed(() => {
-  return toTypedSchema(
+const { handleSubmit, defineField, errors } = useForm({
+  validationSchema: toTypedSchema(
     zod.object({
-      email: zod
-        .string({ message: 'Email is required' })
-        .email({ message: 'Must be a valid email' })
+      email: zod.string({ message: t('validation.emailRequired') }).email({ message: t('validation.emailInvalid') })
     })
-  )
+  ),
+  initialValues: { email: '' }
 })
+const [email] = defineField('email')
 
-const onSubmit = async () => {
+const onSubmit = handleSubmit(async values => {
+  sending.value = true
+  backendError.value = ''
   try {
-    sending.value = true
-
-    const response = await userStore.sendResetPasswordLink(form)
-
-    if (response.status === 200) {
-      backendError.value = false
-      backendErrorMessage.value = ''
-      form.email = ''
-      resetLinkSent.value = true
-    } else {
-      backendError.value = true
-      backendErrorMessage.value = response.response?.data?.message ?? 'Oops, something went wrong!'
-    }
+    const response = await userStore.sendResetPasswordLink(values)
+    if (response.status === 200) sent.value = true
+    else backendError.value = response.response?.data?.message ?? t('common.genericError')
   } catch (e) {
-    console.log(e)
+    backendError.value = e.response?.data?.message ?? t('common.genericError')
   } finally {
     sending.value = false
   }
-}
-
-const onInvalidSubmit = errors => {
-  console.log(errors)
-}
+})
 </script>
 
 <template>
-  <CCard class="max-w-md w-full p-8 shadow-xl">
-    <div class="text-center mb-10">
-      <div class="image-container mb-4">
-        <img
-          src="@/assets/images/commons/logo_primary.png"
-          alt="Celebrate it with me logo"
-          class="w-64 h-auto mx-auto"
-        />
-      </div>
-
-      <h1 class="text-3xl font-display font-bold text-gray-700 mb-4">Forgot Password</h1>
-      <p v-if="!resetLinkSent" class="text-sm text-text-light">
-        Enter your account email address and we will send a password reset link
-      </p>
-
-      <div v-if="backendError" class="text-red-500 text-sm font-semibold mb-10">
-        <p>
-          {{ backendErrorMessage }}
-        </p>
-      </div>
-    </div>
-
-    <Form
-      v-if="!resetLinkSent"
-      :validation-schema="validationSchema"
-      @submit="onSubmit"
-      @invalid-submit="onInvalidSubmit"
-    >
-      <CInput
-        id="forgot_password_email"
-        v-model="form.email"
-        label="Email"
-        type="email"
-        placeholder="Enter your email"
-        name="email"
-        show-error
-      />
-
-      <CButton variant="gradient" full type="submit" class="mt-4"> Send Reset Link </CButton>
-
-      <div class="mt-6 flex items-center justify-center">
-        <router-link to="/sign-in">
-          <span class="text-primary font-medium hover:underline"> Back to Sign In </span>
-        </router-link>
-      </div>
-    </Form>
-
-    <div v-else class="text-gray-500 text-sm font-semibold mb-10">
-      <p>Thank you for your request, please check your email to reset your password.</p>
-    </div>
-  </CCard>
+  <AuthCard
+    :title="t('auth.forgotTitle')"
+    :subtitle="sent ? t('auth.forgotSent') : t('auth.forgotText')"
+    :error="backendError"
+  >
+    <form v-if="!sent" class="flex flex-col gap-4" novalidate @submit="onSubmit">
+      <UiField :label="t('common.email')" :error="errors.email" id="forgot_password_email">
+        <UiInput v-model="email" type="email" autocomplete="email" :placeholder="t('auth.emailPlaceholder')" />
+      </UiField>
+      <UiButton type="submit" block :loading="sending">{{ t('auth.forgotSend') }}</UiButton>
+    </form>
+    <template #footer>
+      <router-link to="/sign-in" class="font-semibold text-rose-600 hover:underline">
+        {{ t('common.signIn') }}
+      </router-link>
+    </template>
+  </AuthCard>
 </template>
-
-<style scoped></style>

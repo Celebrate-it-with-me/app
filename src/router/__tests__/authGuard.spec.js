@@ -23,10 +23,10 @@ describe('authGuard', () => {
 
   it('lets public routes through and sets the document title', async () => {
     expect(await authGuard(route({ title: 'Sign in' }))).toBeUndefined()
-    expect(document.title).toBe('Celebrate it with me - Sign in')
+    expect(document.title).toBe('Sign in · Quinvite')
 
     await authGuard(route())
-    expect(document.title).toBe('CWM')
+    expect(document.title).toBe('Quinvite')
   })
 
   it('redirects anonymous users to sign-in keeping the target', async () => {

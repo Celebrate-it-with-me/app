@@ -1,4 +1,5 @@
 import { useUserStore } from '@/stores/useUserStore'
+import i18n from '@/locales/i18n'
 import { useHydrationStore } from '@/stores/useHydrationStore'
 
 /**
@@ -10,7 +11,8 @@ export async function authGuard(to) {
   const hydrationStore = useHydrationStore()
 
   // 1. Set document title
-  document.title = to.meta?.title ? `Celebrate it with me - ${to.meta.title}` : 'CWM'
+  const pageTitle = to.meta?.titleKey ? i18n.global.t(to.meta.titleKey) : to.meta?.title
+  document.title = pageTitle ? `${pageTitle} · Quinvite` : 'Quinvite'
 
   const requiresAuth = to.meta?.requiresAuth ?? false
 
