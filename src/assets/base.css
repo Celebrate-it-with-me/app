@@ -131,13 +131,8 @@
   }
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
-}
+/* The universal `margin: 0; font-weight: normal` reset was removed: it was unlayered CSS and
+   overrode Tailwind utilities such as mx-auto. Tailwind's preflight already resets margins. */
 
 body {
   /*min-height: 100vh;*/
