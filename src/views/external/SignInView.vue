@@ -66,8 +66,10 @@ const onSubmit = handleSubmit(async values => {
       return router.push(route.query.redirect || '/dashboard')
     }
     backendError.value = response.response?.data?.message ?? t('common.genericError')
+    captcha.reset()
   } catch (e) {
     backendError.value = e.response?.data?.message ?? t('common.genericError')
+    captcha.reset()
   } finally {
     sending.value = false
   }

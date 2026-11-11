@@ -16,7 +16,7 @@ function signInWithGoogle() {
 </script>
 
 <template>
-  <div class="my-5 flex items-center gap-3 text-xs text-ink-400">
+  <div class="my-5 flex items-center gap-3 text-xs text-ink-500">
     <span class="h-px flex-1 bg-line" />
     {{ t('common.orContinueWith') }}
     <span class="h-px flex-1 bg-line" />

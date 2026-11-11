@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Menu, X } from 'lucide-vue-next'
@@ -10,6 +10,13 @@ import { UiButton } from '@/ui'
 const { t } = useI18n()
 const route = useRoute()
 const open = ref(false)
+const menuButton = ref(null)
+
+function closeMenu() {
+  if (!open.value) return
+  open.value = false
+  nextTick(() => menuButton.value?.focus())
+}
 
 const links = [
   { label: 'nav.howItWorks', to: { path: '/', hash: '#como-funciona' } },
@@ -22,7 +29,7 @@ watch(() => route.fullPath, () => (open.value = false))
 </script>
 
 <template>
-  <header class="sticky top-0 z-40 border-b border-line/70 bg-cream-100/90 backdrop-blur">
+  <header class="sticky top-0 z-40 border-b border-line/70 bg-cream-100/90 backdrop-blur" @keydown.esc="closeMenu">
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
       <router-link to="/" class="flex items-center text-ink-900" aria-label="Quinvite" translate="no">
         <QuinviteLogo class="h-8" />
@@ -46,6 +53,7 @@ watch(() => route.fullPath, () => (open.value = false))
       </div>
 
       <button
+        ref="menuButton"
         type="button"
         class="flex h-10 w-10 items-center justify-center rounded-lg text-ink-700 hover:bg-cream-200 lg:hidden"
         :aria-label="t('nav.menu')"
@@ -65,13 +73,14 @@ watch(() => route.fullPath, () => (open.value = false))
           :key="link.label"
           :to="link.to"
           class="rounded-lg px-3 py-3 text-base font-medium text-ink-900 hover:bg-cream-200"
+          @click="open = false"
         >
           {{ t(link.label) }}
         </router-link>
       </nav>
       <div class="mt-3 flex flex-col gap-2 border-t border-line pt-4">
-        <UiButton block to="/sign-up">{{ t('common.createEvent') }}</UiButton>
-        <UiButton block variant="secondary" to="/sign-in">{{ t('common.signIn') }}</UiButton>
+        <UiButton block to="/sign-up" @click="open = false">{{ t('common.createEvent') }}</UiButton>
+        <UiButton block variant="secondary" to="/sign-in" @click="open = false">{{ t('common.signIn') }}</UiButton>
         <div class="flex justify-center pt-2"><LocaleSwitch /></div>
       </div>
     </div>

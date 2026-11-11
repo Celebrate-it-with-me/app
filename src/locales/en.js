@@ -16,7 +16,14 @@ export default {
     genericError: 'Something went wrong. Please try again.',
     captchaRequired: 'Complete the verification to continue.',
     orContinueWith: 'or continue with',
-    language: 'Language'
+    language: 'Language',
+    close: 'Close',
+    previous: 'Previous',
+    next: 'Next',
+    pagination: 'Pagination',
+    notifications: 'Notifications',
+    selectOption: 'Select an option',
+    skipToContent: 'Skip to content'
   },
   nav: {
     howItWorks: 'How it works',

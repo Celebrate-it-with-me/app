@@ -64,7 +64,7 @@ const { root } = useReveal({ threshold: 0.3 })
                   class="absolute inset-0 h-full w-full object-cover object-[50%_14%]"
                 />
                 <div
-                  class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-cream-50 to-transparent"
+                  class="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-cream-50 to-transparent"
                 />
               </div>
               <div class="px-4 pb-4 text-center">

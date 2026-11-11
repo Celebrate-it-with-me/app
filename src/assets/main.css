@@ -3,7 +3,6 @@
 #app {
   width: 100%;
   margin: auto;
-  font-weight: normal;
 }
 
 /* Legacy Vue scaffold rule; `a` removed so links follow the design tokens. */

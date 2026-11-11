@@ -23,7 +23,7 @@ const SIZES = { sm: 'h-9 text-sm', md: 'h-11 text-base', lg: 'h-13 text-lg' }
 const classes = computed(() =>
   cx(
     'w-full rounded-lg border bg-white text-ink-900 shadow-none',
-    'transition-colors duration-150 placeholder:text-ink-400',
+    'transition-colors duration-150 placeholder:text-ink-500',
     'focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-400',
     'disabled:bg-cream-200 disabled:text-ink-400 disabled:cursor-not-allowed',
     isInvalid.value ? 'border-danger-500 focus:ring-danger-50' : 'border-line-strong',
@@ -48,6 +48,8 @@ const classes = computed(() =>
       :value="modelValue"
       :disabled="disabled"
       :aria-invalid="isInvalid || undefined"
+      :aria-describedby="field?.describedBy.value"
+      :aria-required="field?.required.value || undefined"
       :spellcheck="type === 'email' || type === 'password' ? false : undefined"
       :class="classes"
       v-bind="$attrs"

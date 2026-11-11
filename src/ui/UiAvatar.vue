@@ -24,6 +24,8 @@ const showImage = computed(() => props.src && !failed.value)
       )
     "
     :title="name"
+    role="img"
+    :aria-label="name"
   >
     <img v-if="showImage" :src="src" :alt="name" width="80" height="80" class="h-full w-full object-cover" @error="failed = true" />
     <span v-else aria-hidden="true">{{ initials(name) }}</span>

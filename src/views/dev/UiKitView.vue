@@ -111,7 +111,7 @@ const palette = [
     </UiPageHeader>
 
     <div class="grid gap-6 lg:grid-cols-2 [&>*]:min-w-0">
-      <UiCard title="Tipografía" subtitle="Fraunces para títulos, Figtree para texto.">
+      <UiCard heading-level="h2" title="Tipografía" subtitle="Fraunces para títulos, Figtree para texto.">
         <h1 class="text-4xl">Los XV de Valentina</h1>
         <h2 class="mt-2 text-2xl">Sábado 25 de diciembre, 2026</h2>
         <p class="mt-3 text-base text-ink-700">
@@ -121,7 +121,7 @@ const palette = [
         <p class="mt-2 text-sm text-ink-500">Texto secundario para notas y ayudas.</p>
       </UiCard>
 
-      <UiCard title="Paleta" subtitle="Tokens en src/style.css">
+      <UiCard heading-level="h2" title="Paleta" subtitle="Tokens en src/style.css">
         <div v-for="[family, steps] in palette" :key="family" class="mb-3">
           <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-ink-500">{{ family }}</p>
           <div class="flex gap-1">
@@ -145,7 +145,7 @@ const palette = [
         </div>
       </UiCard>
 
-      <UiCard title="Botones">
+      <UiCard heading-level="h2" title="Botones">
         <div class="flex flex-wrap items-center gap-2">
           <UiButton>Primario</UiButton>
           <UiButton variant="secondary">Secundario</UiButton>
@@ -171,7 +171,7 @@ const palette = [
         </UiButton>
       </UiCard>
 
-      <UiCard title="Formulario">
+      <UiCard heading-level="h2" title="Formulario">
         <form class="flex flex-col gap-4" @submit.prevent>
           <UiField label="Nombre de la quinceañera" required hint="Así aparecerá en la invitación.">
             <UiInput v-model="name" placeholder="Valentina" />
@@ -193,11 +193,13 @@ const palette = [
           <UiRadioGroup v-model="template" :options="templates" cards />
           <UiCheckbox v-model="reminders" label="Enviar recordatorio a quien no responda" description="Tres días antes del evento." />
           <UiSwitch v-model="whatsapp" label="Confirmación por WhatsApp" description="Los invitados confirman con un toque." />
-          <UiInput disabled model-value="Deshabilitado" />
+          <UiField label="Campo deshabilitado">
+            <UiInput disabled model-value="Deshabilitado" />
+          </UiField>
         </form>
       </UiCard>
 
-      <UiCard title="Resumen" padding="sm">
+      <UiCard heading-level="h2" title="Resumen" padding="sm">
         <div class="grid grid-cols-2 gap-3">
           <UiStat label="Confirmados" value="86" hint="de 120 invitados" tone="success">
             <template #icon><Users class="h-5 w-5" /></template>
@@ -214,7 +216,7 @@ const palette = [
         </div>
       </UiCard>
 
-      <UiCard title="Invitados" padding="none">
+      <UiCard heading-level="h2" title="Invitados" padding="none">
         <div class="px-5 pt-5">
           <UiTabs
             v-model="tab"
@@ -273,7 +275,7 @@ const palette = [
         </div>
       </UiCard>
 
-      <UiCard title="Estado vacío" flat class="lg:col-span-2">
+      <UiCard heading-level="h2" title="Estado vacío" flat class="lg:col-span-2">
         <UiEmptyState
           title="Aún no tienes invitados"
           description="Importa tu lista desde Excel o agrégalos uno a uno. Podrás enviar la invitación por WhatsApp en cuanto tengas sus teléfonos."

@@ -55,6 +55,8 @@
   --color-rose-600: #b04a62;
   --color-rose-700: #933a50;
   --color-rose-800: #76303f;
+  --color-rose-900: #5a2432;
+  --color-rose-950: #3f1820;
 
   /* Deep wine, for closing bands and dark surfaces of the brand */
   --color-wine-800: #5c2433;
@@ -64,7 +66,7 @@
   --color-gold-100: #f6ecd4;
   --color-gold-300: #e6cf93;
   --color-gold-500: #c9a24e;
-  --color-gold-700: #9a7a2e;
+  --color-gold-700: #7a5c1e;
 
   /* Feedback */
   --color-success-50: #eef6f0;
@@ -91,6 +93,7 @@
   --radius-lg: 1rem;
   --radius-xl: 1.25rem;
   --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
 
   /* Elevation: soft, warm shadows */
   --shadow-soft: 0 1px 2px rgba(43, 36, 32, 0.04), 0 8px 24px -12px rgba(43, 36, 32, 0.12);
@@ -120,12 +123,12 @@
     font-family: var(--font-heading);
     font-weight: 500;
     letter-spacing: -0.01em;
-    color: var(--color-ink-900);
+    /* color is inherited on purpose: legacy headings sit on dark and gradient surfaces */
   }
 
   input::placeholder,
   textarea::placeholder {
-    color: var(--color-ink-400);
+    color: var(--color-ink-500);
   }
 
   *,
@@ -161,10 +164,6 @@
   }
 }
 
-@utility text-balance {
-  text-wrap: balance;
-}
-
 /* Enter/leave animations for overlays (Reka sets data-state on open/close). */
 @keyframes ui-in {
   from {
@@ -188,7 +187,7 @@
   animation: ui-in 180ms ease-out;
 }
 @utility animate-out {
-  animation: ui-out 140ms ease-in forwards;
+  animation: ui-out 120ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 /*
@@ -207,12 +206,13 @@
   background-size: 28px 28px;
 }
 
-/* One-time staggered reveal (see src/composables/useReveal.js). Visible by default. */
-.is-reveal-ready [data-reveal] {
+/* One-time staggered reveal (see src/composables/useReveal.js). Visible by default;
+   only nodes the observer armed are hidden, so anything inserted later stays visible. */
+[data-reveal].is-armed {
   opacity: 0;
   transform: translateY(14px);
 }
-.is-reveal-ready [data-reveal].is-in {
+[data-reveal].is-armed.is-in {
   opacity: 1;
   transform: translateY(0);
   transition:

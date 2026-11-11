@@ -18,12 +18,15 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition
     if (to.hash) {
-      const target = { el: to.hash, top: 80, behavior: 'smooth' }
-      if (document.querySelector(to.hash)) return target
+      const id = to.hash.slice(1)
+      const find = () => document.getElementById(id)
+      const target = { el: `#${CSS.escape(id)}`, top: 80, behavior: 'smooth' }
+      if (find()) return target
       return new Promise(resolve => {
         let tries = 0
         const tick = () => {
-          if (document.querySelector(to.hash) || tries++ > 20) resolve(target)
+          if (find()) resolve(target)
+          else if (tries++ > 20) resolve(false)
           else setTimeout(tick, 50)
         }
         tick()

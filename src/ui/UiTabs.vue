@@ -22,7 +22,7 @@ const emit = defineEmits(['update:modelValue'])
       :class="fill && '[&>button]:flex-1'"
     >
       <TabsIndicator
-        class="absolute bottom-0 left-0 h-0.5 w-(--reka-tabs-indicator-size) translate-x-(--reka-tabs-indicator-position) rounded-full bg-rose-600 transition-[width,transform] duration-200"
+        class="absolute bottom-0 left-0 h-0.5 w-(--reka-tabs-indicator-size) translate-x-(--reka-tabs-indicator-position) rounded-full bg-rose-600 transition-[width,translate] duration-200"
       />
       <TabsTrigger
         v-for="tab in tabs"

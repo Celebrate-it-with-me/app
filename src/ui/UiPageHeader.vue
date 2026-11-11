@@ -1,5 +1,6 @@
 <script setup>
 import { ChevronLeft } from 'lucide-vue-next'
+import { uiText } from './i18n'
 
 defineProps({
   title: { type: String, required: true },
@@ -8,7 +9,7 @@ defineProps({
   eyebrow: { type: String, default: '' },
   /** Route for the back arrow; omit to hide it. */
   back: { type: [String, Object], default: null },
-  backLabel: { type: String, default: 'Volver' }
+  backLabel: { type: String, default: () => uiText('common.back') }
 })
 </script>
 

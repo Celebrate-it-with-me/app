@@ -16,7 +16,14 @@ export default {
     genericError: 'Algo salió mal. Inténtalo de nuevo.',
     captchaRequired: 'Completa la verificación para continuar.',
     orContinueWith: 'o continúa con',
-    language: 'Idioma'
+    language: 'Idioma',
+    close: 'Cerrar',
+    previous: 'Anterior',
+    next: 'Siguiente',
+    pagination: 'Paginación',
+    notifications: 'Notificaciones',
+    selectOption: 'Selecciona una opción',
+    skipToContent: 'Ir al contenido'
   },
   nav: {
     howItWorks: 'Cómo funciona',

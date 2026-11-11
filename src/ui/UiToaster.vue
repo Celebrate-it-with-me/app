@@ -10,6 +10,7 @@ import {
 import { CircleCheck, CircleAlert, TriangleAlert, Info, X } from 'lucide-vue-next'
 import { useToast } from './useToast'
 import { cx } from './utils'
+import { uiText } from './i18n'
 
 const { toasts, dismiss } = useToast()
 
@@ -22,12 +23,12 @@ const TONES = {
 </script>
 
 <template>
-  <ToastProvider :label="'Notificaciones'">
+  <ToastProvider :label="uiText('common.notifications')">
     <ToastRoot
       v-for="item in toasts"
       :key="item.id"
       :duration="item.duration"
-      class="pointer-events-auto flex items-start gap-3 rounded-xl border border-line bg-white p-4 shadow-pop data-[state=closed]:animate-out data-[swipe=end]:animate-out"
+      class="pointer-events-auto flex items-start gap-3 rounded-xl border border-line bg-white p-4 shadow-pop data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out"
       @update:open="open => !open && dismiss(item.id)"
     >
       <component
@@ -41,12 +42,12 @@ const TONES = {
           {{ item.description }}
         </ToastDescription>
       </div>
-      <ToastClose class="-mr-1 -mt-1 rounded-full p-1 text-ink-400 hover:bg-cream-200" aria-label="Cerrar">
+      <ToastClose class="-mr-1 -mt-1 rounded-full p-1 text-ink-400 hover:bg-cream-200" :aria-label="uiText('common.close')">
         <X class="h-4 w-4" aria-hidden="true" />
       </ToastClose>
     </ToastRoot>
     <ToastViewport
-      class="pointer-events-none fixed inset-x-4 bottom-4 z-[100] flex max-w-md flex-col gap-2 sm:left-auto sm:right-6 sm:bottom-6"
+      class="pointer-events-none fixed inset-x-4 bottom-4 z-100 flex max-w-md flex-col gap-2 sm:left-auto sm:right-6 sm:bottom-6"
     />
   </ToastProvider>
 </template>

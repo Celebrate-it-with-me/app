@@ -138,7 +138,7 @@ onUnmounted(() => {
           />
           <span class="absolute left-1/2 top-2.5 h-1.5 w-14 -translate-x-1/2 rounded-full bg-ink-900/70" aria-hidden="true" />
           <!-- Localized gradient so the name reads over the dress -->
-          <div class="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-ink-900/75 via-ink-900/30 to-transparent" aria-hidden="true" />
+          <div class="absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t from-ink-900/75 via-ink-900/30 to-transparent" aria-hidden="true" />
           <div class="absolute inset-x-0 bottom-0 px-5 pb-4 text-center text-white">
             <p class="text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-gold-300">{{ t('mock.eyebrow') }}</p>
             <p class="mt-1 font-heading text-[2.6rem] leading-none">{{ t('mock.name') }}</p>
@@ -166,14 +166,14 @@ onUnmounted(() => {
             <div class="mt-2.5 flex flex-col gap-2">
               <button
                 type="button"
-                class="min-h-10 rounded-lg bg-rose-600 px-3 text-sm font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-rose-700 active:scale-[0.97]"
+                class="min-h-10 rounded-lg bg-rose-600 px-3 text-sm font-semibold text-white transition-[background-color,scale] duration-150 hover:bg-rose-700 active:scale-[0.97]"
                 @click="answer = 'yes'"
               >
                 {{ t('mock.yes') }}
               </button>
               <button
                 type="button"
-                class="min-h-10 rounded-lg border border-line-strong bg-white px-3 text-sm font-semibold text-ink-700 transition-[background-color,transform] duration-150 hover:bg-cream-100 active:scale-[0.97]"
+                class="min-h-10 rounded-lg border border-line-strong bg-white px-3 text-sm font-semibold text-ink-700 transition-[background-color,scale] duration-150 hover:bg-cream-100 active:scale-[0.97]"
                 @click="answer = 'no'"
               >
                 {{ t('mock.no') }}

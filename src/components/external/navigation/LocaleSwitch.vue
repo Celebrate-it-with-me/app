@@ -1,9 +1,17 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 import { LOCALES, setLocale } from '@/locales/i18n'
+import { routeTitle } from '@/router/authGuard'
 import { cx } from '@/ui/utils'
 
 const { locale, t } = useI18n()
+const route = useRoute()
+
+function change(code) {
+  setLocale(code)
+  document.title = routeTitle(route)
+}
 </script>
 
 <template>
@@ -23,7 +31,7 @@ const { locale, t } = useI18n()
         )
       "
       :aria-pressed="locale === code"
-      @click="setLocale(code)"
+      @click="change(code)"
     >
       {{ code }}
     </button>

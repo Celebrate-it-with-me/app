@@ -20,6 +20,8 @@ const { root } = useReveal()
       <!-- Phones: a swipeable row. Larger screens: three columns. -->
       <ul
         class="-mx-4 mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mt-12 sm:grid sm:grid-cols-3 sm:gap-8 sm:overflow-visible sm:px-0"
+        tabindex="0"
+        :aria-label="t('designs.title')"
       >
         <li
           v-for="(item, i) in tm('designs.items')"
@@ -28,7 +30,7 @@ const { root } = useReveal()
           :style="{ '--i': i }"
           class="group w-[76%] shrink-0 snap-center sm:w-auto"
         >
-          <div class="transition-transform duration-300 ease-out group-hover:-translate-y-1.5 [@media(hover:none)]:group-hover:translate-y-0">
+          <div class="transition-transform duration-200 ease-out group-hover:-translate-y-1.5 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0">
             <InvitationCard :theme="themes[i]" :name="item.name" :date="item.date" :place="item.place" :question="t('mock.question')" :yes="t('mock.yes')" />
           </div>
           <div class="mt-4 flex items-center justify-between gap-3">

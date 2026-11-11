@@ -52,8 +52,10 @@ const onSubmit = handleSubmit(async values => {
       return
     }
     backendError.value = response.response?.data?.message ?? t('common.genericError')
+    captcha.reset()
   } catch (e) {
     backendError.value = e.response?.data?.message ?? t('common.genericError')
+    captcha.reset()
   } finally {
     sending.value = false
   }
@@ -82,7 +84,7 @@ const onSubmit = handleSubmit(async values => {
 
         <UiButton type="submit" block :loading="sending" class="mt-2">{{ t('common.signUp') }}</UiButton>
 
-        <i18n-t keypath="auth.acceptTerms" tag="p" class="text-center text-xs text-ink-400">
+        <i18n-t keypath="auth.acceptTerms" tag="p" class="text-center text-xs text-ink-500">
           <template #terms>
             <router-link to="/terms" class="underline hover:text-ink-700">{{ t('nav.terms') }}</router-link>
           </template>

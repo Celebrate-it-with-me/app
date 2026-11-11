@@ -1,6 +1,9 @@
 <script setup>
 import PublicNavbar from '@/components/external/navigation/PublicNavbar.vue'
 import PublicFooter from '@/components/external/footer/PublicFooter.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -9,7 +12,7 @@ import PublicFooter from '@/components/external/footer/PublicFooter.vue'
       href="#main-content"
       class="sr-only z-50 rounded-md bg-rose-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
     >
-      Ir al contenido
+      {{ t('common.skipToContent') }}
     </a>
     <PublicNavbar />
     <main id="main-content" class="flex-1" tabindex="-1">

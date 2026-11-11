@@ -60,7 +60,7 @@ async function accept() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify([...readPending(), invite.value]))
   try {
     if (!isAuthenticated.value) {
-      return await router.push({ name: 'sign-in', query: { redirect: `/invite?token=${token}` } })
+      return await router.push({ name: 'sign-in', query: { redirect: route.fullPath } })
     }
     return await router.push(`/dashboard/events/${invite.value.event.id}/invitations`)
   } catch (e) {

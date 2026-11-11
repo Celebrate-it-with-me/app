@@ -11,7 +11,7 @@ const SUPPORT_EMAIL = 'hola@quinvite.com'
   <section class="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-16">
     <UiPageHeader :title="t('help.title')" :subtitle="t('help.intro')" />
     <div class="divide-y divide-line rounded-xl border border-line bg-white">
-      <details v-for="(item, i) in tm('help.items')" :key="i" class="ui-details group px-5 py-4" :open="i === 0">
+      <details v-for="(item, i) in tm('help.items')" :key="i" class="group px-5 py-4" :open="i === 0">
         <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-ink-900 [&::-webkit-details-marker]:hidden">
           {{ item.q }}
           <ChevronDown class="h-5 w-5 shrink-0 text-ink-500 transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />

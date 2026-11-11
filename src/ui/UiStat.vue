@@ -30,7 +30,7 @@ const TONES = {
     <div class="min-w-0">
       <p class="text-sm text-ink-500">{{ label }}</p>
       <p class="font-heading text-2xl leading-tight text-ink-900 tabular-nums">{{ value }}</p>
-      <p v-if="hint" class="mt-0.5 truncate text-xs text-ink-400">{{ hint }}</p>
+      <p v-if="hint" class="mt-0.5 truncate text-xs text-ink-500">{{ hint }}</p>
     </div>
   </div>
 </template>

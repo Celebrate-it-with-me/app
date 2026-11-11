@@ -52,6 +52,11 @@ const ICON_SIZES = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-13 w-13' }
 
 const tag = computed(() => (props.to ? 'router-link' : props.href ? 'a' : 'button'))
 
+/** A disabled link must not navigate. */
+function onClick(event) {
+  if (tag.value !== 'button' && (props.disabled || props.loading)) event.preventDefault()
+}
+
 /** Only pass what each tag needs: an explicit `href: undefined` would wipe RouterLink's own href. */
 const linkAttrs = computed(() => {
   if (props.to) return { to: props.to }
@@ -63,7 +68,7 @@ const classes = computed(() =>
   cx(
     'inline-flex items-center justify-center rounded-lg font-semibold leading-tight',
     props.block ? 'whitespace-normal text-center' : 'whitespace-nowrap',
-    'transition-[background-color,color,transform] duration-150 select-none active:scale-[0.97]',
+    'transition-[background-color,color,scale] duration-150 select-none active:scale-[0.97] motion-reduce:active:scale-100',
     'disabled:cursor-not-allowed',
     VARIANTS[props.variant] ?? VARIANTS.primary,
     props.icon ? ICON_SIZES[props.size] : props.block ? BLOCK_SIZES[props.size] : SIZES[props.size],
@@ -80,7 +85,9 @@ const classes = computed(() =>
     :disabled="tag === 'button' ? disabled || loading : undefined"
     :aria-disabled="disabled || loading || undefined"
     :aria-busy="loading || undefined"
+    :tabindex="tag !== 'button' && (disabled || loading) ? -1 : undefined"
     :class="classes"
+    @click="onClick"
   >
     <LoaderCircle v-if="loading" class="h-4 w-4 animate-spin" aria-hidden="true" />
     <slot v-else name="icon" />
