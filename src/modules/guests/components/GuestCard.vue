@@ -9,7 +9,7 @@
     >
       <div class="flex items-center gap-4 flex-1">
         <!-- Chevron Icon -->
-        <div class="flex-shrink-0">
+        <div class="shrink-0">
           <ChevronDown v-if="isExpanded" class="w-5 h-5 text-purple-600 transition-transform" />
           <ChevronRight v-else class="w-5 h-5 text-purple-600 transition-transform" />
         </div>

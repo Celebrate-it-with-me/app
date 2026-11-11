@@ -18,7 +18,7 @@
           </p>
         </div>
 
-        <div class="flex flex-shrink-0">
+        <div class="flex shrink-0">
           <CButton
             variant="gradient"
             class="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white shadow-xl shadow-purple-500/20 px-8 h-14 rounded-2xl transition-all hover:-translate-y-0.5 active:scale-95"
@@ -32,11 +32,11 @@
     </div>
 
     <!-- Main Content Area -->
-    <div class="flex-grow min-h-0">
+    <div class="grow min-h-0">
       <!-- Loading State -->
       <div
         v-if="loading"
-        class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm"
+        class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-xs"
       >
         <CWMLoading class="w-12 h-12 text-rose mb-4" />
         <p class="text-gray-500 font-medium">Loading comments...</p>
@@ -45,7 +45,7 @@
       <!-- Empty State (No comments at all) -->
       <div
         v-else-if="!eventComments.length && !isCreating"
-        class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm"
+        class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-xs"
       >
         <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
           <MessageCircle class="w-12 h-12 text-gray-400" />
@@ -86,7 +86,7 @@
           v-model:sort-order="sortOrder"
         />
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow min-h-0">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 grow min-h-0">
           <!-- Column A: List (Hidden on mobile when detail or creating is open) -->
           <div
             class="lg:col-span-5 h-full overflow-hidden"

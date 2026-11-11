@@ -18,7 +18,7 @@ const emit = defineEmits(['update:searchQuery', 'update:yearFilter', 'update:sor
           :value="searchQuery"
           type="text"
           placeholder="Search memories..."
-          class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+          class="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
           @input="emit('update:searchQuery', $event.target.value)"
         />
         <svg
@@ -39,7 +39,7 @@ const emit = defineEmits(['update:searchQuery', 'update:yearFilter', 'update:sor
       <!-- Year -->
       <select
         :value="yearFilter"
-        class="bg-white border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+        class="bg-white border border-gray-200 rounded-lg px-4 py-3 focus:outline-hidden focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
         @change="emit('update:yearFilter', $event.target.value)"
       >
         <option value="">All Years</option>
@@ -51,7 +51,7 @@ const emit = defineEmits(['update:searchQuery', 'update:yearFilter', 'update:sor
       <!-- Sort -->
       <select
         :value="sortOrder"
-        class="bg-white border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+        class="bg-white border border-gray-200 rounded-lg px-4 py-3 focus:outline-hidden focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
         @change="emit('update:sortOrder', $event.target.value)"
       >
         <option value="newest">Newest First</option>

@@ -61,7 +61,7 @@ const requestDeleteSong = () => {
 
 <template>
   <li
-    class="group relative mt-2 overflow-hidden rounded-xl border border-[#7FB9C9]/30 bg-white/75 backdrop-blur-md shadow-sm transition-all duration-300 hover:shadow-[0_8px_30px_rgb(7,26,42,0.15)] hover:border-[#2F6F8F]/40 hover:-translate-y-0.5"
+    class="group relative mt-2 overflow-hidden rounded-xl border border-[#7FB9C9]/30 bg-white/75 backdrop-blur-md shadow-xs transition-all duration-300 hover:shadow-[0_8px_30px_rgb(7,26,42,0.15)] hover:border-[#2F6F8F]/40 hover:-translate-y-0.5"
   >
     <!-- Content -->
     <div class="relative flex items-center gap-3 px-4 py-2">
@@ -69,7 +69,7 @@ const requestDeleteSong = () => {
       <img
         :src="song.thumbnailUrl || 'https://via.placeholder.com/64'"
         alt="Album Art"
-        class="h-12 w-12 shrink-0 rounded-lg object-cover shadow-sm ring-1 ring-black/5"
+        class="h-12 w-12 shrink-0 rounded-lg object-cover shadow-xs ring-1 ring-black/5"
       />
 
       <!-- Title / Artist -->
@@ -128,7 +128,7 @@ const requestDeleteSong = () => {
         <!-- Play -->
         <button
           type="button"
-          class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] text-white shadow-sm transition hover:scale-110 active:scale-95"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] text-white shadow-xs transition hover:scale-110 active:scale-95"
           title="Play"
           @click="onPlay"
         >

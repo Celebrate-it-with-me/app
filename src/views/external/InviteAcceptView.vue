@@ -100,7 +100,7 @@ const acceptInvite = async () => {
       </h1>
 
       <div
-        class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow border border-gray-200 dark:border-gray-700"
+        class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"
       >
         <p class="text-sm mb-2 text-gray-700 dark:text-gray-300">
           <strong>Event:</strong> {{ invite.event.event_name }}

@@ -149,7 +149,7 @@ const handleMoveToTop = () => {
   <button
     v-if="showScrollBtn"
     id="scrollToTopBtn"
-    class="fixed w-10 h-10 bottom-5 right-5 bg-pink-300 border border-pink-400/50 text-white text-lg text-bold rounded-full shadow-lg hover:bg-pink-500/50 focus:outline-none"
+    class="fixed w-10 h-10 bottom-5 right-5 bg-pink-300 border border-pink-400/50 text-white text-lg text-bold rounded-full shadow-lg hover:bg-pink-500/50 focus:outline-hidden"
     @click="handleMoveToTop"
   >
     ↑

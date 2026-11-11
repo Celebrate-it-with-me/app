@@ -69,7 +69,7 @@ const closeModal = () => {
             fill="none"
             stroke="currentColor"
             stroke-width="2"
-            class="text-yellow-600 dark:text-yellow-400 flex-shrink-0"
+            class="text-yellow-600 dark:text-yellow-400 shrink-0"
           >
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 16v-4"></path>

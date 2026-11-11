@@ -109,7 +109,7 @@
         </button>
         <button
           :disabled="sending"
-          class="px-4 py-2 text-sm font-medium bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors inline-flex items-center gap-2 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-4 py-2 text-sm font-medium bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors inline-flex items-center gap-2 shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           @click="handleSend"
         >
           <CWMLoading v-if="sending" size="w-4 h-4" />

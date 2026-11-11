@@ -78,7 +78,7 @@ const handleFieldBlur = e => {
     <div :class="horizontal ? 'flex-1' : ''" class="relative w-full mt-1">
       <input
         :id="name"
-        :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
+        :class="`${classInput} input-control w-full block focus:outline-hidden h-[40px]`"
         :disabled="disabled"
         :name="name"
         :placeholder="placeholder"
@@ -97,7 +97,7 @@ const handleFieldBlur = e => {
       v-if="showErrorMessage"
       :class="
         msgTooltip
-          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-danger-500 block text-sm'
       "
       class="mt-2"
@@ -109,7 +109,7 @@ const handleFieldBlur = e => {
       v-if="validate"
       :class="
         msgTooltip
-          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-success-500 block text-sm'
       "
       class="mt-2"
@@ -125,6 +125,7 @@ const handleFieldBlur = e => {
 </template>
 
 <style scoped>
+@reference '../../../style.css';
 .has-error {
   @apply text-red-500;
 

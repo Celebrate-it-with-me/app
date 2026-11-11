@@ -14,7 +14,7 @@ defineProps({
 <template>
   <section class="rsvp-titles-section text-center mb-10">
     <h2
-      class="text-5xl md:text-7xl font-gvibes font-bold bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] bg-clip-text text-transparent pb-2 drop-shadow-sm"
+      class="text-5xl md:text-7xl font-gvibes font-bold bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] bg-clip-text text-transparent pb-2 drop-shadow-xs"
     >
       {{ title }}
     </h2>

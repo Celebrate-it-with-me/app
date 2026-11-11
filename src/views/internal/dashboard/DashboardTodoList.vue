@@ -130,7 +130,7 @@ onBeforeUnmount(() => {
     <!-- Loading overlay -->
     <div
       v-if="isLoading"
-      class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10"
+      class="absolute inset-0 bg-white/70 dark:bg-gray-900/70 flex items-center justify-center z-10"
     >
       <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-green-500"></div>
     </div>
@@ -246,14 +246,14 @@ onBeforeUnmount(() => {
           :class="{ 'bg-gray-50': task.completed }"
         >
           <div class="flex items-start">
-            <div class="flex-shrink-0 mt-0.5">
+            <div class="shrink-0 mt-0.5">
               <CCheckbox
                 :model-value="task.completed"
                 class="h-4 w-4"
                 @update:model-value="toggleTaskCompletion(task.id)"
               />
             </div>
-            <div class="ml-3 flex-grow">
+            <div class="ml-3 grow">
               <div class="flex justify-between">
                 <h3 class="font-medium" :class="{ 'line-through text-gray-400': task.completed }">
                   {{ task.title }}
@@ -269,12 +269,12 @@ onBeforeUnmount(() => {
               <div class="flex flex-wrap gap-2 mt-1.5">
                 <span
                   v-if="task.dueDate"
-                  class="inline-flex items-center text-xs bg-gray-100 px-2 py-0.5 rounded"
+                  class="inline-flex items-center text-xs bg-gray-100 px-2 py-0.5 rounded-sm"
                 >
                   {{ formatDate(task.dueDate) }}
                 </span>
                 <span
-                  class="inline-flex items-center text-xs px-2 py-0.5 rounded"
+                  class="inline-flex items-center text-xs px-2 py-0.5 rounded-sm"
                   :class="{
                     'bg-red-100 text-red-800': task.priority === 'high',
                     'bg-yellow-100 text-yellow-800': task.priority === 'medium',

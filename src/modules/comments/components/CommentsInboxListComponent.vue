@@ -1,10 +1,10 @@
 <template>
   <div
-    class="h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+    class="h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden"
   >
     <div
       v-if="comments.length > 0"
-      class="flex-grow overflow-y-auto custom-scrollbar"
+      class="grow overflow-y-auto custom-scrollbar"
       @scroll="handleScroll"
     >
       <CommentInboxRowComponent
@@ -24,7 +24,7 @@
       <div v-else ref="loadMoreTrigger" class="h-4 w-full"></div>
     </div>
 
-    <div v-else class="flex-grow flex flex-col items-center justify-center p-8 text-center">
+    <div v-else class="grow flex flex-col items-center justify-center p-8 text-center">
       <SearchX class="w-12 h-12 text-gray-300 mb-4" />
       <h4 class="text-lg font-semibold text-gray-900 mb-1">No comments found</h4>
       <p class="text-sm text-gray-500 max-w-[200px]">
@@ -71,6 +71,7 @@ const handleScroll = event => {
 </script>
 
 <style scoped>
+@reference '../../../style.css';
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }

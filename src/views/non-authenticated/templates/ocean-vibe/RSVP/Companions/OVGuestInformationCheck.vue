@@ -48,7 +48,7 @@ const submit = async e => {
         >
           Información del Invitado Principal:
         </h3>
-        <div class="overflow-hidden rounded-2xl border border-sky-100 shadow-sm">
+        <div class="overflow-hidden rounded-2xl border border-sky-100 shadow-xs">
           <table class="w-full table-auto text-sm">
             <tbody class="divide-y divide-sky-50">
               <tr>
@@ -71,7 +71,7 @@ const submit = async e => {
                 <td class="px-6 py-4 font-bold text-slate-500 bg-sky-50/50">Asistirá:</td>
                 <td class="px-6 py-4">
                   <span
-                    class="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm"
+                    class="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-xs"
                     :class="{
                       'text-sky-700 bg-sky-100/80': guestInfo?.rsvpStatus === 'attending',
                       'text-slate-600 bg-slate-100': guestInfo?.rsvpStatus === 'not-attending',
@@ -99,7 +99,7 @@ const submit = async e => {
         >
           Lista de Acompañantes:
         </h3>
-        <div class="overflow-hidden rounded-2xl border border-sky-100 shadow-sm">
+        <div class="overflow-hidden rounded-2xl border border-sky-100 shadow-xs">
           <table class="w-full table-auto text-sm">
             <thead class="bg-sky-50/50 text-slate-500 uppercase text-xs">
               <tr>
@@ -119,7 +119,7 @@ const submit = async e => {
                 <td class="px-6 py-4">
                   <span
                     :class="[
-                      'inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm',
+                      'inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-xs',
                       companion.rsvpStatus === 'attending'
                         ? 'text-sky-700 bg-sky-100/80'
                         : companion.rsvpStatus === 'not-attending'

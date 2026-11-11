@@ -147,7 +147,7 @@ const handleMoveToTop = () => {
   <button
     v-if="showScrollBtn"
     id="scrollToTopBtn"
-    class="fixed z-50 w-12 h-12 bottom-6 right-6 flex items-center justify-center bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] text-white rounded-full shadow-xl hover:brightness-110 active:scale-90 transition-all focus:outline-none border border-white/20"
+    class="fixed z-50 w-12 h-12 bottom-6 right-6 flex items-center justify-center bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] text-white rounded-full shadow-xl hover:brightness-110 active:scale-90 transition-all focus:outline-hidden border border-white/20"
     @click="handleMoveToTop"
   >
     <ArrowUp class="w-6 h-6" />

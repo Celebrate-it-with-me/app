@@ -5,7 +5,7 @@
     </label>
 
     <div
-      class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 shadow-sm w-full"
+      class="flex items-center justify-between bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-2 shadow-xs w-full"
     >
       <button
         :disabled="currentIndex === 0"

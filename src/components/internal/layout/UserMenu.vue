@@ -23,7 +23,7 @@
     <button
       v-else
       ref="buttonRef"
-      class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-semibold uppercase hover:opacity-90 focus:outline-none"
+      class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-semibold uppercase hover:opacity-90 focus:outline-hidden"
       @click="toggleMenu()"
     >
       {{ initials }}

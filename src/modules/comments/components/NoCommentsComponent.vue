@@ -11,7 +11,7 @@ const addFirstComment = () => {
 
 <template>
   <div
-    class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm"
+    class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-xs"
   >
     <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6">
       <MessageCircle class="w-12 h-12 text-gray-400" />

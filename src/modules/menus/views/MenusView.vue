@@ -17,7 +17,7 @@
           </p>
         </div>
 
-        <div class="flex flex-shrink-0">
+        <div class="flex shrink-0">
           <CButton
             variant="gradient"
             class="bg-gradient-to-r from-rose to-rose-dark hover:from-rose-dark hover:to-rose-darken text-white shadow-xl shadow-rose/20 px-8 h-14 rounded-2xl transition-all hover:-translate-y-0.5 active:scale-95"

@@ -67,7 +67,7 @@ const bgStyle = computed(() => {
           <div class="mb-12 flex justify-between items-center w-full right-timeline">
             <div class="order-1 w-5/12 flex justify-center items-center">
               <div
-                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md shadow-sm"
+                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md shadow-xs"
               >
                 <Martini class="w-10 h-10 text-sky-700/90" :stroke-width="2" />
               </div>
@@ -95,7 +95,7 @@ const bgStyle = computed(() => {
           >
             <div class="order-1 w-5/12 flex justify-center items-center">
               <div
-                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md shadow-sm"
+                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md shadow-xs"
               >
                 <Sparkles class="w-10 h-10 text-sky-700/90" :stroke-width="2" />
               </div>
@@ -121,7 +121,7 @@ const bgStyle = computed(() => {
           <div class="mb-12 flex justify-between items-center w-full right-timeline">
             <div class="order-1 w-5/12 flex justify-center items-center">
               <div
-                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md shadow-sm"
+                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md shadow-xs"
               >
                 <Utensils class="w-10 h-10 text-sky-700/90" :stroke-width="2" />
               </div>
@@ -149,7 +149,7 @@ const bgStyle = computed(() => {
           >
             <div class="order-1 w-5/12 flex justify-center items-center">
               <div
-                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md shadow-sm"
+                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md shadow-xs"
               >
                 <Music class="w-10 h-10 text-sky-700/90" :stroke-width="2" />
               </div>
@@ -175,7 +175,7 @@ const bgStyle = computed(() => {
           <div class="mb-20 flex justify-between items-center w-full right-timeline">
             <div class="order-1 w-5/12 flex justify-center items-center">
               <div
-                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md flex space-x-1 shadow-sm"
+                class="p-4 bg-sky-100/40 rounded-full border border-sky-200/30 backdrop-blur-md flex space-x-1 shadow-xs"
               >
                 <Sparkles class="w-8 h-8 text-sky-700/90" :stroke-width="2" />
                 <Music class="w-8 h-8 text-sky-700/90" :stroke-width="2" />

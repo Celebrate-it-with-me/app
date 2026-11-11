@@ -108,7 +108,7 @@ const handleColorPickerChange = newColor => {
           color: selectedColor
         }"
         type="text"
-        :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
+        :class="`${classInput} input-control w-full block focus:outline-hidden h-[40px]`"
         :disabled="disabled"
         :name="name"
         :placeholder="placeholder"
@@ -125,7 +125,7 @@ const handleColorPickerChange = newColor => {
       v-if="showErrorMessage"
       :class="
         msgTooltip
-          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-danger-500 block text-sm'
       "
       class="mt-2"
@@ -137,7 +137,7 @@ const handleColorPickerChange = newColor => {
       v-if="validate"
       :class="
         msgTooltip
-          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-success-500 block text-sm'
       "
       class="mt-2"
@@ -152,6 +152,7 @@ const handleColorPickerChange = newColor => {
 </template>
 
 <style scoped>
+@reference '../../../style.css';
 .has-error {
   @apply text-red-500;
 

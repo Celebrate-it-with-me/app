@@ -105,7 +105,7 @@ const fetchSuggestions = debounce(async () => {
         v-model="searchQuery"
         type="text"
         placeholder="Busca por título o artista..."
-        class="w-full h-[48px] rounded-xl bg-white border border-[#7FB9C9]/40 pl-12 pr-12 text-slate-700 placeholder:text-[#2F6F8F]/50 shadow-sm transition focus:border-[#2F6F8F] focus:ring-4 focus:ring-[#7FB9C9]/20 outline-none"
+        class="w-full h-[48px] rounded-xl bg-white border border-[#7FB9C9]/40 pl-12 pr-12 text-slate-700 placeholder:text-[#2F6F8F]/50 shadow-xs transition focus:border-[#2F6F8F] focus:ring-4 focus:ring-[#7FB9C9]/20 outline-hidden"
         @input="fetchSuggestions"
       />
 

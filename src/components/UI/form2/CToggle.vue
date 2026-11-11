@@ -14,13 +14,13 @@
       :id="name"
       type="button"
       :class="[
-        'relative w-11 h-6 rounded-full transition-colors duration-300 focus:outline-none',
+        'relative w-11 h-6 rounded-full transition-colors duration-300 focus:outline-hidden',
         localValue ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'
       ]"
       @click="toggle"
     >
       <span
-        class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-300"
+        class="absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-300"
         :class="{ 'translate-x-5': localValue }"
       />
     </button>

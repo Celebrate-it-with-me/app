@@ -53,7 +53,7 @@ const goToMenu = async menu => {
   </section>
   <section
     v-else
-    class="overflow-hidden bg-white dark:bg-gray-900/50 backdrop-blur-sm rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xl"
+    class="overflow-hidden bg-white dark:bg-gray-900/50 backdrop-blur-xs rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xl"
   >
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-800">

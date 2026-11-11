@@ -12,7 +12,7 @@
         <span class="settings-group relative">
           <Settings class="w-4 h-4" />
           <span
-            class="absolute opacity-0 group-hover:opacity-100 transition text-xs bg-black text-white px-2 py-1 rounded shadow-md top-full mt-2"
+            class="absolute opacity-0 group-hover:opacity-100 transition text-xs bg-black text-white px-2 py-1 rounded-sm shadow-md top-full mt-2"
           >
             Customize style
           </span>

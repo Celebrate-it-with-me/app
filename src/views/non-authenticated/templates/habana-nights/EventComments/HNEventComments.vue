@@ -162,7 +162,7 @@ const onInvalidSubmit = error => {
     <div class="relative z-10 mx-auto w-full max-w-4xl">
       <div class="hn-comments-glass w-full">
         <!-- Header -->
-        <div class="text-center pb-6 flex-shrink-0">
+        <div class="text-center pb-6 shrink-0">
           <h2 class="hn-comments-title">
             {{ commentsTitle }}
           </h2>
@@ -232,7 +232,7 @@ const onInvalidSubmit = error => {
                       </p>
                       <span
                         v-if="comment.author?.type"
-                        class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[rgba(212,175,55,0.15)] text-[#D4AF37]"
+                        class="px-1.5 py-0.5 rounded-sm text-[10px] font-bold uppercase tracking-wider bg-[rgba(212,175,55,0.15)] text-[#D4AF37]"
                       >
                         {{ comment.author.type }}
                       </span>

@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <!-- Attending Card -->
-    <div class="bg-white rounded-lg border p-4 shadow-sm border-l-4 border-green-500">
+    <div class="bg-white rounded-lg border p-4 shadow-xs border-l-4 border-green-500">
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center gap-2">
           <CheckCircle class="w-5 h-5 text-green-600" />
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Pending Card -->
-    <div class="bg-white rounded-lg border p-4 shadow-sm border-l-4 border-yellow-500">
+    <div class="bg-white rounded-lg border p-4 shadow-xs border-l-4 border-yellow-500">
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center gap-2">
           <Clock class="w-5 h-5 text-yellow-600" />
@@ -61,7 +61,7 @@
     </div>
 
     <!-- Not Attending Card -->
-    <div class="bg-white rounded-lg border p-4 shadow-sm border-l-4 border-red-500">
+    <div class="bg-white rounded-lg border p-4 shadow-xs border-l-4 border-red-500">
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center gap-2">
           <XCircle class="w-5 h-5 text-red-600" />
@@ -93,7 +93,7 @@
     </div>
 
     <!-- Response Rate Card -->
-    <div class="bg-white rounded-lg border p-4 shadow-sm border-l-4 border-purple-500">
+    <div class="bg-white rounded-lg border p-4 shadow-xs border-l-4 border-purple-500">
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center gap-2">
           <Mail class="w-5 h-5 text-purple-600" />

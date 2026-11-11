@@ -153,6 +153,7 @@ const handleRsvpConfirmed = updatedGuestData => {
 </script>
 
 <style scoped>
+@reference '../../../style.css';
 /* CHANGED: Added improved card styles and button styles */
 .guest-card {
   @apply bg-white rounded-lg border border-gray-200 p-4 mb-3 transition-all duration-200;

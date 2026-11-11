@@ -335,8 +335,9 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+@reference '../../../style.css';
 .event-card {
-  @apply bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300;
+  @apply bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-xs hover:shadow-xl transition-all duration-300;
 }
 .status-badge {
   @apply px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider;

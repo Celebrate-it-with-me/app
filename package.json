@@ -34,8 +34,8 @@
     "date-fns": "^4.1.0",
     "detect-browser": "^5.3.0",
     "floating-vue": "^5.2.2",
-    "flowbite": "^3.1.2",
-    "flowbite-vue": "^0.1.7",
+    "flowbite": "^4.0.2",
+    "flowbite-vue": "^0.4.0",
     "lg-thumbnail": "^1.2.1",
     "lightgallery": "^2.8.2",
     "lodash.debounce": "^4.0.8",
@@ -55,22 +55,28 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.5",
     "@tsconfig/node18": "^18.2.2",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/test-utils": "^2.4.1",
-    "autoprefixer": "^10.4.16",
     "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.12.1",
     "globals": "^17.14.0",
     "jsdom": "^31.0.0",
     "pinia-logger": "^2.1.0",
-    "postcss": "^8.4.32",
     "prettier": "^3.5.3",
     "sass-embedded": "^1.86.3",
-    "tailwindcss": "^3.4.0",
+    "tailwindcss": "^4.3.5",
     "vite": "^8.3.7",
     "vitest": "^5.1.0",
     "vue-eslint-parser": "^10.4.0"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1",
+    "glob": "^14.0.4",
+    "flowbite-vue": {
+      "nanoid": "^5.1.16"
+    }
   }
 }

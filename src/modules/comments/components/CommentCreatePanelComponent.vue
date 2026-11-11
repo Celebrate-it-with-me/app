@@ -60,7 +60,7 @@ const handleCancel = () => {
 
 <template>
   <div
-    class="h-full flex flex-col bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300"
+    class="h-full flex flex-col bg-white rounded-3xl border border-gray-100 shadow-xs overflow-hidden animate-in fade-in slide-in-from-right-4 duration-300"
   >
     <!-- Header -->
     <div
@@ -88,13 +88,13 @@ const handleCancel = () => {
     </div>
 
     <!-- Form Body -->
-    <div class="flex-grow p-6 overflow-y-auto">
+    <div class="grow p-6 overflow-y-auto">
       <Form
         :validation-schema="validationSchema"
         class="h-full flex flex-col"
         @submit="handleSubmit"
       >
-        <div class="flex-grow mb-6">
+        <div class="grow mb-6">
           <label
             for="new-comment"
             class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider"
@@ -151,7 +151,7 @@ const handleCancel = () => {
     <!-- Tips/Info -->
     <div class="p-6 bg-purple-50/50 border-t border-purple-100/50">
       <div class="flex gap-3 text-purple-700">
-        <div class="flex-shrink-0 mt-0.5">
+        <div class="shrink-0 mt-0.5">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"

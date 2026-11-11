@@ -11,7 +11,7 @@
           class="object-cover w-full h-full"
         />
         <label
-          class="absolute inset-0 bg-black bg-opacity-40 text-white flex items-center justify-center text-xs font-semibold cursor-pointer opacity-0 group-hover:opacity-100 transition"
+          class="absolute inset-0 bg-black/40 text-white flex items-center justify-center text-xs font-semibold cursor-pointer opacity-0 group-hover:opacity-100 transition"
         >
           Edit
           <input type="file" accept="image/*" class="hidden" @change="handleFileChange" />

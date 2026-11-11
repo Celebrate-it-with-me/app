@@ -36,7 +36,7 @@
         <div class="text-center lg:text-left space-y-8 animate-fadeIn">
           <!-- Badge -->
           <div
-            class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-sm"
+            class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-xs"
           >
             <Sparkles class="w-4 h-4 text-primary mr-2" />
             <span class="text-sm font-semibold text-primary">🌟 Trusted by 5,000+ Mamás</span>
@@ -70,7 +70,7 @@
           <!-- Feature Pills -->
           <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
             <div
-              class="flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-gray-200/50 dark:border-gray-700/50 shadow-sm"
+              class="flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xs rounded-full border border-gray-200/50 dark:border-gray-700/50 shadow-xs"
             >
               <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300"
@@ -78,7 +78,7 @@
               >
             </div>
             <div
-              class="flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-gray-200/50 dark:border-gray-700/50 shadow-sm"
+              class="flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xs rounded-full border border-gray-200/50 dark:border-gray-700/50 shadow-xs"
             >
               <div
                 class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"
@@ -89,7 +89,7 @@
               >
             </div>
             <div
-              class="flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full border border-gray-200/50 dark:border-gray-700/50 shadow-sm"
+              class="flex items-center px-4 py-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xs rounded-full border border-gray-200/50 dark:border-gray-700/50 shadow-xs"
             >
               <div
                 class="w-2 h-2 bg-purple-500 rounded-full mr-2 animate-pulse"
@@ -105,7 +105,7 @@
           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <a
               href="#features"
-              class="group relative px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden"
+              class="group relative px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden"
             >
               <span class="relative z-10">Start Planning Free</span>
               <div
@@ -114,7 +114,7 @@
             </a>
             <a
               href="#pricing"
-              class="group px-8 py-4 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-lg rounded-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 relative overflow-hidden"
+              class="group px-8 py-4 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-xs font-semibold text-lg rounded-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 relative overflow-hidden"
             >
               <span class="relative z-10">See How It Works →</span>
               <div
@@ -172,7 +172,7 @@
           <div class="relative">
             <!-- Floating Cards -->
             <div
-              class="absolute -top-8 -left-8 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-200/50 dark:border-gray-700/50 animate-float"
+              class="absolute -top-8 -left-8 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xs rounded-2xl p-4 shadow-xl border border-gray-200/50 dark:border-gray-700/50 animate-float"
             >
               <div class="flex items-center gap-3">
                 <div
@@ -200,7 +200,7 @@
             </div>
 
             <div
-              class="absolute -bottom-8 -right-8 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-200/50 dark:border-gray-700/50 animate-float"
+              class="absolute -bottom-8 -right-8 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xs rounded-2xl p-4 shadow-xl border border-gray-200/50 dark:border-gray-700/50 animate-float"
               style="animation-delay: 1s"
             >
               <div class="flex items-center gap-3">
@@ -243,7 +243,7 @@
               />
               <!-- Overlay Content -->
               <div class="absolute bottom-6 left-6 right-6 z-20">
-                <div class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-4">
+                <div class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xs rounded-2xl p-4">
                   <div class="flex items-center justify-between">
                     <div>
                       <p class="font-semibold text-gray-900 dark:text-white">Dream Quinceañera</p>

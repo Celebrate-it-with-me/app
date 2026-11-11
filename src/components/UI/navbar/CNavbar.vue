@@ -1,12 +1,12 @@
 <template>
   <header
-    class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm font-[Poppins] sticky top-0 z-50"
+    class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-xs font-[Poppins] sticky top-0 z-50"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
       <div class="flex items-center gap-2">
         <slot name="logo">
           <span
-            class="text-pink-500 font-bold text-xl hover:text-pink-600 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-md px-1"
+            class="text-pink-500 font-bold text-xl hover:text-pink-600 transition-colors duration-200 cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 rounded-md px-1"
             tabindex="0"
           >
             {{ logo }}</span
@@ -24,10 +24,10 @@
           <a
             :href="link.href"
             :class="[
-              'relative px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2',
+              'relative px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2',
               link.isActive
-                ? 'text-primary bg-gradient-to-r from-primary/10 to-secondary/10 shadow-sm font-semibold'
-                : 'text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:shadow-sm'
+                ? 'text-primary bg-gradient-to-r from-primary/10 to-secondary/10 shadow-xs font-semibold'
+                : 'text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:shadow-xs'
             ]"
             :aria-current="link.isActive ? 'page' : undefined"
             :aria-label="`Navigate to ${link.label} section`"
@@ -51,7 +51,7 @@
         <slot name="extra">
           <RouterLink v-if="loginLink" :to="`/${loginLink}`">
             <a
-              class="group relative inline-flex items-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden"
+              class="group relative inline-flex items-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-xs font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden"
             >
               <span class="relative z-10 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,7 +81,7 @@
 
       <!-- Mobile Menu Button -->
       <button
-        class="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
+        class="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2"
         aria-label="Toggle menu"
         @click="isMenuOpen = !isMenuOpen"
       >
@@ -138,9 +138,9 @@
             <a
               :href="link.href"
               :class="[
-                'block py-2 px-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2',
+                'block py-2 px-3 rounded-md transition-all duration-200 transform hover:scale-[1.02] focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2',
                 link.isActive
-                  ? 'text-primary bg-gradient-to-r from-primary/10 to-secondary/10 border-l-2 border-primary shadow-sm'
+                  ? 'text-primary bg-gradient-to-r from-primary/10 to-secondary/10 border-l-2 border-primary shadow-xs'
                   : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-primary hover:translate-x-1'
               ]"
               :aria-current="link.isActive ? 'page' : undefined"
@@ -163,7 +163,7 @@
           <div class="pt-4 pb-2 border-t border-gray-200 dark:border-gray-700 flex flex-col gap-2">
             <RouterLink v-if="loginLink" :to="`/${loginLink}`">
               <a
-                class="group relative flex items-center justify-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden"
+                class="group relative flex items-center justify-center gap-2 px-4 py-2 border-2 border-primary/30 text-primary hover:text-white hover:border-primary bg-white/50 dark:bg-gray-800/50 backdrop-blur-xs font-semibold text-sm rounded-xl shadow-glow hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 overflow-hidden"
               >
                 <span class="relative z-10 flex items-center gap-2">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +184,7 @@
 
             <RouterLink v-if="ctaText && ctaHref" :to="`/${ctaHref}`">
               <a
-                class="block py-2 px-3 text-center rounded-xl bg-gradient-to-r from-primary to-secondary text-white shadow-sm hover:shadow-md transition-all duration-200 transform hover:scale-[1.02]"
+                class="block py-2 px-3 text-center rounded-xl bg-gradient-to-r from-primary to-secondary text-white shadow-xs hover:shadow-md transition-all duration-200 transform hover:scale-[1.02]"
                 >{{ ctaText }}</a
               >
             </RouterLink>

@@ -108,7 +108,7 @@ const showErrorMessage = computed(() => {
 })
 
 const inputClasses = computed(() => {
-  return `${props.classInput} input-control w-full block focus:outline-none h-[40px]`
+  return `${props.classInput} input-control w-full block focus:outline-hidden h-[40px]`
 })
 </script>
 
@@ -149,7 +149,7 @@ const inputClasses = computed(() => {
       v-if="showErrorMessage"
       :class="
         msgTooltip
-          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-danger-500 block text-sm'
       "
       class="mt-2"
@@ -161,7 +161,7 @@ const inputClasses = computed(() => {
       v-if="validate"
       :class="
         msgTooltip
-          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-success-500 block text-sm'
       "
       class="mt-2"

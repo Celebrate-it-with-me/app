@@ -12,7 +12,7 @@
     <CNavbarLanding />
 
     <!-- Main content area with proper semantic structure -->
-    <main id="main-content" class="flex-1 focus:outline-none" tabindex="-1">
+    <main id="main-content" class="flex-1 focus:outline-hidden" tabindex="-1">
       <!-- Loading indicator for better UX -->
       <router-view v-slot="{ Component }">
         <Suspense>
@@ -35,7 +35,7 @@
     <Transition name="fade">
       <button
         v-if="showBackToTop"
-        class="fixed bottom-6 right-6 bg-primary hover:bg-primary-dark text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 z-40"
+        class="fixed bottom-6 right-6 bg-primary hover:bg-primary-dark text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 z-40"
         aria-label="Back to top"
         @click="scrollToTop"
       >

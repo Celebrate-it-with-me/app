@@ -64,7 +64,7 @@ useParallaxBackground('#homeParallaxBg', 0.75)
           </div>
 
           <div
-            class="inline-flex px-4 py-1 rounded-full bg-white/55 backdrop-blur-sm border border-[#D9C2A3]/35 animate-fadeIn animate__animated animate__bounceInRight"
+            class="inline-flex px-4 py-1 rounded-full bg-white/55 backdrop-blur-xs border border-[#D9C2A3]/35 animate-fadeIn animate__animated animate__bounceInRight"
           >
             <p class="text-2xl font-semibold text-[#123B5A] tracking-[0.12em]">03.14.2026</p>
           </div>

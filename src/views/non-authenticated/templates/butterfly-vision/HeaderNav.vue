@@ -31,7 +31,7 @@ const handleClick = hash => {
   >
     <div class="flex justify-end px-4 pt-6">
       <div
-        class="hamburger-container p-2 border border-rose-200 rounded-lg flex items-center justify-center bg-rose-100/30 focus:outline-none"
+        class="hamburger-container p-2 border border-rose-200 rounded-lg flex items-center justify-center bg-rose-100/30 focus:outline-hidden"
       >
         <CWMHamburger color="#800080" width="24" height="24" @click="toggleMenu" />
       </div>
@@ -46,7 +46,7 @@ const handleClick = hash => {
     >
       <nav v-if="menuOpen" class="mt-3 w-full flex justify-center w-full h-[calc(100vh-12%)]">
         <div
-          class="border-rose-100 bg-white bg-opacity-95 md:bg-white border-y dark:bg-gray-800 dark:border-gray-600 w-[96%] flex items-center justify-center rounded-md flex-col h-full"
+          class="border-rose-100 bg-white/95 md:bg-white border-y dark:bg-gray-800 dark:border-gray-600 w-[96%] flex items-center justify-center rounded-md flex-col h-full"
         >
           <div
             class="flex-1 px-4 py-5 mx-auto text-[#744d9d] dark:text-white text-center flex items-center justify-center"

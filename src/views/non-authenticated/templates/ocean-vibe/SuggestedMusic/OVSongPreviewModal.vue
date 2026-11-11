@@ -109,7 +109,7 @@ const onEsc = e => {
               :src="embedSrc"
               width="100%"
               height="152"
-              class="rounded-xl shadow-sm"
+              class="rounded-xl shadow-xs"
               allow="encrypted-media"
             ></iframe>
 

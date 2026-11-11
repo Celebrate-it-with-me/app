@@ -287,7 +287,7 @@ onMounted(async () => {
             <span>Overall Planning Progress</span>
             <span>{{ completionPercentage }}%</span>
           </div>
-          <div class="h-3 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
+          <div class="h-3 bg-white/20 rounded-full overflow-hidden backdrop-blur-xs">
             <div
               class="h-full bg-white transition-all duration-1000 ease-out"
               :style="`width: ${completionPercentage}%`"
@@ -411,7 +411,7 @@ onMounted(async () => {
       <div class="md:col-span-3 space-y-6">
         <!-- RSVP Overview Widget -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-xs"
         >
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2">
@@ -512,7 +512,7 @@ onMounted(async () => {
         <!-- Menu Status Widget (Conditional) -->
         <div
           v-if="showMenuWidget"
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-xs"
         >
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2">
@@ -580,7 +580,7 @@ onMounted(async () => {
 
         <!-- Seating Progress Widget -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-xs"
         >
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2">
@@ -707,7 +707,7 @@ onMounted(async () => {
 
         <!-- Budget Breakdown Widget -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-xs"
         >
           <div class="flex items-center gap-2 mb-6">
             <TrendingUp class="w-5 h-5 text-pink-500" />
@@ -826,7 +826,7 @@ onMounted(async () => {
 
         <!-- Music Summary Widget -->
         <div
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-xs"
         >
           <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-2">
@@ -903,7 +903,7 @@ onMounted(async () => {
         <!-- Gallery Preview Widget (Conditional) -->
         <div
           v-if="photoCount > 0"
-          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-xs"
         >
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">

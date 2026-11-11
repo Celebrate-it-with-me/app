@@ -117,7 +117,7 @@ const fetchSuggestions = debounce(async () => {
       <input
         v-model="searchQuery"
         type="text"
-        class="w-full text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 input-control w-full block focus:outline-none h-[40px]"
+        class="w-full text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400 input-control w-full block focus:outline-hidden h-[40px]"
         :style="secondaryColorComputed"
         placeholder="Search for a song..."
         @input="fetchSuggestions"

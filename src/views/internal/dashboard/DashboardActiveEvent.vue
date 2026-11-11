@@ -1,6 +1,6 @@
 <template>
   <div
-    class="hero-section bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-4 shadow-sm border-l-4 border-pink-500"
+    class="hero-section bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-4 shadow-xs border-l-4 border-pink-500"
   >
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex-1">

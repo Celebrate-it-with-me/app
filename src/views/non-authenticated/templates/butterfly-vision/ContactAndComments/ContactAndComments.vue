@@ -41,16 +41,16 @@ const addComment = () => {
 <template>
   <section class="guest-comments w-full h-screen flex flex-col bg-gray-100 p-6 overflow-hidden">
     <!-- Title -->
-    <div class="comment-header text-center pb-4 flex-shrink-0">
+    <div class="comment-header text-center pb-4 shrink-0">
       <h2 class="text-6xl font-gvibes font-bold text-gray-800">Deja tu Comentario</h2>
       <p class="text-lg text-gray-600 mt-2">Comparte tus emociones y deseos aquí 🎉</p>
     </div>
 
     <!-- Scrollable Content Section -->
-    <div class="flex-grow overflow-y-auto flex flex-col gap-6">
+    <div class="grow overflow-y-auto flex flex-col gap-6">
       <!-- Leave a Comment Form -->
       <form
-        class="comment-form w-full max-w-2xl bg-white shadow p-6 rounded-lg flex flex-col gap-4 mx-auto"
+        class="comment-form w-full max-w-2xl bg-white shadow-sm p-6 rounded-lg flex flex-col gap-4 mx-auto"
         @submit.prevent="addComment"
       >
         <!-- Author Input -->
@@ -58,14 +58,14 @@ const addComment = () => {
           v-model="newComment.author"
           type="text"
           placeholder="Tu nombre"
-          class="p-3 border border-gray-300 rounded-lg focus:ring focus:ring-pink-300"
+          class="p-3 border border-gray-300 rounded-lg focus:ring-3 focus:ring-pink-300"
         />
         <!-- Comment Input -->
         <textarea
           v-model="newComment.message"
           rows="2"
           placeholder="Escribe tu comentario aquí..."
-          class="p-3 border border-gray-300 rounded-lg focus:ring focus:ring-pink-300 resize-none"
+          class="p-3 border border-gray-300 rounded-lg focus:ring-3 focus:ring-pink-300 resize-none"
         ></textarea>
         <!-- Submit Button -->
         <button
@@ -83,7 +83,7 @@ const addComment = () => {
           <div
             v-for="comment in comments"
             :key="comment.id"
-            class="comment-item p-4 border border-gray-200 bg-white shadow rounded-lg"
+            class="comment-item p-4 border border-gray-200 bg-white shadow-sm rounded-lg"
           >
             <p class="text-lg font-bold">{{ comment.author }}</p>
             <p class="text-gray-600">{{ comment.message }}</p>
@@ -93,7 +93,7 @@ const addComment = () => {
     </div>
 
     <!-- WhatsApp Links -->
-    <div class="whatsapp-links mt-6 flex-shrink-0">
+    <div class="whatsapp-links mt-6 shrink-0">
       <p class="text-lg font-medium text-gray-800 mb-4 text-center">
         También puedes dejar un mensaje en WhatsApp:
       </p>

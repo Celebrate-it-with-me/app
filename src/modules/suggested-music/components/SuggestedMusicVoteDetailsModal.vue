@@ -28,7 +28,7 @@ const emit = defineEmits(['update:modelValue'])
         <img
           :src="props.selectedSong.thumbnailUrl || 'https://via.placeholder.com/80'"
           alt="Album Art"
-          class="w-20 h-20 rounded-lg object-cover shadow-sm"
+          class="w-20 h-20 rounded-lg object-cover shadow-xs"
         />
         <div class="flex-1 min-w-0">
           <h3 class="text-xl font-bold text-gray-900 dark:text-white truncate">

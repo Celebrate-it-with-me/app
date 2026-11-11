@@ -37,7 +37,7 @@ const haveCompanions = computed(() => {
         </div>
 
         <div
-          class="bottom-hero w-full flex flex-col items-center justify-center w-full animate__animated animate__bounce bg-white bg-opacity-50 p-10"
+          class="bottom-hero w-full flex flex-col items-center justify-center w-full animate__animated animate__bounce bg-white/50 p-10"
         >
           <p class="text-2xl font-normal text-purple-middle font-gvibes">
             <span v-if="haveCompanions"> Es nuestro Placer Invitarlos </span>

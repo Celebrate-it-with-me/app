@@ -157,7 +157,7 @@ const handleConfirmHeadcount = () => {
 </script>
 
 <template>
-  <div class="suggestions-section bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+  <div class="suggestions-section bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
     <h2 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
       <Lightbulb class="w-5 h-5 text-yellow-500" />
       Suggested Next Steps
@@ -168,18 +168,18 @@ const handleConfirmHeadcount = () => {
         v-for="(action, index) in suggestedActions"
         :key="index"
         :class="[
-          'suggestion-item flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 rounded-lg border-l-4 transition-all hover:shadow-md border shadow-sm gap-3',
+          'suggestion-item flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 rounded-lg border-l-4 transition-all hover:shadow-md border shadow-xs gap-3',
           action.borderClass,
           action.bgClass
         ]"
       >
         <div class="flex items-center gap-3 flex-1 min-w-0">
           <span
-            class="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-white/50 text-gray-700 font-bold text-xs shadow-sm"
+            class="shrink-0 w-6 h-6 flex items-center justify-center rounded-full bg-white/50 text-gray-700 font-bold text-xs shadow-xs"
           >
             {{ index + 1 }}
           </span>
-          <component :is="action.icon" :class="['w-5 h-5 flex-shrink-0', action.iconClass]" />
+          <component :is="action.icon" :class="['w-5 h-5 shrink-0', action.iconClass]" />
           <div class="flex-1 min-w-0">
             <p class="font-semibold text-sm text-gray-900 truncate">
               {{ action.title }}
@@ -190,7 +190,7 @@ const handleConfirmHeadcount = () => {
           </div>
         </div>
         <button
-          class="w-full sm:w-auto px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors text-sm font-bold shadow-sm whitespace-nowrap ml-0 sm:ml-3"
+          class="w-full sm:w-auto px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors text-sm font-bold shadow-xs whitespace-nowrap ml-0 sm:ml-3"
           @click="action.action"
         >
           {{ action.actionLabel }}

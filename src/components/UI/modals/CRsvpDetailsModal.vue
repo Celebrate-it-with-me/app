@@ -34,7 +34,7 @@
             <!-- Email row -->
             <div v-if="guestData.email" class="flex items-center justify-between group">
               <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
-                <div class="p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                <div class="p-2 bg-white dark:bg-gray-700 rounded-lg shadow-xs">
                   <Mail class="w-4 h-4 text-purple-500" />
                 </div>
                 <span class="truncate max-w-[150px]" :title="guestData.email">{{
@@ -53,7 +53,7 @@
             <!-- Phone row -->
             <div v-if="guestData.phone" class="flex items-center justify-between group">
               <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
-                <div class="p-2 bg-white dark:bg-gray-700 rounded-lg shadow-sm">
+                <div class="p-2 bg-white dark:bg-gray-700 rounded-lg shadow-xs">
                   <Phone class="w-4 h-4 text-purple-500" />
                 </div>
                 <span>{{ guestData.phone }}</span>
@@ -160,17 +160,17 @@
               </label>
               <div class="flex items-center gap-2">
                 <div
-                  class="flex-1 flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"
+                  class="flex-1 flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs"
                 >
                   <LinkIcon class="w-3.5 h-3.5 text-gray-400" />
                   <input
                     :value="truncatedUrl"
                     readonly
-                    class="flex-1 text-xs bg-transparent border-none outline-none text-gray-600 dark:text-gray-400"
+                    class="flex-1 text-xs bg-transparent border-none outline-hidden text-gray-600 dark:text-gray-400"
                   />
                 </div>
                 <button
-                  class="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-sm"
+                  class="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors shadow-xs"
                   title="Copy Link"
                   @click="copyLink"
                 >
@@ -182,12 +182,12 @@
             <!-- QR Code -->
             <div
               v-if="guestData.invitationQR"
-              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg shadow-sm"
+              class="flex items-center gap-3 p-3 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-lg shadow-xs"
             >
               <img
                 :src="qrCodeDataUrl"
                 alt="QR Code"
-                class="w-14 h-14 border border-gray-100 dark:border-gray-700 rounded p-0.5"
+                class="w-14 h-14 border border-gray-100 dark:border-gray-700 rounded-sm p-0.5"
               />
               <div class="flex flex-col">
                 <span class="text-[10px] text-gray-500 mb-1">Scan to RSVP</span>

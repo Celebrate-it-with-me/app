@@ -1,3 +1,5 @@
+@reference '../style.css';
+
 /* color palette from <https://github.com/vuejs/theme> */
 @font-face {
   font-family: 'Beauty sans';
@@ -198,12 +200,12 @@ body {
 }
 
 .cwm-datepicker-input {
-  @apply w-full bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400;
+  @apply w-full bg-transparent border-none outline-hidden text-sm text-gray-900 dark:text-white placeholder-gray-400;
   border-radius: 0;
   box-shadow: none;
 }
 
 .dp__input {
-  @apply bg-transparent border-none shadow-none outline-none;
+  @apply bg-transparent border-none shadow-none outline-hidden;
   border-radius: 0;
 }

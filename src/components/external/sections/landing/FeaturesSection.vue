@@ -33,7 +33,7 @@
       <!-- Header Section -->
       <div class="text-center mb-20 animate-fadeIn">
         <div
-          class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-sm mb-6"
+          class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 backdrop-blur-xs mb-6"
         >
           <Rocket class="w-4 h-4 text-primary mr-2" />
           <span class="text-sm font-semibold text-primary">Features </span>
@@ -61,7 +61,7 @@
       <div class="grid gap-8 lg:grid-cols-3 mb-16">
         <!-- Feature Card 1 - Enhanced -->
         <div
-          class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transform hover:-translate-y-2"
+          class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xs rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transform hover:-translate-y-2"
         >
           <!-- Card Background Gradient -->
           <div
@@ -134,7 +134,7 @@
 
         <!-- Feature Card 2 - Enhanced -->
         <div
-          class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transform hover:-translate-y-2"
+          class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xs rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transform hover:-translate-y-2"
         >
           <div
             class="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -204,7 +204,7 @@
 
         <!-- Feature Card 3 - Enhanced -->
         <div
-          class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transform hover:-translate-y-2"
+          class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xs rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transform hover:-translate-y-2"
         >
           <div
             class="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"

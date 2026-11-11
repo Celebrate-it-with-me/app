@@ -60,7 +60,7 @@ const onAdd = song => emit('add', song)
               <img
                 :src="song.thumbnailUrl"
                 alt="Album Art"
-                class="w-12 h-12 rounded-md object-cover flex-shrink-0"
+                class="w-12 h-12 rounded-md object-cover shrink-0"
               />
               <div class="min-w-0">
                 <h3 class="font-medium text-gray-900 dark:text-white truncate">

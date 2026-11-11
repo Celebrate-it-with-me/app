@@ -12,7 +12,7 @@ const props = defineProps({
 
 const buttonClasses = computed(() => {
   const baseStyles =
-    'w-full inline-flex items-center justify-center font-medium tracking-wide rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2'
+    'w-full inline-flex items-center justify-center font-medium tracking-wide rounded-lg transition duration-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2'
 
   const variantStyles = {
     primary:

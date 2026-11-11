@@ -14,7 +14,7 @@ const goToNext = () => {
   <div>
     <div class="w-full">
       <div
-        class="bg-sky-50/50 border border-sky-100 px-6 py-10 rounded-2xl text-center mb-10 shadow-sm"
+        class="bg-sky-50/50 border border-sky-100 px-6 py-10 rounded-2xl text-center mb-10 shadow-xs"
       >
         <div
           class="w-16 h-16 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-4"

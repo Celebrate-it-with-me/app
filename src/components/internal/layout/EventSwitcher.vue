@@ -124,7 +124,7 @@ const selectEvent = event => {
               <div class="flex flex-col items-start min-w-0">
                 <span class="font-medium truncate w-full">{{ event.eventName }}</span>
               </div>
-              <Check v-if="eventStore.activeEvent.id === event.id" class="w-4 h-4 flex-shrink-0" />
+              <Check v-if="eventStore.activeEvent.id === event.id" class="w-4 h-4 shrink-0" />
             </button>
           </div>
         </div>

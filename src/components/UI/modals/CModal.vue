@@ -2,7 +2,7 @@
   <transition name="modal">
     <div
       v-if="modelValue"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs px-4"
     >
       <div
         class="w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800"

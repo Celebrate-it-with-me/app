@@ -17,7 +17,7 @@
         <div
           v-for="(photo, index) in photos"
           :key="index"
-          class="relative group rounded overflow-hidden border shadow-md"
+          class="relative group rounded-sm overflow-hidden border shadow-md"
         >
           <img :src="photo.url" class="w-full h-40 object-cover" alt="Place Image" />
 

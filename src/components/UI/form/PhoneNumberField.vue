@@ -86,7 +86,7 @@ const handleFieldBlur = e => {
       <!-- Input Field -->
       <input
         :id="name"
-        :class="`${classInput} input-control w-full block focus:outline-none h-[40px]`"
+        :class="`${classInput} input-control w-full block focus:outline-hidden h-[40px]`"
         :disabled="disabled"
         :readonly="isReadonly"
         :name="name"

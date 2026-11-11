@@ -33,7 +33,7 @@ const { showDropdown, toggleDropdown, exportToPDF, exportToExcel } = useRsvpDown
 
     <div
       v-if="showDropdown"
-      class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      class="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 focus:outline-hidden"
     >
       <div class="py-1">
         <button

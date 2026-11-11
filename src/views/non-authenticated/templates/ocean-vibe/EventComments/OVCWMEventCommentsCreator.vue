@@ -171,7 +171,7 @@ const onInvalidSubmit = errors => {
             label="Title"
             show-error
             placeholder="Section Title"
-            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
           />
         </div>
         <!-- STD Title -->
@@ -182,7 +182,7 @@ const onInvalidSubmit = errors => {
             label="Sub Title"
             show-error
             placeholder="Comments Section Subtitle Title"
-            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
           />
         </div>
 
@@ -192,7 +192,7 @@ const onInvalidSubmit = errors => {
             v-model="eventCommentsStore.config.backgroundColor"
             label="Background Color"
             class-label="text-lg font-medium"
-            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
             name="backgroundColor"
             :colorpicker-options="{
               type: 'component',
@@ -212,7 +212,7 @@ const onInvalidSubmit = errors => {
             label="Title"
             show-error
             placeholder="Section Title"
-            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
           />
         </div>
 
@@ -221,7 +221,7 @@ const onInvalidSubmit = errors => {
             v-model="eventCommentsStore.config.buttonColor"
             label="Button Color"
             class-label="text-lg font-medium"
-            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
             name="buttonColor"
             :colorpicker-options="{
               type: 'component',
@@ -241,7 +241,7 @@ const onInvalidSubmit = errors => {
             label="Button Text"
             show-error
             placeholder="Button Text"
-            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
           />
         </div>
 
@@ -252,7 +252,7 @@ const onInvalidSubmit = errors => {
             label="Max Comments"
             show-error
             placeholder="Comments Section Max Comments"
-            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+            :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
           />
         </div>
       </div>

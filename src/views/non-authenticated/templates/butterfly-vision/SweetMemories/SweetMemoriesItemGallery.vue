@@ -14,7 +14,7 @@ defineProps({
     class="image_container w-[150px] h-[150px]"
     :data-sub-html="galleryItem.subHtml"
   >
-    <img :src="galleryItem.thumb" :alt="galleryItem.title" class="rounded" />
+    <img :src="galleryItem.thumb" :alt="galleryItem.title" class="rounded-sm" />
   </a>
 </template>
 

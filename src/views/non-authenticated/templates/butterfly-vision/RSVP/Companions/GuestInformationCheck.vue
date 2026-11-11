@@ -54,7 +54,7 @@ const submit = async () => {
           Main Guest Information:
         </h3>
         <div class="overflow-x-auto">
-          <table class="w-full table-auto border rounded-lg shadow-sm text-sm">
+          <table class="w-full table-auto border rounded-lg shadow-xs text-sm">
             <tbody>
               <tr class="border-b">
                 <td class="px-4 py-2 font-semibold text-gray-600 w-32">Name:</td>
@@ -99,7 +99,7 @@ const submit = async () => {
           Companions List:
         </h3>
         <div class="overflow-x-auto">
-          <table class="w-full table-auto border rounded-lg sm:rounded-lg shadow-sm text-sm">
+          <table class="w-full table-auto border rounded-lg sm:rounded-lg shadow-xs text-sm">
             <thead class="bg-gray-100 text-gray-600 uppercase">
               <tr>
                 <th class="px-4 py-2 text-left">Name</th>

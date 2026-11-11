@@ -12,7 +12,7 @@ defineProps({
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <!-- Total Memories -->
     <div
-      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+      class="bg-white rounded-xl p-6 shadow-xs border border-gray-100 hover:shadow-md transition-shadow"
     >
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
@@ -27,7 +27,7 @@ defineProps({
 
     <!-- Total Reactions -->
     <div
-      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+      class="bg-white rounded-xl p-6 shadow-xs border border-gray-100 hover:shadow-md transition-shadow"
     >
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center">
@@ -48,7 +48,7 @@ defineProps({
 
     <!-- Total Views -->
     <div
-      class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+      class="bg-white rounded-xl p-6 shadow-xs border border-gray-100 hover:shadow-md transition-shadow"
     >
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center">

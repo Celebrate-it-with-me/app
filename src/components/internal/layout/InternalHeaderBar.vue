@@ -37,7 +37,7 @@
           <Search class="w-4 h-4" />
           <span>Search</span>
           <kbd
-            class="px-1.5 py-0.5 text-xs font-mono bg-white dark:bg-gray-700 rounded border text-gray-500"
+            class="px-1.5 py-0.5 text-xs font-mono bg-white dark:bg-gray-700 rounded-sm border text-gray-500"
             >⌘K</kbd
           >
         </button>
@@ -134,7 +134,7 @@
                 class="flex items-start gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
               >
                 <div
-                  class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0"
+                  class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shrink-0"
                 >
                   <component
                     :is="getNotificationIcon(notification.type)"
@@ -175,7 +175,7 @@
             @click="toggleUserMenu"
           >
             <div
-              class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-sm"
+              class="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-xs"
             >
               <span class="text-xs font-bold text-white">{{ userInitials }}</span>
             </div>

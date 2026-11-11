@@ -235,8 +235,9 @@ const handleSubmit = () => {
 </script>
 
 <style scoped>
+@reference '../../../style.css';
 :deep(.dp__input_wrap) {
-  @apply w-full bg-transparent border-none rounded-none outline-none shadow-none;
+  @apply w-full bg-transparent border-none rounded-none outline-hidden shadow-none;
   padding: 0 !important;
 }
 

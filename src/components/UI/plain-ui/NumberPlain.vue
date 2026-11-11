@@ -44,7 +44,7 @@ const handleInput = event => {
       :min="min"
       :max="max"
       :step="step"
-      class="w-1/3 px-3 py-2 text-gray-900 bg-gray-100 rounded-lg border border-gray-300 focus:ring focus:ring-blue-500 focus:border-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500"
+      class="w-1/3 px-3 py-2 text-gray-900 bg-gray-100 rounded-lg border border-gray-300 focus:ring-3 focus:ring-blue-500 focus:border-blue-700 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500"
       @input="handleInput"
     />
   </div>

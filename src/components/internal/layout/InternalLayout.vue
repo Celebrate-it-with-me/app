@@ -81,7 +81,7 @@ onUnmounted(() => {
       <!-- Mobile sidebar backdrop -->
       <div
         v-if="mobileSidebarOpen"
-        class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+        class="fixed inset-0 bg-black/50 z-40 md:hidden"
         @click="mobileSidebarOpen = false"
       ></div>
 

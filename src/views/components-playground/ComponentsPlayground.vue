@@ -300,7 +300,7 @@
         <select
           id="custom-select"
           v-model="selected"
-          class="w-full bg-transparent border-b px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary focus:ring-0"
+          class="w-full bg-transparent border-b px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 border-gray-300 dark:border-gray-600 focus:outline-hidden focus:border-primary focus:ring-0"
         >
           <option disabled value="">Select an option</option>
           <option v-for="(option, index) in options" :key="index" :value="option.value">
