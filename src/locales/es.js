@@ -168,7 +168,16 @@ export default {
       cta: 'Empezar gratis',
       helper: 'Desbloquea el evento completo cuando quieras. No se cobra al registrarte.'
     },
-    fine: 'Puedes quedarte en el plan gratis todo el tiempo que quieras.'
+    fine: 'Puedes quedarte en el plan gratis todo el tiempo que quieras.',
+    custom: {
+      label: 'Diseño a medida',
+      title: '¿Quieres una invitación tan única como tu celebración?',
+      text: 'Creamos un diseño exclusivo inspirado en tu estilo, tus colores y tu historia. Cuéntanos tu idea y te preparamos una cotización.',
+      cta: 'Cotizar mi diseño personalizado',
+      note: 'Servicio de diseño a medida con costo adicional.',
+      mailSubject: 'Cotización de diseño personalizado',
+      mailBody: 'Hola, me interesa una invitación con diseño personalizado. Quisiera conocer las opciones y solicitar una cotización.'
+    }
   },
   faq: {
     title: 'Preguntas frecuentes',

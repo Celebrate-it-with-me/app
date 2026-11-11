@@ -1,7 +1,9 @@
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Check } from 'lucide-vue-next'
 import { UiButton, UiBadge } from '@/ui'
+import { mailtoLink } from '@/config/brand'
 
 /**
  * Two plans side by side. On md+ the cards share one grid with subgrid rows, so
@@ -9,6 +11,10 @@ import { UiButton, UiBadge } from '@/ui'
  * Rows: name · tagline · price · list intro · list · button
  */
 const { t, tm } = useI18n()
+
+const quoteLink = computed(() =>
+  mailtoLink({ subject: t('pricing.custom.mailSubject'), body: t('pricing.custom.mailBody') })
+)
 
 const CARD = 'md:grid md:grid-rows-subgrid md:row-span-6 flex flex-col gap-0 rounded-2xl border p-7'
 </script>
@@ -69,6 +75,22 @@ const CARD = 'md:grid md:grid-rows-subgrid md:row-span-6 flex flex-col gap-0 rou
       </div>
 
       <p class="mt-6 text-center text-sm text-ink-500">{{ t('pricing.fine') }}</p>
+
+      <!-- Optional add-on: a one-of-a-kind design, by quote. Not a third plan. -->
+      <aside
+        class="mx-auto mt-10 flex max-w-4xl flex-col gap-6 rounded-2xl border border-line bg-cream-50 p-7 md:flex-row md:items-center md:justify-between md:gap-10"
+        :aria-label="t('pricing.custom.label')"
+      >
+        <div class="max-w-xl">
+          <p class="text-sm font-semibold uppercase tracking-wide text-gold-700">{{ t('pricing.custom.label') }}</p>
+          <h3 class="mt-2 font-heading text-2xl text-ink-900 text-balance">{{ t('pricing.custom.title') }}</h3>
+          <p class="mt-2 text-base text-ink-500">{{ t('pricing.custom.text') }}</p>
+        </div>
+        <div class="flex shrink-0 flex-col gap-2 md:items-end">
+          <UiButton variant="outline" :href="quoteLink" class="w-full md:w-auto">{{ t('pricing.custom.cta') }}</UiButton>
+          <p class="text-center text-xs text-ink-500 md:text-right">{{ t('pricing.custom.note') }}</p>
+        </div>
+      </aside>
     </div>
   </section>
 </template>

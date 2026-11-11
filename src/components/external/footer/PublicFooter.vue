@@ -2,10 +2,10 @@
 import { useI18n } from 'vue-i18n'
 import QuinviteLogo from '@/components/brand/QuinviteLogo.vue'
 import LocaleSwitch from '@/components/external/navigation/LocaleSwitch.vue'
+import { SUPPORT_EMAIL } from '@/config/brand'
 
 const { t } = useI18n()
 const year = new Date().getFullYear()
-const SUPPORT_EMAIL = 'hola@quinvite.com'
 
 const product = [
   { label: 'nav.howItWorks', to: { path: '/', hash: '#como-funciona' } },

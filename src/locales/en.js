@@ -168,7 +168,16 @@ export default {
       cta: 'Start free',
       helper: 'Unlock the full event whenever you want. Nothing is charged when you sign up.'
     },
-    fine: 'You can stay on the free plan as long as you like.'
+    fine: 'You can stay on the free plan as long as you like.',
+    custom: {
+      label: 'Custom design',
+      title: 'Want an invitation as unique as your celebration?',
+      text: 'We create an exclusive design inspired by your style, your colors and your story. Tell us your idea and we will prepare a quote.',
+      cta: 'Get a quote for my custom design',
+      note: 'Custom design service at an additional cost.',
+      mailSubject: 'Custom design quote',
+      mailBody: 'Hi, I am interested in an invitation with a custom design. I would like to know the options and request a quote.'
+    }
   },
   faq: {
     title: 'Frequently asked questions',

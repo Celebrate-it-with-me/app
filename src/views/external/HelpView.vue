@@ -2,9 +2,9 @@
 import { useI18n } from 'vue-i18n'
 import { ChevronDown } from 'lucide-vue-next'
 import { UiPageHeader } from '@/ui'
+import { SUPPORT_EMAIL } from '@/config/brand'
 
 const { t, tm } = useI18n()
-const SUPPORT_EMAIL = 'hola@quinvite.com'
 </script>
 
 <template>

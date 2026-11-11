@@ -212,6 +212,12 @@
   opacity: 0;
   transform: translateY(14px);
 }
+@media print {
+  [data-reveal].is-armed {
+    opacity: 1;
+    transform: none;
+  }
+}
 [data-reveal].is-armed.is-in {
   opacity: 1;
   transform: translateY(0);
