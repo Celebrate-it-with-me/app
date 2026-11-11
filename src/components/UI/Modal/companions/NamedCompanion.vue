@@ -94,7 +94,7 @@ const selectedGuest = computed(() => guestStore.currentGuest)
             {{ companion.confirmed }}
           </td>
           <td class="px-6 py-4 text-center">
-            <fwb-dropdown text="Actions" content-class="rounded-lg" color="yellow">
+            <fwb-dropdown text="Actions" content-wrapper-class="rounded-lg" color="yellow">
               <fwb-list-group class="text-sm text-gray-700 dark:text-gray-200">
                 <fwb-list-group-item
                   class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"

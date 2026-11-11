@@ -39,7 +39,7 @@ const { getProgressColor } = seatingStore
     <div class="flex items-start justify-between mb-2">
       <div class="flex items-center gap-3">
         <div
-          class="w-10 h-10 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center shadow-sm"
+          class="w-10 h-10 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center shadow-xs"
         >
           <span class="text-lg font-bold text-purple-600 dark:text-purple-400">
             {{ table.id }}

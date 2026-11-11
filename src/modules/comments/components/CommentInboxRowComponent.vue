@@ -11,13 +11,13 @@
   >
     <!-- Avatar -->
     <div
-      class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-sm"
+      class="shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-xs"
     >
       {{ comment.authorInitials || getInitials(comment.authorName) }}
     </div>
 
     <!-- Content -->
-    <div class="flex-grow min-w-0">
+    <div class="grow min-w-0">
       <div class="flex items-center justify-between mb-0.5">
         <span class="font-bold text-gray-900 truncate mr-2">{{ comment.authorName }}</span>
         <span class="text-[10px] text-gray-400 whitespace-nowrap">
@@ -40,7 +40,7 @@
 
     <!-- Quick Actions (Hover) -->
     <div
-      class="absolute right-4 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center gap-1 bg-white/90 backdrop-blur-sm p-1 rounded-lg shadow-sm border border-gray-100"
+      class="absolute right-4 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center gap-1 bg-white/90 backdrop-blur-xs p-1 rounded-lg shadow-xs border border-gray-100"
     >
       <button
         class="p-1.5 hover:bg-gray-100 rounded-md transition-colors"

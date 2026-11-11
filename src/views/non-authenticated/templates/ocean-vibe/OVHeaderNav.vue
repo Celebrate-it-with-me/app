@@ -30,7 +30,7 @@ const handleClick = hash => {
   >
     <div class="flex justify-end px-4 pt-6">
       <div
-        class="hamburger-container p-2 border border-[#D9C2A3]/50 rounded-lg flex items-center justify-center bg-white/70 backdrop-blur focus:outline-none"
+        class="hamburger-container p-2 border border-[#D9C2A3]/50 rounded-lg flex items-center justify-center bg-white/70 backdrop-blur-sm focus:outline-hidden"
       >
         <OVCWMHamburger color="#123B5A" width="24" height="24" @click="toggleMenu" />
       </div>
@@ -115,7 +115,7 @@ const handleClick = hash => {
       <nav class="">
         <ul class="flex gap-x-6">
           <li
-            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded"
+            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded-sm"
             :class="{
               'text-[#2F6F8F] underline decoration-[#D9C2A3] decoration-2 underline-offset-4':
                 currentHash === '#sectionHome'
@@ -124,7 +124,7 @@ const handleClick = hash => {
             <a href="#sectionHome">HOME</a>
           </li>
           <li
-            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded"
+            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded-sm"
             :class="{
               'text-[#2F6F8F] underline decoration-[#D9C2A3] decoration-2 underline-offset-4':
                 currentHash === '#sectionSTD'
@@ -133,7 +133,7 @@ const handleClick = hash => {
             <a href="#sectionSTD">SAVE THE DATE</a>
           </li>
           <li
-            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded"
+            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded-sm"
             :class="{
               'text-[#2F6F8F] underline decoration-[#D9C2A3] decoration-2 underline-offset-4':
                 currentHash === '#sectionItinerario'
@@ -142,7 +142,7 @@ const handleClick = hash => {
             <a href="#sectionItinerario">ITINERARIO</a>
           </li>
           <li
-            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded"
+            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded-sm"
             :class="{
               'text-[#2F6F8F] underline decoration-[#D9C2A3] decoration-2 underline-offset-4':
                 currentHash === '#sectionSweetMemories'
@@ -162,7 +162,7 @@ const handleClick = hash => {
       <nav>
         <ul class="flex gap-x-6">
           <li
-            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded"
+            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded-sm"
             :class="{
               'text-[#2F6F8F] underline decoration-[#D9C2A3] decoration-2 underline-offset-4':
                 currentHash === '#sectionRSVP'
@@ -171,7 +171,7 @@ const handleClick = hash => {
             <a href="#sectionRSVP">RSVP</a>
           </li>
           <li
-            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded"
+            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded-sm"
             :class="{
               'text-[#2F6F8F] underline decoration-[#D9C2A3] decoration-2 underline-offset-4':
                 currentHash === '#sectionSong'
@@ -180,7 +180,7 @@ const handleClick = hash => {
             <a href="#sectionSong">CANCIONES</a>
           </li>
           <li
-            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded"
+            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded-sm"
             :class="{
               'text-[#2F6F8F] underline decoration-[#D9C2A3] decoration-2 underline-offset-4':
                 currentHash === '#sectionComments'
@@ -189,7 +189,7 @@ const handleClick = hash => {
             <a href="#sectionComments">COMENTARIOS</a>
           </li>
           <li
-            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded"
+            class="cursor-pointer text-[#123B5A]/80 hover:text-[#2F6F8F] hover:underline decoration-[#D9C2A3] transition-colors duration-300 tracking-wide focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#2F6F8F] rounded-sm"
             :class="{
               'text-[#2F6F8F] underline decoration-[#D9C2A3] decoration-2 underline-offset-4':
                 currentHash === '#sectionContact'

@@ -1,7 +1,7 @@
 <script setup>
 import { Form } from 'vee-validate'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import TextField from '@/components/UI/form/TextField.vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
@@ -30,9 +30,7 @@ const mainGuestValidationSchema = computed(() => {
         .string()
         .regex(/^[0-9]*$/, { message: 'Phone Number must be numeric' })
         .optional(),
-      rsvpStatus: zod.enum(['attending', 'not-attending'], {
-        required_error: 'Please select a confirmation option'
-      })
+      rsvpStatus: zod.enum(['attending', 'not-attending'], { error: issue => (issue.input === undefined ? 'Please select a confirmation option' : undefined) })
     })
   )
 })

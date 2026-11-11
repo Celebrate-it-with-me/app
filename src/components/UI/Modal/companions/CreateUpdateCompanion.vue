@@ -2,7 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { Form } from 'vee-validate'
 import TextField from '@/components/UI/form/TextField.vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import PhoneNumberField from '@/components/UI/form/PhoneNumberField.vue'
@@ -39,8 +39,8 @@ const notificationStore = useNotificationStore()
 const companionValidationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
-      firstName: zod.string().min(1, { required_error: 'First Name is required.' }),
-      lastName: zod.string().min(1, { required_error: 'Last Name is required.' }),
+      firstName: zod.string().min(1, 'First Name is required.'),
+      lastName: zod.string().min(1, 'Last Name is required.'),
       email: zod.string().email('Invalid email address').or(zod.literal('')).optional(),
       phoneNumber: zod.string().optional()
     })
@@ -131,7 +131,7 @@ const onInvalidSubmit = error => {
           placeholder="First Name"
           name="firstName"
           show-error
-          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
         />
 
         <TextField
@@ -140,7 +140,7 @@ const onInvalidSubmit = error => {
           placeholder="Last Name"
           name="lastName"
           show-error
-          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
         />
       </div>
       <div class="w-1/2 flex justify-between items-start mt-5 gap-x-2">
@@ -150,7 +150,7 @@ const onInvalidSubmit = error => {
           placeholder="Email"
           name="email"
           show-error
-          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
         />
 
         <PhoneNumberField
@@ -160,7 +160,7 @@ const onInvalidSubmit = error => {
           name="phoneNumber"
           show-error
           :show-icon="false"
-          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`"
+          :class-input="`w-full bg-gray-900 text-white border-none px-2 py-1 rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-400`"
         />
       </div>
 

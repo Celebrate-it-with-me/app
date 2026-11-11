@@ -66,7 +66,7 @@ onMounted(async () => {
     </div>
 
     <CCard
-      class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30"
+      class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-xs border border-pink-200/30 dark:border-pink-700/30"
     >
       <div class="text-center">
         <h1 class="text-2xl font-display font-bold text-primary mb-6 capitalize">

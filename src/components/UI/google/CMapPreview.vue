@@ -4,7 +4,7 @@
 
 <script setup>
 import { ref, watch, nextTick } from 'vue'
-import { Loader } from '@googlemaps/js-api-loader'
+import { loadGoogleLibraries } from '@/utils/googleMaps'
 
 const props = defineProps({
   lat: Number,
@@ -22,12 +22,7 @@ const markerInstance = ref(null)
 const initMap = async () => {
   if (!props.lat || !props.lng) return
 
-  const loader = new Loader({
-    apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: ['places']
-  })
-
-  await loader.load()
+  await loadGoogleLibraries('maps')
 
   await nextTick()
 

@@ -4,7 +4,7 @@ import TextField from '@/components/UI/form/TextField.vue'
 import { computed, reactive, ref, watch } from 'vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import PasswordField from '@/components/UI/form/PasswordField.vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { useUserStore } from '@/stores/useUserStore'
 
@@ -59,7 +59,7 @@ const onInvalidSubmit = errors => {
 </script>
 
 <template>
-  <div class="sign-up-form w-1/2 bg-gray-800 rounded p-10">
+  <div class="sign-up-form w-1/2 bg-gray-800 rounded-sm p-10">
     <h3 class="font-semibold text-xl mb-10 text-white">Let's Start!</h3>
     <Form
       v-if="!registrationComplete"
@@ -135,7 +135,7 @@ const onInvalidSubmit = errors => {
       <div>
         <button
           type="submit"
-          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:border-none focus:ring-2 focus:ring-blue-400"
+          class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-hidden focus:border-none focus:ring-2 focus:ring-blue-400"
         >
           Register
         </button>

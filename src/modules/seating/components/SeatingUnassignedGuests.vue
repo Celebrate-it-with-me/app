@@ -56,7 +56,7 @@ onMounted(async () => {
           :key="status"
           class="px-3 py-1.5 text-xs rounded-lg font-medium transition-all"
           :class="{
-            'bg-white dark:bg-gray-800 text-purple-600 dark:text-purple-400 shadow-sm':
+            'bg-white dark:bg-gray-800 text-purple-600 dark:text-purple-400 shadow-xs':
               filterStatus === status,
             'bg-white/50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:bg-white dark:hover:bg-gray-800':
               filterStatus !== status
@@ -134,7 +134,7 @@ onMounted(async () => {
           <div class="flex items-center gap-3">
             <!-- Avatar -->
             <div
-              class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm"
+              class="shrink-0 w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-xs"
             >
               {{ getInitials(guest.name) }}
             </div>
@@ -171,12 +171,12 @@ onMounted(async () => {
             <!-- Assign Button -->
             <button
               v-if="selectedTable && selectedTable.assigned_guests?.length < selectedTable.capacity"
-              class="flex-shrink-0 px-3 py-1.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-xs font-semibold rounded-lg transition-all hover:-translate-y-0.5 shadow-sm"
+              class="shrink-0 px-3 py-1.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-xs font-semibold rounded-lg transition-all hover:-translate-y-0.5 shadow-xs"
               @click="assignGuestToTable(guest.id)"
             >
               Assign
             </button>
-            <span v-else class="text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">
+            <span v-else class="text-xs text-gray-400 dark:text-gray-500 shrink-0">
               Select table
             </span>
           </div>

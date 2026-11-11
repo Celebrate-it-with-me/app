@@ -5,7 +5,7 @@
       v-model="inputValue"
       type="checkbox"
       :disabled="disabled"
-      class="form-checkbox w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary dark:bg-gray-800 dark:border-gray-600"
+      class="form-checkbox w-5 h-5 text-primary border-gray-300 rounded-sm focus:ring-primary dark:bg-gray-800 dark:border-gray-600"
     />
     <span class="text-sm text-gray-700 dark:text-gray-300">
       <slot>{{ label }}</slot>

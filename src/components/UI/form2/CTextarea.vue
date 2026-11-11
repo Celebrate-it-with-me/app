@@ -22,7 +22,7 @@
         :placeholder="placeholder"
         :disabled="disabled"
         :rows="rows"
-        class="w-full resize-none bg-transparent border-none outline-none px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 placeholder:font-extralight"
+        class="w-full resize-none bg-transparent border-none outline-hidden px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 placeholder:font-extralight"
         @blur="handleFieldBlur"
       />
     </div>

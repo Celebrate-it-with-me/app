@@ -21,7 +21,7 @@ const props = defineProps({
     >
       <div class="p-6 text-white">
         <div class="flex items-center justify-between mb-4">
-          <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
+          <div class="p-3 bg-white/20 rounded-lg backdrop-blur-xs">
             <Music class="w-6 h-6" />
           </div>
         </div>
@@ -37,7 +37,7 @@ const props = defineProps({
     <CCard class="relative overflow-hidden bg-gradient-to-br from-pink-500 to-pink-600 border-0">
       <div class="p-6 text-white">
         <div class="flex items-center justify-between mb-4">
-          <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
+          <div class="p-3 bg-white/20 rounded-lg backdrop-blur-xs">
             <Heart class="w-6 h-6" />
           </div>
         </div>
@@ -55,7 +55,7 @@ const props = defineProps({
     >
       <div class="p-6 text-white">
         <div class="flex items-center justify-between mb-4">
-          <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
+          <div class="p-3 bg-white/20 rounded-lg backdrop-blur-xs">
             <TrendingUp class="w-6 h-6" />
           </div>
         </div>
@@ -78,7 +78,7 @@ const props = defineProps({
     >
       <div class="p-6 text-white">
         <div class="flex items-center justify-between mb-4">
-          <div class="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
+          <div class="p-3 bg-white/20 rounded-lg backdrop-blur-xs">
             <Users class="w-6 h-6" />
           </div>
         </div>

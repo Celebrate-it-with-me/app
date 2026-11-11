@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { Pin, Heart, Send, MessageSquareText } from 'lucide-vue-next'
 import { useEventCommentsStore } from '@/modules/comments/stores/useEventCommentsStore'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'
 import TextAreaField from '@/components/UI/form/TextAreaField.vue'
@@ -158,9 +158,9 @@ const onInvalidSubmit = error => {
     class="w-full min-h-screen flex flex-col px-6 pt-16 md:pt-24 pb-24 overflow-hidden bg-gradient-to-b from-white via-[#E0F2F1] to-[#B2DFDB]"
   >
     <!-- Header -->
-    <div class="text-center pb-10 flex-shrink-0">
+    <div class="text-center pb-10 shrink-0">
       <h2
-        class="text-5xl md:text-7xl font-gvibes font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] drop-shadow-sm leading-tight"
+        class="text-5xl md:text-7xl font-gvibes font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] drop-shadow-xs leading-tight"
       >
         {{ commentsTitle }}
       </h2>
@@ -234,13 +234,13 @@ const onInvalidSubmit = error => {
             <div
               v-for="comment in sortedComments"
               :key="comment.id"
-              class="relative flex gap-4 p-5 rounded-3xl bg-white/70 backdrop-blur-sm border border-[#7FB9C9]/20 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#7FB9C9]/40"
+              class="relative flex gap-4 p-5 rounded-3xl bg-white/70 backdrop-blur-xs border border-[#7FB9C9]/20 shadow-xs transition-all duration-300 hover:shadow-md hover:border-[#7FB9C9]/40"
               :class="[comment.isPinned ? 'ring-1 ring-blue-400/30' : '']"
             >
               <!-- Avatar -->
-              <div class="flex-shrink-0">
+              <div class="shrink-0">
                 <div
-                  class="w-12 h-12 rounded-full bg-gradient-to-br from-[#E0F2F1] to-[#B2DFDB] border-2 border-white shadow-sm flex items-center justify-center text-[#123B5A] font-bold text-lg"
+                  class="w-12 h-12 rounded-full bg-gradient-to-br from-[#E0F2F1] to-[#B2DFDB] border-2 border-white shadow-xs flex items-center justify-center text-[#123B5A] font-bold text-lg"
                 >
                   {{ (comment.author?.name || 'I').charAt(0).toUpperCase() }}
                 </div>
@@ -288,7 +288,7 @@ const onInvalidSubmit = error => {
         <!-- Empty state -->
         <div
           v-else
-          class="flex flex-col items-center justify-center p-12 text-center bg-white/40 backdrop-blur-sm rounded-3xl border border-dashed border-[#7FB9C9]/50"
+          class="flex flex-col items-center justify-center p-12 text-center bg-white/40 backdrop-blur-xs rounded-3xl border border-dashed border-[#7FB9C9]/50"
         >
           <div
             class="w-16 h-16 rounded-full bg-[#E0F2F1] flex items-center justify-center text-[#2F6F8F] mb-4"

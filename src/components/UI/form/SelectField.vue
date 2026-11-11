@@ -80,7 +80,7 @@ const handleFieldBlur = e => {
       :id="name"
       v-model="inputValue"
       :disabled="disabled"
-      :class="`${classInput} w-full block focus:outline-none h-[38px] mt-1`"
+      :class="`${classInput} w-full block focus:outline-hidden h-[38px] mt-1`"
       @blur="handleFieldBlur"
     >
       <option
@@ -98,7 +98,7 @@ const handleFieldBlur = e => {
       v-if="showErrorMessage"
       :class="
         msgTooltip
-          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-danger-500 block text-sm'
       "
       class="mt-2"
@@ -109,6 +109,7 @@ const handleFieldBlur = e => {
 </template>
 
 <style scoped>
+@reference '../../../style.css';
 .has-error {
   @apply text-red-500;
 

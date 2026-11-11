@@ -33,7 +33,7 @@
           <a
             :href="googleMapsUrl"
             target="_blank"
-            class="inline-block bg-primary text-white px-5 py-2 rounded-lg shadow hover:bg-pink-600 transition"
+            class="inline-block bg-primary text-white px-5 py-2 rounded-lg shadow-sm hover:bg-pink-600 transition"
           >
             Open in Google Maps
           </a>

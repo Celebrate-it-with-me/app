@@ -34,7 +34,7 @@ const {
       >
         <div class="flex items-start gap-4">
           <div
-            class="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25"
+            class="shrink-0 w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25"
           >
             <Sparkles class="w-7 h-7 text-white" stroke-width="2.5" />
           </div>
@@ -183,7 +183,7 @@ const {
               <CButton
                 variant="outline"
                 type="button"
-                class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 px-8 py-3 rounded-xl transition-all hover:-translate-y-0.5 shadow-sm order-2 sm:order-1"
+                class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 px-8 py-3 rounded-xl transition-all hover:-translate-y-0.5 shadow-xs order-2 sm:order-1"
                 @click="emit('formCancelled')"
               >
                 Cancel
@@ -229,7 +229,7 @@ const {
     >
       <div class="flex items-start gap-4">
         <div
-          class="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center"
+          class="shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-xl flex items-center justify-center"
         >
           <svg
             width="20"

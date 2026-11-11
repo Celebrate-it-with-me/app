@@ -16,7 +16,7 @@
           </p>
         </div>
 
-        <div v-if="hasGuests" class="flex flex-shrink-0">
+        <div v-if="hasGuests" class="flex shrink-0">
           <CButton
             variant="gradient"
             class="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white shadow-xl shadow-purple-500/20 px-8 h-14 rounded-2xl transition-all hover:-translate-y-0.5 active:scale-95"

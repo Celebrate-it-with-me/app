@@ -11,7 +11,7 @@
     </div>
 
     <!-- Stat Card 2 -->
-    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-xs">
       <div class="flex justify-between items-start mb-4">
         <div class="p-2 bg-green-50 rounded-xl"><Zap class="w-6 h-6 text-green-500" /></div>
         <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg">LIVE</span>
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Stat Card 3 -->
-    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-xs">
       <div class="flex justify-between items-start mb-4">
         <div class="p-2 bg-rose-50 rounded-xl"><Users class="w-6 h-6 text-rose-500" /></div>
         <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">+12%</span>
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Stat Card 4 -->
-    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+    <div class="bg-white p-6 rounded-3xl border border-gray-100 shadow-xs">
       <div class="flex justify-between items-start mb-4">
         <div class="p-2 bg-blue-50 rounded-xl"><CheckCircle class="w-6 h-6 text-blue-500" /></div>
         <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">AVG</span>

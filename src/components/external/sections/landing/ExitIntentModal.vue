@@ -85,7 +85,7 @@ const closeModal = () => {
     <template #title>
       <div class="flex flex-col items-center gap-2">
         <div
-          class="inline-flex items-center px-2 py-0.5 rounded-full bg-pink-50 dark:bg-pink-950/30 border border-pink-100 dark:border-pink-900/50 backdrop-blur-sm mb-1"
+          class="inline-flex items-center px-2 py-0.5 rounded-full bg-pink-50 dark:bg-pink-950/30 border border-pink-100 dark:border-pink-900/50 backdrop-blur-xs mb-1"
         >
           <Zap class="w-2.5 h-2.5 text-pink-500 mr-1" />
           <span

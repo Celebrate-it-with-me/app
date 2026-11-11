@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+    class="h-full flex flex-col bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden"
   >
     <template v-if="comment">
       <!-- Header -->
@@ -67,7 +67,7 @@
       </div>
 
       <!-- Content -->
-      <div class="flex-grow p-6 overflow-y-auto custom-scrollbar">
+      <div class="grow p-6 overflow-y-auto custom-scrollbar">
         <div class="bg-gray-50 rounded-2xl p-6 text-gray-800 leading-relaxed whitespace-pre-wrap">
           {{ comment.comment }}
         </div>
@@ -103,7 +103,7 @@
     </template>
 
     <!-- No Comment Selected State -->
-    <div v-else class="flex-grow flex flex-col items-center justify-center p-12 text-center">
+    <div v-else class="grow flex flex-col items-center justify-center p-12 text-center">
       <div class="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-6">
         <MessageSquare class="w-10 h-10 text-gray-200" />
       </div>
@@ -145,18 +145,19 @@ const { getInitials, formatDateTime } = useCommentFormatters()
 const getStatusActiveClass = status => {
   switch (status) {
     case 'visible':
-      return 'bg-white text-green-600 shadow-sm'
+      return 'bg-white text-green-600 shadow-xs'
     case 'pending':
-      return 'bg-white text-amber-600 shadow-sm'
+      return 'bg-white text-amber-600 shadow-xs'
     case 'hidden':
-      return 'bg-white text-red-600 shadow-sm'
+      return 'bg-white text-red-600 shadow-xs'
     default:
-      return 'bg-white text-purple-600 shadow-sm'
+      return 'bg-white text-purple-600 shadow-xs'
   }
 }
 </script>
 
 <style scoped>
+@reference '../../../style.css';
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }

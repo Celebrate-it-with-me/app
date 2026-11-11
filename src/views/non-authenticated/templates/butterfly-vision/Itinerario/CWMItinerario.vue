@@ -16,7 +16,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
     >
       <h2 class="text-gray-900 text-center mb-2 font-bold text-5xl font-gvibes">Itinerario</h2>
       <div
-        class="border-2-2 absolute border-opacity-20 border-gray-700 h-full border"
+        class="border-2-2 absolute border-gray-700/20 h-full border"
         style="left: 50%"
       ></div>
       <!-- right timeline -->
@@ -31,7 +31,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
           <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
             <h3 class="font-bold text-[#111827] text-md">Cocktail</h3>
             <p
-              class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100"
+              class="text-sm font-medium leading-snug tracking-wide text-[#111827]/100 "
             >
               7:00pm-8:00pm
             </p>
@@ -49,7 +49,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
           <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
             <h3 class="font-bold text-[#111827] text-xl">Ceremonia</h3>
             <p
-              class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100"
+              class="text-sm font-medium leading-snug tracking-wide text-[#111827]/100 "
             >
               8:00pm-9:30pm
             </p>
@@ -66,7 +66,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
           </div>
           <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
             <h3 class="font-bold text-[#111827] text-lg">Cena</h3>
-            <p class="text-sm leading-snug tracking-wide text-[#111827] text-opacity-100">
+            <p class="text-sm leading-snug tracking-wide text-[#111827]/100 ">
               9:30pm-10:30pm
             </p>
           </div>
@@ -83,7 +83,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
           <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
             <h3 class="font-bold text-[#111827] text-lg">Baile Sorpresa</h3>
             <p
-              class="text-sm font-medium leading-snug tracking-wide text-[#111827] text-opacity-100"
+              class="text-sm font-medium leading-snug tracking-wide text-[#111827]/100 "
             >
               10:30pm-11:00pm
             </p>
@@ -99,7 +99,7 @@ import DanceFloor from '@/assets/images/Itinerario/dance-floor.gif'
           </div>
           <div class="order-1 bg-[#baa7fb] rounded-lg shadow-xl w-5/12 px-2 py-2">
             <h3 class="font-bold text-[#111827] text-lg">Hora Loca</h3>
-            <p class="text-sm leading-snug tracking-wide text-[#111827] text-opacity-100">
+            <p class="text-sm leading-snug tracking-wide text-[#111827]/100 ">
               11:00pm
             </p>
           </div>

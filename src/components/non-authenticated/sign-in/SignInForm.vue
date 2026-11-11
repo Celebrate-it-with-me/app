@@ -3,7 +3,7 @@ import { Form } from 'vee-validate'
 import { computed, reactive, ref } from 'vue'
 import EmailField from '@/components/UI/form/EmailField.vue'
 import PasswordField from '@/components/UI/form/PasswordField.vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { useUserStore } from '@/stores/useUserStore'
 import { detect } from 'detect-browser'
@@ -112,7 +112,7 @@ const onInvalidSubmit = errors => {
               :class-label="'block text-gray-700 dark:text-gray-300 font-semibold mb-3 text-sm'"
               show-error
               required
-              :class-input="`w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-900 dark:text-white border border-gray-200/50 dark:border-gray-700/50 rounded-xl px-5 py-4 text-lg
+              :class-input="`w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xs text-gray-900 dark:text-white border border-gray-200/50 dark:border-gray-700/50 rounded-xl px-5 py-4 text-lg
                         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 shadow-inner placeholder-gray-500 dark:placeholder-gray-400`"
               placeholder="Enter your email address"
             />
@@ -128,7 +128,7 @@ const onInvalidSubmit = errors => {
               :class-label="'block text-gray-700 dark:text-gray-300 font-semibold mb-3 text-sm'"
               show-error
               required
-              :class-input="`w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-900 dark:text-white border border-gray-200/50 dark:border-gray-700/50 rounded-xl px-5 py-4 text-lg
+              :class-input="`w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xs text-gray-900 dark:text-white border border-gray-200/50 dark:border-gray-700/50 rounded-xl px-5 py-4 text-lg
                         focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 shadow-inner placeholder-gray-500 dark:placeholder-gray-400`"
               placeholder="Enter your password"
             />
@@ -139,7 +139,7 @@ const onInvalidSubmit = errors => {
             <button
               type="submit"
               :disabled="localState.sending"
-              class="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-bold text-lg px-8 py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              class="w-full bg-gradient-to-r from-primary to-secondary hover:from-primary-dark hover:to-secondary-dark text-white font-bold text-lg px-8 py-4 rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               <span v-if="!localState.sending">Login</span>
               <span v-else class="flex items-center justify-center">

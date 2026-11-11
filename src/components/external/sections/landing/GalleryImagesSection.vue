@@ -38,7 +38,7 @@
       <!-- Header Section -->
       <div class="text-center mb-20 animate-fadeIn">
         <div
-          class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 backdrop-blur-sm mb-6"
+          class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 backdrop-blur-xs mb-6"
         >
           <Camera class="w-4 h-4 text-accent mr-2" />
           <span class="text-sm font-semibold text-accent">Gallery</span>
@@ -67,7 +67,7 @@
         <!-- Navigation Buttons -->
         <div class="absolute top-1/2 -left-4 sm:-left-6 transform -translate-y-1/2 z-20">
           <button
-            class="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:shadow-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            class="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-xs rounded-2xl p-4 shadow-xl hover:shadow-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 hover:scale-110 focus:outline-hidden focus:ring-2 focus:ring-primary/50"
             aria-label="Previous image"
             @click="prevImage"
           >
@@ -117,7 +117,7 @@
 
                   <!-- Floating badge -->
                   <div
-                    class="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full px-3 py-1 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0"
+                    class="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xs rounded-full px-3 py-1 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0"
                   >
                     <span class="text-xs font-semibold text-primary">View Details</span>
                   </div>
@@ -128,7 +128,7 @@
                   class="absolute bottom-0 left-0 right-0 p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-500"
                 >
                   <div
-                    class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl"
+                    class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xs rounded-2xl p-4 shadow-xl"
                   >
                     <h3 class="font-bold text-gray-900 dark:text-white mb-2">
                       {{ image.caption }}
@@ -164,7 +164,7 @@
 
         <div class="absolute top-1/2 -right-4 sm:-right-6 transform -translate-y-1/2 z-20">
           <button
-            class="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl p-4 shadow-xl hover:shadow-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            class="group bg-white/90 dark:bg-gray-800/90 backdrop-blur-xs rounded-2xl p-4 shadow-xl hover:shadow-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300 hover:scale-110 focus:outline-hidden focus:ring-2 focus:ring-primary/50"
             aria-label="Next image"
             @click="nextImage"
           >

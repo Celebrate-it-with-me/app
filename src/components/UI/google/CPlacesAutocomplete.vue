@@ -4,7 +4,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { Loader } from '@googlemaps/js-api-loader'
+import { loadGoogleLibraries } from '@/utils/googleMaps'
 import CInput from '@/components/UI/form2/CInput.vue'
 
 const emit = defineEmits(['placeChanged'])
@@ -24,12 +24,7 @@ onMounted(async () => {
     inputEl.value = props.initialValue
   }
 
-  const loader = new Loader({
-    apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-    libraries: ['places']
-  })
-
-  await loader.load()
+  await loadGoogleLibraries('places')
 
   const input = inputRef.value?.$el.querySelector('input')
   if (!input) return

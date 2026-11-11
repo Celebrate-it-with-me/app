@@ -11,7 +11,7 @@ const recentActivities = computed(() => activityStore.activities || [])
 const activityStore = useActivityStore()
 </script>
 <template>
-  <div class="activity-section bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+  <div class="activity-section bg-white border border-gray-200 rounded-lg p-4 shadow-xs">
     <div class="flex items-center justify-between mb-3">
       <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
         <Activity class="w-5 h-5 text-gray-600" />
@@ -37,7 +37,7 @@ const activityStore = useActivityStore()
           class="absolute left-1 top-4 bottom-[-16px] w-0.5 bg-gray-100"
         ></div>
         <div
-          class="w-2 h-2 rounded-full bg-purple-500 mt-1 flex-shrink-0 ring-2 ring-purple-50"
+          class="w-2 h-2 rounded-full bg-purple-500 mt-1 shrink-0 ring-2 ring-purple-50"
         ></div>
         <div class="flex-1 min-w-0">
           <p class="text-xs text-gray-900 leading-relaxed truncate" v-html="activity.message"></p>

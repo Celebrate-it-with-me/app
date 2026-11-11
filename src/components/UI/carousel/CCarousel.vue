@@ -17,14 +17,14 @@
 
     <template v-if="showArrows && images.length > 1">
       <button
-        class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
+        class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-sm hover:bg-gray-100"
         @click="prevPhoto"
       >
         <ChevronLeft class="w-5 h-5 text-red-800" />
       </button>
 
       <button
-        class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
+        class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-sm hover:bg-gray-100"
         @click="nextPhoto"
       >
         <ChevronRight class="w-5 h-5 text-red-800" />

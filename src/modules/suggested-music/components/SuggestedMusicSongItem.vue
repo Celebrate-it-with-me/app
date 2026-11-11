@@ -23,7 +23,7 @@ const netVariant = score => {
   <div class="p-5">
     <div class="flex items-start gap-4">
       <!-- Album Art -->
-      <div class="flex-shrink-0">
+      <div class="shrink-0">
         <img
           :src="props.song.thumbnailUrl || 'https://via.placeholder.com/80'"
           alt="Album Art"
@@ -41,7 +41,7 @@ const netVariant = score => {
           <CBadge
             v-if="props.isTopVoted(props.song)"
             variant="error"
-            class="flex items-center gap-1 flex-shrink-0"
+            class="flex items-center gap-1 shrink-0"
           >
             <Flame class="w-3 h-3" />
             Top Voted
@@ -72,7 +72,7 @@ const netVariant = score => {
 
         <div class="flex items-center gap-4 flex-wrap">
           <div class="flex items-center gap-1.5">
-            <div class="p-1 bg-green-50 dark:bg-green-900/20 rounded">
+            <div class="p-1 bg-green-50 dark:bg-green-900/20 rounded-sm">
               <ArrowUp class="w-4 h-4 text-green-600 dark:text-green-400" />
             </div>
             <span class="text-sm font-medium text-gray-900 dark:text-white">
@@ -81,7 +81,7 @@ const netVariant = score => {
           </div>
 
           <div class="flex items-center gap-1.5">
-            <div class="p-1 bg-red-50 dark:bg-red-900/20 rounded">
+            <div class="p-1 bg-red-50 dark:bg-red-900/20 rounded-sm">
               <ArrowDown class="w-4 h-4 text-red-600 dark:text-red-400" />
             </div>
             <span class="text-sm font-medium text-gray-900 dark:text-white">
@@ -97,7 +97,7 @@ const netVariant = score => {
       </div>
 
       <!-- Actions -->
-      <div class="flex items-center gap-2 flex-shrink-0">
+      <div class="flex items-center gap-2 shrink-0">
         <button
           class="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 dark:text-gray-400 dark:hover:text-purple-400 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
           title="Play song"

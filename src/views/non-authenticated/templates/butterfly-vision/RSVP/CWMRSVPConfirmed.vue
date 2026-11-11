@@ -24,7 +24,7 @@ const formatStatus = status => {
 <template>
   <div class="mt-6 w-full md:w-3/4 ld:w-1/2 flex items-center justify-center px-2">
     <div class="container flex justify-center py-2">
-      <div class="w-full max-w-xl bg-white shadow-xl rounded px-6 py-8 text-dark-blue">
+      <div class="w-full max-w-xl bg-white shadow-xl rounded-sm px-6 py-8 text-dark-blue">
         <!-- Header -->
         <div class="mb-6 text-center">
           <h2

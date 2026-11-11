@@ -6,7 +6,7 @@
     <!-- Loading State -->
     <div
       v-if="loading"
-      class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-sm"
+      class="flex flex-col items-center justify-center py-24 bg-white rounded-3xl border border-gray-100 shadow-xs"
     >
       <CWMLoading class="w-12 h-12 text-pink-500 mb-4" />
       <p class="text-gray-500 font-medium">Loading settings...</p>

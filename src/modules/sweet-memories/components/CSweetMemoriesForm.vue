@@ -6,7 +6,7 @@ import CButton from '@/components/UI/buttons/CButton.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CTextarea from '@/components/UI/form2/CTextarea.vue'
 import CToggle from '@/components/UI/form2/CToggle.vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'
 import { useSweetMemoriesStore } from '@/stores/useSweetMemoriesStore'
@@ -69,10 +69,7 @@ const validationSchema = computed(() => {
   return toTypedSchema(
     zod.object({
       title: zod
-        .string({
-          required_error: 'Title is required',
-          invalid_type_error: 'Title must be a string'
-        })
+        .string({ error: issue => (issue.input === undefined ? 'Title is required' : 'Title must be a string') })
         .min(1, 'Title is required')
         .max(100, 'Title cannot exceed 100 characters'),
       year: zod.string().optional().nullable(),
@@ -372,7 +369,7 @@ const invalidSubmit = errors => {
     </Transition>
 
     <!-- Section 1: Photo Upload -->
-    <div class="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm mb-6">
+    <div class="bg-white rounded-2xl p-8 border border-gray-200 shadow-xs mb-6">
       <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
         <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -484,7 +481,7 @@ const invalidSubmit = errors => {
         <!-- File Info Badge -->
         <div
           v-if="selectedFile"
-          class="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg"
+          class="absolute bottom-4 left-4 bg-white/95 backdrop-blur-xs px-4 py-2 rounded-lg shadow-lg"
         >
           <div class="flex items-center gap-2">
             <svg
@@ -529,7 +526,7 @@ const invalidSubmit = errors => {
     </div>
 
     <!-- Section 2: Memory Details -->
-    <div class="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm mb-6">
+    <div class="bg-white rounded-2xl p-8 border border-gray-200 shadow-xs mb-6">
       <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
         <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -725,7 +722,7 @@ const invalidSubmit = errors => {
     </div>
 
     <!-- Section 3: Visibility Settings -->
-    <div class="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm mb-6">
+    <div class="bg-white rounded-2xl p-8 border border-gray-200 shadow-xs mb-6">
       <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
         <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -805,7 +802,7 @@ const invalidSubmit = errors => {
 
     <!-- Form Actions -->
     <div
-      class="flex items-center justify-end gap-3 bg-white rounded-2xl p-5 border border-gray-200 shadow-sm"
+      class="flex items-center justify-end gap-3 bg-white rounded-2xl p-5 border border-gray-200 shadow-xs"
     >
       <CButton
         v-if="isEditing"

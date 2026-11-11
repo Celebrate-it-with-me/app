@@ -61,7 +61,7 @@ const onExport = format => emit('export', format)
           >
             <div
               v-if="props.showExportDropdown"
-              class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
+              class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black/5 z-50"
             >
               <div class="py-1" role="menu" aria-orientation="vertical">
                 <button

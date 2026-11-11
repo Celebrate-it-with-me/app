@@ -72,7 +72,7 @@ const eventStatus = computed(() => {
       <!-- Header with status and role -->
       <div class="flex justify-between items-start mb-4">
         <div
-          class="inline-flex items-center bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-sm border border-gray-100 dark:border-gray-700"
+          class="inline-flex items-center bg-white dark:bg-gray-800 px-3 py-1 rounded-full shadow-xs border border-gray-100 dark:border-gray-700"
         >
           <span :class="['text-[10px] font-bold tracking-wider uppercase', eventStatus.color]">{{
             eventStatus.text

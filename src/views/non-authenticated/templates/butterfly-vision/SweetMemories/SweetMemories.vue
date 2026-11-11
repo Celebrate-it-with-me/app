@@ -66,7 +66,7 @@ const formatImages = images => {
   <section
     id="sectionSweetMemories"
     :style="generalStyles"
-    class="min-h-screen w-full py-16 px-4 md:px-8 lg:px-20 flex flex-col items-center justify-center gap-12 bg-opacity-90"
+    class="min-h-screen w-full py-16 px-4 md:px-8 lg:px-20 flex flex-col items-center justify-center gap-12"
   >
     <div class="w-full max-w-4xl mx-auto space-y-6">
       <h2

@@ -300,7 +300,7 @@
         <select
           id="custom-select"
           v-model="selected"
-          class="w-full bg-transparent border-b px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 border-gray-300 dark:border-gray-600 focus:outline-none focus:border-primary focus:ring-0"
+          class="w-full bg-transparent border-b px-1 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 border-gray-300 dark:border-gray-600 focus:outline-hidden focus:border-primary focus:ring-0"
         >
           <option disabled value="">Select an option</option>
           <option v-for="(option, index) in options" :key="index" :value="option.value">
@@ -346,7 +346,7 @@ import CPagination from '@/components/UI/pagination/CPagination.vue'
 import CAvatar from '@/components/UI/avatar/CAvatar.vue'
 import { Mail } from 'lucide-vue-next'
 import { useForm, Field } from 'vee-validate'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { z } from 'zod'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CTextarea from '@/components/UI/form2/CTextarea.vue'

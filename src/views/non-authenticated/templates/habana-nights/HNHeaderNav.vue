@@ -24,7 +24,7 @@ const handleClick = hash => {
     <div class="flex justify-end px-4 pt-6">
       <button
         type="button"
-        class="p-2 rounded-xl border border-[color:rgba(212,175,55,0.35)] bg-[color:rgba(17,24,39,0.45)] backdrop-blur focus:outline-none shadow-sm"
+        class="p-2 rounded-xl border border-[color:rgba(212,175,55,0.35)] bg-[color:rgba(17,24,39,0.45)] backdrop-blur-sm focus:outline-hidden shadow-xs"
         @click="toggleMenu"
       >
         <HNCWMHamburger color="var(--hn-gold)" width="24" height="24" />
@@ -106,7 +106,7 @@ const handleClick = hash => {
   <!-- Desktop -->
   <header
     id="page-header"
-    class="hidden lg:flex items-center justify-center fixed top-0 left-0 w-full z-50 border-b border-[color:rgba(212,175,55,0.20)] bg-[color:rgba(248,241,231,0.92)] backdrop-blur shadow-sm"
+    class="hidden lg:flex items-center justify-center fixed top-0 left-0 w-full z-50 border-b border-[color:rgba(212,175,55,0.20)] bg-[color:rgba(248,241,231,0.92)] backdrop-blur-sm shadow-xs"
   >
     <div class="h-16 flex items-center gap-x-8 px-6 font-[var(--hn-font-body)]">
       <!-- Left nav -->

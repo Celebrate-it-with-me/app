@@ -44,9 +44,9 @@
           </div>
           <p class="text-gray-600 mb-6">Perfect to get started with your planning</p>
 
-          <div class="space-y-3 mb-8 flex-grow">
+          <div class="space-y-3 mb-8 grow">
             <div v-for="feature in starterFeatures" :key="feature" class="flex items-start">
-              <CheckCircle2 class="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+              <CheckCircle2 class="w-5 h-5 text-green-600 mr-3 shrink-0 mt-0.5" />
               <span
                 class="text-gray-700 text-sm"
                 :class="{ 'font-semibold': feature.includes('Note:') }"
@@ -81,9 +81,9 @@
           </div>
           <p class="text-white/90 mb-6">Everything you need for your celebration</p>
 
-          <div class="space-y-3 mb-8 flex-grow">
+          <div class="space-y-3 mb-8 grow">
             <div v-for="feature in proFeatures" :key="feature" class="flex items-start">
-              <CheckCircle2 class="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
+              <CheckCircle2 class="w-5 h-5 text-white mr-3 shrink-0 mt-0.5" />
               <span class="text-white/90 text-sm">{{ feature }}</span>
             </div>
           </div>
@@ -108,9 +108,9 @@
           </div>
           <p class="text-gray-600 mb-6">For large, elegant celebrations</p>
 
-          <div class="space-y-3 mb-8 flex-grow">
+          <div class="space-y-3 mb-8 grow">
             <div v-for="feature in premiumFeatures" :key="feature" class="flex items-start">
-              <CheckCircle2 class="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+              <CheckCircle2 class="w-5 h-5 text-green-600 mr-3 shrink-0 mt-0.5" />
               <span class="text-gray-700 text-sm">{{ feature }}</span>
             </div>
           </div>
@@ -181,14 +181,14 @@
           <details
             v-for="(faq, index) in faqs"
             :key="index"
-            class="group bg-white rounded-lg p-5 shadow-sm border border-gray-200"
+            class="group bg-white rounded-lg p-5 shadow-xs border border-gray-200"
           >
             <summary
               class="font-semibold text-gray-900 cursor-pointer flex justify-between items-center list-none"
             >
               <span>{{ faq.question }}</span>
               <ChevronDown
-                class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0"
+                class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform shrink-0"
               />
             </summary>
             <p class="mt-4 text-gray-600 leading-relaxed text-sm">

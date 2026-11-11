@@ -40,7 +40,7 @@ const assignedSeats = computed(() => {
           </div>
         </div>
         <div class="text-right">
-          <div class="px-3 py-1 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <div class="px-3 py-1 bg-white dark:bg-gray-800 rounded-lg shadow-xs">
             <span class="text-2xl font-bold text-purple-600 dark:text-purple-400">
               {{ assignedSeats }}
             </span>
@@ -89,7 +89,7 @@ const assignedSeats = computed(() => {
           <div class="flex items-start gap-3">
             <!-- Avatar -->
             <div
-              class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold shadow-sm"
+              class="shrink-0 w-10 h-10 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold shadow-xs"
             >
               {{ getInitials(guest.name) }}
             </div>
@@ -128,7 +128,7 @@ const assignedSeats = computed(() => {
 
             <!-- Remove Button -->
             <button
-              class="flex-shrink-0 p-2 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
+              class="shrink-0 p-2 opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
               title="Remove guest"
               @click="emit('remove-guest', guest)"
             >

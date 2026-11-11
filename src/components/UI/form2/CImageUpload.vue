@@ -41,7 +41,7 @@
           <img :src="getPreview(img)" alt="Preview" class="rounded-md object-cover w-full h-32" />
           <button
             type="button"
-            class="absolute top-1 right-1 bg-white dark:bg-gray-900 rounded-full p-1 shadow group-hover:opacity-100 opacity-0 transition"
+            class="absolute top-1 right-1 bg-white dark:bg-gray-900 rounded-full p-1 shadow-sm group-hover:opacity-100 opacity-0 transition"
             title="Remove image"
             @click.stop="removeImage(index)"
           >

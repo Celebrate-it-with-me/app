@@ -4,7 +4,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import CCard from '@/components/UI/cards/CCard.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { detect } from 'detect-browser'
 import { useUserStore } from '@/stores/useUserStore'
@@ -159,7 +159,7 @@ onMounted(() => {})
     </div>
 
     <CCard
-      class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-sm border border-pink-200/30 dark:border-pink-700/30"
+      class="relative z-10 max-w-md w-full p-8 shadow-xl bg-gradient-to-br from-pink-50/60 via-rose-50/50 to-pink-100/40 dark:from-pink-900/30 dark:via-pink-800/20 dark:to-pink-700/15 backdrop-blur-xs border border-pink-200/30 dark:border-pink-700/30"
     >
       <div class="text-center mb-8">
         <h1 class="text-3xl font-display font-bold text-primary">Welcome Back</h1>
@@ -171,7 +171,7 @@ onMounted(() => {})
         v-if="backendError"
         class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-start"
       >
-        <div class="flex-shrink-0 mr-2">
+        <div class="shrink-0 mr-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-5 w-5"
@@ -278,7 +278,7 @@ onMounted(() => {})
       <div class="grid grid-cols-1 gap-4 mb-6">
         <!-- Google Login Button -->
         <button
-          class="flex items-center justify-center px-4 py-3 border border-gray-200/50 dark:border-gray-600/50 rounded-xl shadow-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white/90 dark:hover:bg-gray-700/90 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
+          class="flex items-center justify-center px-4 py-3 border border-gray-200/50 dark:border-gray-600/50 rounded-xl shadow-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xs hover:bg-white/90 dark:hover:bg-gray-700/90 hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-primary/50"
           :disabled="sending"
           @click="handleGoogleLogin"
         >

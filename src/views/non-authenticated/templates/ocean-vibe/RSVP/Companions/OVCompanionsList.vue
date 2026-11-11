@@ -17,7 +17,7 @@ const handleConfirmation = companion => {
 <template>
   <div class="w-full">
     <!-- Desktop Table View -->
-    <div class="hidden md:block overflow-hidden rounded-2xl border border-sky-100 shadow-sm">
+    <div class="hidden md:block overflow-hidden rounded-2xl border border-sky-100 shadow-xs">
       <table class="w-full text-sm text-left text-slate-700">
         <thead class="text-xs text-slate-500 uppercase bg-sky-50/50 border-b border-sky-100">
           <tr>
@@ -38,7 +38,7 @@ const handleConfirmation = companion => {
             <td class="px-6 py-4 text-center">
               <span
                 :class="[
-                  'inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm',
+                  'inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-xs',
                   companion.rsvpStatus === 'attending'
                     ? 'bg-sky-100/80 text-sky-700'
                     : companion.rsvpStatus === 'not-attending'
@@ -73,7 +73,7 @@ const handleConfirmation = companion => {
       <div
         v-for="companion in companions"
         :key="companion.id"
-        class="bg-white p-5 rounded-2xl border border-sky-100 shadow-sm flex flex-col gap-4"
+        class="bg-white p-5 rounded-2xl border border-sky-100 shadow-xs flex flex-col gap-4"
       >
         <div class="flex justify-between items-start">
           <div class="flex flex-col">
@@ -88,7 +88,7 @@ const handleConfirmation = companion => {
             >
             <span
               :class="[
-                'inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm',
+                'inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs',
                 companion.rsvpStatus === 'attending'
                   ? 'bg-sky-100/80 text-sky-700'
                   : companion.rsvpStatus === 'not-attending'

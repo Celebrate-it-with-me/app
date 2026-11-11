@@ -1,3 +1,44 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Keep the JS theme (colors, fonts, radius, shadows, spacing). */
+@config '../tailwind.config.js';
+
+@plugin 'flowbite/plugin';
+
+/* Classes used inside these packages. */
+@source '../node_modules/flowbite';
+@source '../node_modules/flowbite-vue';
+
+/* Dark mode by the .dark class (was darkMode: 'class' in the JS config). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Tailwind 4 compatibility with the v3 defaults the app was built on:
+ * - borders default to gray-200 instead of currentColor
+ * - buttons keep the pointer cursor
+ * - placeholders keep gray-400
+ * - `ring` defaults to blue-500
+ */
+@theme {
+  --default-ring-color: var(--color-blue-500);
+}
+
+@layer base {
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-gray-400);
+  }
+
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}

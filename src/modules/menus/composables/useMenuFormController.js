@@ -1,7 +1,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useForm } from 'vee-validate'
 import { z } from 'zod'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useRoute, useRouter } from 'vue-router'

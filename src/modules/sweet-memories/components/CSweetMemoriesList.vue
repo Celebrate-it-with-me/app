@@ -9,17 +9,17 @@
       >
         <div class="flex flex-col md:flex-row gap-4">
           <!-- Image Skeleton -->
-          <div class="w-full md:w-40 h-40 md:h-28 bg-gray-200 rounded-xl flex-shrink-0"></div>
+          <div class="w-full md:w-40 h-40 md:h-28 bg-gray-200 rounded-xl shrink-0"></div>
 
           <!-- Content Skeleton -->
           <div class="flex-1 space-y-3">
-            <div class="h-5 bg-gray-200 rounded w-3/4"></div>
-            <div class="h-3 bg-gray-200 rounded w-1/2"></div>
-            <div class="h-12 bg-gray-200 rounded"></div>
+            <div class="h-5 bg-gray-200 rounded-sm w-3/4"></div>
+            <div class="h-3 bg-gray-200 rounded-sm w-1/2"></div>
+            <div class="h-12 bg-gray-200 rounded-sm"></div>
             <div class="flex gap-2">
-              <div class="h-8 bg-gray-200 rounded flex-1"></div>
-              <div class="h-8 bg-gray-200 rounded flex-1"></div>
-              <div class="h-8 bg-gray-200 rounded w-10"></div>
+              <div class="h-8 bg-gray-200 rounded-sm flex-1"></div>
+              <div class="h-8 bg-gray-200 rounded-sm flex-1"></div>
+              <div class="h-8 bg-gray-200 rounded-sm w-10"></div>
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@
               <div class="p-4">
                 <!-- Drag Handle -->
                 <div
-                  class="absolute top-4 left-4 cursor-move drag-handle bg-white rounded-lg p-1.5 shadow-sm hover:shadow-md hover:bg-purple-50 transition-all z-10"
+                  class="absolute top-4 left-4 cursor-move drag-handle bg-white rounded-lg p-1.5 shadow-xs hover:shadow-md hover:bg-purple-50 transition-all z-10"
                 >
                   <GripVertical
                     class="w-4 h-4 text-gray-400 hover:text-purple-500 transition-colors"
@@ -77,7 +77,7 @@
                 <div class="ml-7">
                   <div class="flex flex-col md:flex-row gap-4">
                     <!-- Image Section with Hover Effect -->
-                    <div class="relative flex-shrink-0">
+                    <div class="relative shrink-0">
                       <div
                         v-if="memory.imagePath"
                         class="relative overflow-hidden rounded-xl w-full md:w-40 h-40 md:h-28 bg-gray-100"
@@ -137,7 +137,7 @@
                             "{{ memory.description }}"
                           </p>
                         </div>
-                        <div v-if="memory.year" class="ml-3 relative group flex-shrink-0">
+                        <div v-if="memory.year" class="ml-3 relative group shrink-0">
                           <span
                             class="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-xs font-semibold shadow-md cursor-help inline-block"
                           >

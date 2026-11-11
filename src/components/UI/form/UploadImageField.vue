@@ -144,6 +144,7 @@ const handleRemoveImage = () => {
 </template>
 
 <style scoped>
+@reference '../../../style.css';
 .has-error {
   @apply text-red-500;
 

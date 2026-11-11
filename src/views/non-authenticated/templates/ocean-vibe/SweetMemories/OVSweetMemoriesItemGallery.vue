@@ -10,7 +10,7 @@ defineProps({
 <template>
   <a
     :href="galleryItem.image"
-    class="relative block overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg shadow-[#123B5A]/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+    class="relative block overflow-hidden rounded-2xl bg-white/80 backdrop-blur-xs shadow-lg shadow-[#123B5A]/10 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
     :data-sub-html="galleryItem.subHtml"
   >
     <div class="w-full relative overflow-hidden aspect-[4/3]">
@@ -26,7 +26,7 @@ defineProps({
 
       <!-- Expand Icon -->
       <div
-        class="absolute top-3 right-3 bg-white/80 backdrop-blur-sm rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300"
+        class="absolute top-3 right-3 bg-white/80 backdrop-blur-xs rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +49,7 @@ defineProps({
     </div>
 
     <!-- Caption Area -->
-    <div v-if="galleryItem.title" class="p-4 bg-white/80 backdrop-blur-sm">
+    <div v-if="galleryItem.title" class="p-4 bg-white/80 backdrop-blur-xs">
       <h3
         class="text-lg font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#123B5A] via-[#2F6F8F] to-[#7FB9C9] truncate"
       >

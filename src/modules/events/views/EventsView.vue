@@ -18,7 +18,7 @@
 
             <div class="flex items-center gap-3">
               <button
-                class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold px-4 py-2 rounded-xl shadow hover:shadow-lg transition"
+                class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-bold px-4 py-2 rounded-xl shadow-sm hover:shadow-lg transition"
                 @click="createNewEvent"
               >
                 <PlusCircle class="w-5 h-5" />

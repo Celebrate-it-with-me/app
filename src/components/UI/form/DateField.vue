@@ -1,7 +1,7 @@
 <script setup>
 import { computed, toRef, watch } from 'vue'
 import { useField } from 'vee-validate'
-import VueDatePicker from '@vuepic/vue-datepicker'
+import { VueDatePicker } from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 const emit = defineEmits(['resetErrors', 'update:modelValue', 'update:blur'])
@@ -108,7 +108,7 @@ const showErrorMessage = computed(() => {
 })
 
 const inputClasses = computed(() => {
-  return `${props.classInput} input-control w-full block focus:outline-none h-[40px]`
+  return `${props.classInput} input-control w-full block focus:outline-hidden h-[40px]`
 })
 </script>
 
@@ -130,18 +130,16 @@ const inputClasses = computed(() => {
     </label>
     <div class="relative w-full mt-1" :class="horizontal ? 'flex-1' : ''">
       <VueDatePicker
-        :id="name"
         v-model="inputValue"
+        :input-attrs="{ id: name }"
         :placeholder="placeholder"
         :dark="true"
-        :format="dateFormat"
-        :enable-time-picker="alsoTime"
+        :formats="{ input: dateFormat }"
+        :time-config="{ enableTimePicker: alsoTime, enableSeconds: false }"
         :week-start="0"
-        :enable-seconds="false"
         :disabled="disabled"
         :readonly="isReadonly"
         :ui="{ input: inputClasses }"
-        :parse="str => parseStringToDate(str)"
         @blur="handleBlur"
       />
     </div>
@@ -151,7 +149,7 @@ const inputClasses = computed(() => {
       v-if="showErrorMessage"
       :class="
         msgTooltip
-          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-danger-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-danger-500 block text-sm'
       "
       class="mt-2"
@@ -163,7 +161,7 @@ const inputClasses = computed(() => {
       v-if="validate"
       :class="
         msgTooltip
-          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded'
+          ? 'inline-block bg-success-500 text-white text-[10px] px-2 py-1 rounded-sm'
           : 'text-success-500 block text-sm'
       "
       class="mt-2"

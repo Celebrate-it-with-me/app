@@ -25,7 +25,7 @@ const { hasEventBudget, openAddBudgetItemModal } = useBudgetTitles(emit)
         </p>
       </div>
 
-      <div class="flex flex-shrink-0">
+      <div class="flex shrink-0">
         <CButton
           v-if="hasEventBudget"
           variant="gradient"

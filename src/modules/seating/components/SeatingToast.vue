@@ -20,7 +20,7 @@ const { showToast, toastMessage } = storeToRefs(seatingStore)
         class="rounded-2xl shadow-2xl backdrop-blur-lg border p-4 flex items-center gap-3 bg-green-50/95 border-green-200 dark:bg-green-900/95 dark:border-green-700"
       >
         <div
-          class="flex-shrink-0 w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center"
+          class="shrink-0 w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center"
         >
           <svg
             width="20"
@@ -39,7 +39,7 @@ const { showToast, toastMessage } = storeToRefs(seatingStore)
         </p>
 
         <button
-          class="flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-colors hover:bg-green-200 dark:hover:bg-green-800 text-green-600 dark:text-green-300"
+          class="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-colors hover:bg-green-200 dark:hover:bg-green-800 text-green-600 dark:text-green-300"
           @click="showToast = false"
         >
           <svg

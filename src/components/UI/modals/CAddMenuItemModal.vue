@@ -66,7 +66,7 @@
 import { computed, ref, watch } from 'vue'
 import { Form } from 'vee-validate'
 import { z } from 'zod'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import CModal from '@/components/UI/modals/CModal.vue'
 import CButton from '@/components/UI/buttons/CButton.vue'
 import CInput from '@/components/UI/form2/CInput.vue'
@@ -92,9 +92,7 @@ const menuValidationSchema = computed(() => {
   return toTypedSchema(
     z.object({
       name: z.string().min(2, 'Name is required'),
-      itemType: z.enum(['starter', 'main', 'dessert'], {
-        required_error: 'Type is required'
-      }),
+      itemType: z.enum(['starter', 'main', 'dessert'], { error: issue => (issue.input === undefined ? 'Type is required' : undefined) }),
       dietType: z.string().optional(),
       notes: z.string().optional()
     })

@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
         class="border-b border-gray-100 dark:border-gray-800 last:border-0 pb-3 last:pb-0"
       >
         <div class="flex items-start gap-3">
-          <div class="flex-shrink-0">
+          <div class="shrink-0">
             <div v-if="comment.user.avatar" class="w-8 h-8 rounded-full overflow-hidden">
               <img
                 :src="comment.user.avatar"
@@ -216,7 +216,7 @@ onBeforeUnmount(() => {
               <UserRound class="w-4 h-4 text-purple-600 dark:text-purple-300" />
             </div>
           </div>
-          <div class="flex-grow">
+          <div class="grow">
             <div class="flex justify-between items-start">
               <div class="font-medium text-gray-900 dark:text-white">{{ comment.user.name }}</div>
               <div class="text-xs text-gray-500">{{ formatDate(comment.createdAt) }}</div>

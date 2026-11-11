@@ -32,7 +32,7 @@ const togglePlayPause = () => {
 <template>
   <div class="fixed bottom-5 left-5 flex items-center rounded-lg z-50">
     <button
-      class="w-10 h-10 bg-[var(--hn-coral)] border border-[color:rgba(212,175,55,0.45)] flex items-center justify-center rounded-full text-white shadow-lg hover:bg-[var(--hn-gold)] hover:text-black transition-all focus:outline-none"
+      class="w-10 h-10 bg-[var(--hn-coral)] border border-[color:rgba(212,175,55,0.45)] flex items-center justify-center rounded-full text-white shadow-lg hover:bg-[var(--hn-gold)] hover:text-black transition-all focus:outline-hidden"
       @click="togglePlayPause"
     >
       <span v-if="!isPlaying">▶</span>

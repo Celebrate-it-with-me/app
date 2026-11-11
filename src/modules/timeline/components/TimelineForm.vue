@@ -20,11 +20,11 @@
         <VueDatePicker
           v-model="dateRange"
           range
-          :enable-time-picker="true"
+          :time-config="{ enableTimePicker: true }"
           auto-apply
           placeholder="Select start and end time"
-          format="MM/dd/yyyy HH:mm"
-          input-class-name="custom-datepicker-input"
+          :formats="{ input: 'MM/dd/yyyy HH:mm' }"
+          :ui="{ input: 'custom-datepicker-input' }"
           teleport="body"
         />
       </div>
@@ -86,7 +86,7 @@ import {
   PartyPopper,
   Users
 } from 'lucide-vue-next'
-import VueDatePicker from '@vuepic/vue-datepicker'
+import { VueDatePicker } from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import CInput from '@/components/UI/form2/CInput.vue'
 import CTextarea from '@/components/UI/form2/CTextarea.vue'
@@ -235,8 +235,9 @@ const handleSubmit = () => {
 </script>
 
 <style scoped>
+@reference '../../../style.css';
 :deep(.dp__input_wrap) {
-  @apply w-full bg-transparent border-none rounded-none outline-none shadow-none;
+  @apply w-full bg-transparent border-none rounded-none outline-hidden shadow-none;
   padding: 0 !important;
 }
 

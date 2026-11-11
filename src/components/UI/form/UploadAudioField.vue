@@ -18,7 +18,7 @@
         v-if="previewUrl"
         controls
         :src="previewUrl"
-        class="w-full h-12 bg-gray-200 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        class="w-full h-12 bg-gray-200 rounded-lg shadow-lg focus:outline-hidden focus:ring-2 focus:ring-blue-400"
       ></audio>
 
       <div

@@ -23,7 +23,7 @@
         :type="type"
         :placeholder="placeholder"
         :disabled="disabled"
-        class="pl-1 w-full bg-transparent border-none outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 placeholder:font-extralight"
+        class="pl-1 w-full bg-transparent border-none outline-hidden text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 placeholder:font-extralight"
         @blur="handleFieldBlur"
       />
     </div>

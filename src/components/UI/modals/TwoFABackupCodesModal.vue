@@ -2,7 +2,7 @@
   <transition name="fade">
     <div
       v-if="modelValue"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 px-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 px-4"
     >
       <div
         class="w-full max-w-md rounded-xl shadow-xl overflow-hidden bg-white dark:bg-gray-900 text-text"
@@ -27,7 +27,7 @@
           <div class="relative group">
             <!-- Tooltip floating box -->
             <div
-              class="absolute top-0 right-0 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 px-3 py-1 rounded-md shadow transition-opacity duration-200 opacity-0 group-hover:opacity-100 flex items-center gap-1 cursor-pointer"
+              class="absolute top-0 right-0 z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 px-3 py-1 rounded-md shadow-sm transition-opacity duration-200 opacity-0 group-hover:opacity-100 flex items-center gap-1 cursor-pointer"
               @click="copyAllCodes"
             >
               <Copy class="w-4 h-4" />
@@ -39,7 +39,7 @@
               <li
                 v-for="(code, index) in codes"
                 :key="index"
-                class="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded text-center"
+                class="bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-sm text-center"
               >
                 {{ code }}
               </li>

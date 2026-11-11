@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useEventCommentsStore } from '@/stores/useEventCommentsStore'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 import { Form } from 'vee-validate'
 import TextAreaField from '@/components/UI/form/TextAreaField.vue'
@@ -196,7 +196,7 @@ const onInvalidSubmit = error => {
     :style="bgColorComputed"
   >
     <!-- Title -->
-    <div class="comment-header text-center pb-4 flex-shrink-0">
+    <div class="comment-header text-center pb-4 shrink-0">
       <h2 class="text-6xl font-gvibes font-bold text-purple-middle">{{ commentsTitle }}</h2>
       <p class="text-lg text-dark-blue mt-2">
         {{ commentsSubtitle }}
@@ -206,7 +206,7 @@ const onInvalidSubmit = error => {
     <div class="flex flex-col gap-6">
       <Form
         :validation-schema="eventCommentValidationSchema"
-        class="comment-form w-full max-w-2xl bg-white shadow p-6 rounded-lg flex flex-col gap-4 mx-auto"
+        class="comment-form w-full max-w-2xl bg-white shadow-sm p-6 rounded-lg flex flex-col gap-4 mx-auto"
         @submit="addComment"
         @invalid-submit="onInvalidSubmit"
       >
@@ -215,7 +215,7 @@ const onInvalidSubmit = error => {
           name="comment"
           placeholder="Escribe tu comentario aquí..."
           show-error
-          :class-input="`p-3 border text-gray-500 border-gray-300 rounded-lg focus:ring focus:ring-pink-300 resize-none`"
+          :class-input="`p-3 border text-gray-500 border-gray-300 rounded-lg focus:ring-3 focus:ring-pink-300 resize-none`"
           :rows="2"
         />
         <button
@@ -238,12 +238,12 @@ const onInvalidSubmit = error => {
         >
           <div
             v-infinite-scroll="onLoadMore"
-            class="comments-list flex flex-col gap-4 flex-grow overflow-y-auto"
+            class="comments-list flex flex-col gap-4 grow flex-grow overflow-y-auto"
           >
             <div
               v-for="comment in commentStore.eventComments"
               :key="comment.id"
-              class="comment-item p-4 border border-gray-200 bg-white shadow rounded-lg mr-1"
+              class="comment-item p-4 border border-gray-200 bg-white shadow-sm rounded-lg mr-1"
             >
               <div class="text-sm font-extralight flex items-center justify-between">
                 <p class="text-gray-500">{{ comment.author }}</p>

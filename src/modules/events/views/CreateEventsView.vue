@@ -50,7 +50,7 @@
       <button
         v-for="type in onboardingTypes"
         :key="type.id"
-        class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-7 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-3 hover:scale-105 transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-pink-300 dark:hover:border-pink-600 flex flex-col items-center gap-5"
+        class="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-xs p-7 rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-3 hover:scale-105 transition-all duration-300 border-2 border-gray-100 dark:border-gray-700 hover:border-pink-300 dark:hover:border-pink-600 flex flex-col items-center gap-5"
         @click="selectEventType(type.id)"
       >
         <!-- Glow Effect on Hover -->
@@ -61,7 +61,7 @@
         <div
           :class="[
             type.bg,
-            'dark:bg-opacity-20 p-5 rounded-2xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-300 shadow-md relative z-10'
+            'p-5 rounded-2xl group-hover:scale-125 group-hover:rotate-6 transition-all duration-300 shadow-md relative z-10'
           ]"
         >
           <component
@@ -307,7 +307,7 @@
                 <ul class="space-y-3">
                   <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
                     <div
-                      class="w-5 h-5 rounded-full bg-pink-200 dark:bg-pink-800 flex items-center justify-center flex-shrink-0 mt-0.5"
+                      class="w-5 h-5 rounded-full bg-pink-200 dark:bg-pink-800 flex items-center justify-center shrink-0 mt-0.5"
                     >
                       <span class="text-xs font-bold text-pink-700 dark:text-pink-300">1</span>
                     </div>
@@ -318,7 +318,7 @@
                   </li>
                   <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
                     <div
-                      class="w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 flex items-center justify-center flex-shrink-0 mt-0.5"
+                      class="w-5 h-5 rounded-full bg-purple-200 dark:bg-purple-800 flex items-center justify-center shrink-0 mt-0.5"
                     >
                       <span class="text-xs font-bold text-purple-700 dark:text-purple-300">2</span>
                     </div>
@@ -328,7 +328,7 @@
                   </li>
                   <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300">
                     <div
-                      class="w-5 h-5 rounded-full bg-orange-200 dark:bg-orange-800 flex items-center justify-center flex-shrink-0 mt-0.5"
+                      class="w-5 h-5 rounded-full bg-orange-200 dark:bg-orange-800 flex items-center justify-center shrink-0 mt-0.5"
                     >
                       <span class="text-xs font-bold text-orange-700 dark:text-orange-300">3</span>
                     </div>
@@ -389,7 +389,7 @@
                   <div class="flex items-start justify-between gap-4">
                     <div class="flex items-start gap-4 flex-1">
                       <div
-                        class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300"
+                        class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300"
                         :class="[
                           eventState[feature.model]
                             ? 'bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/30 dark:to-purple-900/30 scale-110'
@@ -422,7 +422,7 @@
                         </p>
                       </div>
                     </div>
-                    <div class="flex-shrink-0">
+                    <div class="shrink-0">
                       <CToggle v-model="eventState[feature.model]" :name="feature.name" />
                     </div>
                   </div>
@@ -466,7 +466,7 @@
                   <div class="flex items-start justify-between gap-4">
                     <div class="flex items-start gap-4 flex-1">
                       <div
-                        class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0"
+                        class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center shrink-0"
                       >
                         <component :is="feature.icon" class="w-6 h-6 text-gray-400" />
                       </div>
@@ -479,7 +479,7 @@
                         </p>
                       </div>
                     </div>
-                    <div class="flex-shrink-0">
+                    <div class="shrink-0">
                       <CToggle v-model="eventState[feature.model]" :name="feature.name" />
                     </div>
                   </div>
@@ -545,7 +545,7 @@
             >
               <div class="flex items-start gap-6">
                 <div
-                  class="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center flex-shrink-0"
+                  class="w-20 h-20 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shrink-0"
                 >
                   <component :is="getEventTypeIcon()" class="w-10 h-10 text-white" />
                 </div>
@@ -630,7 +630,7 @@
               v-if="eventErrors"
               class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-900/30 text-red-700 dark:text-red-400 p-5 rounded-2xl text-sm flex items-start gap-3"
             >
-              <AlertCircle class="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <AlertCircle class="w-5 h-5 shrink-0 mt-0.5" />
               <div>
                 <p class="font-bold mb-1">Oops! Something went wrong</p>
                 <p>{{ eventErrors }}</p>
@@ -643,7 +643,7 @@
             >
               <div class="flex items-start gap-4">
                 <div
-                  class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center flex-shrink-0"
+                  class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shrink-0"
                 >
                   <Rocket class="w-6 h-6 text-white" />
                 </div>
@@ -673,7 +673,7 @@
 <script setup>
 import { Form } from 'vee-validate'
 import { computed, reactive, ref, onMounted, watch } from 'vue'
-import { toTypedSchema } from '@vee-validate/zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
 import * as zod from 'zod'
 
 import CInput from '@/components/UI/form2/CInput.vue'
@@ -968,12 +968,12 @@ const onboardingTypes = [
     label: 'Quinceañera',
     icon: Sparkles,
     color: 'text-purple-500',
-    bg: 'bg-purple-50'
+    bg: 'bg-purple-50 dark:bg-purple-50/20'
   },
-  { id: 'wedding', label: 'Wedding', icon: Heart, color: 'text-pink-500', bg: 'bg-pink-50' },
-  { id: 'birthday', label: 'Birthday', icon: Cake, color: 'text-orange-500', bg: 'bg-orange-50' },
-  { id: 'baby-shower', label: 'Baby Shower', icon: Baby, color: 'text-blue-500', bg: 'bg-blue-50' },
-  { id: 'other', label: 'Other', icon: PartyPopper, color: 'text-indigo-500', bg: 'bg-indigo-50' }
+  { id: 'wedding', label: 'Wedding', icon: Heart, color: 'text-pink-500', bg: 'bg-pink-50 dark:bg-pink-50/20' },
+  { id: 'birthday', label: 'Birthday', icon: Cake, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-50/20' },
+  { id: 'baby-shower', label: 'Baby Shower', icon: Baby, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-50/20' },
+  { id: 'other', label: 'Other', icon: PartyPopper, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-50/20' }
 ]
 
 const selectEventType = typeId => {
@@ -998,10 +998,7 @@ const eventValidationSchema = computed(() => {
     zod
       .object({
         eventName: zod.string().min(1, 'Event name is required.'),
-        eventType: zod.number({
-          required_error: 'Event type is required.',
-          invalid_type_error: 'Invalid event type.'
-        }),
+        eventType: zod.number({ error: issue => (issue.input === undefined ? 'Event type is required.' : 'Invalid event type.') }),
         startDate: zod.string().min(1, 'Start date is required.'),
         endDate: zod.string().min(1, 'End date is required.')
       })

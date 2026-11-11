@@ -41,7 +41,7 @@ const {
 
       <CButton
         variant="secondary"
-        class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 hover:border-red-300 px-6 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 shadow-sm"
+        class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 hover:border-red-300 px-6 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 shadow-xs"
         @click="confirmDelete"
       >
         <Trash2 class="w-4 h-4 mr-2" />
@@ -59,7 +59,7 @@ const {
       >
         <div class="flex items-start gap-4">
           <div
-            class="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25"
+            class="shrink-0 w-14 h-14 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25"
           >
             <Shirt class="w-7 h-7 text-white" stroke-width="2.5" />
           </div>
@@ -199,7 +199,7 @@ const {
     >
       <div
         v-if="showImageModal"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs"
         @click="closeImagePreview"
       >
         <div class="relative max-w-4xl w-full" @click.stop>
@@ -251,7 +251,7 @@ const {
           class="rounded-2xl shadow-2xl backdrop-blur-lg border p-4 flex items-center gap-3 bg-green-50/95 border-green-200 dark:bg-green-900/95 dark:border-green-700"
         >
           <div
-            class="flex-shrink-0 w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center"
+            class="shrink-0 w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center"
           >
             <svg
               width="20"
@@ -270,7 +270,7 @@ const {
           </p>
 
           <button
-            class="flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-colors hover:bg-green-200 dark:hover:bg-green-800 text-green-600 dark:text-green-300"
+            class="shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-colors hover:bg-green-200 dark:hover:bg-green-800 text-green-600 dark:text-green-300"
             @click="showToast = false"
           >
             <svg

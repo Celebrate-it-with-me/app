@@ -6,7 +6,7 @@
     <input
       v-model="color"
       type="color"
-      class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-transparent cursor-pointer"
+      class="w-8 h-8 rounded-sm border border-gray-300 dark:border-gray-600 bg-transparent cursor-pointer"
     />
   </div>
 </template>

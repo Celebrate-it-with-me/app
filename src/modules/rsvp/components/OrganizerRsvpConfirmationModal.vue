@@ -139,7 +139,7 @@
                 <div class="companion-notes">
                   <textarea
                     v-model="companion.notes"
-                    class="w-full p-2 border border-gray-300 rounded text-sm resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    class="w-full p-2 border border-gray-300 rounded-sm text-sm resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     rows="1"
                     :placeholder="`Notes for ${companion.name}...`"
                   />
@@ -186,8 +186,9 @@ const { saving, formData, companionsData, bulkApplyToCompanions, saveConfirmatio
 </script>
 
 <style scoped>
+@reference '../../../style.css';
 .modal-overlay {
-  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4;
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4;
 }
 
 .modal-content {
@@ -277,7 +278,7 @@ const { saving, formData, companionsData, bulkApplyToCompanions, saveConfirmatio
 }
 
 .bulk-btn {
-  @apply p-1.5 rounded text-xs font-medium transition-all inline-flex items-center gap-1;
+  @apply p-1.5 rounded-sm text-xs font-medium transition-all inline-flex items-center gap-1;
 }
 
 .bulk-confirm {

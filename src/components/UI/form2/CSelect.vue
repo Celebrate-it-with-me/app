@@ -20,7 +20,7 @@
         v-bind="$attrs"
         v-model="inputValue"
         :disabled="disabled"
-        class="w-full bg-transparent px-1 py-2 text-sm text-gray-900 dark:text-white border-none focus:outline-none focus:ring-0"
+        class="w-full bg-transparent px-1 py-2 text-sm text-gray-900 dark:text-white border-none focus:outline-hidden focus:ring-0"
         @blur="handleFieldBlur"
       >
         <option disabled value="">Select an option</option>

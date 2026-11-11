@@ -18,7 +18,7 @@
         </div>
 
         <!-- Add Location Button (when no location) -->
-        <div v-if="!hasLocation" class="flex flex-shrink-0">
+        <div v-if="!hasLocation" class="flex shrink-0">
           <CButton
             variant="gradient"
             class="bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white shadow-xl shadow-purple-500/20 px-8 h-14 rounded-2xl transition-all hover:-translate-y-0.5 active:scale-95"
@@ -63,7 +63,7 @@
 
         <CButton
           variant="secondary"
-          class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 px-6 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 shadow-sm"
+          class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 px-6 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 shadow-xs"
           @click="copyLocationLink"
         >
           <svg
@@ -83,7 +83,7 @@
 
         <CButton
           variant="secondary"
-          class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 px-6 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 shadow-sm"
+          class="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 px-6 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 shadow-xs"
           @click="getDirections"
         >
           <svg
@@ -235,10 +235,10 @@
             </div>
 
             <!-- Coordinates Info -->
-            <div v-if="hasMap" class="mt-6 bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm">
+            <div v-if="hasMap" class="mt-6 bg-white dark:bg-gray-900 rounded-xl p-4 shadow-xs">
               <div class="flex items-center gap-3">
                 <div
-                  class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg flex items-center justify-center"
+                  class="shrink-0 w-10 h-10 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg flex items-center justify-center"
                 >
                   <svg
                     width="18"
@@ -277,7 +277,7 @@
             <div class="mb-8">
               <div class="flex items-start gap-4 mb-6">
                 <div
-                  class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25"
+                  class="shrink-0 w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25"
                 >
                   <svg
                     width="24"
@@ -506,7 +506,7 @@
           <!-- Success Icon -->
           <div
             v-if="toastType === 'success'"
-            class="flex-shrink-0 w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center"
+            class="shrink-0 w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center"
           >
             <svg
               width="20"
@@ -523,7 +523,7 @@
           <!-- Error Icon -->
           <div
             v-else
-            class="flex-shrink-0 w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center"
+            class="shrink-0 w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center"
           >
             <svg
               width="20"
@@ -552,7 +552,7 @@
 
           <button
             :class="[
-              'flex-shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-colors',
+              'shrink-0 w-6 h-6 rounded-lg flex items-center justify-center transition-colors',
               toastType === 'success'
                 ? 'hover:bg-green-200 dark:hover:bg-green-800 text-green-600 dark:text-green-300'
                 : 'hover:bg-red-200 dark:hover:bg-red-800 text-red-600 dark:text-red-300'

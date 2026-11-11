@@ -143,7 +143,7 @@ onBeforeUnmount(() => {
     <!-- Loading overlay -->
     <div
       v-if="isLoading"
-      class="absolute inset-0 bg-white dark:bg-gray-900 bg-opacity-70 dark:bg-opacity-70 flex items-center justify-center z-10"
+      class="absolute inset-0 bg-white/70 dark:bg-gray-900/70 flex items-center justify-center z-10"
     >
       <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-amber-500"></div>
     </div>
