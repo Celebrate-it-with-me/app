@@ -40,7 +40,7 @@ const { t } = useI18n()
 
     <!-- WhatsApp reply arriving -->
     <div
-      class="mock-bubble absolute -bottom-6 -left-1 w-52 rounded-2xl rounded-bl-md bg-[#e7fbe3] px-3.5 py-2.5 text-left shadow-pop sm:-left-8 lg:-left-60 lg:bottom-auto lg:top-[42%] lg:w-56"
+      class="mock-bubble absolute -bottom-6 -left-1 w-52 rounded-2xl rounded-bl-md bg-[#e7fbe3] px-3.5 py-2.5 text-left shadow-pop sm:-left-8 lg:-left-20 lg:bottom-auto lg:top-[44%] lg:w-56"
     >
       <p class="text-xs font-semibold text-success-700">{{ t('mock.bubbleName') }}</p>
       <p class="text-sm text-ink-900">{{ t('mock.bubbleText') }}</p>
