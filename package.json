@@ -39,7 +39,7 @@
     "lg-thumbnail": "^1.2.1",
     "lightgallery": "^2.8.2",
     "lodash.debounce": "^4.0.8",
-    "lucide-vue-next": "^0.487.0",
+    "lucide-vue-next": "^1.0.0",
     "pinia": "^4.1.0",
     "pinia-plugin-persistedstate": "^4.7.1",
     "spectrum-colorpicker": "^1.8.1",
