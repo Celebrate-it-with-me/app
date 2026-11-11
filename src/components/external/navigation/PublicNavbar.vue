@@ -24,11 +24,11 @@ watch(() => route.fullPath, () => (open.value = false))
 <template>
   <header class="sticky top-0 z-40 border-b border-line/70 bg-cream-100/90 backdrop-blur">
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-      <router-link to="/" class="flex items-center text-ink-900" aria-label="Quinvite">
+      <router-link to="/" class="flex items-center text-ink-900" aria-label="Quinvite" translate="no">
         <QuinviteLogo class="h-8" />
       </router-link>
 
-      <nav class="hidden items-center gap-6 md:flex" aria-label="Principal">
+      <nav class="hidden items-center gap-6 md:flex" :aria-label="t('nav.primary')">
         <router-link
           v-for="link in links"
           :key="link.label"
@@ -50,6 +50,7 @@ watch(() => route.fullPath, () => (open.value = false))
         class="flex h-10 w-10 items-center justify-center rounded-lg text-ink-700 hover:bg-cream-200 md:hidden"
         :aria-label="t('nav.menu')"
         :aria-expanded="open"
+        aria-controls="public-mobile-menu"
         @click="open = !open"
       >
         <X v-if="open" class="h-6 w-6" aria-hidden="true" />
@@ -57,8 +58,8 @@ watch(() => route.fullPath, () => (open.value = false))
       </button>
     </div>
 
-    <div v-if="open" class="border-t border-line bg-cream-50 px-4 py-4 md:hidden">
-      <nav class="flex flex-col" aria-label="Principal">
+    <div v-if="open" id="public-mobile-menu" class="ui-enter border-t border-line bg-cream-50 px-4 py-4 md:hidden">
+      <nav class="flex flex-col" :aria-label="t('nav.mobile')">
         <router-link
           v-for="link in links"
           :key="link.label"

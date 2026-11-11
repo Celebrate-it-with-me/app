@@ -26,7 +26,9 @@ export default {
     terms: 'Terms',
     privacy: 'Privacy',
     cookies: 'Cookies',
-    menu: 'Menu'
+    menu: 'Menu',
+    primary: 'Main',
+    mobile: 'Mobile menu'
   },
   titles: {
     home: 'Digital invitations for quinces and weddings',
@@ -43,101 +45,109 @@ export default {
     help: 'Help'
   },
   hero: {
-    eyebrow: 'Quinceañeras and weddings',
-    title: 'Her XV invitation, ready in five minutes',
+    title: 'Your daughter’s XV, ready in five minutes',
     subtitle:
-      'Create a beautiful invitation, share it on WhatsApp and watch the RSVPs come in on their own. No printing, no chasing anyone.',
+      'Create a beautiful invitation, share it on WhatsApp and watch who confirms. No printing, no chasing anyone.',
     cta: 'Create my event for free',
     secondary: 'See how it works',
-    trust: 'Free up to 30 guests · No card needed'
+    trust: 'Free up to 30 guests · Everything for $79, once'
   },
   mock: {
     eyebrow: 'My XV',
     name: 'Valentina',
-    date: 'Saturday, December 25 · 7:00 pm',
+    date: 'Saturday, June 14 · 7:00 pm',
     place: 'Salón Cristal, Miami',
     question: 'Will you join us?',
     yes: 'I’ll be there',
     no: 'Can’t make it',
-    footer: 'With love, the Fernández family'
+    footer: 'With love, the Fernández family',
+    bubbleName: 'Natalia Fonseca',
+    bubbleText: 'I’ll be there 🎉 3 of us',
+    counterLabel: 'confirmed of 120'
   },
   how: {
     title: 'This simple',
-    subtitle: 'Three steps and the invitation is on everyone’s phone.',
+    subtitle: 'Three steps and the invitation is on the whole family’s phones.',
     steps: [
       {
-        title: 'Pick a template and tell her story',
+        title: 'Pick a design and type in the party details',
         text: 'Photos, colors, mass and reception, dress code. All from your phone.'
       },
       {
-        title: 'Add your guests',
-        text: 'From Excel or from your contacts. Every guest gets a personal link.'
+        title: 'Type or paste your guests',
+        text: 'Names and phones, one by one or from a list. Every guest gets their own link.'
       },
       {
-        title: 'Share on WhatsApp and watch who confirms',
-        text: 'RSVPs arrive on their own. Automatic reminder for anyone who hasn’t answered.'
+        title: 'Share the link and watch who confirms',
+        text: 'Every RSVP shows up on your dashboard instantly. On the full event, Quinvite sends the invitation and the reminders for you.'
       }
     ]
   },
   features: {
     title: 'Built for the quince, not for any event',
+    fullBadge: 'Full event',
     items: [
       {
-        title: 'RSVP on WhatsApp',
-        text: 'Guests confirm with one tap from the chat. You see the updated list right away.'
+        title: 'One-tap RSVP',
+        text: 'Guests open the link and confirm. On the full event, Quinvite sends it on WhatsApp and reminds the ones who haven’t answered.',
+        full: false
       },
       {
         title: 'Padrinos',
-        text: 'Who sponsors the waltz, the dress or the cake, what is still pending, and a thank-you on the invitation.'
+        text: 'Who sponsors the waltz, the dress or the cake, what is still pending, and a thank-you on the invitation.',
+        full: true
       },
       {
         title: 'Guest list and tables',
-        text: 'Plus-ones, menu and seating without spreadsheets. Export the list for the venue.'
+        text: 'Plus-ones, menu and seating without spreadsheets. Export the list for the venue.',
+        full: false
       },
       {
-        title: 'Templates that turn heads',
-        text: 'Modern designs with animation, music and gallery. No watermark on the full plan.'
+        title: 'Designs that turn heads',
+        text: 'Modern invitations with animation, music and gallery. No watermark on the full event.',
+        full: true
       }
     ]
   },
   pricing: {
     title: 'One clear price',
-    subtitle: 'Start free. Pay once when you want the full event.',
+    subtitle: 'Start free. Pay once, only if you decide to unlock the full event.',
     free: {
       name: 'Free',
       price: '$0',
-      note: 'forever',
+      note: 'no card, no deadline',
       items: [
         'Up to 30 guests',
-        'Basic templates',
-        'RSVP from the invitation',
+        'Basic designs',
+        'One-tap RSVP (you share the link)',
         'Guest list and budget'
       ],
-      cta: 'Start free'
+      cta: 'Create my event for free'
     },
     full: {
       name: 'Full event',
       price: '$79',
-      note: 'one-time payment per event',
+      note: 'one payment per event',
       badge: 'Recommended',
       items: [
         'Unlimited guests',
-        'Automatic WhatsApp: invitation and reminders',
+        'Quinvite sends the invitation and reminders on WhatsApp',
         'Padrinos with tracking',
-        'Premium templates, no watermark',
+        'Premium designs, no watermark',
         'Collaborators (the quinceañera, the planner)',
         'Menu, music and tables'
       ],
-      cta: 'Create my event'
+      cta: 'Start free and unlock later',
+      helper: 'You pay when you unlock, not when you sign up.'
     },
-    fine: 'Prices in US dollars. You can unlock the full event at any time.'
+    fine: 'Prices in US dollars. You can stay on free as long as you like.'
   },
   faq: {
     title: 'Frequently asked questions',
     items: [
       {
-        q: 'Does it work for weddings?',
-        a: 'Yes. Quinvite is made for quinceañeras and weddings, with templates and copy for each.'
+        q: 'Can I change the invitation after sending it?',
+        a: 'Yes. Each guest’s link never changes: any edit you make shows up instantly, with nothing to resend.'
       },
       {
         q: 'Do my guests need to install anything?',
@@ -145,27 +155,32 @@ export default {
       },
       {
         q: 'How do I know who confirmed?',
-        a: 'Your dashboard shows confirmed, pending and not attending in real time. You can send a reminder to anyone pending.'
+        a: 'Your dashboard shows confirmed, pending and not attending in real time. On the full event you can send a reminder to anyone pending with one button.'
       },
       {
-        q: 'Do I have to pay up front?',
-        a: 'No. Create the event for free and unlock the full event whenever you need it, with a single payment.'
+        q: 'When and how do I pay?',
+        a: 'Only if you decide to unlock the full event: one $79 card payment, once. Creating the event and using it on free costs nothing and asks for no card.'
       },
       {
-        q: 'Which languages?',
-        a: 'Spanish and English. Each guest can see the invitation in their language.'
+        q: 'What happens with my guests’ phone numbers?',
+        a: 'They are used only to send them your invitation and your reminders. We never share them or message them for anything else.'
+      },
+      {
+        q: 'Does it work for weddings?',
+        a: 'Yes. Quinvite is made for quinceañeras and weddings, with designs and copy for each.'
       }
     ]
   },
   cta: {
     title: 'Ready to start?',
-    text: 'Create the event today. The invitation can be on your family’s phones tonight.',
+    text: 'Create the event today. The invitation can be on the whole family’s phones in five minutes.',
     button: 'Create my event for free'
   },
   footer: {
     tagline: 'Made with care for families who celebrate.',
     product: 'Product',
     legal: 'Legal',
+    contact: 'Write to us',
     rights: 'All rights reserved.'
   },
   auth: {

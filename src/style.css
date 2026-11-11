@@ -141,6 +141,20 @@
     outline: 2px solid var(--color-rose-400);
     outline-offset: 2px;
   }
+
+  ::selection {
+    background-color: var(--color-rose-200);
+    color: var(--color-ink-900);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--color-rose-600);
+  }
+
+  a {
+    text-underline-offset: 3px;
+  }
 }
 
 @utility text-balance {
@@ -171,4 +185,26 @@
 }
 @utility animate-out {
   animation: ui-out 140ms ease-in forwards;
+}
+
+/* Entrance for surfaces that appear on demand (menus, bars). */
+@utility ui-enter {
+  animation: ui-in 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* <details> body: ease open instead of snapping (works with a plain <p>/<div> body). */
+@utility ui-details-body {
+  animation: ui-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .animate-out,
+  .ui-enter,
+  .ui-details-body {
+    animation-duration: 1ms;
+  }
+  .animate-spin {
+    animation-duration: 1.5s;
+  }
 }

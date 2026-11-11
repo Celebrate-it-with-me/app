@@ -26,7 +26,9 @@ export default {
     terms: 'Términos',
     privacy: 'Privacidad',
     cookies: 'Cookies',
-    menu: 'Menú'
+    menu: 'Menú',
+    primary: 'Principal',
+    mobile: 'Menú móvil'
   },
   titles: {
     home: 'Invitaciones digitales para quince y bodas',
@@ -43,101 +45,109 @@ export default {
     help: 'Ayuda'
   },
   hero: {
-    eyebrow: 'Quinceañeras y bodas',
-    title: 'La invitación de sus XV, lista en cinco minutos',
+    title: 'Los XV de tu hija, listos en cinco minutos',
     subtitle:
-      'Crea una invitación hermosa, compártela por WhatsApp y recibe las confirmaciones solas. Sin imprimir, sin perseguir a nadie.',
+      'Crea una invitación hermosa, compártela por WhatsApp y mira quién confirma. Sin imprimir, sin perseguir a nadie.',
     cta: 'Crear mi evento gratis',
     secondary: 'Ver cómo funciona',
-    trust: 'Gratis hasta 30 invitados · Sin tarjeta'
+    trust: 'Gratis hasta 30 invitados · Todo por $79, una sola vez'
   },
   mock: {
     eyebrow: 'Mis XV',
     name: 'Valentina',
-    date: 'Sábado 25 de diciembre · 7:00 pm',
+    date: 'Sábado 14 de junio · 7:00 pm',
     place: 'Salón Cristal, Miami',
     question: '¿Nos acompañas?',
     yes: 'Confirmo',
     no: 'No podré',
-    footer: 'Con cariño, familia Fernández'
+    footer: 'Con cariño, familia Fernández',
+    bubbleName: 'Natalia Fonseca',
+    bubbleText: 'Confirmo 🎉 Vamos 3',
+    counterLabel: 'confirmados de 120'
   },
   how: {
     title: 'Así de simple',
-    subtitle: 'Tres pasos y la invitación está en el celular de todos.',
+    subtitle: 'Tres pasos y la invitación está en el celular de toda la familia.',
     steps: [
       {
-        title: 'Elige la plantilla y cuenta su historia',
-        text: 'Fotos, colores, misa y recepción, código de vestimenta. Todo desde el celular.'
+        title: 'Elige un diseño y escribe los datos de la fiesta',
+        text: 'Fotos, colores, misa y recepción, código de vestimenta. Todo desde tu celular.'
       },
       {
-        title: 'Agrega a tus invitados',
-        text: 'Desde Excel o desde tus contactos. Cada invitado recibe su enlace personal.'
+        title: 'Escribe o pega a tus invitados',
+        text: 'Nombres y teléfonos, uno a uno o desde una lista. Cada invitado recibe su propio enlace.'
       },
       {
-        title: 'Comparte por WhatsApp y mira quién confirma',
-        text: 'Las confirmaciones llegan solas. Recordatorio automático a quien no responde.'
+        title: 'Comparte el enlace y mira quién confirma',
+        text: 'Cada confirmación aparece en tu panel al momento. En el evento completo, Quinvite envía la invitación y los recordatorios por ti.'
       }
     ]
   },
   features: {
     title: 'Pensado para la quince, no para cualquier evento',
+    fullBadge: 'Evento completo',
     items: [
       {
-        title: 'Confirmación por WhatsApp',
-        text: 'Tus invitados confirman con un toque desde el chat. Tú ves la lista actualizada al momento.'
+        title: 'Confirman con un toque',
+        text: 'Tus invitados abren el enlace y confirman. Con el evento completo, Quinvite se lo manda por WhatsApp y les recuerda a los que no responden.',
+        full: false
       },
       {
         title: 'Padrinos',
-        text: 'Quién apadrina el vals, el vestido o el pastel, cuánto falta y un agradecimiento en la invitación.'
+        text: 'Quién apadrina el vals, el vestido o el pastel, cuánto falta y un agradecimiento en la invitación.',
+        full: true
       },
       {
         title: 'Lista de invitados y mesas',
-        text: 'Acompañantes, menú y mesas sin hojas de cálculo. Exporta la lista para el salón.'
+        text: 'Acompañantes, menú y mesas sin hojas de cálculo. Exporta la lista para el salón.',
+        full: false
       },
       {
-        title: 'Plantillas que dan envidia',
-        text: 'Diseños modernos con animación, música y galería. Sin marca de agua en el plan completo.'
+        title: 'Diseños que dan envidia',
+        text: 'Invitaciones modernas con animación, música y galería. Sin marca de agua en el evento completo.',
+        full: true
       }
     ]
   },
   pricing: {
     title: 'Un precio claro',
-    subtitle: 'Empieza gratis. Paga una sola vez cuando quieras el evento completo.',
+    subtitle: 'Empiezas gratis. Pagas una sola vez, solo si decides desbloquear el evento completo.',
     free: {
       name: 'Gratis',
       price: '$0',
-      note: 'para siempre',
+      note: 'sin tarjeta, sin plazo',
       items: [
         'Hasta 30 invitados',
-        'Plantillas básicas',
-        'Confirmación desde la invitación',
+        'Diseños básicos',
+        'Confirman con un toque (tú compartes el enlace)',
         'Lista de invitados y presupuesto'
       ],
-      cta: 'Empezar gratis'
+      cta: 'Crear mi evento gratis'
     },
     full: {
       name: 'Evento completo',
       price: '$79',
-      note: 'pago único por evento',
+      note: 'un solo pago por evento',
       badge: 'Recomendado',
       items: [
         'Invitados ilimitados',
-        'WhatsApp automático: invitación y recordatorios',
+        'Quinvite envía la invitación y los recordatorios por WhatsApp',
         'Padrinos con seguimiento',
-        'Plantillas premium sin marca',
+        'Diseños premium sin marca de agua',
         'Colaboradores (la quinceañera, el planner)',
         'Menú, música y mesas'
       ],
-      cta: 'Crear mi evento'
+      cta: 'Empezar gratis y desbloquear después',
+      helper: 'Pagas al desbloquear, no al registrarte.'
     },
-    fine: 'Precio en dólares. Puedes desbloquear el evento completo en cualquier momento.'
+    fine: 'Precio en dólares. Puedes seguir en gratis todo el tiempo que quieras.'
   },
   faq: {
     title: 'Preguntas frecuentes',
     items: [
       {
-        q: '¿Sirve para bodas?',
-        a: 'Sí. Quinvite está hecho para quinceañeras y bodas, con plantillas y textos propios para cada una.'
+        q: '¿Puedo cambiar la invitación después de enviarla?',
+        a: 'Sí. El enlace de cada invitado es el mismo siempre: cualquier cambio que hagas se ve al instante, sin volver a enviar nada.'
       },
       {
         q: '¿Mis invitados tienen que instalar algo?',
@@ -145,27 +155,32 @@ export default {
       },
       {
         q: '¿Cómo me entero de quién confirmó?',
-        a: 'En tu panel ves confirmados, pendientes y quién no asiste, en tiempo real. Puedes enviar un recordatorio a los pendientes.'
+        a: 'En tu panel ves confirmados, pendientes y quién no asiste, en tiempo real. En el evento completo puedes enviar un recordatorio a los pendientes con un botón.'
       },
       {
-        q: '¿Tengo que pagar desde el principio?',
-        a: 'No. Creas el evento gratis y desbloqueas el evento completo cuando lo necesites, con un solo pago.'
+        q: '¿Cuándo y cómo pago?',
+        a: 'Solo si decides desbloquear el evento completo: un pago de $79 con tarjeta, una sola vez. Crear el evento y usarlo en gratis no cuesta nada ni pide tarjeta.'
       },
       {
-        q: '¿En qué idiomas está?',
-        a: 'Español e inglés. Cada invitado puede ver la invitación en su idioma.'
+        q: '¿Qué pasa con los teléfonos de mis invitados?',
+        a: 'Solo se usan para enviarles tu invitación y tus recordatorios. No los compartimos ni les escribimos por otra cosa.'
+      },
+      {
+        q: '¿Sirve para bodas?',
+        a: 'Sí. Quinvite está hecho para quinceañeras y bodas, con diseños y textos propios para cada una.'
       }
     ]
   },
   cta: {
     title: '¿Lista para empezar?',
-    text: 'Crea el evento hoy. La invitación puede estar en el celular de tu familia esta misma noche.',
+    text: 'Crea el evento hoy. La invitación puede estar en el celular de toda la familia en cinco minutos.',
     button: 'Crear mi evento gratis'
   },
   footer: {
     tagline: 'Hecho con cariño para las familias que celebran.',
     product: 'Producto',
     legal: 'Legal',
+    contact: 'Escríbenos',
     rights: 'Todos los derechos reservados.'
   },
   auth: {

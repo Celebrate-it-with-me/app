@@ -11,13 +11,13 @@ const { t, tm } = useI18n()
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
       <div class="mx-auto max-w-2xl text-center">
         <h2 class="font-heading text-3xl text-ink-900 sm:text-4xl">{{ t('pricing.title') }}</h2>
-        <p class="mt-3 text-lg text-ink-500">{{ t('pricing.subtitle') }}</p>
+        <p class="mt-3 text-lg text-ink-500 text-balance">{{ t('pricing.subtitle') }}</p>
       </div>
       <div class="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
         <div class="flex flex-col rounded-2xl border border-line bg-cream-50 p-7">
           <h3 class="font-body text-lg font-semibold text-ink-900">{{ t('pricing.free.name') }}</h3>
           <p class="mt-3 flex items-baseline gap-2">
-            <span class="font-heading text-5xl text-ink-900">{{ t('pricing.free.price') }}</span>
+            <span class="font-heading text-5xl text-ink-900 tabular-nums">{{ t('pricing.free.price') }}</span>
             <span class="text-sm text-ink-500">{{ t('pricing.free.note') }}</span>
           </p>
           <ul class="mt-6 flex flex-1 flex-col gap-3">
@@ -32,7 +32,7 @@ const { t, tm } = useI18n()
           <UiBadge tone="rose" class="absolute -top-3 left-7">{{ t('pricing.full.badge') }}</UiBadge>
           <h3 class="font-body text-lg font-semibold text-ink-900">{{ t('pricing.full.name') }}</h3>
           <p class="mt-3 flex items-baseline gap-2">
-            <span class="font-heading text-5xl text-ink-900">{{ t('pricing.full.price') }}</span>
+            <span class="font-heading text-5xl text-ink-900 tabular-nums">{{ t('pricing.full.price') }}</span>
             <span class="text-sm text-ink-500">{{ t('pricing.full.note') }}</span>
           </p>
           <ul class="mt-6 flex flex-1 flex-col gap-3">
@@ -41,9 +41,10 @@ const { t, tm } = useI18n()
             </li>
           </ul>
           <UiButton block class="mt-8" to="/sign-up">{{ t('pricing.full.cta') }}</UiButton>
+          <p class="mt-2 text-center text-sm text-ink-500">{{ t('pricing.full.helper') }}</p>
         </div>
       </div>
-      <p class="mt-6 text-center text-sm text-ink-400">{{ t('pricing.fine') }}</p>
+      <p class="mt-6 text-center text-sm text-ink-500">{{ t('pricing.fine') }}</p>
     </div>
   </section>
 </template>

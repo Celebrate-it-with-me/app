@@ -17,6 +17,7 @@ defineProps({
     viewBox="0 0 40 40"
     role="img"
     :aria-label="title"
+    translate="no"
     class="inline-block h-9 w-auto"
     v-bind="$attrs"
   >
@@ -39,6 +40,7 @@ defineProps({
     viewBox="0 0 170 40"
     role="img"
     :aria-label="title"
+    translate="no"
     class="inline-block h-9 w-auto"
     v-bind="$attrs"
   >

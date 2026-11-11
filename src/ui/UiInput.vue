@@ -48,6 +48,7 @@ const classes = computed(() =>
       :value="modelValue"
       :disabled="disabled"
       :aria-invalid="isInvalid || undefined"
+      :spellcheck="type === 'email' || type === 'password' ? false : undefined"
       :class="classes"
       v-bind="$attrs"
       @input="emit('update:modelValue', $event.target.value)"

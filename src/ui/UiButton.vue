@@ -43,7 +43,7 @@ const tag = computed(() => (props.to ? 'router-link' : props.href ? 'a' : 'butto
 const classes = computed(() =>
   cx(
     'inline-flex items-center justify-center rounded-lg font-semibold whitespace-nowrap',
-    'transition-colors duration-150 select-none',
+    'transition-[background-color,color,transform] duration-150 select-none active:scale-[0.97]',
     'disabled:cursor-not-allowed',
     VARIANTS[props.variant] ?? VARIANTS.primary,
     props.icon ? ICON_SIZES[props.size] : SIZES[props.size],

@@ -5,15 +5,17 @@ import LandingFeatures from '@/components/external/sections/landing/LandingFeatu
 import LandingPricing from '@/components/external/sections/landing/LandingPricing.vue'
 import LandingFaq from '@/components/external/sections/landing/LandingFaq.vue'
 import LandingCta from '@/components/external/sections/landing/LandingCta.vue'
+import MobileCtaBar from '@/components/external/sections/landing/MobileCtaBar.vue'
 </script>
 
 <template>
-  <div>
+  <div class="pb-20 md:pb-0">
     <LandingHero />
     <LandingHowItWorks />
     <LandingFeatures />
     <LandingPricing />
     <LandingFaq />
     <LandingCta />
+    <MobileCtaBar />
   </div>
 </template>
