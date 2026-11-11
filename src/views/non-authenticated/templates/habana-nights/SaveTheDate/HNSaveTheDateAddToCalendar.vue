@@ -21,10 +21,11 @@ const config = {
   timeZone: 'America/New_York'
 }
 
-const handleClick = e => {
+// atcb_action returns a Promise since add-to-calendar-button 3
+const handleClick = async e => {
   e.preventDefault()
   try {
-    atcb_action(config)
+    await atcb_action(config)
   } catch (error) {
     console.error(error)
   }

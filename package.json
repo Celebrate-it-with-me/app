@@ -27,7 +27,7 @@
     "@vuepic/vue-datepicker": "^14.0.0",
     "@vueuse/components": "^15.0.0",
     "@vueuse/core": "^15.0.0",
-    "add-to-calendar-button": "^2.8.1",
+    "add-to-calendar-button": "^3.6.0",
     "animate.css": "^4.1.1",
     "apexcharts": "^8.8.1",
     "axios": "1.21.1",
