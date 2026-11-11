@@ -64,7 +64,6 @@
     "eslint-plugin-vue": "^10.12.1",
     "globals": "^17.14.0",
     "jsdom": "^31.0.0",
-    "npm-run-all2": "^6.1.1",
     "pinia-logger": "^2.1.0",
     "postcss": "^8.4.32",
     "prettier": "^3.5.3",
