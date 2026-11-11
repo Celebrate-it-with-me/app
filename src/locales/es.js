@@ -45,7 +45,7 @@ export default {
     help: 'Ayuda'
   },
   hero: {
-    title: 'Los XV de tu hija, listos en cinco minutos',
+    title: 'La invitación de sus XV, tan especial como ella',
     subtitle:
       'Crea una invitación hermosa, compártela por WhatsApp y mira quién confirma. Sin imprimir, sin perseguir a nadie.',
     cta: 'Crear mi evento gratis',
@@ -53,6 +53,8 @@ export default {
     trust: 'Gratis hasta 30 invitados · Todo por $79, una sola vez'
   },
   mock: {
+    demoLabel: 'Ejemplo de invitación: los XV de Valentina',
+    portraitAlt: 'Quinceañera con vestido rosa y tiara, sonriendo en un jardín al atardecer',
     eyebrow: 'Mis XV',
     name: 'Valentina',
     date: 'Sábado 14 de junio · 7:00 pm',
@@ -60,10 +62,13 @@ export default {
     question: '¿Nos acompañas?',
     yes: 'Confirmo',
     no: 'No podré',
+    thanks: '¡Gracias! Te esperamos',
+    sorry: 'Te vamos a extrañar',
+    demoNote: 'Es un ejemplo: no se envió nada.',
     footer: 'Con cariño, familia Fernández',
-    bubbleName: 'Natalia Fonseca',
-    bubbleText: 'Confirmo 🎉 Vamos 3',
-    counterLabel: 'confirmados de 120'
+    bubbleName: 'Natalia',
+    bubbleText: 'Confirmó · 3 asistentes',
+    counterLabel: 'de {total} confirmados'
   },
   how: {
     title: 'Así de simple',

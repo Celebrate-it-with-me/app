@@ -8,12 +8,12 @@ const { t } = useI18n()
 
 <template>
   <section class="relative overflow-hidden">
-    <div class="relative mx-auto grid max-w-6xl items-center gap-10 px-4 pb-14 pt-8 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:py-24">
-      <div class="order-first flex justify-center pt-4 lg:order-last lg:justify-end lg:pt-0">
-        <InvitationMock />
-      </div>
+    <div
+      class="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-10 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:gap-10 lg:py-24"
+    >
+      <!-- Phones read the promise first; the showcase follows. -->
       <div class="text-center lg:text-left">
-        <h1 class="font-heading text-[2.6rem] leading-[1.02] tracking-[-0.02em] text-ink-900 sm:text-5xl lg:text-6xl text-balance">
+        <h1 class="font-heading text-[2.5rem] leading-[1.04] tracking-[-0.02em] text-ink-900 sm:text-5xl lg:text-[3.6rem] text-balance">
           {{ t('hero.title') }}
         </h1>
         <p class="mx-auto mt-5 max-w-xl text-lg text-ink-500 lg:mx-0 text-balance">{{ t('hero.subtitle') }}</p>
@@ -22,6 +22,10 @@ const { t } = useI18n()
           <UiButton variant="link" :to="{ path: '/', hash: '#como-funciona' }">{{ t('hero.secondary') }}</UiButton>
         </div>
         <p class="mt-4 text-sm text-ink-500">{{ t('hero.trust') }}</p>
+      </div>
+
+      <div class="px-2 pb-6 pt-4 sm:px-6 lg:px-0 lg:pb-8">
+        <InvitationMock />
       </div>
     </div>
   </section>

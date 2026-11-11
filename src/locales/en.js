@@ -45,7 +45,7 @@ export default {
     help: 'Help'
   },
   hero: {
-    title: 'Your daughter’s XV, ready in five minutes',
+    title: 'Her XV invitation, as special as she is',
     subtitle:
       'Create a beautiful invitation, share it on WhatsApp and watch who confirms. No printing, no chasing anyone.',
     cta: 'Create my event for free',
@@ -53,6 +53,8 @@ export default {
     trust: 'Free up to 30 guests · Everything for $79, once'
   },
   mock: {
+    demoLabel: 'Sample invitation: Valentina’s XV',
+    portraitAlt: 'Quinceañera in a pink gown and tiara, smiling in a garden at sunset',
     eyebrow: 'My XV',
     name: 'Valentina',
     date: 'Saturday, June 14 · 7:00 pm',
@@ -60,10 +62,13 @@ export default {
     question: 'Will you join us?',
     yes: 'I’ll be there',
     no: 'Can’t make it',
+    thanks: 'Thank you! See you there',
+    sorry: 'We’ll miss you',
+    demoNote: 'Just a sample: nothing was sent.',
     footer: 'With love, the Fernández family',
-    bubbleName: 'Natalia Fonseca',
-    bubbleText: 'I’ll be there 🎉 3 of us',
-    counterLabel: 'confirmed of 120'
+    bubbleName: 'Natalia',
+    bubbleText: 'Confirmed · 3 guests',
+    counterLabel: 'of {total} confirmed'
   },
   how: {
     title: 'This simple',
