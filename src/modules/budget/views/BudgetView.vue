@@ -5,6 +5,7 @@ import { Download, Plus, Search } from 'lucide-vue-next'
 import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import BudgetService from '../services/BudgetService'
+import PadrinosService from '@/modules/padrinos/services/PadrinosService'
 import { useBudgetStore } from '../stores/useBudgetStore'
 import BudgetSummary from '../components/BudgetSummary.vue'
 import CategoryBars from '../components/CategoryBars.vue'
@@ -38,12 +39,15 @@ const editingPayment = ref(null)
 const capOpen = ref(false)
 const categoriesOpen = ref(false)
 const removing = ref(null)
+const padrinos = ref([])
 
 async function load() {
   if (!event.value?.id) return
   loading.value = true
   try {
     await store.fetch(event.value.id)
+    // Who besides the family can have paid a payment; if padrinos cannot load the budget still works.
+    padrinos.value = await PadrinosService.list(event.value.id).then(r => r.data.map(p => ({ id: p.id, name: p.name }))).catch(() => [])
   } catch {
     showError(t('app.budget.loadError'))
   } finally {
@@ -203,7 +207,7 @@ async function download() {
     </template>
 
     <ItemFormModal v-model:open="itemOpen" :item="editingItem" :categories="categories" :saving="saving" @save="saveItem" @categories="categoriesOpen = true" />
-    <PaymentModal v-model:open="payOpen" :item="payItem" :payment="editingPayment" :currency="summary?.currency" :saving="saving" @save="savePayment" />
+    <PaymentModal v-model:open="payOpen" :item="payItem" :payment="editingPayment" :currency="summary?.currency" :padrinos="padrinos" :saving="saving" @save="savePayment" />
     <CapModal v-model:open="capOpen" :cap="summary?.cap ?? null" :saving="saving" @save="saveCap" />
     <CategoriesModal v-model:open="categoriesOpen" :categories="categories" :saving="saving" @add="addCategory" @rename="renameCategory" @remove="removeCategory" />
 

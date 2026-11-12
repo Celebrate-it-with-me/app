@@ -36,7 +36,7 @@ export const MODULE_VIEWS = {
   locations: { to: '/dashboard/locations', icon: MapPin, labelKey: 'app.nav.locations' },
   dress_code: { to: '/dashboard/dress-code', icon: Shirt, labelKey: 'app.nav.dressCode' },
   budget: { to: '/dashboard/budget', icon: Wallet, labelKey: 'app.nav.budget', primary: true },
-  padrinos: { to: null, icon: HeartHandshake, labelKey: 'app.nav.padrinos' }, // the module is not built yet
+  padrinos: { to: '/dashboard/padrinos', icon: HeartHandshake, labelKey: 'app.nav.padrinos' },
   menus: { to: '/dashboard/menus', icon: ChefHat, labelKey: 'app.nav.menus' },
   seating: { to: '/dashboard/seating', icon: NotebookPen, labelKey: 'app.nav.seating' },
   suggested_music: { to: '/dashboard/suggested-music', icon: Music, labelKey: 'app.nav.music' },

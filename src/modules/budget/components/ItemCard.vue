@@ -79,7 +79,7 @@ const menu = computed(() => [
       <li v-for="payment in item.payments" :key="payment.id" class="flex items-center justify-between gap-3 px-3 py-2 text-sm">
         <div class="min-w-0">
           <p class="tabular-nums font-medium text-ink-900">{{ money(payment.amount) }}</p>
-          <p class="truncate text-ink-500">{{ date(payment.paidOn) }}<template v-if="payment.note"> · {{ payment.note }}</template></p>
+          <p class="truncate text-ink-500">{{ date(payment.paidOn) }}<template v-if="payment.padrinoName"> · {{ t('app.budget.payment.paidByName', { name: payment.padrinoName }) }}</template><template v-if="payment.note"> · {{ payment.note }}</template></p>
         </div>
         <div v-if="canEdit" class="flex shrink-0">
           <UiButton variant="ghost" size="sm" icon :aria-label="t('app.budget.item.editPayment')" @click="emit('edit-payment', { item, payment })">

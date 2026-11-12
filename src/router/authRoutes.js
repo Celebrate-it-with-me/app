@@ -8,6 +8,7 @@ import commentsRoutes from '@/modules/comments/routes/comment.routes'
 import suggestedMusicRoutes from '@/modules/suggested-music/routes/suggestedMusic.routes'
 import sweetMemoriesRoutes from '@/modules/sweet-memories/routes/sweetMemories.routes'
 import budgetRoutes from '@/modules/budget/routes/budget.routes'
+import padrinosRoutes from '@/modules/padrinos/routes/padrinos.route'
 import locationsRoutes from '@/modules/locations/routes/locations.route'
 import dressCodeRoutes from '@/modules/dress-code/routes/dressCode.route'
 import saveTheDateRoutes from '@/modules/save-the-date/routes/saveTheDate.route'
@@ -80,6 +81,7 @@ const authRoutes = [
   ...suggestedMusicRoutes,
   ...sweetMemoriesRoutes,
   ...budgetRoutes,
+  ...padrinosRoutes,
   ...locationsRoutes,
   ...dressCodeRoutes,
   ...saveTheDateRoutes,

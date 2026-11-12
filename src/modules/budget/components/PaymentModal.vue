@@ -1,7 +1,7 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { UiModal, UiField, UiInput, UiButton } from '@/ui'
+import { UiModal, UiField, UiInput, UiSelect, UiButton } from '@/ui'
 import { emptyPayment, paymentErrors, formatMoney } from '../utils/budget'
 
 const props = defineProps({
@@ -9,6 +9,8 @@ const props = defineProps({
   item: { type: Object, default: null },
   payment: { type: Object, default: null },
   currency: { type: String, default: 'USD' },
+  /** `[{ id, name }]`: who can have paid besides the family. */
+  padrinos: { type: Array, default: () => [] },
   saving: { type: Boolean, default: false }
 })
 const emit = defineEmits(['update:open', 'save'])
@@ -22,12 +24,16 @@ watch(
   open => {
     if (!open) return
     errors.value = {}
-    if (props.payment) form.value = { amount: String(props.payment.amount), paidOn: props.payment.paidOn, note: props.payment.note ?? '', padrinoId: props.payment.padrinoId }
+    if (props.payment) form.value = { amount: String(props.payment.amount), paidOn: props.payment.paidOn, note: props.payment.note ?? '', padrinoId: props.payment.padrinoId ?? '' }
     // A new payment starts at what is still owed: the usual case is paying the balance.
-    else form.value = { ...emptyPayment(), amount: props.item?.remaining ? String(props.item.remaining) : '' }
+    else form.value = { ...emptyPayment(), amount: props.item?.remaining ? String(props.item.remaining) : '', padrinoId: '' }
   }
 )
 
+const payers = computed(() => [
+  { value: '', label: t('app.budget.payment.family') },
+  ...props.padrinos.map(p => ({ value: p.id, label: t('app.budget.payment.padrino', { name: p.name }) }))
+])
 const err = key => (errors.value[key] ? t(errors.value[key]) : '')
 
 function submit() {
@@ -50,6 +56,9 @@ function submit() {
       </UiField>
       <UiField :label="t('app.budget.payment.date')" :error="err('paidOn')" required>
         <UiInput v-model="form.paidOn" type="date" :invalid="!!errors.paidOn" />
+      </UiField>
+      <UiField v-if="padrinos.length" :label="t('app.budget.payment.paidBy')">
+        <UiSelect v-model="form.padrinoId" :options="payers" />
       </UiField>
       <UiField :label="t('app.budget.payment.note')" :hint="t('app.budget.payment.noteHint')">
         <UiInput v-model="form.note" maxlength="160" autocomplete="off" />

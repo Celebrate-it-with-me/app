@@ -62,6 +62,7 @@ export default {
     saveTheDate: 'Save the date',
     dressCode: 'Vestimenta',
     budget: 'Presupuesto',
+    padrinos: 'Padrinos',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -350,6 +351,7 @@ export default {
       google: 'Google Calendar',
       ics: 'Apple, Outlook y otros (.ics)'
     },
+    padrinos: { sponsors: 'Apadrina {items}' },
     itinerary: {
       types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' }
     },
@@ -397,6 +399,72 @@ export default {
     }
   },
   app: {
+    padrinos: {
+      title: 'Padrinos',
+      subtitle: 'Quién te acompaña, qué apadrina y cuánto ha aportado. El dinero no pasa por Quinvite: aquí solo lo registras.',
+      add: 'Añadir padrino',
+      addFirst: 'Añadir mi primer padrino',
+      emptyTitle: 'Aún no hay padrinos',
+      emptyText: 'Anota a quien apadrinará algo de tu fiesta: la torta, el DJ, el vestido… Verás lo prometido y lo aportado.',
+      optional: 'Opcional',
+      cancel: 'Cancelar',
+      save: 'Guardar',
+      saved: 'Padrinos actualizados.',
+      removed: 'Padrino eliminado.',
+      saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
+      loadError: 'No pudimos cargar los padrinos.',
+      hasPayments: 'Este padrino ya tiene pagos registrados, así que no se puede eliminar.',
+      status: { invited: 'Invitado', accepted: 'Aceptó' },
+      progress: { none: 'Sin compromiso', unpaid: 'Sin pagar', partial: 'Pago parcial', paid: 'Al día' },
+      progressOf: 'Aportes de {name}',
+      noCommitments: 'Aún no ha elegido qué apadrinar.',
+      addCommitments: 'Elegir qué apadrina',
+      changeCommitments: 'Cambiar lo que apadrina',
+      shownInInvitation: 'Aparece en la invitación',
+      summary: {
+        label: 'Resumen de aportes',
+        committed: 'Prometido',
+        paid: 'Aportado',
+        remaining: 'Por aportar',
+        note: 'Los aportes salen de los pagos que registras en el Presupuesto, marcados como pagados por el padrino.'
+      },
+      menu: {
+        label: 'Acciones para {name}',
+        whatsapp: 'Escribir por WhatsApp',
+        commitments: 'Lo que apadrina',
+        edit: 'Editar',
+        remove: 'Eliminar'
+      },
+      whatsappText: 'Hola {name}, te escribo por la fiesta de {event}. ¡Gracias por acompañarnos!',
+      removeTitle: '¿Eliminar este padrino?',
+      removeBody: '“{name}” y lo que prometió saldrán de la lista.',
+      form: {
+        addTitle: 'Nuevo padrino',
+        editTitle: 'Editar padrino',
+        name: 'Nombre',
+        relationship: 'Quién es para ti',
+        phone: 'Teléfono',
+        phoneHint: 'Con código de país si es posible.',
+        status: 'Estado',
+        statusHint: 'Invitado: ya le propusiste. Aceptó: se comprometió.',
+        public: 'Mostrar en la invitación',
+        publicHint: 'Aparece en la sección “Con el cariño de”, sin montos. Disponible en el evento completo.',
+        thanks: 'Mensaje de agradecimiento',
+        thanksHint: 'Opcional. Se muestra junto a su nombre.'
+      },
+      commitments: {
+        title: 'Lo que apadrina {name}',
+        text: 'Marca los gastos del presupuesto que cubrirá y cuánto aportará en cada uno.',
+        empty: 'Primero añade gastos en el Presupuesto para poder asignárselos.',
+        costs: 'Cuesta {amount}',
+        amount: 'Monto para {name}'
+      },
+      errors: {
+        name: 'Escribe el nombre.',
+        phone: 'Revisa el teléfono: solo números, con + al inicio si lleva código de país.',
+        amount: 'Cada gasto marcado necesita un monto mayor que 0.'
+      }
+    },
     budget: {
       title: 'Presupuesto',
       subtitle: 'Lo que cuesta tu fiesta, lo que ya pagaste y lo que falta.',
@@ -469,6 +537,10 @@ export default {
         notes: 'Notas'
       },
       payment: {
+        family: 'La familia',
+        padrino: 'Padrino: {name}',
+        paidBy: '¿Quién pagó?',
+        paidByName: 'Pagó {name}',
         addTitle: 'Registrar pago',
         editTitle: 'Editar pago',
         for: '{name} · faltan {left}',

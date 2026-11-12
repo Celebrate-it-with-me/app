@@ -75,7 +75,7 @@ export const today = () => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-export const emptyPayment = () => ({ amount: '', paidOn: today(), note: '' })
+export const emptyPayment = () => ({ amount: '', paidOn: today(), note: '', padrinoId: '' })
 
 export function paymentErrors(form) {
   const errors = {}
@@ -89,7 +89,7 @@ export const paymentPayload = form => ({
   amount: Number(form.amount),
   paidOn: form.paidOn,
   note: String(form.note ?? '').trim() || null,
-  padrinoId: form.padrinoId ?? null
+  padrinoId: form.padrinoId === '' || form.padrinoId === undefined ? null : form.padrinoId
 })
 
 /** Items filtered by tab and search text (title or vendor). */

@@ -62,6 +62,7 @@ export default {
     saveTheDate: 'Save the date',
     dressCode: 'Dress code',
     budget: 'Budget',
+    padrinos: 'Godparents',
     eventEdit: 'Event details'
   },
   hero: {
@@ -350,6 +351,7 @@ export default {
       google: 'Google Calendar',
       ics: 'Apple, Outlook and others (.ics)'
     },
+    padrinos: { sponsors: 'Sponsors {items}' },
     itinerary: {
       types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
     },
@@ -397,6 +399,72 @@ export default {
     }
   },
   app: {
+    padrinos: {
+      title: 'Godparents',
+      subtitle: 'Who stands with you, what they sponsor and how much they have given. Money does not go through Quinvite: you only record it here.',
+      add: 'Add godparent',
+      addFirst: 'Add my first godparent',
+      emptyTitle: 'No godparents yet',
+      emptyText: 'Note who will sponsor something for your party: the cake, the DJ, the dress… You will see what was promised and what was given.',
+      optional: 'Optional',
+      cancel: 'Cancel',
+      save: 'Save',
+      saved: 'Godparents updated.',
+      removed: 'Godparent deleted.',
+      saveError: 'We could not save your changes. Try again.',
+      loadError: 'We could not load the godparents.',
+      hasPayments: 'This godparent already has payments recorded, so they cannot be deleted.',
+      status: { invited: 'Invited', accepted: 'Accepted' },
+      progress: { none: 'No pledge', unpaid: 'Unpaid', partial: 'Partly paid', paid: 'Paid up' },
+      progressOf: 'Contributions of {name}',
+      noCommitments: 'They have not chosen what to sponsor yet.',
+      addCommitments: 'Choose what they sponsor',
+      changeCommitments: 'Change what they sponsor',
+      shownInInvitation: 'Shown in the invitation',
+      summary: {
+        label: 'Contributions summary',
+        committed: 'Pledged',
+        paid: 'Given',
+        remaining: 'Still to give',
+        note: 'Contributions come from the payments you record in the Budget, marked as paid by the godparent.'
+      },
+      menu: {
+        label: 'Actions for {name}',
+        whatsapp: 'Message on WhatsApp',
+        commitments: 'What they sponsor',
+        edit: 'Edit',
+        remove: 'Delete'
+      },
+      whatsappText: 'Hi {name}, I am writing about the {event} party. Thank you for being with us!',
+      removeTitle: 'Delete this godparent?',
+      removeBody: '“{name}” and what they pledged will leave the list.',
+      form: {
+        addTitle: 'New godparent',
+        editTitle: 'Edit godparent',
+        name: 'Name',
+        relationship: 'Who they are to you',
+        phone: 'Phone',
+        phoneHint: 'With country code if possible.',
+        status: 'Status',
+        statusHint: 'Invited: you asked them. Accepted: they committed.',
+        public: 'Show in the invitation',
+        publicHint: 'Appears in the “With love from” section, without amounts. Available in the full event.',
+        thanks: 'Thank-you message',
+        thanksHint: 'Optional. Shown next to their name.'
+      },
+      commitments: {
+        title: 'What {name} sponsors',
+        text: 'Check the budget expenses they will cover and how much they will give for each.',
+        empty: 'First add expenses in the Budget so you can assign them.',
+        costs: 'Costs {amount}',
+        amount: 'Amount for {name}'
+      },
+      errors: {
+        name: 'Enter the name.',
+        phone: 'Check the phone: digits only, with a leading + if it has a country code.',
+        amount: 'Each checked expense needs an amount above 0.'
+      }
+    },
     budget: {
       title: 'Budget',
       subtitle: 'What your party costs, what you already paid and what is left.',
@@ -469,6 +537,10 @@ export default {
         notes: 'Notes'
       },
       payment: {
+        family: 'The family',
+        padrino: 'Godparent: {name}',
+        paidBy: 'Who paid?',
+        paidByName: 'Paid by {name}',
         addTitle: 'Record payment',
         editTitle: 'Edit payment',
         for: '{name} · {left} left',
