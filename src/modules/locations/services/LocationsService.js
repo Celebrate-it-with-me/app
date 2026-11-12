@@ -1,50 +1,39 @@
 import { CWM_API } from '@/services/axios'
 
+const base = eventId => `/event/${eventId}/location`
+
 class LocationsService {
-  async loadLocation({ eventId, perPage, pageSelected, searchValue }) {
-    return CWM_API.get(`event/${eventId}/location`, {
-      params: {
-        perPage,
-        pageSelected,
-        searchValue
-      }
-    })
+  async list(eventId) {
+    return (await CWM_API.get(base(eventId))).data.data
   }
 
-  async addLocation({ eventId, formData }) {
-    return CWM_API.post(`event/${eventId}/location`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  async create(eventId, place) {
+    return (await CWM_API.post(base(eventId), place)).data.data
   }
 
-  async deleteLocation({ eventId, locationId }) {
-    return CWM_API.delete(`event/${eventId}/location/${locationId}`)
+  async update(eventId, id, place) {
+    return (await CWM_API.put(`${base(eventId)}/${id}`, place)).data.data
   }
 
-  async getLocation({ eventId, locationId }) {
-    return CWM_API.get(`event/${eventId}/location/${locationId}`)
+  async remove(eventId, id) {
+    await CWM_API.delete(`${base(eventId)}/${id}`)
   }
 
-  async teLocation({ eventId, locationId, formData }) {
-    return CWM_API.post(`event/${eventId}/location/${locationId}?_method=PUT`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  /** Own pictures (files) and/or Google photos (urls the API already holds). */
+  async addImages(eventId, id, { files = [], googlePhotos = [] }) {
+    const body = new FormData()
+    files.forEach(file => body.append('images[]', file))
+    googlePhotos.forEach(url => body.append('googlePhotos[]', url))
+    return (await CWM_API.post(`${base(eventId)}/${id}/images`, body, { headers: { 'Content-Type': 'multipart/form-data' } })).data.data
   }
 
-  async getPlaceImages({ eventId, placeId }) {
-    return CWM_API.get(`event/${eventId}/location/${placeId}/images`)
+  async removeImage(eventId, id, imageId) {
+    await CWM_API.delete(`${base(eventId)}/${id}/images/${imageId}`)
   }
 
-  uploadLocationImages(locationId, formData, eventId) {
-    return CWM_API.post(`event/${eventId}/location/${locationId}/images`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  /** The photos Google has for a place, fetched by the API. */
+  async googlePhotos(eventId, placeId) {
+    return (await CWM_API.get(`${base(eventId)}/${encodeURIComponent(placeId)}/images`)).data
   }
 }
 

@@ -30,7 +30,7 @@ export const SECTIONS = ['main', 'guests', 'organization', 'extras']
 export const MODULE_VIEWS = {
   invitation: { to: null, icon: Sparkles, labelKey: 'app.nav.invitation' }, // the editor is not built yet
   guests: { to: '/dashboard/guests', icon: Users, labelKey: 'app.nav.guests', primary: true },
-  rsvp: { to: '/dashboard/rsvp', icon: CheckSquare, labelKey: 'app.nav.rsvp', primary: true },
+  rsvp: { to: null, icon: CheckSquare, labelKey: 'app.nav.rsvp' }, // a tab of the guest list now
   save_the_date: { to: '/dashboard/save-the-date', icon: AlarmClock, labelKey: 'app.nav.saveTheDate' },
   timeline: { to: '/dashboard/timeline', icon: CalendarClock, labelKey: 'app.nav.timeline' },
   locations: { to: '/dashboard/locations', icon: MapPin, labelKey: 'app.nav.locations' },

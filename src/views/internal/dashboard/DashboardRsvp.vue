@@ -21,7 +21,7 @@ const rows = computed(() => [
 <template>
   <UiCard :title="t('app.dashboard.rsvp.title')" heading-level="h2">
     <template #actions>
-      <router-link to="/dashboard/rsvp" class="inline-flex min-h-11 items-center text-sm font-semibold text-rose-700 underline-offset-4 hover:underline">{{ t('app.dashboard.rsvp.viewAll') }}</router-link>
+      <router-link to="/dashboard/guests" class="inline-flex min-h-11 items-center text-sm font-semibold text-rose-700 underline-offset-4 hover:underline">{{ t('app.dashboard.rsvp.viewAll') }}</router-link>
     </template>
 
     <p v-if="!rsvp.people" class="text-base text-ink-600">{{ t('app.dashboard.rsvp.empty') }}</p>

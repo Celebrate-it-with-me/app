@@ -2,13 +2,12 @@ export default [
   {
     path: '/dashboard/save-the-date',
     name: 'save-the-date',
-    component: () => import('@/modules/save-the-date/views/CSaveTheDateView.vue'),
+    component: () => import('@/modules/save-the-date/views/SaveTheDateView.vue'),
     meta: {
       moduleKey: 'save_the_date',
-      title: 'Save The Date',
+      titleKey: 'titles.saveTheDate',
       requiresAuth: true,
-      requiredPermission: ['view_save_the_date'],
-      requiresFeature: 'save_the_date',
+      requiredPermission: [],
       module: 'save-the-date'
     }
   }
