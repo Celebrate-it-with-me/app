@@ -389,10 +389,6 @@ export default {
       music: 'Música'
     },
     user: {
-      menu: 'Menú de usuario',
-      profile: 'Mi perfil',
-      preferences: 'Preferencias',
-      security: 'Seguridad',
       logout: 'Cerrar sesión'
     }
   },
