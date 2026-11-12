@@ -385,6 +385,54 @@ export default {
       memories: 'Memories',
       music: 'Music'
     },
+    dashboard: {
+      loadError: 'We could not load some of your data. Try again in a moment.',
+      noDate: 'No date set',
+      countdown: 'It is today | {n} day to go | {n} days to go',
+      past: 'Already happened',
+      setup: 'Your event is {n}% ready',
+      next: {
+        label: 'Your next step',
+        addGuests: { title: 'Add your guests', text: 'With no list there is no one to send the invitation to. Start with family.', cta: 'Add guests' },
+        publish: { title: 'Publish your invitation', text: 'While it is a draft your guests cannot see it or confirm.', cta: 'Review and publish' },
+        pendingGuests: { title: '{n} guests have not replied | {n} guest has not replied | {n} guests have not replied', text: 'See who is missing and who needs a reminder.', cta: 'See confirmations' },
+        budget: { title: 'Set up your budget', text: 'Note what you already booked and how much you have paid.', cta: 'Go to budget' },
+        allSet: { title: 'All caught up', text: 'Your guests have replied. Come back when there is news.' }
+      },
+      rsvp: {
+        title: 'Confirmations',
+        attending: 'Attending',
+        pending: 'Pending',
+        declined: 'Not attending',
+        people: 'people',
+        empty: 'There are no guests on the list yet.',
+        bar: 'Split of replies',
+        viewAll: 'See details'
+      },
+      invitation: {
+        title: 'Your invitation',
+        published: 'Published',
+        draft: 'Draft',
+        publishedText: 'Your guests can already see it and confirm.',
+        draftText: 'No one can see it yet.',
+        manage: 'Edit event'
+      },
+      more: {
+        title: 'More about your event',
+        subtitle: 'A summary of what you have already set up.',
+        budget: 'Budget',
+        budgetCap: 'Cap',
+        budgetEstimated: 'Estimated',
+        budgetPaid: 'Paid',
+        budgetEmpty: 'No expenses noted yet.',
+        budgetOpen: 'See budget',
+        program: 'Day program',
+        programEmpty: 'You have not added moments to the program yet.',
+        programOpen: 'See program',
+        activity: 'Recent activity',
+        activityEmpty: 'When something happens in your event, you will see it here.'
+      }
+    },
     user: {
       menu: 'User menu',
       profile: 'My profile',
