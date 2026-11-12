@@ -2,39 +2,12 @@ export default [
   {
     path: '/dashboard/locations',
     name: 'locations',
-    component: () => import('@/modules/locations/views/CEventLocationsView.vue'),
+    component: () => import('@/modules/locations/views/LocationsView.vue'),
     meta: {
       moduleKey: 'locations',
-      title: 'Event Locations',
+      titleKey: 'titles.locations',
       requiresAuth: true,
-      requiredPermission: ['view_event_locations'],
-      requiresFeature: 'location',
-      module: 'location'
-    }
-  },
-  {
-    path: '/dashboard/locations/create',
-    name: 'create-location',
-    component: () => import('@/modules/locations/views/CEventLocationsCreateView.vue'),
-    meta: {
-      moduleKey: 'locations',
-      title: 'Create Location',
-      requiresAuth: true,
-      requiredPermission: ['create_event_locations'],
-      requiresFeature: 'location',
-      module: 'location'
-    }
-  },
-  {
-    path: '/dashboard/locations/edit/:id',
-    name: 'edit-location',
-    component: () => import('@/modules/locations/views/CEventLocationsCreateView.vue'),
-    meta: {
-      moduleKey: 'locations',
-      title: 'Edit Location',
-      requiresAuth: true,
-      requiredPermission: ['edit_event_locations'],
-      requiresFeature: 'location',
+      requiredPermission: [],
       module: 'location'
     }
   }

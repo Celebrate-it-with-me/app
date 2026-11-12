@@ -6,7 +6,6 @@ import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
 import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { useUserStore } from '@/stores/useUserStore'
-import { useLocationsStore } from '@/modules/locations/stores/useLocationsStore'
 import { useEventCommentsStore } from '@/modules/comments/stores/useEventCommentsStore'
 import { useAuthStore } from '@/stores/useAuthStore'
 
@@ -40,7 +39,6 @@ export const useHydrationStore = defineStore('hydration', {
           useEventCommentsStore().setEventComments(data.comments)
 
           useSaveTheDateStore().setSaveTheDate(data.saveTheDate)
-          useLocationsStore().setLocation(data.location)
 
           useEventsStore().setEventTypes(data.eventTypes)
           useEventsStore().setEventPlans(data.eventPlans)

@@ -57,6 +57,7 @@ export default {
     eventCreate: 'Nuevo evento',
     unlock: 'Pasa a premium',
     timeline: 'Programa del día',
+    locations: 'Ubicaciones',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -341,6 +342,17 @@ export default {
     itinerary: {
       types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' }
     },
+    locations: {
+      types: { ceremony: 'Ceremonia', reception: 'Recepción', other: 'Lugar' },
+      at: 'A las {time}',
+      google: 'Google Maps',
+      apple: 'Apple Maps',
+      waze: 'Waze',
+      showMap: 'Ver mapa',
+      hideMap: 'Ocultar mapa',
+      map: 'Mapa de {name}',
+      directionsTitle: 'Indicaciones'
+    },
     dressCode: {
       types: {
         formal: 'Formal',
@@ -372,6 +384,41 @@ export default {
     }
   },
   app: {
+    locations: {
+      title: 'Ubicaciones',
+      subtitle: 'Dónde será cada momento. Tus invitados verán la dirección y cómo llegar.',
+      emptyTitle: 'Aún no hay ubicaciones',
+      emptyText: 'Añade la ceremonia, la recepción o cualquier otro lugar.',
+      add: 'Añadir una ubicación',
+      addTitle: 'Nueva ubicación',
+      editTitle: 'Editar ubicación',
+      edit: 'Editar',
+      remove: 'Quitar',
+      removeTitle: '¿Quitar esta ubicación?',
+      removeBody: '“{name}” dejará de verse en la invitación.',
+      cancel: 'Cancelar',
+      save: 'Guardar',
+      saved: 'Ubicación guardada.',
+      saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
+      loadError: 'No pudimos cargar las ubicaciones.',
+      timesNote: 'La hora de la ceremonia y de la recepción sale de tu Programa del día.',
+      search: 'Buscar dirección',
+      searchHint: 'Escribe el lugar y elige una opción: llenamos los datos por ti.',
+      searchOff: 'La búsqueda no está disponible ahora. Escribe la dirección a mano.',
+      searchPlaceholder: 'Nombre del lugar o dirección',
+      fields: { type: 'Tipo de lugar', name: 'Nombre', address: 'Dirección', city: 'Ciudad', state: 'Estado', zipCode: 'Código postal', country: 'País', directions: 'Indicaciones' },
+      directionsHint: 'Opcional: estacionamiento, valet, entrada, referencias.',
+      errors: { name: 'Escribe el nombre del lugar.', address: 'Escribe la dirección.', city: 'Escribe la ciudad.', country: 'Escribe el país.' },
+      types: { ceremony: 'Ceremonia', reception: 'Recepción', other: 'Otro lugar' },
+      imagesTitle: 'Fotos del lugar',
+      imagesHint: 'Opcional. Hasta {max} fotos, tuyas o de Google.',
+      upload: 'Subir una foto',
+      googlePhotos: 'Ver fotos de Google',
+      noGooglePhotos: 'No encontramos fotos de Google para este lugar.',
+      removePhoto: 'Quitar foto',
+      imagesFull: 'Ya tienes {max} fotos. Quita una para añadir otra.',
+      file: { type: '“{name}” no es una imagen JPG, PNG o WebP.', size: '“{name}” pesa más de 2 MB.' }
+    },
     timeline: {
       title: 'Programa del día',
       subtitle: 'Lo que pasa y a qué hora. Tus invitados lo verán en la invitación.',

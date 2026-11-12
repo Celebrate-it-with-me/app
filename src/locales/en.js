@@ -57,6 +57,7 @@ export default {
     eventCreate: 'New event',
     unlock: 'Go premium',
     timeline: 'Program of the day',
+    locations: 'Locations',
     eventEdit: 'Event details'
   },
   hero: {
@@ -341,6 +342,17 @@ export default {
     itinerary: {
       types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
     },
+    locations: {
+      types: { ceremony: 'Ceremony', reception: 'Reception', other: 'Venue' },
+      at: 'At {time}',
+      google: 'Google Maps',
+      apple: 'Apple Maps',
+      waze: 'Waze',
+      showMap: 'Show map',
+      hideMap: 'Hide map',
+      map: 'Map of {name}',
+      directionsTitle: 'Directions'
+    },
     dressCode: {
       types: {
         formal: 'Formal',
@@ -372,6 +384,41 @@ export default {
     }
   },
   app: {
+    locations: {
+      title: 'Locations',
+      subtitle: 'Where each moment takes place. Your guests will see the address and how to get there.',
+      emptyTitle: 'No locations yet',
+      emptyText: 'Add the ceremony, the reception or any other place.',
+      add: 'Add a location',
+      addTitle: 'New location',
+      editTitle: 'Edit location',
+      edit: 'Edit',
+      remove: 'Remove',
+      removeTitle: 'Remove this location?',
+      removeBody: '“{name}” will leave the invitation.',
+      cancel: 'Cancel',
+      save: 'Save',
+      saved: 'Location saved.',
+      saveError: 'We could not save your changes. Try again.',
+      loadError: 'We could not load the locations.',
+      timesNote: 'The time of the ceremony and the reception comes from your Program of the day.',
+      search: 'Search address',
+      searchHint: 'Type the place and pick an option: we fill in the details for you.',
+      searchOff: 'Search is not available right now. Type the address by hand.',
+      searchPlaceholder: 'Place name or address',
+      fields: { type: 'Kind of place', name: 'Name', address: 'Address', city: 'City', state: 'State', zipCode: 'Zip code', country: 'Country', directions: 'Directions' },
+      directionsHint: 'Optional: parking, valet, entrance, landmarks.',
+      errors: { name: 'Enter the name of the place.', address: 'Enter the address.', city: 'Enter the city.', country: 'Enter the country.' },
+      types: { ceremony: 'Ceremony', reception: 'Reception', other: 'Other place' },
+      imagesTitle: 'Photos of the place',
+      imagesHint: 'Optional. Up to {max} photos, yours or from Google.',
+      upload: 'Upload a photo',
+      googlePhotos: 'See Google photos',
+      noGooglePhotos: 'We could not find Google photos for this place.',
+      removePhoto: 'Remove photo',
+      imagesFull: 'You already have {max} photos. Remove one to add another.',
+      file: { type: '“{name}” is not a JPG, PNG or WebP image.', size: '“{name}” is larger than 2 MB.' }
+    },
     timeline: {
       title: 'Program of the day',
       subtitle: 'What happens and when. Your guests will see it in the invitation.',
