@@ -8,7 +8,6 @@ import * as zod from 'zod'
 import {
   Calendar,
   Cake,
-  Baby,
   Heart,
   Music,
   Waves,
@@ -16,7 +15,6 @@ import {
   MessageSquareText,
   MapIcon,
   Wallet,
-  PartyPopper,
   Sparkles
 } from 'lucide-vue-next'
 
@@ -52,9 +50,7 @@ export function useCreateEventController() {
 
   const smartDefaults = {
     wedding: ['rsvp', 'menu', 'sweetMemories', 'location'],
-    birthday: ['rsvp', 'sweetMemories', 'location'],
     quinceanera: ['rsvp', 'menu', 'sweetMemories', 'music', 'location'],
-    'baby-shower': ['rsvp', 'menu', 'sweetMemories', 'location'],
     other: ['rsvp', 'location']
   }
 
@@ -127,22 +123,13 @@ export function useCreateEventController() {
 
   const onboardingTypes = [
     { id: 'wedding', label: 'Wedding', icon: Heart, color: 'text-pink-500', bg: 'bg-pink-50' },
-    { id: 'birthday', label: 'Birthday', icon: Cake, color: 'text-orange-500', bg: 'bg-orange-50' },
     {
       id: 'quinceanera',
       label: 'Quinceañera',
       icon: Sparkles,
       color: 'text-purple-500',
       bg: 'bg-purple-50'
-    },
-    {
-      id: 'baby-shower',
-      label: 'Baby Shower',
-      icon: Baby,
-      color: 'text-blue-500',
-      bg: 'bg-blue-50'
-    },
-    { id: 'other', label: 'Other', icon: PartyPopper, color: 'text-gray-500', bg: 'bg-gray-50' }
+    }
   ]
 
   const selectEventType = typeId => {

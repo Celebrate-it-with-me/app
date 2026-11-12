@@ -46,7 +46,7 @@
     </div>
 
     <!-- Event Type Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-5 w-full max-w-6xl z-10 px-4">
+    <div class="grid grid-cols-2 gap-5 w-full max-w-xl z-10 px-4">
       <button
         v-for="type in onboardingTypes"
         :key="type.id"
@@ -690,7 +690,6 @@ import { DEFAULT_ERROR_MESSAGE } from '@/constants/constants'
 import {
   Calendar,
   Cake,
-  Baby,
   Heart,
   Music,
   Waves,
@@ -739,9 +738,7 @@ const eventState = reactive({
 // Smart defaults por tipo de evento
 const smartDefaults = {
   wedding: ['rsvp', 'menu', 'sweetMemories', 'location'],
-  birthday: ['rsvp', 'sweetMemories', 'location'],
   quinceanera: ['rsvp', 'menu', 'sweetMemories', 'music', 'location'],
-  'baby-shower': ['rsvp', 'menu', 'sweetMemories', 'location'],
   other: ['rsvp', 'location']
 }
 
@@ -851,9 +848,7 @@ const getEventTypeKey = () => {
   const name = type?.name.toLowerCase() || 'other'
 
   if (name.includes('wedding')) return 'wedding'
-  if (name.includes('birthday')) return 'birthday'
-  if (name.includes('quinceañera') || name.includes('quinceanera')) return 'quinceañera'
-  if (name.includes('baby') || name.includes('shower')) return 'baby-shower'
+  if (name.includes('quinceañera') || name.includes('quinceanera')) return 'quinceanera'
   return 'other'
 }
 
@@ -867,9 +862,7 @@ const getEventTypeIcon = () => {
   const key = getEventTypeKey()
   const icons = {
     wedding: Heart,
-    birthday: Cake,
     quinceanera: Sparkles,
-    'baby-shower': Baby,
     other: PartyPopper
   }
   return icons[key] || PartyPopper
@@ -970,20 +963,12 @@ const onboardingTypes = [
     color: 'text-purple-500',
     bg: 'bg-purple-50 dark:bg-purple-50/20'
   },
-  { id: 'wedding', label: 'Wedding', icon: Heart, color: 'text-pink-500', bg: 'bg-pink-50 dark:bg-pink-50/20' },
-  { id: 'birthday', label: 'Birthday', icon: Cake, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-50/20' },
-  { id: 'baby-shower', label: 'Baby Shower', icon: Baby, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-50/20' },
-  { id: 'other', label: 'Other', icon: PartyPopper, color: 'text-indigo-500', bg: 'bg-indigo-50 dark:bg-indigo-50/20' }
+  { id: 'wedding', label: 'Wedding', icon: Heart, color: 'text-pink-500', bg: 'bg-pink-50 dark:bg-pink-50/20' }
 ]
 
 const selectEventType = typeId => {
   const type = eventStore.eventTypes.find(
-    t =>
-      t.name.toLowerCase().includes(typeId.replace('-', '')) ||
-      (typeId === 'other' &&
-        !['quinceañera', 'wedding', 'birthday', 'baby-shower'].some(k =>
-          t.name.toLowerCase().includes(k.replace('-', ''))
-        ))
+    t => t.name.toLowerCase().includes(typeId.replace('-', ''))
   )
 
   if (type) {
