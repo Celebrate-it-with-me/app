@@ -56,6 +56,7 @@ export default {
     events: 'My events',
     eventCreate: 'New event',
     unlock: 'Go premium',
+    timeline: 'Program of the day',
     eventEdit: 'Event details'
   },
   hero: {
@@ -337,6 +338,9 @@ export default {
     confirmCta: 'RSVP',
     directions: 'Get directions',
     madeWith: 'Made with Quinvite',
+    itinerary: {
+      types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
+    },
     dressCode: {
       types: {
         formal: 'Formal',
@@ -368,6 +372,34 @@ export default {
     }
   },
   app: {
+    timeline: {
+      title: 'Program of the day',
+      subtitle: 'What happens and when. Your guests will see it in the invitation.',
+      emptyTitle: 'No program yet',
+      emptyText: 'Start with a typical program and change it to taste, or add your own moments.',
+      typical: 'Start with a typical program',
+      typicalDone: 'Done. Adjust the times and names to your party.',
+      add: 'Add a moment',
+      addTitle: 'New moment',
+      editTitle: 'Edit moment',
+      edit: 'Edit',
+      remove: 'Remove',
+      removeTitle: 'Remove this moment?',
+      removeBody: '“{name}” will leave the program.',
+      cancel: 'Cancel',
+      save: 'Save',
+      saved: 'Program updated.',
+      saveError: 'We could not save your changes. Try again.',
+      loadError: 'We could not load the program.',
+      optional: 'Optional',
+      shared: 'The times in this program are the ones your locations and the invitation use.',
+      fields: { type: 'Kind of moment', title: 'Name', startTime: 'Starts', endTime: 'Ends', description: 'Details' },
+      errors: { title: 'Enter a name.', startTime: 'Choose the start time.' },
+      types: {
+        ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner',
+        dance: 'Dancing', toast: 'Toast', other: 'Other'
+      }
+    },
     activeEvent: 'Active event',
     switchEvent: 'Switch event',
     allEvents: 'See all my events',

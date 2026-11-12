@@ -12,6 +12,7 @@ import { themeVars } from '../composables/useInvitationTheme'
 import { loadThemeFonts } from '../composables/useInvitationFonts'
 import InvitationCover from '../components/InvitationCover.vue'
 import InvitationLocations from '../components/InvitationLocations.vue'
+import InvitationItinerary from '../components/InvitationItinerary.vue'
 import InvitationDressCode from '../components/InvitationDressCode.vue'
 import InvitationRsvp from '../components/InvitationRsvp.vue'
 import InvitationClosing from '../components/InvitationClosing.vue'
@@ -20,6 +21,7 @@ import InvitationState from '../components/InvitationState.vue'
 
 const COMPONENTS = {
   cover: InvitationCover,
+  itinerary: InvitationItinerary,
   locations: InvitationLocations,
   dress_code: InvitationDressCode,
   rsvp: InvitationRsvp,

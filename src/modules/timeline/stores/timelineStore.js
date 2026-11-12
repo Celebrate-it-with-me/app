@@ -1,98 +1,33 @@
 import { defineStore } from 'pinia'
 import timelineService from '../services/timelineService'
 
+/** The moments of the active event's program, in order. */
 export const useTimelineStore = defineStore('timelineStore', {
-  state: () => ({
-    timelines: [],
-    loading: false,
-    error: null
-  }),
-
-  getters: {
-    sortedTimelines: state => {
-      const parseDate = dateStr => {
-        const d = new Date(dateStr)
-        if (!isNaN(d.getTime())) return d
-        const [datePart, timePart = '00:00'] = (dateStr || '').replace(',', '').split(' ')
-        const [month, day, year] = datePart.split('/').map(Number)
-        const [hour, minute] = timePart.split(':').map(Number)
-        return new Date(year, month - 1, day, hour, minute)
-      }
-      return [...state.timelines].sort((a, b) => {
-        return parseDate(a.start_time) - parseDate(b.start_time)
-      })
-    },
-    timelineCount: state => state.timelines.length
-  },
+  state: () => ({ timelines: [], loading: false }),
 
   actions: {
     async fetchTimelines(eventId) {
+      this.loading = true
       try {
-        this.loading = true
-        this.error = null
-        const response = await timelineService.getTimelines(eventId)
-        this.timelines = response.data?.data || []
-        return response
-      } catch (error) {
-        this.error = error.message
-        throw error
+        this.timelines = await timelineService.list(eventId)
       } finally {
         this.loading = false
       }
     },
-
-    async addTimeline(eventId, timelineData) {
-      try {
-        this.loading = true
-        this.error = null
-        const response = await timelineService.createTimeline(eventId, timelineData)
-        const newTimeline = response.data?.data
-        if (newTimeline) {
-          this.timelines.push(newTimeline)
-        }
-        return response
-      } catch (error) {
-        this.error = error.message
-        throw error
-      } finally {
-        this.loading = false
-      }
+    async addTimeline(eventId, moment) {
+      await timelineService.create(eventId, moment)
+      await this.fetchTimelines(eventId)
     },
-
-    async updateTimeline(eventId, id, timelineData) {
-      try {
-        this.loading = true
-        this.error = null
-        const response = await timelineService.updateTimeline(eventId, id, timelineData)
-        const updatedTimeline = response.data?.data
-        if (updatedTimeline) {
-          const index = this.timelines.findIndex(t => t.id === id)
-          if (index !== -1) {
-            this.timelines[index] = updatedTimeline
-          }
-        }
-        return response
-      } catch (error) {
-        this.error = error.message
-        throw error
-      } finally {
-        this.loading = false
-      }
+    async updateTimeline(eventId, id, moment) {
+      await timelineService.update(eventId, id, moment)
+      await this.fetchTimelines(eventId)
     },
-
     async deleteTimeline(eventId, id) {
-      try {
-        this.loading = true
-        this.error = null
-        const response = await timelineService.deleteTimeline(eventId, id)
-        this.timelines = this.timelines.filter(t => t.id !== id)
-        return response
-      } catch (error) {
-        this.error = error.message
-        throw error
-      } finally {
-        this.loading = false
-      }
+      await timelineService.remove(eventId, id)
+      this.timelines = this.timelines.filter(moment => moment.id !== id)
+    },
+    async startTypical(eventId) {
+      this.timelines = await timelineService.typical(eventId)
     }
   }
 })

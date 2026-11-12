@@ -56,6 +56,7 @@ export default {
     events: 'Mis eventos',
     eventCreate: 'Nuevo evento',
     unlock: 'Pasa a premium',
+    timeline: 'Programa del día',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -337,6 +338,9 @@ export default {
     confirmCta: 'Confirmar asistencia',
     directions: 'Cómo llegar',
     madeWith: 'Hecho con Quinvite',
+    itinerary: {
+      types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' }
+    },
     dressCode: {
       types: {
         formal: 'Formal',
@@ -368,6 +372,34 @@ export default {
     }
   },
   app: {
+    timeline: {
+      title: 'Programa del día',
+      subtitle: 'Lo que pasa y a qué hora. Tus invitados lo verán en la invitación.',
+      emptyTitle: 'Aún no hay programa',
+      emptyText: 'Empieza con un programa típico y cámbialo a tu gusto, o añade tus propios momentos.',
+      typical: 'Empezar con un programa típico',
+      typicalDone: 'Listo. Ajusta las horas y los nombres a tu fiesta.',
+      add: 'Añadir un momento',
+      addTitle: 'Nuevo momento',
+      editTitle: 'Editar momento',
+      edit: 'Editar',
+      remove: 'Quitar',
+      removeTitle: '¿Quitar este momento?',
+      removeBody: '“{name}” saldrá del programa.',
+      cancel: 'Cancelar',
+      save: 'Guardar',
+      saved: 'Programa actualizado.',
+      saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
+      loadError: 'No pudimos cargar el programa.',
+      optional: 'Opcional',
+      shared: 'Las horas de este programa son las que usan tus ubicaciones y la invitación.',
+      fields: { type: 'Tipo de momento', title: 'Nombre', startTime: 'Empieza', endTime: 'Termina', description: 'Detalles' },
+      errors: { title: 'Escribe un nombre.', startTime: 'Elige la hora de inicio.' },
+      types: {
+        ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena',
+        dance: 'Baile', toast: 'Brindis', other: 'Otro'
+      }
+    },
     activeEvent: 'Evento activo',
     switchEvent: 'Cambiar de evento',
     allEvents: 'Ver todos mis eventos',
