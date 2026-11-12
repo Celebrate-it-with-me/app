@@ -203,8 +203,117 @@
   --color-inv-primary: var(--inv-primary);
   --color-inv-on-primary: var(--inv-on-primary);
   --color-inv-accent: var(--inv-accent);
+  --color-inv-primary-ink: color-mix(in oklab, var(--inv-primary) 78%, #2b2420);
+  --color-inv-accent-ink: color-mix(in oklab, var(--inv-accent) 60%, #3d2a08);
+  --color-inv-deep: color-mix(in oklab, var(--inv-primary) 38%, #1b0f12);
   --font-inv-heading: var(--inv-font-heading, 'Fraunces', Georgia, serif);
   --font-inv-body: var(--inv-font-body, 'Figtree', system-ui, sans-serif);
+  --font-inv-script: var(--inv-font-script, 'Pinyon Script', 'Snell Roundhand', cursive);
+}
+
+/* Invitation motion. One authored entrance on the cover (staggered by --i), a flourish that
+   draws itself as each section arrives, and a petal burst when a guest confirms. All of it is
+   transform/opacity/stroke and is switched off under prefers-reduced-motion. */
+@keyframes inv-rise {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes inv-arch {
+  from {
+    opacity: 0;
+    translate: 0 22px;
+    scale: 0.95;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+@keyframes inv-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes inv-petal {
+  from {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(0.5);
+  }
+  to {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1);
+  }
+}
+
+@utility inv-rise {
+  animation: inv-rise 640ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+@utility inv-arch {
+  animation: inv-arch 760ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@utility inv-fade {
+  animation: inv-fade 900ms ease-out both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+.inv-petal {
+  animation: inv-petal 1100ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Flourishes draw from the center when their section scrolls into view (armed by script). */
+.inv-draw .inv-stroke {
+  stroke-dasharray: 1;
+}
+.inv-draw.is-armed .inv-stroke {
+  stroke-dashoffset: 1;
+}
+.inv-draw.is-armed .inv-draw-fade {
+  opacity: 0;
+}
+.inv-draw.is-armed.is-in .inv-stroke {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 900ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.inv-draw.is-armed.is-in .inv-draw-fade {
+  opacity: 1;
+  transition: opacity 700ms ease-out 250ms;
+}
+/* Safety net: a flourish revealed while off-screen shows its final state at once. Browsers can
+   leave a stroke transition that started off-screen parked at its first frame. */
+.inv-draw.is-armed.is-in.is-instant .inv-stroke,
+.inv-draw.is-armed.is-in.is-instant .inv-draw-fade {
+  transition: none;
+}
+
+/* Browser surfaces inside an invitation follow the theme. */
+.inv-root ::selection {
+  background: color-mix(in oklab, var(--inv-primary) 24%, transparent);
+}
+.inv-root {
+  caret-color: var(--inv-primary);
+  accent-color: var(--inv-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-rise,
+  .inv-arch,
+  .inv-fade {
+    animation: none;
+  }
+  .inv-petal {
+    display: none;
+  }
 }
 
 /*

@@ -9,6 +9,7 @@ import { useRoute, useRouter } from 'vue-router'
 import i18n, { LOCALES } from '@/locales/i18n'
 import { provideInvitation, useInvitationData } from '../composables/useInvitation'
 import { themeVars } from '../composables/useInvitationTheme'
+import { loadThemeFonts } from '../composables/useInvitationFonts'
 import InvitationCover from '../components/InvitationCover.vue'
 import InvitationLocations from '../components/InvitationLocations.vue'
 import InvitationDressCode from '../components/InvitationDressCode.vue'
@@ -64,13 +65,15 @@ watch(
     if (!invitation.value) return
     document.title = invitation.value.event.name
     document.documentElement.lang = locale.value
+    // The Clásica theme writes names and short phrases in a script face loaded on demand.
+    loadThemeFonts({ script: 'Pinyon Script', ...invitation.value.theme?.fonts })
   },
   { immediate: true }
 )
 </script>
 
 <template>
-  <div class="min-h-svh bg-inv-surface font-inv-body text-inv-ink antialiased" :style="vars">
+  <div class="inv-root min-h-svh bg-inv-surface font-inv-body text-inv-ink antialiased" :style="vars">
     <template v-if="status === 'ready' && invitation">
       <nav class="fixed top-3 right-3 z-10" :aria-label="tt('language')">
         <InvitationLangSwitch :current="locale" :label="tt('language')" @change="changeLanguage" />

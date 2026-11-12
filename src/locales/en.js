@@ -326,7 +326,7 @@ export default {
     errorText: 'Check your connection and try again.',
     retry: 'Try again',
     language: 'Language',
-    invitedGuest: 'Invitation for {name}',
+    invitedFor: 'Invitation for',
     confirmCta: 'RSVP',
     directions: 'Get directions',
     madeWith: 'Made with Quinvite',

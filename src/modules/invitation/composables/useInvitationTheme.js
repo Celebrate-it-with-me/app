@@ -58,7 +58,9 @@ export function themeVars(theme) {
     typeof name === 'string' && FONT.test(name) ? `'${name}', ${fallback}` : null
   const heading = font(theme?.fonts?.heading, 'Georgia, serif')
   const body = font(theme?.fonts?.body, 'system-ui, sans-serif')
+  const script = font(theme?.fonts?.script, 'cursive')
   if (heading) vars['--inv-font-heading'] = heading
   if (body) vars['--inv-font-body'] = body
+  if (script) vars['--inv-font-script'] = script
   return vars
 }
