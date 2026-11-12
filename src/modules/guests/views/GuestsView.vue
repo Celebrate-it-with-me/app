@@ -30,6 +30,8 @@
       </div>
     </div>
 
+    <GuestLimitBanner />
+
     <!-- Guest List Section -->
     <section>
       <div v-if="hasGuests" class="flex items-center justify-between mb-6">
@@ -62,6 +64,7 @@ import { useRouter } from 'vue-router'
 import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
 import GuestsTable from '@/modules/guests/components/GuestsTable.vue'
 import NoGuests from '@/modules/guests/components/NoGuests.vue'
+import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { useGuestsController } from '@/modules/guests/composables/useGuestsController'
 
 const router = useRouter()

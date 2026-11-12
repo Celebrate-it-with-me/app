@@ -553,6 +553,10 @@ export default {
     }
   },
   unlock: {
+    guestsLimit: {
+      lead: 'Tu lista pasó el límite del plan gratis.',
+      benefit: 'Con el evento completo no hay tope de 30: invita a toda tu lista y publica tu invitación.'
+    },
     lead: '{module} es parte del evento completo.',
     generic: 'Disponible cuando desbloqueas tu evento completo.',
     modules: {
@@ -569,6 +573,17 @@ export default {
     back: 'Volver al inicio',
     mailSubject: 'Quiero desbloquear mi evento',
     mailBody: 'Hola, quiero desbloquear mi evento completo ({module}). Avísenme cuando el pago esté listo.'
+  },
+  limits: {
+    guests: {
+      removeCount: '{n} invitados | {n} invitado | {n} invitados',
+      bannerTitle: 'Pasaste el límite del plan gratis',
+      banner: 'Tienes {total} invitados y el plan gratis permite {limit}. Puedes seguir armando tu lista; para publicar tu invitación, desbloquea tu evento completo o elimina {remove}.',
+      publishBlocked: 'Tu lista tiene {total} invitados y el plan gratis permite {limit}. Desbloquea tu evento completo o elimina {remove} para poder publicar.',
+      addBlocked: 'Tu invitación ya está publicada y el plan gratis permite {limit} invitados. Desbloquea tu evento completo para agregar más.',
+      unlock: 'Desbloquear evento completo',
+      seeGuests: 'Ver mi lista'
+    }
   },
   account: {
     title: 'Mi cuenta',
