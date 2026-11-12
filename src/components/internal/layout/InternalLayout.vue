@@ -69,10 +69,11 @@ const determinatePostLoginRoute = async () => {
           <span class="block lg:hidden"><QuinviteLogo mark class="h-8" /></span>
           <span class="hidden lg:block"><QuinviteLogo class="h-8" /></span>
         </router-link>
-        <div class="min-w-0 flex-1">
+        <!-- Right side: the event you are working on, next to who you are. -->
+        <div class="flex min-w-0 flex-1 items-center justify-end gap-3">
           <EventSwitcher />
+          <UserMenu />
         </div>
-        <UserMenu />
       </div>
     </header>
 

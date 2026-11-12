@@ -43,7 +43,7 @@ function select(event) {
   <DropdownMenuRoot>
     <DropdownMenuTrigger
       v-if="variant === 'header'"
-      class="flex w-full max-w-full min-w-0 items-center gap-2.5 rounded-lg border border-line-strong bg-white px-2.5 py-1.5 text-left shadow-soft hover:bg-cream-100 focus-visible:outline-2 focus-visible:outline-rose-400 sm:w-auto sm:min-w-56"
+      class="flex w-full max-w-full min-w-0 items-center gap-2.5 rounded-lg border border-line-strong bg-white px-2.5 py-1.5 text-left shadow-soft hover:bg-cream-100 focus-visible:outline-2 focus-visible:outline-rose-400 sm:w-auto sm:min-w-56 sm:max-w-80"
       :aria-label="t('app.switchEvent')"
     >
       <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-rose-100 text-rose-700">
@@ -77,7 +77,7 @@ function select(event) {
     </DropdownMenuTrigger>
     <DropdownMenuPortal>
       <DropdownMenuContent
-        align="start"
+        :align="variant === 'header' ? 'end' : 'start'"
         :side-offset="6"
         :class="cx('z-50 rounded-lg border border-line bg-white p-1 shadow-pop', variant === 'card' ? 'w-(--reka-dropdown-menu-trigger-width) min-w-64' : 'w-72')"
       >
