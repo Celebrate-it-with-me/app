@@ -41,16 +41,21 @@ const step = computed(() =>
     pendingGuests: rsvp.value.pendingGuests,
     rsvpEnabled: rsvpEnabled.value,
     budgetEnabled: budgetEnabled.value,
-    budgetItems: budgetStore.budgetItems?.length ?? 0
+    budgetItems: budget.value.items
   })
 )
 const stepTarget = computed(() => (step.value.to === 'edit' ? editTarget.value : step.value.to))
 
 const budget = computed(() => {
-  const items = budgetStore.budgetItems ?? []
-  const sum = key => items.reduce((total, item) => total + Number(item[key] || 0), 0)
-  const paid = items.filter(i => i.isPaid).reduce((total, i) => total + Number(i.actualCost || i.estimatedCost || 0), 0)
-  return { cap: Number(budgetStore.eventBudget?.budgetCap || 0), estimated: sum('estimatedCost'), paid, items: items.length }
+  const summary = budgetStore.summary
+  const count = (summary?.categories ?? []).reduce((total, c) => total + c.itemCount, 0) + (summary?.uncategorized?.itemCount ?? 0)
+  return {
+    cap: summary?.cap ?? 0,
+    estimated: summary?.totals.owed ?? 0,
+    paid: summary?.totals.paid ?? 0,
+    currency: summary?.currency ?? 'USD',
+    items: count
+  }
 })
 
 const program = computed(() =>
@@ -74,7 +79,7 @@ async function load() {
   if (!current?.id) return
   const id = ++loadId
   const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
-  if (budgetEnabled.value) jobs.push(budgetStore.getEventBudget().then(() => budgetStore.loadBudgetItems()))
+  if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
   const results = await Promise.allSettled(jobs)
   if (id === loadId && results.some(r => r.status === 'rejected')) showError(t('app.dashboard.loadError'))
 }

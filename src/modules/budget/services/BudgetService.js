@@ -1,74 +1,60 @@
 import { CWM_API } from '@/services/axios'
 
+const base = eventId => `/event/${eventId}/budget`
+
 class BudgetService {
-  /**
-   * Get event budget information
-   * @param {string|number} eventId - The ID of the event
-   * @returns {Promise<Object>} API response
-   */
-  async getEventBudget(eventId) {
-    return CWM_API.get(`/event/${eventId}/budget`)
+  /** Totals (owed, paid, remaining, cap) of the event, by category too. Created on first read. */
+  async summary(eventId) {
+    return (await CWM_API.get(base(eventId))).data.data
   }
 
-  /**
-   * Create event budget with initial budget cap
-   * @param {string|number} eventId - The ID of the event
-   * @param {Object} budgetData - The budget data with budget_cap
-   * @returns {Promise<Object>} API response
-   */
-  async createEventBudget(eventId, budgetData) {
-    return CWM_API.post(`/event/${eventId}/budget`, budgetData)
+  async setCap(eventId, cap) {
+    return (await CWM_API.put(base(eventId), { cap })).data.data
   }
 
-  async updateEventBudget(eventId, eventBudgetId, budgetData) {
-    return CWM_API.put(`/event/${eventId}/budget/${eventBudgetId}`, budgetData)
+  async items(eventId) {
+    return (await CWM_API.get(`${base(eventId)}/items`)).data.data
   }
 
-  /**
-   * Get budget items for an event budget
-   * @param {string|number} eventId - The ID of the event
-   * @param {string|number} eventBudgetId - The ID of the event budget
-   * @returns {Promise<Object>} API response
-   */
-  async getBudgetItems(eventId, eventBudgetId) {
-    return CWM_API.get(`/event/${eventId}/budget/${eventBudgetId}/items`)
+  async createItem(eventId, item) {
+    return (await CWM_API.post(`${base(eventId)}/items`, item)).data.data
   }
 
-  /**
-   * Create a new budget item
-   * @param {string|number} eventId - The ID of the event
-   * @param {string|number} eventBudgetId - The ID of the event budget
-   * @param {Object} budgetItemData - The budget item data
-   * @returns {Promise<Object>} API response
-   */
-  async createBudgetItem(eventId, eventBudgetId, budgetItemData) {
-    return CWM_API.post(`/event/${eventId}/budget/${eventBudgetId}/items`, budgetItemData)
+  async updateItem(eventId, id, item) {
+    return (await CWM_API.put(`${base(eventId)}/items/${id}`, item)).data.data
   }
 
-  /**
-   * Update a budget item
-   * @param {string|number} eventId - The ID of the event
-   * @param {string|number} eventBudgetId - The ID of the event budget
-   * @param {string|number} budgetItemId - The ID of the budget item
-   * @param {Object} budgetItemData - The updated budget item data
-   * @returns {Promise<Object>} API response
-   */
-  async updateBudgetItem(eventId, eventBudgetId, budgetItemId, budgetItemData) {
-    return CWM_API.put(
-      `/event/${eventId}/budget/${eventBudgetId}/items/${budgetItemId}`,
-      budgetItemData
-    )
+  async removeItem(eventId, id) {
+    await CWM_API.delete(`${base(eventId)}/items/${id}`)
   }
 
-  /**
-   * Delete a budget item
-   * @param {string|number} eventId - The ID of the event
-   * @param {string|number} eventBudgetId - The ID of the event budget
-   * @param {string|number} budgetItemId - The ID of the budget item
-   * @returns {Promise<Object>} API response
-   */
-  async deleteBudgetItem(eventId, eventBudgetId, budgetItemId) {
-    return CWM_API.delete(`/event/${eventId}/budget/${eventBudgetId}/items/${budgetItemId}`)
+  async addPayment(eventId, itemId, payment) {
+    return (await CWM_API.post(`${base(eventId)}/items/${itemId}/payments`, payment)).data.data
+  }
+
+  async updatePayment(eventId, itemId, paymentId, payment) {
+    return (await CWM_API.put(`${base(eventId)}/items/${itemId}/payments/${paymentId}`, payment)).data.data
+  }
+
+  async removePayment(eventId, itemId, paymentId) {
+    return (await CWM_API.delete(`${base(eventId)}/items/${itemId}/payments/${paymentId}`)).data.data
+  }
+
+  async addCategory(eventId, name) {
+    return (await CWM_API.post(`${base(eventId)}/categories`, { name })).data.data
+  }
+
+  async renameCategory(eventId, id, name) {
+    return (await CWM_API.put(`${base(eventId)}/categories/${id}`, { name })).data.data
+  }
+
+  async removeCategory(eventId, id) {
+    return (await CWM_API.delete(`${base(eventId)}/categories/${id}`)).data.data
+  }
+
+  /** The budget as CSV (a Blob), for the download button. */
+  async exportCsv(eventId) {
+    return (await CWM_API.get(`${base(eventId)}/export`, { responseType: 'blob' })).data
   }
 }
 

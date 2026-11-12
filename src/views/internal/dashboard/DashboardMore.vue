@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiCard } from '@/ui'
 
-defineProps({
+const props = defineProps({
   budgetEnabled: { type: Boolean, default: false },
   budget: { type: Object, default: () => ({ cap: 0, estimated: 0, paid: 0, items: 0 }) },
   /** Next moments of the day, already sorted: `[{ id, title, time }]`. */
@@ -16,7 +16,7 @@ const { t, locale } = useI18n()
 const money = computed(() => value =>
   new Intl.NumberFormat(locale.value === 'es' ? 'es-US' : 'en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency: props.budget.currency || 'USD',
     maximumFractionDigits: 0
   }).format(value || 0)
 )
