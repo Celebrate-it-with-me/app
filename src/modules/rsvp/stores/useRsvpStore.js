@@ -3,127 +3,26 @@ import RsvpService from '@/modules/rsvp/services/RsvpService'
 import { useUserStore } from '@/stores/useUserStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 
+/** The event's answer counters, for the dashboard. The guest list screen reads its own counters (modules/roster). */
 export const useRsvpStore = defineStore('rsvpStore', {
-  state: () => ({
-    rsvpGuests: [],
-    pageSelected: 1,
-    perPage: 10,
-    searchValue: '',
-    statusSelected: '',
-    totalPages: 1,
-    title: '',
-    description: '',
-    customFields: {},
-    confirmationDeadline: null,
-    loaded: false,
-    stats: {},
-    loading: false
-  }),
+  state: () => ({ stats: {} }),
   actions: {
     async fetchStats() {
       const userStore = useUserStore()
-      const notifications = useNotificationStore()
 
-      if (userStore.activeEvent) {
-        const response = await RsvpService.loadStats({
-          eventId: userStore.activeEvent
-        })
-
-        if (response.status !== 200) {
-          notifications.addNotification({
-            type: 'error',
-            message: 'Failed to load event stats. Please try again later.'
-          })
-          return
-        }
-
-        this.stats = response.data
-      } else {
+      if (!userStore.activeEvent) {
         this.stats = {}
+        return
       }
-    },
 
-    async loadGuests() {
-      const userStore = useUserStore()
-      const notifications = useNotificationStore()
+      const response = await RsvpService.loadStats({ eventId: userStore.activeEvent })
 
-      this.loading = true
-      try {
-        const response = await this.loadRsvpGuestsList({
-          eventId: userStore.activeEvent,
-          currentPage: this.pageSelected,
-          perPage: this.perPage,
-          status: this.statusSelected,
-          search: this.searchValue
-        })
-
-        if (response.status !== 200) {
-          notifications.addNotification({
-            type: 'error',
-            message: 'Failed to load guests. Please try again later.'
-          })
-          return
-        }
-
-        this.rsvpGuests = response.data.data ?? []
-        const newPage = response.data.meta?.current_page || 1
-        if (this.pageSelected !== newPage) {
-          this.pageSelected = newPage
-        }
-        this.totalPages = response.data.meta?.last_page || 1
-      } finally {
-        this.loading = false
+      if (response.status !== 200) {
+        useNotificationStore().addNotification({ type: 'error', message: 'Failed to load event stats. Please try again later.' })
+        return
       }
-    },
 
-    setRsvp(rsvpGuests) {
-      this.rsvpGuests = rsvpGuests.data || []
-
-      this.pageSelected = rsvpGuests?.meta?.current_page ?? 1
-      this.perPage = rsvpGuests?.meta?.per_page ?? 10
-      this.totalPages = rsvpGuests?.meta?.last_page ?? 1
-    },
-
-    loadRsvp({ eventId }) {
-      return RsvpService.loadRsvp({ eventId })
-    },
-    loadRsvpGuestsList({ eventId, currentPage, perPage, status, search }) {
-      return RsvpService.loadRsvpGuestsList({
-        eventId,
-        currentPage,
-        perPage,
-        status,
-        search
-      })
-    },
-    loadRsvpTotals({ eventId }) {
-      return RsvpService.loadRsvpTotals({ eventId })
-    },
-    downloadFile({ eventId, status, searchValue, exportType, perPage, currentPage }) {
-      return RsvpService.downloadFile({
-        eventId,
-        status,
-        searchValue,
-        exportType,
-        perPage,
-        currentPage
-      })
-    },
-    revertConfirmation({ guestId }) {
-      const userStore = useUserStore()
-      return RsvpService.revertConfirmation({
-        guestId,
-        eventId: userStore.activeEvent
-      })
-    },
-
-    async loadDashboardRsvpSummary({ eventId }) {
-      return await RsvpService.loadDashboardRsvpSummary({ eventId })
-    }
-  },
-  getters: {
-    isLoaded() {
-      return this.loaded
+      this.stats = response.data
     }
   }
 })
