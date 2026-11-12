@@ -191,6 +191,23 @@
 }
 
 /*
+ * Public invitation theme. The renderer sets --inv-* variables on a wrapper (see
+ * modules/invitation/composables/useInvitationTheme.js); components use the inv-* utilities,
+ * so a theme or color preset never touches component code.
+ */
+@theme inline {
+  --color-inv-surface: var(--inv-surface);
+  --color-inv-surface-alt: var(--inv-surface-alt);
+  --color-inv-ink: var(--inv-ink);
+  --color-inv-ink-soft: var(--inv-ink-soft);
+  --color-inv-primary: var(--inv-primary);
+  --color-inv-on-primary: var(--inv-on-primary);
+  --color-inv-accent: var(--inv-accent);
+  --font-inv-heading: var(--inv-font-heading, 'Fraunces', Georgia, serif);
+  --font-inv-body: var(--inv-font-body, 'Figtree', system-ui, sans-serif);
+}
+
+/*
  * Background art. Subtle, token-colored, and cheap: inline SVG data URIs.
  * - lattice: a fine diamond lattice in gold, like the cut of papel picado
  * - dots: confetti dust for dark bands

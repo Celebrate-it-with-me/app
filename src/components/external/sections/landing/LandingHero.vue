@@ -1,6 +1,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { UiButton } from '@/ui'
+import { DEMO_INVITATION_PATH } from '@/config/brand'
 import InvitationMock from './InvitationMock.vue'
 
 const { t } = useI18n()
@@ -19,7 +20,7 @@ const { t } = useI18n()
         <p class="mx-auto mt-5 max-w-xl text-lg text-ink-500 lg:mx-0 text-balance">{{ t('hero.subtitle') }}</p>
         <div class="mt-8 flex flex-col items-center gap-3 lg:items-start">
           <UiButton size="lg" to="/sign-up" class="w-full sm:w-auto">{{ t('hero.cta') }}</UiButton>
-          <UiButton variant="link" :to="{ path: '/', hash: '#como-funciona' }">{{ t('hero.secondary') }}</UiButton>
+          <UiButton variant="link" :to="DEMO_INVITATION_PATH">{{ t('hero.secondary') }}</UiButton>
         </div>
         <p class="mt-4 text-sm text-ink-500">{{ t('hero.trust') }}</p>
       </div>
