@@ -56,7 +56,7 @@ export default {
     subtitle:
       'Create a beautiful invitation, share it on WhatsApp and watch who confirms. No printing, no chasing anyone.',
     cta: 'Create my event for free',
-    secondary: 'See how it works',
+    secondary: 'See a sample invitation',
     trust: 'Free up to 30 guests · Everything for $79, once'
   },
   mock: {
@@ -316,6 +316,49 @@ export default {
         a: 'Yes. From "Collaborators" you invite the quinceañera, your partner or the planner with an edit or read-only role.'
       }
     ]
+  },
+  invitation: {
+    pageTitle: 'Invitation',
+    loading: 'Preparing your invitation…',
+    notFoundTitle: 'We couldn\'t find this invitation',
+    notFoundText: 'Check that the link is complete, or ask whoever invited you for a new one.',
+    errorTitle: 'We couldn\'t load the invitation',
+    errorText: 'Check your connection and try again.',
+    retry: 'Try again',
+    language: 'Language',
+    invitedGuest: 'Invitation for {name}',
+    confirmCta: 'RSVP',
+    directions: 'Get directions',
+    madeWith: 'Made with Quinvite',
+    dressCode: {
+      types: {
+        formal: 'Formal',
+        'semi-formal': 'Semi-formal',
+        casual: 'Casual',
+        thematic: 'Themed',
+        'black-tie': 'Black tie'
+      },
+      reservedQuince: 'Colors reserved for the quinceañera',
+      reservedWedding: 'Colors reserved for the couple'
+    },
+    rsvp: {
+      attending: 'I\'ll be there',
+      notAttending: 'I can\'t make it',
+      deadline: 'Please reply by {date}',
+      closed: 'The deadline to reply has passed. If you need to change your answer, contact whoever invited you.',
+      submit: 'Send reply',
+      update: 'Update reply',
+      change: 'Change my reply',
+      thanksYes: 'Thank you! We look forward to seeing you.',
+      thanksNo: 'Thanks for letting us know. We\'ll miss you.',
+      error: 'We couldn\'t save your reply. Please try again.',
+      closedError: 'The deadline to reply has passed.',
+      status: {
+        attending: 'Will attend',
+        'not-attending': 'Will not attend',
+        pending: 'Pending'
+      }
+    }
   },
   app: {
     switchEvent: 'Switch event',

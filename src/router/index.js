@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { nonAuthRoutes } from '@/router/nonAuthRoutes'
 import { authRoutes } from '@/router/authRoutes'
-import { eventsRoutes } from '@/router/eventsRoutes'
+import { invitationRoutes } from '@/router/invitationRoutes'
 import ExternalLayout from '@/components/external/layout/ExternalLayout.vue'
 import ExternalCleanLayout from '@/components/external/layout/ExternalCleanLayout.vue'
 import { externalCleanRoutes } from '@/router/externalCleanRoutes'
@@ -55,8 +55,8 @@ const router = createRouter({
     },
     {
       path: '',
-      name: 'Event Pages Routes',
-      children: [...eventsRoutes]
+      name: 'Invitation Routes',
+      children: [...invitationRoutes]
     },
     // Live showcase of the UI kit (src/ui). Development only.
     ...(import.meta.env.DEV

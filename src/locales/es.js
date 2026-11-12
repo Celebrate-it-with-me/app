@@ -56,7 +56,7 @@ export default {
     subtitle:
       'Crea una invitación hermosa, compártela por WhatsApp y mira quién confirma. Sin imprimir, sin perseguir a nadie.',
     cta: 'Crear mi evento gratis',
-    secondary: 'Ver cómo funciona',
+    secondary: 'Ver una invitación de ejemplo',
     trust: 'Gratis hasta 30 invitados · Todo por $79, una sola vez'
   },
   mock: {
@@ -316,6 +316,49 @@ export default {
         a: 'Sí. Desde "Colaboradores" invitas a la quinceañera, a tu pareja o al planner con un rol de edición o solo lectura.'
       }
     ]
+  },
+  invitation: {
+    pageTitle: 'Invitación',
+    loading: 'Preparando tu invitación…',
+    notFoundTitle: 'No encontramos esta invitación',
+    notFoundText: 'Revisa que el enlace esté completo o pídele uno nuevo a quien te invitó.',
+    errorTitle: 'No pudimos cargar la invitación',
+    errorText: 'Revisa tu conexión e inténtalo de nuevo.',
+    retry: 'Reintentar',
+    language: 'Idioma',
+    invitedGuest: 'Invitación para {name}',
+    confirmCta: 'Confirmar asistencia',
+    directions: 'Cómo llegar',
+    madeWith: 'Hecho con Quinvite',
+    dressCode: {
+      types: {
+        formal: 'Formal',
+        'semi-formal': 'Semiformal',
+        casual: 'Casual',
+        thematic: 'Temático',
+        'black-tie': 'Etiqueta rigurosa'
+      },
+      reservedQuince: 'Colores reservados para la quinceañera',
+      reservedWedding: 'Colores reservados para los novios'
+    },
+    rsvp: {
+      attending: 'Asistiré',
+      notAttending: 'No podré asistir',
+      deadline: 'Responde antes del {date}',
+      closed: 'El plazo para confirmar ya terminó. Si necesitas cambiar tu respuesta, escribe a quien te invitó.',
+      submit: 'Enviar respuesta',
+      update: 'Actualizar respuesta',
+      change: 'Cambiar mi respuesta',
+      thanksYes: '¡Gracias! Te esperamos.',
+      thanksNo: 'Gracias por avisarnos. Te vamos a extrañar.',
+      error: 'No pudimos guardar tu respuesta. Inténtalo de nuevo.',
+      closedError: 'El plazo para confirmar ya terminó.',
+      status: {
+        attending: 'Asistirá',
+        'not-attending': 'No asistirá',
+        pending: 'Pendiente'
+      }
+    }
   },
   app: {
     switchEvent: 'Cambiar de evento',

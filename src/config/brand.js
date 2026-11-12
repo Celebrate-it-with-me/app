@@ -12,3 +12,9 @@ export function mailtoLink({ subject = '', body = '' } = {}) {
   const query = params.toString().replace(/\+/g, '%20')
   return `mailto:${SUPPORT_EMAIL}${query ? `?${query}` : ''}`
 }
+
+/**
+ * Sample invitation shown from the landing hero. It must exist in every environment that
+ * serves the landing (the demo seeders only run locally): override with VITE_DEMO_INVITATION_PATH.
+ */
+export const DEMO_INVITATION_PATH = import.meta.env.VITE_DEMO_INVITATION_PATH || '/i/xv-de-valentina/VAL001'
