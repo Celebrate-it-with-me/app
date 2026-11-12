@@ -385,6 +385,54 @@ export default {
       memories: 'Recuerdos',
       music: 'Música'
     },
+    dashboard: {
+      loadError: 'No pudimos cargar algunos datos. Intenta de nuevo en un momento.',
+      noDate: 'Sin fecha definida',
+      countdown: 'Es hoy | Falta {n} día | Faltan {n} días',
+      past: 'Ya pasó',
+      setup: 'Tu evento está al {n} % listo',
+      next: {
+        label: 'Tu siguiente paso',
+        addGuests: { title: 'Agrega a tus invitados', text: 'Sin lista no hay a quién enviar la invitación. Empieza con la familia.', cta: 'Agregar invitados' },
+        publish: { title: 'Publica tu invitación', text: 'Mientras esté en borrador, tus invitados no pueden verla ni confirmar.', cta: 'Revisar y publicar' },
+        pendingGuests: { title: '{n} invitados no han respondido | {n} invitado no ha respondido | {n} invitados no han respondido', text: 'Mira quién falta y ve quién necesita un recordatorio.', cta: 'Ver confirmaciones' },
+        budget: { title: 'Organiza tu presupuesto', text: 'Anota lo que ya contrataste y cuánto llevas pagado.', cta: 'Ir al presupuesto' },
+        allSet: { title: 'Todo al día', text: 'Tus invitados ya respondieron. Vuelve cuando haya novedades.' }
+      },
+      rsvp: {
+        title: 'Confirmaciones',
+        attending: 'Confirmados',
+        pending: 'Pendientes',
+        declined: 'No asisten',
+        people: 'personas',
+        empty: 'Todavía no hay invitados en la lista.',
+        bar: 'Reparto de respuestas',
+        viewAll: 'Ver detalle'
+      },
+      invitation: {
+        title: 'Tu invitación',
+        published: 'Publicada',
+        draft: 'Borrador',
+        publishedText: 'Tus invitados ya pueden verla y confirmar.',
+        draftText: 'Nadie puede verla todavía.',
+        manage: 'Editar evento'
+      },
+      more: {
+        title: 'Más sobre tu evento',
+        subtitle: 'Resumen de lo que ya tienes configurado.',
+        budget: 'Presupuesto',
+        budgetCap: 'Tope',
+        budgetEstimated: 'Estimado',
+        budgetPaid: 'Pagado',
+        budgetEmpty: 'Aún no hay gastos anotados.',
+        budgetOpen: 'Ver presupuesto',
+        program: 'Programa del día',
+        programEmpty: 'Aún no has agregado momentos al programa.',
+        programOpen: 'Ver programa',
+        activity: 'Actividad reciente',
+        activityEmpty: 'Cuando pase algo en tu evento, lo verás aquí.'
+      }
+    },
     user: {
       menu: 'Menú de usuario',
       profile: 'Mi perfil',
