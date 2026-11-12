@@ -1,141 +1,86 @@
-<template>
-  <CHeading :level="2" weight="semibold">User Profile</CHeading>
-  <Form
-    :validation-schema="profileSchema"
-    @submit="onSubmitProfile"
-    @invalid-submit="onInvalidSubmitProfile"
-  >
-    <div class="mx-auto py-10 space-y-10">
-      <div class="bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-card mx-auto space-y-6">
-        <div class="flex items-center gap-6 mb-8">
-          <CAvatarUploader v-model="userAvatar" @file-selected="handleFileSelected" />
-        </div>
-
-        <form class="space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <CInput id="name" v-model="user.name" label="Full Name" name="name" />
-            <CInput id="email" v-model="user.email" label="Email" name="email" disabled />
-            <CPhoneInput
-              id="user-phone"
-              v-model="user.phone"
-              name="phone"
-              label="Phone Number"
-              show-error
-            />
-          </div>
-        </form>
-
-        <div class="mt-10 flex justify-end">
-          <CButton
-            type="submit"
-            :loading="saving"
-            :disabled="!isModified || saving"
-            :class="{
-              'opacity-50 cursor-not-allowed': !isModified || saving
-            }"
-          >
-            Save Changes
-          </CButton>
-        </div>
-      </div>
-    </div>
-  </Form>
-</template>
-
 <script setup>
-import CInput from '@/components/UI/form2/CInput.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
-import { computed, onMounted, reactive, ref } from 'vue'
-import CAvatarUploader from '@/components/UI/form2/CAvatarUploader.vue'
-import { useUserStore } from '@/stores/useUserStore'
-import CPhoneInput from '@/components/UI/form2/CPhoneInput.vue'
-import { toTypedSchema } from '@/utils/zodTypedSchema'
+import { ref, computed, onMounted } from 'vue'
+import { useForm } from 'vee-validate'
+import { useI18n } from 'vue-i18n'
 import * as zod from 'zod'
-import { Form } from 'vee-validate'
-import CHeading from '@/components/UI/headings/CHeading.vue'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
+import { normalizePhone } from '@/utils/phone'
+import { useUserStore } from '@/stores/useUserStore'
+import { SUPPORT_EMAIL } from '@/config/brand'
+import { UiCard, UiField, UiInput, UiButton, UiAvatar, useToast } from '@/ui'
 
+const { t } = useI18n()
+const { success, error } = useToast()
 const userStore = useUserStore()
 const saving = ref(false)
 
-const userAvatar = computed(() => {
-  return userStore?.avatar ?? ''
-})
-
-const isModified = computed(() => {
-  return (
-    user.name !== originalUser.name ||
-    user.phone !== originalUser.phone ||
-    user.avatar !== originalUser.avatar
-  )
-})
-
-const profileSchema = computed(() => {
-  return toTypedSchema(
+const { handleSubmit, defineField, errors, meta, resetForm, setFieldError } = useForm({
+  validationSchema: toTypedSchema(
     zod.object({
-      name: zod.string().min(1, 'Name is required.'),
-      avatar: zod
-        .any()
-        .refine(
-          file => !file || file instanceof File || (typeof file === 'object' && 'name' in file),
-          'Avatar must be a valid file.'
-        ),
-      phone: zod.string().optional()
+      name: zod.string({ message: t('validation.nameRequired') }).trim().min(1, t('validation.nameRequired')),
+      phone: zod
+        .string()
+        .optional()
+        .refine(value => normalizePhone(value) !== null, { message: t('account.profile.phoneInvalid') })
     })
-  )
+  ),
+  initialValues: { name: '', phone: '' }
 })
+const [name] = defineField('name')
+const [phone] = defineField('phone')
 
-const user = reactive({
-  name: '',
-  email: '',
-  phone: '',
-  avatar: ''
-})
+const avatarUrl = computed(() => (typeof userStore.avatar === 'string' ? userStore.avatar : ''))
 
-const originalUser = reactive({
-  name: '',
-  email: '',
-  phone: '',
-  avatar: ''
-})
+onMounted(() => resetForm({ values: { name: userStore.name ?? '', phone: userStore.phone ?? '' } }))
 
-onMounted(() => {
-  user.name = originalUser.name = userStore.name ?? ''
-  user.email = originalUser.email = userStore.email ?? ''
-  user.phone = originalUser.phone = userStore.phone ?? ''
-  user.avatar = originalUser.avatar = userStore.avatar ?? ''
-})
-
-const handleFileSelected = file => {
-  user.avatar = file
-}
-
-const onSubmitProfile = async () => {
+const onSubmit = handleSubmit(async values => {
+  saving.value = true
   try {
-    saving.value = true
-
-    const response = await userStore.updateProfile({
-      name: user.name,
-      phone: user.phone,
-      avatar: user.avatar
-    })
-
+    const response = await userStore.updateProfile({ name: values.name.trim(), phone: normalizePhone(values.phone) })
     if (response.status === 200) {
       await userStore.refreshUser()
-
-      originalUser.name = user.name
-      originalUser.phone = user.phone
-      originalUser.avatar = user.avatar
+      resetForm({ values: { name: userStore.name ?? '', phone: userStore.phone ?? '' } })
+      success(t('account.saved'))
     } else {
-      console.error('Failed to update profile:', response)
+      error(t('account.saveError'))
     }
-  } catch (error) {
-    console.log(error)
+  } catch (e) {
+    const fieldErrors = e.response?.data?.errors ?? {}
+    if (fieldErrors.phone) setFieldError('phone', t('account.profile.phoneInvalid'))
+    else if (fieldErrors.name) setFieldError('name', t('validation.nameRequired'))
+    else error(t('account.saveError'))
   } finally {
     saving.value = false
   }
-}
-
-const onInvalidSubmitProfile = errors => {
-  console.log('Form submission failed with errors:', errors)
-}
+})
 </script>
+
+<template>
+  <UiCard :title="t('account.profile.title')" :subtitle="t('account.profile.text')" heading-level="h2">
+    <form class="flex flex-col gap-5" novalidate @submit="onSubmit">
+      <div class="flex items-center gap-4">
+        <UiAvatar :name="userStore.name" :src="avatarUrl" size="xl" />
+        <div class="min-w-0">
+          <p class="truncate font-heading text-xl text-ink-900">{{ userStore.name }}</p>
+          <p class="truncate text-sm text-ink-500">{{ userStore.email }}</p>
+        </div>
+      </div>
+
+      <UiField :label="t('account.profile.name')" :error="errors.name" id="account_name" required>
+        <UiInput v-model="name" autocomplete="name" />
+      </UiField>
+
+      <UiField :label="t('account.profile.email')" :hint="t('account.profile.emailHint', { email: SUPPORT_EMAIL })" id="account_email">
+        <UiInput :model-value="userStore.email" type="email" disabled />
+      </UiField>
+
+      <UiField :label="t('account.profile.phone')" :hint="t('account.profile.phoneHint')" :error="errors.phone" id="account_phone">
+        <UiInput v-model="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+1 305 555 0123" />
+      </UiField>
+
+      <UiButton type="submit" :loading="saving" :disabled="!meta.dirty" class="w-full sm:w-auto sm:self-end">
+        {{ t('account.save') }}
+      </UiButton>
+    </form>
+  </UiCard>
+</template>

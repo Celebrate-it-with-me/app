@@ -49,7 +49,10 @@ export default {
     terms: 'Terms of Service',
     privacy: 'Privacy Policy',
     cookies: 'Cookie Policy',
-    help: 'Help'
+    help: 'Help',
+    profile: 'Profile',
+    preferences: 'Preferences',
+    security: 'Security'
   },
   hero: {
     title: 'Her XV invitation, as special as she is',
@@ -391,6 +394,45 @@ export default {
       preferences: 'Preferences',
       security: 'Security',
       logout: 'Sign out'
+    }
+  },
+  account: {
+    title: 'My account',
+    subtitle: 'Your details, your preferences and your password.',
+    nav: 'Account sections',
+    tabs: { profile: 'Profile', preferences: 'Preferences', security: 'Security' },
+    save: 'Save changes',
+    saved: 'Changes saved.',
+    saveError: 'We could not save your changes. Please try again.',
+    profile: {
+      title: 'Your details',
+      text: 'This is how people who collaborate with you on an event see you.',
+      name: 'Full name',
+      email: 'Email',
+      emailHint: 'To change your email, write to {email}.',
+      phone: 'Phone',
+      phoneHint: 'With country code, for example +1 305 555 0123.',
+      phoneInvalid: 'Enter a valid phone number with country code.'
+    },
+    preferences: {
+      title: 'Preferences',
+      text: 'How you want to use Quinvite.',
+      language: 'Language',
+      languageHint: 'The language you see your account in.',
+      timezone: 'Time zone',
+      emailNotifications: 'Email notices',
+      emailNotificationsText: 'News about your events and your account.'
+    },
+    security: {
+      title: 'Password',
+      text: 'Choose a password you do not use anywhere else.',
+      current: 'Current password',
+      new: 'New password',
+      confirm: 'Repeat the new password',
+      hint: 'At least 8 characters.',
+      save: 'Change password',
+      saved: 'Password updated.',
+      wrongCurrent: 'The current password is not correct.'
     }
   },
   legal: {

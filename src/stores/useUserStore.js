@@ -1,3 +1,4 @@
+import { LOCALES, setLocale } from '@/locales/i18n'
 import { defineStore } from 'pinia'
 import UserService from '../services/UserService'
 import { format } from 'date-fns'
@@ -116,6 +117,8 @@ export const useUserStore = defineStore('userStore', {
      * @param {Object} newPreferences - User preferences object
      */
     setPreferences(newPreferences) {
+      // The saved language wins over the browser's guess, on any device.
+      if (LOCALES.includes(newPreferences.language)) setLocale(newPreferences.language)
       this.preferences = {
         language: newPreferences.language,
         timezone: newPreferences.timezone,

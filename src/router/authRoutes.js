@@ -1,10 +1,9 @@
 import DashboardView from '../views/internal/dashboard/Dashboard.vue'
 import { useUserStore } from '@/stores/useUserStore'
-import SettingsLayout from '@/components/internal/layout/SettingsLayout.vue'
+import AccountLayout from '@/components/internal/layout/AccountLayout.vue'
 import SettingsProfile from '@/views/internal/settings/SettingsProfile.vue'
 import SettingsPreferences from '@/views/internal/settings/SettingsPreferences.vue'
 import SettingsSecurity from '@/views/internal/settings/SettingsSecurity.vue'
-import SettingsDangerZone from '@/views/internal/settings/SettingsDangerZone.vue'
 import commentsRoutes from '@/modules/comments/routes/comment.routes'
 import suggestedMusicRoutes from '@/modules/suggested-music/routes/suggestedMusic.routes'
 import sweetMemoriesRoutes from '@/modules/sweet-memories/routes/sweetMemories.routes'
@@ -33,14 +32,14 @@ const authRoutes = [
   },
   {
     path: '/settings',
-    component: SettingsLayout,
+    component: AccountLayout,
     children: [
       {
         path: 'profile',
         name: 'settings-profile',
         component: SettingsProfile,
         meta: {
-          title: 'Profile',
+          titleKey: 'titles.profile',
           requiresAuth: true,
           requiredPermission: ['view_profile']
         }
@@ -50,7 +49,7 @@ const authRoutes = [
         name: 'settings-preferences',
         component: SettingsPreferences,
         meta: {
-          title: 'Preferences',
+          titleKey: 'titles.preferences',
           requiresAuth: true,
           requiredPermission: ['view_preferences']
         }
@@ -60,19 +59,9 @@ const authRoutes = [
         name: 'settings-security',
         component: SettingsSecurity,
         meta: {
-          title: 'Security',
+          titleKey: 'titles.security',
           requiresAuth: true,
           requiredPermission: ['view_security']
-        }
-      },
-      {
-        path: 'danger-zone',
-        name: 'settings-danger-zone',
-        component: SettingsDangerZone,
-        meta: {
-          title: 'Danger Zone',
-          requiresAuth: true,
-          requiredPermission: ['view_danger_zone']
         }
       }
     ]
