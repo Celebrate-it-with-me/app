@@ -52,7 +52,10 @@ export default {
     help: 'Ayuda',
     profile: 'Perfil',
     preferences: 'Preferencias',
-    security: 'Seguridad'
+    security: 'Seguridad',
+    events: 'Mis eventos',
+    eventCreate: 'Nuevo evento',
+    eventEdit: 'Detalles del evento'
   },
   hero: {
     title: 'La invitación de sus XV, tan especial como ella',
@@ -438,6 +441,108 @@ export default {
     },
     user: {
       logout: 'Cerrar sesión'
+    }
+  },
+  events: {
+    title: 'Mis eventos',
+    subtitle: 'Abre uno para organizarlo, o crea uno nuevo.',
+    new: 'Nuevo evento',
+    loadError: 'No pudimos cargar tus eventos.',
+    retry: 'Intentar de nuevo',
+    types: { quinceanera: 'Quinceañera', wedding: 'Boda' },
+    status: { draft: 'Borrador', published: 'Publicado', archived: 'Archivado' },
+    tabs: { active: 'Activos', archived: 'Archivados' },
+    card: {
+      activeNow: 'Evento activo',
+      open: 'Abrir',
+      edit: 'Editar',
+      restore: 'Restaurar',
+      noDate: 'Sin fecha',
+      guests: 'Sin invitados | {n} invitado | {n} invitados',
+      replied: 'Nadie ha respondido | {n} ha respondido | {n} han respondido'
+    },
+    empty: {
+      title: 'Aún no tienes eventos',
+      text: 'Crea el primero: en pocos minutos tienes tu invitación lista.',
+      cta: 'Crear mi evento',
+      archivedTitle: 'No hay eventos archivados',
+      archivedText: 'Los eventos que archives aparecerán aquí.'
+    },
+    create: {
+      title: 'Nuevo evento',
+      subtitle: 'Solo lo esencial. Todo lo demás lo ajustas después.',
+      type: 'Tipo de evento',
+      name: 'Nombre del evento',
+      namePlaceholder: { quinceanera: 'Los XV de Valentina', wedding: 'Boda de Camila y Andrés', none: 'Los XV de Valentina' },
+      date: 'Fecha y hora',
+      submit: 'Crear evento',
+      cancel: 'Cancelar',
+      created: 'Tu evento está creado. Es un borrador: publícalo cuando esté listo.',
+      typeRequired: 'Elige el tipo de evento.',
+      nameRequired: 'Escribe el nombre del evento.',
+      dateRequired: 'Elige la fecha y la hora.'
+    },
+    address: {
+      label: 'Dirección de tu invitación',
+      hintOpen: 'Puedes cambiarla mientras tu evento sea un borrador. Al publicarlo, queda fija.',
+      hintLocked: 'Ya no se puede cambiar: tu invitación se publicó y los enlaces pueden estar enviados.',
+      linkPreview: 'Así empezará el enlace de cada invitado',
+      invalid: 'Usa solo letras minúsculas, números y guiones.',
+      taken: 'Esa dirección ya está en uso. Prueba con otra.'
+    },
+    edit: {
+      title: 'Detalles del evento',
+      back: 'Volver a mis eventos',
+      type: 'Tipo de evento',
+      name: 'Nombre del evento',
+      description: 'Descripción',
+      descriptionHint: 'Opcional. Un par de líneas sobre tu celebración.',
+      start: 'Empieza',
+      end: 'Termina',
+      endHint: 'Opcional.',
+      save: 'Guardar cambios',
+      saved: 'Cambios guardados.',
+      endBeforeStart: 'El fin no puede ser antes del inicio.',
+      notFoundTitle: 'No encontramos este evento',
+      notFoundText: 'Puede que ya no exista o que no tengas acceso.',
+      forbidden: 'No tienes permiso para hacer esto en este evento.'
+    },
+    publication: {
+      title: 'Publicación',
+      draftText: 'Tu invitación todavía no es visible. Cuando la publiques, tus invitados podrán abrirla con su enlace.',
+      publishedText: 'Tu invitación está visible para quienes tengan su enlace.',
+      archivedText: 'Este evento está archivado: su invitación no se muestra.',
+      saveFirst: 'Guarda tus cambios antes de cambiar el estado.',
+      publish: 'Publicar invitación',
+      unpublish: 'Volver a borrador',
+      archive: 'Archivar evento',
+      restore: 'Restaurar evento',
+      missing: 'Completa el nombre, la fecha y el tipo de evento antes de publicar.',
+      confirm: {
+        cancel: 'Cancelar',
+        publishTitle: 'Publicar tu invitación',
+        publishText: 'Tus invitados podrán verla y confirmar. La dirección del enlace quedará fija.',
+        unpublishTitle: 'Volver a borrador',
+        unpublishText: 'Tu invitación dejará de mostrarse. La dirección seguirá fija, porque los enlaces pueden estar enviados.',
+        archiveTitle: 'Archivar evento',
+        archiveText: 'Sale de tu lista activa y su invitación deja de mostrarse. Puedes restaurarlo cuando quieras.'
+      },
+      done: {
+        publish: 'Invitación publicada.',
+        unpublish: 'Tu evento volvió a borrador.',
+        archive: 'Evento archivado.',
+        restore: 'Evento restaurado como borrador.'
+      }
+    },
+    danger: {
+      title: 'Eliminar evento',
+      text: 'El evento y todo lo que contiene dejarán de estar disponibles. Esta acción no se puede deshacer desde la app.',
+      cta: 'Eliminar evento',
+      confirmTitle: 'Eliminar este evento',
+      confirmText: 'Escribe el nombre del evento para confirmar: {name}',
+      confirmLabel: 'Nombre del evento',
+      confirm: 'Eliminar definitivamente',
+      deleted: 'Evento eliminado.'
     }
   },
   account: {

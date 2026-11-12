@@ -4,7 +4,7 @@ export default [
     name: 'events',
     component: () => import('@/modules/events/views/EventsView.vue'),
     meta: {
-      title: 'My CwmEvents',
+      titleKey: 'titles.events',
       requiresAuth: true,
       requiredPermission: ['view_events'],
       module: 'events'
@@ -13,31 +13,20 @@ export default [
   {
     path: '/dashboard/events/create',
     name: 'create-events',
-    component: () => import('@/modules/events/views/CreateEventsView.vue'),
+    component: () => import('@/modules/events/views/CreateEventView.vue'),
     meta: {
-      title: 'Create Event',
+      titleKey: 'titles.eventCreate',
       requiresAuth: true,
       requiredPermission: ['create_event'],
       module: 'events'
     }
   },
   {
-    path: '/dashboard/events/:id/details',
-    name: 'event-details',
-    component: () => import('@/modules/events/views/EventDetailsView.vue'),
-    meta: {
-      title: 'Event Details',
-      requiresAuth: true,
-      requiredPermission: ['view_event'],
-      module: 'events'
-    }
-  },
-  {
     path: '/dashboard/events/:id/edit',
     name: 'edit-event',
-    component: () => import('@/modules/events/views/CreateEventsView.vue'),
+    component: () => import('@/modules/events/views/EditEventView.vue'),
     meta: {
-      title: 'Edit Event',
+      titleKey: 'titles.eventEdit',
       requiresAuth: true,
       requiredPermission: ['edit_event'],
       module: 'events'

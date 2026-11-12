@@ -52,7 +52,10 @@ export default {
     help: 'Help',
     profile: 'Profile',
     preferences: 'Preferences',
-    security: 'Security'
+    security: 'Security',
+    events: 'My events',
+    eventCreate: 'New event',
+    eventEdit: 'Event details'
   },
   hero: {
     title: 'Her XV invitation, as special as she is',
@@ -438,6 +441,108 @@ export default {
     },
     user: {
       logout: 'Sign out'
+    }
+  },
+  events: {
+    title: 'My events',
+    subtitle: 'Open one to organize it, or create a new one.',
+    new: 'New event',
+    loadError: 'We could not load your events.',
+    retry: 'Try again',
+    types: { quinceanera: 'Quinceañera', wedding: 'Wedding' },
+    status: { draft: 'Draft', published: 'Published', archived: 'Archived' },
+    tabs: { active: 'Active', archived: 'Archived' },
+    card: {
+      activeNow: 'Active event',
+      open: 'Open',
+      edit: 'Edit',
+      restore: 'Restore',
+      noDate: 'No date',
+      guests: 'No guests | {n} guest | {n} guests',
+      replied: 'No replies yet | {n} has replied | {n} have replied'
+    },
+    empty: {
+      title: 'You have no events yet',
+      text: 'Create the first one: your invitation is ready in a few minutes.',
+      cta: 'Create my event',
+      archivedTitle: 'No archived events',
+      archivedText: 'Events you archive will show up here.'
+    },
+    create: {
+      title: 'New event',
+      subtitle: 'Just the essentials. You adjust everything else later.',
+      type: 'Type of event',
+      name: 'Event name',
+      namePlaceholder: { quinceanera: 'Valentina’s XV', wedding: 'Camila and Andrés’s wedding', none: 'Valentina’s XV' },
+      date: 'Date and time',
+      submit: 'Create event',
+      cancel: 'Cancel',
+      created: 'Your event is created. It is a draft: publish it when it is ready.',
+      typeRequired: 'Choose the type of event.',
+      nameRequired: 'Enter the event name.',
+      dateRequired: 'Choose the date and time.'
+    },
+    address: {
+      label: 'Your invitation address',
+      hintOpen: 'You can change it while your event is a draft. Once you publish it, it is fixed.',
+      hintLocked: 'It can no longer be changed: your invitation was published and the links may already be sent.',
+      linkPreview: 'This is how each guest’s link will start',
+      invalid: 'Use only lowercase letters, numbers and hyphens.',
+      taken: 'That address is already in use. Try another one.'
+    },
+    edit: {
+      title: 'Event details',
+      back: 'Back to my events',
+      type: 'Type of event',
+      name: 'Event name',
+      description: 'Description',
+      descriptionHint: 'Optional. A couple of lines about your celebration.',
+      start: 'Starts',
+      end: 'Ends',
+      endHint: 'Optional.',
+      save: 'Save changes',
+      saved: 'Changes saved.',
+      endBeforeStart: 'The end cannot be before the start.',
+      notFoundTitle: 'We could not find this event',
+      notFoundText: 'It may no longer exist, or you may not have access.',
+      forbidden: 'You do not have permission to do this in this event.'
+    },
+    publication: {
+      title: 'Publishing',
+      draftText: 'Your invitation is not visible yet. Once you publish it, your guests can open it with their link.',
+      publishedText: 'Your invitation is visible to anyone who has their link.',
+      archivedText: 'This event is archived: its invitation is not shown.',
+      saveFirst: 'Save your changes before changing the status.',
+      publish: 'Publish invitation',
+      unpublish: 'Back to draft',
+      archive: 'Archive event',
+      restore: 'Restore event',
+      missing: 'Fill in the name, the date and the type of event before publishing.',
+      confirm: {
+        cancel: 'Cancel',
+        publishTitle: 'Publish your invitation',
+        publishText: 'Your guests will be able to see it and reply. The address of the link will be fixed.',
+        unpublishTitle: 'Back to draft',
+        unpublishText: 'Your invitation will stop being shown. The address stays fixed, because the links may already be sent.',
+        archiveTitle: 'Archive event',
+        archiveText: 'It leaves your active list and its invitation stops being shown. You can restore it any time.'
+      },
+      done: {
+        publish: 'Invitation published.',
+        unpublish: 'Your event is back to draft.',
+        archive: 'Event archived.',
+        restore: 'Event restored as a draft.'
+      }
+    },
+    danger: {
+      title: 'Delete event',
+      text: 'The event and everything in it will no longer be available. This cannot be undone from the app.',
+      cta: 'Delete event',
+      confirmTitle: 'Delete this event',
+      confirmText: 'Type the event name to confirm: {name}',
+      confirmLabel: 'Event name',
+      confirm: 'Delete for good',
+      deleted: 'Event deleted.'
     }
   },
   account: {

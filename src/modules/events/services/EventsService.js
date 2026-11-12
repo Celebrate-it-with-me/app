@@ -5,8 +5,18 @@ class EventsService {
     return CWM_API.post(`event`, eventData)
   }
 
-  async edit(eventData) {
-    return CWM_API.put(`event/${eventData.eventId}`, eventData)
+  async get(eventId) {
+    return CWM_API.get(`event/${eventId}`)
+  }
+
+  /** Partial update: only the fields in `patch` change. */
+  async update(eventId, patch) {
+    return CWM_API.patch(`event/${eventId}`, patch)
+  }
+
+  /** `publish` | `unpublish` | `archive` | `restore` */
+  async runAction(eventId, action) {
+    return CWM_API.post(`event/${eventId}/${action}`)
   }
 
   async getMyEvents() {

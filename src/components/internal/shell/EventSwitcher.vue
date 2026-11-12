@@ -14,6 +14,7 @@ import {
 } from 'reka-ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { cx } from '@/ui/utils'
+import { parseEventDate } from '@/views/internal/dashboard/dashboardLogic'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -21,10 +22,8 @@ const eventsStore = useEventsStore()
 
 const active = computed(() => eventsStore.activeEvent)
 const eventDate = computed(() => {
-  const raw = active.value?.startDate
-  if (!raw) return ''
-  const date = new Date(raw)
-  if (Number.isNaN(date.getTime())) return ''
+  const date = parseEventDate(active.value?.startDate)
+  if (!date) return ''
   return new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric' }).format(date)
 })
 
@@ -56,7 +55,7 @@ function select(event) {
           {{ t('app.switchEvent') }}
         </DropdownMenuLabel>
         <DropdownMenuItem
-          v-for="event in eventsStore.events"
+          v-for="event in eventsStore.activeEvents"
           :key="event.id"
           :class="
             cx(
