@@ -48,7 +48,7 @@ onMounted(async () => {
     invites.remove(invite.id)
     success.value = `Welcome! You've been added to “${invite.event.event_name}”`
     setTimeout(() => {
-      router.push(`/dashboard/events/${eventId}/details`)
+      router.push('/dashboard/events')
     }, 2000)
   } catch (e) {
     error.value = 'There was an error accepting the invitation. Please try again later.'

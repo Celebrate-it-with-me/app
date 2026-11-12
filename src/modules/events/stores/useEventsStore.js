@@ -159,55 +159,62 @@ export const useEventsStore = defineStore('eventsStore', {
     },
 
     /**
-     * Remove the active event
-     * @returns {Promise<Object>} API response
+     * Put an event returned by the API into the list (and into `activeEvent` if it is that one),
+     * so every screen sees the same state after a save or a status change.
      */
-    async removeActiveEvent() {
-      try {
-        return await EventsService.removeCurrentEvent(this.activeEvent.id)
-      } catch (error) {
-        console.error('Error removing active event:', error)
-        return {
-          status: error.response?.status || 500,
-          message: error.message || 'An unexpected error occurred'
-        }
-      }
+    upsertEvent(event) {
+      if (!event?.id) return
+      const index = this.events.findIndex(e => e.id === event.id)
+      if (index === -1) this.events.push(event)
+      else this.events[index] = event
+      if (this.activeEvent?.id === event.id) this.activeEvent = event
+    },
+
+    /** Load one event from the API (for example when its edit page is opened directly). */
+    async fetchEvent(eventId) {
+      const response = await EventsService.get(eventId)
+      const event = response.data?.data
+      this.upsertEvent(event)
+      return event
     },
 
     /**
-     * Edit the active event
-     * @param {Object} eventData - The event data to update
-     * @returns {Promise<Object>} API response
+     * Create an event. The API starts it as a draft and makes it the user's active event.
+     * Errors are thrown so the form can show the 422 messages next to their fields.
      */
-    async editEvent(eventData) {
-      try {
-        return await EventsService.edit({
-          eventId: this.activeEvent.id,
-          ...eventData
-        })
-      } catch (error) {
-        console.error('Error editing event:', error)
-        return {
-          status: error.response?.status || 500,
-          message: error.message || 'An unexpected error occurred'
-        }
-      }
+    async createEvent(payload) {
+      const response = await EventsService.create(payload)
+      const event = response.data?.data
+      this.upsertEvent(event)
+      this.activeEvent = event
+      useUserStore().activeEvent = event.id
+      return event
     },
 
-    /**
-     * Create a new event
-     * @param {Object} eventData - The event data to create
-     * @returns {Promise<Object>} API response
-     */
-    async createEvent(eventData) {
-      try {
-        return await EventsService.create(eventData)
-      } catch (error) {
-        console.error('Error creating event:', error)
-        return {
-          status: error.response?.status || 500,
-          message: error.message || 'An unexpected error occurred'
-        }
+    /** Save only the changed details of an event (`PATCH`). Throws on errors. */
+    async saveEventDetails(eventId, patch) {
+      const response = await EventsService.update(eventId, patch)
+      const event = response.data?.data
+      this.upsertEvent(event)
+      return event
+    },
+
+    /** `publish` | `unpublish` | `archive` | `restore`. Throws on errors. */
+    async runEventAction(eventId, action) {
+      const response = await EventsService.runAction(eventId, action)
+      const event = response.data?.data
+      this.upsertEvent(event)
+      return event
+    },
+
+    /** Delete an event (owner only on the API). If it was the active one, fall back to another live event. */
+    async deleteEvent(eventId) {
+      await EventsService.removeCurrentEvent(eventId)
+      this.events = this.events.filter(e => e.id !== eventId)
+      if (this.activeEvent?.id === eventId) {
+        this.activeEvent = this.activeEvents[0] ?? null
+        useUserStore().activeEvent = this.activeEvent?.id ?? null
+        if (this.activeEvent) await this.updateActiveEvent(this.activeEvent)
       }
     },
 
@@ -310,7 +317,7 @@ export const useEventsStore = defineStore('eventsStore', {
      * @returns {Array} List of inactive events
      */
     inactiveEvents() {
-      return this.events.filter(event => ['archived', 'canceled'].includes(event.status))
+      return this.events.filter(event => event.status === 'archived')
     },
 
     activeEventHasMenu() {
