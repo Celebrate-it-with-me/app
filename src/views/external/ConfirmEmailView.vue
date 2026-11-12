@@ -1,58 +1,22 @@
-<template>
-  <section class="min-h-screen flex items-center justify-center bg-pink-50 dark:bg-gray-900 px-4">
-    <CCard class="max-w-md w-full text-center p-8 shadow-xl">
-      <div v-if="loading" class="text-gray-500 dark:text-gray-300">Confirming your email...</div>
-
-      <div v-else-if="success" class="flex flex-col text-green-600 dark:text-green-400">
-        Your email has been confirmed successfully!
-        <CButton class="mt-6" @click="goToLogin">Go to Login</CButton>
-      </div>
-
-      <div v-else class="flex flex-col text-red-500 dark:text-red-400">
-        The confirmation link is invalid or has expired.
-        <CButton class="mt-6" @click="goToHome">Back to Home</CButton>
-      </div>
-    </CCard>
-  </section>
-</template>
-
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import CCard from '@/components/UI/cards/CCard.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/useUserStore'
+import { UiButton, UiSkeleton } from '@/ui'
+import AuthCard from '@/components/external/auth/AuthCard.vue'
 
+const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
-
+const userStore = useUserStore()
 const loading = ref(true)
 const success = ref(false)
-const userStore = useUserStore()
 
 onMounted(async () => {
-  await confirmEmail()
-})
-
-const goToLogin = () => {
-  router.push('/sign-in')
-}
-
-const goToHome = () => {
-  router.push('/')
-}
-
-const confirmEmail = async () => {
   try {
-    const confirmUrl = decodeURIComponent(route.query.confirm)
-
-    if (!confirmUrl) {
-      loading.value = false
-      return
-    }
-
+    const confirmUrl = route.query.confirm ? decodeURIComponent(route.query.confirm) : ''
+    if (!confirmUrl) return
     const response = await userStore.confirmEmail(confirmUrl)
-
     success.value = response.status === 200
   } catch (error) {
     console.error('Error confirming email:', error)
@@ -60,5 +24,19 @@ const confirmEmail = async () => {
   } finally {
     loading.value = false
   }
-}
+})
 </script>
+
+<template>
+  <section class="flex justify-center px-4 py-10 sm:py-16">
+    <AuthCard v-if="loading" :title="t('auth.confirming')">
+      <UiSkeleton :lines="2" />
+    </AuthCard>
+    <AuthCard v-else-if="success" :title="t('auth.confirmedTitle')" :subtitle="t('auth.confirmedText')">
+      <UiButton block to="/sign-in">{{ t('common.signIn') }}</UiButton>
+    </AuthCard>
+    <AuthCard v-else :title="t('auth.confirmFailedTitle')" :subtitle="t('auth.confirmFailedText')">
+      <UiButton block variant="secondary" to="/">{{ t('common.backHome') }}</UiButton>
+    </AuthCard>
+  </section>
+</template>

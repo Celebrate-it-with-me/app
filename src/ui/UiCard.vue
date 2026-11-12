@@ -6,6 +6,8 @@ const props = defineProps({
   as: { type: String, default: 'div' },
   title: { type: String, default: '' },
   subtitle: { type: String, default: '' },
+  /** Heading tag for the title: keep the page's outline (h2 under an h1, h3 under an h2). */
+  headingLevel: { type: String, default: 'h3' },
   /** none | sm | md | lg */
   padding: { type: String, default: 'md' },
   /** Lifts on hover; use for clickable cards. */
@@ -34,7 +36,7 @@ const classes = computed(() =>
     >
       <div class="min-w-0">
         <slot name="header">
-          <h3 v-if="title" class="font-heading text-xl text-ink-900">{{ title }}</h3>
+          <component :is="headingLevel" v-if="title" class="font-heading text-xl text-ink-900">{{ title }}</component>
           <p v-if="subtitle" class="mt-0.5 text-sm text-ink-500">{{ subtitle }}</p>
         </slot>
       </div>

@@ -1,7 +1,7 @@
 <script setup>
 import { CheckboxRoot, CheckboxIndicator } from 'reka-ui'
 import { Check } from 'lucide-vue-next'
-import { useId } from './utils'
+import { uniqueId } from './utils'
 
 defineProps({
   modelValue: { type: Boolean, default: false },
@@ -10,7 +10,7 @@ defineProps({
   disabled: { type: Boolean, default: false }
 })
 const emit = defineEmits(['update:modelValue'])
-const id = useId('checkbox')
+const id = uniqueId('checkbox')
 </script>
 
 <template>

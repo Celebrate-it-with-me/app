@@ -20,7 +20,7 @@ defineProps({
       </div>
 
       <div class="mt-6 text-center text-xs text-gray-400">
-        © {{ new Date().getFullYear() }} Celebrate It With Me
+        © {{ new Date().getFullYear() }} Quinvite
       </div>
     </div>
   </div>

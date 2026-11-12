@@ -16,18 +16,8 @@
           to="/"
           class="flex items-center gap-2 text-xl font-bold text-white drop-shadow-xs"
         >
-          <img
-            v-if="isExpanded"
-            src="@/assets/images/commons/logo_primary_2.png"
-            alt="Logo"
-            class="w-4/5 filter brightness-0 invert"
-          />
-          <img
-            v-else
-            src="@/assets/images/commons/logo.png"
-            alt="Logo"
-            class="w-8 h-8 filter brightness-0 invert"
-          />
+          <QuinviteLogo v-if="isExpanded" class="h-9 text-white" />
+          <QuinviteLogo v-else mark class="h-8" />
         </RouterLink>
       </div>
       <!-- Decorative gradient overlay -->
@@ -464,6 +454,7 @@
 </template>
 
 <script setup>
+import QuinviteLogo from '@/components/brand/QuinviteLogo.vue'
 import { useRoute, RouterLink } from 'vue-router'
 import {
   Users,

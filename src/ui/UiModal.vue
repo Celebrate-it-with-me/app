@@ -11,6 +11,7 @@ import {
 } from 'reka-ui'
 import { X } from 'lucide-vue-next'
 import { cx } from './utils'
+import { uiText } from './i18n'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -20,7 +21,7 @@ const props = defineProps({
   size: { type: String, default: 'md' },
   /** On phones a sheet slides up from the bottom; on larger screens both look centered. */
   sheet: { type: Boolean, default: true },
-  closeLabel: { type: String, default: 'Cerrar' }
+  closeLabel: { type: String, default: () => uiText('common.close') }
 })
 const emit = defineEmits(['update:open'])
 
@@ -41,7 +42,7 @@ const contentClasses = computed(() =>
 <template>
   <DialogRoot :open="open" @update:open="value => emit('update:open', value)">
     <DialogPortal>
-      <DialogOverlay class="fixed inset-0 z-50 bg-ink-900/40 backdrop-blur-[2px]" />
+      <DialogOverlay class="fixed inset-0 z-50 bg-ink-900/40 backdrop-blur-xs" />
       <DialogContent :class="contentClasses">
         <div class="flex items-start justify-between gap-4 px-5 pt-5 sm:px-6 sm:pt-6">
           <div class="min-w-0">

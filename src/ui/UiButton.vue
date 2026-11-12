@@ -4,7 +4,7 @@ import { LoaderCircle } from 'lucide-vue-next'
 import { cx } from './utils'
 
 const props = defineProps({
-  /** primary | secondary | ghost | danger | link */
+  /** primary | secondary | ghost | danger | link | ivory | wine | outline */
   variant: { type: String, default: 'primary' },
   /** sm | md | lg */
   size: { type: String, default: 'md' },
@@ -27,7 +27,15 @@ const VARIANTS = {
     'bg-white text-ink-900 border border-line-strong shadow-soft hover:bg-cream-100 active:bg-cream-200 disabled:text-ink-400',
   ghost: 'bg-transparent text-ink-700 hover:bg-cream-200 active:bg-cream-300 disabled:text-ink-400',
   danger: 'bg-danger-500 text-white shadow-soft hover:bg-danger-700 disabled:opacity-60',
-  link: 'bg-transparent text-rose-600 underline-offset-4 hover:underline px-0 disabled:text-ink-400'
+  link: 'bg-transparent text-rose-600 underline-offset-4 hover:underline px-0 disabled:text-ink-400',
+  /** Secondary with a wine border: keeps the primary plan's priority while reading as brand. */
+  outline:
+    'bg-transparent text-wine-900 border border-wine-800 hover:bg-rose-50 active:bg-rose-100 disabled:opacity-60',
+  /** Deep wine face with ivory text, for the plan that unlocks everything. */
+  wine: 'bg-wine-800 text-cream-50 shadow-soft hover:bg-wine-900 active:bg-wine-900 disabled:opacity-60',
+  /** For wine/dark surfaces: ivory face, wine text, ivory focus ring. */
+  ivory:
+    'bg-cream-100 text-wine-900 shadow-soft hover:bg-white active:bg-cream-200 focus-visible:outline-cream-100 disabled:opacity-60'
 }
 
 const SIZES = {
@@ -36,17 +44,37 @@ const SIZES = {
   lg: 'h-13 px-6 text-lg gap-2.5'
 }
 
+/** Full-width buttons may carry long labels on phones: let them wrap instead of overflowing. */
+const BLOCK_SIZES = {
+  sm: 'min-h-9 px-3 py-1.5 text-sm gap-1.5',
+  md: 'min-h-11 px-4 py-2 text-base gap-2',
+  lg: 'min-h-13 px-6 py-2.5 text-lg gap-2.5'
+}
+
 const ICON_SIZES = { sm: 'h-9 w-9', md: 'h-11 w-11', lg: 'h-13 w-13' }
 
 const tag = computed(() => (props.to ? 'router-link' : props.href ? 'a' : 'button'))
 
+/** A disabled link must not navigate. */
+function onClick(event) {
+  if (tag.value !== 'button' && (props.disabled || props.loading)) event.preventDefault()
+}
+
+/** Only pass what each tag needs: an explicit `href: undefined` would wipe RouterLink's own href. */
+const linkAttrs = computed(() => {
+  if (props.to) return { to: props.to }
+  if (props.href) return { href: props.href }
+  return {}
+})
+
 const classes = computed(() =>
   cx(
-    'inline-flex items-center justify-center rounded-lg font-semibold whitespace-nowrap',
-    'transition-colors duration-150 select-none',
+    'inline-flex items-center justify-center rounded-lg font-semibold leading-tight',
+    props.block ? 'whitespace-normal text-center' : 'whitespace-nowrap',
+    'transition-[background-color,color,scale] duration-150 select-none active:scale-[0.97] motion-reduce:active:scale-100',
     'disabled:cursor-not-allowed',
     VARIANTS[props.variant] ?? VARIANTS.primary,
-    props.icon ? ICON_SIZES[props.size] : SIZES[props.size],
+    props.icon ? ICON_SIZES[props.size] : props.block ? BLOCK_SIZES[props.size] : SIZES[props.size],
     props.block && 'w-full'
   )
 )
@@ -55,13 +83,14 @@ const classes = computed(() =>
 <template>
   <component
     :is="tag"
-    :to="to || undefined"
-    :href="href || undefined"
+    v-bind="linkAttrs"
     :type="tag === 'button' ? type : undefined"
     :disabled="tag === 'button' ? disabled || loading : undefined"
     :aria-disabled="disabled || loading || undefined"
     :aria-busy="loading || undefined"
+    :tabindex="tag !== 'button' && (disabled || loading) ? -1 : undefined"
     :class="classes"
+    @click="onClick"
   >
     <LoaderCircle v-if="loading" class="h-4 w-4 animate-spin" aria-hidden="true" />
     <slot v-else name="icon" />

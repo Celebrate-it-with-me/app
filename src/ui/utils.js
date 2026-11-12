@@ -4,8 +4,8 @@ export function cx(...parts) {
 }
 
 let uid = 0
-/** Stable unique id for form controls. */
-export function useId(prefix = 'ui') {
+/** Stable unique id for form controls (named so it does not shadow Vue's own useId). */
+export function uniqueId(prefix = 'ui') {
   uid += 1
   return `${prefix}-${uid}`
 }

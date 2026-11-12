@@ -10,6 +10,30 @@ import { authGuard } from '@/router/authGuard'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  /**
+   * Hash links (#como-funciona, #precios…) scroll to their section, also when coming from
+   * another page: the target may not exist until the view renders, so we retry briefly.
+   * Back/forward restores the saved position; other navigations start at the top.
+   */
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (to.hash) {
+      const id = to.hash.slice(1)
+      const find = () => document.getElementById(id)
+      const target = { el: `#${CSS.escape(id)}`, top: 80, behavior: 'smooth' }
+      if (find()) return target
+      return new Promise(resolve => {
+        let tries = 0
+        const tick = () => {
+          if (find()) resolve(target)
+          else if (tries++ > 20) resolve(false)
+          else setTimeout(tick, 50)
+        }
+        tick()
+      })
+    }
+    return to.path === from.path ? false : { top: 0 }
+  },
   routes: [
     {
       path: '/password',

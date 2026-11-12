@@ -2,12 +2,14 @@
 import { computed } from 'vue'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { cx } from './utils'
+import { uiText } from './i18n'
 
 const props = defineProps({
   page: { type: Number, default: 1 },
   pages: { type: Number, default: 1 },
-  prevLabel: { type: String, default: 'Anterior' },
-  nextLabel: { type: String, default: 'Siguiente' }
+  prevLabel: { type: String, default: () => uiText('common.previous') },
+  nextLabel: { type: String, default: () => uiText('common.next') },
+  label: { type: String, default: () => uiText('common.pagination') }
 })
 const emit = defineEmits(['update:page'])
 
@@ -34,10 +36,10 @@ const btn =
 </script>
 
 <template>
-  <nav class="flex items-center justify-between gap-2" aria-label="Paginación">
-    <button type="button" :class="cx(btn, 'gap-1 text-ink-700 hover:bg-cream-200')" :disabled="page <= 1" @click="go(page - 1)">
+  <nav class="flex items-center justify-between gap-2" :aria-label="label">
+    <button type="button" :class="cx(btn, 'gap-1 text-ink-700 hover:bg-cream-200')" :disabled="page <= 1" :aria-label="prevLabel" @click="go(page - 1)">
       <ChevronLeft class="h-4 w-4" aria-hidden="true" />
-      <span class="hidden sm:inline">{{ prevLabel }}</span>
+      <span class="hidden sm:inline" aria-hidden="true">{{ prevLabel }}</span>
     </button>
     <div class="flex items-center gap-1">
       <template v-for="(item, i) in items" :key="i">
@@ -53,8 +55,8 @@ const btn =
         </button>
       </template>
     </div>
-    <button type="button" :class="cx(btn, 'gap-1 text-ink-700 hover:bg-cream-200')" :disabled="page >= pages" @click="go(page + 1)">
-      <span class="hidden sm:inline">{{ nextLabel }}</span>
+    <button type="button" :class="cx(btn, 'gap-1 text-ink-700 hover:bg-cream-200')" :disabled="page >= pages" :aria-label="nextLabel" @click="go(page + 1)">
+      <span class="hidden sm:inline" aria-hidden="true">{{ nextLabel }}</span>
       <ChevronRight class="h-4 w-4" aria-hidden="true" />
     </button>
   </nav>

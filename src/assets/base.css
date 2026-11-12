@@ -131,37 +131,11 @@
   }
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
-}
+/* The universal `margin: 0; font-weight: normal` reset was removed: it was unlayered CSS and
+   overrode Tailwind utilities such as mx-auto. Tailwind's preflight already resets margins. */
 
-body {
-  /*min-height: 100vh;*/
-  color: var(--color-text);
-  background: var(--color-background);
-  line-height: 1.6;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
-  font-size: 15px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* The legacy `body` rule (Inter, 15px, --color-text) was removed: unlayered CSS beat the
+   Tailwind base layer and kept Figtree from applying. Tokens in src/style.css own this now. */
 
 .vue-notification-wrapper {
   margin-top: 10px !important;

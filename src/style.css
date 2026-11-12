@@ -55,12 +55,18 @@
   --color-rose-600: #b04a62;
   --color-rose-700: #933a50;
   --color-rose-800: #76303f;
+  --color-rose-900: #5a2432;
+  --color-rose-950: #3f1820;
+
+  /* Deep wine, for closing bands and dark surfaces of the brand */
+  --color-wine-800: #5c2433;
+  --color-wine-900: #461a26;
 
   /* Secondary accent: soft gold */
   --color-gold-100: #f6ecd4;
   --color-gold-300: #e6cf93;
   --color-gold-500: #c9a24e;
-  --color-gold-700: #9a7a2e;
+  --color-gold-700: #7a5c1e;
 
   /* Feedback */
   --color-success-50: #eef6f0;
@@ -87,6 +93,7 @@
   --radius-lg: 1rem;
   --radius-xl: 1.25rem;
   --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
 
   /* Elevation: soft, warm shadows */
   --shadow-soft: 0 1px 2px rgba(43, 36, 32, 0.04), 0 8px 24px -12px rgba(43, 36, 32, 0.12);
@@ -116,12 +123,12 @@
     font-family: var(--font-heading);
     font-weight: 500;
     letter-spacing: -0.01em;
-    color: var(--color-ink-900);
+    /* color is inherited on purpose: legacy headings sit on dark and gradient surfaces */
   }
 
   input::placeholder,
   textarea::placeholder {
-    color: var(--color-ink-400);
+    color: var(--color-ink-500);
   }
 
   *,
@@ -141,10 +148,20 @@
     outline: 2px solid var(--color-rose-400);
     outline-offset: 2px;
   }
-}
 
-@utility text-balance {
-  text-wrap: balance;
+  ::selection {
+    background-color: var(--color-rose-200);
+    color: var(--color-ink-900);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--color-rose-600);
+  }
+
+  a {
+    text-underline-offset: 3px;
+  }
 }
 
 /* Enter/leave animations for overlays (Reka sets data-state on open/close). */
@@ -170,5 +187,64 @@
   animation: ui-in 180ms ease-out;
 }
 @utility animate-out {
-  animation: ui-out 140ms ease-in forwards;
+  animation: ui-out 120ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/*
+ * Background art. Subtle, token-colored, and cheap: inline SVG data URIs.
+ * - lattice: a fine diamond lattice in gold, like the cut of papel picado
+ * - dots: confetti dust for dark bands
+ */
+@utility bg-pattern-lattice {
+  background-color: var(--color-cream-50);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpath d='M18 2 L34 18 L18 34 L2 18 Z' fill='none' stroke='%23c9a24e' stroke-opacity='0.16' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 36px 36px;
+}
+
+@utility bg-pattern-dots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Ccircle cx='4' cy='4' r='1.2' fill='%23e6cf93' fill-opacity='0.35'/%3E%3Ccircle cx='18' cy='16' r='0.9' fill='%23f0c6d0' fill-opacity='0.35'/%3E%3C/svg%3E");
+  background-size: 28px 28px;
+}
+
+/* One-time staggered reveal (see src/composables/useReveal.js). Visible by default;
+   only nodes the observer armed are hidden, so anything inserted later stays visible. */
+[data-reveal].is-armed {
+  opacity: 0;
+  transform: translateY(14px);
+}
+@media print {
+  [data-reveal].is-armed {
+    opacity: 1;
+    transform: none;
+  }
+}
+[data-reveal].is-armed.is-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 600ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* Entrance for surfaces that appear on demand (menus, bars). */
+@utility ui-enter {
+  animation: ui-in 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* <details> body: ease open instead of snapping (works with a plain <p>/<div> body). */
+@utility ui-details-body {
+  animation: ui-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in,
+  .animate-out,
+  .ui-enter,
+  .ui-details-body {
+    animation-duration: 1ms;
+  }
+  .animate-spin {
+    animation-duration: 1.5s;
+  }
 }

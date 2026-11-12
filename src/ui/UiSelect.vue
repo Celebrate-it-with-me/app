@@ -13,12 +13,13 @@ import {
 } from 'reka-ui'
 import { ChevronDown, Check } from 'lucide-vue-next'
 import { cx } from './utils'
+import { uiText } from './i18n'
 
 const props = defineProps({
   modelValue: { type: [String, Number], default: undefined },
   /** [{ value, label, disabled? }] */
   options: { type: Array, default: () => [] },
-  placeholder: { type: String, default: 'Selecciona una opción' },
+  placeholder: { type: String, default: () => uiText('common.selectOption') },
   /** sm | md | lg */
   size: { type: String, default: 'md' },
   invalid: { type: Boolean, default: false },
@@ -36,7 +37,7 @@ const SIZES = { sm: 'h-9 text-sm', md: 'h-11 text-base', lg: 'h-13 text-lg' }
 const triggerClasses = computed(() =>
   cx(
     'flex w-full items-center justify-between gap-2 rounded-lg border bg-white px-3.5 text-left',
-    'text-ink-900 transition-colors duration-150 data-[placeholder]:text-ink-400',
+    'text-ink-900 transition-colors duration-150 data-[placeholder]:text-ink-500',
     'focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-400',
     'disabled:bg-cream-200 disabled:text-ink-400 disabled:cursor-not-allowed',
     isInvalid.value ? 'border-danger-500' : 'border-line-strong',
@@ -55,7 +56,13 @@ function onUpdate(value) {
 
 <template>
   <SelectRoot :model-value="selected" :disabled="disabled" @update:model-value="onUpdate">
-    <SelectTrigger :id="triggerId" :class="triggerClasses" :aria-invalid="isInvalid || undefined">
+    <SelectTrigger
+      :id="triggerId"
+      :class="triggerClasses"
+      :aria-invalid="isInvalid || undefined"
+      :aria-describedby="field?.describedBy.value"
+      :aria-required="field?.required.value || undefined"
+    >
       <SelectValue :placeholder="placeholder" class="truncate" />
       <ChevronDown class="h-4 w-4 shrink-0 text-ink-400" aria-hidden="true" />
     </SelectTrigger>

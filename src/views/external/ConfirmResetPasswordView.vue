@@ -1,212 +1,108 @@
 <script setup>
-import CCard from '@/components/UI/cards/CCard.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
-import { Form } from 'vee-validate'
-import CInput from '@/components/UI/form2/CInput.vue'
-import { computed, onMounted, reactive, ref } from 'vue'
-import { toTypedSchema } from '@/utils/zodTypedSchema'
-import * as zod from 'zod'
-import { useUserStore } from '@/stores/useUserStore'
+import { onMounted, ref } from 'vue'
+import { useForm } from 'vee-validate'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import * as zod from 'zod'
+import { toTypedSchema } from '@/utils/zodTypedSchema'
+import { useUserStore } from '@/stores/useUserStore'
+import { UiField, UiInput, UiButton, UiSkeleton } from '@/ui'
+import AuthCard from '@/components/external/auth/AuthCard.vue'
 
-const backendError = ref(false)
-const backendErrorMessage = ref('')
-const loading = ref(false)
-const sending = ref(false)
-const userStore = useUserStore()
-const isValidResetLink = ref(false)
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const userEmail = ref('')
+const userStore = useUserStore()
 
-const form = reactive({
-  email: '',
-  password: '',
-  confirmPassword: ''
-})
+const loading = ref(true)
+const sending = ref(false)
+const valid = ref(false)
+const accountEmail = ref('')
+const backendError = ref('')
 
-const validationSchema = computed(() => {
-  return toTypedSchema(
+const { handleSubmit, defineField, errors } = useForm({
+  validationSchema: toTypedSchema(
     zod
       .object({
         email: zod
-          .string({ message: 'Email is required' })
-          .email({ message: 'Must be a valid email' })
-          .refine(value => value === userEmail.value, {
-            message: 'Email does not match the user email',
-            path: ['email']
-          }),
-        password: zod
-          .string({ message: 'Password is required' })
-          .min(8, { message: 'Password must have at least 8 characters long' }),
-        confirmPassword: zod
-          .string({ message: 'Confirm Password is required' })
-          .min(8, { message: 'Confirm Password must have at least 8 characters long' })
+          .string({ message: t('validation.emailRequired') })
+          .email({ message: t('validation.emailInvalid') })
+          .refine(value => value === accountEmail.value, { message: t('validation.emailMismatch') }),
+        password: zod.string({ message: t('validation.passwordRequired') }).min(8, { message: t('validation.passwordMin') }),
+        confirmPassword: zod.string({ message: t('validation.passwordRequired') }).min(8, { message: t('validation.passwordMin') })
       })
       .refine(data => data.password === data.confirmPassword, {
-        message: 'Passwords must match',
+        message: t('validation.passwordsMismatch'),
         path: ['confirmPassword']
       })
-  )
+  ),
+  initialValues: { email: '', password: '', confirmPassword: '' }
 })
+const [email] = defineField('email')
+const [password] = defineField('password')
+const [confirmPassword] = defineField('confirmPassword')
 
 onMounted(async () => {
-  await checkResetLink()
-})
-
-const checkResetLink = async () => {
   try {
-    loading.value = true
-
-    const confirmUrl = decodeURIComponent(route.query.confirm)
-
-    if (!confirmUrl) {
-      loading.value = false
-      isValidResetLink.value = false
-      return
-    }
-
+    const confirmUrl = route.query.confirm ? decodeURIComponent(route.query.confirm) : ''
+    if (!confirmUrl) return
     const response = await userStore.checkResetLink(confirmUrl)
-
     if (response.status === 200) {
-      const { data } = response?.data ?? {}
-      isValidResetLink.value = data?.email
-      userEmail.value = data?.email
+      accountEmail.value = response.data?.data?.email ?? ''
+      valid.value = Boolean(accountEmail.value)
     } else {
-      isValidResetLink.value = false
-      backendError.value = true
-      backendErrorMessage.value = response.response?.data?.message ?? 'Oops, something went wrong!'
+      backendError.value = response.response?.data?.message ?? ''
     }
-  } catch (e) {
-    console.log(e)
+  } catch {
+    valid.value = false
   } finally {
     loading.value = false
   }
-}
+})
 
-const onSubmit = async () => {
+const onSubmit = handleSubmit(async values => {
+  sending.value = true
+  backendError.value = ''
   try {
-    sending.value = true
-
     const response = await userStore.changePassword({
-      email: form.email,
-      password: form.password,
-      passwordConfirmation: form.confirmPassword
+      email: values.email,
+      password: values.password,
+      passwordConfirmation: values.confirmPassword
     })
-
-    if (response.status === 200) {
-      backendError.value = false
-      backendErrorMessage.value = ''
-      form.email = ''
-      form.password = ''
-      form.confirmPassword = ''
-
-      await router.push('/password-updated')
-    } else {
-      backendError.value = true
-      backendErrorMessage.value = response.response?.data?.message ?? 'Oops, something went wrong!'
-    }
+    if (response.status === 200) return router.push('/password-updated')
+    backendError.value = response.response?.data?.message ?? t('common.genericError')
   } catch (e) {
-    console.log(e)
+    backendError.value = e.response?.data?.message ?? t('common.genericError')
   } finally {
     sending.value = false
   }
-}
-
-const onInvalidSubmit = errors => {
-  console.log(errors)
-}
+})
 </script>
 
 <template>
-  <CCard class="max-w-md w-full p-8 shadow-xl">
-    <div v-if="!isValidResetLink">
-      <div class="text-center mb-10">
-        <div class="image-container mb-4">
-          <img
-            src="@/assets/images/commons/logo_primary.png"
-            alt="Celebrate it with me logo"
-            class="w-64 h-auto mx-auto"
-          />
-        </div>
-
-        <h1 class="text-3xl font-display font-bold text-gray-700 mb-4">Reset Password</h1>
-        <p class="text-sm text-text-light">
-          Looks like this link is invalid or expired. Please check your email for the correct link.
-        </p>
-
-        <div v-if="backendError" class="text-red-500 text-sm font-semibold mb-10">
-          <p>
-            {{ backendErrorMessage }}
-          </p>
-        </div>
-      </div>
-    </div>
-    <div v-if="isValidResetLink" class="reset-valid">
-      <div class="text-center mb-10">
-        <div class="image-container mb-4">
-          <img
-            src="@/assets/images/commons/logo_primary.png"
-            alt="Celebrate it with me logo"
-            class="w-64 h-auto mx-auto"
-          />
-        </div>
-
-        <h1 class="text-3xl font-display font-bold text-gray-700 mb-4">Reset Password</h1>
-        <p class="text-sm text-text-light">Enter your new password below.</p>
-
-        <div v-if="backendError" class="text-red-500 text-sm font-semibold mb-10">
-          <p>
-            {{ backendErrorMessage }}
-          </p>
-        </div>
-      </div>
-
-      <Form
-        :validation-schema="validationSchema"
-        @submit="onSubmit"
-        @invalid-submit="onInvalidSubmit"
-      >
-        <CInput
-          id="reset_password_email"
-          v-model="form.email"
-          label="Email"
-          type="email"
-          placeholder="Enter your email"
-          name="email"
-          show-error
-        />
-
-        <CInput
-          id="reset_password_password"
-          v-model="form.password"
-          name="password"
-          label="New Password"
-          type="password"
-          placeholder="Enter your new password"
-          show-error
-        />
-
-        <CInput
-          id="reset_password_confirm_password"
-          v-model="form.confirmPassword"
-          name="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          placeholder="Confirm your new password"
-          show-error
-        />
-
-        <CButton variant="gradient" full type="submit" class="mt-4"> Change Password </CButton>
-
-        <div class="mt-6 flex items-center justify-center">
-          <router-link to="/sign-in">
-            <span class="text-primary font-medium hover:underline"> Back to Sign In </span>
-          </router-link>
-        </div>
-      </Form>
-    </div>
-  </CCard>
+  <AuthCard
+    :title="t('auth.resetTitle')"
+    :subtitle="loading ? '' : valid ? t('auth.resetText') : t('auth.resetInvalid')"
+    :error="backendError"
+  >
+    <UiSkeleton v-if="loading" :lines="3" />
+    <form v-else-if="valid" class="flex flex-col gap-4" novalidate @submit="onSubmit">
+      <UiField :label="t('common.email')" :error="errors.email" id="reset_email">
+        <UiInput v-model="email" type="email" autocomplete="email" :placeholder="t('auth.emailPlaceholder')" />
+      </UiField>
+      <UiField :label="t('auth.newPassword')" :error="errors.password" id="reset_password">
+        <UiInput v-model="password" type="password" autocomplete="new-password" :placeholder="t('auth.passwordPlaceholder')" />
+      </UiField>
+      <UiField :label="t('auth.confirmPassword')" :error="errors.confirmPassword" id="reset_confirm">
+        <UiInput v-model="confirmPassword" type="password" autocomplete="new-password" />
+      </UiField>
+      <UiButton type="submit" block :loading="sending">{{ t('auth.resetSubmit') }}</UiButton>
+    </form>
+    <UiButton v-else block variant="secondary" to="/forgot-password">{{ t('auth.forgotTitle') }}</UiButton>
+    <template #footer>
+      <router-link to="/sign-in" class="font-semibold text-rose-600 hover:underline">
+        {{ t('common.signIn') }}
+      </router-link>
+    </template>
+  </AuthCard>
 </template>
-
-<style scoped></style>

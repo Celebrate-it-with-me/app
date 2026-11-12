@@ -202,7 +202,7 @@ const emit = defineEmits(['updateActiveStatus'])
 const props = defineProps({
   logo: {
     type: [String, Object],
-    default: 'Celebrateitwithme'
+    default: 'Quinvite'
   },
   links: {
     type: Array,

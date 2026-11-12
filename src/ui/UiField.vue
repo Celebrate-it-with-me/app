@@ -1,6 +1,6 @@
 <script setup>
 import { computed, provide } from 'vue'
-import { useId } from './utils'
+import { uniqueId } from './utils'
 
 const props = defineProps({
   label: { type: String, default: '' },
@@ -10,12 +10,16 @@ const props = defineProps({
   id: { type: String, default: '' }
 })
 
-const generatedId = useId('field')
+const generatedId = uniqueId('field')
 const controlId = computed(() => props.id || generatedId)
 const invalid = computed(() => Boolean(props.error))
+const messageId = computed(() => `${controlId.value}-msg`)
+/** id of the error (or hint) so controls can reference it with aria-describedby */
+const describedBy = computed(() => (props.error || props.hint ? messageId.value : undefined))
+const required = computed(() => props.required)
 
 /** Controls inside read these instead of repeating props. */
-provide('ui-field', { id: controlId, invalid })
+provide('ui-field', { id: controlId, invalid, describedBy, required })
 </script>
 
 <template>
@@ -25,7 +29,7 @@ provide('ui-field', { id: controlId, invalid })
       <span v-if="required" class="text-rose-600" aria-hidden="true">*</span>
     </label>
     <slot :id="controlId" :invalid="invalid" />
-    <p v-if="error" class="text-sm text-danger-700" role="alert">{{ error }}</p>
-    <p v-else-if="hint" class="text-sm text-ink-500">{{ hint }}</p>
+    <p v-if="error" :id="messageId" class="text-sm text-danger-700" role="alert">{{ error }}</p>
+    <p v-else-if="hint" :id="messageId" class="text-sm text-ink-500">{{ hint }}</p>
   </div>
 </template>
