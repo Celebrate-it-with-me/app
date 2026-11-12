@@ -55,6 +55,7 @@ export default {
     security: 'Seguridad',
     events: 'Mis eventos',
     eventCreate: 'Nuevo evento',
+    unlock: 'Pasa a premium',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -367,18 +368,23 @@ export default {
     }
   },
   app: {
+    activeEvent: 'Evento activo',
     switchEvent: 'Cambiar de evento',
+    allEvents: 'Ver todos mis eventos',
     newEvent: 'Nuevo evento',
     noEvent: 'Sin evento activo',
     noEventTitle: 'Elige un evento para continuar',
     noEventText: 'Selecciona uno de tus eventos o crea uno nuevo.',
     chooseEvent: 'Ver mis eventos',
-    groups: { event: 'Evento', planning: 'Planificación', guests: 'Invitados', experience: 'Experiencia' },
+    groups: { guests: 'Invitados', organization: 'Organización', extras: 'Extras' },
     nav: {
       label: 'Secciones del evento',
       more: 'Más',
+      timeline: 'Programa del día',
+      invitation: 'Tu invitación',
+      padrinos: 'Padrinos',
+      premium: 'Premium',
       home: 'Inicio',
-      events: 'Mis eventos',
       guests: 'Invitados',
       rsvp: 'Confirmaciones',
       budget: 'Presupuesto',
@@ -545,6 +551,24 @@ export default {
       confirm: 'Eliminar definitivamente',
       deleted: 'Evento eliminado.'
     }
+  },
+  unlock: {
+    lead: '{module} es parte del evento completo.',
+    generic: 'Disponible cuando desbloqueas tu evento completo.',
+    modules: {
+      menus: 'Cada invitado elige su plato al confirmar y tú ves cuántos pidió cada opción.',
+      seating: 'Acomoda a tus invitados en mesas y ten el plano listo para el salón.',
+      suggested_music: 'Tus invitados proponen canciones y votan las que más quieren bailar.',
+      memories: 'Tus invitados suben sus fotos de la fiesta y tú guardas el álbum.',
+      comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.'
+    },
+    includes: 'Con el evento completo tienes:',
+    soonTitle: 'Muy pronto',
+    soonText: 'Estamos terminando el pago en línea. Escríbenos y te avisamos en cuanto puedas desbloquearlo.',
+    notify: 'Avisarme cuando esté listo',
+    back: 'Volver al inicio',
+    mailSubject: 'Quiero desbloquear mi evento',
+    mailBody: 'Hola, quiero desbloquear mi evento completo ({module}). Avísenme cuando el pago esté listo.'
   },
   account: {
     title: 'Mi cuenta',

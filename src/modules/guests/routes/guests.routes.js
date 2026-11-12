@@ -4,6 +4,7 @@ export default [
     name: 'guests',
     component: () => import('@/modules/guests/views/GuestsView.vue'),
     meta: {
+      moduleKey: 'guests',
       title: 'Events Guests',
       requiresAuth: true,
       requiredPermission: ['view_guests'],
@@ -15,6 +16,7 @@ export default [
     name: 'create-guest',
     component: () => import('@/modules/guests/views/CreateGuestView.vue'),
     meta: {
+      moduleKey: 'guests',
       title: 'Create Guest',
       requiresAuth: true,
       requiredPermission: ['create_guest'],

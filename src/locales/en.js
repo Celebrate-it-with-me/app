@@ -55,6 +55,7 @@ export default {
     security: 'Security',
     events: 'My events',
     eventCreate: 'New event',
+    unlock: 'Go premium',
     eventEdit: 'Event details'
   },
   hero: {
@@ -367,18 +368,23 @@ export default {
     }
   },
   app: {
+    activeEvent: 'Active event',
     switchEvent: 'Switch event',
+    allEvents: 'See all my events',
     newEvent: 'New event',
     noEvent: 'No active event',
     noEventTitle: 'Pick an event to continue',
     noEventText: 'Select one of your events or create a new one.',
     chooseEvent: 'See my events',
-    groups: { event: 'Event', planning: 'Planning', guests: 'Guests', experience: 'Experience' },
+    groups: { guests: 'Guests', organization: 'Planning', extras: 'Extras' },
     nav: {
       label: 'Event sections',
       more: 'More',
+      timeline: 'Day program',
+      invitation: 'Your invitation',
+      padrinos: 'Godparents',
+      premium: 'Premium',
       home: 'Home',
-      events: 'My events',
       guests: 'Guests',
       rsvp: 'RSVPs',
       budget: 'Budget',
@@ -545,6 +551,24 @@ export default {
       confirm: 'Delete for good',
       deleted: 'Event deleted.'
     }
+  },
+  unlock: {
+    lead: '{module} is part of the full event.',
+    generic: 'Available when you unlock your full event.',
+    modules: {
+      menus: 'Each guest picks their dish when they confirm, and you see how many chose each option.',
+      seating: 'Seat your guests at tables and have the floor plan ready for the venue.',
+      suggested_music: 'Your guests suggest songs and vote for the ones they most want to dance to.',
+      memories: 'Your guests upload their photos from the party and you keep the album.',
+      comments: 'Your guests leave you messages and good wishes on the invitation.'
+    },
+    includes: 'With the full event you get:',
+    soonTitle: 'Coming soon',
+    soonText: 'We are finishing online payment. Write to us and we will let you know as soon as you can unlock it.',
+    notify: 'Let me know when it is ready',
+    back: 'Back to home',
+    mailSubject: 'I want to unlock my event',
+    mailBody: 'Hi, I want to unlock my full event ({module}). Please let me know when payment is ready.'
   },
   account: {
     title: 'My account',

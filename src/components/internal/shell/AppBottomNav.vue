@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { Ellipsis, LogOut } from 'lucide-vue-next'
+import { Ellipsis, LogOut, Lock } from 'lucide-vue-next'
 import { useAppNav } from './useAppNav'
 import { useSignOut } from './useSignOut'
 import { UiModal } from '@/ui'
@@ -33,7 +33,7 @@ const tab =
         :aria-current="isActive(item.to) ? 'page' : undefined"
       >
         <component :is="item.icon" class="h-5 w-5" aria-hidden="true" />
-        <span class="truncate">{{ t(`app.nav.${item.key}`) }}</span>
+        <span class="truncate">{{ t(item.labelKey) }}</span>
       </router-link>
       <button v-if="secondary.length" type="button" :class="cx(tab, 'text-ink-500')" @click="moreOpen = true">
         <Ellipsis class="h-5 w-5" aria-hidden="true" />
@@ -50,8 +50,16 @@ const tab =
           class="flex flex-col items-center gap-2 rounded-lg border border-line bg-cream-50 px-2 py-3 text-center text-xs font-medium text-ink-700 hover:bg-cream-200"
           @click="moreOpen = false"
         >
-          <component :is="item.icon" class="h-5 w-5 text-rose-700" aria-hidden="true" />
-          {{ t(`app.nav.${item.key}`) }}
+          <span class="relative">
+            <component :is="item.icon" class="h-5 w-5" :class="item.state === 'locked' ? 'text-ink-400' : 'text-rose-700'" aria-hidden="true" />
+            <Lock
+              v-if="item.state === 'locked'"
+              class="absolute -right-2 -top-1.5 h-3 w-3 text-ink-500"
+              :aria-label="t('app.nav.premium')"
+              role="img"
+            />
+          </span>
+          {{ t(item.labelKey) }}
         </router-link>
       </li>
     </ul>

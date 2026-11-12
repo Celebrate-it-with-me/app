@@ -4,6 +4,7 @@ export default [
     name: 'suggest-music',
     component: () => import('@/modules/suggested-music/views/CSuggestedMusic.vue'),
     meta: {
+      moduleKey: 'suggested_music',
       title: 'Suggested Music',
       requiresAuth: true,
       requiredPermission: ['view_suggested_music'],
