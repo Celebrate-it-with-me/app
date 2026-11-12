@@ -1,18 +1,8 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import { LogOut } from 'lucide-vue-next'
-import { useUserStore } from '@/stores/useUserStore'
-import { UiPageHeader, UiButton } from '@/ui'
+import { UiPageHeader } from '@/ui'
 
 const { t } = useI18n()
-const router = useRouter()
-const userStore = useUserStore()
-
-async function logOut() {
-  await userStore.logOut()
-  await router.push({ name: 'sign-in' })
-}
 const tabs = [
   { key: 'profile', to: '/settings/profile' },
   { key: 'preferences', to: '/settings/preferences' },
@@ -37,12 +27,5 @@ const tabs = [
     </nav>
 
     <router-view />
-
-    <div class="mt-8 border-t border-line pt-6">
-      <UiButton variant="secondary" class="w-full sm:w-auto" @click="logOut">
-        <LogOut class="h-4 w-4" aria-hidden="true" />
-        {{ t('app.user.logout') }}
-      </UiButton>
-    </div>
   </div>
 </template>

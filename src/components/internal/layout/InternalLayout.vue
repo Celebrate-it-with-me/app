@@ -78,7 +78,7 @@ const determinatePostLoginRoute = async () => {
 
     <div class="lg:flex">
       <aside
-        class="sticky top-16 hidden h-[calc(100vh-4rem)] w-60 shrink-0 overflow-y-auto border-r border-line/70 bg-cream-50 lg:block"
+        class="sticky top-16 hidden h-[calc(100vh-4rem)] w-60 shrink-0 border-r border-line/70 bg-cream-50 lg:block"
       >
         <AppSidebar />
       </aside>

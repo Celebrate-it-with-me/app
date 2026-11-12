@@ -2,8 +2,9 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { Ellipsis } from 'lucide-vue-next'
+import { Ellipsis, LogOut } from 'lucide-vue-next'
 import { useAppNav } from './useAppNav'
+import { useSignOut } from './useSignOut'
 import { UiModal } from '@/ui'
 import { cx } from '@/ui/utils'
 
@@ -11,6 +12,7 @@ const { t } = useI18n()
 const route = useRoute()
 const { primary, secondary } = useAppNav()
 const moreOpen = ref(false)
+const signOut = useSignOut()
 
 const isActive = to => route.path === to || (to !== '/dashboard' && route.path.startsWith(to + '/'))
 const tab =
@@ -53,5 +55,15 @@ const tab =
         </router-link>
       </li>
     </ul>
+    <div class="mt-4 border-t border-line pt-3">
+      <button
+        type="button"
+        class="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-3 text-sm font-medium text-ink-700 hover:bg-cream-200"
+        @click="moreOpen = false; signOut()"
+      >
+        <LogOut class="h-4.5 w-4.5" aria-hidden="true" />
+        {{ t('app.user.logout') }}
+      </button>
+    </div>
   </UiModal>
 </template>
