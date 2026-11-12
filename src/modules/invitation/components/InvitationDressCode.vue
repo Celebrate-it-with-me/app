@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue'
+import { Shirt } from 'lucide-vue-next'
 import { useInvitationContext } from '../composables/useInvitation'
+import { swatchFor } from '../composables/colorNames'
 import { isHex } from '../composables/useInvitationTheme'
 import InvitationSection from './InvitationSection.vue'
 
@@ -16,30 +18,36 @@ const typeLabel = computed(() => tt(`dressCode.types.${data.value.type}`))
 const reservedLabel = computed(() =>
   tt(invitation.value.event.typeSlug === 'wedding' ? 'dressCode.reservedWedding' : 'dressCode.reservedQuince')
 )
+const colors = computed(() =>
+  data.value.colors.map(name => ({ name, swatch: swatchFor(name), isCode: isHex(String(name).trim()) }))
+)
 </script>
 
 <template>
   <InvitationSection id="dress-code" :title="section.title" :text="section.text">
-    <p class="font-inv-heading text-3xl text-inv-primary">{{ typeLabel }}</p>
-    <p v-if="data.description" class="mx-auto mt-3 max-w-prose text-lg text-inv-ink-soft text-pretty">
-      {{ data.description }}
-    </p>
+    <div class="flex flex-col items-center">
+      <span
+        class="flex h-14 w-14 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50"
+      >
+        <Shirt class="h-6 w-6" aria-hidden="true" />
+      </span>
+      <p class="mt-4 font-inv-script text-5xl text-inv-primary-ink sm:text-6xl">{{ typeLabel }}</p>
+      <p v-if="data.description" class="mx-auto mt-4 max-w-prose text-lg text-inv-ink-soft text-pretty">
+        {{ data.description }}
+      </p>
+    </div>
 
-    <div v-if="data.colors.length" class="mt-8">
+    <div v-if="colors.length" class="mt-10">
       <p class="text-sm font-medium text-inv-ink-soft">{{ reservedLabel }}</p>
-      <ul class="mt-3 flex flex-wrap justify-center gap-2">
-        <li
-          v-for="color in data.colors"
-          :key="color"
-          class="inline-flex items-center gap-2 rounded-full bg-inv-surface-alt px-3 py-1.5 text-sm ring-1 ring-inv-ink/10"
-        >
+      <ul class="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-5">
+        <li v-for="color in colors" :key="color.name" class="flex w-20 flex-col items-center gap-2">
           <span
-            v-if="isHex(color)"
-            class="h-4 w-4 rounded-full ring-1 ring-inv-ink/20"
-            :style="{ backgroundColor: color }"
+            v-if="color.swatch"
+            class="h-14 w-14 rounded-full shadow-soft ring-1 ring-inv-ink/15 ring-offset-2 ring-offset-inv-surface"
+            :style="{ backgroundColor: color.swatch }"
             aria-hidden="true"
           />
-          {{ color }}
+          <span :class="color.isCode ? 'sr-only' : 'text-sm text-inv-ink-soft'">{{ color.name }}</span>
         </li>
       </ul>
     </div>
