@@ -317,6 +317,39 @@ export default {
       }
     ]
   },
+  app: {
+    switchEvent: 'Switch event',
+    newEvent: 'New event',
+    noEvent: 'No active event',
+    noEventTitle: 'Pick an event to continue',
+    noEventText: 'Select one of your events or create a new one.',
+    chooseEvent: 'See my events',
+    groups: { event: 'Event', planning: 'Planning', guests: 'Guests', experience: 'Experience' },
+    nav: {
+      label: 'Event sections',
+      more: 'More',
+      home: 'Home',
+      events: 'My events',
+      guests: 'Guests',
+      rsvp: 'RSVPs',
+      budget: 'Budget',
+      locations: 'Locations',
+      menus: 'Menu',
+      seating: 'Tables',
+      saveTheDate: 'Save the date',
+      comments: 'Comments',
+      dressCode: 'Dress code',
+      memories: 'Memories',
+      music: 'Music'
+    },
+    user: {
+      menu: 'User menu',
+      profile: 'My profile',
+      preferences: 'Preferences',
+      security: 'Security',
+      logout: 'Sign out'
+    }
+  },
   legal: {
     updated: 'Last updated: {date}',
     englishOnly: 'This document is available in English for now.'
