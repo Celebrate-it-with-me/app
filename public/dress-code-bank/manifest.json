@@ -1,0 +1,9 @@
+{
+  "_comment": "Photo bank: { type: [{ file, credit, source }] }. Files live in /dress-code-bank/<type>/<file>. The key stored by the API is '<type>/<file without extension>'. Empty lists hide the bank in the screen.",
+  "black-tie": [],
+  "formal": [],
+  "semi-formal": [],
+  "cocktail": [],
+  "smart-casual": [],
+  "thematic": []
+}

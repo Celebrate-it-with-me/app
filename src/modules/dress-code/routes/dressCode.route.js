@@ -5,7 +5,7 @@ export default [
     component: () => import('@/modules/dress-code/views/DressCodeView.vue'),
     meta: {
       moduleKey: 'dress_code',
-      title: 'Dress Code',
+      titleKey: 'titles.dressCode',
       requiresAuth: true,
       requiredPermission: []
     }

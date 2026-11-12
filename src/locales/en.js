@@ -56,6 +56,7 @@ export default {
     events: 'My events',
     eventCreate: 'New event',
     unlock: 'Go premium',
+    dressCode: 'Dress code',
     eventEdit: 'Event details'
   },
   hero: {
@@ -341,12 +342,14 @@ export default {
       types: {
         formal: 'Formal',
         'semi-formal': 'Semi-formal',
-        casual: 'Casual',
         thematic: 'Themed',
-        'black-tie': 'Black tie'
+        'black-tie': 'Black tie',
+        cocktail: 'Cocktail',
+        'smart-casual': 'Smart casual'
       },
-      reservedQuince: 'Colors reserved for the quinceañera',
-      reservedWedding: 'Colors reserved for the couple'
+      reservedQuince: 'Colors reserved for the quinceañera and her court',
+      reservedWedding: 'Colors reserved for the couple',
+      suggested: 'Suggested colors'
     },
     rsvp: {
       attending: 'I\'ll be there',
@@ -368,6 +371,64 @@ export default {
     }
   },
   app: {
+    dressCode: {
+      title: 'Dress code',
+      subtitle: 'Tell your guests what to wear and which colors to avoid.',
+      styleTitle: 'Style',
+      typeRequired: 'Choose a dress code.',
+      types: {
+        'black-tie': { name: 'Black tie', hint: 'Tuxedo and floor-length gown.' },
+        formal: { name: 'Formal', hint: 'Dark suit and long or midi dress.' },
+        'semi-formal': { name: 'Semi-formal', hint: 'Elegant suit or dress, less protocol.' },
+        cocktail: { name: 'Cocktail', hint: 'Short or midi dress, suit without a required tie.' },
+        'smart-casual': { name: 'Smart casual', hint: 'Dressed up but comfortable.' },
+        thematic: { name: 'Themed', hint: 'A special idea for the party.' }
+      },
+      description: 'Notes (optional)',
+      descriptionHint: 'For example: “Comfortable shoes, the dance is in a garden”.',
+      colorsTitle: 'Colors',
+      reserved: 'Reserved colors',
+      reservedHintQuince: 'Only the quinceañera and her court wear them. Guests avoid them.',
+      reservedHintWedding: 'Only the couple and their party wear them. Guests avoid them.',
+      suggested: 'Suggested colors',
+      suggestedHint: 'A palette that goes with the decoration.',
+      otherColor: 'Other color',
+      removeColor: 'Remove {color}',
+      colorsCount: '{n} of {max} colors',
+      palette: {
+        white: 'White', black: 'Black', gold: 'Gold', silver: 'Silver', red: 'Red', wine: 'Wine',
+        pink: 'Pink', fuchsia: 'Fuchsia', lilac: 'Lilac', navy: 'Navy', sky: 'Sky blue',
+        emerald: 'Emerald', sage: 'Sage', champagne: 'Champagne'
+      },
+      imagesTitle: 'Inspiration',
+      imagesSubtitle: 'Up to {max} example photos for your guests.',
+      upload: 'Upload a photo',
+      uploadHint: 'JPG, PNG or WebP, up to 2 MB each.',
+      bankTitle: 'Or pick from the photo bank',
+      photo: 'Photo',
+      removePhoto: 'Remove photo',
+      imagesFull: 'You already have {max} photos. Remove one to add another.',
+      file: {
+        type: '“{name}” is not a JPG, PNG or WebP image.',
+        size: '“{name}” is larger than 2 MB.'
+      },
+      save: 'Save dress code',
+      saved: 'Dress code saved.',
+      saveError: 'We could not save your changes. Try again.',
+      loadError: 'We could not load the dress code.',
+      remove: 'Remove dress code',
+      removeTitle: 'Remove the dress code?',
+      removeBody: 'Your guests will stop seeing this section in the invitation.',
+      removed: 'Dress code removed.',
+      cancel: 'Cancel',
+      readOnly: 'Only the event organizers can change the dress code.',
+      previewTitle: 'What your guests will see',
+      previewSubtitle: 'Quick look at the section.',
+      previewEmpty: 'Choose a style to see the preview.',
+      previewReservedQuince: 'Colors reserved for the quinceañera and her court',
+      previewReservedWedding: 'Colors reserved for the couple',
+      previewSuggested: 'Suggested colors'
+    },
     activeEvent: 'Active event',
     switchEvent: 'Switch event',
     allEvents: 'See all my events',

@@ -1,8 +1,9 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { Shirt } from 'lucide-vue-next'
 import { useInvitationContext } from '../composables/useInvitation'
 import { swatchFor } from '../composables/colorNames'
+import { bankUrl } from '@/modules/dress-code/utils/dressCodeForm'
 import { isHex } from '../composables/useInvitationTheme'
 import InvitationSection from './InvitationSection.vue'
 
@@ -18,9 +19,28 @@ const typeLabel = computed(() => tt(`dressCode.types.${data.value.type}`))
 const reservedLabel = computed(() =>
   tt(invitation.value.event.typeSlug === 'wedding' ? 'dressCode.reservedWedding' : 'dressCode.reservedQuince')
 )
-const colors = computed(() =>
-  data.value.colors.map(name => ({ name, swatch: swatchFor(name), isCode: isHex(String(name).trim()) }))
+const swatches = list => (list ?? []).map(name => ({ name, swatch: swatchFor(name), isCode: isHex(String(name).trim()) }))
+const palettes = computed(() =>
+  [
+    { id: 'reserved', label: reservedLabel.value, colors: swatches(data.value.reservedColors) },
+    { id: 'suggested', label: tt('dressCode.suggested'), colors: swatches(data.value.suggestedColors) }
+  ].filter(palette => palette.colors.length)
 )
+/** Own uploads come with a URL; photo bank picks are served from the app. */
+const images = computed(() =>
+  (data.value.images ?? [])
+    .map(image => ({ ...image, src: image.source === 'bank' ? bankUrl(manifest.value, image.bankKey) : image.url }))
+    .filter(image => image.src)
+)
+const manifest = ref({})
+onMounted(async () => {
+  if (!(data.value.images ?? []).some(image => image.source === 'bank')) return
+  try {
+    manifest.value = await (await fetch('/dress-code-bank/manifest.json')).json()
+  } catch {
+    manifest.value = {}
+  }
+})
 </script>
 
 <template>
@@ -37,10 +57,10 @@ const colors = computed(() =>
       </p>
     </div>
 
-    <div v-if="colors.length" class="mt-10">
-      <p class="text-sm font-medium text-inv-ink-soft">{{ reservedLabel }}</p>
+    <div v-for="palette in palettes" :key="palette.id" class="mt-10">
+      <p class="text-sm font-medium text-inv-ink-soft">{{ palette.label }}</p>
       <ul class="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-5">
-        <li v-for="color in colors" :key="color.name" class="flex w-20 flex-col items-center gap-2">
+        <li v-for="color in palette.colors" :key="color.name" class="flex w-20 flex-col items-center gap-2">
           <span
             v-if="color.swatch"
             class="h-14 w-14 rounded-full shadow-soft ring-1 ring-inv-ink/15 ring-offset-2 ring-offset-inv-surface"
@@ -51,5 +71,11 @@ const colors = computed(() =>
         </li>
       </ul>
     </div>
+
+    <ul v-if="images.length" class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <li v-for="(image, index) in images" :key="index" class="aspect-[3/4] overflow-hidden rounded-xl bg-inv-primary/10">
+        <img :src="image.src" alt="" class="h-full w-full object-cover" loading="lazy" />
+      </li>
+    </ul>
   </InvitationSection>
 </template>
