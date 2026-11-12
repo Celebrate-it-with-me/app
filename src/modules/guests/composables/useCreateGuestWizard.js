@@ -2,6 +2,8 @@ import { ref, computed, watch } from 'vue'
 import { useGuestsStore } from '@/modules/guests/stores/useGuestStore'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
+import i18n from '@/locales/i18n'
+import { planLimitFrom, planLimitMessage } from '@/utils/planLimit'
 
 export function useCreateGuestWizard() {
   const currentStep = ref(0)
@@ -64,6 +66,12 @@ export function useCreateGuestWizard() {
         })
       }
     } catch (error) {
+      // The invitation is published and the plan's guest limit is a hard cap: say exactly that.
+      const limit = planLimitFrom(error)
+      if (limit) {
+        notifications.addNotification({ type: 'error', message: planLimitMessage(i18n.global.t, limit, 'add') })
+        return
+      }
       console.error(error)
       notifications.addNotification({
         type: 'error',

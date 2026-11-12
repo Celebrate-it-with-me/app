@@ -6,6 +6,8 @@ import { SearchX } from 'lucide-vue-next'
 import { UiPageHeader, UiCard, UiField, UiInput, UiTextarea, UiButton, UiModal, UiSkeleton, UiEmptyState, useToast } from '@/ui'
 import { useEventsStore } from '../stores/useEventsStore'
 import { formFromEvent, buildPatch, SLUG_PATTERN, fieldErrors } from '../utils/eventForm'
+import { guestOverflow, planLimitFrom } from '@/utils/planLimit'
+import GuestLimitNotice from '@/components/internal/limits/GuestLimitNotice.vue'
 import EventAddressField from '../components/EventAddressField.vue'
 import EventStatusBadge from '../components/EventStatusBadge.vue'
 
@@ -46,8 +48,11 @@ async function load() {
   try {
     if (!event.value) await eventsStore.fetchEvent(eventId.value)
     if (!eventsStore.eventTypes.length) await eventsStore.loadEventsPlansAndType()
-    if (event.value) resetForm()
-    else notFound.value = true
+    if (event.value) {
+      resetForm()
+      // The guest count it was loaded with can be old: refresh it quietly for the limit.
+      eventsStore.fetchEvent(eventId.value).catch(() => {})
+    } else notFound.value = true
   } catch {
     notFound.value = true
   } finally {
@@ -107,6 +112,9 @@ async function save() {
 
 // ── Publication ──────────────────────────────────────────────
 const pending = ref(null) // the action waiting for confirmation
+// Over the plan's guest limit: from the event's own numbers, or from the API's answer to a publish attempt.
+const limitInfo = ref(null)
+const overflow = computed(() => limitInfo.value ?? guestOverflow(event.value))
 const acting = ref(false)
 
 const actions = computed(() => {
@@ -133,10 +141,16 @@ async function runAction(action) {
   try {
     await eventsStore.runEventAction(event.value.id, action)
     resetForm()
+    limitInfo.value = null
     success(t(`events.publication.done.${action}`))
     pending.value = null
   } catch (e) {
     pending.value = null
+    const limit = planLimitFrom(e)
+    if (limit) {
+      limitInfo.value = limit
+      return
+    }
     const server = fieldErrors(e)
     if (server.eventName || server.startDate || server.eventType) showError(t('events.publication.missing'))
     else showServerError(e)
@@ -220,12 +234,13 @@ async function confirmDelete() {
         <template #actions><EventStatusBadge :status="event.status" /></template>
         <p class="text-base text-ink-600">{{ t(`events.publication.${event.status}Text`) }}</p>
         <p v-if="dirty" class="mt-2 text-sm text-ink-500">{{ t('events.publication.saveFirst') }}</p>
+        <GuestLimitNotice v-if="overflow && event.status === 'draft'" class="mt-4" :info="overflow" variant="publish" with-list-link />
         <div class="mt-4 flex flex-col gap-2 sm:flex-row">
           <UiButton
             v-for="action in actions"
             :key="action.key"
             :variant="action.variant"
-            :disabled="dirty"
+            :disabled="dirty || (action.key === 'publish' && !!overflow)"
             @click="askAction(action.key)"
           >
             {{ t(`events.publication.${action.key}`) }}

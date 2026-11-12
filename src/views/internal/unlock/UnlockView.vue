@@ -14,17 +14,26 @@ const router = useRouter()
 const eventsStore = useEventsStore()
 
 const key = computed(() => String(route.params.module ?? ''))
-const view = computed(() => MODULE_VIEWS[key.value] ?? null)
-const state = computed(() => eventsStore.activeEvent?.modules?.find(m => m.key === key.value)?.state ?? null)
+// Besides locked modules, this screen also explains going over the plan's guest limit.
+const isGuestsLimit = computed(() => key.value === 'guests-limit')
+const view = computed(() => (isGuestsLimit.value ? null : (MODULE_VIEWS[key.value] ?? null)))
+const state = computed(() =>
+  isGuestsLimit.value ? 'locked' : (eventsStore.activeEvent?.modules?.find(m => m.key === key.value)?.state ?? null)
+)
 
 // Nothing to unlock here: send the person where they were going, or home if the module is not available.
 watchEffect(() => {
+  if (isGuestsLimit.value) return
   if (!view.value || !state.value) router.replace('/dashboard')
   else if (state.value === 'active' && view.value.to) router.replace(view.value.to)
 })
 
-const moduleName = computed(() => (view.value ? t(view.value.labelKey) : ''))
-const benefit = computed(() => (te(`unlock.modules.${key.value}`) ? t(`unlock.modules.${key.value}`) : t('unlock.generic')))
+const moduleName = computed(() => (isGuestsLimit.value ? t('app.nav.guests') : view.value ? t(view.value.labelKey) : ''))
+const lead = computed(() => (isGuestsLimit.value ? t('unlock.guestsLimit.lead') : t('unlock.lead', { module: moduleName.value })))
+const benefit = computed(() => {
+  if (isGuestsLimit.value) return t('unlock.guestsLimit.benefit')
+  return te(`unlock.modules.${key.value}`) ? t(`unlock.modules.${key.value}`) : t('unlock.generic')
+})
 const included = computed(() => tm('pricing.full.items').map(item => rt(item)))
 const notifyLink = computed(() =>
   mailtoLink({ subject: t('unlock.mailSubject'), body: t('unlock.mailBody', { module: moduleName.value }) })
@@ -38,7 +47,7 @@ const notifyLink = computed(() =>
         <Lock class="h-5 w-5" aria-hidden="true" />
       </div>
 
-      <h1 class="mt-4 font-heading text-3xl text-ink-900 text-balance">{{ t('unlock.lead', { module: moduleName }) }}</h1>
+      <h1 class="mt-4 font-heading text-3xl text-ink-900 text-balance">{{ lead }}</h1>
       <p class="mt-2 text-base text-ink-600">{{ benefit }}</p>
 
       <div class="mt-6 border-t border-line pt-5">

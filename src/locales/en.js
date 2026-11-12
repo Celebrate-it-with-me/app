@@ -553,6 +553,10 @@ export default {
     }
   },
   unlock: {
+    guestsLimit: {
+      lead: 'Your list went over the free plan limit.',
+      benefit: 'With the full event there is no cap of 30: invite your whole list and publish your invitation.'
+    },
     lead: '{module} is part of the full event.',
     generic: 'Available when you unlock your full event.',
     modules: {
@@ -569,6 +573,17 @@ export default {
     back: 'Back to home',
     mailSubject: 'I want to unlock my event',
     mailBody: 'Hi, I want to unlock my full event ({module}). Please let me know when payment is ready.'
+  },
+  limits: {
+    guests: {
+      removeCount: '{n} guests | {n} guest | {n} guests',
+      bannerTitle: 'You went over the free plan limit',
+      banner: 'You have {total} guests and the free plan allows {limit}. You can keep building your list; to publish your invitation, unlock your full event or remove {remove}.',
+      publishBlocked: 'Your list has {total} guests and the free plan allows {limit}. Unlock your full event or remove {remove} to be able to publish.',
+      addBlocked: 'Your invitation is already published and the free plan allows {limit} guests. Unlock your full event to add more.',
+      unlock: 'Unlock full event',
+      seeGuests: 'See my list'
+    }
   },
   account: {
     title: 'My account',
