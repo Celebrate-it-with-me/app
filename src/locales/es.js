@@ -60,6 +60,7 @@ export default {
     locations: 'Ubicaciones',
     guests: 'Invitados',
     saveTheDate: 'Save the date',
+    dressCode: 'Vestimenta',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -366,12 +367,14 @@ export default {
       types: {
         formal: 'Formal',
         'semi-formal': 'Semiformal',
-        casual: 'Casual',
         thematic: 'Temático',
-        'black-tie': 'Etiqueta rigurosa'
+        'black-tie': 'Etiqueta rigurosa',
+        cocktail: 'Cóctel',
+        'smart-casual': 'Casual elegante'
       },
-      reservedQuince: 'Colores reservados para la quinceañera',
-      reservedWedding: 'Colores reservados para los novios'
+      reservedQuince: 'Colores reservados para la quinceañera y su corte',
+      reservedWedding: 'Colores reservados para los novios',
+      suggested: 'Colores sugeridos'
     },
     rsvp: {
       attending: 'Asistiré',
@@ -393,6 +396,64 @@ export default {
     }
   },
   app: {
+    dressCode: {
+      title: 'Vestimenta',
+      subtitle: 'Cuéntales a tus invitados cómo vestirse y qué colores evitar.',
+      styleTitle: 'Estilo',
+      typeRequired: 'Elige un estilo de vestimenta.',
+      types: {
+        'black-tie': { name: 'Etiqueta rigurosa', hint: 'Smoking y vestido largo.' },
+        formal: { name: 'Formal', hint: 'Traje oscuro y vestido largo o midi.' },
+        'semi-formal': { name: 'Semiformal', hint: 'Traje o vestido elegante, sin tanto protocolo.' },
+        cocktail: { name: 'Cóctel', hint: 'Vestido corto o midi, traje sin corbata obligatoria.' },
+        'smart-casual': { name: 'Casual elegante', hint: 'Arreglado pero cómodo.' },
+        thematic: { name: 'Temático', hint: 'Una idea especial para la fiesta.' }
+      },
+      description: 'Indicaciones (opcional)',
+      descriptionHint: 'Por ejemplo: “Zapatos cómodos, el baile es en jardín”.',
+      colorsTitle: 'Colores',
+      reserved: 'Colores reservados',
+      reservedHintQuince: 'Los que solo usan la quinceañera y su corte. Los invitados los evitan.',
+      reservedHintWedding: 'Los que solo usan los novios y su cortejo. Los invitados los evitan.',
+      suggested: 'Colores sugeridos',
+      suggestedHint: 'Una paleta que combina con la decoración.',
+      otherColor: 'Otro color',
+      removeColor: 'Quitar {color}',
+      colorsCount: '{n} de {max} colores',
+      palette: {
+        white: 'Blanco', black: 'Negro', gold: 'Dorado', silver: 'Plateado', red: 'Rojo', wine: 'Vino',
+        pink: 'Rosa', fuchsia: 'Fucsia', lilac: 'Lila', navy: 'Azul marino', sky: 'Celeste',
+        emerald: 'Esmeralda', sage: 'Salvia', champagne: 'Champán'
+      },
+      imagesTitle: 'Inspiración',
+      imagesSubtitle: 'Hasta {max} fotos de ejemplo para tus invitados.',
+      upload: 'Subir una foto',
+      uploadHint: 'JPG, PNG o WebP, hasta 2 MB cada una.',
+      bankTitle: 'O elige del banco de fotos',
+      photo: 'Foto',
+      removePhoto: 'Quitar foto',
+      imagesFull: 'Ya tienes {max} fotos. Quita una para añadir otra.',
+      file: {
+        type: '“{name}” no es una imagen JPG, PNG o WebP.',
+        size: '“{name}” pesa más de 2 MB.'
+      },
+      save: 'Guardar vestimenta',
+      saved: 'Vestimenta guardada.',
+      saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
+      loadError: 'No pudimos cargar la vestimenta.',
+      remove: 'Quitar vestimenta',
+      removeTitle: '¿Quitar la vestimenta?',
+      removeBody: 'Tus invitados dejarán de ver esta sección en la invitación.',
+      removed: 'Vestimenta eliminada.',
+      cancel: 'Cancelar',
+      readOnly: 'Solo quien organiza el evento puede cambiar la vestimenta.',
+      previewTitle: 'Así lo verán tus invitados',
+      previewSubtitle: 'Vista rápida de la sección.',
+      previewEmpty: 'Elige un estilo para ver la vista previa.',
+      previewReservedQuince: 'Colores reservados para la quinceañera y su corte',
+      previewReservedWedding: 'Colores reservados para los novios',
+      previewSuggested: 'Colores sugeridos'
+    },
     saveTheDate: {
       title: 'Save the date',
       subtitle: 'Avisa la fecha con meses de anticipación. Más adelante, el mismo enlace se convierte en tu invitación completa.',
