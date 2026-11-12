@@ -368,6 +368,7 @@ export default {
     }
   },
   app: {
+    activeEvent: 'Active event',
     switchEvent: 'Switch event',
     allEvents: 'See all my events',
     newEvent: 'New event',

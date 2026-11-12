@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { ChevronDown, Check, Plus, CalendarDays, LayoutList } from 'lucide-vue-next'
+import { ChevronsUpDown, Check, Plus, CalendarDays, LayoutList } from 'lucide-vue-next'
 import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
@@ -15,6 +15,13 @@ import {
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { cx } from '@/ui/utils'
 import { parseEventDate } from '@/views/internal/dashboard/dashboardLogic'
+import EventStatusBadge from '@/modules/events/components/EventStatusBadge.vue'
+
+// header: a bordered control with a label (phones, and the top bar); card: the current event as a card
+// at the top of the sidebar, like a workspace switcher.
+defineProps({
+  variant: { type: String, default: 'header' }
+})
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -35,22 +42,45 @@ function select(event) {
 <template>
   <DropdownMenuRoot>
     <DropdownMenuTrigger
-      class="flex w-full max-w-full min-w-0 items-center gap-2 overflow-hidden rounded-lg px-2 py-1.5 text-left hover:bg-cream-200 focus-visible:outline-2 focus-visible:outline-rose-400 sm:w-auto"
+      v-if="variant === 'header'"
+      class="flex w-full max-w-full min-w-0 items-center gap-2.5 rounded-lg border border-line-strong bg-white px-2.5 py-1.5 text-left shadow-soft hover:bg-cream-100 focus-visible:outline-2 focus-visible:outline-rose-400 sm:w-auto sm:min-w-56"
       :aria-label="t('app.switchEvent')"
     >
       <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-rose-100 text-rose-700">
         <CalendarDays class="h-4 w-4" aria-hidden="true" />
       </span>
-      <span class="min-w-0">
+      <span class="min-w-0 flex-1">
+        <span class="block text-[0.65rem] font-semibold uppercase leading-tight tracking-wide text-ink-500">{{ t('app.activeEvent') }}</span>
         <span class="block truncate font-heading text-base leading-tight text-ink-900">
           {{ active?.eventName || t('app.noEvent') }}
         </span>
-        <span v-if="eventDate" class="block truncate text-xs text-ink-500">{{ eventDate }}</span>
       </span>
-      <ChevronDown class="h-4 w-4 shrink-0 text-ink-400" aria-hidden="true" />
+      <ChevronsUpDown class="h-4 w-4 shrink-0 text-ink-500" aria-hidden="true" />
+    </DropdownMenuTrigger>
+
+    <DropdownMenuTrigger
+      v-else
+      class="flex w-full min-w-0 items-center gap-2 rounded-xl border border-line bg-white p-3 text-left shadow-soft hover:bg-cream-100 focus-visible:outline-2 focus-visible:outline-rose-400"
+      :aria-label="t('app.switchEvent')"
+    >
+      <!-- No icon here: the sidebar is narrow, the name and its date and status need the room. -->
+      <span class="min-w-0 flex-1">
+        <span class="line-clamp-2 font-heading text-base leading-snug text-ink-900">
+          {{ active?.eventName || t('app.noEvent') }}
+        </span>
+        <span class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-500">
+          <span v-if="eventDate">{{ eventDate }}</span>
+          <EventStatusBadge v-if="active?.status" :status="active.status" size="sm" />
+        </span>
+      </span>
+      <ChevronsUpDown class="h-4 w-4 shrink-0 text-ink-500" aria-hidden="true" />
     </DropdownMenuTrigger>
     <DropdownMenuPortal>
-      <DropdownMenuContent align="start" :side-offset="6" class="z-50 w-72 rounded-lg border border-line bg-white p-1 shadow-pop">
+      <DropdownMenuContent
+        align="start"
+        :side-offset="6"
+        :class="cx('z-50 rounded-lg border border-line bg-white p-1 shadow-pop', variant === 'card' ? 'w-(--reka-dropdown-menu-trigger-width) min-w-64' : 'w-72')"
+      >
         <DropdownMenuLabel class="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-ink-500">
           {{ t('app.switchEvent') }}
         </DropdownMenuLabel>

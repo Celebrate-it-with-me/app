@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { LogOut, Lock } from 'lucide-vue-next'
 import { useAppNav } from './useAppNav'
+import EventSwitcher from './EventSwitcher.vue'
 import { useSignOut } from './useSignOut'
 import { cx } from '@/ui/utils'
 
@@ -16,7 +17,11 @@ const isActive = to => route.path === to || (to !== '/dashboard' && route.path.s
 
 <template>
   <div class="flex h-full min-h-0 flex-col">
-  <nav class="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-3 py-4" :aria-label="t('app.nav.label')">
+  <!-- The event every item below belongs to: a card, so it reads as something you can change. -->
+  <div class="px-3 pt-4">
+    <EventSwitcher variant="card" />
+  </div>
+  <nav class="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-3 pb-4 pt-5" :aria-label="t('app.nav.label')">
     <div v-for="group in byGroup" :key="group.group">
       <p
         v-if="group.group !== 'main'"
