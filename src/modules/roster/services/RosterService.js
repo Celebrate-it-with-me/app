@@ -1,0 +1,52 @@
+import { CWM_API } from '@/services/axios'
+
+const base = eventId => `/event/${eventId}`
+
+class RosterService {
+  /** `{ data, meta, counts }`: families of the page, and the people counters of the whole event. */
+  async list(eventId, { status, search, page = 1, perPage = 15 } = {}) {
+    const params = { page, perPage }
+    if (status && status !== 'all') params.status = status
+    if (search) params.search = search
+    return (await CWM_API.get(`${base(eventId)}/roster`, { params })).data
+  }
+
+  async update(eventId, id, person) {
+    return (await CWM_API.put(`${base(eventId)}/roster/${id}`, person)).data.data
+  }
+
+  async addCompanion(eventId, guestId, person) {
+    return (await CWM_API.post(`${base(eventId)}/roster/${guestId}/companions`, person)).data.data
+  }
+
+  async remove(eventId, id) {
+    return (await CWM_API.delete(`${base(eventId)}/roster/${id}`)).data.data
+  }
+
+  /** A new main guest, with named companions. */
+  async create(eventId, { guest, companions }) {
+    return (
+      await CWM_API.post(`${base(eventId)}/guests`, {
+        guest,
+        namedCompanions: companions,
+        unnamedCompanions: 0
+      })
+    ).data.data
+  }
+
+  /** The organizer answers for the family (a phone call, a message). */
+  async confirm(eventId, guestId, { status, companions }) {
+    return (
+      await CWM_API.put(`${base(eventId)}/organizer/rsvp/${guestId}/confirm`, {
+        guest: { rsvp_status: status },
+        companions: companions.map(c => ({ id: c.id, rsvp_status: c.status }))
+      })
+    ).data
+  }
+
+  async revert(eventId, guestId) {
+    await CWM_API.post(`${base(eventId)}/rsvp/guests/${guestId}/revert-confirmation`)
+  }
+}
+
+export default new RosterService()

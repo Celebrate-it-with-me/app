@@ -55,7 +55,7 @@ export function rsvpShares({ attending, pending, declined }) {
 export function pickNextStep({ guestCount, status, pendingGuests, rsvpEnabled, budgetEnabled, budgetItems }) {
   if (!guestCount) return { id: 'addGuests', to: '/dashboard/guests' }
   if (status === 'draft') return { id: 'publish', to: 'edit' }
-  if (rsvpEnabled && pendingGuests > 0) return { id: 'pendingGuests', to: '/dashboard/rsvp', count: pendingGuests }
+  if (rsvpEnabled && pendingGuests > 0) return { id: 'pendingGuests', to: { path: '/dashboard/guests', query: { status: 'pending' } }, count: pendingGuests }
   if (budgetEnabled && budgetItems === 0) return { id: 'budget', to: '/dashboard/budget' }
   return { id: 'allSet' }
 }

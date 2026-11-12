@@ -23,7 +23,8 @@ describe('buildNavSections', () => {
   it('groups by section in menu order, and by the order the API gave inside each one', () => {
     const sections = buildNavSections([mod('budget', 'organization', 40), mod('timeline', 'organization', 10), mod('rsvp', 'guests', 20), mod('guests', 'guests', 10)])
     expect(sections.map(s => s.section)).toEqual(['main', 'guests', 'organization'])
-    expect(sections[1].items.map(i => i.key)).toEqual(['guests', 'rsvp'])
+    // Confirmations are a tab of the guest list: the `rsvp` module is not drawn.
+    expect(sections[1].items.map(i => i.key)).toEqual(['guests'])
     expect(sections[2].items.map(i => i.key)).toEqual(['timeline', 'budget'])
   })
 
@@ -56,7 +57,7 @@ describe('buildNavSections', () => {
 
   it('marks as primary (phone bottom bar) only usable modules', () => {
     const primary = buildNavSections([...modules, mod('guests', 'guests', 10)]).flatMap(s => s.items).filter(i => i.primary).map(i => i.key)
-    expect(primary).toEqual(expect.arrayContaining(['home', 'guests', 'rsvp', 'budget']))
+    expect(primary).toEqual(expect.arrayContaining(['home', 'guests', 'budget']))
     expect(primary).not.toContain('menus')
   })
 })

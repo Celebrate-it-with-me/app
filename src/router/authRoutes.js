@@ -13,9 +13,8 @@ import dressCodeRoutes from '@/modules/dress-code/routes/dressCode.route'
 import saveTheDateRoutes from '@/modules/save-the-date/routes/saveTheDate.route'
 import timelineRoutes from '@/modules/timeline/routes/timeline.route'
 import errorsRoutes from '@/modules/errors/routes/errors.route'
-import rsvpRoutes from '@/modules/rsvp/routes/rsvp.route'
+import rosterRoutes from '@/modules/roster/routes/roster.route'
 import menusRoutes from '@/modules/menus/routes/menus.routes'
-import guestsRoutes from '@/modules/guests/routes/guests.routes'
 import eventsRoutes from '@/modules/events/routes/events.routes'
 import UnlockView from '@/views/internal/unlock/UnlockView.vue'
 import seatingRoutes from '@/modules/seating/routes/seating.route'
@@ -92,9 +91,8 @@ const authRoutes = [
     meta: { titleKey: 'titles.unlock', requiresAuth: true }
   },
   ...errorsRoutes,
-  ...rsvpRoutes,
+  ...rosterRoutes,
   ...menusRoutes,
-  ...guestsRoutes,
   ...eventsRoutes,
   ...seatingRoutes,
   {
