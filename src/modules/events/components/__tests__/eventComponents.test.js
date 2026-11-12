@@ -84,14 +84,13 @@ describe('EventAddressField', () => {
     expect(wrapper.text()).toContain('/i/los-xv/CÓDIGO')
   })
 
-  it('says it is a web link and not the address of the venue', () => {
+  it('is called a link, never an address, so it is not mistaken for the venue', () => {
     const wrapper = mount(EventAddressField, { props: { modelValue: 'los-xv' }, ...setup() })
     expect(wrapper.text()).toContain('Enlace de tu invitación')
-    expect(wrapper.text()).toContain('no la dirección del lugar de la fiesta')
+    expect(wrapper.text()).not.toMatch(/dirección de tu invitación/i)
     setLocale('en')
     const english = mount(EventAddressField, { props: { modelValue: 'los-xv' }, ...setup() })
     expect(english.text()).toContain('Your invitation link')
-    expect(english.text()).toContain('not the address of the venue')
   })
 
   it('is locked and says why once the event has been published', () => {

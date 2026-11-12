@@ -484,7 +484,6 @@ export default {
     },
     address: {
       label: 'Enlace de tu invitación',
-      meaning: 'Es el enlace web que compartirás con tus invitados, no la dirección del lugar de la fiesta.',
       hintOpen: 'Puedes cambiarlo mientras tu evento sea un borrador. Al publicarlo, queda fijo.',
       hintLocked: 'Ya no se puede cambiar: tu invitación se publicó y los enlaces pueden estar enviados.',
       linkPreview: 'Así se verá el enlace que recibirá cada invitado',

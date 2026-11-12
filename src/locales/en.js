@@ -484,7 +484,6 @@ export default {
     },
     address: {
       label: 'Your invitation link',
-      meaning: 'This is the web link you will share with your guests, not the address of the venue.',
       hintOpen: 'You can change it while your event is a draft. Once you publish it, it is fixed.',
       hintLocked: 'It can no longer be changed: your invitation was published and the links may already be sent.',
       linkPreview: 'This is how the link each guest receives will look',

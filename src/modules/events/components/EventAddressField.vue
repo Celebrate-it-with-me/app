@@ -20,8 +20,6 @@ const exampleLink = computed(() => `${origin}/i/${props.modelValue || '…'}/${t
 
 <template>
   <UiField :label="t('events.address.label')" :error="error" id="event_address">
-    <!-- Said before the field, so nobody reads it as the address of the venue. -->
-    <p class="mb-2 text-sm text-ink-600">{{ t('events.address.meaning') }}</p>
     <div class="relative">
       <UiInput
         :model-value="modelValue"
