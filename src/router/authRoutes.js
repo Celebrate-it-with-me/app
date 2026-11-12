@@ -17,6 +17,7 @@ import rsvpRoutes from '@/modules/rsvp/routes/rsvp.route'
 import menusRoutes from '@/modules/menus/routes/menus.routes'
 import guestsRoutes from '@/modules/guests/routes/guests.routes'
 import eventsRoutes from '@/modules/events/routes/events.routes'
+import UnlockView from '@/views/internal/unlock/UnlockView.vue'
 import seatingRoutes from '@/modules/seating/routes/seating.route'
 
 const authRoutes = [
@@ -84,6 +85,12 @@ const authRoutes = [
   ...dressCodeRoutes,
   ...saveTheDateRoutes,
   ...timelineRoutes,
+  {
+    path: '/dashboard/unlock/:module',
+    name: 'unlock',
+    component: UnlockView,
+    meta: { titleKey: 'titles.unlock', requiresAuth: true }
+  },
   ...errorsRoutes,
   ...rsvpRoutes,
   ...menusRoutes,

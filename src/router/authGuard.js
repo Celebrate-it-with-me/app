@@ -1,6 +1,8 @@
 import { useUserStore } from '@/stores/useUserStore'
 import i18n from '@/locales/i18n'
 import { useHydrationStore } from '@/stores/useHydrationStore'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
+import { moduleRedirect } from './moduleGuard'
 
 /**
  * Global navigation guard (vue-router 4.1+/5 style: return instead of next()).
@@ -39,5 +41,12 @@ export async function authGuard(to) {
       await userStore.logOut()
       return { name: 'sign-in', query: { redirect: to.fullPath } }
     }
+  }
+
+  // 5. A module the event's plan does not include, or the admin switched off, does not open
+  const moduleKey = to.meta?.moduleKey
+  if (moduleKey) {
+    const redirect = moduleRedirect(useEventsStore().activeEvent, moduleKey)
+    if (redirect) return redirect
   }
 }

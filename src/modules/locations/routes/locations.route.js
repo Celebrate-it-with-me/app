@@ -4,6 +4,7 @@ export default [
     name: 'locations',
     component: () => import('@/modules/locations/views/CEventLocationsView.vue'),
     meta: {
+      moduleKey: 'locations',
       title: 'Event Locations',
       requiresAuth: true,
       requiredPermission: ['view_event_locations'],
@@ -16,6 +17,7 @@ export default [
     name: 'create-location',
     component: () => import('@/modules/locations/views/CEventLocationsCreateView.vue'),
     meta: {
+      moduleKey: 'locations',
       title: 'Create Location',
       requiresAuth: true,
       requiredPermission: ['create_event_locations'],
@@ -28,6 +30,7 @@ export default [
     name: 'edit-location',
     component: () => import('@/modules/locations/views/CEventLocationsCreateView.vue'),
     meta: {
+      moduleKey: 'locations',
       title: 'Edit Location',
       requiresAuth: true,
       requiredPermission: ['edit_event_locations'],

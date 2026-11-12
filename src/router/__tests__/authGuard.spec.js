@@ -3,9 +3,11 @@ import { createRouter, createMemoryHistory } from 'vue-router'
 
 const userStore = { isAuthenticated: false, logOut: vi.fn() }
 const hydrationStore = { isHydrated: false, reset: vi.fn(), hydrateAll: vi.fn() }
+const eventsStore = { activeEvent: null }
 
 vi.mock('@/stores/useUserStore', () => ({ useUserStore: () => userStore }))
 vi.mock('@/stores/useHydrationStore', () => ({ useHydrationStore: () => hydrationStore }))
+vi.mock('@/modules/events/stores/useEventsStore', () => ({ useEventsStore: () => eventsStore }))
 
 const { authGuard } = await import('../authGuard')
 
@@ -18,6 +20,7 @@ describe('authGuard', () => {
     hydrationStore.isHydrated = false
     hydrationStore.reset.mockReset()
     hydrationStore.hydrateAll.mockReset().mockResolvedValue()
+    eventsStore.activeEvent = null
     document.title = ''
   })
 
@@ -106,5 +109,30 @@ describe('authGuard inside a real vue-router 5 router', () => {
     await router.push('/logout')
 
     expect(router.currentRoute.value.name).toBe('sign-in')
+  })
+})
+
+describe('authGuard with modules', () => {
+  beforeEach(() => {
+    userStore.isAuthenticated = true
+    hydrationStore.isHydrated = true
+    eventsStore.activeEvent = { modules: [{ key: 'rsvp', state: 'active' }, { key: 'menus', state: 'locked' }] }
+  })
+
+  it('opens a module the event\'s plan includes', async () => {
+    expect(await authGuard(route({ requiresAuth: true, moduleKey: 'rsvp' }, '/dashboard/rsvp'))).toBeUndefined()
+  })
+
+  it('sends a locked module to the unlock screen, even when its address is typed', async () => {
+    expect(await authGuard(route({ requiresAuth: true, moduleKey: 'menus' }, '/dashboard/menus'))).toBe('/dashboard/unlock/menus')
+  })
+
+  it('sends a module the admin switched off back home', async () => {
+    expect(await authGuard(route({ requiresAuth: true, moduleKey: 'timeline' }, '/dashboard/timeline'))).toBe('/dashboard')
+  })
+
+  it('does not look at modules on routes that are not modules', async () => {
+    eventsStore.activeEvent = { modules: [] }
+    expect(await authGuard(route({ requiresAuth: true }, '/dashboard/events'))).toBeUndefined()
   })
 })

@@ -126,13 +126,10 @@ export const useMenusStore = defineStore('menusStore', {
     needMenu() {
       const eventStore = useEventsStore()
 
-      const menuFeature = eventStore.activeEvent?.eventFeatures.find(
-        feature => feature.name === 'menu'
-      )
+      // The menu module counts when the event's plan includes it (`event.modules`, from the API catalog).
+      const isMenuActive = eventStore.activeEvent?.modules?.some(m => m.key === 'menus' && m.state === 'active') ?? false
 
-      const isMenuFeatureActive = menuFeature?.isActive ?? false
-
-      return isMenuFeatureActive && !this.hasMenu
+      return isMenuActive && !this.hasMenu
     },
 
     mainMenu() {

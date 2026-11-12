@@ -4,6 +4,7 @@ export default [
     name: 'save-the-date',
     component: () => import('@/modules/save-the-date/views/CSaveTheDateView.vue'),
     meta: {
+      moduleKey: 'save_the_date',
       title: 'Save The Date',
       requiresAuth: true,
       requiredPermission: ['view_save_the_date'],

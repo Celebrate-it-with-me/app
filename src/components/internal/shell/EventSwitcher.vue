@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { ChevronDown, Check, Plus, CalendarDays } from 'lucide-vue-next'
+import { ChevronDown, Check, Plus, CalendarDays, LayoutList } from 'lucide-vue-next'
 import {
   DropdownMenuRoot,
   DropdownMenuTrigger,
@@ -69,6 +69,12 @@ function select(event) {
           <Check v-if="active?.id === event.id" class="h-4 w-4 shrink-0" aria-hidden="true" />
         </DropdownMenuItem>
         <DropdownMenuSeparator class="my-1 h-px bg-line" />
+        <DropdownMenuItem
+          class="flex cursor-pointer items-center gap-2.5 rounded-md px-3 py-2.5 text-base text-ink-900 outline-none data-[highlighted]:bg-cream-200"
+          @select="router.push('/dashboard/events')"
+        >
+          <LayoutList class="h-4 w-4 text-ink-500" aria-hidden="true" /> {{ t('app.allEvents') }}
+        </DropdownMenuItem>
         <DropdownMenuItem
           class="flex cursor-pointer items-center gap-2.5 rounded-md px-3 py-2.5 text-base text-ink-900 outline-none data-[highlighted]:bg-cream-200"
           @select="router.push('/dashboard/events/create')"

@@ -23,9 +23,10 @@ const timelineStore = useTimelineStore()
 const activityStore = useActivityStore()
 
 const event = computed(() => eventsStore.activeEvent)
-const featureOn = name => !!event.value?.eventFeatures?.some(f => f.name === name && f.isActive)
-const rsvpEnabled = computed(() => featureOn('rsvp'))
-const budgetEnabled = computed(() => featureOn('budget'))
+// A module counts when the event's plan includes it (the API sends `event.modules` from the catalog).
+const moduleActive = key => !!event.value?.modules?.some(m => m.key === key && m.state === 'active')
+const rsvpEnabled = computed(() => moduleActive('rsvp'))
+const budgetEnabled = computed(() => moduleActive('budget'))
 
 const rsvp = computed(() => summarizeRsvp(rsvpStore.stats))
 const guestCount = computed(() => event.value?.guestsCount ?? rsvp.value.people)
