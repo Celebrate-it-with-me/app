@@ -234,6 +234,10 @@ async function confirmDelete() {
         <template #actions><EventStatusBadge :status="event.status" /></template>
         <p class="text-base text-ink-600">{{ t(`events.publication.${event.status}Text`) }}</p>
         <p v-if="dirty" class="mt-2 text-sm text-ink-500">{{ t('events.publication.saveFirst') }}</p>
+        <p v-if="event.status === 'published' && event.invitationStage === 'save_the_date'" class="mt-2 text-sm text-ink-500">
+          {{ t('events.publication.stageSaveTheDate') }}
+          <router-link to="/dashboard/save-the-date" class="font-medium text-rose-700 underline-offset-4 hover:underline">{{ t('events.publication.stageSaveTheDateLink') }}</router-link>
+        </p>
         <GuestLimitNotice v-if="overflow && event.status === 'draft'" class="mt-4" :info="overflow" variant="publish" with-list-link />
         <div class="mt-4 flex flex-col gap-2 sm:flex-row">
           <UiButton

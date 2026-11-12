@@ -59,6 +59,7 @@ export default {
     timeline: 'Program of the day',
     locations: 'Locations',
     guests: 'Guests',
+    saveTheDate: 'Save the date',
     eventEdit: 'Event details'
   },
   hero: {
@@ -340,6 +341,13 @@ export default {
     confirmCta: 'RSVP',
     directions: 'Get directions',
     madeWith: 'Made with Quinvite',
+    saveTheDate: {
+      units: { days: 'days', hours: 'hours', minutes: 'minutes', seconds: 'seconds' },
+      passed: 'The day is here!',
+      addToCalendar: 'Add to calendar',
+      google: 'Google Calendar',
+      ics: 'Apple, Outlook and others (.ics)'
+    },
     itinerary: {
       types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
     },
@@ -385,6 +393,45 @@ export default {
     }
   },
   app: {
+    saveTheDate: {
+      title: 'Save the date',
+      subtitle: 'Announce the date months ahead. Later, the same link becomes your full invitation.',
+      stateTitle: 'Status',
+      state: {
+        draft: { badge: 'Not published', text: 'Your guests cannot see it yet. Once published, each one opens their own link and sees the date, the countdown and your message.' },
+        live: { badge: 'Live', text: 'Your guests can see the Save the date. When the rest is ready, switch to the full invitation: no new links to send.' },
+        invitation: { badge: 'Full invitation', text: 'Your full invitation is already published. The Save the date is no longer shown on the link.' },
+        archived: { badge: 'Archived', text: 'This event is archived. Restore it to publish anything.' }
+      },
+      actions: { publishSaveTheDate: 'Publish Save the date', upgrade: 'Switch to the full invitation', unpublish: 'Stop publishing' },
+      confirm: {
+        publishSaveTheDate: { title: 'Publish the Save the date?', text: 'Your guests will see only the date, the countdown and your message. They cannot RSVP yet.' },
+        upgrade: { title: 'Switch to the full invitation?', text: 'The same link will now show the program, locations, dress code and RSVP. You cannot go back to the Save the date.' },
+        unpublish: { title: 'Stop publishing?', text: 'The links stop working until you publish again.' }
+      },
+      done: { publishSaveTheDate: 'Save the date published.', upgrade: 'Your full invitation is live.', unpublish: 'You stopped publishing.' },
+      saveFirst: 'Save your changes before publishing.',
+      sameLink: 'Each guest uses their own link; find and send them from Guests.',
+      limitBlocked: 'Your list is over your plan’s limit, so it cannot be published yet.',
+      actionError: 'We could not complete the action. Try again.',
+      settingsTitle: 'What it shows',
+      message: 'Message',
+      messageHint: 'Optional. One or two sentences: “Save the date, we want to celebrate with you”.',
+      countdown: 'Countdown',
+      countdownHint: 'The days, hours and minutes left until your event.',
+      calendar: 'Add to calendar',
+      calendarHint: 'A button to save the date in Google Calendar or the phone’s calendar.',
+      save: 'Save changes',
+      saved: 'Changes saved.',
+      saveError: 'We could not save your changes. Try again.',
+      loadError: 'We could not load your Save the date.',
+      cancel: 'Cancel',
+      previewTitle: 'What your guests will see',
+      previewSubtitle: 'Quick look.',
+      previewKicker: 'Save the date',
+      previewCalendar: 'Add to calendar',
+      units: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec' }
+    },
     roster: {
       progress: {
         label: 'Your guests’ answers',
@@ -664,6 +711,8 @@ export default {
       draftText: 'Your invitation is not visible yet. Once you publish it, your guests can open it with their link.',
       publishedText: 'Your invitation is visible to anyone who has their link.',
       archivedText: 'This event is archived: its invitation is not shown.',
+      stageSaveTheDate: 'The Save the date is showing now, not the full invitation.',
+      stageSaveTheDateLink: 'Go to Save the date',
       saveFirst: 'Save your changes before changing the status.',
       publish: 'Publish invitation',
       unpublish: 'Back to draft',

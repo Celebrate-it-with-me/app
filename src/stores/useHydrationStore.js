@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import HydrationService from '@/services/HydrationService'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
-import { useSaveTheDateStore } from '@/stores/useSaveTheDateStore'
 import { useUserStore } from '@/stores/useUserStore'
 import { useEventCommentsStore } from '@/modules/comments/stores/useEventCommentsStore'
 import { useAuthStore } from '@/stores/useAuthStore'
@@ -34,7 +33,6 @@ export const useHydrationStore = defineStore('hydration', {
 
           useEventCommentsStore().setEventComments(data.comments)
 
-          useSaveTheDateStore().setSaveTheDate(data.saveTheDate)
 
           useEventsStore().setEventTypes(data.eventTypes)
           useEventsStore().setEventPlans(data.eventPlans)

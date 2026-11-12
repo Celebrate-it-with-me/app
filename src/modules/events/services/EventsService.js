@@ -15,8 +15,8 @@ class EventsService {
   }
 
   /** `publish` | `unpublish` | `archive` | `restore` */
-  async runAction(eventId, action) {
-    return CWM_API.post(`event/${eventId}/${action}`)
+  async runAction(eventId, action, body = {}) {
+    return CWM_API.post(`event/${eventId}/${action}`, body)
   }
 
   async getMyEvents() {

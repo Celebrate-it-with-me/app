@@ -200,8 +200,8 @@ export const useEventsStore = defineStore('eventsStore', {
     },
 
     /** `publish` | `unpublish` | `archive` | `restore`. Throws on errors. */
-    async runEventAction(eventId, action) {
-      const response = await EventsService.runAction(eventId, action)
+    async runEventAction(eventId, action, body = {}) {
+      const response = await EventsService.runAction(eventId, action, body)
       const event = response.data?.data
       this.upsertEvent(event)
       return event

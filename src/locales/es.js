@@ -59,6 +59,7 @@ export default {
     timeline: 'Programa del día',
     locations: 'Ubicaciones',
     guests: 'Invitados',
+    saveTheDate: 'Save the date',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -340,6 +341,13 @@ export default {
     confirmCta: 'Confirmar asistencia',
     directions: 'Cómo llegar',
     madeWith: 'Hecho con Quinvite',
+    saveTheDate: {
+      units: { days: 'días', hours: 'horas', minutes: 'minutos', seconds: 'segundos' },
+      passed: '¡Llegó el día!',
+      addToCalendar: 'Agregar al calendario',
+      google: 'Google Calendar',
+      ics: 'Apple, Outlook y otros (.ics)'
+    },
     itinerary: {
       types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' }
     },
@@ -385,6 +393,45 @@ export default {
     }
   },
   app: {
+    saveTheDate: {
+      title: 'Save the date',
+      subtitle: 'Avisa la fecha con meses de anticipación. Más adelante, el mismo enlace se convierte en tu invitación completa.',
+      stateTitle: 'Estado',
+      state: {
+        draft: { badge: 'Sin publicar', text: 'Tus invitados aún no lo ven. Cuando lo publiques, cada uno abrirá su enlace y verá la fecha, la cuenta regresiva y tu mensaje.' },
+        live: { badge: 'En línea', text: 'Tus invitados ya ven el Save the date. Cuando tengas listo el resto, pasa a la invitación completa: no hace falta enviar enlaces nuevos.' },
+        invitation: { badge: 'Invitación completa', text: 'Tu invitación completa ya está publicada. El Save the date dejó de mostrarse en el enlace.' },
+        archived: { badge: 'Archivado', text: 'Este evento está archivado. Restáuralo para publicar algo.' }
+      },
+      actions: { publishSaveTheDate: 'Publicar Save the date', upgrade: 'Pasar a la invitación completa', unpublish: 'Dejar de publicar' },
+      confirm: {
+        publishSaveTheDate: { title: '¿Publicar el Save the date?', text: 'Tus invitados verán solo la fecha, la cuenta regresiva y tu mensaje. Aún no podrán confirmar asistencia.' },
+        upgrade: { title: '¿Pasar a la invitación completa?', text: 'El mismo enlace mostrará ahora el programa, las ubicaciones, la vestimenta y la confirmación de asistencia. No se puede volver al Save the date.' },
+        unpublish: { title: '¿Dejar de publicar?', text: 'Los enlaces dejarán de funcionar hasta que vuelvas a publicar.' }
+      },
+      done: { publishSaveTheDate: 'Save the date publicado.', upgrade: 'Tu invitación completa está en línea.', unpublish: 'Dejaste de publicar.' },
+      saveFirst: 'Guarda tus cambios antes de publicar.',
+      sameLink: 'Cada invitado usa su propio enlace; los encuentras y los envías desde Invitados.',
+      limitBlocked: 'Tu lista supera el límite de tu plan, así que no se puede publicar todavía.',
+      actionError: 'No pudimos completar la acción. Inténtalo de nuevo.',
+      settingsTitle: 'Qué muestra',
+      message: 'Mensaje',
+      messageHint: 'Opcional. Una o dos frases: “Guarda la fecha, queremos celebrarlo contigo”.',
+      countdown: 'Cuenta regresiva',
+      countdownHint: 'Los días, horas y minutos que faltan para tu evento.',
+      calendar: 'Agregar al calendario',
+      calendarHint: 'Un botón para guardar la fecha en Google Calendar o en el calendario del teléfono.',
+      save: 'Guardar cambios',
+      saved: 'Cambios guardados.',
+      saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
+      loadError: 'No pudimos cargar tu Save the date.',
+      cancel: 'Cancelar',
+      previewTitle: 'Así lo verán tus invitados',
+      previewSubtitle: 'Vista rápida.',
+      previewKicker: 'Guarda la fecha',
+      previewCalendar: 'Agregar al calendario',
+      units: { days: 'días', hours: 'horas', minutes: 'min', seconds: 'seg' }
+    },
     roster: {
       progress: {
         label: 'Respuestas de tus invitados',
@@ -664,6 +711,8 @@ export default {
       draftText: 'Tu invitación todavía no es visible. Cuando la publiques, tus invitados podrán abrirla con su enlace.',
       publishedText: 'Tu invitación está visible para quienes tengan su enlace.',
       archivedText: 'Este evento está archivado: su invitación no se muestra.',
+      stageSaveTheDate: 'Ahora se muestra el Save the date, no la invitación completa.',
+      stageSaveTheDateLink: 'Ir al Save the date',
       saveFirst: 'Guarda tus cambios antes de cambiar el estado.',
       publish: 'Publicar invitación',
       unpublish: 'Volver a borrador',
