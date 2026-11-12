@@ -80,8 +80,18 @@ describe('EventAddressField', () => {
   it('is editable while the event is a draft, and explains that it gets fixed on publishing', () => {
     const wrapper = mount(EventAddressField, { props: { modelValue: 'los-xv' }, ...setup() })
     expect(wrapper.get('input').attributes('disabled')).toBeUndefined()
-    expect(wrapper.text()).toContain('Puedes cambiarla mientras tu evento sea un borrador')
-    expect(wrapper.text()).toContain('/i/los-xv/')
+    expect(wrapper.text()).toContain('Puedes cambiarlo mientras tu evento sea un borrador')
+    expect(wrapper.text()).toContain('/i/los-xv/CÓDIGO')
+  })
+
+  it('says it is a web link and not the address of the venue', () => {
+    const wrapper = mount(EventAddressField, { props: { modelValue: 'los-xv' }, ...setup() })
+    expect(wrapper.text()).toContain('Enlace de tu invitación')
+    expect(wrapper.text()).toContain('no la dirección del lugar de la fiesta')
+    setLocale('en')
+    const english = mount(EventAddressField, { props: { modelValue: 'los-xv' }, ...setup() })
+    expect(english.text()).toContain('Your invitation link')
+    expect(english.text()).toContain('not the address of the venue')
   })
 
   it('is locked and says why once the event has been published', () => {

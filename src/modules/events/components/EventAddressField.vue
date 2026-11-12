@@ -15,15 +15,18 @@ const emit = defineEmits(['update:modelValue'])
 
 const { t } = useI18n()
 const origin = typeof window !== 'undefined' ? window.location.origin : ''
-const linkStart = computed(() => `${origin}/i/${props.modelValue || '…'}/`)
+const exampleLink = computed(() => `${origin}/i/${props.modelValue || '…'}/${t('events.address.codePlaceholder')}`)
 </script>
 
 <template>
   <UiField :label="t('events.address.label')" :error="error" id="event_address">
+    <!-- Said before the field, so nobody reads it as the address of the venue. -->
+    <p class="mb-2 text-sm text-ink-600">{{ t('events.address.meaning') }}</p>
     <div class="relative">
       <UiInput
         :model-value="modelValue"
         :disabled="locked || disabled"
+        placeholder="los-xv-de-valentina"
         autocomplete="off"
         autocapitalize="none"
         spellcheck="false"
@@ -36,7 +39,7 @@ const linkStart = computed(() => `${origin}/i/${props.modelValue || '…'}/`)
       {{ locked ? t('events.address.hintLocked') : t('events.address.hintOpen') }}
     </p>
     <p class="mt-1 text-xs text-ink-500">
-      {{ t('events.address.linkPreview') }}: <span class="break-all font-medium text-ink-700">{{ linkStart }}</span>
+      {{ t('events.address.linkPreview') }}: <span class="break-all font-medium text-ink-700">{{ exampleLink }}</span>
     </p>
   </UiField>
 </template>

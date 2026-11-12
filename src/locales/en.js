@@ -483,12 +483,14 @@ export default {
       dateRequired: 'Choose the date and time.'
     },
     address: {
-      label: 'Your invitation address',
+      label: 'Your invitation link',
+      meaning: 'This is the web link you will share with your guests, not the address of the venue.',
       hintOpen: 'You can change it while your event is a draft. Once you publish it, it is fixed.',
       hintLocked: 'It can no longer be changed: your invitation was published and the links may already be sent.',
-      linkPreview: 'This is how each guest’s link will start',
+      linkPreview: 'This is how the link each guest receives will look',
+      codePlaceholder: 'CODE',
       invalid: 'Use only lowercase letters, numbers and hyphens.',
-      taken: 'That address is already in use. Try another one.'
+      taken: 'That link is already in use. Try another one.'
     },
     edit: {
       title: 'Event details',
@@ -521,9 +523,9 @@ export default {
       confirm: {
         cancel: 'Cancel',
         publishTitle: 'Publish your invitation',
-        publishText: 'Your guests will be able to see it and reply. The address of the link will be fixed.',
+        publishText: 'Your guests will be able to see it and reply. The invitation link will be fixed.',
         unpublishTitle: 'Back to draft',
-        unpublishText: 'Your invitation will stop being shown. The address stays fixed, because the links may already be sent.',
+        unpublishText: 'Your invitation will stop being shown. The link stays fixed, because it may already have been sent.',
         archiveTitle: 'Archive event',
         archiveText: 'It leaves your active list and its invitation stops being shown. You can restore it any time.'
       },

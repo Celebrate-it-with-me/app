@@ -62,7 +62,7 @@ const determinatePostLoginRoute = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-cream-100 text-ink-900">
+  <div class="flex min-h-screen flex-col bg-cream-100 text-ink-900">
     <header class="sticky top-0 z-40 border-b border-line/70 bg-cream-100/90 backdrop-blur">
       <div class="flex h-14 items-center gap-3 px-3 sm:px-4 lg:h-16 lg:px-6">
         <router-link to="/dashboard" class="shrink-0 text-ink-900" aria-label="Quinvite">
@@ -76,23 +76,23 @@ const determinatePostLoginRoute = async () => {
       </div>
     </header>
 
-    <div class="lg:flex">
+    <div class="flex-1 lg:flex">
       <aside
-        class="sticky top-16 hidden h-[calc(100vh-4rem)] w-60 shrink-0 border-r border-line/70 bg-cream-50 lg:block"
+        class="sticky top-16 hidden h-[calc(100vh-4rem-1px)] w-60 shrink-0 border-r border-line/70 bg-cream-50 lg:block"
       >
         <AppSidebar />
       </aside>
 
-      <div class="min-w-0 flex-1 overflow-x-clip">
+      <div class="flex min-w-0 flex-1 flex-col overflow-x-clip">
         <CPageLoaderV2 v-if="loading" />
-        <main v-else class="mx-auto w-full max-w-6xl overflow-x-clip px-4 pb-24 pt-5 sm:px-6 lg:pb-10 lg:pt-8">
+        <main v-else class="mx-auto w-full max-w-6xl flex-1 overflow-x-clip px-4 pb-24 pt-5 sm:px-6 lg:pb-10 lg:pt-8">
           <UiEmptyState v-if="!shouldShowRouteView" :title="t('app.noEventTitle')" :description="t('app.noEventText')">
             <template #icon><CalendarPlus class="h-6 w-6" /></template>
             <UiButton to="/dashboard/events">{{ t('app.chooseEvent') }}</UiButton>
           </UiEmptyState>
           <router-view v-else />
         </main>
-        <footer class="hidden px-6 pb-6 text-xs text-ink-500 lg:block">
+        <footer class="mt-auto hidden px-6 pb-6 pt-4 text-xs text-ink-500 lg:block">
           © {{ new Date().getFullYear() }} {{ t('common.company') }} · {{ t('common.brand') }}
         </footer>
       </div>

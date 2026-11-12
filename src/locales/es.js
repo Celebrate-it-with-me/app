@@ -483,12 +483,14 @@ export default {
       dateRequired: 'Elige la fecha y la hora.'
     },
     address: {
-      label: 'Dirección de tu invitación',
-      hintOpen: 'Puedes cambiarla mientras tu evento sea un borrador. Al publicarlo, queda fija.',
+      label: 'Enlace de tu invitación',
+      meaning: 'Es el enlace web que compartirás con tus invitados, no la dirección del lugar de la fiesta.',
+      hintOpen: 'Puedes cambiarlo mientras tu evento sea un borrador. Al publicarlo, queda fijo.',
       hintLocked: 'Ya no se puede cambiar: tu invitación se publicó y los enlaces pueden estar enviados.',
-      linkPreview: 'Así empezará el enlace de cada invitado',
+      linkPreview: 'Así se verá el enlace que recibirá cada invitado',
+      codePlaceholder: 'CÓDIGO',
       invalid: 'Usa solo letras minúsculas, números y guiones.',
-      taken: 'Esa dirección ya está en uso. Prueba con otra.'
+      taken: 'Ese enlace ya está en uso. Prueba con otro.'
     },
     edit: {
       title: 'Detalles del evento',
@@ -521,9 +523,9 @@ export default {
       confirm: {
         cancel: 'Cancelar',
         publishTitle: 'Publicar tu invitación',
-        publishText: 'Tus invitados podrán verla y confirmar. La dirección del enlace quedará fija.',
+        publishText: 'Tus invitados podrán verla y confirmar. El enlace de la invitación quedará fijo.',
         unpublishTitle: 'Volver a borrador',
-        unpublishText: 'Tu invitación dejará de mostrarse. La dirección seguirá fija, porque los enlaces pueden estar enviados.',
+        unpublishText: 'Tu invitación dejará de mostrarse. El enlace seguirá fijo, porque ya pueden haberse enviado.',
         archiveTitle: 'Archivar evento',
         archiveText: 'Sale de tu lista activa y su invitación deja de mostrarse. Puedes restaurarlo cuando quieras.'
       },
