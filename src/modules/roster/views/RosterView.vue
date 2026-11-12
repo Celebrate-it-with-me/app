@@ -73,6 +73,8 @@ watch(() => event.value?.id, load)
 onMounted(load)
 
 const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), count: counts.value[tab.count] })))
+const answered = computed(() => counts.value.attending + counts.value.notAttending)
+const percent = computed(() => (counts.value.all ? Math.round((answered.value / counts.value.all) * 100) : 0))
 const counter = computed(() => (counts.value.limit ? t('app.roster.counterLimit', { n: counts.value.all, limit: counts.value.limit }) : t('app.roster.counter', { n: counts.value.all }, counts.value.all)))
 
 /** After a change the event's own count (the limit banner reads it) is refreshed too. */
@@ -167,6 +169,17 @@ async function copyLink(family) {
   <div class="mx-auto max-w-3xl">
     <UiPageHeader :title="t('app.roster.title')" :subtitle="counter" />
     <GuestLimitBanner class="mt-4" />
+
+    <section v-if="counts.all" class="mt-5 rounded-2xl border border-line bg-white p-4" :aria-label="t('app.roster.progress.label')">
+      <div class="flex items-baseline justify-between gap-3">
+        <p class="font-heading text-lg text-ink-900">{{ t('app.roster.progress.answered', { n: answered, total: counts.all }) }}</p>
+        <p class="text-sm font-medium text-ink-700">{{ percent }}%</p>
+      </div>
+      <div class="mt-3 h-2 overflow-hidden rounded-full bg-cream-100" role="progressbar" :aria-valuenow="percent" aria-valuemin="0" aria-valuemax="100" :aria-label="t('app.roster.progress.label')">
+        <div class="h-full origin-left rounded-full bg-rose-600 transition-transform duration-500 ease-out" :style="{ transform: `scaleX(${percent / 100})` }" />
+      </div>
+      <p class="mt-3 text-sm text-ink-500">{{ t('app.roster.progress.detail', { yes: counts.attending, no: counts.notAttending, pending: counts.pending }) }}</p>
+    </section>
 
     <div class="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
       <div class="relative flex-1">

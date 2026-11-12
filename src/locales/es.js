@@ -386,6 +386,11 @@ export default {
   },
   app: {
     roster: {
+      progress: {
+        label: 'Respuestas de tus invitados',
+        answered: '{n} de {total} ya respondieron',
+        detail: '{yes} asisten · {no} no asisten · {pending} pendientes'
+      },
       title: 'Invitados',
       counter: '{n} persona | {n} personas',
       counterLimit: '{n} de {limit} personas en tu plan',
