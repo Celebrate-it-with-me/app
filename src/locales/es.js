@@ -360,6 +360,39 @@ export default {
       }
     }
   },
+  app: {
+    switchEvent: 'Cambiar de evento',
+    newEvent: 'Nuevo evento',
+    noEvent: 'Sin evento activo',
+    noEventTitle: 'Elige un evento para continuar',
+    noEventText: 'Selecciona uno de tus eventos o crea uno nuevo.',
+    chooseEvent: 'Ver mis eventos',
+    groups: { event: 'Evento', planning: 'Planificación', guests: 'Invitados', experience: 'Experiencia' },
+    nav: {
+      label: 'Secciones del evento',
+      more: 'Más',
+      home: 'Inicio',
+      events: 'Mis eventos',
+      guests: 'Invitados',
+      rsvp: 'Confirmaciones',
+      budget: 'Presupuesto',
+      locations: 'Ubicaciones',
+      menus: 'Menú',
+      seating: 'Mesas',
+      saveTheDate: 'Save the date',
+      comments: 'Comentarios',
+      dressCode: 'Vestimenta',
+      memories: 'Recuerdos',
+      music: 'Música'
+    },
+    user: {
+      menu: 'Menú de usuario',
+      profile: 'Mi perfil',
+      preferences: 'Preferencias',
+      security: 'Seguridad',
+      logout: 'Cerrar sesión'
+    }
+  },
   legal: {
     updated: 'Última actualización: {date}',
     englishOnly: 'Este documento está disponible en inglés por ahora.'
