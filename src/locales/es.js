@@ -49,7 +49,10 @@ export default {
     terms: 'Términos del servicio',
     privacy: 'Política de privacidad',
     cookies: 'Política de cookies',
-    help: 'Ayuda'
+    help: 'Ayuda',
+    profile: 'Perfil',
+    preferences: 'Preferencias',
+    security: 'Seguridad'
   },
   hero: {
     title: 'La invitación de sus XV, tan especial como ella',
@@ -434,11 +437,46 @@ export default {
       }
     },
     user: {
-      menu: 'Menú de usuario',
-      profile: 'Mi perfil',
-      preferences: 'Preferencias',
-      security: 'Seguridad',
       logout: 'Cerrar sesión'
+    }
+  },
+  account: {
+    title: 'Mi cuenta',
+    subtitle: 'Tus datos, tus preferencias y tu contraseña.',
+    nav: 'Secciones de tu cuenta',
+    tabs: { profile: 'Perfil', preferences: 'Preferencias', security: 'Seguridad' },
+    save: 'Guardar cambios',
+    saved: 'Cambios guardados.',
+    saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
+    profile: {
+      title: 'Tus datos',
+      text: 'Así te ven las personas que colaboran contigo en un evento.',
+      name: 'Nombre completo',
+      email: 'Correo electrónico',
+      emailHint: 'Para cambiar tu correo, escríbenos a {email}.',
+      phone: 'Teléfono',
+      phoneHint: 'Con código de país, por ejemplo +1 305 555 0123.',
+      phoneInvalid: 'Escribe un teléfono válido, con código de país.'
+    },
+    preferences: {
+      title: 'Preferencias',
+      text: 'Cómo quieres usar Quinvite.',
+      language: 'Idioma',
+      languageHint: 'Es el idioma en el que ves tu cuenta.',
+      timezone: 'Zona horaria',
+      emailNotifications: 'Avisos por correo',
+      emailNotificationsText: 'Novedades de tus eventos y de tu cuenta.'
+    },
+    security: {
+      title: 'Contraseña',
+      text: 'Elige una contraseña que no uses en otros sitios.',
+      current: 'Contraseña actual',
+      new: 'Contraseña nueva',
+      confirm: 'Repite la contraseña nueva',
+      hint: 'Mínimo 8 caracteres.',
+      save: 'Cambiar contraseña',
+      saved: 'Contraseña actualizada.',
+      wrongCurrent: 'La contraseña actual no es correcta.'
     }
   },
   legal: {

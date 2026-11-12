@@ -67,8 +67,8 @@ class UserService {
   async updateProfile({ name, phone, avatar }) {
     const formData = new FormData()
     formData.append('name', name)
-    formData.append('phone', phone)
-    formData.append('avatar', avatar)
+    formData.append('phone', phone ?? '')
+    if (avatar instanceof File) formData.append('avatar', avatar)
 
     return await CWM_API.post('user/update-profile', formData, {
       headers: {

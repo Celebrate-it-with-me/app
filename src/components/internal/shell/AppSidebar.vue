@@ -1,18 +1,22 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { LogOut } from 'lucide-vue-next'
 import { useAppNav } from './useAppNav'
+import { useSignOut } from './useSignOut'
 import { cx } from '@/ui/utils'
 
 const { t } = useI18n()
 const route = useRoute()
 const { byGroup } = useAppNav()
+const signOut = useSignOut()
 
 const isActive = to => route.path === to || (to !== '/dashboard' && route.path.startsWith(to + '/'))
 </script>
 
 <template>
-  <nav class="flex flex-col gap-6 px-3 py-4" :aria-label="t('app.nav.label')">
+  <div class="flex h-full min-h-0 flex-col">
+  <nav class="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-3 py-4" :aria-label="t('app.nav.label')">
     <div v-for="group in byGroup" :key="group.group">
       <p class="px-3 pb-1.5 text-xs font-semibold uppercase tracking-wide text-ink-500">
         {{ t(`app.groups.${group.group}`) }}
@@ -36,4 +40,16 @@ const isActive = to => route.path === to || (to !== '/dashboard' && route.path.s
       </ul>
     </div>
   </nav>
+
+  <div class="border-t border-line/70 px-3 py-3">
+    <button
+      type="button"
+      class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink-700 transition-colors hover:bg-cream-200 hover:text-ink-900"
+      @click="signOut"
+    >
+      <LogOut class="h-4.5 w-4.5 shrink-0" aria-hidden="true" />
+      {{ t('app.user.logout') }}
+    </button>
+  </div>
+  </div>
 </template>
