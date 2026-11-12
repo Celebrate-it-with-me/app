@@ -15,7 +15,7 @@ import DashboardMore from './DashboardMore.vue'
 import { summarizeRsvp, pickNextStep } from './dashboardLogic'
 
 const { t } = useI18n()
-const toast = useToast()
+const { error: showError } = useToast()
 const eventsStore = useEventsStore()
 const rsvpStore = useRsvpStore()
 const budgetStore = useBudgetStore()
@@ -75,7 +75,7 @@ async function load() {
   const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
   if (budgetEnabled.value) jobs.push(budgetStore.getEventBudget().then(() => budgetStore.loadBudgetItems()))
   const results = await Promise.allSettled(jobs)
-  if (id === loadId && results.some(r => r.status === 'rejected')) toast({ title: t('app.dashboard.loadError'), tone: 'danger' })
+  if (id === loadId && results.some(r => r.status === 'rejected')) showError(t('app.dashboard.loadError'))
 }
 
 watch(() => event.value?.id, load, { immediate: true })
