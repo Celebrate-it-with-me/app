@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  NONE,
   FILTERS,
   emptyItem,
   emptyPayment,
@@ -42,12 +43,12 @@ describe('item form', () => {
     expect(itemPayload({ ...emptyItem(), title: ' Salón ', categoryId: 3, estimatedCost: '1000', agreedCost: '', vendorName: ' Cristal ' })).toEqual({
       title: 'Salón', categoryId: 3, estimatedCost: 1000, agreedCost: null, dueDate: null, vendorName: 'Cristal', vendorPhone: null, description: null
     })
-    expect(itemPayload({ ...emptyItem(), title: 'X', estimatedCost: '5', categoryId: '' }).categoryId).toBeNull()
+    expect(itemPayload({ ...emptyItem(), title: 'X', estimatedCost: '5' }).categoryId).toBeNull()
   })
 
   it('round-trips an item into the form', () => {
     expect(formFromItem({ title: 'A', categoryId: null, estimatedCost: 10, agreedCost: 12, dueDate: '2027-01-05', vendorName: null, vendorPhone: null, description: null }))
-      .toMatchObject({ categoryId: '', estimatedCost: '10', agreedCost: '12', dueDate: '2027-01-05', vendorName: '' })
+      .toMatchObject({ categoryId: 'none', estimatedCost: '10', agreedCost: '12', dueDate: '2027-01-05', vendorName: '' })
   })
 })
 
@@ -61,6 +62,8 @@ describe('payment form', () => {
 
   it('builds the payload', () => {
     expect(paymentPayload({ amount: '50.5', paidOn: '2027-01-01', note: ' anticipo ' })).toEqual({ amount: 50.5, paidOn: '2027-01-01', note: 'anticipo', padrinoId: null })
+    expect(paymentPayload({ amount: '5', paidOn: '2027-01-01', padrinoId: 'none' }).padrinoId).toBeNull()
+    expect(paymentPayload({ amount: '5', paidOn: '2027-01-01', padrinoId: 7 }).padrinoId).toBe(7)
   })
 })
 
@@ -84,5 +87,13 @@ describe('list helpers', () => {
     const groups = groupByCategory(items, categories)
     expect(groups.map(g => g.category?.name ?? null)).toEqual(['Salón', 'Pastel', null])
     expect(groups.at(-1).items.map(i => i.id)).toEqual([4, 5])
+  })
+})
+
+describe('select values', () => {
+  it('never uses an empty value for "none": the select component rejects it and the modal would break', () => {
+    expect(NONE).not.toBe('')
+    expect(emptyItem().categoryId).toBe(NONE)
+    expect(emptyPayment().padrinoId).toBe(NONE)
   })
 })

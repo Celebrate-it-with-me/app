@@ -14,6 +14,7 @@ import ItemFormModal from '../components/ItemFormModal.vue'
 import PaymentModal from '../components/PaymentModal.vue'
 import CapModal from '../components/CapModal.vue'
 import CategoriesModal from '../components/CategoriesModal.vue'
+import ItemSponsorsModal from '../components/ItemSponsorsModal.vue'
 import { FILTERS, filterCounts, filterItems, groupByCategory, itemPayload, paymentPayload } from '../utils/budget'
 
 const { t } = useI18n()
@@ -39,7 +40,10 @@ const editingPayment = ref(null)
 const capOpen = ref(false)
 const categoriesOpen = ref(false)
 const removing = ref(null)
-const padrinos = ref([])
+const padrinos = ref([]) // `{ id, name }` for the payment payer
+const padrinoList = ref([]) // full rows, with their commitments
+const sponsorsOpen = ref(false)
+const sponsorItem = ref(null)
 
 async function load() {
   if (!event.value?.id) return
@@ -47,7 +51,8 @@ async function load() {
   try {
     await store.fetch(event.value.id)
     // Who besides the family can have paid a payment; if padrinos cannot load the budget still works.
-    padrinos.value = await PadrinosService.list(event.value.id).then(r => r.data.map(p => ({ id: p.id, name: p.name }))).catch(() => [])
+    padrinoList.value = await PadrinosService.list(event.value.id).then(r => r.data).catch(() => [])
+    padrinos.value = padrinoList.value.map(p => ({ id: p.id, name: p.name }))
   } catch {
     showError(t('app.budget.loadError'))
   } finally {
@@ -115,6 +120,25 @@ async function saveCap(cap) {
 async function confirmRemove() {
   const ok = await run(() => BudgetService.removeItem(event.value.id, removing.value.id), 'app.budget.item.removed')
   if (ok) removing.value = null
+}
+
+function openSponsors(item) {
+  sponsorItem.value = item
+  sponsorsOpen.value = true
+}
+async function saveSponsors(changes) {
+  if (!changes.length) {
+    sponsorsOpen.value = false
+    return
+  }
+  const id = event.value.id
+  const ok = await run(async () => {
+    for (const change of changes) await PadrinosService.setCommitments(id, change.padrinoId, change.commitments)
+  })
+  if (ok) {
+    padrinoList.value = await PadrinosService.list(id).then(r => r.data).catch(() => padrinoList.value)
+    sponsorsOpen.value = false
+  }
 }
 
 const addCategory = name => run(() => BudgetService.addCategory(event.value.id, name), null)
@@ -194,6 +218,8 @@ async function download() {
                 :item="item"
                 :currency="summary.currency"
                 :can-edit="canEdit"
+                :has-padrinos="padrinoList.length > 0"
+                @sponsors="openSponsors"
                 @pay="openPayment($event)"
                 @edit="openItem"
                 @remove="removing = $event"
@@ -208,6 +234,7 @@ async function download() {
 
     <ItemFormModal v-model:open="itemOpen" :item="editingItem" :categories="categories" :saving="saving" @save="saveItem" @categories="categoriesOpen = true" />
     <PaymentModal v-model:open="payOpen" :item="payItem" :payment="editingPayment" :currency="summary?.currency" :padrinos="padrinos" :saving="saving" @save="savePayment" />
+    <ItemSponsorsModal v-model:open="sponsorsOpen" :item="sponsorItem" :padrinos="padrinoList" :saving="saving" @save="saveSponsors" />
     <CapModal v-model:open="capOpen" :cap="summary?.cap ?? null" :saving="saving" @save="saveCap" />
     <CategoriesModal v-model:open="categoriesOpen" :categories="categories" :saving="saving" @add="addCategory" @rename="renameCategory" @remove="removeCategory" />
 

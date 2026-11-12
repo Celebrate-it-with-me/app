@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiModal, UiField, UiInput, UiSelect, UiTextarea, UiButton } from '@/ui'
-import { emptyItem, formFromItem, itemErrors } from '../utils/budget'
+import { NONE, emptyItem, formFromItem, itemErrors } from '../utils/budget'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -26,7 +26,7 @@ watch(
 )
 
 const options = computed(() => [
-  { value: '', label: t('app.budget.form.noCategory') },
+  { value: NONE, label: t('app.budget.form.noCategory') },
   ...props.categories.map(category => ({ value: category.id, label: category.name }))
 ])
 const err = key => (errors.value[key] ? t(errors.value[key]) : '')

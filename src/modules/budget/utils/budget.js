@@ -1,3 +1,6 @@
+/** The select cannot hold an empty value, so "none" stands for no category / paid by the family. */
+export const NONE = 'none'
+
 export const STATUSES = ['unpaid', 'partial', 'paid', 'overdue']
 export const STATUS_TONE = { unpaid: 'neutral', partial: 'warning', paid: 'success', overdue: 'danger' }
 
@@ -22,7 +25,7 @@ export const percent = (part, whole) => (whole > 0 ? Math.min(100, Math.round((p
 
 export const emptyItem = () => ({
   title: '',
-  categoryId: '',
+  categoryId: NONE,
   estimatedCost: '',
   agreedCost: '',
   dueDate: '',
@@ -34,7 +37,7 @@ export const emptyItem = () => ({
 export function formFromItem(item) {
   return {
     title: item.title,
-    categoryId: item.categoryId ?? '',
+    categoryId: item.categoryId ?? NONE,
     estimatedCost: String(item.estimatedCost ?? ''),
     agreedCost: item.agreedCost === null || item.agreedCost === undefined ? '' : String(item.agreedCost),
     dueDate: item.dueDate ?? '',
@@ -50,7 +53,7 @@ export function itemPayload(form) {
   const blank = value => (String(value ?? '').trim() ? String(value).trim() : null)
   return {
     title: form.title.trim(),
-    categoryId: form.categoryId === '' ? null : Number(form.categoryId),
+    categoryId: form.categoryId === NONE || form.categoryId === '' || form.categoryId == null ? null : Number(form.categoryId),
     estimatedCost: num(form.estimatedCost) ?? 0,
     agreedCost: num(form.agreedCost),
     dueDate: form.dueDate || null,
@@ -75,7 +78,7 @@ export const today = () => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-export const emptyPayment = () => ({ amount: '', paidOn: today(), note: '', padrinoId: '' })
+export const emptyPayment = () => ({ amount: '', paidOn: today(), note: '', padrinoId: NONE })
 
 export function paymentErrors(form) {
   const errors = {}
@@ -89,7 +92,7 @@ export const paymentPayload = form => ({
   amount: Number(form.amount),
   paidOn: form.paidOn,
   note: String(form.note ?? '').trim() || null,
-  padrinoId: form.padrinoId === '' || form.padrinoId === undefined ? null : form.padrinoId
+  padrinoId: form.padrinoId === NONE || form.padrinoId === '' || form.padrinoId == null ? null : Number(form.padrinoId)
 })
 
 /** Items filtered by tab and search text (title or vendor). */

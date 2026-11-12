@@ -503,7 +503,18 @@ export default {
         overdue: '{n} gasto vencido | {n} gastos vencidos'
       },
       cap: { title: 'Tope del presupuesto', text: 'El máximo que quieres gastar en total. Te avisamos si lo superas.', label: 'Tope', hint: 'Déjalo vacío para no tener tope.' },
+      sponsors: {
+        title: 'Padrinos de “{name}”',
+        text: 'Marca quién lo apadrina y cuánto aporta cada uno.',
+        empty: 'Aún no tienes padrinos. Añádelos en la sección Padrinos.',
+        amount: 'Monto de {name}',
+        invalid: 'Cada padrino marcado necesita un monto mayor que 0.'
+      },
       item: {
+        sponsors: 'Padrinos del gasto',
+        sponsoredBy: 'Lo apadrinan',
+        sponsorPaid: 'pagó {paid} de {committed}',
+        addSponsor: 'Asignar padrino',
         edit: 'Editar',
         remove: 'Eliminar',
         removeTitle: '¿Eliminar este gasto?',

@@ -1,16 +1,18 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { MoreHorizontal, Pencil, Trash2, WalletCards, ChevronDown, Phone } from 'lucide-vue-next'
+import { MoreHorizontal, Pencil, Trash2, WalletCards, ChevronDown, Phone, HandHeart } from 'lucide-vue-next'
 import { UiCard, UiBadge, UiButton, UiDropdown } from '@/ui'
 import { STATUS_TONE, formatMoney, percent } from '../utils/budget'
 
 const props = defineProps({
   item: { type: Object, required: true },
   currency: { type: String, default: 'USD' },
-  canEdit: { type: Boolean, default: false }
+  canEdit: { type: Boolean, default: false },
+  /** Whether the event has padrinos at all: only then does "sponsors" make sense to offer. */
+  hasPadrinos: { type: Boolean, default: false }
 })
-const emit = defineEmits(['pay', 'edit', 'remove', 'edit-payment', 'remove-payment'])
+const emit = defineEmits(['pay', 'edit', 'remove', 'edit-payment', 'remove-payment', 'sponsors'])
 const { t, locale } = useI18n()
 
 const open = ref(false)
@@ -20,6 +22,7 @@ const date = value => (value ? new Intl.DateTimeFormat(locale.value === 'es' ? '
 
 const menu = computed(() => [
   { label: t('app.budget.item.edit'), icon: Pencil, onSelect: () => emit('edit', props.item) },
+  { label: t('app.budget.item.sponsors'), icon: HandHeart, onSelect: () => emit('sponsors', props.item) },
   { label: t('app.budget.item.remove'), icon: Trash2, danger: true, separator: true, onSelect: () => emit('remove', props.item) }
 ])
 </script>
@@ -64,10 +67,29 @@ const menu = computed(() => [
       </p>
     </div>
 
+    <div v-if="item.padrinos.length" class="mt-3 rounded-xl bg-rose-50 px-3 py-2">
+      <p class="flex items-center gap-1.5 text-xs font-medium text-ink-700">
+        <HandHeart class="h-3.5 w-3.5" aria-hidden="true" />
+        {{ t('app.budget.item.sponsoredBy') }}
+      </p>
+      <ul class="mt-1 space-y-0.5 text-sm">
+        <li v-for="sponsor in item.padrinos" :key="sponsor.padrinoId" class="flex flex-wrap justify-between gap-x-3 text-ink-900">
+          <span class="font-medium">{{ sponsor.name }}</span>
+          <span class="tabular-nums text-ink-700">
+            {{ t('app.budget.item.sponsorPaid', { paid: money(sponsor.paid), committed: money(sponsor.committed) }) }}
+          </span>
+        </li>
+      </ul>
+    </div>
+
     <div class="mt-3 flex flex-wrap items-center gap-2">
       <UiButton v-if="canEdit && item.remaining > 0" size="sm" @click="emit('pay', item)">
         <WalletCards class="h-4 w-4" aria-hidden="true" />
         {{ t('app.budget.item.pay') }}
+      </UiButton>
+      <UiButton v-if="canEdit && hasPadrinos && !item.padrinos.length" variant="secondary" size="sm" @click="emit('sponsors', item)">
+        <HandHeart class="h-4 w-4" aria-hidden="true" />
+        {{ t('app.budget.item.addSponsor') }}
       </UiButton>
       <UiButton v-if="item.payments.length" variant="ghost" size="sm" :aria-expanded="open" @click="open = !open">
         {{ t('app.budget.item.payments', { n: item.payments.length }, item.payments.length) }}

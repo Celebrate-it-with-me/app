@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiModal, UiField, UiInput, UiSelect, UiButton } from '@/ui'
-import { emptyPayment, paymentErrors, formatMoney } from '../utils/budget'
+import { NONE, emptyPayment, paymentErrors, formatMoney } from '../utils/budget'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -24,14 +24,14 @@ watch(
   open => {
     if (!open) return
     errors.value = {}
-    if (props.payment) form.value = { amount: String(props.payment.amount), paidOn: props.payment.paidOn, note: props.payment.note ?? '', padrinoId: props.payment.padrinoId ?? '' }
+    if (props.payment) form.value = { amount: String(props.payment.amount), paidOn: props.payment.paidOn, note: props.payment.note ?? '', padrinoId: props.payment.padrinoId ?? NONE }
     // A new payment starts at what is still owed: the usual case is paying the balance.
-    else form.value = { ...emptyPayment(), amount: props.item?.remaining ? String(props.item.remaining) : '', padrinoId: '' }
+    else form.value = { ...emptyPayment(), amount: props.item?.remaining ? String(props.item.remaining) : '', padrinoId: NONE }
   }
 )
 
 const payers = computed(() => [
-  { value: '', label: t('app.budget.payment.family') },
+  { value: NONE, label: t('app.budget.payment.family') },
   ...props.padrinos.map(p => ({ value: p.id, label: t('app.budget.payment.padrino', { name: p.name }) }))
 ])
 const err = key => (errors.value[key] ? t(errors.value[key]) : '')

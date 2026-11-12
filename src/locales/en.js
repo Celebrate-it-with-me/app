@@ -503,7 +503,18 @@ export default {
         overdue: '{n} overdue expense | {n} overdue expenses'
       },
       cap: { title: 'Budget cap', text: 'The most you want to spend in total. We warn you if you go over.', label: 'Cap', hint: 'Leave it empty for no cap.' },
+      sponsors: {
+        title: 'Godparents of “{name}”',
+        text: 'Check who sponsors it and how much each one gives.',
+        empty: 'You have no godparents yet. Add them in the Godparents section.',
+        amount: 'Amount for {name}',
+        invalid: 'Each checked godparent needs an amount above 0.'
+      },
       item: {
+        sponsors: 'Godparents of this expense',
+        sponsoredBy: 'Sponsored by',
+        sponsorPaid: 'paid {paid} of {committed}',
+        addSponsor: 'Assign godparent',
         edit: 'Edit',
         remove: 'Delete',
         removeTitle: 'Delete this expense?',
