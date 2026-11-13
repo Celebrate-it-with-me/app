@@ -30,27 +30,22 @@ async function getToken() {
  * @param {number} limit - Number of results (default: 5)
  */
 async function searchSongs(query, limit = 5) {
-  try {
-    const { access_token } = await getToken()
+  const { access_token } = await getToken()
 
-    const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}`,
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`
-        }
+  const response = await fetch(
+    `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}`,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`
       }
-    )
-
-    if (!response.ok) {
-      throw new Error('Failed to search songs on Spotify')
     }
+  )
 
-    return response.json()
-  } catch (error) {
-    console.error('Spotify search error:', error)
-    throw error
+  if (!response.ok) {
+    throw new Error('Failed to search songs on Spotify')
   }
+
+  return response.json()
 }
 
 export default {

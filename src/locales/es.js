@@ -68,6 +68,7 @@ export default {
     menusCreate: 'Nuevo menú',
     menusShow: 'Menú',
     menusEdit: 'Editar menú',
+    music: 'Música sugerida',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -404,6 +405,99 @@ export default {
     }
   },
   app: {
+    music: {
+      title: 'Música sugerida',
+      subtitle: 'Busca canciones en Spotify, agrégalas y mira cuáles votan tus invitados.',
+      close: 'Cerrar',
+      cancel: 'Cancelar',
+      loadError: 'No pudimos cargar la música sugerida.',
+      searchError: 'No pudimos buscar canciones. Inténtalo de nuevo.',
+      added: 'Canción agregada.',
+      addError: 'No pudimos agregar la canción.',
+      removed: 'Canción eliminada.',
+      removeError: 'No pudimos eliminar la canción.',
+      exported: 'Lista exportada.',
+      exportError: 'No pudimos exportar la lista.',
+      export: {
+        label: 'Exportar lista',
+        xlsx: 'Excel (.xlsx)',
+        csv: 'CSV (.csv)',
+        pdf: 'PDF (.pdf)'
+      },
+      stats: {
+        songs: 'Canciones',
+        votes: 'Votos',
+        top: 'Canción favorita',
+        noTop: 'Aún no hay',
+        guests: 'Sugeridas por invitados'
+      },
+      search: {
+        title: 'Buscar y agregar canciones',
+        subtitle: 'Las canciones que agregues aparecen para que tus invitados voten.',
+        placeholder: 'Canción, artista o álbum en Spotify',
+        add: 'Agregar',
+        addNamed: 'Agregar {title}',
+        searching: 'Buscando…',
+        keepTyping: 'Sin resultados todavía. Sigue escribiendo…',
+        hint: 'Escribe una canción, un artista o un álbum para buscar en Spotify.'
+      },
+      list: {
+        title: 'Canciones sugeridas',
+        searchLabel: 'Buscar en la lista',
+        searchPlaceholder: 'Buscar en la lista',
+        sortLabel: 'Ordenar por',
+        emptyTitle: 'No hay canciones',
+        emptyText: 'Agrega canciones con el buscador de arriba.',
+        emptyFiltered: 'Prueba con otros filtros o con otra búsqueda.',
+        topVoted: 'Más votada',
+        suggestedBy: 'Sugerida por {name}',
+        unknown: 'alguien',
+        organizer: 'Organizador',
+        guest: 'Invitado',
+        upVotes: '{n} votos a favor',
+        downVotes: '{n} votos en contra',
+        net: 'Neto {n}',
+        play: 'Reproducir',
+        details: 'Ver votos',
+        remove: 'Eliminar canción'
+      },
+      sort: {
+        recent: 'Más recientes',
+        popular: 'Más populares',
+        mostVoted: 'Más votadas',
+        alphabetical: 'Título (A-Z)'
+      },
+      filter: {
+        all: 'Todas',
+        admin: 'Del organizador',
+        guest: 'De invitados',
+        topVoted: 'Más votadas'
+      },
+      details: {
+        title: 'Detalle de votos',
+        up: 'A favor',
+        down: 'En contra',
+        net: 'Neto',
+        breakdown: 'Votos por invitado',
+        guest: 'Invitado',
+        voteUp: 'A favor',
+        voteDown: 'En contra',
+        noVotes: 'Esta canción aún no tiene votos.'
+      },
+      player: {
+        title: 'Reproduciendo',
+        iframeTitle: 'Reproductor de Spotify: {title}',
+        unavailable: 'No se pudo cargar el reproductor.',
+        powered: 'Con tecnología de Spotify',
+        preview: 'Se reproduce un adelanto de 30 segundos.',
+        premium: 'Para escuchar la canción completa necesitas Spotify Premium.'
+      },
+      remove: {
+        title: 'Eliminar canción',
+        text: 'Se quitará de las sugerencias y se perderán sus votos. Esta acción no se puede deshacer.',
+        confirm: 'Eliminar'
+      }
+    },
     menus: {
       title: 'Menús',
       subtitle: 'Crea los menús entre los que eligen tus invitados y mira qué escogió cada uno.',

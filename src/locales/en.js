@@ -68,6 +68,7 @@ export default {
     menusCreate: 'New menu',
     menusShow: 'Menu',
     menusEdit: 'Edit menu',
+    music: 'Suggested music',
     eventEdit: 'Event details'
   },
   hero: {
@@ -404,6 +405,99 @@ export default {
     }
   },
   app: {
+    music: {
+      title: 'Suggested music',
+      subtitle: 'Search Spotify, add songs and see which ones your guests vote for.',
+      close: 'Close',
+      cancel: 'Cancel',
+      loadError: 'We could not load the suggested music.',
+      searchError: 'We could not search for songs. Please try again.',
+      added: 'Song added.',
+      addError: 'We could not add the song.',
+      removed: 'Song removed.',
+      removeError: 'We could not remove the song.',
+      exported: 'Playlist exported.',
+      exportError: 'We could not export the playlist.',
+      export: {
+        label: 'Export playlist',
+        xlsx: 'Excel (.xlsx)',
+        csv: 'CSV (.csv)',
+        pdf: 'PDF (.pdf)'
+      },
+      stats: {
+        songs: 'Songs',
+        votes: 'Votes',
+        top: 'Top song',
+        noTop: 'None yet',
+        guests: 'Suggested by guests'
+      },
+      search: {
+        title: 'Search and add songs',
+        subtitle: 'Songs you add show up for your guests to vote on.',
+        placeholder: 'Song, artist or album on Spotify',
+        add: 'Add',
+        addNamed: 'Add {title}',
+        searching: 'Searching…',
+        keepTyping: 'No results yet. Keep typing…',
+        hint: 'Type a song, artist or album to search Spotify.'
+      },
+      list: {
+        title: 'Suggested songs',
+        searchLabel: 'Search the list',
+        searchPlaceholder: 'Search the list',
+        sortLabel: 'Sort by',
+        emptyTitle: 'No songs found',
+        emptyText: 'Add songs using the search above.',
+        emptyFiltered: 'Try different filters or another search.',
+        topVoted: 'Top voted',
+        suggestedBy: 'Suggested by {name}',
+        unknown: 'someone',
+        organizer: 'Organizer',
+        guest: 'Guest',
+        upVotes: '{n} up votes',
+        downVotes: '{n} down votes',
+        net: 'Net {n}',
+        play: 'Play',
+        details: 'View votes',
+        remove: 'Remove song'
+      },
+      sort: {
+        recent: 'Most recent',
+        popular: 'Most popular',
+        mostVoted: 'Most voted',
+        alphabetical: 'Title (A-Z)'
+      },
+      filter: {
+        all: 'All',
+        admin: 'Added by you',
+        guest: 'From guests',
+        topVoted: 'Top voted'
+      },
+      details: {
+        title: 'Vote details',
+        up: 'Up votes',
+        down: 'Down votes',
+        net: 'Net score',
+        breakdown: 'Votes by guest',
+        guest: 'Guest',
+        voteUp: 'Up',
+        voteDown: 'Down',
+        noVotes: 'No votes recorded yet for this song.'
+      },
+      player: {
+        title: 'Now playing',
+        iframeTitle: 'Spotify player: {title}',
+        unavailable: 'Unable to load the player.',
+        powered: 'Powered by Spotify',
+        preview: 'Playing a 30-second preview.',
+        premium: 'Full playback requires Spotify Premium.'
+      },
+      remove: {
+        title: 'Remove song',
+        text: 'It will be removed from the suggestions and its votes will be lost. This cannot be undone.',
+        confirm: 'Remove'
+      }
+    },
     menus: {
       title: 'Menus',
       subtitle: 'Create the menus your guests choose from and see what each one picked.',

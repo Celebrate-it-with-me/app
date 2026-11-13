@@ -1,28 +1,22 @@
 <script setup>
-// All comments in code are in English, as requested.
-
-import CPageLoaderV2 from '@/components/UI/loading/CPageLoaderV2.vue'
-import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
-
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { ChevronDown, Download } from 'lucide-vue-next'
+import { UiPageHeader, UiButton, UiDropdown, UiModal, UiSkeleton } from '@/ui'
 import { useSuggestedMusicAdminController } from '@/modules/suggested-music/composables/useSuggestedMusicAdminController'
-
-// Your new components
-import SuggestedMusicHeader from '@/modules/suggested-music/components/SuggestedMusicHeader.vue'
 import SuggestedMusicSearchAdd from '@/modules/suggested-music/components/SuggestedMusicSearchAdd.vue'
 import SuggestedMusicList from '@/modules/suggested-music/components/SuggestedMusicList.vue'
+import SuggestedMusicStats from '@/modules/suggested-music/components/SuggestedMusicStats.vue'
 import SuggestedMusicPlayerModal from '@/modules/suggested-music/components/SuggestedMusicPlayerModal.vue'
 import SuggestedMusicVoteDetailsModal from '@/modules/suggested-music/components/SuggestedMusicVoteDetailsModal.vue'
 
-// Stats component: you said it's already ready.
-// Update the import path/name to match what you created.
-import SuggestedMusicStats from '@/modules/suggested-music/components/SuggestedMusicStats.vue'
+const { t } = useI18n()
 
 const {
-  // State
   loading,
   exporting,
-  showExportDropdown,
-  exportDropdownRef,
+  deleting,
+  searching,
   searchQuery,
   searchResults,
   searchContainerRef,
@@ -35,16 +29,12 @@ const {
   localSearch,
   sortBy,
   filterBy,
-
-  // Computed
   totalSongs,
   totalVotes,
   topSong,
   guestSuggested,
   filteredAndSortedSongs,
   hasSongs,
-
-  // Actions
   searchSongs,
   addSong,
   confirmRemoveSong,
@@ -52,65 +42,66 @@ const {
   viewSongDetails,
   openPlayer,
   closePlayer,
-  exportPlaylist,
-
-  // Helpers
-  isTopVoted,
-  getNetScore
+  exportPlaylist
 } = useSuggestedMusicAdminController()
 
-const toggleExportDropdown = () => {
-  showExportDropdown.value = !showExportDropdown.value
-}
+const exportItems = computed(() => [
+  { label: t('app.music.export.xlsx'), onSelect: () => exportPlaylist('xlsx') },
+  { label: t('app.music.export.csv'), onSelect: () => exportPlaylist('csv') },
+  { label: t('app.music.export.pdf'), onSelect: () => exportPlaylist('pdf') }
+])
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Header -->
-    <div ref="exportDropdownRef">
-      <SuggestedMusicHeader
-        :loading="loading"
-        :exporting="exporting"
-        :show-export-dropdown="showExportDropdown"
-        @toggle-export="toggleExportDropdown"
-        @export="exportPlaylist"
-      />
+  <div class="mx-auto max-w-5xl">
+    <UiPageHeader :title="t('app.music.title')" :subtitle="t('app.music.subtitle')">
+      <template #actions>
+        <UiDropdown :items="exportItems">
+          <template #trigger>
+            <UiButton variant="secondary" :loading="exporting" :disabled="loading || exporting">
+              <Download class="h-4 w-4" aria-hidden="true" />
+              {{ t('app.music.export.label') }}
+              <ChevronDown class="h-4 w-4" aria-hidden="true" />
+            </UiButton>
+          </template>
+        </UiDropdown>
+      </template>
+    </UiPageHeader>
+
+    <div v-if="loading" class="mt-6 space-y-4" aria-busy="true">
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <UiSkeleton v-for="n in 4" :key="n" height="5rem" />
+      </div>
+      <UiSkeleton height="9rem" />
+      <UiSkeleton height="6rem" />
+      <UiSkeleton height="6rem" />
     </div>
 
-    <!-- Stats -->
-    <SuggestedMusicStats
-      v-if="!loading"
-      :total-songs="totalSongs"
-      :total-votes="totalVotes"
-      :top-song="topSong"
-      :guest-suggested="guestSuggested"
-    />
+    <div v-else class="mt-6 space-y-6">
+      <SuggestedMusicStats
+        :total-songs="totalSongs"
+        :total-votes="totalVotes"
+        :top-song="topSong"
+        :guest-suggested="guestSuggested"
+      />
 
-    <!-- Loading State -->
-    <CPageLoaderV2 v-if="loading" />
-
-    <template v-else>
-      <!-- Search & Add -->
       <div ref="searchContainerRef">
         <SuggestedMusicSearchAdd
-          :loading="loading"
           :search-query="searchQuery"
           :search-results="searchResults"
+          :searching="searching"
           @update:search-query="val => (searchQuery = val)"
           @search="searchSongs"
           @add="addSong"
         />
       </div>
 
-      <!-- List -->
       <SuggestedMusicList
         :has-songs="hasSongs"
         :songs="filteredAndSortedSongs"
         :local-search="localSearch"
         :sort-by="sortBy"
         :filter-by="filterBy"
-        :is-top-voted="isTopVoted"
-        :get-net-score="getNetScore"
         @update:local-search="val => (localSearch = val)"
         @update:sort-by="val => (sortBy = val)"
         @update:filter-by="val => (filterBy = val)"
@@ -118,32 +109,24 @@ const toggleExportDropdown = () => {
         @details="viewSongDetails"
         @remove="confirmRemoveSong"
       />
-    </template>
+    </div>
 
-    <!-- Player Modal -->
-    <SuggestedMusicPlayerModal
-      v-model="showPlayerModal"
-      :selected-song="selectedSongForPlayer"
-      @close="closePlayer"
-    />
+    <SuggestedMusicPlayerModal v-model="showPlayerModal" :selected-song="selectedSongForPlayer" @close="closePlayer" />
+    <SuggestedMusicVoteDetailsModal v-model="showVoteDetailsModal" :selected-song="selectedSongForDetails" />
 
-    <!-- Vote Details Modal -->
-    <SuggestedMusicVoteDetailsModal
-      v-model="showVoteDetailsModal"
-      :selected-song="selectedSongForDetails"
-      :get-net-score="getNetScore"
-    />
-
-    <!-- Remove Confirmation Modal -->
-    <CConfirmModal
-      v-model="showRemoveConfirm"
-      title="Remove Song"
-      message="Are you sure you want to remove this song from the suggestions? This action cannot be undone."
-      @confirm="removeSong(songIdToRemove)"
-    />
+    <UiModal
+      :open="showRemoveConfirm"
+      :title="t('app.music.remove.title')"
+      :description="t('app.music.remove.text')"
+      size="sm"
+      @update:open="val => (showRemoveConfirm = val)"
+    >
+      <template #footer>
+        <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <UiButton variant="secondary" :disabled="deleting" @click="showRemoveConfirm = false">{{ t('app.music.cancel') }}</UiButton>
+          <UiButton variant="danger" :loading="deleting" @click="removeSong(songIdToRemove)">{{ t('app.music.remove.confirm') }}</UiButton>
+        </div>
+      </template>
+    </UiModal>
   </div>
 </template>
-
-<style scoped>
-/* Additional styling if needed */
-</style>
