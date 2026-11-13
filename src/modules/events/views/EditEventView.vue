@@ -10,12 +10,14 @@ import { guestOverflow, planLimitFrom } from '@/utils/planLimit'
 import GuestLimitNotice from '@/components/internal/limits/GuestLimitNotice.vue'
 import EventAddressField from '../components/EventAddressField.vue'
 import EventStatusBadge from '../components/EventStatusBadge.vue'
+import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { success, error: showError } = useToast()
 const eventsStore = useEventsStore()
+const impersonation = useImpersonationStore()
 
 const eventId = computed(() => route.params.id)
 const event = computed(() => eventsStore.events.find(e => String(e.id) === String(eventId.value)) ?? null)
@@ -252,7 +254,7 @@ async function confirmDelete() {
         </div>
       </UiCard>
 
-      <UiCard v-if="isOwner" class="mt-6" :title="t('events.danger.title')" heading-level="h2">
+      <UiCard v-if="isOwner && !impersonation.active" class="mt-6" :title="t('events.danger.title')" heading-level="h2">
         <p class="text-base text-ink-600">{{ t('events.danger.text') }}</p>
         <UiButton variant="danger" class="mt-4" @click="askDelete">{{ t('events.danger.cta') }}</UiButton>
       </UiCard>

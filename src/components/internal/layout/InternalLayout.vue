@@ -13,6 +13,8 @@ import UserMenu from '@/components/internal/shell/UserMenu.vue'
 import AppSidebar from '@/components/internal/shell/AppSidebar.vue'
 import AppBottomNav from '@/components/internal/shell/AppBottomNav.vue'
 import SupportHelpButton from '@/modules/support/components/SupportHelpButton.vue'
+import ImpersonationBanner from '@/modules/impersonation/components/ImpersonationBanner.vue'
+import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import CPageLoaderV2 from '@/components/UI/loading/CPageLoaderV2.vue'
 import { UiButton, UiEmptyState } from '@/ui'
 import { useUserStore } from '@/stores/useUserStore'
@@ -25,6 +27,7 @@ const userStore = useUserStore()
 const eventsStore = useEventsStore()
 const hydrationStore = useHydrationStore()
 const collaboratorsStore = useCollaboratorsStore()
+const impersonation = useImpersonationStore()
 const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
@@ -64,7 +67,9 @@ const determinatePostLoginRoute = async () => {
 
 <template>
   <div class="flex min-h-screen flex-col bg-cream-100 text-ink-900">
-    <header class="sticky top-0 z-40 border-b border-line/70 bg-cream-100/90 backdrop-blur">
+    <div class="sticky top-0 z-40">
+    <ImpersonationBanner v-if="impersonation.active" />
+    <header class="border-b border-line/70 bg-cream-100/90 backdrop-blur">
       <div class="flex h-14 items-center gap-3 px-3 sm:px-4 lg:h-16 lg:px-6">
         <router-link to="/dashboard" class="shrink-0 text-ink-900" aria-label="Quinvite">
           <span class="block lg:hidden"><QuinviteLogo mark class="h-8" /></span>
@@ -77,10 +82,11 @@ const determinatePostLoginRoute = async () => {
         </div>
       </div>
     </header>
+    </div>
 
     <div class="flex-1 lg:flex">
       <aside
-        class="sticky top-16 hidden h-[calc(100vh-4rem-1px)] w-60 shrink-0 border-r border-line/70 bg-cream-50 lg:block"
+        class="sticky top-[calc(4rem+var(--imp-banner-h,0px))] hidden h-[calc(100vh-4rem-var(--imp-banner-h,0px)-1px)] w-60 shrink-0 border-r border-line/70 bg-cream-50 lg:block"
       >
         <AppSidebar />
       </aside>
@@ -101,6 +107,6 @@ const determinatePostLoginRoute = async () => {
     </div>
 
     <AppBottomNav />
-    <SupportHelpButton />
+    <SupportHelpButton v-if="!impersonation.active" />
   </div>
 </template>

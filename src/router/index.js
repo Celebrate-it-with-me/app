@@ -58,6 +58,19 @@ const router = createRouter({
       name: 'Invitation Routes',
       children: [...invitationRoutes]
     },
+    // Support sessions opened from the admin panel (see modules/impersonation).
+    {
+      path: '/impersonate',
+      name: 'impersonate',
+      component: () => import('@/modules/impersonation/views/ImpersonateView.vue'),
+      meta: { title: 'Quinvite', requiresAuth: false }
+    },
+    {
+      path: '/impersonation-ended',
+      name: 'impersonation-ended',
+      component: () => import('@/modules/impersonation/views/ImpersonationEndedView.vue'),
+      meta: { titleKey: 'impersonation.endedTitle', requiresAuth: false }
+    },
     // Live showcase of the UI kit (src/ui). Development only.
     ...(import.meta.env.DEV
       ? [
