@@ -69,6 +69,7 @@ export default {
     menusShow: 'Menú',
     menusEdit: 'Editar menú',
     music: 'Música sugerida',
+    seating: 'Mesas',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -405,6 +406,97 @@ export default {
     }
   },
   app: {
+    seating: {
+      title: 'Mesas',
+      subtitle: 'Arma tus mesas y siente a cada invitado en su lugar.',
+      newTable: 'Nueva mesa',
+      cancel: 'Cancelar',
+      tabs: { tables: 'Mesas', unassigned: 'Sin sentar' },
+      stats: { tables: 'Mesas', seated: 'Sentados', pending: 'Sin sentar' },
+      type: { vip: 'VIP', family: 'Familia', friends: 'Amigos', general: 'General' },
+      location: { front: 'Al frente', center: 'Al centro', back: 'Al fondo', side: 'A un lado', entrance: 'Cerca de la entrada' },
+      rsvp: { all: 'Todos', attending: 'Confirmados', pending: 'Pendientes', 'not-attending': 'No asisten' },
+      tables: {
+        title: 'Tus mesas',
+        emptyTitle: 'Aún no tienes mesas',
+        emptyText: 'Crea tu primera mesa para empezar a sentar a tus invitados.',
+        full: 'Llena',
+        occupancy: 'Ocupación de la mesa',
+        edit: 'Editar {name}',
+        delete: 'Eliminar {name}'
+      },
+      form: {
+        createTitle: 'Nueva mesa',
+        editTitle: 'Editar mesa',
+        name: 'Nombre de la mesa',
+        nameHint: 'Un nombre fácil de reconocer, como "Familia de la quinceañera".',
+        namePlaceholder: 'Ej. Mesa de honor',
+        capacity: 'Capacidad',
+        capacityPlaceholder: 'Ej. 8',
+        type: 'Tipo',
+        priority: 'Prioridad',
+        priorityLow: '1 (baja)',
+        priorityHigh: '10 (alta)',
+        priorityHint: 'Las mesas con más prioridad aparecen primero.',
+        reservedFor: 'Reservada para',
+        reservedHint: 'Opcional. Un grupo específico de invitados.',
+        reservedPlaceholder: 'Ej. familia paterna',
+        location: 'Ubicación',
+        locationHint: 'Opcional. Dónde queda en el salón.',
+        locationNone: 'Sin ubicación',
+        create: 'Crear mesa',
+        save: 'Guardar cambios',
+        errors: {
+          name: 'Ponle un nombre a la mesa.',
+          capacity: 'Escribe cuántas personas caben (mínimo 1).',
+          type: 'Elige un tipo de mesa.'
+        }
+      },
+      details: {
+        title: 'Detalle de la mesa',
+        noneTitle: 'Elige una mesa',
+        noneText: 'Toca una mesa de la lista para ver quién está sentado ahí.',
+        seated: '{taken} de {capacity} lugares ocupados',
+        emptyTitle: 'Nadie sentado todavía',
+        emptyText: 'Sienta invitados desde la lista de "Sin sentar".',
+        remove: 'Quitar a {name} de la mesa',
+        assignGuests: 'Sentar invitados'
+      },
+      unassigned: {
+        title: 'Sin sentar',
+        search: 'Buscar invitado...',
+        searchLabel: 'Buscar invitado por nombre',
+        statusLabel: 'Filtrar por confirmación',
+        seatingAt: 'Sentando en: {name}',
+        pickTable: 'Elige una mesa para poder sentar invitados.',
+        goTables: 'Ir a las mesas',
+        assign: 'Sentar',
+        emptyTitle: 'No hay invitados para mostrar',
+        emptyAll: 'Todos tus invitados ya tienen mesa.',
+        emptyFiltered: 'Prueba con otra búsqueda o con otro filtro.'
+      },
+      delete: {
+        title: 'Eliminar mesa',
+        text: '¿Seguro que quieres eliminar "{name}"?',
+        withGuests: 'Esta mesa tiene {count} invitado(s) sentado(s). Volverán a la lista de "Sin sentar".',
+        confirm: 'Eliminar mesa'
+      },
+      removeGuest: {
+        title: 'Quitar de la mesa',
+        text: '¿Quitar a {guest} de {table}? Volverá a la lista de "Sin sentar".',
+        confirm: 'Quitar'
+      },
+      toast: {
+        created: 'Mesa "{name}" creada.',
+        updated: 'Mesa "{name}" actualizada.',
+        deleted: 'Mesa "{name}" eliminada.',
+        assigned: '{guest} ahora está en {table}.',
+        removed: '{guest} salió de {table}.',
+        full: 'Esa mesa ya está llena. Elige otra o aumenta su capacidad.',
+        loadError: 'No pudimos cargar las mesas. Intenta de nuevo.',
+        error: 'Algo salió mal. Intenta de nuevo en un momento.'
+      }
+    },
     music: {
       title: 'Música sugerida',
       subtitle: 'Busca canciones en Spotify, agrégalas y mira cuáles votan tus invitados.',

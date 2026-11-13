@@ -5,7 +5,7 @@ export default [
     component: () => import('@/modules/seating/views/SeatingView.vue'),
     meta: {
       moduleKey: 'seating',
-      title: 'Seat Accommodation',
+      titleKey: 'titles.seating',
       requiresAuth: true,
       requiredPermission: [],
       requiresFeature: 'seating',

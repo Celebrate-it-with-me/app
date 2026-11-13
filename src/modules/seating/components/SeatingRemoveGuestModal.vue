@@ -1,76 +1,29 @@
 <script setup>
-import CButton from '@/components/UI/buttons/CButton.vue'
-import CModal from '@/components/UI/modals/CModal.vue'
-import { useSeatingStore } from '@/modules/seating/stores/useSeatingStore'
-import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+import { UiButton, UiModal } from '@/ui'
 
-const props = defineProps({
-  modelValue: { type: Boolean, default: false },
-  guest: { type: Object, default: null }
+defineProps({
+  guest: { type: Object, default: null },
+  table: { type: Object, default: null },
+  saving: { type: Boolean, default: false }
 })
-
-const emit = defineEmits(['update:modelValue'])
-
-const seatingStore = useSeatingStore()
-const { selectedTable } = storeToRefs(seatingStore)
-
-const confirmRemove = async () => {
-  if (props.guest) {
-    await seatingStore.removeGuestFromTable(props.guest.id)
-  }
-  emit('update:modelValue', false)
-}
-
-const closeModal = () => {
-  emit('update:modelValue', false)
-}
+const emit = defineEmits(['close', 'confirm'])
+const { t } = useI18n()
 </script>
 
 <template>
-  <CModal :model-value="modelValue" show-close-icon @update:model-value="closeModal">
-    <template #title>
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/20 rounded-xl flex items-center justify-center"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.5"
-            class="text-yellow-600 dark:text-yellow-400"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M12 16v-4"></path>
-            <path d="M12 8h.01"></path>
-          </svg>
-        </div>
-        <span>Remove Guest</span>
-      </div>
-    </template>
-
-    <div class="py-4">
-      <p class="text-gray-700 dark:text-gray-300">
-        Remove <span class="font-semibold">{{ guest?.name }}</span> from
-        <span class="font-semibold">{{ selectedTable?.name }}</span
-        >?
-      </p>
-    </div>
-
+  <UiModal
+    :open="!!guest"
+    :title="t('app.seating.removeGuest.title')"
+    :description="t('app.seating.removeGuest.text', { guest: guest?.name ?? '', table: table?.name ?? '' })"
+    size="sm"
+    @update:open="val => !val && emit('close')"
+  >
     <template #footer>
-      <div class="flex justify-end gap-3">
-        <CButton variant="outline" class="px-6 py-2 rounded-xl" @click="closeModal">
-          Cancel
-        </CButton>
-        <CButton
-          class="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl"
-          @click="confirmRemove"
-        >
-          Remove Guest
-        </CButton>
+      <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <UiButton variant="secondary" :disabled="saving" @click="emit('close')">{{ t('app.seating.cancel') }}</UiButton>
+        <UiButton variant="danger" :loading="saving" @click="emit('confirm')">{{ t('app.seating.removeGuest.confirm') }}</UiButton>
       </div>
     </template>
-  </CModal>
+  </UiModal>
 </template>

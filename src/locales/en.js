@@ -69,6 +69,7 @@ export default {
     menusShow: 'Menu',
     menusEdit: 'Edit menu',
     music: 'Suggested music',
+    seating: 'Tables',
     eventEdit: 'Event details'
   },
   hero: {
@@ -405,6 +406,97 @@ export default {
     }
   },
   app: {
+    seating: {
+      title: 'Tables',
+      subtitle: 'Build your tables and seat each guest in their spot.',
+      newTable: 'New table',
+      cancel: 'Cancel',
+      tabs: { tables: 'Tables', unassigned: 'Unseated' },
+      stats: { tables: 'Tables', seated: 'Seated', pending: 'Unseated' },
+      type: { vip: 'VIP', family: 'Family', friends: 'Friends', general: 'General' },
+      location: { front: 'Front', center: 'Center', back: 'Back', side: 'Side', entrance: 'Near the entrance' },
+      rsvp: { all: 'All', attending: 'Attending', pending: 'Pending', 'not-attending': 'Not attending' },
+      tables: {
+        title: 'Your tables',
+        emptyTitle: 'No tables yet',
+        emptyText: 'Create your first table to start seating your guests.',
+        full: 'Full',
+        occupancy: 'Table occupancy',
+        edit: 'Edit {name}',
+        delete: 'Delete {name}'
+      },
+      form: {
+        createTitle: 'New table',
+        editTitle: 'Edit table',
+        name: 'Table name',
+        nameHint: 'An easy name to recognize, like "Honoree\'s family".',
+        namePlaceholder: 'E.g. Head table',
+        capacity: 'Capacity',
+        capacityPlaceholder: 'E.g. 8',
+        type: 'Type',
+        priority: 'Priority',
+        priorityLow: '1 (low)',
+        priorityHigh: '10 (high)',
+        priorityHint: 'Higher priority tables show up first.',
+        reservedFor: 'Reserved for',
+        reservedHint: 'Optional. A specific group of guests.',
+        reservedPlaceholder: 'E.g. dad\'s side of the family',
+        location: 'Location',
+        locationHint: 'Optional. Where it sits in the venue.',
+        locationNone: 'No location',
+        create: 'Create table',
+        save: 'Save changes',
+        errors: {
+          name: 'Give the table a name.',
+          capacity: 'Enter how many people fit (at least 1).',
+          type: 'Choose a table type.'
+        }
+      },
+      details: {
+        title: 'Table details',
+        noneTitle: 'Pick a table',
+        noneText: 'Tap a table in the list to see who is seated there.',
+        seated: '{taken} of {capacity} seats taken',
+        emptyTitle: 'Nobody seated yet',
+        emptyText: 'Seat guests from the "Unseated" list.',
+        remove: 'Remove {name} from the table',
+        assignGuests: 'Seat guests'
+      },
+      unassigned: {
+        title: 'Unseated',
+        search: 'Search guests...',
+        searchLabel: 'Search guests by name',
+        statusLabel: 'Filter by RSVP',
+        seatingAt: 'Seating at: {name}',
+        pickTable: 'Pick a table to start seating guests.',
+        goTables: 'Go to tables',
+        assign: 'Seat',
+        emptyTitle: 'No guests to show',
+        emptyAll: 'All your guests already have a table.',
+        emptyFiltered: 'Try a different search or filter.'
+      },
+      delete: {
+        title: 'Delete table',
+        text: 'Are you sure you want to delete "{name}"?',
+        withGuests: 'This table has {count} guest(s) seated. They will go back to the "Unseated" list.',
+        confirm: 'Delete table'
+      },
+      removeGuest: {
+        title: 'Remove from table',
+        text: 'Remove {guest} from {table}? They will go back to the "Unseated" list.',
+        confirm: 'Remove'
+      },
+      toast: {
+        created: 'Table "{name}" created.',
+        updated: 'Table "{name}" updated.',
+        deleted: 'Table "{name}" deleted.',
+        assigned: '{guest} is now at {table}.',
+        removed: '{guest} left {table}.',
+        full: 'That table is already full. Pick another one or raise its capacity.',
+        loadError: 'We could not load the tables. Please try again.',
+        error: 'Something went wrong. Please try again in a moment.'
+      }
+    },
     music: {
       title: 'Suggested music',
       subtitle: 'Search Spotify, add songs and see which ones your guests vote for.',
