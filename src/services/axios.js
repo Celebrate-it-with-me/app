@@ -71,7 +71,7 @@ const onError = async error => {
     const impersonation = useImpersonationStore()
     if (isEndedError(error, impersonation.active)) {
       impersonation.finish()
-      if (router.currentRoute.value.name !== 'impersonation-ended') await router.replace({ name: 'impersonation-ended' })
+      if (router.currentRoute.value.name !== 'impersonation-ended') await router.replace({ name: 'impersonation-ended', query: { reason: 'expired' } })
       return Promise.reject(error)
     }
   }
