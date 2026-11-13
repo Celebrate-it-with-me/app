@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { Lock, Check } from 'lucide-vue-next'
 import { UiButton, UiCard } from '@/ui'
-import { mailtoLink } from '@/config/brand'
+import PurchasePanel from '@/modules/payments/components/PurchasePanel.vue'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { MODULE_VIEWS } from '@/components/internal/shell/navModules'
 
@@ -15,7 +15,9 @@ const eventsStore = useEventsStore()
 
 const key = computed(() => String(route.params.module ?? ''))
 // Besides locked modules, this screen also explains going over the plan's guest limit.
-const isGuestsLimit = computed(() => key.value === 'guests-limit')
+const isFull = computed(() => key.value === 'full')
+const isGuestsLimit = computed(() => key.value === 'guests-limit' || isFull.value)
+const eventId = computed(() => eventsStore.activeEvent?.id)
 const view = computed(() => (isGuestsLimit.value ? null : (MODULE_VIEWS[key.value] ?? null)))
 const state = computed(() =>
   isGuestsLimit.value ? 'locked' : (eventsStore.activeEvent?.modules?.find(m => m.key === key.value)?.state ?? null)
@@ -29,15 +31,13 @@ watchEffect(() => {
 })
 
 const moduleName = computed(() => (isGuestsLimit.value ? t('app.nav.guests') : view.value ? t(view.value.labelKey) : ''))
-const lead = computed(() => (isGuestsLimit.value ? t('unlock.guestsLimit.lead') : t('unlock.lead', { module: moduleName.value })))
+const lead = computed(() => (isFull.value ? t('unlock.full.lead') : isGuestsLimit.value ? t('unlock.guestsLimit.lead') : t('unlock.lead', { module: moduleName.value })))
 const benefit = computed(() => {
+  if (isFull.value) return t('unlock.full.benefit')
   if (isGuestsLimit.value) return t('unlock.guestsLimit.benefit')
   return te(`unlock.modules.${key.value}`) ? t(`unlock.modules.${key.value}`) : t('unlock.generic')
 })
 const included = computed(() => tm('pricing.full.items').map(item => rt(item)))
-const notifyLink = computed(() =>
-  mailtoLink({ subject: t('unlock.mailSubject'), body: t('unlock.mailBody', { module: moduleName.value }) })
-)
 </script>
 
 <template>
@@ -58,20 +58,11 @@ const notifyLink = computed(() =>
             <span>{{ item }}</span>
           </li>
         </ul>
-        <p class="mt-4 text-ink-900">
-          <span class="font-heading text-3xl">{{ t('pricing.full.price') }}</span>
-          <span class="ml-2 text-sm text-ink-600">{{ t('pricing.full.note') }}</span>
-        </p>
       </div>
 
-      <!-- Until the online payment exists: be honest about it and let people ask to be told. -->
       <div class="mt-6 rounded-lg bg-cream-100 p-4">
-        <p class="font-semibold text-ink-900">{{ t('unlock.soonTitle') }}</p>
-        <p class="mt-1 text-sm text-ink-600">{{ t('unlock.soonText') }}</p>
-        <div class="mt-4 flex flex-col gap-2 sm:flex-row">
-          <UiButton :href="notifyLink">{{ t('unlock.notify') }}</UiButton>
-          <UiButton variant="ghost" to="/dashboard">{{ t('unlock.back') }}</UiButton>
-        </div>
+        <PurchasePanel v-if="eventId" :event-id="eventId" />
+        <UiButton class="mt-3" variant="ghost" to="/dashboard">{{ t('unlock.back') }}</UiButton>
       </div>
     </UiCard>
   </div>
