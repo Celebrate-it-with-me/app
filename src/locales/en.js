@@ -1576,6 +1576,27 @@ export default {
     includes: 'With the full event you get:',
     back: 'Back to home',
   },
+  support: {
+    button: 'Help',
+    open: 'Ask for help',
+    title: 'How can we help?',
+    description: 'Tell us what is going on and we will reply by email.',
+    messageLabel: 'Your message',
+    placeholder: 'Write here what you need…',
+    contextNote: 'We attach the screen and event you are on so we can help faster.',
+    send: 'Send',
+    cancel: 'Cancel',
+    close: 'Close',
+    sentTitle: 'Message sent',
+    sentText: 'Thank you. We got your message and will reply by email as soon as we can.',
+    errors: {
+      tooShort: 'Write at least {min} characters.',
+      tooLong: 'The message can have up to {max} characters.',
+      invalid: 'We could not send your message. Check that it is not empty or too long.',
+      tooMany: 'You sent several messages in a row. Wait a minute and try again.',
+      generic: 'We could not send your message. Please try again in a moment.'
+    }
+  },
   limits: {
     guests: {
       removeCount: '{n} guests | {n} guest | {n} guests',

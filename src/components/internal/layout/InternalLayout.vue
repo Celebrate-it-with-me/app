@@ -12,6 +12,7 @@ import EventSwitcher from '@/components/internal/shell/EventSwitcher.vue'
 import UserMenu from '@/components/internal/shell/UserMenu.vue'
 import AppSidebar from '@/components/internal/shell/AppSidebar.vue'
 import AppBottomNav from '@/components/internal/shell/AppBottomNav.vue'
+import SupportHelpButton from '@/modules/support/components/SupportHelpButton.vue'
 import CPageLoaderV2 from '@/components/UI/loading/CPageLoaderV2.vue'
 import { UiButton, UiEmptyState } from '@/ui'
 import { useUserStore } from '@/stores/useUserStore'
@@ -100,5 +101,6 @@ const determinatePostLoginRoute = async () => {
     </div>
 
     <AppBottomNav />
+    <SupportHelpButton />
   </div>
 </template>
