@@ -1,4 +1,5 @@
 import { CWM_API } from '@/services/axios'
+import { toMenuPayload } from '@/modules/menus/utils/menus'
 
 class MenusService {
   async loadMenus({ eventId }) {
@@ -6,25 +7,11 @@ class MenusService {
   }
 
   async createMenu(formValues, eventId) {
-    console.log('checking form values', formValues)
-
-    return await CWM_API.post(`event/${eventId}/menus`, {
-      title: formValues.title,
-      description: formValues.description,
-      allowMultipleChoices: formValues.allow_multiple_choices,
-      allowCustomRequest: formValues.allow_custom_request,
-      isDefault: formValues.main_menu
-    })
+    return await CWM_API.post(`event/${eventId}/menus`, toMenuPayload(formValues))
   }
 
   async updateMenu(formValues, eventId) {
-    return await CWM_API.put(`event/${eventId}/menus/${formValues.id}`, {
-      title: formValues.title,
-      description: formValues.description,
-      allowMultipleChoices: formValues.allow_multiple_choices,
-      allowCustomRequest: formValues.allow_custom_request,
-      isDefault: formValues.main_menu
-    })
+    return await CWM_API.put(`event/${eventId}/menus/${formValues.id}`, toMenuPayload(formValues))
   }
 
   async addMenuItem({ menuItem, menuId, eventId }) {
@@ -47,8 +34,10 @@ class MenusService {
     )
   }
 
-  async loadGuestMenu({ eventId }) {
-    return await CWM_API.get(`event/${eventId}/menus/guests`)
+  async loadGuestMenu({ eventId, page = 1, perPage = 10 }) {
+    return await CWM_API.get(`event/${eventId}/menus/guests`, {
+      params: { page, per_page: perPage }
+    })
   }
 
   async exportGuestsMenu({ eventId }) {

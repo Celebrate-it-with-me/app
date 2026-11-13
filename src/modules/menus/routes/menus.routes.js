@@ -5,7 +5,7 @@ export default [
     component: () => import('@/modules/menus/views/MenusView.vue'),
     meta: {
       moduleKey: 'menus',
-      title: 'Menus',
+      titleKey: 'titles.menus',
       requiresAuth: true,
       requiredPermission: ['view_menus'],
       requiresFeature: 'menus',
@@ -18,7 +18,7 @@ export default [
     component: () => import('@/modules/menus/views/CreateMenusView.vue'),
     meta: {
       moduleKey: 'menus',
-      title: 'Menus',
+      titleKey: 'titles.menusCreate',
       requiresAuth: true,
       requiredPermission: ['create_menu'],
       requiresFeature: 'menus',
@@ -31,7 +31,7 @@ export default [
     component: () => import('@/modules/menus/views/ShowMenuView.vue'),
     meta: {
       moduleKey: 'menus',
-      title: 'Show Menus',
+      titleKey: 'titles.menusShow',
       requiresAuth: true,
       requiredPermission: ['view_menu'],
       requiresFeature: 'menus',
@@ -44,7 +44,7 @@ export default [
     component: () => import('@/modules/menus/views/CreateMenusView.vue'),
     meta: {
       moduleKey: 'menus',
-      title: 'Edit Menus',
+      titleKey: 'titles.menusEdit',
       requiresAuth: true,
       requiredPermission: ['edit_menu'],
       requiresFeature: 'menus',

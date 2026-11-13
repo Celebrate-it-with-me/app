@@ -1,19 +1,19 @@
 <script setup>
-import CButton from '@/components/UI/buttons/CButton.vue'
-import CHeading from '@/components/UI/headings/CHeading.vue'
+import { useI18n } from 'vue-i18n'
+import { Pencil, Plus, UtensilsCrossed } from 'lucide-vue-next'
+import { UiPageHeader, UiCard, UiButton, UiBadge, UiEmptyState, UiSkeleton } from '@/ui'
 import MenuItem from '@/modules/menus/components/MenuItem.vue'
-import CLoading from '@/components/UI/loading/CLoading.vue'
-import CAddMenuItemModal from '@/components/UI/modals/CAddMenuItemModal.vue'
+import AddMenuItemModal from '@/modules/menus/components/AddMenuItemModal.vue'
 import { useShowMenuController } from '@/modules/menus/composables/useShowMenuController'
 
+const { t } = useI18n()
 const {
-  menuStore,
   loading,
   openItemForm,
-  starterMenuItems,
-  mainMenuItems,
-  desertMenuItems,
-  addNewMenu,
+  addingItem,
+  itemErrors,
+  itemGroups,
+  itemCount,
   menuSelected,
   handleAddMenuItem,
   goToEditMenu,
@@ -22,95 +22,53 @@ const {
 </script>
 
 <template>
-  <div class="space-y-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex items-center justify-between">
-      <CHeading :level="2" weight="semibold" class="text-3xl tracking-tight">
-        Menu <span class="text-rose">Details</span>
-      </CHeading>
-      <CButton
-        variant="gradient"
-        class="bg-gradient-to-r from-rose to-rose-dark text-white px-6 rounded-xl shadow-lg shadow-rose/20"
-        @click="addNewMenu"
-      >
-        + Add Menu
-      </CButton>
+  <div class="mx-auto max-w-4xl">
+    <div v-if="loading" class="space-y-3">
+      <UiSkeleton class="h-16" />
+      <UiSkeleton class="h-24" />
+      <UiSkeleton class="h-24" />
     </div>
 
-    <section
-      v-if="menuSelected"
-      class="mx-auto bg-white dark:bg-gray-900/50 backdrop-blur-md p-10 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 space-y-12"
-    >
-      <div class="menu-title text-center space-y-4">
-        <CHeading :level="3" weight="black" class="text-4xl text-gray-900 dark:text-white">
-          {{ menuSelected?.title ?? '' }}
-        </CHeading>
-        <p class="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-          {{ menuSelected?.description ?? '' }}
-        </p>
+    <UiEmptyState v-else-if="!menuSelected" :title="t('app.menus.notFoundTitle')" :description="t('app.menus.notFoundText')">
+      <template #icon><UtensilsCrossed class="h-6 w-6" aria-hidden="true" /></template>
+      <UiButton to="/dashboard/menus">{{ t('app.menus.backToMenus') }}</UiButton>
+    </UiEmptyState>
 
-        <div class="pt-6 flex justify-center gap-4">
-          <CButton
-            class="px-8 h-12 rounded-xl font-bold transition-all hover:-translate-y-0.5"
-            @click="handleAddMenuItem"
-          >
-            Add Menu Item
-          </CButton>
+    <template v-else>
+      <UiPageHeader :title="menuSelected.title" :subtitle="menuSelected.description || ''" back="/dashboard/menus" :back-label="t('app.menus.backToMenus')">
+        <template #actions>
+          <UiButton variant="secondary" @click="goToEditMenu">
+            <Pencil class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.menus.editSettings') }}
+          </UiButton>
+          <UiButton @click="handleAddMenuItem">
+            <Plus class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.menus.addItem') }}
+          </UiButton>
+        </template>
+      </UiPageHeader>
 
-          <CButton
-            variant="secondary"
-            class="px-8 h-12 rounded-xl font-bold border-2 transition-all hover:-translate-y-0.5"
-            @click="goToEditMenu"
-          >
-            Edit Settings
-          </CButton>
-        </div>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <UiBadge :tone="menuSelected.is_default ? 'rose' : 'neutral'">{{ menuSelected.is_default ? t('app.menus.main') : t('app.menus.optional') }}</UiBadge>
+        <UiBadge v-if="menuSelected.allow_multiple_choices" tone="info">{{ t('app.menus.multiple') }}</UiBadge>
+        <UiBadge v-if="menuSelected.allow_custom_request" tone="gold">{{ t('app.menus.custom') }}</UiBadge>
       </div>
 
-      <CLoading v-if="loading" />
+      <UiEmptyState v-if="!itemCount" class="mt-6" :title="t('app.menus.itemsEmptyTitle')" :description="t('app.menus.itemsEmptyText')">
+        <template #icon><UtensilsCrossed class="h-6 w-6" aria-hidden="true" /></template>
+        <UiButton @click="handleAddMenuItem">{{ t('app.menus.addFirstItem') }}</UiButton>
+      </UiEmptyState>
 
-      <div class="space-y-16">
-        <div v-if="starterMenuItems.length" class="menu-sections">
-          <div class="flex items-center gap-4 mb-8">
-            <h3 class="text-2xl font-black text-rose uppercase tracking-widest">Starters</h3>
-            <div class="h-px flex-1 bg-gradient-to-r from-rose/20 to-transparent"></div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div v-for="(item, index) in starterMenuItems" :key="index">
-              <MenuItem :item="item" />
-            </div>
-          </div>
-        </div>
-
-        <div v-if="mainMenuItems.length" class="menu-sections">
-          <div class="flex items-center gap-4 mb-8">
-            <h3 class="text-2xl font-black text-rose uppercase tracking-widest">Main Course</h3>
-            <div class="h-px flex-1 bg-gradient-to-r from-rose/20 to-transparent"></div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div v-for="(item, index) in mainMenuItems" :key="index">
-              <MenuItem :item="item" />
-            </div>
-          </div>
-        </div>
-
-        <div v-if="desertMenuItems.length" class="menu-sections">
-          <div class="flex items-center gap-4 mb-8">
-            <h3 class="text-2xl font-black text-rose uppercase tracking-widest">Desserts</h3>
-            <div class="h-px flex-1 bg-gradient-to-r from-rose/20 to-transparent"></div>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div v-for="(item, index) in desertMenuItems" :key="index">
-              <MenuItem :item="item" />
-            </div>
-          </div>
-        </div>
+      <div v-else class="mt-6 space-y-8">
+        <section v-for="group in itemGroups" :key="group.type" :aria-labelledby="`course-${group.type}`">
+          <h2 :id="`course-${group.type}`" class="font-heading text-xl text-ink-900">{{ t(`app.menus.types.${group.type}`) }}</h2>
+          <UiCard padding="none" class="mt-3 divide-y divide-line overflow-hidden">
+            <MenuItem v-for="item in group.items" :key="item.id" :item="item" />
+          </UiCard>
+        </section>
       </div>
-    </section>
+    </template>
+
+    <AddMenuItemModal v-if="menuSelected" v-model:open="openItemForm" :loading="addingItem" :errors="itemErrors" @submitted="handleAddItem" />
   </div>
-  <CAddMenuItemModal
-    v-model="openItemForm"
-    :menu="menuStore.currentMenu"
-    @close="openItemForm = false"
-    @submitted="handleAddItem"
-  />
 </template>

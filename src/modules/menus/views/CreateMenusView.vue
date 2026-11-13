@@ -1,94 +1,62 @@
 <script setup>
-import CInput from '@/components/UI/form2/CInput.vue'
-import CTextarea from '@/components/UI/form2/CTextarea.vue'
-import CToggle from '@/components/UI/form2/CToggle.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
-import CCard from '@/components/UI/cards/CCard.vue'
-import CAlert from '@/components/UI/alerts/CAlert.vue'
-import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { UiPageHeader, UiCard, UiButton, UiField, UiInput, UiTextarea, UiSwitch, UiModal, UiSkeleton } from '@/ui'
 import { useMenuFormController } from '@/modules/menus/composables/useMenuFormController'
 
-const { sending, mode, showDeleteMenuModal, menuState, onSubmit, handleDeleteMenu } =
-  useMenuFormController()
+const { t } = useI18n()
+const { sending, loading, deleting, mode, showDeleteMenuModal, menuState, errors, onSubmit, handleDeleteMenu } = useMenuFormController()
+const title = computed(() => (mode.value === 'edit' ? t('app.menus.editTitle') : t('app.menus.createTitle')))
 </script>
 
 <template>
-  <CCard shadow="xl" class="overflow-hidden border-0 bg-white/50 backdrop-blur-xs">
-    <form class="space-y-6" @submit.prevent="onSubmit">
-      <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
-        <CInput
-          id="menu_title"
-          v-model="menuState.title"
-          name="title"
-          label="Menu Title"
-          placeholder="e.g. Reception Dinner"
-        />
-      </div>
+  <div class="mx-auto max-w-2xl">
+    <UiPageHeader :title="title" :subtitle="t('app.menus.formSubtitle')" back="/dashboard/menus" />
 
-      <CTextarea
-        id="menu_description"
-        v-model="menuState.description"
-        name="description"
-        label="Menu Description"
-        placeholder="Optional description for this menu..."
-      />
+    <div v-if="loading" class="mt-6 space-y-3">
+      <UiSkeleton class="h-14" />
+      <UiSkeleton class="h-28" />
+      <UiSkeleton class="h-14" />
+    </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-gray-50/50 p-6 rounded-2xl">
-        <CToggle
-          v-model="menuState.allow_custom_request"
-          name="allow_custom_request"
-          label="Allow Custom Requests"
-        />
+    <template v-else>
+      <UiCard class="mt-6">
+        <form id="menu-form" class="space-y-5" novalidate @submit.prevent="onSubmit">
+          <UiField :label="t('app.menus.fieldTitle')" :error="errors.title" required>
+            <template #default="{ id, invalid }">
+              <UiInput :id="id" v-model="menuState.title" :invalid="invalid" :placeholder="t('app.menus.fieldTitlePlaceholder')" autocomplete="off" />
+            </template>
+          </UiField>
 
-        <CToggle
-          v-model="menuState.allow_multiple_choices"
-          name="allow_multiple_choices"
-          label="Allow Multiple Choices"
-        />
-      </div>
+          <UiField :label="t('app.menus.fieldDescription')" :error="errors.description">
+            <template #default="{ id, invalid }">
+              <UiTextarea :id="id" v-model="menuState.description" :invalid="invalid" :rows="3" :placeholder="t('app.menus.fieldDescriptionPlaceholder')" />
+            </template>
+          </UiField>
 
-      <div class="bg-rose/5 p-6 rounded-2xl border border-rose/10">
-        <CToggle v-model="menuState.main_menu" name="main_menu" label="Is Main Menu" />
-      </div>
-
-      <div class="pt-4 flex justify-end">
-        <CButton
-          type="submit"
-          variant="gradient"
-          class="bg-gradient-to-r from-rose to-rose-dark text-white px-10 h-12 rounded-xl"
-          :disabled="sending"
-        >
-          <span v-if="mode === 'create'"> Create Menu </span>
-          <span v-if="mode === 'edit'"> Update Menu </span>
-        </CButton>
-      </div>
-    </form>
-  </CCard>
-
-  <CCard v-if="mode === 'edit'" class="mt-8 border-rose/20 bg-rose/5">
-    <CAlert variant="warning" class="bg-transparent border-0 p-0">
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center">
-            <span class="text-rose text-lg">⚠️</span>
+          <div class="space-y-4 border-t border-line pt-5">
+            <UiSwitch v-model="menuState.allow_custom_request" :label="t('app.menus.allowCustom')" :description="t('app.menus.allowCustomHint')" />
+            <UiSwitch v-model="menuState.allow_multiple_choices" :label="t('app.menus.allowMultiple')" :description="t('app.menus.allowMultipleHint')" />
+            <UiSwitch v-model="menuState.main_menu" :label="t('app.menus.isMain')" :description="t('app.menus.isMainHint')" />
           </div>
-          <div>
-            <p class="font-bold text-rose-dark">Danger Zone</p>
-            <p class="text-sm text-rose/80">Delete action is irreversible, please be careful.</p>
-          </div>
-        </div>
-        <CButton variant="danger" class="w-full sm:w-auto px-6" @click="showDeleteMenuModal = true">
-          Delete Menu
-        </CButton>
-      </div>
-    </CAlert>
-  </CCard>
 
-  <CConfirmModal
-    v-model="showDeleteMenuModal"
-    :message="'Are you sure you want to delete this menu? All items and guest selections will be lost.'"
-    show-close-icon
-    show-footer
-    @confirm="handleDeleteMenu"
-  />
+          <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+            <UiButton variant="secondary" to="/dashboard/menus">{{ t('app.menus.cancel') }}</UiButton>
+            <UiButton type="submit" :loading="sending">{{ mode === 'edit' ? t('app.menus.update') : t('app.menus.create') }}</UiButton>
+          </div>
+        </form>
+      </UiCard>
+
+      <UiCard v-if="mode === 'edit'" class="mt-6" :title="t('app.menus.dangerTitle')" :subtitle="t('app.menus.dangerText')" heading-level="h2">
+        <UiButton variant="danger" class="mt-3" @click="showDeleteMenuModal = true">{{ t('app.menus.deleteMenu') }}</UiButton>
+      </UiCard>
+    </template>
+
+    <UiModal v-model:open="showDeleteMenuModal" :title="t('app.menus.deleteTitle')" :description="t('app.menus.deleteText')" size="sm">
+      <template #footer>
+        <UiButton variant="secondary" @click="showDeleteMenuModal = false">{{ t('app.menus.cancel') }}</UiButton>
+        <UiButton variant="danger" :loading="deleting" @click="handleDeleteMenu">{{ t('app.menus.delete') }}</UiButton>
+      </template>
+    </UiModal>
+  </div>
 </template>
