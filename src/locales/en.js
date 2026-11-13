@@ -70,6 +70,7 @@ export default {
     menusEdit: 'Edit menu',
     music: 'Suggested music',
     seating: 'Tables',
+    memories: 'Memories',
     eventEdit: 'Event details'
   },
   hero: {
@@ -406,6 +407,90 @@ export default {
     }
   },
   app: {
+    memories: {
+      title: 'Memories',
+      subtitle: 'The photo album of your party: upload and look after your best moments.',
+      add: 'Add memory',
+      loading: 'Loading memories',
+      stats: { total: 'Memories', visible: 'Visible', hidden: 'Hidden' },
+      filters: {
+        search: 'Search',
+        searchPlaceholder: 'Search by title or description',
+        year: 'Year',
+        allYears: 'All years',
+        sort: 'Sort',
+        newest: 'Newest first',
+        oldest: 'Oldest first',
+        clear: 'Clear filters',
+        noResultsTitle: 'No memories found',
+        noResultsText: 'Try another search or clear the filters.'
+      },
+      empty: {
+        title: 'No memories yet',
+        text: 'Start the album with your first photo: add a title, the year and a description.',
+        cta: 'Add my first memory'
+      },
+      card: {
+        untitled: 'Untitled memory',
+        hidden: 'Hidden',
+        view: 'View photo of {title}',
+        edit: 'Edit {title}',
+        delete: 'Delete {title}'
+      },
+      form: {
+        createTitle: 'New memory',
+        editTitle: 'Edit memory',
+        title: 'Title',
+        titlePlaceholder: 'E.g. My first birthday',
+        description: 'Description',
+        descriptionPlaceholder: 'Tell what happened that day',
+        year: 'Year',
+        yearHint: 'Optional. A year between 1900 and 2100.',
+        visible: 'Visible in the album',
+        visibleOn: 'Shown in the album.',
+        visibleOff: 'Hidden: only you can see it.',
+        cancel: 'Cancel',
+        create: 'Save memory',
+        save: 'Save changes',
+        errors: {
+          titleRequired: 'Enter a title.',
+          titleMax: 'The title can have up to 100 characters.',
+          descriptionMax: 'The description can have up to 500 characters.',
+          yearRange: 'Enter a valid year between 1900 and 2100.',
+          imageRequired: 'Choose a photo for this memory.'
+        }
+      },
+      dropzone: {
+        label: 'Photo',
+        choose: 'Tap to choose a photo',
+        drop: 'or drag it here',
+        hint: 'JPG, PNG, WEBP or GIF, up to 5 MB.',
+        replace: 'Change photo',
+        remove: 'Remove photo',
+        preview: 'Photo preview',
+        current: 'Current photo',
+        errors: {
+          type: 'That file is not a valid image. Use JPG, PNG, WEBP or GIF.',
+          size: 'The photo is larger than 5 MB. Choose a lighter one.'
+        }
+      },
+      delete: {
+        title: 'Delete memory',
+        text: 'You are about to delete “{title}” and its photo. This cannot be undone.',
+        confirm: 'Delete',
+        cancel: 'Cancel'
+      },
+      toast: {
+        created: 'Memory added.',
+        updated: 'Changes saved.',
+        deleted: 'Memory deleted.',
+        loadError: 'We could not load your memories. Please try again.',
+        error: 'We could not complete the action. Please try again.',
+        fileRejected: 'We could not upload the photo. Make sure it is a JPG, PNG, WEBP or GIF up to 5 MB.',
+        invalid: 'Check the memory details and try again.'
+      },
+      viewer: { noTitle: 'Memory' }
+    },
     seating: {
       title: 'Tables',
       subtitle: 'Build your tables and seat each guest in their spot.',
@@ -1349,7 +1434,7 @@ export default {
       menus: 'Each guest picks their dish when they confirm, and you see how many chose each option.',
       seating: 'Seat your guests at tables and have the floor plan ready for the venue.',
       suggested_music: 'Your guests suggest songs and vote for the ones they most want to dance to.',
-      memories: 'Your guests upload their photos from the party and you keep the album.',
+      memories: 'Keep the photos of your party in one album.',
       comments: 'Your guests leave you messages and good wishes on the invitation.'
     },
     includes: 'With the full event you get:',

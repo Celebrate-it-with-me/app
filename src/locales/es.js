@@ -70,6 +70,7 @@ export default {
     menusEdit: 'Editar menú',
     music: 'Música sugerida',
     seating: 'Mesas',
+    memories: 'Recuerdos',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -406,6 +407,90 @@ export default {
     }
   },
   app: {
+    memories: {
+      title: 'Recuerdos',
+      subtitle: 'El álbum de fotos de tu fiesta: sube y cuida tus mejores momentos.',
+      add: 'Agregar recuerdo',
+      loading: 'Cargando recuerdos',
+      stats: { total: 'Recuerdos', visible: 'Visibles', hidden: 'Ocultos' },
+      filters: {
+        search: 'Buscar',
+        searchPlaceholder: 'Busca por título o descripción',
+        year: 'Año',
+        allYears: 'Todos los años',
+        sort: 'Orden',
+        newest: 'Más recientes primero',
+        oldest: 'Más antiguos primero',
+        clear: 'Limpiar filtros',
+        noResultsTitle: 'No encontramos recuerdos',
+        noResultsText: 'Prueba con otra búsqueda o quita los filtros.'
+      },
+      empty: {
+        title: 'Aún no hay recuerdos',
+        text: 'Empieza el álbum con tu primera foto: agrégale un título, el año y una descripción.',
+        cta: 'Agregar mi primer recuerdo'
+      },
+      card: {
+        untitled: 'Recuerdo sin título',
+        hidden: 'Oculto',
+        view: 'Ver foto de {title}',
+        edit: 'Editar {title}',
+        delete: 'Eliminar {title}'
+      },
+      form: {
+        createTitle: 'Nuevo recuerdo',
+        editTitle: 'Editar recuerdo',
+        title: 'Título',
+        titlePlaceholder: 'Ej. Mi primer cumpleaños',
+        description: 'Descripción',
+        descriptionPlaceholder: 'Cuenta qué pasó ese día',
+        year: 'Año',
+        yearHint: 'Opcional. Un año entre 1900 y 2100.',
+        visible: 'Visible en el álbum',
+        visibleOn: 'Se muestra en el álbum.',
+        visibleOff: 'Queda oculto: solo lo ves tú.',
+        cancel: 'Cancelar',
+        create: 'Guardar recuerdo',
+        save: 'Guardar cambios',
+        errors: {
+          titleRequired: 'Escribe un título.',
+          titleMax: 'El título admite hasta 100 caracteres.',
+          descriptionMax: 'La descripción admite hasta 500 caracteres.',
+          yearRange: 'Escribe un año válido entre 1900 y 2100.',
+          imageRequired: 'Elige una foto para este recuerdo.'
+        }
+      },
+      dropzone: {
+        label: 'Foto',
+        choose: 'Toca para elegir una foto',
+        drop: 'o arrástrala aquí',
+        hint: 'JPG, PNG, WEBP o GIF, hasta 5 MB.',
+        replace: 'Cambiar foto',
+        remove: 'Quitar foto',
+        preview: 'Vista previa de la foto',
+        current: 'Foto actual',
+        errors: {
+          type: 'Ese archivo no es una imagen válida. Usa JPG, PNG, WEBP o GIF.',
+          size: 'La foto pesa más de 5 MB. Elige una más ligera.'
+        }
+      },
+      delete: {
+        title: 'Eliminar recuerdo',
+        text: 'Vas a eliminar “{title}” y su foto. Esto no se puede deshacer.',
+        confirm: 'Eliminar',
+        cancel: 'Cancelar'
+      },
+      toast: {
+        created: 'Recuerdo agregado.',
+        updated: 'Cambios guardados.',
+        deleted: 'Recuerdo eliminado.',
+        loadError: 'No pudimos cargar tus recuerdos. Intenta de nuevo.',
+        error: 'No pudimos completar la acción. Intenta de nuevo.',
+        fileRejected: 'No pudimos subir la foto. Revisa que sea JPG, PNG, WEBP o GIF de hasta 5 MB.',
+        invalid: 'Revisa los datos del recuerdo e intenta de nuevo.'
+      },
+      viewer: { noTitle: 'Recuerdo' }
+    },
     seating: {
       title: 'Mesas',
       subtitle: 'Arma tus mesas y siente a cada invitado en su lugar.',
@@ -1349,7 +1434,7 @@ export default {
       menus: 'Cada invitado elige su plato al confirmar y tú ves cuántos pidió cada opción.',
       seating: 'Acomoda a tus invitados en mesas y ten el plano listo para el salón.',
       suggested_music: 'Tus invitados proponen canciones y votan las que más quieren bailar.',
-      memories: 'Tus invitados suben sus fotos de la fiesta y tú guardas el álbum.',
+      memories: 'Guarda las fotos de tu fiesta en un álbum.',
       comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.'
     },
     includes: 'Con el evento completo tienes:',

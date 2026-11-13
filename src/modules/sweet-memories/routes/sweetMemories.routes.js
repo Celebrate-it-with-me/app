@@ -5,11 +5,11 @@ export default [
     component: () => import('@/modules/sweet-memories/views/CSweetMemories.vue'),
     meta: {
       moduleKey: 'memories',
-      title: 'Sweet Memories',
+      titleKey: 'titles.memories',
       requiresAuth: true,
       requiredPermission: ['view_sweet_memories'],
-      requiresFeature: 'suggested-music',
-      module: 'suggested-music'
+      requiresFeature: 'memories',
+      module: 'memories'
     }
   }
 ]
