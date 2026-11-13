@@ -1,10 +1,12 @@
-// src/modules/comments/composables/useCommentsAdminController.js
-// All comments in code are in English, as requested.
-
 import { computed, ref, watch } from 'vue'
-import { useCommentsFilters } from '@/modules/comments/composables/useCommentsFilters'
+import { useI18n } from 'vue-i18n'
+import { useToast } from '@/ui'
+import { filterComments } from '@/modules/comments/utils/comments'
 
 export function useCommentsAdminController({ store, normalizeComment }) {
+  const { t } = useI18n()
+  const { success, error: showError } = useToast()
+
   // UI state
   const loading = ref(false)
   const loadingMore = ref(false)
@@ -29,8 +31,16 @@ export function useCommentsAdminController({ store, normalizeComment }) {
   })
 
   // Filters (client-side)
-  const { searchQuery, statusFilter, sortOrder, filteredComments } =
-    useCommentsFilters(eventComments)
+  const searchQuery = ref('')
+  const statusFilter = ref('all')
+  const sortOrder = ref('newest')
+  const filteredComments = computed(() =>
+    filterComments(eventComments.value, {
+      search: searchQuery.value,
+      status: statusFilter.value,
+      sort: sortOrder.value
+    })
+  )
 
   // Selection
   const selectedComment = computed(() => {
@@ -59,7 +69,7 @@ export function useCommentsAdminController({ store, normalizeComment }) {
       ensureSelection()
     } catch (err) {
       console.error('Error fetching comments:', err)
-      error.value = 'Failed to load comments.'
+      error.value = t('app.comments.loadError')
     } finally {
       loading.value = false
     }
@@ -79,6 +89,7 @@ export function useCommentsAdminController({ store, normalizeComment }) {
       ensureSelection()
     } catch (err) {
       console.error('Error loading more comments:', err)
+      showError(t('app.comments.loadError'))
     } finally {
       loadingMore.value = false
     }
@@ -87,13 +98,10 @@ export function useCommentsAdminController({ store, normalizeComment }) {
   // UI actions
   const openCreate = () => {
     isCreating.value = true
-    // On mobile, create acts like detail drawer.
-    isDetailOpenOnMobile.value = true
   }
 
   const closeCreate = () => {
     isCreating.value = false
-    // Do not force-close detail on desktop; on mobile we follow the view's logic.
   }
 
   const selectComment = id => {
@@ -109,6 +117,7 @@ export function useCommentsAdminController({ store, normalizeComment }) {
   // CRUD-like actions
   const onCommentCreated = async () => {
     isCreating.value = false
+    success(t('app.comments.added'))
     await refresh()
   }
 
@@ -120,8 +129,8 @@ export function useCommentsAdminController({ store, normalizeComment }) {
     try {
       await store.updateStatus({ commentId: id, status })
       // Optional: update local normalized list if store does not refresh automatically.
-    } catch (e) {
-      console.log(e)
+    } catch {
+      showError(t('app.comments.saveError'))
     }
   }
 
@@ -135,8 +144,8 @@ export function useCommentsAdminController({ store, normalizeComment }) {
 
       // If your normalized mapping uses `is_pinned` based on `isPinned`,
       // this immediate toggle will reflect through computed normalization.
-    } catch (e) {
-      console.log(e)
+    } catch {
+      showError(t('app.comments.saveError'))
     }
   }
 
@@ -146,8 +155,8 @@ export function useCommentsAdminController({ store, normalizeComment }) {
 
       const raw = store.eventComments.find(x => x.id === comment.id)
       if (raw) raw.isFavorite = !raw.isFavorite
-    } catch (e) {
-      console.log(e)
+    } catch {
+      showError(t('app.comments.saveError'))
     }
   }
 
@@ -166,17 +175,18 @@ export function useCommentsAdminController({ store, normalizeComment }) {
       store.eventComments = store.eventComments.filter(c => c.id !== commentToDelete.value.id)
       showDeleteConfirm.value = false
       commentToDelete.value = null
+      isDetailOpenOnMobile.value = false
+      success(t('app.comments.deleted'))
 
       ensureSelection()
-    } catch (e) {
-      console.log(e)
+    } catch {
+      showError(t('app.comments.deleteError'))
     }
   }
 
-  const authorLabel = computed(() => {
-    if (selectedComment.value?.author?.is_organizer) return 'Organizer'
-    return 'Guest'
-  })
+  const authorLabel = computed(() =>
+    selectedComment.value?.author?.is_organizer ? t('app.comments.organizer') : t('app.comments.guest')
+  )
 
   // Keep selection valid when filters change
   watch(filteredComments, () => {

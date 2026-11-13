@@ -1,9 +1,9 @@
 <script setup>
-// All comments in code are in English, as requested.
-
-import CModal from '@/components/UI/modals/CModal.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Music } from 'lucide-vue-next'
+import { UiModal, UiButton } from '@/ui'
+import { spotifyEmbedUrl } from '@/modules/suggested-music/utils/music'
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -11,57 +11,54 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'close'])
+const { t } = useI18n()
+
+const embedUrl = computed(() => spotifyEmbedUrl(props.selectedSong?.platformId))
 
 const close = () => {
   emit('update:modelValue', false)
   emit('close')
 }
+
+const onOpenChange = open => {
+  if (open) emit('update:modelValue', true)
+  else close()
+}
 </script>
 
 <template>
-  <CModal
-    :model-value="props.modelValue"
-    size="lg"
-    show-close-icon
-    @update:model-value="val => emit('update:modelValue', val)"
-    @close="close"
-  >
-    <template #title>Now Playing</template>
+  <UiModal :open="props.modelValue" :title="t('app.music.player.title')" size="lg" @update:open="onOpenChange">
+    <div v-if="props.selectedSong" class="space-y-4">
+      <p class="truncate text-sm text-ink-700">{{ props.selectedSong.title }} · {{ props.selectedSong.artist }}</p>
 
-    <div v-if="props.selectedSong" class="space-y-6">
-      <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
-        <iframe
-          v-if="props.selectedSong.platformId"
-          :src="`https://open.spotify.com/embed/track/${props.selectedSong.platformId}`"
-          width="100%"
-          height="352"
-          allowtransparency="true"
-          allow="encrypted-media"
-          class="rounded-lg"
-        ></iframe>
+      <iframe
+        v-if="embedUrl"
+        :src="embedUrl"
+        :title="t('app.music.player.iframeTitle', { title: props.selectedSong.title })"
+        width="100%"
+        height="352"
+        allowtransparency="true"
+        allow="encrypted-media"
+        class="rounded-lg"
+      ></iframe>
 
-        <div v-else class="text-center py-10 text-gray-500 dark:text-gray-400">
-          <Music class="w-12 h-12 mx-auto mb-3 text-gray-400" />
-          <p>Unable to load player</p>
-        </div>
+      <div v-else class="py-10 text-center text-ink-500">
+        <Music class="mx-auto mb-3 h-10 w-10" aria-hidden="true" />
+        <p>{{ t('app.music.player.unavailable') }}</p>
       </div>
 
-      <div class="text-center text-sm text-gray-500 dark:text-gray-400">
-        <p>🎵 Powered by Spotify</p>
-        <p class="text-xs mt-1">
-          {{
-            props.selectedSong.previewUrl
-              ? 'Playing 30-second preview'
-              : 'Full playback requires Spotify Premium'
-          }}
+      <div class="text-center text-sm text-ink-500">
+        <p>{{ t('app.music.player.powered') }}</p>
+        <p class="mt-1 text-xs">
+          {{ props.selectedSong.previewUrl ? t('app.music.player.preview') : t('app.music.player.premium') }}
         </p>
       </div>
     </div>
 
     <template #footer>
-      <div class="flex justify-end w-full">
-        <CButton variant="outline" @click="close">Close</CButton>
+      <div class="flex justify-end">
+        <UiButton variant="secondary" @click="close">{{ t('app.music.close') }}</UiButton>
       </div>
     </template>
-  </CModal>
+  </UiModal>
 </template>

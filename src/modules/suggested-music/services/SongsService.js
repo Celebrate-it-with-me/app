@@ -16,27 +16,6 @@ class SongsService {
     })
   }
 
-  async createPublic({
-    eventId,
-    platformId,
-    title,
-    artist,
-    album,
-    thumbnailUrl,
-    previewUrl,
-    accessCode
-  }) {
-    return CWM_API.post(`template/event/${eventId}/suggest-music`, {
-      platformId,
-      title,
-      artist,
-      album,
-      thumbnailUrl,
-      previewUrl,
-      accessCode
-    })
-  }
-
   /**
    * Get suggested songs for an event (organizer view)
    * GET /event/{eventId}/suggest-music
@@ -53,34 +32,12 @@ class SongsService {
     })
   }
 
-  async getSuggestedSongsPublic(eventId, options = {}) {
-    const { perPage = 5, pageSelected = 1, orderBy = 'recent', search = '' } = options
-
-    return CWM_API.get(`template/event/${eventId}/suggest-music`, {
-      params: {
-        perPage,
-        pageSelected,
-        orderBy,
-        search
-      }
-    })
-  }
-
   /**
    * Delete a suggested song (organizer)
    * DELETE /event/{eventId}/suggest-music/{songId}
    */
   async deleteSong(eventId, songId) {
     return CWM_API.delete(`event/${eventId}/suggest-music/${songId}`)
-  }
-
-  async deleteSongPublic(eventId, songId, accessCode) {
-    return CWM_API.delete(`template/event/${eventId}/suggest-music/`, {
-      params: {
-        songId,
-        accessCode
-      }
-    })
   }
 
   /**

@@ -1,195 +1,137 @@
 <script setup>
-import CAlert from '@/components/UI/alerts/CAlert.vue'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { Download, Users } from 'lucide-vue-next'
+import { UiCard, UiButton, UiSelect, UiPagination, UiEmptyState, UiSkeleton, useToast } from '@/ui'
 import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
-import CPagination from '@/components/UI/pagination/CPagination.vue'
-import CSelect from '@/components/UI/form2/CSelect.vue'
 import { useUserStore } from '@/stores/useUserStore'
+import { PER_PAGE_OPTIONS, chosenName, totalPages } from '@/modules/menus/utils/menus'
 
+defineProps({ loading: { type: Boolean, default: false } })
+
+const { t } = useI18n()
+const toast = useToast()
 const menuStore = useMenusStore()
 const userStore = useUserStore()
-const loading = ref(false)
-const currentPage = ref(1)
+const reloading = ref(false)
+const exporting = ref(false)
 
-const perPageOptions = [
-  { value: 5, label: '5' },
-  { value: 10, label: '10' },
-  { value: 20, label: '20' }
-]
+const perPageOptions = PER_PAGE_OPTIONS.map(n => ({ value: n, label: String(n) }))
+const pages = computed(() => totalPages(menuStore.guestsMeta))
 
-const totalPages = computed(() => {
-  if (!menuStore?.guestsMenu?.length) {
-    return 1
+const reload = async () => {
+  reloading.value = true
+  try {
+    await menuStore.loadGuestsMenu()
+  } catch {
+    toast.error(t('app.menus.loadError'))
+  } finally {
+    reloading.value = false
   }
+}
 
-  return Math.ceil(menuStore.guestsMenu.length / menuStore.perPage)
-})
+const onPage = async page => {
+  menuStore.pageSelected = page
+  await reload()
+}
 
-const loadGuestsMenu = async () => {
-  loading.value = true
-  await menuStore.loadGuestsMenu()
-  loading.value = false
+const onPerPage = async value => {
+  menuStore.perPage = Number(value)
+  menuStore.pageSelected = 1
+  await reload()
 }
 
 const exportMenu = async () => {
+  exporting.value = true
   try {
     const response = await menuStore.exportGuestsMenu()
-
-    if (response.status === 200) {
-      const blob = new Blob([response.data], { type: response.headers['content-type'] })
-      const url = window.URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `guest-menus-${userStore.activeEvent}.xlsx`
-      document.body.appendChild(a)
-      a.click()
-      window.URL.revokeObjectURL(url)
-      a.remove()
-    } else {
-      throw new Error('Failed to export data')
-    }
-  } catch (error) {
-    console.error('Error exporting data:', error)
+    if (response.status !== 200) throw new Error('export failed')
+    const blob = new Blob([response.data], { type: response.headers['content-type'] })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `guest-menus-${userStore.activeEvent}.xlsx`
+    document.body.appendChild(a)
+    a.click()
+    window.URL.revokeObjectURL(url)
+    a.remove()
+  } catch {
+    toast.error(t('app.menus.exportError'))
   } finally {
-    loading.value = false
+    exporting.value = false
   }
 }
 
-watch(
-  () => menuStore.pageSelected,
-  async () => {
-    await loadGuestsMenu()
-  }
-)
-
-watch(
-  () => menuStore.perPage,
-  async () => {
-    await loadGuestsMenu()
-  }
-)
+const COURSES = [
+  { key: 'starterName', label: 'app.menus.types.starter' },
+  { key: 'mainName', label: 'app.menus.types.main' },
+  { key: 'dessertName', label: 'app.menus.types.dessert' }
+]
 </script>
 
 <template>
-  <section v-if="!menuStore?.guestsMenu?.length">
-    <CAlert
-      variant="info"
-      class="rounded-2xl border-0 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-    >
-      No guest selections yet. Once guests confirm their attendance, their menu choices will appear
-      here.
-    </CAlert>
-  </section>
-  <section v-else class="space-y-6">
+  <div v-if="loading && !menuStore.guestsMenu.length" class="space-y-3">
+    <UiSkeleton class="h-20" />
+    <UiSkeleton class="h-20" />
+  </div>
+
+  <UiEmptyState v-else-if="!menuStore.guestsMenu.length" :title="t('app.menus.guestsEmptyTitle')" :description="t('app.menus.guestsEmptyText')">
+    <template #icon><Users class="h-6 w-6" aria-hidden="true" /></template>
+  </UiEmptyState>
+
+  <div v-else class="space-y-4">
     <div class="flex justify-end">
-      <button
-        class="flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold hover:scale-105 active:scale-95 transition-all shadow-lg"
-        @click="exportMenu"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        Export XLSX
-      </button>
+      <UiButton variant="secondary" :loading="exporting" @click="exportMenu">
+        <Download class="h-4 w-4" aria-hidden="true" />
+        {{ t('app.menus.export') }}
+      </UiButton>
     </div>
 
-    <div
-      class="overflow-hidden bg-white dark:bg-gray-900/50 backdrop-blur-xs rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xl"
-    >
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-800">
-          <thead class="bg-gray-50/50 dark:bg-gray-800/50">
+    <div :class="reloading && 'opacity-60'">
+      <!-- Phones: one card per guest -->
+      <ul class="space-y-3 md:hidden">
+        <li v-for="guest in menuStore.guestsMenu" :key="guest.id">
+          <UiCard>
+            <p class="truncate text-base font-medium text-ink-900">{{ guest.name }}</p>
+            <p v-if="guest.email" class="truncate text-sm text-ink-500">{{ guest.email }}</p>
+            <dl class="mt-3 space-y-1.5 text-sm">
+              <div v-for="course in COURSES" :key="course.key" class="flex justify-between gap-3">
+                <dt class="text-ink-500">{{ t(course.label) }}</dt>
+                <dd class="min-w-0 truncate text-right text-ink-900">{{ chosenName(guest[course.key]) || '—' }}</dd>
+              </div>
+            </dl>
+          </UiCard>
+        </li>
+      </ul>
+
+      <!-- md and up: table -->
+      <UiCard padding="none" class="hidden overflow-hidden md:block">
+        <table class="w-full text-left">
+          <thead class="border-b border-line bg-cream-100 text-sm text-ink-700">
             <tr>
-              <th
-                class="px-8 py-5 text-left text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-              >
-                Guest
-              </th>
-              <th
-                class="px-8 py-5 text-left text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-              >
-                Starter
-              </th>
-              <th
-                class="px-8 py-5 text-left text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-              >
-                Main
-              </th>
-              <th
-                class="px-8 py-5 text-left text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-              >
-                Dessert
-              </th>
+              <th scope="col" class="px-5 py-3 font-medium">{{ t('app.menus.colGuest') }}</th>
+              <th v-for="course in COURSES" :key="course.key" scope="col" class="px-5 py-3 font-medium">{{ t(course.label) }}</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-            <tr
-              v-for="guest in menuStore.guestsMenu"
-              :key="guest.id"
-              class="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-all"
-            >
-              <td class="px-8 py-6 whitespace-nowrap">
-                <div class="flex flex-col">
-                  <span class="text-base font-bold text-gray-900 dark:text-white">{{
-                    guest.name
-                  }}</span>
-                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ guest.email }}</span>
-                </div>
+          <tbody class="divide-y divide-line">
+            <tr v-for="guest in menuStore.guestsMenu" :key="guest.id" class="hover:bg-cream-100">
+              <td class="px-5 py-3">
+                <span class="block font-medium text-ink-900">{{ guest.name }}</span>
+                <span v-if="guest.email" class="block text-sm text-ink-500">{{ guest.email }}</span>
               </td>
-              <td class="px-8 py-6 whitespace-nowrap">
-                <span
-                  class="px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  {{ guest.starterName || '—' }}
-                </span>
-              </td>
-              <td class="px-8 py-6 whitespace-nowrap">
-                <span
-                  class="px-3 py-1 rounded-lg bg-rose/5 text-sm font-medium text-rose-dark dark:text-rose"
-                >
-                  {{ guest.mainName || '—' }}
-                </span>
-              </td>
-              <td class="px-8 py-6 whitespace-nowrap">
-                <span
-                  class="px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300"
-                >
-                  {{ guest.dessertName || '—' }}
-                </span>
-              </td>
+              <td v-for="course in COURSES" :key="course.key" class="px-5 py-3 text-sm text-ink-900">{{ chosenName(guest[course.key]) || '—' }}</td>
             </tr>
           </tbody>
         </table>
-      </div>
-
-      <div
-        class="p-8 border-t border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/30 flex flex-col sm:flex-row items-center justify-between gap-6"
-      >
-        <div class="flex items-center gap-4">
-          <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Show</span>
-          <CSelect
-            id="per-page"
-            v-model="menuStore.perPage"
-            :options="perPageOptions"
-            name="perPage"
-            class="w-24"
-          />
-        </div>
-        <CPagination
-          :total-pages="totalPages"
-          :current-page="menuStore.pageSelected"
-          @update:current-page="currentPage = $event"
-        />
-      </div>
+      </UiCard>
     </div>
-  </section>
+
+    <div class="flex flex-col items-center justify-between gap-3 sm:flex-row">
+      <div class="flex items-center gap-3">
+        <span id="menus-per-page" class="whitespace-nowrap text-sm text-ink-700">{{ t('app.menus.perPage') }}</span>
+        <UiSelect :model-value="menuStore.perPage" :options="perPageOptions" class="w-24" aria-labelledby="menus-per-page" @update:model-value="onPerPage" />
+      </div>
+      <UiPagination v-if="pages > 1" :page="menuStore.pageSelected" :pages="pages" @update:page="onPage" />
+    </div>
+  </div>
 </template>

@@ -1,88 +1,59 @@
 <script setup>
-// All comments in code are in English, as requested.
-
-import CCard from '@/components/UI/cards/CCard.vue'
-import CButton from '@/components/UI/buttons/CButton.vue'
-import { Search } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+import { Plus, Search } from 'lucide-vue-next'
+import { UiCard, UiInput, UiButton } from '@/ui'
+import SongCover from '@/modules/suggested-music/components/SongCover.vue'
 
 const props = defineProps({
-  loading: { type: Boolean, default: false },
-
-  // Search state
   searchQuery: { type: String, default: '' },
-  searchResults: { type: Array, default: () => [] }
+  searchResults: { type: Array, default: () => [] },
+  searching: { type: Boolean, default: false }
 })
 
-const emit = defineEmits([
-  // v-model:searchQuery support
-  'update:searchQuery',
+const emit = defineEmits(['update:searchQuery', 'search', 'add'])
+const { t } = useI18n()
 
-  // actions
-  'search', // when user types
-  'add' // payload: song object from search results
-])
-
-const onInput = e => {
-  emit('update:searchQuery', e.target.value)
+const onInput = value => {
+  emit('update:searchQuery', value)
   emit('search')
 }
-
-const onAdd = song => emit('add', song)
 </script>
 
 <template>
-  <CCard class="mb-6">
-    <div class="p-6">
-      <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
-        <Search class="w-5 h-5 mr-2 text-primary-600" />
-        Search & Add Songs
-      </h2>
+  <UiCard :title="t('app.music.search.title')" :subtitle="t('app.music.search.subtitle')" heading-level="h2">
+    <UiInput
+      :model-value="props.searchQuery"
+      type="search"
+      :aria-label="t('app.music.search.title')"
+      :placeholder="t('app.music.search.placeholder')"
+      autocomplete="off"
+      @update:model-value="onInput"
+    >
+      <template #leading><Search class="h-4 w-4" aria-hidden="true" /></template>
+    </UiInput>
 
-      <div class="relative mb-6">
-        <input
-          :value="props.searchQuery"
-          type="text"
-          :disabled="props.loading"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white disabled:opacity-60 disabled:cursor-not-allowed"
-          placeholder="Search for songs on Spotify..."
-          @input="onInput"
-        />
-      </div>
-
-      <div v-if="props.searchResults.length > 0" class="mt-4 space-y-4 max-h-80 overflow-y-auto">
-        <div
-          v-for="(song, index) in props.searchResults"
-          :key="song.platformId || index"
-          class="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-        >
-          <div class="flex items-center justify-between gap-3">
-            <div class="flex items-center space-x-3 min-w-0">
-              <img
-                :src="song.thumbnailUrl"
-                alt="Album Art"
-                class="w-12 h-12 rounded-md object-cover shrink-0"
-              />
-              <div class="min-w-0">
-                <h3 class="font-medium text-gray-900 dark:text-white truncate">
-                  {{ song.title }}
-                </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
-                  {{ song.artist }} - {{ song.album }}
-                </p>
-              </div>
-            </div>
-
-            <CButton :disabled="props.loading" variant="primary" size="sm" @click="onAdd(song)">
-              Add
-            </CButton>
-          </div>
+    <ul v-if="props.searchResults.length" class="mt-3 max-h-96 divide-y divide-line overflow-y-auto rounded-lg border border-line">
+      <li
+        v-for="(song, index) in props.searchResults"
+        :key="song.platformId || index"
+        class="flex items-center gap-3 p-3"
+      >
+        <SongCover :src="song.thumbnailUrl" size="h-12 w-12" />
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-base font-medium text-ink-900">{{ song.title }}</p>
+          <p class="truncate text-sm text-ink-500">{{ song.artist }} · {{ song.album }}</p>
         </div>
-      </div>
+        <UiButton size="sm" :aria-label="t('app.music.search.addNamed', { title: song.title })" @click="emit('add', song)">
+          <Plus class="h-4 w-4" aria-hidden="true" />
+          <span class="hidden sm:inline">{{ t('app.music.search.add') }}</span>
+        </UiButton>
+      </li>
+    </ul>
 
-      <div v-else class="text-sm text-gray-500 dark:text-gray-400">
-        <span v-if="props.searchQuery.trim()">No results yet. Keep typing…</span>
-        <span v-else>Type a song, artist, or album to search Spotify.</span>
-      </div>
-    </div>
-  </CCard>
+    <p v-else class="mt-3 text-sm text-ink-500" aria-live="polite">
+      <template v-if="props.searching">{{ t('app.music.search.searching') }}</template>
+      <template v-else-if="props.searchQuery.trim()">{{ t('app.music.search.keepTyping') }}</template>
+      <template v-else>{{ t('app.music.search.hint') }}</template>
+    </p>
+  </UiCard>
 </template>

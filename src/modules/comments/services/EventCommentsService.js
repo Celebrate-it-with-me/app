@@ -50,7 +50,6 @@ class EventCommentsService {
 
   async addComment({ eventId, userId, origin, comment }) {
     try {
-      console.log('Request parameters:', { eventId, userId, origin, comment })
 
       await CWM_API.get('sanctum/csrf-cookie', {
         baseURL: import.meta.env.VITE_API_URL

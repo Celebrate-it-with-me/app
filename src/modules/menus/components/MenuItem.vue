@@ -1,9 +1,9 @@
 <script setup>
-import CButton from '@/components/UI/buttons/CButton.vue'
 import { ref } from 'vue'
-import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
+import { useI18n } from 'vue-i18n'
+import { Trash2 } from 'lucide-vue-next'
+import { UiBadge, UiButton, UiModal, useToast } from '@/ui'
 import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
-import { useNotificationStore } from '@/stores/useNotificationStore'
 
 const props = defineProps({
   item: {
@@ -12,82 +12,52 @@ const props = defineProps({
   }
 })
 
-const showConfirmDeleteMenuItemModal = ref(false)
+const { t, te } = useI18n()
+const toast = useToast()
 const menuStore = useMenusStore()
-const notifications = useNotificationStore()
+const showConfirm = ref(false)
+const removing = ref(false)
 
-const removeMenuItem = () => {
-  showConfirmDeleteMenuItemModal.value = true
-}
+const dietLabel = diet => (te(`app.menus.diets.${diet}`) ? t(`app.menus.diets.${diet}`) : diet)
 
 const confirmRemoveItem = async () => {
+  removing.value = true
   try {
     const response = await menuStore.removeMenuItem(props.item)
 
     if (response.status === 200) {
+      const id = menuStore.currentMenu.id
       await menuStore.loadMenus()
-      await menuStore.setCurrentMenu(menuStore.currentMenu.id)
-      notifications.addNotification({
-        type: 'success',
-        message: 'Menu item removed successfully.'
-      })
+      await menuStore.setCurrentMenu(id)
+      toast.success(t('app.menus.itemRemoved'))
     }
-  } catch (e) {
-    console.error(e)
+    showConfirm.value = false
+  } catch {
+    toast.error(t('app.menus.itemRemoveError'))
   } finally {
-    showConfirmDeleteMenuItemModal.value = false
+    removing.value = false
   }
 }
 </script>
 
 <template>
-  <div
-    class="group relative bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-rose/30 dark:hover:border-rose/30 transition-all hover:shadow-lg hover:shadow-rose/5"
-  >
-    <div class="flex justify-between items-start gap-4">
-      <div class="space-y-2 flex-1">
-        <div class="flex items-center gap-2">
-          <p
-            class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-rose transition-colors"
-          >
-            {{ item.name }}
-          </p>
-          <span
-            v-if="item.diet_type"
-            class="px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[10px] font-black uppercase tracking-wider"
-          >
-            {{ item.diet_type }}
-          </span>
-        </div>
-        <p class="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-          {{ item.notes || 'No description available' }}
-        </p>
+  <div class="flex items-start gap-3 p-4">
+    <div class="min-w-0 flex-1">
+      <div class="flex flex-wrap items-center gap-2">
+        <p class="text-base font-medium text-ink-900">{{ item.name }}</p>
+        <UiBadge v-if="item.diet_type && item.diet_type !== 'regular'" tone="success" size="sm">{{ dietLabel(item.diet_type) }}</UiBadge>
       </div>
-      <CButton
-        variant="danger"
-        class="opacity-0 group-hover:opacity-100 transition-opacity p-2 h-10 w-10 rounded-xl flex items-center justify-center"
-        @click="removeMenuItem"
-      >
-        <span class="sr-only">Remove</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </CButton>
+      <p class="mt-0.5 text-sm text-ink-500">{{ item.notes || t('app.menus.noNotes') }}</p>
     </div>
+    <UiButton variant="ghost" icon :aria-label="t('app.menus.removeItemAria', { name: item.name })" class="text-danger" @click="showConfirm = true">
+      <Trash2 class="h-5 w-5" aria-hidden="true" />
+    </UiButton>
   </div>
-  <CConfirmModal
-    v-model="showConfirmDeleteMenuItemModal"
-    title="Remove Menu Item"
-    message="Are you sure you want to remove this item? This action cannot be undone."
-    @confirm="confirmRemoveItem"
-  />
+
+  <UiModal v-model:open="showConfirm" :title="t('app.menus.removeItemTitle')" :description="t('app.menus.removeItemText')" size="sm">
+    <template #footer>
+      <UiButton variant="secondary" @click="showConfirm = false">{{ t('app.menus.cancel') }}</UiButton>
+      <UiButton variant="danger" :loading="removing" @click="confirmRemoveItem">{{ t('app.menus.remove') }}</UiButton>
+    </template>
+  </UiModal>
 </template>

@@ -1,16 +1,21 @@
 <script setup>
-import CButton from '@/components/UI/buttons/CButton.vue'
-import CAlert from '@/components/UI/alerts/CAlert.vue'
-import CConfirmModal from '@/components/UI/modals/CConfirmModal.vue'
-import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { ChevronRight, Trash2, UtensilsCrossed } from 'lucide-vue-next'
+import { UiCard, UiBadge, UiButton, UiModal, UiEmptyState, UiSkeleton, useToast } from '@/ui'
+import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
 
+defineProps({ loading: { type: Boolean, default: false } })
+
+const { t } = useI18n()
+const toast = useToast()
+const router = useRouter()
 const menuStore = useMenusStore()
-const loading = ref(false)
+
 const showConfirmDeleteModal = ref(false)
 const menuSelectedForDelete = ref(null)
-const router = useRouter()
+const deleting = ref(false)
 
 const confirmDeleteMenu = menu => {
   menuSelectedForDelete.value = menu
@@ -18,160 +23,107 @@ const confirmDeleteMenu = menu => {
 }
 
 const deleteMenu = async () => {
+  deleting.value = true
   try {
     const response = await menuStore.deleteMenu(menuSelectedForDelete.value.id)
-
     if (response.status >= 200 && response.status < 300) {
-      await loadMenus()
+      await menuStore.loadMenus()
+      toast.success(t('app.menus.deleted'))
     }
-  } catch (err) {
-    console.log(err)
-  } finally {
     showConfirmDeleteModal.value = false
+  } catch {
+    toast.error(t('app.menus.deleteError'))
+  } finally {
+    deleting.value = false
   }
 }
 
-const loadMenus = async () => {
-  loading.value = true
-  await menuStore.loadMenus()
-  loading.value = false
-}
-
-const goToMenu = async menu => {
-  await router.push(`/dashboard/menus/show/${menu.id}`)
-}
+const goToMenu = menu => router.push(`/dashboard/menus/show/${menu.id}`)
 </script>
 
 <template>
-  <section v-if="!menuStore.hasMenu">
-    <CAlert
-      variant="info"
-      class="rounded-2xl border-0 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-    >
-      There are no menus in this event yet. Start by adding one!
-    </CAlert>
-  </section>
-  <section
-    v-else
-    class="overflow-hidden bg-white dark:bg-gray-900/50 backdrop-blur-xs rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xl"
-  >
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-100 dark:divide-gray-800">
-        <thead class="bg-gray-50/50 dark:bg-gray-800/50">
-          <tr>
-            <th
-              class="px-8 py-5 text-left text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-            >
-              Menu Title
-            </th>
-            <th
-              class="px-8 py-5 text-left text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-            >
-              Description
-            </th>
-            <th
-              class="px-8 py-5 text-center text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-            >
-              Options
-            </th>
-            <th
-              class="px-8 py-5 text-center text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-            >
-              Status
-            </th>
-            <th
-              class="px-8 py-5 text-right text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest"
-            >
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-          <tr
-            v-for="menu in menuStore.menus"
-            :key="menu.id"
-            class="group hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-all cursor-pointer"
+  <div v-if="loading && !menuStore.hasMenu" class="space-y-3">
+    <UiSkeleton class="h-20" />
+    <UiSkeleton class="h-20" />
+  </div>
+
+  <UiEmptyState v-else-if="!menuStore.hasMenu" :title="t('app.menus.emptyTitle')" :description="t('app.menus.emptyText')">
+    <template #icon><UtensilsCrossed class="h-6 w-6" aria-hidden="true" /></template>
+  </UiEmptyState>
+
+  <div v-else>
+    <!-- Phones: one card per menu -->
+    <ul class="space-y-3 md:hidden">
+      <li v-for="menu in menuStore.menus" :key="menu.id">
+        <UiCard padding="none" class="overflow-hidden">
+          <button
+            type="button"
+            class="flex min-h-11 w-full items-start gap-3 p-4 text-left transition-colors hover:bg-cream-100 focus-visible:outline-2 focus-visible:outline-rose-600"
             @click="goToMenu(menu)"
           >
-            <td class="px-8 py-6 whitespace-nowrap">
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-xl bg-rose/10 flex items-center justify-center text-rose font-bold"
-                >
-                  {{ menu.title.charAt(0).toUpperCase() }}
-                </div>
-                <span
-                  class="text-base font-bold text-gray-900 dark:text-white group-hover:text-rose transition-colors"
-                >
-                  {{ menu.title }}
-                </span>
-              </div>
-            </td>
-            <td class="px-8 py-6 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">
-              {{ menu.description || 'No description' }}
-            </td>
-            <td class="px-8 py-6 whitespace-nowrap">
-              <div class="flex justify-center gap-2">
-                <span
-                  v-if="menu.allowMultipleChoices"
-                  class="px-2 py-1 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 text-[10px] font-black uppercase tracking-tighter"
-                >
-                  Multiple
-                </span>
-                <span
-                  v-if="menu.allowCustomRequest"
-                  class="px-2 py-1 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase tracking-tighter"
-                >
-                  Custom
-                </span>
-              </div>
-            </td>
-            <td class="px-8 py-6 whitespace-nowrap text-center">
-              <span
-                v-if="menu.isDefault"
-                class="px-3 py-1 rounded-full bg-rose/10 text-rose text-[10px] font-black uppercase tracking-widest border border-rose/20"
-              >
-                Default
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-base font-medium text-ink-900">{{ menu.title }}</span>
+              <span class="mt-0.5 block line-clamp-2 text-sm text-ink-500">{{ menu.description || t('app.menus.noDescription') }}</span>
+              <span class="mt-2 flex flex-wrap gap-1.5">
+                <UiBadge :tone="menu.is_default ? 'rose' : 'neutral'" size="sm">{{ menu.is_default ? t('app.menus.main') : t('app.menus.optional') }}</UiBadge>
+                <UiBadge v-if="menu.allow_multiple_choices" tone="info" size="sm">{{ t('app.menus.multiple') }}</UiBadge>
+                <UiBadge v-if="menu.allow_custom_request" tone="gold" size="sm">{{ t('app.menus.custom') }}</UiBadge>
               </span>
-              <span
-                v-else
-                class="text-[10px] font-bold text-gray-300 dark:text-gray-600 uppercase tracking-widest"
-              >
-                Optional
+            </span>
+            <ChevronRight class="mt-0.5 h-5 w-5 shrink-0 text-ink-500" aria-hidden="true" />
+          </button>
+          <div class="border-t border-line px-4 py-2">
+            <UiButton variant="ghost" size="sm" class="text-danger" @click="confirmDeleteMenu(menu)">
+              <Trash2 class="h-4 w-4" aria-hidden="true" />
+              {{ t('app.menus.delete') }}
+            </UiButton>
+          </div>
+        </UiCard>
+      </li>
+    </ul>
+
+    <!-- md and up: table -->
+    <UiCard padding="none" class="hidden overflow-hidden md:block">
+      <table class="w-full text-left">
+        <thead class="border-b border-line bg-cream-100 text-sm text-ink-700">
+          <tr>
+            <th scope="col" class="px-5 py-3 font-medium">{{ t('app.menus.colTitle') }}</th>
+            <th scope="col" class="px-5 py-3 font-medium">{{ t('app.menus.colDescription') }}</th>
+            <th scope="col" class="px-5 py-3 font-medium">{{ t('app.menus.colOptions') }}</th>
+            <th scope="col" class="px-5 py-3 font-medium">{{ t('app.menus.colStatus') }}</th>
+            <th scope="col" class="px-5 py-3 text-right font-medium"><span class="sr-only">{{ t('app.menus.colActions') }}</span></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line">
+          <tr v-for="menu in menuStore.menus" :key="menu.id" class="hover:bg-cream-100">
+            <td class="px-5 py-3 font-medium text-ink-900">{{ menu.title }}</td>
+            <td class="max-w-xs truncate px-5 py-3 text-sm text-ink-500">{{ menu.description || t('app.menus.noDescription') }}</td>
+            <td class="px-5 py-3">
+              <span class="flex flex-wrap gap-1.5">
+                <UiBadge v-if="menu.allow_multiple_choices" tone="info" size="sm">{{ t('app.menus.multiple') }}</UiBadge>
+                <UiBadge v-if="menu.allow_custom_request" tone="gold" size="sm">{{ t('app.menus.custom') }}</UiBadge>
+                <span v-if="!menu.allow_multiple_choices && !menu.allow_custom_request" class="text-sm text-ink-500">&mdash;</span>
               </span>
             </td>
-            <td class="px-8 py-6 whitespace-nowrap text-right" @click.stop>
-              <div
-                class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <CButton
-                  size="sm"
-                  variant="secondary"
-                  class="rounded-xl h-9 px-4 font-bold"
-                  @click="goToMenu(menu)"
-                >
-                  Details
-                </CButton>
-                <CButton
-                  size="sm"
-                  variant="danger"
-                  class="rounded-xl h-9 px-4 font-bold"
-                  @click="confirmDeleteMenu(menu)"
-                >
-                  Delete
-                </CButton>
+            <td class="px-5 py-3">
+              <UiBadge :tone="menu.is_default ? 'rose' : 'neutral'" size="sm">{{ menu.is_default ? t('app.menus.main') : t('app.menus.optional') }}</UiBadge>
+            </td>
+            <td class="px-5 py-3">
+              <div class="flex justify-end gap-2">
+                <UiButton variant="secondary" size="sm" @click="goToMenu(menu)">{{ t('app.menus.details') }}</UiButton>
+                <UiButton variant="ghost" size="sm" class="text-danger" @click="confirmDeleteMenu(menu)">{{ t('app.menus.delete') }}</UiButton>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
-    <CConfirmModal
-      v-model="showConfirmDeleteModal"
-      title="Delete Menu"
-      message="Are you sure you want to delete this menu? This action cannot be undone and will remove all associated menu items and guest selections."
-      @confirm="deleteMenu()"
-      @close="showConfirmDeleteModal = false"
-    />
-  </section>
+    </UiCard>
+  </div>
+
+  <UiModal v-model:open="showConfirmDeleteModal" :title="t('app.menus.deleteTitle')" :description="t('app.menus.deleteText')" size="sm">
+    <template #footer>
+      <UiButton variant="secondary" @click="showConfirmDeleteModal = false">{{ t('app.menus.cancel') }}</UiButton>
+      <UiButton variant="danger" :loading="deleting" @click="deleteMenu">{{ t('app.menus.delete') }}</UiButton>
+    </template>
+  </UiModal>
 </template>

@@ -2,12 +2,15 @@ import { defineStore } from 'pinia'
 import { useUserStore } from '@/stores/useUserStore'
 import MenusService from '@/modules/menus/services/MenusService'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
+import { normalizeMenus } from '@/modules/menus/utils/menus'
 
 export const useMenusStore = defineStore('menusStore', {
   state: () => ({
     menus: [],
+    menu: null,
     currentMenu: null,
     guestsMenu: [],
+    guestsMeta: null,
     pageSelected: 1,
     perPage: 10,
     searchValue: ''
@@ -21,35 +24,50 @@ export const useMenusStore = defineStore('menusStore', {
     },
     async loadGuestsMenu() {
       const userStore = useUserStore()
-      const response = await MenusService.loadGuestMenu({
-        eventId: userStore.activeEvent
-      })
+      try {
+        const response = await MenusService.loadGuestMenu({
+          eventId: userStore.activeEvent,
+          page: this.pageSelected,
+          perPage: this.perPage
+        })
 
-      if (response.status === 200) {
-        this.guestsMenu = response.data.data ?? []
-        this.pageSelected = response.data.meta?.current_page || 1
-        return true
+        if (response.status === 200) {
+          this.guestsMenu = response.data?.data ?? []
+          this.guestsMeta = response.data?.meta ?? null
+          this.pageSelected = response.data?.meta?.current_page || 1
+          return true
+        }
+      } catch (e) {
+        // The old API answered 404 when nobody had been invited yet: treat it as an empty page.
+        if (e?.response?.status !== 404) throw e
+        this.guestsMenu = []
+        this.guestsMeta = null
       }
       return false
     },
 
     async loadMenus() {
       const userStore = useUserStore()
-      const response = await MenusService.loadMenus({
-        eventId: userStore.activeEvent
-      })
+      try {
+        const response = await MenusService.loadMenus({
+          eventId: userStore.activeEvent
+        })
 
-      if (response.status === 200) {
-        this.menus = response.data ?? []
-        return true
+        if (response.status === 200) {
+          this.menus = normalizeMenus(response.data)
+          return true
+        }
+      } catch (e) {
+        // The old API answered 404 when the event had no menus yet: treat it as an empty list.
+        if (e?.response?.status !== 404) throw e
+        this.menus = []
       }
 
       return false
     },
 
     async setCurrentMenu(menuId) {
-      console.log('checking menu id', menuId)
-      this.currentMenu = this.menus.find(menu => +menu.id === +menuId)
+      this.currentMenu = this.menus.find(menu => +menu.id === +menuId) ?? null
     },
 
     async loadRouteMenu(id) {
@@ -61,7 +79,7 @@ export const useMenusStore = defineStore('menusStore', {
       })
 
       if (response.status === 200) {
-        this.menu = response.data ?? []
+        this.menu = response.data ?? null
         return true
       }
 
@@ -106,7 +124,7 @@ export const useMenusStore = defineStore('menusStore', {
     },
 
     setMenus(menus) {
-      this.menus = menus
+      this.menus = normalizeMenus(menus)
     },
 
     setMenuGuests(menuGuests) {

@@ -1,19 +1,25 @@
-import { onMounted, reactive, ref } from 'vue'
-import { useForm } from 'vee-validate'
-import { z } from 'zod'
-import { toTypedSchema } from '@/utils/zodTypedSchema'
-import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
-import { useNotificationStore } from '@/stores/useNotificationStore'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+import { useToast } from '@/ui'
+import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
+import { fieldErrors, menuTitleError } from '@/modules/menus/utils/menus'
 
 export function useMenuFormController() {
-  const sending = ref(false)
+  const { t } = useI18n()
+  const toast = useToast()
   const menuStore = useMenusStore()
-  const notification = useNotificationStore()
   const router = useRouter()
   const route = useRoute()
-  const mode = ref('create')
+
+  const sending = ref(false)
+  const loading = ref(false)
+  const deleting = ref(false)
   const showDeleteMenuModal = ref(false)
+  const touched = ref(false)
+  const serverErrors = ref({})
+
+  const mode = computed(() => (route.params.id ? 'edit' : 'create'))
 
   const menuState = reactive({
     title: '',
@@ -23,119 +29,80 @@ export function useMenuFormController() {
     main_menu: false
   })
 
-  const schema = toTypedSchema(
-    z.object({
-      title: z.string().min(3, 'Title is required'),
-      description: z.string().optional(),
-      allow_multiple_choices: z.boolean().default(false),
-      allow_custom_request: z.boolean().default(false),
-      main_menu: z.boolean().default(false)
-    })
-  )
-
-  const { handleSubmit, values, errors } = useForm({
-    validationSchema: schema,
-    initialValues: {
-      title: '',
-      description: '',
-      allow_multiple_choices: false,
-      allow_custom_request: false,
-      main_menu: false
-    }
-  })
+  const errors = computed(() => ({
+    title: touched.value && menuTitleError(menuState.title) ? t(menuTitleError(menuState.title)) : serverErrors.value.title ?? '',
+    description: serverErrors.value.description ?? ''
+  }))
 
   const loadRouteMenu = async menuId => {
+    loading.value = true
     try {
-      const result = await menuStore.loadRouteMenu(menuId)
-
-      if (result) {
-        menuState.title = menuStore.menu?.title ?? ''
-        menuState.description = menuStore.menu?.description ?? ''
-        menuState.allow_multiple_choices = !!menuStore.menu?.allow_multiple_choices
-        menuState.allow_custom_request = !!menuStore.menu?.allow_custom_request
+      const ok = await menuStore.loadRouteMenu(menuId)
+      if (ok && menuStore.menu) {
+        menuState.title = menuStore.menu.title ?? ''
+        menuState.description = menuStore.menu.description ?? ''
+        menuState.allow_multiple_choices = !!menuStore.menu.allow_multiple_choices
+        menuState.allow_custom_request = !!menuStore.menu.allow_custom_request
+        menuState.main_menu = !!menuStore.menu.is_default
       } else {
-        notification.addNotification({
-          type: 'error',
-          message: 'Oops, something went wrong!'
-        })
+        toast.error(t('app.menus.loadError'))
       }
-    } catch (e) {
-      console.error(e)
+    } catch {
+      toast.error(t('app.menus.loadError'))
     } finally {
-      sending.value = false
+      loading.value = false
     }
   }
 
   onMounted(async () => {
-    let id = route.params.id
-    if (id) {
-      mode.value = 'edit'
-      await loadRouteMenu(id)
-    }
+    if (route.params.id) await loadRouteMenu(route.params.id)
   })
 
-  const handleRequest = async formValues => {
-    const id = route.params.id
+  const onSubmit = async () => {
+    touched.value = true
+    serverErrors.value = {}
+    if (menuTitleError(menuState.title)) return
 
-    if (mode.value === 'create') {
-      return await menuStore.createMenu(formValues)
-    }
-
-    return await menuStore.updateMenu({
-      ...formValues,
-      id: id
-    })
-  }
-
-  const onSubmit = handleSubmit(async formValues => {
+    sending.value = true
     try {
-      sending.value = true
-      const response = await handleRequest(formValues)
+      const payload = { ...menuState, title: menuState.title.trim() }
+      const response =
+        mode.value === 'create'
+          ? await menuStore.createMenu(payload)
+          : await menuStore.updateMenu({ ...payload, id: route.params.id })
 
       if (response.status >= 200 && response.status < 300) {
-        notification.addNotification({
-          type: 'success',
-          message: 'Menu processed successfully!'
-        })
-
+        toast.success(t('app.menus.saved'))
         await menuStore.loadMenus()
-
         await router.push('/dashboard/menus')
       } else {
-        notification.addNotification({
-          type: 'error',
-          message: 'Oops, something went wrong!'
-        })
+        toast.error(t('app.menus.saveError'))
       }
     } catch (e) {
-      console.error(e)
+      const fields = fieldErrors(e)
+      if (e?.response?.status === 422 && Object.keys(fields).length) {
+        serverErrors.value = fields
+      } else {
+        toast.error(t('app.menus.saveError'))
+      }
     } finally {
       sending.value = false
     }
-  })
+  }
 
   const handleDeleteMenu = async () => {
+    deleting.value = true
     try {
-      await menuStore.deleteMenu(menuStore.menu?.id)
-      notification.addNotification({
-        type: 'success',
-        message: 'Menu deleted successfully!'
-      })
+      await menuStore.deleteMenu(menuStore.menu?.id ?? route.params.id)
+      toast.success(t('app.menus.deleted'))
       await router.push('/dashboard/menus')
-    } catch (e) {
-      console.error(e)
+    } catch {
+      toast.error(t('app.menus.deleteError'))
     } finally {
+      deleting.value = false
       showDeleteMenuModal.value = false
     }
   }
 
-  return {
-    sending,
-    mode,
-    showDeleteMenuModal,
-    menuState,
-    onSubmit,
-    handleDeleteMenu,
-    errors
-  }
+  return { sending, loading, deleting, mode, showDeleteMenuModal, menuState, errors, onSubmit, handleDeleteMenu }
 }

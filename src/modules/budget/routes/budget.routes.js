@@ -5,10 +5,9 @@ export default [
     component: () => import('@/modules/budget/views/BudgetView.vue'),
     meta: {
       moduleKey: 'budget',
-      title: 'Budget',
+      titleKey: 'titles.budget',
       requiresAuth: true,
       requiredPermission: [],
-      requiresFeature: 'budget',
       module: 'budget'
     }
   }

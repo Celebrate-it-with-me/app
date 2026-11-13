@@ -1,49 +1,34 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { useToast } from '@/ui'
 import { useMenusStore } from '@/modules/menus/stores/useMenusStore'
 
 export function useMenusView() {
   const router = useRouter()
+  const { t } = useI18n()
+  const toast = useToast()
   const menuStore = useMenusStore()
-  const loading = ref(false)
-  const menusTableRef = ref(null)
-  const guestsMenuRef = ref(null)
+  const loading = ref(true)
 
-  const guestMenuCount = computed(() => {
-    return menuStore.guestsMenu?.length || 0
-  })
+  const guestMenuCount = computed(() => menuStore.guestsMeta?.total ?? menuStore.guestsMenu?.length ?? 0)
 
   const createMenu = async () => {
     await router.push('/dashboard/menus/create')
   }
 
-  const setLoading = isLoading => {
-    loading.value = isLoading
-  }
-
   const loadData = async () => {
     loading.value = true
     try {
-      await menuStore.loadMenus()
-      await menuStore.loadGuestsMenu()
-    } catch (error) {
-      console.error('Error loading menu data:', error)
+      await Promise.all([menuStore.loadMenus(), menuStore.loadGuestsMenu()])
+    } catch {
+      toast.error(t('app.menus.loadError'))
     } finally {
       loading.value = false
     }
   }
 
-  onMounted(async () => {
-    await loadData()
-  })
+  onMounted(loadData)
 
-  return {
-    loading,
-    menusTableRef,
-    guestsMenuRef,
-    guestMenuCount,
-    createMenu,
-    setLoading,
-    loadData
-  }
+  return { loading, guestMenuCount, createMenu, loadData }
 }

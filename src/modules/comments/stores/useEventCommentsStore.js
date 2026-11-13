@@ -19,7 +19,6 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
   }),
   actions: {
     setEventComments(eventComments) {
-      console.log('Checking comments object', eventComments)
       this.eventComments = eventComments.data || []
 
       this.pageSelected = eventComments?.meta?.current_page ?? 1
@@ -82,22 +81,20 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
 
     async toggleCommentPin(commentId) {
       const eventStore = useEventsStore()
-      const response = await EventCommentsService.toggleCommentPin({
+      return EventCommentsService.toggleCommentPin({
         eventId: eventStore.activeEvent.id,
         commentId: commentId
       })
 
-      console.log(response)
     },
 
     async toggleCommentFavorite(commentId) {
       const eventStore = useEventsStore()
-      const response = await EventCommentsService.toggleCommentFavorite({
+      return EventCommentsService.toggleCommentFavorite({
         eventId: eventStore.activeEvent.id,
         commentId: commentId
       })
 
-      console.log(response)
     },
 
     async loadCommentsPaginated() {

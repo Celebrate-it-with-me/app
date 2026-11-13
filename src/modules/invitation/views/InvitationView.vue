@@ -14,6 +14,7 @@ import InvitationCover from '../components/InvitationCover.vue'
 import InvitationLocations from '../components/InvitationLocations.vue'
 import InvitationCountdown from '../components/InvitationCountdown.vue'
 import InvitationSaveTheDate from '../components/InvitationSaveTheDate.vue'
+import InvitationPadrinos from '../components/InvitationPadrinos.vue'
 import InvitationItinerary from '../components/InvitationItinerary.vue'
 import InvitationDressCode from '../components/InvitationDressCode.vue'
 import InvitationRsvp from '../components/InvitationRsvp.vue'
@@ -28,6 +29,7 @@ const COMPONENTS = {
   itinerary: InvitationItinerary,
   locations: InvitationLocations,
   dress_code: InvitationDressCode,
+  padrinos: InvitationPadrinos,
   rsvp: InvitationRsvp,
   closing: InvitationClosing
 }
