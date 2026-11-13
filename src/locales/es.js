@@ -63,6 +63,7 @@ export default {
     dressCode: 'Vestimenta',
     budget: 'Presupuesto',
     padrinos: 'Padrinos',
+    comments: 'Comentarios',
     eventEdit: 'Detalles del evento'
   },
   hero: {
@@ -399,6 +400,68 @@ export default {
     }
   },
   app: {
+    comments: {
+      title: 'Comentarios',
+      subtitle: 'Los mensajes que dejan tus invitados. Elige cuáles se ven en la invitación, fija los favoritos o elimina los que no quieras.',
+      add: 'Agregar comentario',
+      addFirst: 'Agregar el primero',
+      emptyTitle: 'Aún no hay comentarios',
+      emptyText: 'Cuando tus invitados te dejen mensajes aparecerán aquí. También puedes escribir uno tú.',
+      noResultsTitle: 'No encontramos comentarios',
+      noResultsText: 'Prueba con otra búsqueda o cambia los filtros.',
+      search: 'Buscar por invitado o mensaje',
+      statusLabel: 'Estado',
+      sortLabel: 'Orden',
+      status: {
+        all: 'Todos',
+        visible: 'Visible',
+        pending: 'Pendiente de revisión',
+        hidden: 'Oculto',
+        unknown: 'Sin estado'
+      },
+      sort: {
+        newest: 'Más recientes',
+        oldest: 'Más antiguos',
+        pinned: 'Fijados primero'
+      },
+      guest: 'Invitado',
+      organizer: 'Organizadora',
+      anonymous: 'Invitado',
+      pin: 'Fijar',
+      unpin: 'Quitar de fijados',
+      favorite: 'Marcar como favorito',
+      unfavorite: 'Quitar de favoritos',
+      pinned: 'Fijado',
+      favorited: 'Favorito',
+      actions: 'Acciones para el comentario de {name}',
+      open: 'Abrir comentario de {name}',
+      visibility: 'Visibilidad',
+      delete: 'Eliminar comentario',
+      deleteTitle: '¿Eliminar este comentario?',
+      deleteText: 'Se borrará para siempre y tus invitados dejarán de verlo. No se puede deshacer.',
+      cancel: 'Cancelar',
+      close: 'Cerrar',
+      loadMore: 'Ver más comentarios',
+      loadingMore: 'Cargando…',
+      formTitle: 'Nuevo comentario',
+      formText: 'Escribe un mensaje para el evento.',
+      formLabel: 'Comentario',
+      formPlaceholder: 'Escribe tu mensaje…',
+      formNote: 'Los comentarios nuevos quedan visibles. Después puedes ocultarlos o fijarlos.',
+      characters: '{n} de {max} caracteres',
+      post: 'Publicar',
+      posting: 'Publicando…',
+      added: 'Comentario publicado.',
+      deleted: 'Comentario eliminado.',
+      loadError: 'No pudimos cargar los comentarios. Inténtalo de nuevo.',
+      saveError: 'No pudimos guardar el cambio. Inténtalo de nuevo.',
+      deleteError: 'No pudimos eliminar el comentario. Inténtalo de nuevo.',
+      postError: 'No pudimos publicar el comentario. Inténtalo de nuevo.',
+      errors: {
+        empty: 'Escribe un comentario.',
+        tooLong: 'El comentario es demasiado largo (máximo 2000 caracteres).'
+      }
+    },
     padrinos: {
       title: 'Padrinos',
       subtitle: 'Quién te acompaña, qué apadrina y cuánto ha aportado. El dinero no pasa por Quinvite: aquí solo lo registras.',
@@ -645,7 +708,8 @@ export default {
         draft: { badge: 'Sin publicar', text: 'Tus invitados aún no lo ven. Cuando lo publiques, cada uno abrirá su enlace y verá la fecha, la cuenta regresiva y tu mensaje.' },
         live: { badge: 'En línea', text: 'Tus invitados ya ven el Save the date. Cuando tengas listo el resto, pasa a la invitación completa: no hace falta enviar enlaces nuevos.' },
         invitation: { badge: 'Invitación completa', text: 'Tu invitación completa ya está publicada. El Save the date dejó de mostrarse en el enlace.' },
-        archived: { badge: 'Archivado', text: 'Este evento está archivado. Restáuralo para publicar algo.' }
+        archived: { badge: 'Archivado', text: 'Este evento está archivado. Restáuralo para publicar algo.' }
+
       },
       actions: { publishSaveTheDate: 'Publicar Save the date', upgrade: 'Pasar a la invitación completa', unpublish: 'Dejar de publicar' },
       confirm: {

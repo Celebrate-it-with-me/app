@@ -5,7 +5,7 @@ export default [
     component: () => import('@/modules/comments/views/CCommentsView.vue'),
     meta: {
       moduleKey: 'comments',
-      title: 'Event Comments',
+      titleKey: 'titles.comments',
       requiresAuth: true,
       requiredPermission: ['view_event_comments'],
       requiresFeature: 'comments',

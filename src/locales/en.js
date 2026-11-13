@@ -63,6 +63,7 @@ export default {
     dressCode: 'Dress code',
     budget: 'Budget',
     padrinos: 'Godparents',
+    comments: 'Comments',
     eventEdit: 'Event details'
   },
   hero: {
@@ -399,6 +400,68 @@ export default {
     }
   },
   app: {
+    comments: {
+      title: 'Comments',
+      subtitle: 'The messages your guests leave. Choose which ones show on the invitation, pin your favorites or delete the ones you do not want.',
+      add: 'Add comment',
+      addFirst: 'Add the first one',
+      emptyTitle: 'No comments yet',
+      emptyText: 'When your guests leave messages they will show up here. You can write one too.',
+      noResultsTitle: 'No comments found',
+      noResultsText: 'Try a different search or change the filters.',
+      search: 'Search by guest or message',
+      statusLabel: 'Status',
+      sortLabel: 'Order',
+      status: {
+        all: 'All',
+        visible: 'Visible',
+        pending: 'Pending review',
+        hidden: 'Hidden',
+        unknown: 'No status'
+      },
+      sort: {
+        newest: 'Newest',
+        oldest: 'Oldest',
+        pinned: 'Pinned first'
+      },
+      guest: 'Guest',
+      organizer: 'Organizer',
+      anonymous: 'Guest',
+      pin: 'Pin',
+      unpin: 'Unpin',
+      favorite: 'Mark as favorite',
+      unfavorite: 'Remove from favorites',
+      pinned: 'Pinned',
+      favorited: 'Favorite',
+      actions: 'Actions for the comment by {name}',
+      open: 'Open comment by {name}',
+      visibility: 'Visibility',
+      delete: 'Delete comment',
+      deleteTitle: 'Delete this comment?',
+      deleteText: 'It will be removed for good and your guests will stop seeing it. This cannot be undone.',
+      cancel: 'Cancel',
+      close: 'Close',
+      loadMore: 'Show more comments',
+      loadingMore: 'Loading…',
+      formTitle: 'New comment',
+      formText: 'Write a message for the event.',
+      formLabel: 'Comment',
+      formPlaceholder: 'Write your message…',
+      formNote: 'New comments are visible by default. You can hide or pin them afterwards.',
+      characters: '{n} of {max} characters',
+      post: 'Post',
+      posting: 'Posting…',
+      added: 'Comment posted.',
+      deleted: 'Comment deleted.',
+      loadError: 'We could not load the comments. Please try again.',
+      saveError: 'We could not save the change. Please try again.',
+      deleteError: 'We could not delete the comment. Please try again.',
+      postError: 'We could not post the comment. Please try again.',
+      errors: {
+        empty: 'Write a comment.',
+        tooLong: 'The comment is too long (2000 characters max).'
+      }
+    },
     padrinos: {
       title: 'Godparents',
       subtitle: 'Who stands with you, what they sponsor and how much they have given. Money does not go through Quinvite: you only record it here.',
@@ -645,7 +708,8 @@ export default {
         draft: { badge: 'Not published', text: 'Your guests cannot see it yet. Once published, each one opens their own link and sees the date, the countdown and your message.' },
         live: { badge: 'Live', text: 'Your guests can see the Save the date. When the rest is ready, switch to the full invitation: no new links to send.' },
         invitation: { badge: 'Full invitation', text: 'Your full invitation is already published. The Save the date is no longer shown on the link.' },
-        archived: { badge: 'Archived', text: 'This event is archived. Restore it to publish anything.' }
+        archived: { badge: 'Archived', text: 'This event is archived. Restore it to publish anything.' }
+
       },
       actions: { publishSaveTheDate: 'Publish Save the date', upgrade: 'Switch to the full invitation', unpublish: 'Stop publishing' },
       confirm: {

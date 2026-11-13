@@ -1,56 +1,24 @@
-// src/modules/comments/composables/useCommentSubmit.js
-// All comments in code are in English, as requested.
+import { ref } from 'vue'
 
-import { computed, ref } from 'vue'
-import { toTypedSchema } from '@/utils/zodTypedSchema'
-import * as zod from 'zod'
-
-export function useCommentSubmit({ store, maxLength = 2000 } = {}) {
+export function useCommentSubmit({ store } = {}) {
   const loading = ref(false)
-  const submitError = ref(null)
 
-  const validationSchema = computed(() => {
-    return toTypedSchema(
-      zod.object({
-        comment: zod
-          .string()
-          .min(1, 'Comment cannot be empty')
-          .max(maxLength, `Comment cannot exceed ${maxLength} characters`)
-      })
-    )
-  })
-
+  /** Returns { ok } and never throws; the caller shows the feedback. */
   const submit = async commentText => {
-    submitError.value = null
-
     try {
       loading.value = true
-
       const response = await store.addNewComment(commentText)
-
       if (response?.status >= 200 && response?.status < 300) {
-        // Keep behavior consistent with your current flow.
-        // If you later want to avoid refetch, you can push into store list instead.
         await store.loadNewComments()
         return { ok: true }
       }
-
-      const message = response?.error || 'Failed to add comment.'
-      submitError.value = message
-      return { ok: false, error: message }
-    } catch (err) {
-      const message = err?.message || 'Failed to add comment.'
-      submitError.value = message
-      return { ok: false, error: message }
+      return { ok: false }
+    } catch {
+      return { ok: false }
     } finally {
       loading.value = false
     }
   }
 
-  return {
-    validationSchema,
-    loading,
-    submitError,
-    submit
-  }
+  return { loading, submit }
 }
