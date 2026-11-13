@@ -1597,6 +1597,12 @@ export default {
       generic: 'No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.'
     }
   },
+  moduleLocked: {
+    title: 'Pasa a premium',
+    text: 'Esta función es parte del evento completo. Pasa a premium para desbloquearla.',
+    textNamed: '{name} es parte del evento completo. Pasa a premium para desbloquearla.',
+    names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios' }
+  },
   impersonation: {
     region: 'Sesión de soporte',
     viewingAs: 'Estás viendo como {name}',

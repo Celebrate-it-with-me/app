@@ -19,7 +19,7 @@ export const useEventCommentsStore = defineStore('eventCommentsStore', {
   }),
   actions: {
     setEventComments(eventComments) {
-      this.eventComments = eventComments.data || []
+      this.eventComments = eventComments?.data || []
 
       this.pageSelected = eventComments?.meta?.current_page ?? 1
       this.perPage = eventComments?.meta?.per_page ?? 10

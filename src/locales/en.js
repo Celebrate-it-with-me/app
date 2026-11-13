@@ -1597,6 +1597,12 @@ export default {
       generic: 'We could not send your message. Please try again in a moment.'
     }
   },
+  moduleLocked: {
+    title: 'Go premium',
+    text: 'This feature is part of the full event. Go premium to unlock it.',
+    textNamed: '{name} is part of the full event. Go premium to unlock it.',
+    names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments' }
+  },
   impersonation: {
     region: 'Support session',
     viewingAs: 'You are viewing as {name}',
