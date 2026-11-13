@@ -1546,6 +1546,15 @@ export default {
     late: { title: 'We are still confirming', text: 'Your payment may take a moment to arrive. If your event stays the same in a few minutes, write to us.' },
     cancelled: { title: 'No payment was made', text: 'You were not charged. Your event is as it was.', cta: 'Try again' }
   },
+  accountSuspended: {
+    title: 'Your access has been suspended',
+    message: 'You cannot sign in to your account for now. Your published invitations are still visible to your guests.',
+    contact: 'If you think this is a mistake, or want to know more, write to support and we will help.',
+    emailLabel: 'Support email',
+    write: 'Write to support',
+    mailSubject: 'My account is suspended',
+    home: 'Back to home'
+  },
   unlock: {
     full: {
       lead: 'Your full event, right away.',
