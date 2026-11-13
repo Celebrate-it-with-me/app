@@ -38,6 +38,7 @@ export default {
     mobile: 'Menú móvil'
   },
   titles: {
+    start: 'Primeros pasos',
     home: 'Invitaciones digitales para quince y bodas',
     signIn: 'Entrar',
     signUp: 'Crear cuenta',
@@ -407,6 +408,107 @@ export default {
     }
   },
   app: {
+    start: {
+      title: 'Primeros pasos',
+      welcome: 'Hola, {name}',
+      welcomeNoName: 'Hola',
+      subtitle: 'Vamos armando «{event}» paso a paso. Puedes salir cuando quieras y volver desde tu dashboard.',
+      progress: '{done} de {total} listos',
+      progressLabel: 'Avance de los primeros pasos',
+      loadError: 'No pudimos cargar tu avance. Inténtalo de nuevo en un momento.',
+      done: 'Listo',
+      pending: 'Pendiente',
+      skip: 'Ir a mi dashboard',
+      skipHint: 'Esta guía no es obligatoria. La encuentras siempre en tu dashboard.',
+      dashboardLink: 'Primeros pasos · {done} de {total}',
+      dashboardLinkText: 'Retoma lo que falta para dejar tu fiesta lista.',
+      steps: {
+        event: {
+          title: 'Tu fiesta',
+          text: 'Ya creaste «{event}». El resto es ir llenándola, sin prisa.'
+        },
+        guests: {
+          title: 'Invitados',
+          text: 'Sin lista no hay a quién enviar la invitación. Importa la que ya tienes o añádelos uno por uno.',
+          count: 'Tienes {n} invitados | Tienes {n} invitado | Tienes {n} invitados',
+          import: 'Importar desde Excel o CSV',
+          add: 'Añadir uno por uno',
+          see: 'Ver mi lista'
+        },
+        details: {
+          title: 'Detalles',
+          text: 'Cuéntales a tus invitados cuándo, dónde y cómo vestirse.',
+          program: 'Programa del día',
+          places: 'Ubicaciones',
+          dressCode: 'Vestimenta'
+        },
+        share: {
+          title: 'Compartir',
+          text: 'Tienes dos formas de avisar, y puedes usar una o las dos.',
+          saveTheDate: 'Save the date: un aviso corto con la fecha para que la reserven. Sale antes que la invitación.',
+          invitation: 'Invitación completa: programa, ubicaciones, vestimenta y confirmación de asistencia.',
+          publishSaveTheDate: 'Publicar Save the date',
+          publishInvitation: 'Publicar invitación',
+          liveSaveTheDate: 'Tu Save the date ya está publicado.',
+          liveInvitation: 'Tu invitación ya está publicada.',
+          sendLinks: 'Envía a cada invitado su enlace desde la lista de invitados.',
+          goGuests: 'Ir a invitados'
+        }
+      }
+    },
+    guestImport: {
+      button: 'Importar',
+      title: 'Importar invitados',
+      pickText: 'Sube un archivo de Excel o CSV con una fila por invitado. Solo el nombre es obligatorio.',
+      columns: 'Reconocemos las columnas: nombre, teléfono, correo y familia.',
+      dropTitle: 'Arrastra tu archivo aquí',
+      dropOr: 'o',
+      choose: 'Elegir archivo',
+      formats: 'CSV, XLSX o XLS · máximo 2 MB',
+      template: 'Descargar plantilla',
+      templateError: 'No pudimos descargar la plantilla. Inténtalo de nuevo.',
+      reading: 'Revisando tu archivo…',
+      errors: {
+        missing_name_column: 'No encontramos una columna de nombre. Usa la plantilla o llama «Nombre» a esa columna.',
+        empty_file: 'El archivo no tiene invitados. Agrega al menos una fila debajo de los encabezados.',
+        too_many_rows: 'El archivo tiene demasiadas filas. Divídelo en partes más pequeñas.',
+        unreadable_file: 'No pudimos leer el archivo. Guárdalo como CSV o XLSX e inténtalo otra vez.',
+        fileType: 'Ese formato no sirve. Sube un archivo .csv, .xlsx o .xls.',
+        fileSize: 'El archivo pesa más de 2 MB.',
+        generic: 'No pudimos revisar el archivo. Inténtalo de nuevo.'
+      },
+      summary: {
+        all: 'Todos',
+        ready: 'Listos',
+        problems: 'Con problemas',
+        duplicates: 'Repetidos',
+        assumedUs: 'Con +1 agregado'
+      },
+      filtersLabel: 'Filtrar filas',
+      selected: '{n} de {total} seleccionados',
+      familiesHint: 'Las filas con la misma familia se importan como un invitado principal (la primera fila) con sus acompañantes.',
+      assumedHint: 'A los teléfonos sin código de país les pusimos +1 (EE. UU.). Revísalos antes de importar.',
+      columnsHead: { include: 'Incluir', name: 'Nombre', phone: 'Teléfono', email: 'Correo', family: 'Familia', status: 'Estado' },
+      row: 'Fila {n}',
+      include: 'Incluir a {name}',
+      nameLabel: 'Nombre de la fila {n}',
+      phoneLabel: 'Teléfono de la fila {n}',
+      badges: { assumed: '+1 asumido', duplicate: 'Ya existe', ok: 'Listo' },
+      problems: {
+        name_missing: 'Falta el nombre',
+        phone_invalid: 'Teléfono no válido',
+        email_invalid: 'Correo no válido'
+      },
+      noRows: 'No hay filas con este filtro.',
+      otherFile: 'Elegir otro archivo',
+      cancel: 'Cancelar',
+      confirm: 'Importar {n} invitados | Importar {n} invitado | Importar {n} invitados',
+      nothingSelected: 'Selecciona al menos un invitado',
+      done: 'Importamos {n} invitados | Importamos {n} invitado | Importamos {n} invitados',
+      doneFamilies: '{n} familias | {n} familia | {n} familias',
+      doneSkipped: '{n} omitidos | {n} omitido | {n} omitidos',
+      importError: 'No pudimos importar a tus invitados. Inténtalo de nuevo.'
+    },
     memories: {
       title: 'Recuerdos',
       subtitle: 'El álbum de fotos de tu fiesta: sube y cuida tus mejores momentos.',

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
@@ -9,6 +9,9 @@ import { useActivityStore } from '@/stores/useActivityStore'
 import { useToast } from '@/ui'
 import DashboardHeader from './DashboardHeader.vue'
 import DashboardNextStep from './DashboardNextStep.vue'
+import DashboardStartLink from './DashboardStartLink.vue'
+import OnboardingService from '@/modules/onboarding/services/OnboardingService'
+import { allDone, normalizeProgress } from '@/modules/onboarding/utils/steps'
 import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardInvitation from './DashboardInvitation.vue'
 import DashboardMore from './DashboardMore.vue'
@@ -71,6 +74,19 @@ const program = computed(() =>
     }))
 )
 
+// First steps: a calm link while some are pending. A failure here just hides the link.
+const start = ref(null)
+const showStart = computed(() => start.value && !allDone(start.value))
+async function loadStart(eventId) {
+  start.value = null
+  try {
+    const data = normalizeProgress(await OnboardingService.progress(eventId))
+    if (eventId === event.value?.id) start.value = data
+  } catch {
+    start.value = null
+  }
+}
+
 const activity = computed(() => (activityStore.activities ?? []).slice(0, 5))
 
 let loadId = 0
@@ -78,6 +94,7 @@ async function load() {
   const current = event.value
   if (!current?.id) return
   const id = ++loadId
+  loadStart(current.id)
   const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
   if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
   const results = await Promise.allSettled(jobs)
@@ -92,6 +109,7 @@ watch(() => event.value?.id, load, { immediate: true })
     <DashboardHeader :name="event.eventName" :start-date="event.startDate" :progress="event.setupProgress ?? 0" />
 
     <DashboardNextStep :step="step" :target="stepTarget" />
+    <DashboardStartLink v-if="showStart" :done="start.done" :total="start.total" />
 
     <div class="mt-6 grid gap-4 lg:grid-cols-3">
       <DashboardRsvp class="lg:col-span-2" :rsvp="rsvp" />
