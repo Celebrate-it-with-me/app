@@ -1576,6 +1576,27 @@ export default {
     includes: 'Con el evento completo tienes:',
     back: 'Volver al inicio',
   },
+  support: {
+    button: 'Ayuda',
+    open: 'Pedir ayuda',
+    title: '¿En qué te ayudamos?',
+    description: 'Cuéntanos qué pasa y te respondemos por correo.',
+    messageLabel: 'Tu mensaje',
+    placeholder: 'Escribe aquí lo que necesitas…',
+    contextNote: 'Adjuntamos la pantalla y el evento donde estás para ayudarte más rápido.',
+    send: 'Enviar',
+    cancel: 'Cancelar',
+    close: 'Cerrar',
+    sentTitle: 'Mensaje enviado',
+    sentText: 'Gracias. Recibimos tu mensaje y te responderemos por correo lo antes posible.',
+    errors: {
+      tooShort: 'Escribe al menos {min} caracteres.',
+      tooLong: 'El mensaje puede tener hasta {max} caracteres.',
+      invalid: 'No pudimos enviar tu mensaje. Revisa que no esté vacío ni sea demasiado largo.',
+      tooMany: 'Enviaste varios mensajes seguidos. Espera un minuto e inténtalo de nuevo.',
+      generic: 'No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.'
+    }
+  },
   limits: {
     guests: {
       removeCount: '{n} invitados | {n} invitado | {n} invitados',
