@@ -57,6 +57,7 @@ export default {
     events: 'My events',
     eventCreate: 'New event',
     unlock: 'Go premium',
+    purchases: 'My purchases',
     timeline: 'Program of the day',
     locations: 'Locations',
     guests: 'Guests',
@@ -1625,11 +1626,26 @@ export default {
       seeGuests: 'See my list'
     }
   },
+  purchases: {
+    title: 'My purchases',
+    text: 'Your payments and the invoice for each one. They are created automatically when the payment is confirmed.',
+    emptyTitle: 'No purchases yet',
+    emptyText: 'When you unlock a full event, your invoice will show up here.',
+    loadError: 'We could not load your purchases.',
+    retry: 'Try again',
+    downloadError: 'We could not download the PDF. Please try again.',
+    deletedEvent: 'Deleted event',
+    invoice: 'Invoice',
+    creditNote: 'Credit note',
+    download: 'Download PDF',
+    noInvoice: 'The invoice for this purchase is not available yet.',
+    status: { paid: 'Paid', refunded: 'Refunded' }
+  },
   account: {
     title: 'My account',
     subtitle: 'Your details, your preferences and your password.',
     nav: 'Account sections',
-    tabs: { profile: 'Profile', preferences: 'Preferences', security: 'Security' },
+    tabs: { profile: 'Profile', preferences: 'Preferences', purchases: 'Purchases', security: 'Security' },
     save: 'Save changes',
     saved: 'Changes saved.',
     saveError: 'We could not save your changes. Please try again.',
