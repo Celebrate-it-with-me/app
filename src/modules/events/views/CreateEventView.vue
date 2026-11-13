@@ -18,6 +18,8 @@ const form = ref({ eventType: '', eventName: '', startDate: '', customUrlSlug: '
 const slugTouched = ref(false)
 const errors = ref({})
 const saving = ref(false)
+// free: as before. full: after creating, go straight to the payment screen (the event is created either way).
+const plan = ref('free')
 
 onMounted(async () => {
   if (!eventsStore.eventTypes.length) await eventsStore.loadEventsPlansAndType()
@@ -27,6 +29,10 @@ onMounted(async () => {
   if (wanted) form.value.eventType = wanted.id
 })
 
+const planOptions = computed(() => [
+  { value: 'free', label: t('payments.planFree') },
+  { value: 'full', label: t('payments.planFull') }
+])
 const typeOptions = computed(() =>
   eventsStore.eventTypes.map(type => ({ value: type.id, label: t(`events.types.${type.slug}`, type.name) }))
 )
@@ -80,7 +86,7 @@ async function submit() {
     await eventsStore.createEvent(payload)
     clearPendingType()
     success(t('events.create.created'))
-    await router.push('/dashboard/start')
+    await router.push(plan.value === 'full' ? '/dashboard/unlock/full' : '/dashboard/start')
   } catch (e) {
     const server = fieldErrors(e)
     if (server.customUrlSlug) errors.value = { customUrlSlug: t('events.address.taken') }
@@ -115,11 +121,15 @@ async function submit() {
           <UiInput v-model="form.startDate" type="datetime-local" />
         </UiField>
 
+        <UiField :label="t('payments.planLabel')" id="event_plan">
+          <UiRadioGroup v-model="plan" :options="planOptions" orientation="horizontal" cards />
+        </UiField>
+
         <EventAddressField :model-value="form.customUrlSlug" :error="errors.customUrlSlug" @update:model-value="onSlugInput" />
 
         <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <UiButton variant="ghost" to="/dashboard/events">{{ t('events.create.cancel') }}</UiButton>
-          <UiButton type="submit" :loading="saving">{{ t('events.create.submit') }}</UiButton>
+          <UiButton type="submit" :loading="saving">{{ plan === 'full' ? t('payments.createWith') : t('events.create.submit') }}</UiButton>
         </div>
       </form>
     </UiCard>

@@ -181,7 +181,7 @@ export default {
       note: 'One payment per event · No subscription',
       intro: 'Everything in Free, plus:',
       items: [
-        'Unlimited guests',
+        'Up to 300 guests',
         'Invitations and reminders sent on WhatsApp',
         'Premium designs, no watermark',
         'Padrinos tracking',
@@ -332,7 +332,7 @@ export default {
       },
       {
         q: 'What does the full event include?',
-        a: 'Unlimited guests, automatic WhatsApp, padrinos, premium templates without watermark, collaborators and the menu, music and tables modules. One payment per event.'
+        a: 'Up to 300 guests, automatic WhatsApp, padrinos, premium templates without watermark, collaborators and the menu, music and tables modules. One payment per event.'
       },
       {
         q: 'Can I invite someone to help me?',
@@ -1525,7 +1525,32 @@ export default {
       deleted: 'Event deleted.'
     }
   },
+  payments: {
+    note: 'one-time payment · up to {n} guests',
+    codeLabel: 'Have a code?',
+    codePlaceholder: 'Type it here',
+    apply: 'Apply',
+    invalidCode: 'That code is not valid or has expired.',
+    codeApplied: 'Code {code} applied.',
+    pay: 'Pay {price}',
+    unlockFree: 'Unlock my event',
+    refundNote: 'If you change your mind before publishing your invitation, we refund everything.',
+    checkoutFailed: 'We could not start the payment. Please try again.',
+    createWith: 'Create with everything included',
+    createFree: 'Start free',
+    planLabel: 'Plan',
+    planFree: 'Free · up to 30 guests',
+    planFull: 'Full event · one-time payment',
+    waiting: { title: 'Confirming your payment…', text: 'This takes a few seconds. Do not close this page.' },
+    done: { title: 'Your event is complete!', text: 'You can now invite your whole list and use every module.', cta: 'Go to my event' },
+    late: { title: 'We are still confirming', text: 'Your payment may take a moment to arrive. If your event stays the same in a few minutes, write to us.' },
+    cancelled: { title: 'No payment was made', text: 'You were not charged. Your event is as it was.', cta: 'Try again' }
+  },
   unlock: {
+    full: {
+      lead: 'Your full event, right away.',
+      benefit: 'Up to 300 guests, every module and your invitation ready to publish.'
+    },
     guestsLimit: {
       lead: 'Your list went over the free plan limit.',
       benefit: 'With the full event there is no cap of 30: invite your whole list and publish your invitation.'
@@ -1540,12 +1565,7 @@ export default {
       comments: 'Your guests leave you messages and good wishes on the invitation.'
     },
     includes: 'With the full event you get:',
-    soonTitle: 'Coming soon',
-    soonText: 'We are finishing online payment. Write to us and we will let you know as soon as you can unlock it.',
-    notify: 'Let me know when it is ready',
     back: 'Back to home',
-    mailSubject: 'I want to unlock my event',
-    mailBody: 'Hi, I want to unlock my full event ({module}). Please let me know when payment is ready.'
   },
   limits: {
     guests: {

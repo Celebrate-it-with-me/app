@@ -181,7 +181,7 @@ export default {
       note: 'Pago único por evento · Sin suscripción',
       intro: 'Todo lo del plan gratis, más:',
       items: [
-        'Invitados ilimitados',
+        'Hasta 300 invitados',
         'Envío de invitaciones y recordatorios por WhatsApp',
         'Diseños premium sin marca de agua',
         'Seguimiento de padrinos',
@@ -332,7 +332,7 @@ export default {
       },
       {
         q: '¿Qué incluye el evento completo?',
-        a: 'Invitados ilimitados, WhatsApp automático, padrinos, plantillas premium sin marca, colaboradores y los módulos de menú, música y mesas. Es un solo pago por evento.'
+        a: 'Hasta 300 invitados, WhatsApp automático, padrinos, plantillas premium sin marca, colaboradores y los módulos de menú, música y mesas. Es un solo pago por evento.'
       },
       {
         q: '¿Puedo invitar a alguien a ayudarme?',
@@ -1525,7 +1525,32 @@ export default {
       deleted: 'Evento eliminado.'
     }
   },
+  payments: {
+    note: 'pago único · hasta {n} invitados',
+    codeLabel: '¿Tienes un código?',
+    codePlaceholder: 'Escríbelo aquí',
+    apply: 'Aplicar',
+    invalidCode: 'Ese código no es válido o ya venció.',
+    codeApplied: 'Código {code} aplicado.',
+    pay: 'Pagar {price}',
+    unlockFree: 'Desbloquear mi evento',
+    refundNote: 'Si cambias de opinión antes de publicar tu invitación, te devolvemos todo.',
+    checkoutFailed: 'No pudimos iniciar el pago. Inténtalo de nuevo.',
+    createWith: 'Crear con todo incluido',
+    createFree: 'Empezar gratis',
+    planLabel: 'Plan',
+    planFree: 'Gratis · hasta 30 invitados',
+    planFull: 'Evento completo · pago único',
+    waiting: { title: 'Confirmando tu pago…', text: 'Esto toma unos segundos. No cierres esta página.' },
+    done: { title: '¡Tu evento está completo!', text: 'Ya puedes invitar a toda tu lista y usar todos los módulos.', cta: 'Ir a mi evento' },
+    late: { title: 'Todavía estamos confirmando', text: 'Tu pago puede tardar un poco en llegar. Si en unos minutos tu evento sigue igual, escríbenos.' },
+    cancelled: { title: 'No se hizo el pago', text: 'No te cobramos nada. Tu evento sigue como estaba.', cta: 'Intentar de nuevo' }
+  },
   unlock: {
+    full: {
+      lead: 'Tu evento completo, de una vez.',
+      benefit: 'Hasta 300 invitados, todos los módulos y tu invitación lista para publicar.'
+    },
     guestsLimit: {
       lead: 'Tu lista pasó el límite del plan gratis.',
       benefit: 'Con el evento completo no hay tope de 30: invita a toda tu lista y publica tu invitación.'
@@ -1540,12 +1565,7 @@ export default {
       comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.'
     },
     includes: 'Con el evento completo tienes:',
-    soonTitle: 'Muy pronto',
-    soonText: 'Estamos terminando el pago en línea. Escríbenos y te avisamos en cuanto puedas desbloquearlo.',
-    notify: 'Avisarme cuando esté listo',
     back: 'Volver al inicio',
-    mailSubject: 'Quiero desbloquear mi evento',
-    mailBody: 'Hola, quiero desbloquear mi evento completo ({module}). Avísenme cuando el pago esté listo.'
   },
   limits: {
     guests: {

@@ -17,6 +17,7 @@ import errorsRoutes from '@/modules/errors/routes/errors.route'
 import rosterRoutes from '@/modules/roster/routes/roster.route'
 import menusRoutes from '@/modules/menus/routes/menus.routes'
 import eventsRoutes from '@/modules/events/routes/events.routes'
+import paymentsRoutes from '@/modules/payments/routes/payments.route'
 import UnlockView from '@/views/internal/unlock/UnlockView.vue'
 import seatingRoutes from '@/modules/seating/routes/seating.route'
 import onboardingRoutes from '@/modules/onboarding/routes/onboarding.route'
@@ -87,6 +88,7 @@ const authRoutes = [
   ...dressCodeRoutes,
   ...saveTheDateRoutes,
   ...timelineRoutes,
+  ...paymentsRoutes,
   {
     path: '/dashboard/unlock/:module',
     name: 'unlock',
