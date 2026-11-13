@@ -38,7 +38,7 @@ describe('axios during a support session', () => {
     const error = { response: { status: 401, data: { code: 'impersonation_ended' } } }
     await expect(onError(error)).rejects.toBe(error)
     expect(impersonation.finish).toHaveBeenCalledTimes(1)
-    expect(router.replace).toHaveBeenCalledWith({ name: 'impersonation-ended' })
+    expect(router.replace).toHaveBeenCalledWith({ name: 'impersonation-ended', query: { reason: 'expired' } })
     expect(userStore.logOut).not.toHaveBeenCalled()
     expect(router.push).not.toHaveBeenCalled()
   })
