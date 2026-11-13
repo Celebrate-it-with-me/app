@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { useI18n } from 'vue-i18n'
 import { detect } from 'detect-browser'
@@ -10,10 +11,14 @@ import { UiField, UiInput, UiButton } from '@/ui'
 import AuthCard from '@/components/external/auth/AuthCard.vue'
 import GoogleButton from '@/components/external/auth/GoogleButton.vue'
 import { useCaptcha } from '@/components/external/auth/useCaptcha'
+import { storePendingType } from '@/modules/onboarding/utils/pendingType'
 
 const { t } = useI18n()
 const userStore = useUserStore()
 const captcha = useCaptcha()
+
+// The landing can send ?type=quinceanera|wedding: it is remembered until the first event is created.
+storePendingType(useRoute().query.type)
 
 const sending = ref(false)
 const done = ref(false)

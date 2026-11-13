@@ -8,7 +8,7 @@ import { planLimitMessage } from '@/utils/planLimit'
 const props = defineProps({
   /** `{ limit, total, excess }`: how far over the plan's guest limit the list is. */
   info: { type: Object, required: true },
-  /** banner: the guests page, a title and the "keep building" text. publish: next to the publish button. */
+  /** banner: the guests page, a title and the "keep building" text. publish: next to the publish button. add: a published event cannot take more guests. */
   variant: { type: String, default: 'banner' },
   /** Also offer a link to the guest list (not needed on the guests page itself). */
   withListLink: { type: Boolean, default: false }
@@ -22,7 +22,7 @@ const text = computed(() =>
         'limits.guests.banner',
         { ...props.info, remove: t('limits.guests.removeCount', { n: props.info.excess }, props.info.excess) }
       )
-    : planLimitMessage(t, props.info, 'publish')
+    : planLimitMessage(t, props.info, props.variant === 'add' ? 'add' : 'publish')
 )
 </script>
 

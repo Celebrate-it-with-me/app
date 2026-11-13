@@ -6,6 +6,7 @@ import { UiPageHeader, UiCard, UiField, UiInput, UiRadioGroup, UiButton, useToas
 import { useEventsStore } from '../stores/useEventsStore'
 import { slugify, inputToApi, SLUG_PATTERN, fieldErrors } from '../utils/eventForm'
 import EventAddressField from '../components/EventAddressField.vue'
+import { cleanType, readPendingType, clearPendingType } from '@/modules/onboarding/utils/pendingType'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -20,8 +21,9 @@ const saving = ref(false)
 
 onMounted(async () => {
   if (!eventsStore.eventTypes.length) await eventsStore.loadEventsPlansAndType()
-  // The landing can link here with ?type=quinceanera|wedding
-  const wanted = eventsStore.eventTypes.find(type => type.slug === route.query.type)
+  // ?type=quinceanera|wedding wins; else the one chosen on the landing before signing up.
+  const wantedSlug = cleanType(route.query.type) ?? readPendingType()
+  const wanted = eventsStore.eventTypes.find(type => type.slug === wantedSlug)
   if (wanted) form.value.eventType = wanted.id
 })
 
@@ -76,8 +78,9 @@ async function submit() {
     // server builds a free one from the name (adding -2, -3... if it is taken) instead of rejecting it.
     if (slugTouched.value && form.value.customUrlSlug) payload.customUrlSlug = form.value.customUrlSlug
     await eventsStore.createEvent(payload)
+    clearPendingType()
     success(t('events.create.created'))
-    await router.push('/dashboard')
+    await router.push('/dashboard/start')
   } catch (e) {
     const server = fieldErrors(e)
     if (server.customUrlSlug) errors.value = { customUrlSlug: t('events.address.taken') }

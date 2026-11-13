@@ -38,6 +38,7 @@ export default {
     mobile: 'Mobile menu'
   },
   titles: {
+    start: 'First steps',
     home: 'Digital invitations for quinces and weddings',
     signIn: 'Sign in',
     signUp: 'Create account',
@@ -407,6 +408,107 @@ export default {
     }
   },
   app: {
+    start: {
+      title: 'First steps',
+      welcome: 'Hi, {name}',
+      welcomeNoName: 'Hi there',
+      subtitle: 'Let us build "{event}" step by step. You can leave any time and come back from your dashboard.',
+      progress: '{done} of {total} done',
+      progressLabel: 'First steps progress',
+      loadError: 'We could not load your progress. Please try again in a moment.',
+      done: 'Done',
+      pending: 'To do',
+      skip: 'Go to my dashboard',
+      skipHint: 'This guide is optional. You can always find it on your dashboard.',
+      dashboardLink: 'First steps · {done} of {total}',
+      dashboardLinkText: 'Pick up what is left to get your event ready.',
+      steps: {
+        event: {
+          title: 'Your event',
+          text: 'You created "{event}". The rest is filling it in, no rush.'
+        },
+        guests: {
+          title: 'Guests',
+          text: 'Without a list there is nobody to send the invitation to. Import the one you already have or add guests one by one.',
+          count: 'You have {n} guests | You have {n} guest | You have {n} guests',
+          import: 'Import from Excel or CSV',
+          add: 'Add one by one',
+          see: 'See my list'
+        },
+        details: {
+          title: 'Details',
+          text: 'Tell your guests when, where and what to wear.',
+          program: 'Day program',
+          places: 'Locations',
+          dressCode: 'Dress code'
+        },
+        share: {
+          title: 'Share',
+          text: 'There are two ways to let people know, and you can use one or both.',
+          saveTheDate: 'Save the date: a short notice with the date so they can reserve it. It goes out before the invitation.',
+          invitation: 'Full invitation: program, locations, dress code and RSVP.',
+          publishSaveTheDate: 'Publish Save the date',
+          publishInvitation: 'Publish invitation',
+          liveSaveTheDate: 'Your Save the date is live.',
+          liveInvitation: 'Your invitation is live.',
+          sendLinks: 'Send each guest their own link from the guest list.',
+          goGuests: 'Go to guests'
+        }
+      }
+    },
+    guestImport: {
+      button: 'Import',
+      title: 'Import guests',
+      pickText: 'Upload an Excel or CSV file with one row per guest. Only the name is required.',
+      columns: 'We recognize these columns: name, phone, email and family.',
+      dropTitle: 'Drop your file here',
+      dropOr: 'or',
+      choose: 'Choose file',
+      formats: 'CSV, XLSX or XLS · max 2 MB',
+      template: 'Download template',
+      templateError: 'We could not download the template. Please try again.',
+      reading: 'Checking your file…',
+      errors: {
+        missing_name_column: 'We could not find a name column. Use the template or call that column "Name".',
+        empty_file: 'The file has no guests. Add at least one row below the headers.',
+        too_many_rows: 'The file has too many rows. Split it into smaller parts.',
+        unreadable_file: 'We could not read the file. Save it as CSV or XLSX and try again.',
+        fileType: 'That format will not work. Upload a .csv, .xlsx or .xls file.',
+        fileSize: 'The file is larger than 2 MB.',
+        generic: 'We could not check the file. Please try again.'
+      },
+      summary: {
+        all: 'All',
+        ready: 'Ready',
+        problems: 'With problems',
+        duplicates: 'Duplicates',
+        assumedUs: '+1 added'
+      },
+      filtersLabel: 'Filter rows',
+      selected: '{n} of {total} selected',
+      familiesHint: 'Rows with the same family are imported as one main guest (the first row) with their companions.',
+      assumedHint: 'Phones without a country code got +1 (U.S.). Check them before importing.',
+      columnsHead: { include: 'Include', name: 'Name', phone: 'Phone', email: 'Email', family: 'Family', status: 'Status' },
+      row: 'Row {n}',
+      include: 'Include {name}',
+      nameLabel: 'Name of row {n}',
+      phoneLabel: 'Phone of row {n}',
+      badges: { assumed: '+1 assumed', duplicate: 'Already exists', ok: 'Ready' },
+      problems: {
+        name_missing: 'Name is missing',
+        phone_invalid: 'Invalid phone',
+        email_invalid: 'Invalid email'
+      },
+      noRows: 'No rows match this filter.',
+      otherFile: 'Choose another file',
+      cancel: 'Cancel',
+      confirm: 'Import {n} guests | Import {n} guest | Import {n} guests',
+      nothingSelected: 'Select at least one guest',
+      done: 'Imported {n} guests | Imported {n} guest | Imported {n} guests',
+      doneFamilies: '{n} families | {n} family | {n} families',
+      doneSkipped: '{n} skipped | {n} skipped | {n} skipped',
+      importError: 'We could not import your guests. Please try again.'
+    },
     memories: {
       title: 'Memories',
       subtitle: 'The photo album of your party: upload and look after your best moments.',

@@ -44,6 +44,23 @@ class RosterService {
     ).data
   }
 
+  /** The CSV template, in the event's language (a Blob). */
+  async importTemplate(eventId) {
+    return (await CWM_API.get(`${base(eventId)}/roster/import/template`, { responseType: 'blob' })).data
+  }
+
+  /** Reads the file and answers `{ rows, summary, limit }` without saving anything. */
+  async importPreview(eventId, file) {
+    const body = new FormData()
+    body.append('file', file)
+    return (await CWM_API.post(`${base(eventId)}/roster/import/preview`, body, { headers: { 'Content-Type': 'multipart/form-data' } })).data.data
+  }
+
+  /** Saves the kept rows: `{ created, families, skipped }`. */
+  async importGuests(eventId, rows) {
+    return (await CWM_API.post(`${base(eventId)}/roster/import`, { rows })).data.data
+  }
+
   async revert(eventId, guestId) {
     await CWM_API.post(`${base(eventId)}/rsvp/guests/${guestId}/revert-confirmation`)
   }

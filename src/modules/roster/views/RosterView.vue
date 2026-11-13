@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Plus, Search } from 'lucide-vue-next'
+import { FileSpreadsheet, Plus, Search } from 'lucide-vue-next'
 import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
@@ -11,6 +11,7 @@ import RosterService from '../services/RosterService'
 import GuestCard from '../components/GuestCard.vue'
 import GuestFormModal from '../components/GuestFormModal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
+import GuestImportModal from '../components/GuestImportModal.vue'
 import { TABS, noCounts, personPayload, whatsappUrl } from '../utils/roster'
 
 const { t } = useI18n()
@@ -32,6 +33,7 @@ const loading = ref(true)
 const saving = ref(false)
 
 const formOpen = ref(false)
+const importOpen = ref(false)
 const editing = ref(null)
 const confirming = ref(null)
 const removing = ref(null)
@@ -193,10 +195,16 @@ async function copyLink(family) {
           class="h-11 w-full rounded-xl border border-line-strong bg-white pl-10 pr-3 text-base text-ink-900 placeholder:text-ink-500 focus-visible:outline-2 focus-visible:outline-rose-600"
         />
       </div>
-      <UiButton v-if="canEdit" @click="openForm()">
-        <Plus class="h-4 w-4" aria-hidden="true" />
-        {{ t('app.roster.add') }}
-      </UiButton>
+      <div v-if="canEdit" class="flex flex-col gap-2 sm:flex-row">
+        <UiButton variant="secondary" @click="importOpen = true">
+          <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
+          {{ t('app.guestImport.button') }}
+        </UiButton>
+        <UiButton @click="openForm()">
+          <Plus class="h-4 w-4" aria-hidden="true" />
+          {{ t('app.roster.add') }}
+        </UiButton>
+      </div>
     </div>
 
     <div class="mt-4 overflow-x-auto">
@@ -235,6 +243,7 @@ async function copyLink(family) {
 
     <UiPagination v-if="meta.lastPage > 1" :page="page" :pages="meta.lastPage" class="mt-6" @update:page="page = $event" />
 
+    <GuestImportModal v-if="event" v-model:open="importOpen" :event-id="event.id" @imported="refresh" />
     <GuestFormModal v-model:open="formOpen" :family="editing" :saving="saving" @save="save" />
     <ConfirmModal :open="!!confirming" :family="confirming" :saving="saving" @update:open="confirming = null" @save="saveConfirm" />
 
