@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/i/:slug/:code",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(WhatsApp|facebookexternalhit|Facebot|Twitterbot|TelegramBot|Slackbot|LinkedInBot|Discordbot|Applebot|SkypeUriPreview|Pinterest|Googlebot).*"
+        }
+      ],
+      "destination": "https://api.quinvite.com/og/:slug/:code"
+    },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
