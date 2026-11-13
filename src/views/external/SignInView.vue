@@ -11,6 +11,7 @@ import { UiField, UiInput, UiCheckbox, UiButton } from '@/ui'
 import AuthCard from '@/components/external/auth/AuthCard.vue'
 import GoogleButton from '@/components/external/auth/GoogleButton.vue'
 import { useCaptcha } from '@/components/external/auth/useCaptcha'
+import { isAccountSuspended } from '@/utils/accountSuspended'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -68,6 +69,8 @@ const onSubmit = handleSubmit(async values => {
     backendError.value = response.response?.data?.message ?? t('common.genericError')
     captcha.reset()
   } catch (e) {
+    // A suspended account: the axios interceptor already sent her to the suspended screen.
+    if (isAccountSuspended(e)) return
     backendError.value = e.response?.data?.message ?? t('common.genericError')
     captcha.reset()
   } finally {

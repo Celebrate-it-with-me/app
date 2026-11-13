@@ -1,8 +1,18 @@
 import ForgotPasswordView from '@/views/external/ForgotPasswordView.vue'
 import ConfirmResetPasswordView from '@/views/external/ConfirmResetPasswordView.vue'
 import PasswordUpdatedView from '@/views/external/PasswordUpdatedView.vue'
+import AccountSuspendedView from '@/views/external/AccountSuspendedView.vue'
 
 const externalCleanRoutes = [
+  {
+    path: '/account-suspended',
+    name: 'account-suspended',
+    component: AccountSuspendedView,
+    meta: {
+      titleKey: 'accountSuspended.title',
+      requiresAuth: false
+    }
+  },
   {
     path: '/forgot-password',
     name: 'forgot-password',

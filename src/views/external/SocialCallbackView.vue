@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/useUserStore'
 import { CWM_API } from '@/services/axios'
 import { UiSkeleton } from '@/ui'
 import AuthCard from '@/components/external/auth/AuthCard.vue'
+import { isSuspendedSocialCallback, rememberSupportEmail } from '@/utils/accountSuspended'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -14,6 +15,10 @@ const userStore = useUserStore()
 const provider = computed(() => route.query.provider || 'Google')
 
 onMounted(async () => {
+  if (isSuspendedSocialCallback(route.query)) {
+    rememberSupportEmail('')
+    return router.replace({ name: 'account-suspended' })
+  }
   if (route.query.status !== 'ok') {
     return router.push({ name: 'sign-in', query: { message: 'social-failed' } })
   }

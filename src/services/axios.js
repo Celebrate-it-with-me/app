@@ -2,6 +2,7 @@ import axios from 'axios'
 import { useUserStore } from '@/stores/useUserStore'
 import router from '@/router'
 import { useNotificationStore } from '@/stores/useNotificationStore'
+import { isAccountSuspended, rememberSupportEmail, supportEmailFrom } from '@/utils/accountSuspended'
 
 const CWM_API = axios.create({
   baseURL: import.meta.env.VITE_API_URL + 'api/v1/app',
@@ -54,6 +55,10 @@ const onError = async error => {
         await handleUnauthorized()
         break
       case 403:
+        if (isAccountSuspended(error)) {
+          await handleSuspended(error)
+          break
+        }
         await router.push('/403')
         console.log('Forbidden:', error.message)
         break
@@ -68,6 +73,16 @@ const onError = async error => {
   return Promise.reject(error)
 }
 
+/** A suspended account: close the local session and show the suspended screen (never the generic 403). */
+const handleSuspended = async error => {
+  const userStore = useUserStore()
+  await userStore.logOut()
+  rememberSupportEmail(supportEmailFrom(error))
+  if (router.currentRoute.value.name !== 'account-suspended') {
+    await router.push({ name: 'account-suspended' })
+  }
+}
+
 const handleUnauthorized = async () => {
   const userStore = useUserStore()
   const notificationStore = useNotificationStore()
@@ -78,4 +93,4 @@ const handleUnauthorized = async () => {
   await router.push({ name: 'sign-in', query: { redirect: currentPath } })
 }
 
-export { CWM_API }
+export { CWM_API, onError }

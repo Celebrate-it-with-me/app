@@ -4,6 +4,12 @@
  */
 export const SUPPORT_EMAIL = 'hola@quinvite.com'
 
+/**
+ * Where a suspended account is told to write. The API sends its own `supportEmail` with the 403; this one
+ * covers the Google sign-in redirect, which carries no email. Override with VITE_SUPPORT_EMAIL.
+ */
+export const SUSPENDED_SUPPORT_EMAIL = import.meta.env.VITE_SUPPORT_EMAIL || 'soporte@quinvite.com'
+
 /** mailto: link with an optional prefilled subject and body (the user reviews and sends). */
 export function mailtoLink({ subject = '', body = '' } = {}) {
   const params = new URLSearchParams()
