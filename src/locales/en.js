@@ -1597,6 +1597,23 @@ export default {
       generic: 'We could not send your message. Please try again in a moment.'
     }
   },
+  impersonation: {
+    region: 'Support session',
+    viewingAs: 'You are viewing as {name}',
+    thisUser: 'this user',
+    supportSession: 'Support session',
+    endsIn: 'ends in',
+    endsInLabel: 'Ends in {time}',
+    exit: 'Exit',
+    blocked: 'This action is not available during a support session.',
+    opening: 'Opening the support session…',
+    invalidTitle: 'This link no longer works',
+    invalidText: 'Open the support session again from the admin panel.',
+    endedTitle: 'The support session ended',
+    endedText: 'You left the account. You can close this tab now.',
+    endedExpired: 'The session expired or was closed. To continue, open a new one from the admin panel.',
+    backToAdmin: 'Back to the admin panel'
+  },
   limits: {
     guests: {
       removeCount: '{n} guests | {n} guest | {n} guests',

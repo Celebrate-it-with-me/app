@@ -3,6 +3,10 @@ import { useUserStore } from '@/stores/useUserStore'
 import router from '@/router'
 import { useNotificationStore } from '@/stores/useNotificationStore'
 import { isAccountSuspended, rememberSupportEmail, supportEmailFrom } from '@/utils/accountSuspended'
+import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
+import { isBlockedError, isEndedError, readBlobBody } from '@/modules/impersonation/utils/impersonation'
+import { useToast } from '@/ui'
+import i18n from '@/locales/i18n'
 
 const CWM_API = axios.create({
   baseURL: import.meta.env.VITE_API_URL + 'api/v1/app',
@@ -22,6 +26,14 @@ function getCookie(name) {
 CWM_API.interceptors.request.use(
   config => {
     const userStore = useUserStore()
+    const impersonation = useImpersonationStore()
+
+    // A support session lives on its own bearer token and never touches the cookies of the person's normal session.
+    if (impersonation.active) {
+      config.headers.Authorization = `Bearer ${impersonation.token}`
+      config.withCredentials = false
+      return config
+    }
 
     const token = getCookie('XSRF-TOKEN')
     if (token) {
@@ -49,6 +61,20 @@ CWM_API.interceptors.response.use(
 )
 
 const onError = async error => {
+  await readBlobBody(error)
+  if (isBlockedError(error)) {
+    // The server decides what a support session may do: tell her kindly and keep the session.
+    useToast().toast({ title: i18n.global.t('impersonation.blocked'), tone: 'warning' })
+    return Promise.reject(error)
+  }
+  if (error?.response?.status === 401) {
+    const impersonation = useImpersonationStore()
+    if (isEndedError(error, impersonation.active)) {
+      impersonation.finish()
+      if (router.currentRoute.value.name !== 'impersonation-ended') await router.replace({ name: 'impersonation-ended', query: { reason: 'expired' } })
+      return Promise.reject(error)
+    }
+  }
   if (error.response) {
     switch (error.response.status) {
       case 401:

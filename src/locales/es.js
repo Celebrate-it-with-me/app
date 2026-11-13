@@ -1597,6 +1597,23 @@ export default {
       generic: 'No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.'
     }
   },
+  impersonation: {
+    region: 'Sesión de soporte',
+    viewingAs: 'Estás viendo como {name}',
+    thisUser: 'esta usuaria',
+    supportSession: 'Sesión de soporte',
+    endsIn: 'termina en',
+    endsInLabel: 'Termina en {time}',
+    exit: 'Salir',
+    blocked: 'Esta acción no está disponible durante una sesión de soporte.',
+    opening: 'Abriendo la sesión de soporte…',
+    invalidTitle: 'Este enlace ya no sirve',
+    invalidText: 'Abre la sesión de soporte de nuevo desde el panel de administración.',
+    endedTitle: 'La sesión de soporte terminó',
+    endedText: 'Saliste de la cuenta. Ya puedes cerrar esta pestaña.',
+    endedExpired: 'La sesión venció o se cerró. Para seguir, abre otra desde el panel de administración.',
+    backToAdmin: 'Volver al panel de administración'
+  },
   limits: {
     guests: {
       removeCount: '{n} invitados | {n} invitado | {n} invitados',
