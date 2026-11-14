@@ -277,7 +277,7 @@ export default {
     tooManyAttempts: 'Too many attempts. Wait a moment and try again.',
     tooManyAttemptsSeconds: 'Too many attempts. Wait {seconds} seconds and try again.',
     tooManyAttemptsMinutes: 'Too many attempts. Wait {minutes} minutes and try again.',
-    resetInvalid: 'This link is invalid or has expired. Request a new one from "Forgot your password".',
+    resetInvalid: 'This link has expired or is not valid. Request a new one from "Forgot your password".',
     newPassword: 'New password',
     confirmPassword: 'Repeat the password',
     resetSubmit: 'Change password',
@@ -306,6 +306,11 @@ export default {
     invalid: 'The invitation is invalid or has expired.',
     used: 'This invitation was already used or has expired.',
     acceptFailed: 'We could not accept the invitation.',
+    processing: 'Processing your invitation...',
+    processingWait: 'One moment, please.',
+    noneValid: 'We could not find a valid invitation for your account.',
+    welcome: 'Welcome! You are now part of "{event}".',
+    processError: 'We could not accept the invitation. Please try again later.',
     declineFailed: 'We could not decline the invitation.'
   },
   validation: {
