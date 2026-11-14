@@ -47,13 +47,14 @@ class UserService {
     }).then(async () => await CWM_API.post(confirmUrl))
   }
 
-  async changePassword({ email, password, passwordConfirmation }) {
+  async changePassword({ email, token, password, passwordConfirmation }) {
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
     }).then(
       async () =>
         await CWM_API.post('reset-password', {
           email,
+          token,
           password,
           password_confirmation: passwordConfirmation
         })
