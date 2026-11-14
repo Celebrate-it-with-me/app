@@ -1,0 +1,104 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { mount, flushPromises } from '@vue/test-utils'
+import i18n from '@/locales/i18n'
+
+const { send } = vi.hoisted(() => ({ send: vi.fn() }))
+vi.mock('../services/WhatsappService', () => ({ default: { send } }))
+import WhatsappSendModal from '../components/WhatsappSendModal.vue'
+import GuestCard from '../components/GuestCard.vue'
+
+const stubs = { RouterLink: { props: ['to'], template: '<a><slot /></a>' } }
+const family = { id: 1, name: 'Ana Perez', phone: '+13055550123', email: null, status: 'pending', link: 'https://quinvite.test/i/xv/ABC', companions: [], notes: null, locale: null }
+let wrapper
+
+const mountModal = props => {
+  wrapper = mount(WhatsappSendModal, {
+    props: { open: true, eventId: 7, eventName: 'Los XV', counts: { all: 10, pending: 4 }, families: [family], ...props },
+    global: { plugins: [i18n], stubs },
+    attachTo: document.body
+  })
+  return wrapper
+}
+const body = () => document.body.textContent
+const button = text => [...document.body.querySelectorAll('button')].find(b => b.textContent.includes(text))
+
+beforeEach(() => {
+  i18n.global.locale.value = 'es'
+  send.mockReset()
+})
+afterEach(() => wrapper?.unmount())
+
+describe('WhatsappSendModal', () => {
+  it('previews the recipients, asks to confirm, then shows what was left out and why', async () => {
+    send.mockResolvedValue({ batchId: 'b', queued: 8, skipped: [{ guestId: 3, guestName: 'Luis', reason: 'no_phone' }, { guestId: 4, guestName: 'Eva', reason: 'opted_out' }] })
+    const emitted = mountModal()
+    await flushPromises()
+    expect(body()).toContain('hasta 10 invitados')
+    button('Continuar').click()
+    await flushPromises()
+    expect(body()).toContain('Vas a enviar «Invitación» a hasta 10 invitados')
+    expect(send).not.toHaveBeenCalled()
+    button('Enviar ahora').click()
+    await flushPromises()
+    expect(send).toHaveBeenCalledWith(7, { template: 'invitation', audience: 'all', guestIds: [] })
+    expect(body()).toContain('8 mensajes en camino')
+    expect(body()).toContain('No tienen teléfono')
+    expect(body()).toContain('Luis')
+    expect(body()).toContain('Pidieron no recibir más mensajes')
+    expect(emitted.emitted('sent')).toHaveLength(1)
+  })
+
+  it('shows the contract errors in plain Spanish', async () => {
+    send.mockRejectedValue({ response: { status: 409, data: { code: 'whatsapp_unavailable' } } })
+    mountModal()
+    await flushPromises()
+    button('Continuar').click()
+    await flushPromises()
+    button('Enviar ahora').click()
+    await flushPromises()
+    expect(body()).toContain('WhatsApp todavía no está conectado')
+    expect(button('Continuar')).toBeTruthy()
+  })
+
+  it('offers only manual wa.me links, and the upgrade, on the free plan', async () => {
+    const emitted = mountModal({ locked: true })
+    await flushPromises()
+    expect(body()).toContain('parte del evento completo')
+    expect(button('Enviar ahora')).toBeUndefined()
+    const link = document.body.querySelector('a[href^="https://wa.me/"]')
+    expect(link.getAttribute('href')).toContain('wa.me/13055550123?text=')
+    expect(decodeURIComponent(link.getAttribute('href'))).toContain('https://quinvite.test/i/xv/ABC')
+    button('Pasa a premium').click()
+    expect(emitted.emitted('unlock')).toHaveLength(1)
+  })
+
+  it('reports the selected guests when there are some', async () => {
+    mountModal({ selectedIds: [1, 2] })
+    await flushPromises()
+    expect(body()).toContain('Los que elegí (2 invitados)')
+    expect(body()).toContain('hasta 2 invitados')
+  })
+})
+
+describe('GuestCard WhatsApp state', () => {
+  const card = props => mount(GuestCard, { props: { family, canEdit: true, ...props }, global: { plugins: [i18n], stubs } })
+
+  it('writes the state as text, not only colour', () => {
+    expect(card({ whatsapp: { key: 'delivered', message: { status: 'delivered' } } }).text()).toContain('Entregado')
+    expect(card({ whatsapp: { key: 'no_phone', message: null } }).text()).toContain('Sin teléfono')
+  })
+
+  it('offers a retry for failed messages', async () => {
+    const message = { id: 9, status: 'failed', errorMessage: 'Número no registrado en WhatsApp' }
+    const wrapper = card({ whatsapp: { key: 'failed', message } })
+    expect(wrapper.text()).toContain('Número no registrado en WhatsApp')
+    await wrapper.findAll('button').find(b => b.text() === 'Reintentar').trigger('click')
+    expect(wrapper.emitted('retry')[0][0]).toEqual(message)
+  })
+
+  it('shows a labelled checkbox when selecting', () => {
+    const wrapper = card({ selectable: true })
+    expect(wrapper.find('[role="checkbox"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Elegir a Ana Perez')
+  })
+})

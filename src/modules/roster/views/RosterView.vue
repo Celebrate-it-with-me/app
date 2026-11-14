@@ -2,18 +2,25 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { FileSpreadsheet, Plus, Search } from 'lucide-vue-next'
+import { FileSpreadsheet, ListChecks, MessageCircle, Plus, Search } from 'lucide-vue-next'
 import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { planLimitFrom } from '@/utils/planLimit'
+import { isModuleLocked } from '@/utils/moduleLocked'
+import { unlockPath } from '@/components/internal/shell/navModules'
 import RosterService from '../services/RosterService'
+import WhatsappService from '../services/WhatsappService'
+import { mockModuleState } from '../services/whatsappMock'
 import GuestCard from '../components/GuestCard.vue'
 import GuestFormModal from '../components/GuestFormModal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import GuestImportModal from '../components/GuestImportModal.vue'
 import RosterDownloadMenu from '../components/RosterDownloadMenu.vue'
+import WhatsappSendModal from '../components/WhatsappSendModal.vue'
+import WhatsappSummary from '../components/WhatsappSummary.vue'
 import { TABS, noCounts, personPayload, whatsappUrl } from '../utils/roster'
+import { guestWhatsappState, whatsappModuleState } from '../utils/whatsapp'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -39,6 +46,78 @@ const importOpen = ref(false)
 const editing = ref(null)
 const confirming = ref(null)
 const removing = ref(null)
+
+// WhatsApp: last message of each guest, the event's delivery summary, and the send dialog.
+const moduleState = computed(() => mockModuleState() ?? whatsappModuleState(event.value))
+const lockedByApi = ref(false)
+const waLocked = computed(() => moduleState.value === 'locked' || lockedByApi.value)
+const waAutomatic = computed(() => !waLocked.value && moduleState.value !== 'off')
+const waMessages = ref({})
+const waSummary = ref(null)
+const optedOut = ref(new Set())
+const sendOpen = ref(false)
+const pendingFamilies = ref(0)
+const selecting = ref(false)
+const selectedIds = ref([])
+let waTimer
+
+async function loadWhatsapp() {
+  if (!event.value?.id || !waAutomatic.value) return
+  try {
+    const [messages, summary] = await Promise.all([WhatsappService.latestByGuest(event.value.id), WhatsappService.summary(event.value.id)])
+    waMessages.value = messages
+    waSummary.value = summary
+    clearTimeout(waTimer)
+    // Messages in flight change by themselves: look again until they settle.
+    if (summary.queued || summary.sent) waTimer = setTimeout(loadWhatsapp, 5000)
+  } catch (e) {
+    if (isModuleLocked(e)) lockedByApi.value = true
+  }
+}
+onBeforeUnmount(() => clearTimeout(waTimer))
+
+const waStateOf = family => (waAutomatic.value ? guestWhatsappState(family, waMessages.value[family.id], optedOut.value.has(family.id)) : null)
+
+async function openSend() {
+  sendOpen.value = true
+  if (waLocked.value) return
+  try {
+    pendingFamilies.value = (await RosterService.list(event.value.id, { status: 'pending', perPage: 1 })).meta.total
+  } catch {
+    pendingFamilies.value = counts.value.pending
+  }
+}
+
+function afterSend(result) {
+  for (const skip of result.skipped) if (skip.reason === 'opted_out') optedOut.value = new Set([...optedOut.value, skip.guestId])
+  selecting.value = false
+  selectedIds.value = []
+  loadWhatsapp()
+}
+
+function toggleSelecting() {
+  selecting.value = !selecting.value
+  if (!selecting.value) selectedIds.value = []
+}
+
+function goUnlock() {
+  sendOpen.value = false
+  router.push(unlockPath('whatsapp'))
+}
+
+function toggleSelect(family, on) {
+  selectedIds.value = on ? [...new Set([...selectedIds.value, family.id])] : selectedIds.value.filter(id => id !== family.id)
+}
+
+async function retryMessage(message) {
+  try {
+    await WhatsappService.retry(event.value.id, message.id)
+    success(t('app.whatsapp.retried'))
+    await loadWhatsapp()
+  } catch (e) {
+    showError(t(e?.response?.data?.code === 'not_failed' ? 'app.whatsapp.errors.notFailed' : 'app.whatsapp.errors.generic'))
+  }
+}
 
 let loadId = 0
 async function load() {
@@ -74,8 +153,14 @@ watch(status, value => {
   load()
 })
 watch(page, load)
-watch(() => event.value?.id, load)
-onMounted(load)
+watch(() => event.value?.id, () => {
+  load()
+  loadWhatsapp()
+})
+onMounted(() => {
+  load()
+  loadWhatsapp()
+})
 
 const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), count: counts.value[tab.count] })))
 const answered = computed(() => counts.value.attending + counts.value.notAttending)
@@ -229,6 +314,18 @@ async function copyLink(family) {
       </div>
     </div>
 
+    <div v-if="canEdit && counts.all" class="mt-3 flex flex-wrap gap-2">
+      <UiButton variant="secondary" @click="openSend">
+        <MessageCircle class="h-4 w-4" aria-hidden="true" />
+        {{ t(waLocked || !waAutomatic ? 'app.whatsapp.shareButton' : 'app.whatsapp.button') }}
+      </UiButton>
+      <UiButton v-if="waAutomatic" variant="ghost" :aria-pressed="selecting" @click="toggleSelecting">
+        <ListChecks class="h-4 w-4" aria-hidden="true" />
+        {{ selecting ? t('app.whatsapp.selecting', { n: selectedIds.length }, selectedIds.length) : t('app.whatsapp.select') }}
+      </UiButton>
+    </div>
+    <WhatsappSummary v-if="waAutomatic" :summary="waSummary" />
+
     <div class="mt-4 overflow-x-auto">
       <UiTabs v-model="status" :tabs="tabs" />
     </div>
@@ -254,6 +351,11 @@ async function copyLink(family) {
           :family="family"
           :can-edit="canEdit"
           :event-locale="eventLocale"
+          :whatsapp="waStateOf(family)"
+          :selectable="selecting"
+          :selected="selectedIds.includes(family.id)"
+          @retry="retryMessage"
+          @select="toggleSelect"
           @edit="openForm"
           @confirm="confirming = $event"
           @revert="revert"
@@ -268,6 +370,19 @@ async function copyLink(family) {
     <UiPagination v-if="meta.lastPage > 1" :page="page" :pages="meta.lastPage" class="mt-6" @update:page="page = $event" />
 
     <GuestImportModal v-if="event" v-model:open="importOpen" :event-id="event.id" @imported="refresh" />
+    <WhatsappSendModal
+      v-if="event"
+      v-model:open="sendOpen"
+      :event-id="event.id"
+      :event-name="event.eventName ?? ''"
+      :locked="waLocked"
+      :manual="!waAutomatic"
+      :families="families"
+      :counts="{ all: counts.families, pending: pendingFamilies }"
+      :selected-ids="selectedIds"
+      @sent="afterSend"
+      @unlock="goUnlock"
+    />
     <GuestFormModal v-model:open="formOpen" :family="editing" :saving="saving" @save="save" />
     <ConfirmModal :open="!!confirming" :family="confirming" :saving="saving" @update:open="confirming = null" @save="saveConfirm" />
 
