@@ -42,7 +42,7 @@ export const useHydrationStore = defineStore('hydration', {
         } else {
           // Todo: Handle Error, redirect to error page with support message
         }
-      } catch (error) {
+      } catch {
         this.isLoading = false
       } finally {
         this.isLoading = false
