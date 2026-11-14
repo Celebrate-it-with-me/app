@@ -82,6 +82,19 @@
   --color-info-500: #3c6e9e;
   --color-info-700: #2c5276;
 
+  /* Design worlds shown by the landing's miniature invitations (InvitationCard): jardin and noche */
+  --color-garden-50: #f3f7ee;
+  --color-garden-200: #b7c9a7;
+  --color-garden-300: #cfdcc3;
+  --color-garden-400: #8fae7b;
+  --color-garden-500: #6f8f5c;
+  --color-garden-600: #5f6d58;
+  --color-garden-800: #2f3d2a;
+  --color-garden-bronze: #8a6a3a;
+  --color-night-950: #1d1a2b;
+  --color-night-700: #4a4360;
+  --color-night-100: #c9bfa6;
+
   /* Legacy aliases so bg-primary / text-primary on old screens pick the new accent. */
   --color-primary: var(--color-rose-600);
   --color-primary-light: var(--color-rose-400);
