@@ -1728,6 +1728,44 @@ export default {
       seeGuests: 'Ver mi lista'
     }
   },
+  billing: {
+    title: 'Datos de facturación',
+    text: 'Aparecerán en las facturas que emitamos desde ahora.',
+    name: 'Nombre o razón social',
+    nameHint: 'Tal como quieres que figure en la factura.',
+    email: 'Correo de facturación',
+    emailHint: 'Aquí te enviamos tus facturas y notas de crédito.',
+    address: 'Dirección',
+    city: 'Ciudad',
+    state: 'Estado o provincia',
+    postalCode: 'Código postal',
+    country: 'País',
+    taxId: 'Identificación fiscal (opcional)',
+    taxIdHint: 'EIN, RFC, NIT, CIF u otra. Déjala vacía si no la necesitas.',
+    notice: 'Las facturas ya emitidas no cambian: estos datos se usan solo en las facturas nuevas. Si necesitas corregir una anterior, escríbenos.',
+    save: 'Guardar datos',
+    saved: 'Datos de facturación guardados.',
+    saveError: 'No pudimos guardar tus datos. Inténtalo de nuevo.',
+    loadError: 'No pudimos cargar tus datos de facturación.',
+    nameRequired: 'Escribe tu nombre o razón social.',
+    emailInvalid: 'Escribe un correo válido.',
+    countryRequired: 'Elige un país.',
+    taxIdInvalid: 'Usa solo letras, números, espacios, puntos, guiones o barras (3 a 30 caracteres).',
+    postalInvalid: 'Usa solo letras, números, espacios o guiones.',
+    tooLong: 'Es demasiado largo.'
+  },
+  resend: {
+    title: 'Reenviar por correo',
+    text: 'Te enviamos de nuevo {number} con el PDF adjunto.',
+    billing: 'Correo de facturación',
+    account: 'Correo de tu cuenta',
+    noBilling: 'Guarda un correo de facturación arriba para poder elegirlo aquí.',
+    send: 'Reenviar',
+    cancel: 'Cancelar',
+    sent: 'Enviado a {email}.',
+    error: 'No pudimos enviar el correo. Inténtalo de nuevo.',
+    tooMany: 'Has pedido demasiados reenvíos. Espera unos minutos.'
+  },
   purchases: {
     title: 'Mis compras',
     text: 'Tus pagos y las facturas de cada uno. Se generan solas cuando se confirma el pago.',
@@ -1739,6 +1777,7 @@ export default {
     deletedEvent: 'Evento eliminado',
     invoice: 'Factura',
     creditNote: 'Nota de crédito',
+    resend: 'Reenviar',
     download: 'Descargar PDF',
     noInvoice: 'La factura de esta compra todavía no está disponible.',
     status: { paid: 'Pagada', refunded: 'Reembolsada' }

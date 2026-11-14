@@ -1728,6 +1728,44 @@ export default {
       seeGuests: 'See my list'
     }
   },
+  billing: {
+    title: 'Billing details',
+    text: 'They will appear on the invoices we issue from now on.',
+    name: 'Name or business name',
+    nameHint: 'Exactly as you want it on the invoice.',
+    email: 'Billing email',
+    emailHint: 'We send your invoices and credit notes here.',
+    address: 'Address',
+    city: 'City',
+    state: 'State or province',
+    postalCode: 'Postal code',
+    country: 'Country',
+    taxId: 'Tax ID (optional)',
+    taxIdHint: 'EIN, RFC, NIT, CIF or similar. Leave it empty if you do not need one.',
+    notice: 'Invoices already issued do not change: these details are used only on new invoices. If you need an earlier one corrected, write to us.',
+    save: 'Save details',
+    saved: 'Billing details saved.',
+    saveError: 'We could not save your details. Please try again.',
+    loadError: 'We could not load your billing details.',
+    nameRequired: 'Enter your name or business name.',
+    emailInvalid: 'Enter a valid email.',
+    countryRequired: 'Choose a country.',
+    taxIdInvalid: 'Use only letters, numbers, spaces, dots, dashes or slashes (3 to 30 characters).',
+    postalInvalid: 'Use only letters, numbers, spaces or dashes.',
+    tooLong: 'That is too long.'
+  },
+  resend: {
+    title: 'Resend by email',
+    text: 'We will send {number} again with the PDF attached.',
+    billing: 'Billing email',
+    account: 'Your account email',
+    noBilling: 'Save a billing email above to be able to choose it here.',
+    send: 'Resend',
+    cancel: 'Cancel',
+    sent: 'Sent to {email}.',
+    error: 'We could not send the email. Please try again.',
+    tooMany: 'You have asked for too many resends. Please wait a few minutes.'
+  },
   purchases: {
     title: 'My purchases',
     text: 'Your payments and the invoice for each one. They are created automatically when the payment is confirmed.',
@@ -1739,6 +1777,7 @@ export default {
     deletedEvent: 'Deleted event',
     invoice: 'Invoice',
     creditNote: 'Credit note',
+    resend: 'Resend',
     download: 'Download PDF',
     noInvoice: 'The invoice for this purchase is not available yet.',
     status: { paid: 'Paid', refunded: 'Refunded' }

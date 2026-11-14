@@ -1,19 +1,39 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { FileText, ReceiptText } from 'lucide-vue-next'
+import { FileText, Mail, ReceiptText } from 'lucide-vue-next'
 import { UiCard, UiBadge, UiButton, UiSkeleton, UiEmptyState, useToast } from '@/ui'
 import PurchasesService from '../services/PurchasesService'
+import BillingProfileForm from '../components/BillingProfileForm.vue'
+import ResendDialog from '../components/ResendDialog.vue'
+import { useUserStore } from '@/stores/useUserStore'
 import { formatMoney } from '@/modules/payments/utils/money'
 import { purchaseState, shortDate } from '../utils/purchases'
 
 const { t, locale } = useI18n()
 const { error } = useToast()
+const userStore = useUserStore()
 
 const purchases = ref([])
 const loading = ref(true)
 const failed = ref(false)
 const downloading = ref('')
+const resendOpen = ref(false)
+const resendDoc = ref(null)
+const billingEmail = ref('')
+
+async function loadBillingEmail() {
+  try {
+    billingEmail.value = (await PurchasesService.billingProfile()).billingEmail ?? ''
+  } catch {
+    billingEmail.value = ''
+  }
+}
+
+function askResend(kind, id, number) {
+  resendDoc.value = { kind, id, number }
+  loadBillingEmail().then(() => { resendOpen.value = true })
+}
 
 async function load() {
   loading.value = true
@@ -42,7 +62,8 @@ onMounted(load)
 </script>
 
 <template>
-  <section :aria-busy="loading">
+  <section class="flex flex-col gap-6" :aria-busy="loading">
+    <BillingProfileForm />
     <UiCard :title="t('purchases.title')" :subtitle="t('purchases.text')" heading-level="h2">
       <div v-if="loading" class="mt-5 flex flex-col gap-4">
         <UiSkeleton :lines="3" />
@@ -75,17 +96,29 @@ onMounted(load)
             <li v-for="inv in p.invoices" :key="inv.id" class="flex flex-col gap-2 rounded-lg bg-cream-100 p-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <span class="text-base font-medium text-ink-900">{{ t('purchases.invoice') }} {{ inv.number }}</span>
-                <UiButton size="sm" variant="secondary" :loading="downloading === `invoice-${inv.id}`" @click="download('invoice', inv.id, inv.number)">
-                  <FileText class="h-4 w-4" aria-hidden="true" />
-                  {{ t('purchases.download') }}
-                </UiButton>
+                <div class="flex flex-wrap gap-2">
+                  <UiButton size="sm" variant="secondary" :loading="downloading === `invoice-${inv.id}`" @click="download('invoice', inv.id, inv.number)">
+                    <FileText class="h-4 w-4" aria-hidden="true" />
+                    {{ t('purchases.download') }}
+                  </UiButton>
+                  <UiButton size="sm" variant="ghost" @click="askResend('invoice', inv.id, inv.number)">
+                    <Mail class="h-4 w-4" aria-hidden="true" />
+                    {{ t('purchases.resend') }}
+                  </UiButton>
+                </div>
               </div>
               <div v-for="note in inv.creditNotes" :key="note.id" class="flex flex-wrap items-center justify-between gap-2 border-t border-line pt-2">
                 <span class="text-sm text-ink-700">{{ t('purchases.creditNote') }} {{ note.number }} · −{{ formatMoney(note.amountCents, p.currency, locale) }}</span>
-                <UiButton size="sm" variant="ghost" :loading="downloading === `credit-note-${note.id}`" @click="download('credit-note', note.id, note.number)">
-                  <FileText class="h-4 w-4" aria-hidden="true" />
-                  {{ t('purchases.download') }}
-                </UiButton>
+                <div class="flex flex-wrap gap-2">
+                  <UiButton size="sm" variant="ghost" :loading="downloading === `credit-note-${note.id}`" @click="download('credit-note', note.id, note.number)">
+                    <FileText class="h-4 w-4" aria-hidden="true" />
+                    {{ t('purchases.download') }}
+                  </UiButton>
+                  <UiButton size="sm" variant="ghost" @click="askResend('credit-note', note.id, note.number)">
+                    <Mail class="h-4 w-4" aria-hidden="true" />
+                    {{ t('purchases.resend') }}
+                  </UiButton>
+                </div>
               </div>
             </li>
           </ul>
@@ -93,5 +126,7 @@ onMounted(load)
         </li>
       </ul>
     </UiCard>
+
+    <ResendDialog v-model:open="resendOpen" :document="resendDoc" :account-email="userStore.email ?? ''" :billing-email="billingEmail" />
   </section>
 </template>

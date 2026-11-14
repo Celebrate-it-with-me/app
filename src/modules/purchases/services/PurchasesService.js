@@ -6,6 +6,21 @@ class PurchasesService {
     return (await CWM_API.get('account/purchases')).data.data
   }
 
+  /** Her billing data ({ exists, name, billingEmail, ..., accountEmail }). */
+  async billingProfile() {
+    return (await CWM_API.get('account/billing-profile')).data.data
+  }
+
+  async saveBillingProfile(payload) {
+    return (await CWM_API.put('account/billing-profile', payload)).data.data
+  }
+
+  /** Mails an invoice or credit note again to one of her own addresses ('billing' | 'account'). Returns the address used. */
+  async resend(kind, id, to) {
+    const path = kind === 'invoice' ? `account/invoices/${id}/resend` : `account/credit-notes/${id}/resend`
+    return (await CWM_API.post(path, { to })).data.data.sentTo
+  }
+
   /** Downloads a PDF (the auth header is needed, so it goes through axios as a blob). */
   async download(kind, id, filename) {
     const path = kind === 'invoice' ? `account/invoices/${id}/pdf` : `account/credit-notes/${id}/pdf`
