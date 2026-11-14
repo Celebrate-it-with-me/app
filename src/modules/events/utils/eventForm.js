@@ -47,6 +47,9 @@ export function formFromEvent(event) {
     eventDescription: event?.eventDescription ?? '',
     startDate: apiToInput(event?.startDate),
     endDate: apiToInput(event?.endDate),
+    locale: event?.locale ?? 'es',
+    currency: event?.currency ?? 'USD',
+    timezone: event?.timezone ?? 'America/New_York',
     customUrlSlug: event?.customUrlSlug ?? ''
   }
 }
@@ -63,6 +66,9 @@ export function buildPatch(original, current, { slugLocked = false } = {}) {
   }
   if (current.startDate !== original.startDate) patch.startDate = inputToApi(current.startDate)
   if (current.endDate !== original.endDate) patch.endDate = current.endDate ? inputToApi(current.endDate) : null
+  for (const field of ['locale', 'currency', 'timezone']) {
+    if (current[field] !== original[field]) patch[field] = current[field]
+  }
   if (!slugLocked && current.customUrlSlug !== original.customUrlSlug) patch.customUrlSlug = current.customUrlSlug
   return patch
 }
@@ -71,4 +77,55 @@ export function buildPatch(original, current, { slugLocked = false } = {}) {
 export function fieldErrors(error) {
   const errors = error?.response?.data?.errors ?? {}
   return Object.fromEntries(Object.entries(errors).map(([field, messages]) => [field, Array.isArray(messages) ? messages[0] : String(messages)]))
+}
+
+/** Languages an event can run in, and currencies it can use (the API validates the same lists). */
+export const EVENT_LOCALES = ['es', 'en']
+export const EVENT_CURRENCIES = ['USD', 'EUR', 'MXN', 'COP', 'ARS', 'PEN', 'CLP', 'DOP', 'GTQ', 'UYU', 'CRC', 'HNL', 'PAB', 'BOB', 'PYG', 'VES', 'BRL', 'CAD', 'GBP']
+
+const ZONE_REGIONS = ['America', 'Europe', 'Atlantic', 'Pacific', 'Africa', 'Asia', 'Australia']
+const FALLBACK_ZONES = [
+  'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'America/Phoenix', 'America/Anchorage',
+  'America/Mexico_City', 'America/Bogota', 'America/Lima', 'America/Caracas', 'America/Santiago', 'America/Argentina/Buenos_Aires',
+  'America/Sao_Paulo', 'America/Montevideo', 'America/Panama', 'America/Costa_Rica', 'America/Guatemala', 'America/Santo_Domingo',
+  'America/Puerto_Rico', 'America/Havana', 'America/Toronto', 'Pacific/Honolulu', 'Europe/Madrid', 'Europe/London', 'Europe/Paris'
+]
+
+/** Time zones worth offering (IANA names). The event's current one is always included, even if unusual. */
+export function timezoneList(current = '') {
+  let zones = FALLBACK_ZONES
+  try {
+    const all = Intl.supportedValuesOf('timeZone')
+    if (all?.length) zones = all.filter(zone => ZONE_REGIONS.includes(zone.split('/')[0]))
+  } catch {
+    // Older engines: the short list is enough.
+  }
+  const list = new Set(zones)
+  if (current) list.add(current)
+  return [...list].sort()
+}
+
+/** Readable label: `America/New_York` -> `New York (America) · GMT-5`. */
+export function timezoneLabel(zone, now = new Date()) {
+  const [region, ...rest] = zone.split('/')
+  const city = rest.join(' / ').replace(/_/g, ' ')
+  let offset = ''
+  try {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone: zone, timeZoneName: 'shortOffset' }).formatToParts(now)
+    offset = parts.find(p => p.type === 'timeZoneName')?.value ?? ''
+  } catch {
+    // An unknown zone just has no offset in its label.
+  }
+  return `${city || region}${city ? ` (${region})` : ''}${offset ? ` · ${offset}` : ''}`
+}
+
+/** Options for the zone picker, filtered by a free text (accents and case ignored). */
+export function timezoneOptions(current, query = '') {
+  const fold = text => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/_/g, ' ')
+  const needle = fold(query.trim())
+  const options = timezoneList(current).map(zone => ({ value: zone, label: timezoneLabel(zone) }))
+  const filtered = needle ? options.filter(o => fold(`${o.value} ${o.label}`).includes(needle)) : options
+  // The current value stays selectable so the picker never shows an empty box.
+  if (current && !filtered.some(o => o.value === current)) filtered.unshift(options.find(o => o.value === current))
+  return filtered
 }

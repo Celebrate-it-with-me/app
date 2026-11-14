@@ -1373,6 +1373,7 @@ export default {
       noDate: 'Sin fecha definida',
       countdown: 'Es hoy | Falta {n} día | Faltan {n} días',
       past: 'Ya pasó',
+      edit: 'Editar evento',
       setup: 'Tu evento está al {n} % listo',
       next: {
         label: 'Tu siguiente paso',
@@ -1398,7 +1399,7 @@ export default {
         draft: 'Borrador',
         publishedText: 'Tus invitados ya pueden verla y confirmar.',
         draftText: 'Nadie puede verla todavía.',
-        manage: 'Editar evento'
+        manage: 'Gestionar publicación'
       },
       more: {
         title: 'Más sobre tu evento',
@@ -1483,7 +1484,26 @@ export default {
       endBeforeStart: 'El fin no puede ser antes del inicio.',
       notFoundTitle: 'No encontramos este evento',
       notFoundText: 'Puede que ya no exista o que no tengas acceso.',
-      forbidden: 'No tienes permiso para hacer esto en este evento.'
+      forbidden: 'No tienes permiso para hacer esto en este evento.',
+      unsaved: 'Tienes cambios sin guardar.',
+      leaveTitle: '¿Salir sin guardar?',
+      leaveText: 'Cambiaste algunos datos y no los has guardado. Si sales ahora, se perderán.',
+      leave: 'Salir sin guardar',
+      stay: 'Seguir editando'
+    },
+    regional: {
+      locale: 'Idioma del evento',
+      localeHint: 'El idioma en que tus invitados ven la invitación y los mensajes.',
+      locales: { es: 'Español', en: 'Inglés' },
+      currency: 'Moneda',
+      currencyHint: 'Se usa en el presupuesto y en los montos de regalos.',
+      timezone: 'Zona horaria',
+      timezoneHint: 'La hora de tu evento se entiende en esta zona, estén donde estén tus invitados.',
+      timezoneSearch: 'Busca una ciudad o región',
+      timezoneEmpty: 'Elige una zona horaria',
+      timezoneNoMatch: 'Ninguna zona horaria coincide con tu búsqueda.',
+      required: 'Este campo es obligatorio.',
+      invalid: 'Elige una de las opciones de la lista.'
     },
     publication: {
       title: 'Publicación',

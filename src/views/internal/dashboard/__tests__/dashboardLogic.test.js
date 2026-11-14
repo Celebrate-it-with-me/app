@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseEventDate, daysUntil, summarizeRsvp, rsvpShares, pickNextStep } from '../dashboardLogic'
+import { parseEventDate, daysUntil, summarizeRsvp, rsvpShares, pickNextStep, readiness } from '../dashboardLogic'
 
 describe('parseEventDate', () => {
   it('reads the API format as wall time', () => {
@@ -68,4 +68,17 @@ describe('pickNextStep', () => {
     expect(pickNextStep({ ...base, budgetItems: 0 }).id).toBe('budget')
     expect(pickNextStep({ ...base, budgetItems: 0, budgetEnabled: false }).id).toBe('allSet')
   })
+})
+
+describe('readiness', () => {
+  const base = { hasDate: true, guestCount: 0, published: false, budgetEnabled: false, budgetItems: 0 }
+  it('counts only what is really done', () => {
+    expect(readiness(base)).toEqual({ done: 1, total: 3, ratio: 1 / 3 })
+    expect(readiness({ ...base, guestCount: 12, published: true })).toMatchObject({ done: 3, ratio: 1 })
+  })
+  it('adds the budget only when the plan has it', () => {
+    expect(readiness({ ...base, budgetEnabled: true })).toMatchObject({ done: 1, total: 4 })
+    expect(readiness({ ...base, budgetEnabled: true, budgetItems: 2 })).toMatchObject({ done: 2, total: 4 })
+  })
+  it('is 0 with nothing done', () => expect(readiness({ ...base, hasDate: false }).ratio).toBe(0))
 })
