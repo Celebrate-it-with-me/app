@@ -9,12 +9,21 @@
  * Usage (same as before): `toTypedSchema(z.object({ ... }))`
  */
 import { z } from 'zod'
+import i18n from '@/locales/i18n'
 
 // Zod 3 answered "Required" when a value was missing; Zod 4 answers
-// "Invalid input: expected string, received undefined". Keep the old message.
+// "Invalid input: expected string, received undefined". Keep the old message,
+// in the language the app is showing at the moment the schema is validated.
+const REQUIRED = { es: 'Obligatorio', en: 'Required' }
+const currentLocale = () => (i18n.global.locale.value === 'es' ? 'es' : 'en')
+
+// The built-in messages of Zod (too_small, invalid_format...) follow the app language too.
+const zodMessages = { es: z.locales.es().localeError, en: z.locales.en().localeError }
+
 z.config({
   customError: issue =>
-    issue.code === 'invalid_type' && issue.input === undefined ? 'Required' : undefined
+    issue.code === 'invalid_type' && issue.input === undefined ? REQUIRED[currentLocale()] : undefined,
+  localeError: issue => zodMessages[currentLocale()](issue)
 })
 
 /** ['a', 'b', 0, 'c'] -> 'a.b[0].c' (vee-validate path syntax) */

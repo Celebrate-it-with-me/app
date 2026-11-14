@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -23,13 +23,13 @@ const sending = ref(false)
 const backendError = ref(route.query.message ? t('auth.socialFailed') : '')
 
 const { handleSubmit, defineField, errors } = useForm({
-  validationSchema: toTypedSchema(
+  validationSchema: computed(() => toTypedSchema(
     zod.object({
       email: zod.string({ message: t('validation.emailRequired') }).email({ message: t('validation.emailInvalid') }),
       password: zod.string({ message: t('validation.passwordRequired') }).min(8, { message: t('validation.passwordMin') }),
       remember: zod.boolean().optional().default(false)
     })
-  ),
+  )),
   initialValues: { email: '', password: '', remember: false }
 })
 const [email] = defineField('email')

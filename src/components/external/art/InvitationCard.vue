@@ -14,7 +14,7 @@ defineProps({
 
 const THEMES = {
   clasica: {
-    card: 'bg-[#fdfbf8] text-ink-900',
+    card: 'bg-cream-50 text-ink-900',
     eyebrow: 'text-rose-600',
     rule: 'bg-gold-500',
     meta: 'text-ink-500',
@@ -22,20 +22,20 @@ const THEMES = {
     button: 'bg-rose-600 text-white'
   },
   jardin: {
-    card: 'bg-[#f3f7ee] text-[#2f3d2a]',
-    eyebrow: 'text-[#8a6a3a]',
-    rule: 'bg-[#8fae7b]',
-    meta: 'text-[#5f6d58]',
-    frame: 'border-[#cfdcc3]',
-    button: 'bg-[#6f8f5c] text-white'
+    card: 'bg-garden-50 text-garden-800',
+    eyebrow: 'text-garden-bronze',
+    rule: 'bg-garden-400',
+    meta: 'text-garden-600',
+    frame: 'border-garden-300',
+    button: 'bg-garden-500 text-white'
   },
   noche: {
-    card: 'bg-[#1d1a2b] text-[#f6ecd4]',
-    eyebrow: 'text-[#e6cf93]',
-    rule: 'bg-[#e6cf93]',
-    meta: 'text-[#c9bfa6]',
-    frame: 'border-[#4a4360]',
-    button: 'bg-[#e6cf93] text-[#1d1a2b]'
+    card: 'bg-night-950 text-gold-100',
+    eyebrow: 'text-gold-300',
+    rule: 'bg-gold-300',
+    meta: 'text-night-100',
+    frame: 'border-night-700',
+    button: 'bg-gold-300 text-night-950'
   }
 }
 </script>
@@ -48,22 +48,22 @@ const THEMES = {
   >
     <!-- Corner ornaments per world -->
     <svg v-if="theme === 'jardin'" class="absolute -left-4 -top-4 h-28 w-28 opacity-80" viewBox="0 0 100 100" fill="none">
-      <path d="M10 90 C 20 50, 50 20, 90 10" stroke="#8fae7b" stroke-width="1.5" />
-      <ellipse cx="34" cy="52" rx="9" ry="4" transform="rotate(-45 34 52)" fill="#b7c9a7" />
-      <ellipse cx="52" cy="34" rx="9" ry="4" transform="rotate(-45 52 34)" fill="#b7c9a7" />
-      <circle cx="26" cy="70" r="6" fill="#e3a1b1" />
-      <circle cx="70" cy="26" r="6" fill="#e3a1b1" />
-      <circle cx="26" cy="70" r="2.5" fill="#f8e3e8" />
-      <circle cx="70" cy="26" r="2.5" fill="#f8e3e8" />
+      <path d="M10 90 C 20 50, 50 20, 90 10" class="stroke-garden-400" stroke-width="1.5" />
+      <ellipse cx="34" cy="52" rx="9" ry="4" transform="rotate(-45 34 52)" class="fill-garden-200" />
+      <ellipse cx="52" cy="34" rx="9" ry="4" transform="rotate(-45 52 34)" class="fill-garden-200" />
+      <circle cx="26" cy="70" r="6" class="fill-rose-300" />
+      <circle cx="70" cy="26" r="6" class="fill-rose-300" />
+      <circle cx="26" cy="70" r="2.5" class="fill-rose-100" />
+      <circle cx="70" cy="26" r="2.5" class="fill-rose-100" />
     </svg>
-    <svg v-else-if="theme === 'noche'" class="absolute inset-0 h-full w-full" viewBox="0 0 100 133" fill="#e6cf93">
+    <svg v-else-if="theme === 'noche'" class="absolute inset-0 h-full w-full fill-gold-300" viewBox="0 0 100 133">
       <circle cx="12" cy="18" r="0.9" /><circle cx="30" cy="8" r="0.6" /><circle cx="52" cy="14" r="0.8" />
       <circle cx="80" cy="10" r="0.6" /><circle cx="90" cy="30" r="0.9" /><circle cx="8" cy="60" r="0.6" />
       <circle cx="92" cy="70" r="0.7" /><circle cx="20" cy="110" r="0.8" /><circle cx="70" cy="120" r="0.6" />
       <circle cx="46" cy="126" r="0.9" />
     </svg>
     <svg v-else class="absolute inset-3 h-[calc(100%-1.5rem)] w-[calc(100%-1.5rem)]" viewBox="0 0 100 133" fill="none" preserveAspectRatio="none">
-      <rect x="1" y="1" width="98" height="131" stroke="#e6cf93" stroke-width="0.8" />
+      <rect x="1" y="1" width="98" height="131" class="stroke-gold-300" stroke-width="0.8" />
     </svg>
 
     <div class="relative flex h-full flex-col items-center justify-center text-center">

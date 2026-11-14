@@ -15,7 +15,7 @@ const userStore = useUserStore()
 const saving = ref(false)
 
 const { handleSubmit, defineField, errors, meta, resetForm, setFieldError } = useForm({
-  validationSchema: toTypedSchema(
+  validationSchema: computed(() => toTypedSchema(
     zod.object({
       name: zod.string({ message: t('validation.nameRequired') }).trim().min(1, t('validation.nameRequired')),
       phone: zod
@@ -23,7 +23,7 @@ const { handleSubmit, defineField, errors, meta, resetForm, setFieldError } = us
         .optional()
         .refine(value => normalizePhone(value) !== null, { message: t('account.profile.phoneInvalid') })
     })
-  ),
+  )),
   initialValues: { name: '', phone: '' }
 })
 const [name] = defineField('name')

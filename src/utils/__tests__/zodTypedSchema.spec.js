@@ -140,3 +140,35 @@ describe('toTypedSchema (zod 4 adapter)', () => {
     expect((await form.validate()).valid).toBe(true)
   })
 })
+
+describe('toTypedSchema messages follow the app language', () => {
+  const required = toTypedSchema(z.object({ name: z.string() }))
+
+  it('answers "Required" in English and "Obligatorio" in Spanish for a missing value', async () => {
+    const { default: i18n } = await import('@/locales/i18n')
+    const previous = i18n.global.locale.value
+
+    i18n.global.locale.value = 'en'
+    expect((await required.parse({})).errors[0].errors).toEqual(['Required'])
+
+    i18n.global.locale.value = 'es'
+    expect((await required.parse({})).errors[0].errors).toEqual(['Obligatorio'])
+
+    i18n.global.locale.value = previous
+  })
+
+  it('translates the built-in Zod messages', async () => {
+    const { default: i18n } = await import('@/locales/i18n')
+    const previous = i18n.global.locale.value
+    const min = toTypedSchema(z.object({ name: z.string().min(3) }))
+
+    i18n.global.locale.value = 'es'
+    const [spanish] = (await min.parse({ name: 'a' })).errors[0].errors
+    i18n.global.locale.value = 'en'
+    const [english] = (await min.parse({ name: 'a' })).errors[0].errors
+
+    expect(spanish).not.toBe(english)
+    expect(spanish).toMatch(/caracteres|corto|menos/i)
+    i18n.global.locale.value = previous
+  })
+})
