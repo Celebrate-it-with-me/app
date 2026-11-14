@@ -1779,6 +1779,13 @@ export default {
       generic: 'We could not send your message. Please try again in a moment.'
     }
   },
+  announcements: {
+    region: 'Quinvite notices',
+    level: { info: 'Information', news: 'News', warning: 'Important notice' },
+    dismiss: 'Dismiss notice: {title}',
+    dismissFailed: 'We could not dismiss the notice. Please try again.',
+    opensNewTab: '(opens in a new tab)'
+  },
   maintenance: {
     title: 'We are making things better',
     defaultMessage: 'We are down for maintenance to make everything better. Please come back in a few minutes.',
