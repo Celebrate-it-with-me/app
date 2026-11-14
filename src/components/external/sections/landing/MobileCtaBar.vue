@@ -43,6 +43,6 @@ onUnmounted(() => {
     v-if="visible"
     class="ui-enter fixed inset-x-0 bottom-0 z-30 border-t border-line bg-cream-50/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden"
   >
-    <UiButton block to="/sign-up">{{ t('hero.cta') }}</UiButton>
+    <UiButton block to="/sign-up?code=LANZAMIENTO79">{{ t('hero.cta') }}</UiButton>
   </div>
 </template>

@@ -28,7 +28,7 @@ const { root } = useReveal({ threshold: 0.3 })
           {{ t('cta.text') }}
         </p>
         <div class="mt-8 flex flex-col items-center gap-3 lg:items-start">
-          <UiButton variant="ivory" size="lg" to="/sign-up" class="w-full sm:w-auto">{{
+          <UiButton variant="ivory" size="lg" to="/sign-up?code=LANZAMIENTO79" class="w-full sm:w-auto">{{
             t('cta.button')
           }}</UiButton>
           <p class="text-sm text-cream-300/80">{{ t('cta.note') }}</p>

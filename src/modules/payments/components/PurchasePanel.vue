@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { UiButton, UiField, UiInput, useToast } from '@/ui'
 import PaymentsService from '../services/PaymentsService'
 import { formatMoney, isInvalidCode } from '../utils/money'
+import { readPendingCode, clearPendingCode } from '../utils/pendingCode'
 
 const props = defineProps({
   eventId: { type: [Number, String], required: true },
@@ -15,7 +16,8 @@ const { t, locale } = useI18n()
 const { error: showError } = useToast()
 
 const quote = ref(null)
-const code = ref(props.initialCode)
+// A code typed earlier wins; else the one that came with the landing link. Stays visible and editable.
+const code = ref(props.initialCode || readPendingCode() || '')
 const codeError = ref('')
 const loading = ref(true)
 const paying = ref(false)
@@ -33,6 +35,7 @@ async function load(withCode) {
   } catch (e) {
     if (isInvalidCode(e)) {
       codeError.value = t('payments.invalidCode')
+      clearPendingCode()
       quote.value = await PaymentsService.quote(props.eventId)
     } else showError(t('common.genericError'))
   } finally {
@@ -48,6 +51,7 @@ async function pay() {
   paying.value = true
   try {
     const { url } = await PaymentsService.checkout(props.eventId, quote.value.code ?? undefined)
+    clearPendingCode()
     window.location.assign(url)
   } catch (e) {
     paying.value = false
