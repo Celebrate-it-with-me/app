@@ -16,7 +16,6 @@ const collaboratorsStore = useCollaboratorsStore()
 const hydrationStore = useHydrationStore()
 
 onMounted(async () => {
-  console.log('on mounted check')
   const eventId = Number(route.params.id)
   const currentEmail = userStore.email
 
@@ -39,7 +38,6 @@ onMounted(async () => {
       await hydrationStore.hydrateAll()
     }
 
-    console.log('response', response)
     // Send request to accept the invitation
     /*await axios.post('/api/event-invitations/accept', {
       invitation_id: invite.id,
@@ -50,7 +48,7 @@ onMounted(async () => {
     setTimeout(() => {
       router.push('/dashboard/events')
     }, 2000)
-  } catch (e) {
+  } catch {
     error.value = 'There was an error accepting the invitation. Please try again later.'
   } finally {
     loading.value = false
