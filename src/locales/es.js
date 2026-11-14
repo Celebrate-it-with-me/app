@@ -1683,6 +1683,16 @@ export default {
       generic: 'No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.'
     }
   },
+  maintenance: {
+    title: 'Estamos haciendo mejoras',
+    defaultMessage: 'Estamos en mantenimiento para dejar todo mejor. Vuelve en unos minutos.',
+    bannerTitle: 'Mantenimiento programado.',
+    estimatedEnd: 'Regreso estimado: {when}.',
+    reassure: 'Tu información está a salvo. No pierdes nada de lo que ya guardaste.',
+    retry: 'Reintentar ahora',
+    autoRetry: 'Volveremos a intentarlo solos; esta pantalla se cierra cuando todo esté listo.',
+    dismiss: 'Cerrar aviso de mantenimiento'
+  },
   moduleLocked: {
     title: 'Pasa a premium',
     text: 'Esta función es parte del evento completo. Pasa a premium para desbloquearla.',
