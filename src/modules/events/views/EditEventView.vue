@@ -10,6 +10,8 @@ import { guestOverflow, planLimitFrom } from '@/utils/planLimit'
 import GuestLimitNotice from '@/components/internal/limits/GuestLimitNotice.vue'
 import EventAddressField from '../components/EventAddressField.vue'
 import EventStatusBadge from '../components/EventStatusBadge.vue'
+import EventRegionalFields from '../components/EventRegionalFields.vue'
+import { useLeaveGuard } from '../composables/useLeaveGuard'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 
 const { t } = useI18n()
@@ -50,6 +52,11 @@ async function load() {
   try {
     if (!event.value) await eventsStore.fetchEvent(eventId.value)
     if (!eventsStore.eventTypes.length) await eventsStore.loadEventsPlansAndType()
+    if (event.value && !canEdit.value) {
+      // A viewer reads: there is nothing to edit here.
+      router.replace({ name: 'dashboard' })
+      return
+    }
     if (event.value) {
       resetForm()
       // The guest count it was loaded with can be old: refresh it quietly for the limit.
@@ -66,7 +73,7 @@ onMounted(load)
 watch(eventId, load)
 
 // A message goes away as soon as its field is touched.
-for (const field of ['eventName', 'startDate', 'endDate', 'customUrlSlug']) {
+for (const field of ['eventName', 'startDate', 'endDate', 'customUrlSlug', 'locale', 'currency', 'timezone']) {
   watch(
     () => form.value[field],
     () => {
@@ -77,6 +84,7 @@ for (const field of ['eventName', 'startDate', 'endDate', 'customUrlSlug']) {
 
 const patch = computed(() => buildPatch(original.value, form.value, { slugLocked: slugLocked.value }))
 const dirty = computed(() => Object.keys(patch.value).length > 0)
+const leave = useLeaveGuard(dirty)
 
 function validate() {
   const next = {}
@@ -84,6 +92,9 @@ function validate() {
   if (!form.value.startDate) next.startDate = t('events.create.dateRequired')
   if (form.value.endDate && form.value.startDate && form.value.endDate < form.value.startDate) next.endDate = t('events.edit.endBeforeStart')
   if (!slugLocked.value && !SLUG_PATTERN.test(form.value.customUrlSlug)) next.customUrlSlug = t('events.address.invalid')
+  if (!form.value.locale) next.locale = t('events.regional.required')
+  if (!form.value.currency) next.currency = t('events.regional.required')
+  if (!form.value.timezone) next.timezone = t('events.regional.required')
   errors.value = next
   return Object.keys(next).length === 0
 }
@@ -102,10 +113,17 @@ async function save() {
     success(t('events.edit.saved'))
   } catch (e) {
     const server = fieldErrors(e)
-    if (server.customUrlSlug) errors.value = { customUrlSlug: t('events.address.taken') }
-    else if (server.endDate) errors.value = { endDate: t('events.edit.endBeforeStart') }
-    else if (server.eventName) errors.value = { eventName: t('events.create.nameRequired') }
-    else if (server.startDate) errors.value = { startDate: t('events.create.dateRequired') }
+    const messages = {
+      customUrlSlug: t('events.address.taken'),
+      endDate: t('events.edit.endBeforeStart'),
+      eventName: t('events.create.nameRequired'),
+      startDate: t('events.create.dateRequired'),
+      locale: t('events.regional.invalid'),
+      currency: t('events.regional.invalid'),
+      timezone: t('events.regional.invalid')
+    }
+    const next = Object.fromEntries(Object.keys(server).filter(field => messages[field]).map(field => [field, messages[field]]))
+    if (Object.keys(next).length) errors.value = next
     else showServerError(e)
   } finally {
     saving.value = false
@@ -178,6 +196,8 @@ async function confirmDelete() {
   try {
     await eventsStore.deleteEvent(event.value.id)
     deleteOpen.value = false
+    // The event is gone: unsaved edits no longer matter, so leaving must not ask.
+    form.value = { ...original.value }
     success(t('events.danger.deleted'))
     await router.push('/dashboard/events')
   } catch (e) {
@@ -224,11 +244,22 @@ async function confirmDelete() {
             </UiField>
           </div>
 
+          <EventRegionalFields
+            v-model:locale="form.locale"
+            v-model:currency="form.currency"
+            v-model:timezone="form.timezone"
+            :disabled="!canEdit"
+            :errors="errors"
+          />
+
           <EventAddressField v-model="form.customUrlSlug" :locked="slugLocked" :disabled="!canEdit" :error="errors.customUrlSlug" />
 
-          <UiButton v-if="canEdit" type="submit" :loading="saving" :disabled="!dirty" class="w-full sm:w-auto sm:self-end">
-            {{ t('events.edit.save') }}
-          </UiButton>
+          <div v-if="canEdit" class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+            <p v-if="dirty" class="text-sm text-ink-500" role="status">{{ t('events.edit.unsaved') }}</p>
+            <UiButton type="submit" :loading="saving" :disabled="!dirty" class="w-full sm:w-auto">
+              {{ t('events.edit.save') }}
+            </UiButton>
+          </div>
         </form>
       </UiCard>
 
@@ -270,6 +301,19 @@ async function confirmDelete() {
       <template #footer>
         <UiButton variant="ghost" :disabled="acting" @click="pending = null">{{ t('events.publication.confirm.cancel') }}</UiButton>
         <UiButton :loading="acting" @click="runAction(pending)">{{ pending ? t(`events.publication.${pending}`) : '' }}</UiButton>
+      </template>
+    </UiModal>
+
+    <UiModal
+      :open="leave.open.value"
+      :title="t('events.edit.leaveTitle')"
+      :description="t('events.edit.leaveText')"
+      size="sm"
+      @update:open="value => { if (!value) leave.stay() }"
+    >
+      <template #footer>
+        <UiButton variant="ghost" @click="leave.leave">{{ t('events.edit.leave') }}</UiButton>
+        <UiButton @click="leave.stay">{{ t('events.edit.stay') }}</UiButton>
       </template>
     </UiModal>
 

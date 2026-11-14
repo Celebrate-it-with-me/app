@@ -1373,6 +1373,7 @@ export default {
       noDate: 'No date set',
       countdown: 'It is today | {n} day to go | {n} days to go',
       past: 'Already happened',
+      edit: 'Edit event',
       setup: 'Your event is {n}% ready',
       next: {
         label: 'Your next step',
@@ -1398,7 +1399,7 @@ export default {
         draft: 'Draft',
         publishedText: 'Your guests can already see it and confirm.',
         draftText: 'No one can see it yet.',
-        manage: 'Edit event'
+        manage: 'Manage publishing'
       },
       more: {
         title: 'More about your event',
@@ -1483,7 +1484,26 @@ export default {
       endBeforeStart: 'The end cannot be before the start.',
       notFoundTitle: 'We could not find this event',
       notFoundText: 'It may no longer exist, or you may not have access.',
-      forbidden: 'You do not have permission to do this in this event.'
+      forbidden: 'You do not have permission to do this in this event.',
+      unsaved: 'You have unsaved changes.',
+      leaveTitle: 'Leave without saving?',
+      leaveText: 'You changed some details and have not saved them. If you leave now, they will be lost.',
+      leave: 'Leave without saving',
+      stay: 'Keep editing'
+    },
+    regional: {
+      locale: 'Event language',
+      localeHint: 'The language your guests see in the invitation and messages.',
+      locales: { es: 'Spanish', en: 'English' },
+      currency: 'Currency',
+      currencyHint: 'Used for the budget and gift amounts.',
+      timezone: 'Time zone',
+      timezoneHint: 'Your event time is understood in this zone, wherever your guests are.',
+      timezoneSearch: 'Search a city or region',
+      timezoneEmpty: 'Choose a time zone',
+      timezoneNoMatch: 'No time zone matches your search.',
+      required: 'This field is required.',
+      invalid: 'Choose one of the options in the list.'
     },
     publication: {
       title: 'Publishing',
