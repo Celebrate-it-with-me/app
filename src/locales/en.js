@@ -1904,6 +1904,52 @@ export default {
     noInvoice: 'The invoice for this purchase is not available yet.',
     status: { paid: 'Paid', refunded: 'Refunded' }
   },
+  accountDeletion: {
+    zoneTitle: 'Danger zone',
+    zoneText: 'Deleting your account is permanent. Before you do, we show you exactly what will happen.',
+    open: 'Delete my account',
+    stepOf: 'Step {step} of {total}',
+    retry: 'Try again',
+    keep: 'I will keep it',
+    steps: {
+      1: { title: 'Before we say goodbye' },
+      2: { title: 'Confirm it is you' },
+      3: { title: 'One last confirmation' }
+    },
+    intro: 'This is what will happen to your account and your events:',
+    published: 'Your published event will be archived for {days} days and then deleted. Invitations you already sent will keep opening, view only, but nobody will be able to RSVP. | Your published event will be archived for {days} days and then deleted. Invitations you already sent will keep opening, view only, but nobody will be able to RSVP. | Your {n} published events will be archived for {days} days and then deleted. Invitations you already sent will keep opening, view only, but nobody will be able to RSVP.',
+    unpublished: 'Your unpublished event will be deleted right now, with its guests. | Your unpublished event will be deleted right now, with its guests. | Your {n} unpublished events will be deleted right now, with their guests.',
+    collaborating: 'You will leave the event where you collaborate with someone else. | You will leave the event where you collaborate with someone else. | You will leave the {n} events where you collaborate with other people.',
+    noEvents: 'You have no events, so none will be deleted.',
+    personal: 'Your name, email, phone and other personal data are erased immediately.',
+    invoices: 'Your invoices and purchases are kept as required by law and accounting, without your contact details.',
+    pendingNote: 'You have a payment in progress. If it does not finish before you confirm, we cannot delete the account yet.',
+    irreversible: 'This cannot be undone. There is no way to restore the account or its events.',
+    typeEmailIntro: 'To be sure it is you, type your account email exactly as it appears here:',
+    emailLabel: 'Your email',
+    emailHint: 'It must be identical to the one above.',
+    passwordLabel: 'Your password',
+    finalText: 'You are about to delete the account of:',
+    confirmButton: 'Yes, delete my account',
+    errors: {
+      preview: 'We could not load your account summary. Please try again.',
+      emailMismatch: 'That email does not match your account.',
+      passwordRequired: 'Enter your password to continue.',
+      invalidPassword: 'The password is not correct.',
+      staff: 'This account is part of the support team. Ask to be removed from the team and try again.',
+      pendingPayment: 'You have a payment in progress. Wait for it to finish or cancel it, then try again.',
+      tooMany: 'Too many attempts. Wait a while before trying again.',
+      tooManyMinutes: 'Too many attempts. Try again in {minutes} minutes.',
+      tooManySeconds: 'Too many attempts. Try again in {seconds} seconds.',
+      generic: 'We could not delete the account. Nothing was erased; please try again.'
+    }
+  },
+  accountDeleted: {
+    title: 'Your account was deleted',
+    message: 'Thank you for celebrating with us. Your personal data is erased and we signed you out.',
+    mail: 'We sent you an email to confirm it. If you ever want to come back, you can create a new account.',
+    home: 'Go to the home page'
+  },
   account: {
     title: 'My account',
     subtitle: 'Your details, your preferences and your password.',

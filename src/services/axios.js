@@ -89,6 +89,8 @@ const onError = async error => {
           notifyModuleLocked(error, { toast: useToast().toast, t: i18n.global.t })
           break
         }
+        // The account cannot be deleted while it is support staff: the screen explains it, no redirect.
+        if (error.response.data?.code === 'staff_account') break
         if (isAccountSuspended(error)) {
           await handleSuspended(error)
           break
