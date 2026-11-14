@@ -41,6 +41,7 @@ export default {
     start: 'First steps',
     home: 'Digital invitations for quinces and weddings',
     signIn: 'Sign in',
+    notFound: 'Page not found',
     signUp: 'Create account',
     forgot: 'Reset password',
     reset: 'New password',
@@ -1699,6 +1700,11 @@ export default {
     text: 'This feature is part of the full event. Go premium to unlock it.',
     textNamed: '{name} is part of the full event. Go premium to unlock it.',
     names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments' }
+  },
+  notFound: {
+    title: "We can't find this page",
+    text: 'The link may be incomplete or the page may no longer exist. Let us take you back so you can keep planning your celebration.',
+    backHome: 'Back to home'
   },
   impersonation: {
     region: 'Support session',

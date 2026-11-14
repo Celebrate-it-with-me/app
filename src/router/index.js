@@ -81,7 +81,20 @@ const router = createRouter({
             meta: { title: 'UI kit', requiresAuth: false }
           }
         ]
-      : [])
+      : []),
+    // 404 page (public, outside the organizer shell). The catch-all goes last.
+    {
+      path: '/404',
+      name: 'not-found',
+      component: () => import('@/views/external/NotFoundView.vue'),
+      meta: { titleKey: 'titles.notFound', requiresAuth: false }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'catch-all',
+      component: () => import('@/views/external/NotFoundView.vue'),
+      meta: { titleKey: 'titles.notFound', requiresAuth: false }
+    }
   ]
 })
 
