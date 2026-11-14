@@ -50,4 +50,12 @@ describe('PurchasePanel with a code from the landing', () => {
     await flushPromises()
     expect(quote).toHaveBeenCalledWith(1, undefined)
   })
+
+  it('asks for the quote once when the stored code is valid', async () => {
+    localStorage.setItem(PENDING_CODE_KEY, LAUNCH_CODE)
+    quote.mockResolvedValue(offer)
+    mountPanel()
+    await flushPromises()
+    expect(quote).toHaveBeenCalledTimes(1)
+  })
 })
