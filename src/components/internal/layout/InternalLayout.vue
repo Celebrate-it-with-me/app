@@ -13,6 +13,7 @@ import UserMenu from '@/components/internal/shell/UserMenu.vue'
 import AppSidebar from '@/components/internal/shell/AppSidebar.vue'
 import AppBottomNav from '@/components/internal/shell/AppBottomNav.vue'
 import SupportHelpButton from '@/modules/support/components/SupportHelpButton.vue'
+import AnnouncementBanners from '@/modules/announcements/components/AnnouncementBanners.vue'
 import ImpersonationBanner from '@/modules/impersonation/components/ImpersonationBanner.vue'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import CPageLoaderV2 from '@/components/UI/loading/CPageLoaderV2.vue'
@@ -83,6 +84,8 @@ const determinatePostLoginRoute = async () => {
       </div>
     </header>
     </div>
+
+    <AnnouncementBanners />
 
     <div class="flex-1 lg:flex">
       <aside

@@ -1684,6 +1684,13 @@ export default {
       generic: 'No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.'
     }
   },
+  announcements: {
+    region: 'Avisos de Quinvite',
+    level: { info: 'Información', news: 'Novedad', warning: 'Aviso importante' },
+    dismiss: 'Cerrar aviso: {title}',
+    dismissFailed: 'No pudimos cerrar el aviso. Inténtalo de nuevo.',
+    opensNewTab: '(se abre en una pestaña nueva)'
+  },
   maintenance: {
     title: 'Estamos haciendo mejoras',
     defaultMessage: 'Estamos en mantenimiento para dejar todo mejor. Vuelve en unos minutos.',
