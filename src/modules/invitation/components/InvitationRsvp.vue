@@ -12,7 +12,7 @@ const props = defineProps({
   section: { type: Object, required: true }
 })
 
-const { tt, formatDate, slug, code, updateSection } = useInvitationContext()
+const { tt, formatDate, slug, code, updateSection, preview } = useInvitationContext()
 
 const ATTENDING = 'attending'
 const NOT_ATTENDING = 'not-attending'
@@ -50,7 +50,7 @@ const deadline = computed(() => (rsvp.value.deadline ? formatDate(rsvp.value.dea
 const statusLabel = status => tt(`rsvp.status.${status}`)
 
 async function submit() {
-  if (!canSubmit.value || saving.value) return
+  if (preview || !canSubmit.value || saving.value) return
   saving.value = true
   failed.value = false
   message.value = ''
@@ -105,7 +105,7 @@ async function submit() {
               <span class="shrink-0 text-inv-ink-soft">{{ statusLabel(person.status) }}</span>
             </li>
           </ul>
-          <InvitationButton v-if="rsvp.isOpen" variant="outline" class="mt-7 w-full" @click="editing = true">
+          <InvitationButton v-if="rsvp.isOpen" variant="outline" class="mt-7 w-full" :disabled="preview" @click="editing = true">
             {{ tt('rsvp.change') }}
           </InvitationButton>
         </div>
@@ -139,7 +139,8 @@ async function submit() {
             </div>
           </fieldset>
 
-          <InvitationButton type="submit" :loading="saving" :disabled="!canSubmit" class="w-full">
+          <p v-if="preview" role="note" class="text-center text-sm text-inv-ink-soft">{{ tt('previewNotice') }}</p>
+          <InvitationButton type="submit" :loading="saving" :disabled="preview || !canSubmit" class="w-full">
             {{ tt(hasAnswered ? 'rsvp.update' : 'rsvp.submit') }}
           </InvitationButton>
         </form>
