@@ -124,7 +124,7 @@ describe('banner', () => {
     await flushPromises()
     const banner = wrapper.get('[role="status"]')
     expect(banner.text()).toContain('Mejorando la plataforma')
-    expect(banner.text()).toMatch(/back around .*Nov/)
+    expect(banner.text()).toMatch(/Estimated return: .*Nov/)
     await banner.get('button').trigger('click')
     expect(wrapper.find('[role="status"]').exists()).toBe(false)
     expect(sessionStorage.getItem('quinvite.maintenance.dismissed')).toBe('1')
@@ -137,7 +137,7 @@ describe('banner', () => {
     await flushPromises()
     const text = wrapper.get('[role="status"]').text()
     expect(text).toContain(en.maintenance.defaultMessage)
-    expect(text).not.toContain('back around')
+    expect(text).not.toContain('Estimated return')
     wrapper.unmount()
   })
 

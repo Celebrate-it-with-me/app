@@ -1601,7 +1601,7 @@ export default {
     title: 'Estamos haciendo mejoras',
     defaultMessage: 'Estamos en mantenimiento para dejar todo mejor. Vuelve en unos minutos.',
     bannerTitle: 'Mantenimiento programado.',
-    estimatedEnd: 'Volvemos hacia las {when}.',
+    estimatedEnd: 'Regreso estimado: {when}.',
     reassure: 'Tu información está a salvo. No pierdes nada de lo que ya guardaste.',
     retry: 'Reintentar ahora',
     autoRetry: 'Volveremos a intentarlo solos; esta pantalla se cierra cuando todo esté listo.',
