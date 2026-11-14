@@ -64,6 +64,7 @@ export default {
     dressCode: 'Vestimenta',
     budget: 'Presupuesto',
     padrinos: 'Padrinos',
+    collaborators: 'Colaboradores',
     comments: 'Comentarios',
     menus: 'Menús',
     menusCreate: 'Nuevo menú',
@@ -933,6 +934,49 @@ export default {
         tooLong: 'El comentario es demasiado largo (máximo 2000 caracteres).'
       }
     },
+    collaborators: {
+      title: 'Colaboradores',
+      subtitle: 'Quién puede ver y organizar este evento contigo.',
+      add: 'Invitar',
+      cancel: 'Cancelar',
+      retry: 'Reintentar',
+      loading: 'Cargando colaboradores',
+      loadErrorTitle: 'No pudimos cargar los colaboradores',
+      loadError: 'Revisa tu conexión e inténtalo de nuevo.',
+      emptyTitle: 'Aún no hay colaboradores',
+      emptyText: 'Invita a la quinceañera, a tu planner o a quien te ayude a organizar la fiesta.',
+      freeNotice: 'En el plan gratis solo tiene acceso la dueña del evento. Desbloquea tu evento completo para invitar a más personas.',
+      actionsFor: 'Acciones para {name}',
+      roles: { owner: 'Dueña', editor: 'Editor', viewer: 'Solo lectura' },
+      roleHelp: { editor: 'Puede ver y cambiar todo menos las invitaciones a colaborar y borrar el evento.', viewer: 'Puede ver el evento, sin cambiar nada.' },
+      status: { active: 'Con acceso', pending: 'Pendiente', expired: 'Vencida', declined: 'Rechazada' },
+      actions: { resend: 'Reenviar invitación', cancel: 'Cancelar invitación', makeEditor: 'Pasar a editor', makeViewer: 'Pasar a solo lectura', remove: 'Quitar acceso' },
+      invite: {
+        title: 'Invitar a una persona',
+        text: 'Le enviaremos un correo para que se una a este evento.',
+        email: 'Correo electrónico',
+        emailPlaceholder: "nombre{'@'}correo.com",
+        emailRequired: 'Escribe un correo.',
+        emailInvalid: 'Escribe un correo válido.',
+        role: 'Rol',
+        send: 'Enviar invitación'
+      },
+      confirm: {
+        removeTitle: '¿Quitar el acceso de {name}?',
+        removeText: 'Dejará de ver y de organizar este evento. Puedes volver a invitarla cuando quieras.',
+        removeButton: 'Quitar acceso',
+        cancelTitle: '¿Cancelar la invitación de {name}?',
+        cancelText: 'El enlace que recibió dejará de funcionar.',
+        cancelButton: 'Cancelar invitación'
+      },
+      invited: 'Invitación enviada.',
+      resent: 'Invitación reenviada.',
+      cancelled: 'Invitación cancelada.',
+      removed: 'Acceso quitado.',
+      roleChanged: 'Rol actualizado.',
+      inviteError: 'No pudimos enviar la invitación. Inténtalo de nuevo.',
+      actionError: 'No pudimos completar la acción. Inténtalo de nuevo.'
+    },
     padrinos: {
       title: 'Padrinos',
       subtitle: 'Quién te acompaña, qué apadrina y cuánto ha aportado. El dinero no pasa por Quinvite: aquí solo lo registras.',
@@ -1354,6 +1398,7 @@ export default {
       timeline: 'Programa del día',
       invitation: 'Tu invitación',
       padrinos: 'Padrinos',
+      collaborators: 'Colaboradores',
       premium: 'Premium',
       home: 'Inicio',
       guests: 'Invitados',
@@ -1639,6 +1684,7 @@ export default {
       name: 'Nombre completo',
       email: 'Correo electrónico',
       emailHint: 'Para cambiar tu correo, escríbenos a {email}.',
+      photoAlt: 'Foto de perfil de {name}',
       phone: 'Teléfono',
       phoneHint: 'Con código de país, por ejemplo +1 305 555 0123.',
       phoneInvalid: 'Escribe un teléfono válido, con código de país.'
