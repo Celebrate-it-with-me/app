@@ -82,7 +82,7 @@ export default {
       'Create a beautiful invitation, share it on WhatsApp and watch who confirms. No printing, no chasing anyone.',
     cta: 'Create my event for free',
     secondary: 'See a sample invitation',
-    trust: 'Free up to 30 guests · Everything for $79, once'
+    trust: 'Free up to 30 guests · Full event $99, or $79 with the code LANZAMIENTO79'
   },
   mock: {
     demoLabel: 'Sample invitation: Valentina’s XV',
@@ -179,6 +179,10 @@ export default {
       badge: 'To organize it all',
       tagline: 'Her whole celebration, in one place.',
       price: '$79',
+      listPrice: '$99',
+      listPriceLabel: 'Regular price:',
+      offer: 'Launch offer: $79 with the code LANZAMIENTO79',
+      offerNote: 'Limited spots. The regular price is $99. Enter the code when you unlock; we will have it ready for you.',
       currency: 'USD',
       note: 'One payment per event · No subscription',
       intro: 'Everything in Free, plus:',
@@ -221,7 +225,7 @@ export default {
       },
       {
         q: 'When and how do I pay?',
-        a: 'Only if you decide to unlock the full event: one $79 card payment, once. Creating the event and using it on free costs nothing and asks for no card.'
+        a: 'Only if you decide to unlock the full event: one $99 card payment, once. As a launch offer, the code LANZAMIENTO79 makes it $79 (limited spots). Creating the event and using it on free costs nothing and asks for no card.'
       },
       {
         q: 'What happens with my guests’ phone numbers?',

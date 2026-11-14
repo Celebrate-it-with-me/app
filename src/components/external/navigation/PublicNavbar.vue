@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Menu, X } from 'lucide-vue-next'
@@ -11,6 +11,8 @@ const { t } = useI18n()
 const route = useRoute()
 const open = ref(false)
 const menuButton = ref(null)
+// Only the landing carries the launch offer; other public pages sign up without a code.
+const signUpTo = computed(() => (route.path === '/' ? '/sign-up?code=LANZAMIENTO79' : '/sign-up'))
 
 function closeMenu() {
   if (!open.value) return
@@ -49,7 +51,7 @@ watch(() => route.fullPath, () => (open.value = false))
       <div class="hidden items-center gap-3 lg:flex">
         <LocaleSwitch />
         <UiButton variant="ghost" size="sm" to="/sign-in">{{ t('common.signIn') }}</UiButton>
-        <UiButton size="sm" to="/sign-up">{{ t('common.createEvent') }}</UiButton>
+        <UiButton size="sm" :to="signUpTo">{{ t('common.createEvent') }}</UiButton>
       </div>
 
       <button
@@ -79,7 +81,7 @@ watch(() => route.fullPath, () => (open.value = false))
         </router-link>
       </nav>
       <div class="mt-3 flex flex-col gap-2 border-t border-line pt-4">
-        <UiButton block to="/sign-up" @click="open = false">{{ t('common.createEvent') }}</UiButton>
+        <UiButton block :to="signUpTo" @click="open = false">{{ t('common.createEvent') }}</UiButton>
         <UiButton block variant="secondary" to="/sign-in" @click="open = false">{{ t('common.signIn') }}</UiButton>
         <div class="flex justify-center pt-2"><LocaleSwitch /></div>
       </div>

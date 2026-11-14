@@ -19,7 +19,7 @@ const { t } = useI18n()
         </h1>
         <p class="mx-auto mt-5 max-w-xl text-lg text-ink-500 lg:mx-0 text-balance">{{ t('hero.subtitle') }}</p>
         <div class="mt-8 flex flex-col items-center gap-3 lg:items-start">
-          <UiButton size="lg" to="/sign-up" class="w-full sm:w-auto">{{ t('hero.cta') }}</UiButton>
+          <UiButton size="lg" to="/sign-up?code=LANZAMIENTO79" class="w-full sm:w-auto">{{ t('hero.cta') }}</UiButton>
           <UiButton variant="link" :to="DEMO_INVITATION_PATH">{{ t('hero.secondary') }}</UiButton>
         </div>
         <p class="mt-4 text-sm text-ink-500">{{ t('hero.trust') }}</p>
