@@ -1,5 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/preview/invitation",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors https://admin.quinvite.com" },
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    }
+  ],
   "rewrites": [
     {
       "source": "/i/:slug/:code",

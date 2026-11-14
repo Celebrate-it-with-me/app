@@ -347,6 +347,8 @@ export default {
     notFoundText: 'Check that the link is complete, or ask whoever invited you for a new one.',
     errorTitle: 'We couldn\'t load the invitation',
     errorText: 'Check your connection and try again.',
+    previewNotice: 'Preview: answers are not saved.',
+    preview: { waiting: 'Waiting for preview…', notConfigured: 'Preview is not configured', invalidKept: 'The received content is not valid. The last valid preview is kept.', invalid: 'The received content is not valid.' },
     retry: 'Try again',
     language: 'Language',
     invitedFor: 'Invitation for',

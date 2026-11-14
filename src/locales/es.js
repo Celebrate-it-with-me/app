@@ -347,6 +347,8 @@ export default {
     notFoundText: 'Revisa que el enlace esté completo o pídele uno nuevo a quien te invitó.',
     errorTitle: 'No pudimos cargar la invitación',
     errorText: 'Revisa tu conexión e inténtalo de nuevo.',
+    previewNotice: 'Vista previa: las respuestas no se guardan.',
+    preview: { waiting: 'Esperando vista previa…', notConfigured: 'Vista previa no configurada', invalidKept: 'El contenido recibido no es válido. Se mantiene la última vista previa válida.', invalid: 'El contenido recibido no es válido.' },
     retry: 'Reintentar',
     language: 'Idioma',
     invitedFor: 'Invitación para',
