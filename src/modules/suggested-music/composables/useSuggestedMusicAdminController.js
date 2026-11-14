@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n'
 import debounce from 'lodash.debounce'
 import { useToast } from '@/ui'
 import { useUserStore } from '@/stores/useUserStore'
+import { isModuleLocked } from '@/utils/moduleLocked'
 import { useClickOutside } from '@/composables/useClickOutside'
 import SpotifyService from '@/modules/suggested-music/services/SpotifyService'
 import SongsService from '@/modules/suggested-music/services/SongsService'
@@ -78,6 +79,15 @@ export function useSuggestedMusicAdminController() {
     }
   }
 
+  function searchErrorMessage(error) {
+    const status = error?.response?.status
+    if (status === 503 && error.response?.data?.code === 'spotify_unavailable') {
+      return t('app.music.searchUnavailable')
+    }
+    if (status === 422) return t('app.music.searchInvalid')
+    return t('app.music.searchError')
+  }
+
   const searchSongs = debounce(async () => {
     if (!searchQuery.value) {
       searchResults.value = []
@@ -86,11 +96,12 @@ export function useSuggestedMusicAdminController() {
 
     searching.value = true
     try {
-      const result = await SpotifyService.searchSongs(searchQuery.value)
+      const result = await SpotifyService.searchSongs(searchQuery.value, 5, userStore.activeEvent)
       searchResults.value = mapSpotifyTracks(result)
-    } catch {
+    } catch (error) {
       searchResults.value = []
-      toast.error(t('app.music.searchError'))
+      // A locked module is already announced by the axios interceptor (upgrade notice).
+      if (!isModuleLocked(error)) toast.error(searchErrorMessage(error))
     } finally {
       searching.value = false
     }

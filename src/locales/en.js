@@ -695,6 +695,8 @@ export default {
       cancel: 'Cancel',
       loadError: 'We could not load the suggested music.',
       searchError: 'We could not search for songs. Please try again.',
+      searchUnavailable: 'Song search is not available right now, please try again in a moment.',
+      searchInvalid: 'That search is not valid. Try a shorter name.',
       added: 'Song added.',
       addError: 'We could not add the song.',
       removed: 'Song removed.',
