@@ -1258,6 +1258,86 @@ export default {
       previewCalendar: 'Agregar al calendario',
       units: { days: 'días', hours: 'horas', minutes: 'min', seconds: 'seg' }
     },
+    whatsapp: {
+      title: 'Enviar por WhatsApp',
+      button: 'Enviar por WhatsApp',
+      shareButton: 'Compartir por WhatsApp',
+      select: 'Elegir invitados',
+      selecting: 'Elegidos: {n} | Elegidos: {n}',
+      selectGuest: 'Elegir a {name}',
+      templateLabel: 'Qué quieres enviar',
+      audienceLabel: 'A quién',
+      templates: {
+        invitation: { name: 'Invitación', help: 'Tu invitación con el enlace y botones para confirmar con un toque.' },
+        reminder_pending: { name: 'Recordatorio a pendientes', help: 'Un recordatorio amable para quien aún no responde.' },
+        save_the_date: { name: 'Save the date', help: 'Avisa la fecha antes de enviar la invitación.' }
+      },
+      audience: {
+        all: 'Toda tu lista ({n} invitado) | Toda tu lista ({n} invitados)',
+        pending: 'Solo pendientes ({n} invitado) | Solo pendientes ({n} invitados)',
+        selected: 'Los que elegí ({n} invitado) | Los que elegí ({n} invitados)',
+        selectedHelp: 'Pulsa «Elegir invitados» en la lista para marcarlos.'
+      },
+      preview: 'Se enviará a hasta {n} invitado. Quien no tenga un teléfono válido se omite. | Se enviará a hasta {n} invitados. Quien no tenga un teléfono válido se omite.',
+      next: 'Continuar',
+      back: 'Volver',
+      close: 'Cerrar',
+      confirm: {
+        text: 'Vas a enviar «{template}» a hasta {n} invitado por WhatsApp. | Vas a enviar «{template}» a hasta {n} invitados por WhatsApp.',
+        note: 'Los mensajes salen de inmediato. A quien ya recibió esta misma plantilla hoy no se le repite.',
+        send: 'Enviar ahora'
+      },
+      result: {
+        queued: '{n} mensaje en camino | {n} mensajes en camino',
+        queuedHelp: 'Verás cómo pasan a enviado, entregado y leído en la lista.',
+        skipped: 'No se envió a {n} invitado | No se envió a {n} invitados',
+        resend: 'Enviar de nuevo a {n} invitado | Enviar de nuevo a {n} invitados'
+      },
+      skip: {
+        no_phone: 'No tienen teléfono. Añade su número para poder escribirles.',
+        invalid_phone: 'Su número no parece válido. Revísalo con el código del país, por ejemplo +1 305 555 0123.',
+        opted_out: 'Pidieron no recibir más mensajes. Respetamos su decisión.',
+        recently_sent: 'Ya recibieron este mensaje en las últimas 24 horas.',
+        already_responded: 'Ya respondieron a tu invitación, no hace falta recordarles.'
+      },
+      stateLabel: 'WhatsApp',
+      state: {
+        queued: 'En cola',
+        sent: 'Enviado',
+        delivered: 'Entregado',
+        read: 'Leído',
+        failed: 'No se pudo enviar',
+        no_phone: 'Sin teléfono',
+        opted_out: 'No quiere mensajes'
+      },
+      failedHelp: 'El mensaje no llegó.',
+      retry: 'Reintentar',
+      retried: 'Volvimos a intentarlo.',
+      summary: {
+        label: 'Resumen de envíos por WhatsApp',
+        title: '{n} mensaje enviado por WhatsApp | {n} mensajes enviados por WhatsApp'
+      },
+      manual: {
+        title: 'Compartir por WhatsApp',
+        lockedTitle: 'El envío automático es parte del evento completo',
+        lockedText: 'Con el evento completo escribimos a toda tu lista de una vez y ves quién recibió y leyó cada mensaje.',
+        upgrade: 'Pasa a premium',
+        help: 'Mientras tanto, abre WhatsApp con la invitación lista para cada invitado y envíala tú.',
+        share: 'Compartir',
+        shareLabel: 'Compartir la invitación de {name} por WhatsApp',
+        empty: 'Aún no hay invitados en esta vista.'
+      },
+      errors: {
+        generic: 'No pudimos enviar los mensajes. Inténtalo de nuevo en un momento.',
+        locked: 'El envío automático es parte del evento completo.',
+        unavailable: 'WhatsApp todavía no está conectado. Mientras tanto puedes compartir cada invitación a mano.',
+        templateNotApproved: 'Este mensaje aún está en revisión por WhatsApp. Prueba de nuevo más tarde.',
+        noRecipients: 'No hay nadie a quien enviar en este grupo.',
+        tooMany: 'Puedes enviar a 500 invitados a la vez como máximo. Elige menos o envía por grupos.',
+        selectSome: 'Elige al menos un invitado.',
+        notFailed: 'Ese mensaje ya no está fallido.'
+      }
+    },
     roster: {
       progress: {
         label: 'Respuestas de tus invitados',
@@ -1433,7 +1513,8 @@ export default {
       comments: 'Comentarios',
       dressCode: 'Vestimenta',
       memories: 'Recuerdos',
-      music: 'Música'
+      music: 'Música',
+      whatsapp: 'WhatsApp'
     },
     dashboard: {
       loadError: 'No pudimos cargar algunos datos. Intenta de nuevo en un momento.',
@@ -1658,7 +1739,8 @@ export default {
       seating: 'Acomoda a tus invitados en mesas y ten el plano listo para el salón.',
       suggested_music: 'Tus invitados proponen canciones y votan las que más quieren bailar.',
       memories: 'Guarda las fotos de tu fiesta en un álbum.',
-      comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.'
+      comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.',
+      whatsapp: 'Envío automático de la invitación por WhatsApp a toda tu lista, con el estado de cada mensaje.'
     },
     includes: 'Con el evento completo tienes:',
     back: 'Volver al inicio',
@@ -1698,7 +1780,7 @@ export default {
     title: 'Pasa a premium',
     text: 'Esta función es parte del evento completo. Pasa a premium para desbloquearla.',
     textNamed: '{name} es parte del evento completo. Pasa a premium para desbloquearla.',
-    names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios' }
+    names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios', whatsapp: 'WhatsApp' }
   },
   impersonation: {
     region: 'Sesión de soporte',
