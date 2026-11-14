@@ -1230,6 +1230,25 @@ export default {
       emptyText: 'Añade a tu primera familia o amiga. Cada invitado recibe su propio enlace.',
       noResultsTitle: 'No encontramos a nadie',
       noResultsText: 'Prueba con otro nombre o cambia de pestaña.',
+      download: {
+        button: 'Descargar',
+        label: 'Descargar la lista en Excel',
+        current: 'Esta lista ({tab})',
+        all: 'Todos los invitados',
+        venue: 'Para el salón',
+        venueHint: 'Solo confirmados, con mesa y menú si los usas',
+        done: 'Descarga lista.',
+        error: 'No pudimos preparar la descarga. Inténtalo de nuevo.',
+        tooMany: 'Hiciste muchas descargas seguidas. Espera un minuto.'
+      },
+      locale: {
+        label: 'Idioma de la invitación',
+        es: 'Español',
+        en: 'Inglés',
+        event: 'El del evento ({lang})',
+        saved: 'Idioma guardado.',
+        error: 'No pudimos cambiar el idioma. Quedó como estaba.'
+      },
       menu: {
         label: 'Acciones para {name}',
         whatsapp: 'Enviar por WhatsApp',
