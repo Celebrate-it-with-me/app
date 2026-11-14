@@ -45,7 +45,9 @@ export const MODULE_VIEWS = {
   memories: { to: '/dashboard/memories', icon: Camera, labelKey: 'app.nav.memories' },
   comments: { to: '/dashboard/event-comments', icon: MessageCircle, labelKey: 'app.nav.comments' },
   // No screen of its own: sending lives in the guest list. Listed so the "pass to premium" screen can name it.
-  whatsapp: { to: null, icon: MessageCircle, labelKey: 'app.nav.whatsapp' }
+  whatsapp: { to: null, icon: MessageCircle, labelKey: 'app.nav.whatsapp' },
+  // A control key, not a menu entry (the screen sits under Organization elsewhere): it only gives the unlock screen a name.
+  collaborators: { to: null, icon: Users, labelKey: 'app.nav.collaborators' }
 }
 
 /** The home screen is always there; it is not a module. */

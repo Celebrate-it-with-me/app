@@ -2,13 +2,15 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { Info, UserPlus, UsersRound } from 'lucide-vue-next'
+import { Lock, UserPlus, UsersRound } from 'lucide-vue-next'
 import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import CollaboratorsService from '@/services/CollaboratorsService'
+import { isModuleLocked } from '@/utils/moduleLocked'
+import { unlockPath } from '@/components/internal/shell/navModules'
 import CollaboratorRow from '../components/CollaboratorRow.vue'
 import InviteCollaboratorModal from '../components/InviteCollaboratorModal.vue'
-import { canManage, isFreePlan, normalizeCollaborator, sortCollaborators } from '../utils/collaborators'
+import { canManage, isCollaboratorsLocked, normalizeCollaborator, sortCollaborators } from '../utils/collaborators'
 
 const { t } = useI18n()
 const { success, error: showError } = useToast()
@@ -18,7 +20,9 @@ const eventsStore = useEventsStore()
 
 const event = computed(() => eventsStore.activeEvent)
 const manage = computed(() => canManage(event.value, eventsStore.hasPermission))
-const free = computed(() => isFreePlan(event.value))
+// Locked by the event's modules, or by a 403 `module_locked` that arrived before the event was refreshed.
+const lockedByApi = ref(false)
+const locked = computed(() => lockedByApi.value || isCollaboratorsLocked(event.value))
 
 const rows = ref([])
 const loading = ref(true)
@@ -45,11 +49,12 @@ async function load() {
 onMounted(() => {
   load()
   // `/dashboard/collaborators/invite` (the API's suggestion) opens the invitation form.
-  if (route.query.invite && manage.value) inviteOpen.value = true
+  if (route.query.invite && manage.value && !locked.value) inviteOpen.value = true
 })
 watch(() => event.value?.id, load)
 
 function openInvite() {
+  if (locked.value) return
   inviteOpen.value = true
 }
 watch(inviteOpen, open => {
@@ -65,6 +70,12 @@ async function run(request, okKey, failKey) {
     success(t(okKey))
     return true
   } catch (e) {
+    // The axios interceptor already showed the upgrade notice: no second toast, just lock the screen.
+    if (isModuleLocked(e)) {
+      lockedByApi.value = true
+      inviteOpen.value = false
+      return false
+    }
     if (e.response?.status === 429) showError(t('app.collaborators.tooManyRequests'))
     else showError(e.response?.data?.message && e.response.status < 500 ? e.response.data.message : t(failKey))
     return false
@@ -121,20 +132,26 @@ const confirmOpen = computed({
   <div v-if="event">
     <UiPageHeader :title="t('app.collaborators.title')" :subtitle="t('app.collaborators.subtitle')">
       <template v-if="manage" #actions>
-        <UiButton @click="openInvite"><UserPlus class="h-5 w-5" aria-hidden="true" />{{ t('app.collaborators.add') }}</UiButton>
+        <UiButton :disabled="locked" @click="openInvite"><UserPlus class="h-5 w-5" aria-hidden="true" />{{ t('app.collaborators.add') }}</UiButton>
       </template>
     </UiPageHeader>
 
-    <!-- Informational only: the plan's limit is enforced by the API when someone is invited. -->
-    <p
-      v-if="free"
-      class="mb-4 flex items-start gap-3 rounded-lg border border-info-500/30 bg-info-50 p-4 text-sm text-info-700"
+    <!-- The API enforces it too (403 module_locked); this is the warm version of that refusal. -->
+    <div
+      v-if="locked"
+      class="mb-4 flex flex-col gap-4 rounded-lg border border-gold-300 bg-gold-50 p-4 sm:flex-row sm:items-center"
       role="note"
-      data-testid="free-plan-note"
+      data-testid="locked-note"
     >
-      <Info class="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-      <span>{{ t('app.collaborators.freeNotice') }}</span>
-    </p>
+      <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-700" aria-hidden="true">
+        <Lock class="h-5 w-5" />
+      </span>
+      <div class="min-w-0 flex-1">
+        <p class="text-base font-semibold text-ink-900">{{ t('app.collaborators.locked.title') }}</p>
+        <p class="mt-0.5 text-sm text-ink-600">{{ t('app.collaborators.locked.text') }}</p>
+      </div>
+      <UiButton :to="unlockPath('collaborators')" data-testid="locked-cta">{{ t('app.collaborators.locked.cta') }}</UiButton>
+    </div>
 
     <UiCard padding="none" :aria-busy="loading">
       <div v-if="loading" class="flex flex-col gap-3 p-4" role="status" :aria-label="t('app.collaborators.loading')">
@@ -150,11 +167,11 @@ const confirmOpen = computed({
 
       <UiEmptyState v-else-if="!rows.length" compact :title="t('app.collaborators.emptyTitle')" :description="t('app.collaborators.emptyText')">
         <template #icon><UsersRound class="h-6 w-6" /></template>
-        <UiButton v-if="manage" @click="openInvite">{{ t('app.collaborators.add') }}</UiButton>
+        <UiButton v-if="manage" :disabled="locked" @click="openInvite">{{ t('app.collaborators.add') }}</UiButton>
       </UiEmptyState>
 
       <ul v-else class="divide-y divide-line" :aria-label="t('app.collaborators.title')">
-        <CollaboratorRow v-for="row in rows" :key="row.key" :row="row" :manage="manage" :busy="busyKey === row.key" @action="onAction" />
+        <CollaboratorRow v-for="row in rows" :key="row.key" :row="row" :manage="manage" :locked="locked" :busy="busyKey === row.key" @action="onAction" />
       </ul>
     </UiCard>
 

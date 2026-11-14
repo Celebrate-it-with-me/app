@@ -954,7 +954,7 @@ export default {
       loadError: 'Revisa tu conexión e inténtalo de nuevo.',
       emptyTitle: 'Aún no hay colaboradores',
       emptyText: 'Invita a la quinceañera, a tu planner o a quien te ayude a organizar la fiesta.',
-      freeNotice: 'En el plan gratis solo tiene acceso la dueña del evento. Desbloquea tu evento completo para invitar a más personas.',
+      locked: { title: 'Invitar colaboradoras es parte del evento completo', text: 'Aquí sigues viendo a quienes ya tienen acceso y puedes quitarlos o cancelar invitaciones. Para invitar a más personas, cambiar roles o reenviar, pasa a premium.', cta: 'Pasa a premium' },
       actionsFor: 'Acciones para {name}',
       roles: { owner: 'Dueña', editor: 'Editor', viewer: 'Solo lectura' },
       roleHelp: { editor: 'Puede ver y cambiar todo menos las invitaciones a colaborar y borrar el evento.', viewer: 'Puede ver el evento, sin cambiar nada.' },
@@ -1760,13 +1760,15 @@ export default {
     },
     lead: '{module} es parte del evento completo.',
     generic: 'Disponible cuando desbloqueas tu evento completo.',
+    leads: { collaborators: 'Invitar colaboradoras es parte del evento completo.' },
     modules: {
       menus: 'Cada invitado elige su plato al confirmar y tú ves cuántos pidió cada opción.',
       seating: 'Acomoda a tus invitados en mesas y ten el plano listo para el salón.',
       suggested_music: 'Tus invitados proponen canciones y votan las que más quieren bailar.',
       memories: 'Guarda las fotos de tu fiesta en un álbum.',
       comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.',
-      whatsapp: 'Envío automático de la invitación por WhatsApp a toda tu lista, con el estado de cada mensaje.'
+      whatsapp: 'Envío automático de la invitación por WhatsApp a toda tu lista, con el estado de cada mensaje.',
+      collaborators: 'Invita a tu planner, a la quinceañera o a quien te ayude y repartan el trabajo con el rol que quieras.'
     },
     includes: 'Con el evento completo tienes:',
     back: 'Volver al inicio',
@@ -1813,7 +1815,7 @@ export default {
     title: 'Pasa a premium',
     text: 'Esta función es parte del evento completo. Pasa a premium para desbloquearla.',
     textNamed: '{name} es parte del evento completo. Pasa a premium para desbloquearla.',
-    names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios', whatsapp: 'WhatsApp' }
+    names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios', whatsapp: 'WhatsApp', collaborators: 'Colaboradores' }
   },
   notFound: {
     title: 'No encontramos esta página',
