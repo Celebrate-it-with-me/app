@@ -13,7 +13,9 @@ import {
   NotebookPen,
   Music,
   Camera,
-  MessageCircle
+  MessageCircle,
+  Briefcase,
+  Ellipsis
 } from 'lucide-vue-next'
 
 /** Sections of the menu, in order. `main` has no title. The API sends each module's section. */
@@ -91,4 +93,49 @@ export function buildNavSections(modules) {
   return SECTIONS.map(section => ({ section, items: all.filter(item => item.section === section) })).filter(
     group => group.items.length
   )
+}
+
+/**
+ * The phone's bottom bar, built from the same sections as the sidebar (one source of truth).
+ *
+ * Tabs: Home, "Tu invitación", Guests, "Organización" and "Más".
+ * - "Tu invitación" has no editor yet: it leads to the event screen where the invitation's status is changed
+ *   (`edit-event`). It needs an event, and it is not a module of the catalog, so it is always drawn when there is one.
+ * - Guests is a plain link and only shows while the module is on and usable.
+ * - "Organización" opens a sheet with the whole section (locked ones with their padlock).
+ * - "Más" opens a sheet with everything else: what is left of the guests section and the extras.
+ * Modules the admin switched off never arrive here, so they are never drawn.
+ */
+export function buildMobileNav(sections, eventId = null) {
+  const items = sections.flatMap(group => group.items)
+  const guests = items.find(item => item.key === 'guests' && item.state === 'active') ?? null
+  const organization = items.filter(item => item.section === 'organization')
+  const more = items.filter(
+    item => item.key !== 'home' && item !== guests && item.section !== 'organization'
+  )
+  const home = items.find(item => item.key === 'home')
+
+  const tabs = [{ key: 'home', kind: 'link', to: home.to, icon: home.icon, labelKey: home.labelKey }]
+  if (eventId) {
+    tabs.push({
+      key: 'invitation',
+      kind: 'link',
+      to: { name: 'edit-event', params: { id: eventId } },
+      routeNames: ['edit-event'],
+      icon: MODULE_VIEWS.invitation.icon,
+      labelKey: MODULE_VIEWS.invitation.labelKey
+    })
+  }
+  if (guests) tabs.push({ key: 'guests', kind: 'link', to: guests.to, icon: guests.icon, labelKey: guests.labelKey })
+  if (organization.length) {
+    tabs.push({ key: 'organization', kind: 'sheet', icon: Briefcase, labelKey: 'app.groups.organization', items: organization })
+  }
+  tabs.push({ key: 'more', kind: 'sheet', icon: Ellipsis, labelKey: 'app.nav.more', items: more })
+  return tabs
+}
+
+/** Whether `path` is the destination `to` (a path string) or inside it. Route objects never match by path. */
+export function isActivePath(path, to) {
+  if (typeof to !== 'string') return false
+  return path === to || (to !== '/dashboard' && path.startsWith(to + '/'))
 }
