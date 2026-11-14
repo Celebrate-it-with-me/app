@@ -1,15 +1,17 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { CalendarDays } from 'lucide-vue-next'
-import { UiBadge } from '@/ui'
+import { CalendarDays, Pencil } from 'lucide-vue-next'
+import { UiBadge, UiButton } from '@/ui'
 import { parseEventDate, daysUntil } from './dashboardLogic'
 
 const props = defineProps({
   name: { type: String, default: '' },
   startDate: { type: String, default: '' },
   /** 0..1 as sent by the API (`setupProgress`). */
-  progress: { type: Number, default: 0 }
+  progress: { type: Number, default: 0 },
+  /** Route to edit the event; null hides the button (viewers). */
+  editTo: { type: [String, Object], default: null }
 })
 
 const { t, locale } = useI18n()
@@ -41,7 +43,13 @@ const percent = computed(() => Math.round(Math.min(1, Math.max(0, props.progress
       </p>
       <UiBadge v-if="countdown" tone="gold" size="sm">{{ countdown }}</UiBadge>
     </div>
-    <h1 class="mt-2 font-heading text-3xl text-ink-900 text-balance sm:text-4xl">{{ name }}</h1>
+    <div class="mt-2 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+      <h1 class="font-heading text-3xl text-ink-900 text-balance sm:text-4xl">{{ name }}</h1>
+      <UiButton v-if="editTo" :to="editTo" variant="secondary" size="sm" class="self-start sm:shrink-0">
+        <Pencil class="h-4 w-4" aria-hidden="true" />
+        {{ t('app.dashboard.edit') }}
+      </UiButton>
+    </div>
 
     <div class="mt-5 max-w-md">
       <div class="flex items-baseline justify-between gap-3 text-sm">

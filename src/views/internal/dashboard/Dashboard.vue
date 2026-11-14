@@ -15,7 +15,7 @@ import { allDone, normalizeProgress } from '@/modules/onboarding/utils/steps'
 import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardInvitation from './DashboardInvitation.vue'
 import DashboardMore from './DashboardMore.vue'
-import { summarizeRsvp, pickNextStep } from './dashboardLogic'
+import { summarizeRsvp, pickNextStep, readiness } from './dashboardLogic'
 
 const { t } = useI18n()
 const { error: showError } = useToast()
@@ -35,6 +35,8 @@ const rsvp = computed(() => summarizeRsvp(rsvpStore.stats))
 const guestCount = computed(() => event.value?.guestsCount ?? rsvp.value.people)
 const published = computed(() => event.value?.status === 'published')
 
+// Only owners and editors (`edit_event`) change the event; a viewer just reads.
+const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 const editTarget = computed(() => (event.value ? { name: 'edit-event', params: { id: event.value.id } } : null))
 
 const step = computed(() =>
@@ -46,6 +48,15 @@ const step = computed(() =>
     budgetEnabled: budgetEnabled.value,
     budgetItems: budget.value.items
   })
+)
+const progress = computed(() =>
+  readiness({
+    hasDate: !!event.value?.startDate,
+    guestCount: guestCount.value,
+    published: published.value,
+    budgetEnabled: budgetEnabled.value,
+    budgetItems: budget.value.items
+  }).ratio
 )
 const stepTarget = computed(() => (step.value.to === 'edit' ? editTarget.value : step.value.to))
 
@@ -106,14 +117,14 @@ watch(() => event.value?.id, load, { immediate: true })
 
 <template>
   <div v-if="event">
-    <DashboardHeader :name="event.eventName" :start-date="event.startDate" :progress="event.setupProgress ?? 0" />
+    <DashboardHeader :name="event.eventName" :start-date="event.startDate" :progress="progress" :edit-to="canEdit ? editTarget : null" />
 
     <DashboardNextStep :step="step" :target="stepTarget" />
     <DashboardStartLink v-if="showStart" :done="start.done" :total="start.total" />
 
     <div class="mt-6 grid gap-4 lg:grid-cols-3">
       <DashboardRsvp class="lg:col-span-2" :rsvp="rsvp" />
-      <DashboardInvitation :published="published" :edit-to="editTarget" />
+      <DashboardInvitation :published="published" :edit-to="canEdit ? editTarget : null" />
     </div>
 
     <DashboardMore :budget-enabled="budgetEnabled" :budget="budget" :program="program" :activity="activity" />

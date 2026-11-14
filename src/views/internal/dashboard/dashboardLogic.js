@@ -49,6 +49,17 @@ export function rsvpShares({ attending, pending, declined }) {
 }
 
 /**
+ * How ready the event really is, from real data: a date is set, there are guests, the invitation is published and,
+ * when the plan has the budget, it has at least one item. Returns `{ done, total, ratio }` (ratio 0..1).
+ */
+export function readiness({ hasDate, guestCount, published, budgetEnabled, budgetItems }) {
+  const checks = [!!hasDate, guestCount > 0, !!published]
+  if (budgetEnabled) checks.push(budgetItems > 0)
+  const done = checks.filter(Boolean).length
+  return { done, total: checks.length, ratio: done / checks.length }
+}
+
+/**
  * The single most useful thing to do next, from real data only.
  * Returns `{ id, to }` (route target) or `{ id: 'allSet' }` when nothing is pending.
  */
