@@ -1263,6 +1263,94 @@ export default {
       previewCalendar: 'Add to calendar',
       units: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec' }
     },
+    whatsapp: {
+      title: 'Send by WhatsApp',
+      button: 'Send by WhatsApp',
+      shareButton: 'Share by WhatsApp',
+      select: 'Pick guests',
+      selecting: 'Picked: {n} | Picked: {n}',
+      selectGuest: 'Pick {name}',
+      templateLabel: 'What to send',
+      audienceLabel: 'To whom',
+      templates: {
+        invitation: { name: 'Invitation', help: 'Your invitation with the link and buttons to reply in one tap.' },
+        reminder_pending: { name: 'Reminder to pending guests', help: 'A friendly nudge for whoever has not answered yet.' },
+        save_the_date: { name: 'Save the date', help: 'Share the date before the invitation goes out.' }
+      },
+      audience: {
+        all: 'Your whole list',
+        pending: 'Pending guests only',
+        selected: 'The ones I picked ({n}) | The ones I picked ({n})',
+        selectedHelp: 'Tap "Pick guests" in the list to mark them.'
+      },
+      previewLoading: 'Working out who will get it…',
+      preview: 'It will reach {n} guest. | It will reach {n} guests.',
+      previewSkip: {
+        no_phone: '{n} without a phone | {n} without a phone',
+        invalid_phone: '{n} with an invalid number | {n} with an invalid number',
+        opted_out: '{n} asked not to get messages | {n} asked not to get messages',
+        recently_sent: '{n} already got it today | {n} already got it today',
+        already_responded: '{n} already answered | {n} already answered'
+      },
+      next: 'Continue',
+      back: 'Back',
+      close: 'Close',
+      confirm: {
+        text: 'You are about to send "{template}" to {n} guest by WhatsApp. | You are about to send "{template}" to {n} guests by WhatsApp.',
+        note: 'Messages go out right away. Anyone who already got this same message today will not get it twice.',
+        send: 'Send now'
+      },
+      result: {
+        queued: '{n} message on its way | {n} messages on their way',
+        queuedHelp: 'You will see them move to sent, delivered and read in the list.',
+        skipped: '{n} guest was left out | {n} guests were left out',
+        resend: 'Send again to {n} guest | Send again to {n} guests'
+      },
+      skip: {
+        no_phone: 'They have no phone number. Add one so you can message them.',
+        invalid_phone: 'Their number does not look valid. Check it includes the country code, for example +1 305 555 0123.',
+        opted_out: 'They asked not to get more messages. We respect that.',
+        recently_sent: 'They already got this message in the last 24 hours.',
+        already_responded: 'They already answered your invitation, so no reminder is needed.'
+      },
+      stateLabel: 'WhatsApp',
+      state: {
+        queued: 'Queued',
+        sent: 'Sent',
+        delivered: 'Delivered',
+        read: 'Read',
+        failed: 'Could not send',
+        no_phone: 'No phone',
+        opted_out: 'Opted out'
+      },
+      failedHelp: 'The message did not arrive.',
+      retry: 'Try again',
+      retried: 'We tried again.',
+      summary: {
+        label: 'WhatsApp delivery summary',
+        title: '{n} message sent by WhatsApp | {n} messages sent by WhatsApp'
+      },
+      manual: {
+        title: 'Share by WhatsApp',
+        lockedTitle: 'Automatic sending is part of the full event',
+        lockedText: 'With the full event we message your whole list at once and you see who received and read each message.',
+        upgrade: 'Go premium',
+        help: 'Meanwhile, open WhatsApp with the invitation ready for each guest and send it yourself.',
+        share: 'Share',
+        shareLabel: 'Share {name}\'s invitation by WhatsApp',
+        empty: 'There are no guests in this view yet.'
+      },
+      errors: {
+        generic: 'We could not send the messages. Please try again in a moment.',
+        locked: 'Automatic sending is part of the full event.',
+        unavailable: 'WhatsApp is not connected yet. Meanwhile you can share each invitation by hand.',
+        templateNotApproved: 'This message is still being reviewed by WhatsApp. Try again later.',
+        noRecipients: 'There is nobody to send to in this group.',
+        tooMany: 'You can send to 500 guests at a time at most. Pick fewer or send in groups.',
+        selectSome: 'Pick at least one guest.',
+        notFailed: 'That message is no longer failed.'
+      }
+    },
     roster: {
       progress: {
         label: 'Your guests’ answers',
@@ -1438,7 +1526,8 @@ export default {
       comments: 'Comments',
       dressCode: 'Dress code',
       memories: 'Memories',
-      music: 'Music'
+      music: 'Music',
+      whatsapp: 'WhatsApp'
     },
     dashboard: {
       loadError: 'We could not load some of your data. Try again in a moment.',
@@ -1663,7 +1752,8 @@ export default {
       seating: 'Seat your guests at tables and have the floor plan ready for the venue.',
       suggested_music: 'Your guests suggest songs and vote for the ones they most want to dance to.',
       memories: 'Keep the photos of your party in one album.',
-      comments: 'Your guests leave you messages and good wishes on the invitation.'
+      comments: 'Your guests leave you messages and good wishes on the invitation.',
+      whatsapp: 'Automatic WhatsApp delivery of the invitation to your whole list, with the status of every message.'
     },
     includes: 'With the full event you get:',
     back: 'Back to home',
@@ -1703,7 +1793,7 @@ export default {
     title: 'Go premium',
     text: 'This feature is part of the full event. Go premium to unlock it.',
     textNamed: '{name} is part of the full event. Go premium to unlock it.',
-    names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments' }
+    names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments', whatsapp: 'WhatsApp' }
   },
   notFound: {
     title: "We can't find this page",
