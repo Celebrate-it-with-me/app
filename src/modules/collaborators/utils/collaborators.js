@@ -38,10 +38,13 @@ export function canManage(event, hasPermission) {
   return event?.userRole === 'owner' || Boolean(hasPermission?.('manage_collaborators'))
 }
 
-/** The free plan is the one that leaves modules locked. The API enforces the real limit; this only picks the notice. */
-export function isFreePlan(event) {
-  return Array.isArray(event?.modules) && event.modules.some(module => module.state === 'locked')
+/** Inviting, changing roles and resending need the full event: the `collaborators` module is locked on the free plan. */
+export function isCollaboratorsLocked(event) {
+  return Array.isArray(event?.modules) && event.modules.some(module => module.key === 'collaborators' && module.state === 'locked')
 }
+
+/** Actions the free plan keeps (so nobody is trapped after a downgrade): everything else needs the full event. */
+export const LOCKED_ACTIONS = ['resend', 'makeEditor', 'makeViewer']
 
 /** What a manager can do with a row, as action keys. The owner's row has none. */
 export function rowActions(row) {

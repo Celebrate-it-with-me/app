@@ -948,7 +948,7 @@ export default {
       loadError: 'Check your connection and try again.',
       emptyTitle: 'No collaborators yet',
       emptyText: 'Invite the birthday girl, your planner or anyone helping you organize the party.',
-      freeNotice: 'On the free plan only the event owner has access. Unlock your full event to invite more people.',
+      locked: { title: 'Inviting collaborators is part of the full event', text: 'You can still see who has access, remove people and cancel invitations. To invite more people, change roles or resend, go premium.', cta: 'Go premium' },
       actionsFor: 'Actions for {name}',
       roles: { owner: 'Owner', editor: 'Editor', viewer: 'View only' },
       roleHelp: { editor: 'Can see and change everything except collaborator invitations and deleting the event.', viewer: 'Can see the event but change nothing.' },
@@ -1653,12 +1653,14 @@ export default {
     },
     lead: '{module} is part of the full event.',
     generic: 'Available when you unlock your full event.',
+    leads: { collaborators: 'Inviting collaborators is part of the full event.' },
     modules: {
       menus: 'Each guest picks their dish when they confirm, and you see how many chose each option.',
       seating: 'Seat your guests at tables and have the floor plan ready for the venue.',
       suggested_music: 'Your guests suggest songs and vote for the ones they most want to dance to.',
       memories: 'Keep the photos of your party in one album.',
-      comments: 'Your guests leave you messages and good wishes on the invitation.'
+      comments: 'Your guests leave you messages and good wishes on the invitation.',
+      collaborators: 'Invite your planner, the quinceañera or whoever helps you, and share the work with the role you choose.'
     },
     includes: 'With the full event you get:',
     back: 'Back to home',
@@ -1698,7 +1700,7 @@ export default {
     title: 'Go premium',
     text: 'This feature is part of the full event. Go premium to unlock it.',
     textNamed: '{name} is part of the full event. Go premium to unlock it.',
-    names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments' }
+    names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments', collaborators: 'Collaborators' }
   },
   impersonation: {
     region: 'Support session',

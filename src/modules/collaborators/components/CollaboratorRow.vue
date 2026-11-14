@@ -4,13 +4,15 @@ import { useI18n } from 'vue-i18n'
 import { Ellipsis, Mail, RefreshCw, ShieldCheck, Eye, Trash2, X } from 'lucide-vue-next'
 import { UiAvatar, UiBadge, UiButton, UiDropdown } from '@/ui'
 import { resolveAvatarUrl } from '@/utils/avatar'
-import { rowActions, statusTone } from '../utils/collaborators'
+import { LOCKED_ACTIONS, rowActions, statusTone } from '../utils/collaborators'
 
 const props = defineProps({
   row: { type: Object, required: true },
   /** Whether the person looking can manage access (shows the actions menu). */
   manage: { type: Boolean, default: false },
-  busy: { type: Boolean, default: false }
+  busy: { type: Boolean, default: false },
+  /** The plan does not include collaborators: removing and cancelling stay, the rest is disabled. */
+  locked: { type: Boolean, default: false }
 })
 const emit = defineEmits(['action'])
 
@@ -21,6 +23,7 @@ const items = computed(() =>
   rowActions(props.row).map(action => ({
     label: t(`app.collaborators.actions.${action}`),
     icon: ICONS[action],
+    disabled: props.locked && LOCKED_ACTIONS.includes(action),
     danger: action === 'remove' || action === 'cancel',
     separator: action === 'remove' || action === 'cancel',
     onSelect: () => emit('action', action, props.row)
