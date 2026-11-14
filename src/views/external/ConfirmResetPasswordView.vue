@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -21,7 +21,7 @@ const accountEmail = ref('')
 const backendError = ref('')
 
 const { handleSubmit, defineField, errors } = useForm({
-  validationSchema: toTypedSchema(
+  validationSchema: computed(() => toTypedSchema(
     zod
       .object({
         email: zod
@@ -35,7 +35,7 @@ const { handleSubmit, defineField, errors } = useForm({
         message: t('validation.passwordsMismatch'),
         path: ['confirmPassword']
       })
-  ),
+  )),
   initialValues: { email: '', password: '', confirmPassword: '' }
 })
 const [email] = defineField('email')

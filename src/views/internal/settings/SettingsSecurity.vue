@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { useI18n } from 'vue-i18n'
 import * as zod from 'zod'
@@ -13,7 +13,7 @@ const userStore = useUserStore()
 const saving = ref(false)
 
 const { handleSubmit, defineField, errors, resetForm, setFieldError } = useForm({
-  validationSchema: toTypedSchema(
+  validationSchema: computed(() => toTypedSchema(
     zod
       .object({
         currentPassword: zod.string().min(1, t('validation.passwordRequired')),
@@ -24,7 +24,7 @@ const { handleSubmit, defineField, errors, resetForm, setFieldError } = useForm(
         message: t('validation.passwordsMismatch'),
         path: ['newPasswordConfirmation']
       })
-  ),
+  )),
   initialValues: { currentPassword: '', newPassword: '', newPasswordConfirmation: '' }
 })
 const [currentPassword] = defineField('currentPassword')

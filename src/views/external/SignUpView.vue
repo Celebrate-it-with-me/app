@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useForm } from 'vee-validate'
 import { useI18n } from 'vue-i18n'
@@ -25,13 +25,13 @@ const done = ref(false)
 const backendError = ref('')
 
 const { handleSubmit, defineField, errors } = useForm({
-  validationSchema: toTypedSchema(
+  validationSchema: computed(() => toTypedSchema(
     zod.object({
       name: zod.string({ message: t('validation.nameRequired') }).trim().min(1, { message: t('validation.nameRequired') }),
       email: zod.string({ message: t('validation.emailRequired') }).email({ message: t('validation.emailInvalid') }),
       password: zod.string({ message: t('validation.passwordRequired') }).min(8, { message: t('validation.passwordMin') })
     })
-  ),
+  )),
   initialValues: { name: '', email: '', password: '' }
 })
 const [name] = defineField('name')
