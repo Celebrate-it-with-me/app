@@ -1782,6 +1782,52 @@ export default {
     noInvoice: 'La factura de esta compra todavía no está disponible.',
     status: { paid: 'Pagada', refunded: 'Reembolsada' }
   },
+  accountDeletion: {
+    zoneTitle: 'Zona de peligro',
+    zoneText: 'Eliminar tu cuenta es definitivo. Antes de hacerlo te mostramos exactamente qué pasará.',
+    open: 'Eliminar mi cuenta',
+    stepOf: 'Paso {step} de {total}',
+    retry: 'Reintentar',
+    keep: 'Mejor me quedo',
+    steps: {
+      1: { title: 'Antes de despedirnos' },
+      2: { title: 'Confirma que eres tú' },
+      3: { title: 'Última confirmación' }
+    },
+    intro: 'Esto es lo que pasará con tu cuenta y tus eventos:',
+    published: 'Tu evento publicado quedará archivado {days} días y luego se borrará. Las invitaciones que ya enviaste seguirán abriéndose, solo para ver, pero nadie podrá confirmar asistencia. | Tu evento publicado quedará archivado {days} días y luego se borrará. Las invitaciones que ya enviaste seguirán abriéndose, solo para ver, pero nadie podrá confirmar asistencia. | Tus {n} eventos publicados quedarán archivados {days} días y luego se borrarán. Las invitaciones que ya enviaste seguirán abriéndose, solo para ver, pero nadie podrá confirmar asistencia.',
+    unpublished: 'Tu evento sin publicar se borrará ahora mismo, con sus invitados. | Tu evento sin publicar se borrará ahora mismo, con sus invitados. | Tus {n} eventos sin publicar se borrarán ahora mismo, con sus invitados.',
+    collaborating: 'Saldrás del evento en el que colaboras con otra persona. | Saldrás del evento en el que colaboras con otra persona. | Saldrás de los {n} eventos en los que colaboras con otras personas.',
+    noEvents: 'No tienes eventos, así que no se borrará ninguno.',
+    personal: 'Tu nombre, correo, teléfono y demás datos personales se borran de inmediato.',
+    invoices: 'Tus facturas y compras se conservan por obligación legal y contable, sin tus datos de contacto.',
+    pendingNote: 'Tienes un pago en curso. Si no termina antes de que confirmes, no podremos eliminar la cuenta todavía.',
+    irreversible: 'Esto no se puede deshacer. No hay forma de restaurar la cuenta ni sus eventos.',
+    typeEmailIntro: 'Para estar seguros de que eres tú, escribe el correo de tu cuenta exactamente como aparece aquí:',
+    emailLabel: 'Tu correo',
+    emailHint: 'Debe ser idéntico al de arriba.',
+    passwordLabel: 'Tu contraseña',
+    finalText: 'Vas a eliminar la cuenta de:',
+    confirmButton: 'Sí, eliminar mi cuenta',
+    errors: {
+      preview: 'No pudimos cargar el resumen de tu cuenta. Inténtalo de nuevo.',
+      emailMismatch: 'Ese correo no coincide con el de tu cuenta.',
+      passwordRequired: 'Escribe tu contraseña para continuar.',
+      invalidPassword: 'La contraseña no es correcta.',
+      staff: 'Esta cuenta forma parte del equipo de soporte. Pide que te quiten del equipo y vuelve a intentarlo.',
+      pendingPayment: 'Tienes un pago en curso. Espera a que termine o cancélalo, y vuelve a intentarlo.',
+      tooMany: 'Hiciste demasiados intentos. Espera un rato antes de volver a probar.',
+      tooManyMinutes: 'Hiciste demasiados intentos. Vuelve a probar en {minutes} minutos.',
+      tooManySeconds: 'Hiciste demasiados intentos. Vuelve a probar en {seconds} segundos.',
+      generic: 'No pudimos eliminar la cuenta. No se borró nada; inténtalo de nuevo.'
+    }
+  },
+  accountDeleted: {
+    title: 'Tu cuenta fue eliminada',
+    message: 'Gracias por haber celebrado con nosotros. Tus datos personales ya se borraron y cerramos tu sesión.',
+    mail: 'Te enviamos un correo para confirmarlo. Si algún día quieres volver, puedes crear una cuenta nueva.',
+    home: 'Ir al inicio'
+  },
   account: {
     title: 'Mi cuenta',
     subtitle: 'Tus datos, tus preferencias y tu contraseña.',
