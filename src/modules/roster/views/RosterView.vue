@@ -20,7 +20,7 @@ import RosterDownloadMenu from '../components/RosterDownloadMenu.vue'
 import WhatsappSendModal from '../components/WhatsappSendModal.vue'
 import WhatsappSummary from '../components/WhatsappSummary.vue'
 import { TABS, noCounts, personPayload, whatsappUrl } from '../utils/roster'
-import { guestWhatsappState, whatsappModuleState } from '../utils/whatsapp'
+import { guestWhatsappState, whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/whatsapp'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -46,6 +46,8 @@ const importOpen = ref(false)
 const editing = ref(null)
 const confirming = ref(null)
 const removing = ref(null)
+const retrying = ref(null) // unknown-delivery message waiting for the organizer's confirmation
+const retryBusy = ref(false)
 
 // WhatsApp: last message of each guest, the event's delivery summary, and the send dialog.
 const moduleState = computed(() => mockModuleState() ?? whatsappModuleState(event.value))
@@ -101,15 +103,22 @@ function toggleSelect(family, on) {
   selectedIds.value = on ? [...new Set([...selectedIds.value, family.id])] : selectedIds.value.filter(id => id !== family.id)
 }
 
-async function retryMessage(message) {
+async function doRetry(message) {
+  retryBusy.value = true
   try {
     await WhatsappService.retry(event.value.id, message.id)
     success(t('app.whatsapp.retried'))
     await loadWhatsapp()
   } catch (e) {
-    showError(t(e?.response?.data?.code === 'not_failed' ? 'app.whatsapp.errors.notFailed' : 'app.whatsapp.errors.generic'))
+    showError(t(`app.whatsapp.errors.${retryErrorKey(e)}`))
+  } finally {
+    retryBusy.value = false
+    retrying.value = null
   }
 }
+
+// The message may have arrived (unknown_delivery): ask before sending it twice.
+const retryMessage = message => (isUnknownDelivery(message) ? (retrying.value = message) : doRetry(message))
 
 let loadId = 0
 async function load() {
@@ -376,6 +385,14 @@ async function copyLink(family) {
     />
     <GuestFormModal v-model:open="formOpen" :family="editing" :saving="saving" @save="save" />
     <ConfirmModal :open="!!confirming" :family="confirming" :saving="saving" @update:open="confirming = null" @save="saveConfirm" />
+
+    <UiModal :open="!!retrying" :title="t('app.whatsapp.retryConfirm.title')" size="sm" @update:open="retrying = null">
+      <p class="text-ink-700">{{ t('app.whatsapp.retryConfirm.body') }}</p>
+      <template #footer>
+        <UiButton variant="ghost" :disabled="retryBusy" @click="retrying = null">{{ t('app.roster.cancel') }}</UiButton>
+        <UiButton :loading="retryBusy" @click="doRetry(retrying)">{{ t('app.whatsapp.retryConfirm.send') }}</UiButton>
+      </template>
+    </UiModal>
 
     <UiModal :open="!!removing" :title="t('app.roster.removeTitle')" size="sm" @update:open="removing = null">
       <p class="text-ink-700">{{ t('app.roster.removeBody', { name: removing?.name ?? '', n: removing?.companions?.length ?? 0 }, removing?.companions?.length ?? 0) }}</p>

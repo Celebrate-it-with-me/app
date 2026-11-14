@@ -39,7 +39,8 @@ onMounted(async () => {
   try {
     invite.value = await collaboratorsStore.checkInviteToken({ token, eventId })
   } catch (e) {
-    error.value = e.response?.data?.message || t('invite.invalid')
+    // 422: the invitation was already accepted, declined or has expired.
+    error.value = e.response?.status === 422 ? t('invite.used') : t('invite.invalid')
   } finally {
     loading.value = false
   }

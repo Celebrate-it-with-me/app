@@ -7,7 +7,7 @@ export const AUDIENCES = ['all', 'pending', 'selected']
 /** Most guests the API takes in one request. */
 export const MAX_BATCH = 500
 /** Reasons a guest was left out (`skipped[].reason`). */
-export const SKIP_REASONS = ['no_phone', 'invalid_phone', 'opted_out', 'recently_sent', 'already_responded']
+export const SKIP_REASONS = ['no_phone', 'invalid_phone', 'opted_out', 'recently_sent', 'already_responded', 'daily_limit']
 
 /**
  * How each message status is drawn: icon + text (never colour alone). `offline` states are not API statuses:
@@ -41,6 +41,7 @@ export function sendErrorKey(error) {
   const status = error?.response?.status
   const code = error?.response?.data?.code
   if (status === 403 && code === 'module_locked') return 'locked'
+  if (status === 429) return code === 'whatsapp_daily_limit' ? 'dailyLimit' : 'tooManyRequests'
   if (status === 409 && code === 'whatsapp_unavailable') return 'unavailable'
   if (status === 409 && code === 'template_not_approved') return 'templateNotApproved'
   if (status === 422) {
@@ -50,6 +51,19 @@ export function sendErrorKey(error) {
   }
   return 'generic'
 }
+
+/** Maps a failed `retry` to the key (under `app.whatsapp.errors`) of the message to show. */
+export function retryErrorKey(error) {
+  const status = error?.response?.status
+  const code = error?.response?.data?.code
+  if (status === 409 && code === 'not_failed') return 'notFailed'
+  if (status === 409 && code === 'retry_limit') return 'retryLimit'
+  if (status === 429) return code === 'whatsapp_daily_limit' ? 'dailyLimit' : 'tooManyRequests'
+  return 'generic'
+}
+
+/** A failed message whose outcome is unknown: Meta never confirmed, so it may have reached the guest. */
+export const isUnknownDelivery = message => message?.status === 'failed' && message?.errorCode === 'unknown_delivery'
 
 /** Groups the skipped list by reason, keeping SKIP_REASONS order: `[{ reason, guests: [name] }]`. */
 export function groupSkipped(skipped) {

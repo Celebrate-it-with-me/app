@@ -65,7 +65,8 @@ async function run(request, okKey, failKey) {
     success(t(okKey))
     return true
   } catch (e) {
-    showError(e.response?.data?.message && e.response.status < 500 ? e.response.data.message : t(failKey))
+    if (e.response?.status === 429) showError(t('app.collaborators.tooManyRequests'))
+    else showError(e.response?.data?.message && e.response.status < 500 ? e.response.data.message : t(failKey))
     return false
   } finally {
     saving.value = false

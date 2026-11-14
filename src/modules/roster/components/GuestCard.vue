@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { MoreHorizontal, Pencil, MessageCircle, Link as LinkIcon, CheckCheck, Undo2, Trash2 } from 'lucide-vue-next'
 import { UiCard, UiBadge, UiAvatar, UiDropdown, UiButton, UiCheckbox } from '@/ui'
 import { STATUS_TONE, peopleIn } from '../utils/roster'
-import { MESSAGE_VIEW } from '../utils/whatsapp'
+import { MESSAGE_VIEW, isUnknownDelivery } from '../utils/whatsapp'
 import GuestLocaleSelect from './GuestLocaleSelect.vue'
 
 const props = defineProps({
@@ -60,7 +60,7 @@ const items = computed(() => {
             {{ t(`app.whatsapp.state.${wa.key}`) }}
           </UiBadge>
           <template v-if="wa.key === 'failed' && wa.message">
-            <span class="text-xs text-danger-700">{{ wa.message.errorMessage || t('app.whatsapp.failedHelp') }}</span>
+            <span class="text-xs text-danger-700">{{ isUnknownDelivery(wa.message) ? t('app.whatsapp.unknownDelivery') : wa.message.errorMessage || t('app.whatsapp.failedHelp') }}</span>
             <UiButton v-if="canEdit" size="sm" variant="link" class="h-auto text-xs" @click="emit('retry', wa.message)">{{ t('app.whatsapp.retry') }}</UiButton>
           </template>
         </div>

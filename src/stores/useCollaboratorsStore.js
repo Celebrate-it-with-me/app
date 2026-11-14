@@ -48,7 +48,8 @@ export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
       }
     } catch (error) {
       console.error('Error checking invite token:', error)
-      return null
+      // The screen tells "used or expired" (422) from a network failure, so it needs the error.
+      throw error
     } finally {
       isLoading.value = false
     }
