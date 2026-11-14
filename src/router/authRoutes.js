@@ -18,6 +18,7 @@ import rosterRoutes from '@/modules/roster/routes/roster.route'
 import menusRoutes from '@/modules/menus/routes/menus.routes'
 import eventsRoutes from '@/modules/events/routes/events.routes'
 import paymentsRoutes from '@/modules/payments/routes/payments.route'
+import purchasesRoutes from '@/modules/purchases/routes/purchases.route'
 import UnlockView from '@/views/internal/unlock/UnlockView.vue'
 import seatingRoutes from '@/modules/seating/routes/seating.route'
 import onboardingRoutes from '@/modules/onboarding/routes/onboarding.route'
@@ -91,6 +92,7 @@ const authRoutes = [
   ...saveTheDateRoutes,
   ...timelineRoutes,
   ...paymentsRoutes,
+  ...purchasesRoutes,
   {
     path: '/dashboard/unlock/:module',
     name: 'unlock',

@@ -57,6 +57,7 @@ export default {
     events: 'Mis eventos',
     eventCreate: 'Nuevo evento',
     unlock: 'Pasa a premium',
+    purchases: 'Mis compras',
     timeline: 'Programa del día',
     locations: 'Ubicaciones',
     guests: 'Invitados',
@@ -1727,11 +1728,26 @@ export default {
       seeGuests: 'Ver mi lista'
     }
   },
+  purchases: {
+    title: 'Mis compras',
+    text: 'Tus pagos y las facturas de cada uno. Se generan solas cuando se confirma el pago.',
+    emptyTitle: 'Todavía no tienes compras',
+    emptyText: 'Cuando desbloquees un evento completo, tu factura aparecerá aquí.',
+    loadError: 'No pudimos cargar tus compras.',
+    retry: 'Reintentar',
+    downloadError: 'No pudimos descargar el PDF. Inténtalo de nuevo.',
+    deletedEvent: 'Evento eliminado',
+    invoice: 'Factura',
+    creditNote: 'Nota de crédito',
+    download: 'Descargar PDF',
+    noInvoice: 'La factura de esta compra todavía no está disponible.',
+    status: { paid: 'Pagada', refunded: 'Reembolsada' }
+  },
   account: {
     title: 'Mi cuenta',
     subtitle: 'Tus datos, tus preferencias y tu contraseña.',
     nav: 'Secciones de tu cuenta',
-    tabs: { profile: 'Perfil', preferences: 'Preferencias', security: 'Seguridad' },
+    tabs: { profile: 'Perfil', preferences: 'Preferencias', purchases: 'Compras', security: 'Seguridad' },
     save: 'Guardar cambios',
     saved: 'Cambios guardados.',
     saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',

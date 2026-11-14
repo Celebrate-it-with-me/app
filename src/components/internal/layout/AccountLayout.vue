@@ -11,6 +11,7 @@ const tabs = computed(() =>
   [
     { key: 'profile', to: '/settings/profile' },
     { key: 'preferences', to: '/settings/preferences' },
+    { key: 'purchases', to: '/settings/purchases' },
     { key: 'security', to: '/settings/security' }
   ].filter(tab => !(impersonation.active && tab.key === 'security'))
 )
