@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { apiToInput, inputToApi, slugify, SLUG_PATTERN, formFromEvent, buildPatch, fieldErrors } from '../eventForm'
+import { apiToInput, inputToApi, slugify, SLUG_PATTERN, formFromEvent, buildPatch, fieldErrors, timezoneOptions, timezoneList, EVENT_CURRENCIES } from '../eventForm'
 
 describe('dates', () => {
   it('converts between the API format and the input format', () => {
@@ -58,4 +58,29 @@ describe('fieldErrors', () => {
     expect(fieldErrors(new Error('boom'))).toEqual({})
     expect(fieldErrors(null)).toEqual({})
   })
+})
+
+describe('regional settings', () => {
+  const event = { eventName: 'x', startDate: '12/25/2026 18:00', customUrlSlug: 'x', locale: 'es', currency: 'USD', timezone: 'America/New_York' }
+  const original = formFromEvent(event)
+
+  it('defaults like the API when the event has none', () => {
+    expect(formFromEvent(null)).toMatchObject({ locale: 'es', currency: 'USD', timezone: 'America/New_York' })
+  })
+  it('sends language, currency and zone only when they changed', () => {
+    expect(buildPatch(original, { ...original })).toEqual({})
+    expect(buildPatch(original, { ...original, locale: 'en', currency: 'MXN', timezone: 'America/Mexico_City' })).toEqual({
+      locale: 'en',
+      currency: 'MXN',
+      timezone: 'America/Mexico_City'
+    })
+  })
+  it('offers a zone list that always contains the current one and is searchable', () => {
+    expect(timezoneList('Mars/Olympus')).toContain('Mars/Olympus')
+    const found = timezoneOptions('America/New_York', 'new york')
+    expect(found.map(o => o.value)).toContain('America/New_York')
+    expect(timezoneOptions('America/New_York', 'bogota').map(o => o.value)).toContain('America/Bogota')
+    expect(timezoneOptions('America/New_York', 'zzzz').map(o => o.value)).toEqual(['America/New_York'])
+  })
+  it('lists the currencies the API accepts', () => expect(EVENT_CURRENCIES).toContain('USD'))
 })

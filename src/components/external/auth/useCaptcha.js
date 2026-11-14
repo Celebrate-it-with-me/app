@@ -1,9 +1,21 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 
 /**
- * hCaptcha widget rendered into `#hcaptcha-container` (script tag lives in index.html).
+ * hCaptcha widget rendered into `#hcaptcha-container`. The hCaptcha script is only loaded when a
+ * screen that uses the widget (login, registration) mounts, not on every page of the app.
  * In the local environment the token is not required.
  */
+const HCAPTCHA_SRC = 'https://js.hcaptcha.com/1/api.js'
+
+function loadHcaptchaScript() {
+  if (typeof document === 'undefined' || document.querySelector(`script[src="${HCAPTCHA_SRC}"]`)) return
+  const script = document.createElement('script')
+  script.src = HCAPTCHA_SRC
+  script.async = true
+  script.defer = true
+  document.head.appendChild(script)
+}
+
 export function useCaptcha() {
   const token = ref(null)
   const required = import.meta.env.VITE_APP_ENVIRONMENT !== 'local'
@@ -23,7 +35,8 @@ export function useCaptcha() {
       token.value = value
     }
     if (!siteKey || !document.getElementById('hcaptcha-container')) return
-    // api.js loads async/defer: it may land after this view mounts. Retry for up to ~10 s.
+    loadHcaptchaScript()
+    // api.js loads async: it lands after this view mounts. Retry for up to ~10 s.
     let tries = 0
     const render = () => {
       if (window.hcaptcha) {

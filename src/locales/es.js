@@ -57,6 +57,7 @@ export default {
     events: 'Mis eventos',
     eventCreate: 'Nuevo evento',
     unlock: 'Pasa a premium',
+    purchases: 'Mis compras',
     timeline: 'Programa del día',
     locations: 'Ubicaciones',
     guests: 'Invitados',
@@ -64,6 +65,7 @@ export default {
     dressCode: 'Vestimenta',
     budget: 'Presupuesto',
     padrinos: 'Padrinos',
+    collaborators: 'Colaboradores',
     comments: 'Comentarios',
     menus: 'Menús',
     menusCreate: 'Nuevo menú',
@@ -347,6 +349,8 @@ export default {
     notFoundText: 'Revisa que el enlace esté completo o pídele uno nuevo a quien te invitó.',
     errorTitle: 'No pudimos cargar la invitación',
     errorText: 'Revisa tu conexión e inténtalo de nuevo.',
+    previewNotice: 'Vista previa: las respuestas no se guardan.',
+    preview: { waiting: 'Esperando vista previa…', notConfigured: 'Vista previa no configurada', invalidKept: 'El contenido recibido no es válido. Se mantiene la última vista previa válida.', invalid: 'El contenido recibido no es válido.' },
     retry: 'Reintentar',
     language: 'Idioma',
     invitedFor: 'Invitación para',
@@ -933,6 +937,49 @@ export default {
         tooLong: 'El comentario es demasiado largo (máximo 2000 caracteres).'
       }
     },
+    collaborators: {
+      title: 'Colaboradores',
+      subtitle: 'Quién puede ver y organizar este evento contigo.',
+      add: 'Invitar',
+      cancel: 'Cancelar',
+      retry: 'Reintentar',
+      loading: 'Cargando colaboradores',
+      loadErrorTitle: 'No pudimos cargar los colaboradores',
+      loadError: 'Revisa tu conexión e inténtalo de nuevo.',
+      emptyTitle: 'Aún no hay colaboradores',
+      emptyText: 'Invita a la quinceañera, a tu planner o a quien te ayude a organizar la fiesta.',
+      freeNotice: 'En el plan gratis solo tiene acceso la dueña del evento. Desbloquea tu evento completo para invitar a más personas.',
+      actionsFor: 'Acciones para {name}',
+      roles: { owner: 'Dueña', editor: 'Editor', viewer: 'Solo lectura' },
+      roleHelp: { editor: 'Puede ver y cambiar todo menos las invitaciones a colaborar y borrar el evento.', viewer: 'Puede ver el evento, sin cambiar nada.' },
+      status: { active: 'Con acceso', pending: 'Pendiente', expired: 'Vencida', declined: 'Rechazada' },
+      actions: { resend: 'Reenviar invitación', cancel: 'Cancelar invitación', makeEditor: 'Pasar a editor', makeViewer: 'Pasar a solo lectura', remove: 'Quitar acceso' },
+      invite: {
+        title: 'Invitar a una persona',
+        text: 'Le enviaremos un correo para que se una a este evento.',
+        email: 'Correo electrónico',
+        emailPlaceholder: "nombre{'@'}correo.com",
+        emailRequired: 'Escribe un correo.',
+        emailInvalid: 'Escribe un correo válido.',
+        role: 'Rol',
+        send: 'Enviar invitación'
+      },
+      confirm: {
+        removeTitle: '¿Quitar el acceso de {name}?',
+        removeText: 'Dejará de ver y de organizar este evento. Puedes volver a invitarla cuando quieras.',
+        removeButton: 'Quitar acceso',
+        cancelTitle: '¿Cancelar la invitación de {name}?',
+        cancelText: 'El enlace que recibió dejará de funcionar.',
+        cancelButton: 'Cancelar invitación'
+      },
+      invited: 'Invitación enviada.',
+      resent: 'Invitación reenviada.',
+      cancelled: 'Invitación cancelada.',
+      removed: 'Acceso quitado.',
+      roleChanged: 'Rol actualizado.',
+      inviteError: 'No pudimos enviar la invitación. Inténtalo de nuevo.',
+      actionError: 'No pudimos completar la acción. Inténtalo de nuevo.'
+    },
     padrinos: {
       title: 'Padrinos',
       subtitle: 'Quién te acompaña, qué apadrina y cuánto ha aportado. El dinero no pasa por Quinvite: aquí solo lo registras.',
@@ -1230,6 +1277,25 @@ export default {
       emptyText: 'Añade a tu primera familia o amiga. Cada invitado recibe su propio enlace.',
       noResultsTitle: 'No encontramos a nadie',
       noResultsText: 'Prueba con otro nombre o cambia de pestaña.',
+      download: {
+        button: 'Descargar',
+        label: 'Descargar la lista en Excel',
+        current: 'Esta lista ({tab})',
+        all: 'Todos los invitados',
+        venue: 'Para el salón',
+        venueHint: 'Solo confirmados, con mesa y menú si los usas',
+        done: 'Descarga lista.',
+        error: 'No pudimos preparar la descarga. Inténtalo de nuevo.',
+        tooMany: 'Hiciste muchas descargas seguidas. Espera un minuto.'
+      },
+      locale: {
+        label: 'Idioma de la invitación',
+        es: 'Español',
+        en: 'Inglés',
+        event: 'El del evento ({lang})',
+        saved: 'Idioma guardado.',
+        error: 'No pudimos cambiar el idioma. Quedó como estaba.'
+      },
       menu: {
         label: 'Acciones para {name}',
         whatsapp: 'Enviar por WhatsApp',
@@ -1354,6 +1420,7 @@ export default {
       timeline: 'Programa del día',
       invitation: 'Tu invitación',
       padrinos: 'Padrinos',
+      collaborators: 'Colaboradores',
       premium: 'Premium',
       home: 'Inicio',
       guests: 'Invitados',
@@ -1373,6 +1440,7 @@ export default {
       noDate: 'Sin fecha definida',
       countdown: 'Es hoy | Falta {n} día | Faltan {n} días',
       past: 'Ya pasó',
+      edit: 'Editar evento',
       setup: 'Tu evento está al {n} % listo',
       next: {
         label: 'Tu siguiente paso',
@@ -1398,7 +1466,7 @@ export default {
         draft: 'Borrador',
         publishedText: 'Tus invitados ya pueden verla y confirmar.',
         draftText: 'Nadie puede verla todavía.',
-        manage: 'Editar evento'
+        manage: 'Gestionar publicación'
       },
       more: {
         title: 'Más sobre tu evento',
@@ -1483,7 +1551,26 @@ export default {
       endBeforeStart: 'El fin no puede ser antes del inicio.',
       notFoundTitle: 'No encontramos este evento',
       notFoundText: 'Puede que ya no exista o que no tengas acceso.',
-      forbidden: 'No tienes permiso para hacer esto en este evento.'
+      forbidden: 'No tienes permiso para hacer esto en este evento.',
+      unsaved: 'Tienes cambios sin guardar.',
+      leaveTitle: '¿Salir sin guardar?',
+      leaveText: 'Cambiaste algunos datos y no los has guardado. Si sales ahora, se perderán.',
+      leave: 'Salir sin guardar',
+      stay: 'Seguir editando'
+    },
+    regional: {
+      locale: 'Idioma del evento',
+      localeHint: 'El idioma en que tus invitados ven la invitación y los mensajes.',
+      locales: { es: 'Español', en: 'Inglés' },
+      currency: 'Moneda',
+      currencyHint: 'Se usa en el presupuesto y en los montos de regalos.',
+      timezone: 'Zona horaria',
+      timezoneHint: 'La hora de tu evento se entiende en esta zona, estén donde estén tus invitados.',
+      timezoneSearch: 'Busca una ciudad o región',
+      timezoneEmpty: 'Elige una zona horaria',
+      timezoneNoMatch: 'Ninguna zona horaria coincide con tu búsqueda.',
+      required: 'Este campo es obligatorio.',
+      invalid: 'Elige una de las opciones de la lista.'
     },
     publication: {
       title: 'Publicación',
@@ -1597,6 +1684,22 @@ export default {
       generic: 'No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.'
     }
   },
+  maintenance: {
+    title: 'Estamos haciendo mejoras',
+    defaultMessage: 'Estamos en mantenimiento para dejar todo mejor. Vuelve en unos minutos.',
+    bannerTitle: 'Mantenimiento programado.',
+    estimatedEnd: 'Regreso estimado: {when}.',
+    reassure: 'Tu información está a salvo. No pierdes nada de lo que ya guardaste.',
+    retry: 'Reintentar ahora',
+    autoRetry: 'Volveremos a intentarlo solos; esta pantalla se cierra cuando todo esté listo.',
+    dismiss: 'Cerrar aviso de mantenimiento'
+  },
+  moduleLocked: {
+    title: 'Pasa a premium',
+    text: 'Esta función es parte del evento completo. Pasa a premium para desbloquearla.',
+    textNamed: '{name} es parte del evento completo. Pasa a premium para desbloquearla.',
+    names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios' }
+  },
   impersonation: {
     region: 'Sesión de soporte',
     viewingAs: 'Estás viendo como {name}',
@@ -1625,11 +1728,65 @@ export default {
       seeGuests: 'Ver mi lista'
     }
   },
+  billing: {
+    title: 'Datos de facturación',
+    text: 'Aparecerán en las facturas que emitamos desde ahora.',
+    name: 'Nombre o razón social',
+    nameHint: 'Tal como quieres que figure en la factura.',
+    email: 'Correo de facturación',
+    emailHint: 'Aquí te enviamos tus facturas y notas de crédito.',
+    address: 'Dirección',
+    city: 'Ciudad',
+    state: 'Estado o provincia',
+    postalCode: 'Código postal',
+    country: 'País',
+    taxId: 'Identificación fiscal (opcional)',
+    taxIdHint: 'EIN, RFC, NIT, CIF u otra. Déjala vacía si no la necesitas.',
+    notice: 'Las facturas ya emitidas no cambian: estos datos se usan solo en las facturas nuevas. Si necesitas corregir una anterior, escríbenos.',
+    save: 'Guardar datos',
+    saved: 'Datos de facturación guardados.',
+    saveError: 'No pudimos guardar tus datos. Inténtalo de nuevo.',
+    loadError: 'No pudimos cargar tus datos de facturación.',
+    nameRequired: 'Escribe tu nombre o razón social.',
+    emailInvalid: 'Escribe un correo válido.',
+    countryRequired: 'Elige un país.',
+    taxIdInvalid: 'Usa solo letras, números, espacios, puntos, guiones o barras (3 a 30 caracteres).',
+    postalInvalid: 'Usa solo letras, números, espacios o guiones.',
+    tooLong: 'Es demasiado largo.'
+  },
+  resend: {
+    title: 'Reenviar por correo',
+    text: 'Te enviamos de nuevo {number} con el PDF adjunto.',
+    billing: 'Correo de facturación',
+    account: 'Correo de tu cuenta',
+    noBilling: 'Guarda un correo de facturación arriba para poder elegirlo aquí.',
+    send: 'Reenviar',
+    cancel: 'Cancelar',
+    sent: 'Enviado a {email}.',
+    error: 'No pudimos enviar el correo. Inténtalo de nuevo.',
+    tooMany: 'Has pedido demasiados reenvíos. Espera unos minutos.'
+  },
+  purchases: {
+    title: 'Mis compras',
+    text: 'Tus pagos y las facturas de cada uno. Se generan solas cuando se confirma el pago.',
+    emptyTitle: 'Todavía no tienes compras',
+    emptyText: 'Cuando desbloquees un evento completo, tu factura aparecerá aquí.',
+    loadError: 'No pudimos cargar tus compras.',
+    retry: 'Reintentar',
+    downloadError: 'No pudimos descargar el PDF. Inténtalo de nuevo.',
+    deletedEvent: 'Evento eliminado',
+    invoice: 'Factura',
+    creditNote: 'Nota de crédito',
+    resend: 'Reenviar',
+    download: 'Descargar PDF',
+    noInvoice: 'La factura de esta compra todavía no está disponible.',
+    status: { paid: 'Pagada', refunded: 'Reembolsada' }
+  },
   account: {
     title: 'Mi cuenta',
     subtitle: 'Tus datos, tus preferencias y tu contraseña.',
     nav: 'Secciones de tu cuenta',
-    tabs: { profile: 'Perfil', preferences: 'Preferencias', security: 'Seguridad' },
+    tabs: { profile: 'Perfil', preferences: 'Preferencias', purchases: 'Compras', security: 'Seguridad' },
     save: 'Guardar cambios',
     saved: 'Cambios guardados.',
     saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
@@ -1639,6 +1796,7 @@ export default {
       name: 'Nombre completo',
       email: 'Correo electrónico',
       emailHint: 'Para cambiar tu correo, escríbenos a {email}.',
+      photoAlt: 'Foto de perfil de {name}',
       phone: 'Teléfono',
       phoneHint: 'Con código de país, por ejemplo +1 305 555 0123.',
       phoneInvalid: 'Escribe un teléfono válido, con código de país.'

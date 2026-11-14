@@ -57,6 +57,7 @@ export default {
     events: 'My events',
     eventCreate: 'New event',
     unlock: 'Go premium',
+    purchases: 'My purchases',
     timeline: 'Program of the day',
     locations: 'Locations',
     guests: 'Guests',
@@ -64,6 +65,7 @@ export default {
     dressCode: 'Dress code',
     budget: 'Budget',
     padrinos: 'Godparents',
+    collaborators: 'Collaborators',
     comments: 'Comments',
     menus: 'Menus',
     menusCreate: 'New menu',
@@ -347,6 +349,8 @@ export default {
     notFoundText: 'Check that the link is complete, or ask whoever invited you for a new one.',
     errorTitle: 'We couldn\'t load the invitation',
     errorText: 'Check your connection and try again.',
+    previewNotice: 'Preview: answers are not saved.',
+    preview: { waiting: 'Waiting for preview…', notConfigured: 'Preview is not configured', invalidKept: 'The received content is not valid. The last valid preview is kept.', invalid: 'The received content is not valid.' },
     retry: 'Try again',
     language: 'Language',
     invitedFor: 'Invitation for',
@@ -933,6 +937,49 @@ export default {
         tooLong: 'The comment is too long (2000 characters max).'
       }
     },
+    collaborators: {
+      title: 'Collaborators',
+      subtitle: 'Who can see and organize this event with you.',
+      add: 'Invite',
+      cancel: 'Cancel',
+      retry: 'Try again',
+      loading: 'Loading collaborators',
+      loadErrorTitle: 'We could not load the collaborators',
+      loadError: 'Check your connection and try again.',
+      emptyTitle: 'No collaborators yet',
+      emptyText: 'Invite the birthday girl, your planner or anyone helping you organize the party.',
+      freeNotice: 'On the free plan only the event owner has access. Unlock your full event to invite more people.',
+      actionsFor: 'Actions for {name}',
+      roles: { owner: 'Owner', editor: 'Editor', viewer: 'View only' },
+      roleHelp: { editor: 'Can see and change everything except collaborator invitations and deleting the event.', viewer: 'Can see the event but change nothing.' },
+      status: { active: 'Has access', pending: 'Pending', expired: 'Expired', declined: 'Declined' },
+      actions: { resend: 'Resend invitation', cancel: 'Cancel invitation', makeEditor: 'Make editor', makeViewer: 'Make view only', remove: 'Remove access' },
+      invite: {
+        title: 'Invite someone',
+        text: 'We will email them so they can join this event.',
+        email: 'Email',
+        emailPlaceholder: "name{'@'}email.com",
+        emailRequired: 'Enter an email.',
+        emailInvalid: 'Enter a valid email.',
+        role: 'Role',
+        send: 'Send invitation'
+      },
+      confirm: {
+        removeTitle: 'Remove access for {name}?',
+        removeText: 'They will stop seeing and organizing this event. You can invite them again any time.',
+        removeButton: 'Remove access',
+        cancelTitle: 'Cancel the invitation for {name}?',
+        cancelText: 'The link they received will stop working.',
+        cancelButton: 'Cancel invitation'
+      },
+      invited: 'Invitation sent.',
+      resent: 'Invitation resent.',
+      cancelled: 'Invitation cancelled.',
+      removed: 'Access removed.',
+      roleChanged: 'Role updated.',
+      inviteError: 'We could not send the invitation. Try again.',
+      actionError: 'We could not complete the action. Try again.'
+    },
     padrinos: {
       title: 'Godparents',
       subtitle: 'Who stands with you, what they sponsor and how much they have given. Money does not go through Quinvite: you only record it here.',
@@ -1230,6 +1277,25 @@ export default {
       emptyText: 'Add your first family or friend. Every guest gets their own link.',
       noResultsTitle: 'We could not find anyone',
       noResultsText: 'Try another name or switch tabs.',
+      download: {
+        button: 'Download',
+        label: 'Download the list as Excel',
+        current: 'This list ({tab})',
+        all: 'All guests',
+        venue: 'For the venue',
+        venueHint: 'Confirmed guests only, with table and menu if you use them',
+        done: 'Download ready.',
+        error: 'We could not prepare the download. Please try again.',
+        tooMany: 'You made too many downloads in a row. Wait a minute.'
+      },
+      locale: {
+        label: 'Invitation language',
+        es: 'Spanish',
+        en: 'English',
+        event: 'The event\'s ({lang})',
+        saved: 'Language saved.',
+        error: 'We could not change the language. It stays as it was.'
+      },
       menu: {
         label: 'Actions for {name}',
         whatsapp: 'Send on WhatsApp',
@@ -1354,6 +1420,7 @@ export default {
       timeline: 'Day program',
       invitation: 'Your invitation',
       padrinos: 'Godparents',
+      collaborators: 'Collaborators',
       premium: 'Premium',
       home: 'Home',
       guests: 'Guests',
@@ -1373,6 +1440,7 @@ export default {
       noDate: 'No date set',
       countdown: 'It is today | {n} day to go | {n} days to go',
       past: 'Already happened',
+      edit: 'Edit event',
       setup: 'Your event is {n}% ready',
       next: {
         label: 'Your next step',
@@ -1398,7 +1466,7 @@ export default {
         draft: 'Draft',
         publishedText: 'Your guests can already see it and confirm.',
         draftText: 'No one can see it yet.',
-        manage: 'Edit event'
+        manage: 'Manage publishing'
       },
       more: {
         title: 'More about your event',
@@ -1483,7 +1551,26 @@ export default {
       endBeforeStart: 'The end cannot be before the start.',
       notFoundTitle: 'We could not find this event',
       notFoundText: 'It may no longer exist, or you may not have access.',
-      forbidden: 'You do not have permission to do this in this event.'
+      forbidden: 'You do not have permission to do this in this event.',
+      unsaved: 'You have unsaved changes.',
+      leaveTitle: 'Leave without saving?',
+      leaveText: 'You changed some details and have not saved them. If you leave now, they will be lost.',
+      leave: 'Leave without saving',
+      stay: 'Keep editing'
+    },
+    regional: {
+      locale: 'Event language',
+      localeHint: 'The language your guests see in the invitation and messages.',
+      locales: { es: 'Spanish', en: 'English' },
+      currency: 'Currency',
+      currencyHint: 'Used for the budget and gift amounts.',
+      timezone: 'Time zone',
+      timezoneHint: 'Your event time is understood in this zone, wherever your guests are.',
+      timezoneSearch: 'Search a city or region',
+      timezoneEmpty: 'Choose a time zone',
+      timezoneNoMatch: 'No time zone matches your search.',
+      required: 'This field is required.',
+      invalid: 'Choose one of the options in the list.'
     },
     publication: {
       title: 'Publishing',
@@ -1597,6 +1684,22 @@ export default {
       generic: 'We could not send your message. Please try again in a moment.'
     }
   },
+  maintenance: {
+    title: 'We are making things better',
+    defaultMessage: 'We are down for maintenance to make everything better. Please come back in a few minutes.',
+    bannerTitle: 'Scheduled maintenance.',
+    estimatedEnd: 'Estimated return: {when}.',
+    reassure: 'Your information is safe. Nothing you already saved is lost.',
+    retry: 'Try again now',
+    autoRetry: 'We will try again on our own; this screen closes when everything is ready.',
+    dismiss: 'Dismiss maintenance notice'
+  },
+  moduleLocked: {
+    title: 'Go premium',
+    text: 'This feature is part of the full event. Go premium to unlock it.',
+    textNamed: '{name} is part of the full event. Go premium to unlock it.',
+    names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments' }
+  },
   impersonation: {
     region: 'Support session',
     viewingAs: 'You are viewing as {name}',
@@ -1625,11 +1728,65 @@ export default {
       seeGuests: 'See my list'
     }
   },
+  billing: {
+    title: 'Billing details',
+    text: 'They will appear on the invoices we issue from now on.',
+    name: 'Name or business name',
+    nameHint: 'Exactly as you want it on the invoice.',
+    email: 'Billing email',
+    emailHint: 'We send your invoices and credit notes here.',
+    address: 'Address',
+    city: 'City',
+    state: 'State or province',
+    postalCode: 'Postal code',
+    country: 'Country',
+    taxId: 'Tax ID (optional)',
+    taxIdHint: 'EIN, RFC, NIT, CIF or similar. Leave it empty if you do not need one.',
+    notice: 'Invoices already issued do not change: these details are used only on new invoices. If you need an earlier one corrected, write to us.',
+    save: 'Save details',
+    saved: 'Billing details saved.',
+    saveError: 'We could not save your details. Please try again.',
+    loadError: 'We could not load your billing details.',
+    nameRequired: 'Enter your name or business name.',
+    emailInvalid: 'Enter a valid email.',
+    countryRequired: 'Choose a country.',
+    taxIdInvalid: 'Use only letters, numbers, spaces, dots, dashes or slashes (3 to 30 characters).',
+    postalInvalid: 'Use only letters, numbers, spaces or dashes.',
+    tooLong: 'That is too long.'
+  },
+  resend: {
+    title: 'Resend by email',
+    text: 'We will send {number} again with the PDF attached.',
+    billing: 'Billing email',
+    account: 'Your account email',
+    noBilling: 'Save a billing email above to be able to choose it here.',
+    send: 'Resend',
+    cancel: 'Cancel',
+    sent: 'Sent to {email}.',
+    error: 'We could not send the email. Please try again.',
+    tooMany: 'You have asked for too many resends. Please wait a few minutes.'
+  },
+  purchases: {
+    title: 'My purchases',
+    text: 'Your payments and the invoice for each one. They are created automatically when the payment is confirmed.',
+    emptyTitle: 'No purchases yet',
+    emptyText: 'When you unlock a full event, your invoice will show up here.',
+    loadError: 'We could not load your purchases.',
+    retry: 'Try again',
+    downloadError: 'We could not download the PDF. Please try again.',
+    deletedEvent: 'Deleted event',
+    invoice: 'Invoice',
+    creditNote: 'Credit note',
+    resend: 'Resend',
+    download: 'Download PDF',
+    noInvoice: 'The invoice for this purchase is not available yet.',
+    status: { paid: 'Paid', refunded: 'Refunded' }
+  },
   account: {
     title: 'My account',
     subtitle: 'Your details, your preferences and your password.',
     nav: 'Account sections',
-    tabs: { profile: 'Profile', preferences: 'Preferences', security: 'Security' },
+    tabs: { profile: 'Profile', preferences: 'Preferences', purchases: 'Purchases', security: 'Security' },
     save: 'Save changes',
     saved: 'Changes saved.',
     saveError: 'We could not save your changes. Please try again.',
@@ -1639,6 +1796,7 @@ export default {
       name: 'Full name',
       email: 'Email',
       emailHint: 'To change your email, write to {email}.',
+      photoAlt: 'Profile photo of {name}',
       phone: 'Phone',
       phoneHint: 'With country code, for example +1 305 555 0123.',
       phoneInvalid: 'Enter a valid phone number with country code.'

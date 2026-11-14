@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import RsvpService from '@/modules/rsvp/services/RsvpService'
 import { useUserStore } from '@/stores/useUserStore'
-import { useNotificationStore } from '@/stores/useNotificationStore'
+import { useToast } from '@/ui'
 
 /** The event's answer counters, for the dashboard. The guest list screen reads its own counters (modules/roster). */
 export const useRsvpStore = defineStore('rsvpStore', {
@@ -18,7 +18,7 @@ export const useRsvpStore = defineStore('rsvpStore', {
       const response = await RsvpService.loadStats({ eventId: userStore.activeEvent })
 
       if (response.status !== 200) {
-        useNotificationStore().addNotification({ type: 'error', message: 'Failed to load event stats. Please try again later.' })
+        useToast().error('Failed to load event stats. Please try again later.')
         return
       }
 

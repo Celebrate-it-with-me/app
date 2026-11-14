@@ -7,6 +7,9 @@ import { useImpersonationStore } from '@/modules/impersonation/stores/useImperso
 import { isBlockedError, isEndedError, readBlobBody } from '@/modules/impersonation/utils/impersonation'
 import { useToast } from '@/ui'
 import i18n from '@/locales/i18n'
+import { isModuleLocked, notifyModuleLocked } from '@/utils/moduleLocked'
+import { isMaintenanceError } from '@/modules/maintenance/utils/maintenance'
+import { useSystemStatusStore } from '@/modules/maintenance/stores/useSystemStatusStore'
 
 const CWM_API = axios.create({
   baseURL: import.meta.env.VITE_API_URL + 'api/v1/app',
@@ -81,12 +84,23 @@ const onError = async error => {
         await handleUnauthorized()
         break
       case 403:
+        // A module the plan does not include: an upgrade notice, never the generic forbidden page.
+        if (isModuleLocked(error)) {
+          notifyModuleLocked(error, { toast: useToast().toast, t: i18n.global.t })
+          break
+        }
         if (isAccountSuspended(error)) {
           await handleSuspended(error)
           break
         }
         await router.push('/403')
         console.log('Forbidden:', error.message)
+        break
+      case 503:
+        // Maintenance mode: a full-screen notice that retries by itself. Any other 503 is left alone.
+        if (isMaintenanceError(error)) {
+          useSystemStatusStore().handleMaintenanceResponse(error, router.currentRoute.value.path)
+        }
         break
       case 404:
         console.log('Not Found:', error.message)

@@ -2,6 +2,12 @@ import { CWM_API } from '@/services/axios'
 
 const base = eventId => `/event/${eventId}`
 
+/** The name the server gave the file (Content-Disposition), or a fallback. */
+function fileOf(response, fallback) {
+  const match = /filename="?([^";]+)"?/i.exec(response.headers?.['content-disposition'] ?? '')
+  return { blob: response.data, filename: match ? match[1] : fallback }
+}
+
 class RosterService {
   /** `{ data, meta, counts }`: families of the page, and the people counters of the whole event. */
   async list(eventId, { status, search, page = 1, perPage = 15 } = {}) {
@@ -59,6 +65,24 @@ class RosterService {
   /** Saves the kept rows: `{ created, families, skipped }`. */
   async importGuests(eventId, rows) {
     return (await CWM_API.post(`${base(eventId)}/roster/import`, { rows })).data.data
+  }
+
+  /** `{ status, search }` are the tab and search of the screen; the file comes back as `{ blob, filename }`. */
+  async download(eventId, { status, search, locale } = {}) {
+    const params = { locale }
+    if (status && status !== 'all') params.status = status
+    if (search) params.search = search
+    return fileOf(await CWM_API.get(`${base(eventId)}/roster/export`, { params, responseType: 'blob' }), 'invitados.xlsx')
+  }
+
+  /** The list for the venue: confirmed people (or `scope: 'all'`), with table and menu when those modules are active. */
+  async downloadVenue(eventId, { scope = 'attending', locale } = {}) {
+    return fileOf(await CWM_API.get(`${base(eventId)}/roster/export/venue`, { params: { scope, locale }, responseType: 'blob' }), 'salon.xlsx')
+  }
+
+  /** `locale`: 'es', 'en', or null to follow the event. Answers the updated family. */
+  async setLocale(eventId, id, locale) {
+    return (await CWM_API.patch(`${base(eventId)}/roster/${id}/locale`, { locale })).data.data
   }
 
   async revert(eventId, guestId) {

@@ -12,6 +12,7 @@ import GuestCard from '../components/GuestCard.vue'
 import GuestFormModal from '../components/GuestFormModal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import GuestImportModal from '../components/GuestImportModal.vue'
+import RosterDownloadMenu from '../components/RosterDownloadMenu.vue'
 import { TABS, noCounts, personPayload, whatsappUrl } from '../utils/roster'
 
 const { t } = useI18n()
@@ -29,6 +30,7 @@ const page = ref(1)
 const families = ref([])
 const meta = ref({ currentPage: 1, lastPage: 1, total: 0 })
 const counts = ref(noCounts())
+const eventLocale = ref('es')
 const loading = ref(true)
 const saving = ref(false)
 
@@ -49,6 +51,7 @@ async function load() {
     families.value = result.data
     meta.value = result.meta
     counts.value = result.counts
+    eventLocale.value = result.eventLocale ?? 'es'
   } catch {
     if (id === loadId) showError(t('app.roster.loadError'))
   } finally {
@@ -140,6 +143,22 @@ async function revert(family) {
   }
 }
 
+/** Optimistic: the select changes at once and goes back to what it was if the server refuses. */
+async function changeLocale(family, next) {
+  const previous = { locale: family.locale, effectiveLocale: family.effectiveLocale }
+  family.locale = next
+  family.effectiveLocale = next || eventLocale.value
+  try {
+    const row = await RosterService.setLocale(event.value.id, family.id, next)
+    family.locale = row.locale
+    family.effectiveLocale = row.effectiveLocale
+    success(t('app.roster.locale.saved'))
+  } catch {
+    Object.assign(family, previous)
+    showError(t('app.roster.locale.error'))
+  }
+}
+
 async function confirmRemove() {
   saving.value = true
   try {
@@ -195,15 +214,18 @@ async function copyLink(family) {
           class="h-11 w-full rounded-xl border border-line-strong bg-white pl-10 pr-3 text-base text-ink-900 placeholder:text-ink-500 focus-visible:outline-2 focus-visible:outline-rose-600"
         />
       </div>
-      <div v-if="canEdit" class="flex flex-col gap-2 sm:flex-row">
-        <UiButton variant="secondary" @click="importOpen = true">
-          <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.guestImport.button') }}
-        </UiButton>
-        <UiButton @click="openForm()">
-          <Plus class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.roster.add') }}
-        </UiButton>
+      <div class="flex flex-col gap-2 sm:flex-row">
+        <RosterDownloadMenu v-if="event?.id && counts.all" :event-id="event.id" :status="status" :search="search" />
+        <template v-if="canEdit">
+          <UiButton variant="secondary" @click="importOpen = true">
+            <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.guestImport.button') }}
+          </UiButton>
+          <UiButton @click="openForm()">
+            <Plus class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.roster.add') }}
+          </UiButton>
+        </template>
       </div>
     </div>
 
@@ -231,12 +253,14 @@ async function copyLink(family) {
         <GuestCard
           :family="family"
           :can-edit="canEdit"
+          :event-locale="eventLocale"
           @edit="openForm"
           @confirm="confirming = $event"
           @revert="revert"
           @remove="removing = $event"
           @whatsapp="openWhatsapp"
           @copy="copyLink"
+          @locale="changeLocale"
         />
       </li>
     </ul>

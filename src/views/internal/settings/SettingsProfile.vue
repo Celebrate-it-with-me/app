@@ -7,6 +7,7 @@ import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { normalizePhone } from '@/utils/phone'
 import { useUserStore } from '@/stores/useUserStore'
 import { SUPPORT_EMAIL } from '@/config/brand'
+import { useUserAvatar } from '@/composables/useUserAvatar'
 import { UiCard, UiField, UiInput, UiButton, UiAvatar, useToast } from '@/ui'
 
 const { t } = useI18n()
@@ -15,7 +16,7 @@ const userStore = useUserStore()
 const saving = ref(false)
 
 const { handleSubmit, defineField, errors, meta, resetForm, setFieldError } = useForm({
-  validationSchema: toTypedSchema(
+  validationSchema: computed(() => toTypedSchema(
     zod.object({
       name: zod.string({ message: t('validation.nameRequired') }).trim().min(1, t('validation.nameRequired')),
       phone: zod
@@ -23,13 +24,13 @@ const { handleSubmit, defineField, errors, meta, resetForm, setFieldError } = us
         .optional()
         .refine(value => normalizePhone(value) !== null, { message: t('account.profile.phoneInvalid') })
     })
-  ),
+  )),
   initialValues: { name: '', phone: '' }
 })
 const [name] = defineField('name')
 const [phone] = defineField('phone')
 
-const avatarUrl = computed(() => (typeof userStore.avatar === 'string' ? userStore.avatar : ''))
+const avatar = useUserAvatar()
 
 onMounted(() => resetForm({ values: { name: userStore.name ?? '', phone: userStore.phone ?? '' } }))
 
@@ -59,7 +60,7 @@ const onSubmit = handleSubmit(async values => {
   <UiCard :title="t('account.profile.title')" :subtitle="t('account.profile.text')" heading-level="h2">
     <form class="flex flex-col gap-5" novalidate @submit="onSubmit">
       <div class="flex items-center gap-4">
-        <UiAvatar :name="userStore.name" :src="avatarUrl" size="xl" />
+        <UiAvatar :name="avatar.name.value" :src="avatar.src.value" :alt="avatar.alt.value" size="xl" />
         <div class="min-w-0">
           <p class="truncate font-heading text-xl text-ink-900">{{ userStore.name }}</p>
           <p class="truncate text-sm text-ink-500">{{ userStore.email }}</p>

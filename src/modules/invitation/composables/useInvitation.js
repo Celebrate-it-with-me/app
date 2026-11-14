@@ -8,6 +8,29 @@ export const INVITATION_KEY = Symbol('invitation')
 const INTL = { es: 'es-US', en: 'en-US' }
 
 /**
+ * Language and data helpers shared by the public invitation and the admin preview:
+ * both render the same section components from an `invitation` ref.
+ */
+export function invitationHelpers(invitation) {
+  const locale = computed(() => invitation.value?.locale ?? i18n.global.locale.value)
+
+  /** Translate `invitation.<key>` in the invitation's language. */
+  const tt = (key, params = {}) => i18n.global.t(`invitation.${key}`, params, { locale: locale.value })
+
+  /** Wall-clock times: the API sends them without offset, the browser must not convert them. */
+  const formatDate = (iso, options = { dateStyle: 'long' }) =>
+    iso ? new Intl.DateTimeFormat(INTL[locale.value], options).format(new Date(iso)) : ''
+
+  /** Replace the data of one section after the guest changed it (e.g. the RSVP answer). */
+  function updateSection(type, data) {
+    const section = invitation.value?.sections.find(item => item.type === type)
+    if (section) section.data = data
+  }
+
+  return { locale, tt, formatDate, updateSection }
+}
+
+/**
  * Loads one invitation and exposes it with helpers for the section components.
  * The invitation has its own language (guest, event or ?lang=), independent of the
  * organizer's app language, so texts are translated with an explicit locale and the
@@ -33,22 +56,9 @@ export function useInvitationData(slug, code) {
     }
   }
 
-  const locale = computed(() => invitation.value?.locale ?? i18n.global.locale.value)
+  const helpers = invitationHelpers(invitation)
 
-  /** Translate `invitation.<key>` in the invitation's language. */
-  const tt = (key, params = {}) => i18n.global.t(`invitation.${key}`, params, { locale: locale.value })
-
-  /** Wall-clock times: the API sends them without offset, the browser must not convert them. */
-  const formatDate = (iso, options = { dateStyle: 'long' }) =>
-    iso ? new Intl.DateTimeFormat(INTL[locale.value], options).format(new Date(iso)) : ''
-
-  /** Replace the data of one section after the guest changed it (e.g. the RSVP answer). */
-  function updateSection(type, data) {
-    const section = invitation.value?.sections.find(item => item.type === type)
-    if (section) section.data = data
-  }
-
-  return { status, invitation, locale, tt, formatDate, load, updateSection, slug, code }
+  return { status, invitation, ...helpers, load, slug, code, preview: false }
 }
 
 export function provideInvitation(context) {

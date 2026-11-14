@@ -41,3 +41,21 @@ export function whatsappUrl(phone, text) {
 
 /** Counters of the tabs, with a safe default before the first answer. */
 export const noCounts = () => ({ all: 0, attending: 0, pending: 0, notAttending: 0, families: 0, limit: null })
+
+/** Languages an invitation can be in. `null` (the guest has none of her own) follows the event. */
+export const INVITATION_LOCALES = ['es', 'en']
+
+/** The language a family's invitation shows: her own, or the event's (Spanish when the event has none). */
+export const effectiveLocale = (family, eventLocale) => family.locale || eventLocale || 'es'
+
+/** Saves a Blob as a file the browser downloads. */
+export function saveBlob(blob, filename) {
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
