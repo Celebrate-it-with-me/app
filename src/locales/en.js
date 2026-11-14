@@ -1230,6 +1230,25 @@ export default {
       emptyText: 'Add your first family or friend. Every guest gets their own link.',
       noResultsTitle: 'We could not find anyone',
       noResultsText: 'Try another name or switch tabs.',
+      download: {
+        button: 'Download',
+        label: 'Download the list as Excel',
+        current: 'This list ({tab})',
+        all: 'All guests',
+        venue: 'For the venue',
+        venueHint: 'Confirmed guests only, with table and menu if you use them',
+        done: 'Download ready.',
+        error: 'We could not prepare the download. Please try again.',
+        tooMany: 'You made too many downloads in a row. Wait a minute.'
+      },
+      locale: {
+        label: 'Invitation language',
+        es: 'Spanish',
+        en: 'English',
+        event: 'The event\'s ({lang})',
+        saved: 'Language saved.',
+        error: 'We could not change the language. It stays as it was.'
+      },
       menu: {
         label: 'Actions for {name}',
         whatsapp: 'Send on WhatsApp',

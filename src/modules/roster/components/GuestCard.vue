@@ -4,12 +4,14 @@ import { useI18n } from 'vue-i18n'
 import { MoreHorizontal, Pencil, MessageCircle, Link as LinkIcon, CheckCheck, Undo2, Trash2 } from 'lucide-vue-next'
 import { UiCard, UiBadge, UiAvatar, UiDropdown, UiButton } from '@/ui'
 import { STATUS_TONE, peopleIn } from '../utils/roster'
+import GuestLocaleSelect from './GuestLocaleSelect.vue'
 
 const props = defineProps({
   family: { type: Object, required: true },
-  canEdit: { type: Boolean, default: false }
+  canEdit: { type: Boolean, default: false },
+  eventLocale: { type: String, default: 'es' }
 })
-const emit = defineEmits(['edit', 'confirm', 'revert', 'remove', 'whatsapp', 'copy'])
+const emit = defineEmits(['edit', 'confirm', 'revert', 'remove', 'whatsapp', 'copy', 'locale'])
 const { t } = useI18n()
 
 const answered = computed(() => props.family.status !== 'pending' || props.family.companions.some(c => c.status !== 'pending'))
@@ -49,6 +51,7 @@ const items = computed(() => {
           </li>
         </ul>
         <p v-if="family.notes" class="mt-2 text-sm text-ink-500">{{ family.notes }}</p>
+        <GuestLocaleSelect :family="family" :event-locale="eventLocale" :disabled="!canEdit" @change="emit('locale', family, $event)" />
         <p class="mt-2 text-xs text-ink-500">{{ t('app.roster.people', { n: peopleIn(family) }, peopleIn(family)) }}</p>
       </div>
       <UiDropdown :items="items">
