@@ -1,15 +1,21 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
-import { LogOut, Lock } from 'lucide-vue-next'
+import { LogOut, Lock, UsersRound } from 'lucide-vue-next'
 import { useAppNav } from './useAppNav'
 import { useSignOut } from './useSignOut'
 import { cx } from '@/ui/utils'
+import { computed } from 'vue'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 const { t } = useI18n()
 const route = useRoute()
 const { byGroup } = useAppNav()
 const signOut = useSignOut()
+const eventsStore = useEventsStore()
+const canManageCollaborators = computed(
+  () => eventsStore.activeEvent?.userRole === 'owner' || eventsStore.hasPermission('manage_collaborators')
+)
 
 const isActive = to => route.path === to || (to !== '/dashboard' && route.path.startsWith(to + '/'))
 </script>
@@ -50,6 +56,20 @@ const isActive = to => route.path === to || (to !== '/dashboard' && route.path.s
   </nav>
 
   <div class="border-t border-line/70 px-3 py-3">
+    <router-link
+      v-if="canManageCollaborators"
+      to="/dashboard/collaborators"
+      :class="
+        cx(
+          'mb-0.5 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-cream-200 hover:text-ink-900',
+          isActive('/dashboard/collaborators') ? 'bg-rose-100 text-rose-800' : 'text-ink-700'
+        )
+      "
+      :aria-current="isActive('/dashboard/collaborators') ? 'page' : undefined"
+    >
+      <UsersRound class="h-4.5 w-4.5 shrink-0" aria-hidden="true" />
+      {{ t('app.nav.collaborators') }}
+    </router-link>
     <button
       type="button"
       class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-ink-700 transition-colors hover:bg-cream-200 hover:text-ink-900"

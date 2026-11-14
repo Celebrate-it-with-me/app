@@ -5,6 +5,8 @@ import { cx, initials, avatarTone } from './utils'
 const props = defineProps({
   name: { type: String, default: '' },
   src: { type: String, default: '' },
+  /** Text for the photo; the name when omitted. Ignored while the initials show. */
+  alt: { type: String, default: '' },
   /** sm | md | lg | xl */
   size: { type: String, default: 'md' }
 })
@@ -24,10 +26,20 @@ const showImage = computed(() => props.src && !failed.value)
       )
     "
     :title="name"
-    role="img"
-    :aria-label="name"
+    :role="showImage ? undefined : 'img'"
+    :aria-label="showImage ? undefined : name"
   >
-    <img v-if="showImage" :src="src" :alt="name" width="80" height="80" class="h-full w-full object-cover" @error="failed = true" />
+    <img
+      v-if="showImage"
+      :src="src"
+      :alt="alt || name"
+      width="80"
+      height="80"
+      loading="lazy"
+      decoding="async"
+      class="h-full w-full rounded-full object-cover"
+      @error="failed = true"
+    />
     <span v-else aria-hidden="true">{{ initials(name) }}</span>
   </span>
 </template>

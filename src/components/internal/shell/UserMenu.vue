@@ -2,11 +2,13 @@
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
+import { useUserAvatar } from '@/composables/useUserAvatar'
 import { UiAvatar } from '@/ui'
 
 const { t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
+const avatar = useUserAvatar()
 </script>
 
 <template>
@@ -16,7 +18,7 @@ const userStore = useUserStore()
     :aria-label="t('account.title')"
     :aria-current="route.path.startsWith('/settings') ? 'page' : undefined"
   >
-    <UiAvatar :name="userStore.name || ''" :src="userStore.avatar || ''" size="sm" />
+    <UiAvatar :name="avatar.name.value" :src="avatar.src.value" :alt="avatar.alt.value" size="sm" />
     <span class="hidden max-w-32 truncate pr-2 text-sm font-medium text-ink-900 md:block">{{ userStore.name }}</span>
   </router-link>
 </template>

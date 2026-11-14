@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { buildNavSections } from './navModules'
+import { buildNavSections, buildMobileNav } from './navModules'
 
 /**
  * Navigation of the organizer app. One source for the sidebar, the bottom bar and the "Más" sheet.
@@ -16,9 +16,13 @@ export function useAppNav() {
   )
   const items = computed(() => byGroup.value.flatMap(group => group.items))
 
-  // The phone's bottom bar: the usable main modules; everything else, including locked ones, goes under "Más".
-  const primary = computed(() => items.value.filter(item => item.primary).slice(0, 4))
-  const secondary = computed(() => items.value.filter(item => !primary.value.includes(item)))
+  // The phone's bottom bar: Home, "Tu invitación", Guests, "Organización" (sheet) and "Más" (sheet).
+  const mobileTabs = computed(() =>
+    buildMobileNav(
+      byGroup.value.map(group => ({ section: group.group, items: group.items })),
+      eventsStore.activeEvent?.id ?? null
+    )
+  )
 
-  return { items, primary, secondary, byGroup }
+  return { items, byGroup, mobileTabs }
 }

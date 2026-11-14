@@ -21,6 +21,7 @@ import paymentsRoutes from '@/modules/payments/routes/payments.route'
 import UnlockView from '@/views/internal/unlock/UnlockView.vue'
 import seatingRoutes from '@/modules/seating/routes/seating.route'
 import onboardingRoutes from '@/modules/onboarding/routes/onboarding.route'
+import collaboratorsRoutes from '@/modules/collaborators/routes/collaborators.route'
 
 const authRoutes = [
   {
@@ -84,6 +85,7 @@ const authRoutes = [
   ...sweetMemoriesRoutes,
   ...budgetRoutes,
   ...padrinosRoutes,
+  ...collaboratorsRoutes,
   ...locationsRoutes,
   ...dressCodeRoutes,
   ...saveTheDateRoutes,

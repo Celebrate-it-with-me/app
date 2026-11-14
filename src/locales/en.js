@@ -64,6 +64,7 @@ export default {
     dressCode: 'Dress code',
     budget: 'Budget',
     padrinos: 'Godparents',
+    collaborators: 'Collaborators',
     comments: 'Comments',
     menus: 'Menus',
     menusCreate: 'New menu',
@@ -933,6 +934,49 @@ export default {
         tooLong: 'The comment is too long (2000 characters max).'
       }
     },
+    collaborators: {
+      title: 'Collaborators',
+      subtitle: 'Who can see and organize this event with you.',
+      add: 'Invite',
+      cancel: 'Cancel',
+      retry: 'Try again',
+      loading: 'Loading collaborators',
+      loadErrorTitle: 'We could not load the collaborators',
+      loadError: 'Check your connection and try again.',
+      emptyTitle: 'No collaborators yet',
+      emptyText: 'Invite the birthday girl, your planner or anyone helping you organize the party.',
+      freeNotice: 'On the free plan only the event owner has access. Unlock your full event to invite more people.',
+      actionsFor: 'Actions for {name}',
+      roles: { owner: 'Owner', editor: 'Editor', viewer: 'View only' },
+      roleHelp: { editor: 'Can see and change everything except collaborator invitations and deleting the event.', viewer: 'Can see the event but change nothing.' },
+      status: { active: 'Has access', pending: 'Pending', expired: 'Expired', declined: 'Declined' },
+      actions: { resend: 'Resend invitation', cancel: 'Cancel invitation', makeEditor: 'Make editor', makeViewer: 'Make view only', remove: 'Remove access' },
+      invite: {
+        title: 'Invite someone',
+        text: 'We will email them so they can join this event.',
+        email: 'Email',
+        emailPlaceholder: "name{'@'}email.com",
+        emailRequired: 'Enter an email.',
+        emailInvalid: 'Enter a valid email.',
+        role: 'Role',
+        send: 'Send invitation'
+      },
+      confirm: {
+        removeTitle: 'Remove access for {name}?',
+        removeText: 'They will stop seeing and organizing this event. You can invite them again any time.',
+        removeButton: 'Remove access',
+        cancelTitle: 'Cancel the invitation for {name}?',
+        cancelText: 'The link they received will stop working.',
+        cancelButton: 'Cancel invitation'
+      },
+      invited: 'Invitation sent.',
+      resent: 'Invitation resent.',
+      cancelled: 'Invitation cancelled.',
+      removed: 'Access removed.',
+      roleChanged: 'Role updated.',
+      inviteError: 'We could not send the invitation. Try again.',
+      actionError: 'We could not complete the action. Try again.'
+    },
     padrinos: {
       title: 'Godparents',
       subtitle: 'Who stands with you, what they sponsor and how much they have given. Money does not go through Quinvite: you only record it here.',
@@ -1373,6 +1417,7 @@ export default {
       timeline: 'Day program',
       invitation: 'Your invitation',
       padrinos: 'Godparents',
+      collaborators: 'Collaborators',
       premium: 'Premium',
       home: 'Home',
       guests: 'Guests',
@@ -1678,6 +1723,7 @@ export default {
       name: 'Full name',
       email: 'Email',
       emailHint: 'To change your email, write to {email}.',
+      photoAlt: 'Profile photo of {name}',
       phone: 'Phone',
       phoneHint: 'With country code, for example +1 305 555 0123.',
       phoneInvalid: 'Enter a valid phone number with country code.'
