@@ -701,6 +701,8 @@ export default {
       cancel: 'Cancelar',
       loadError: 'No pudimos cargar la música sugerida.',
       searchError: 'No pudimos buscar canciones. Inténtalo de nuevo.',
+      searchUnavailable: 'La búsqueda de canciones no está disponible ahora, inténtalo en un momento.',
+      searchInvalid: 'La búsqueda no es válida. Escribe un nombre más corto.',
       added: 'Canción agregada.',
       addError: 'No pudimos agregar la canción.',
       removed: 'Canción eliminada.',

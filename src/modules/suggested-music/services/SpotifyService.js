@@ -1,54 +1,21 @@
-// services/SpotifyService.js
-const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID?.trim()
-const client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET?.trim()
+import { CWM_API } from '@/services/axios'
 
 /**
- * Get Spotify Authorization Token
- */
-async function getToken() {
-  const base64Credentials = btoa(`${client_id}:${client_secret}`)
-
-  const response = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    body: new URLSearchParams({ grant_type: 'client_credentials' }),
-    headers: {
-      Authorization: `Basic ${base64Credentials}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to get Spotify token')
-  }
-
-  return response.json()
-}
-
-/**
- * Search songs on Spotify
+ * Search songs on Spotify through our API (the API holds the Spotify credentials).
+ * GET /event/{eventId}/suggest-music/spotify-search?q=&limit=
+ * Resolves with the `data` body: { tracks: { items: [...] } } (same shape Spotify returns).
  * @param {string} query - Search query
  * @param {number} limit - Number of results (default: 5)
+ * @param {number|string} eventId - Active event id
  */
-async function searchSongs(query, limit = 5) {
-  const { access_token } = await getToken()
+async function searchSongs(query, limit = 5, eventId) {
+  const response = await CWM_API.get(`event/${eventId}/suggest-music/spotify-search`, {
+    params: { q: query, limit }
+  })
 
-  const response = await fetch(
-    `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${access_token}`
-      }
-    }
-  )
-
-  if (!response.ok) {
-    throw new Error('Failed to search songs on Spotify')
-  }
-
-  return response.json()
+  return response?.data?.data
 }
 
 export default {
-  searchSongs,
-  getToken
+  searchSongs
 }
