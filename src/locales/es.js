@@ -300,6 +300,7 @@ export default {
     validity: 'La invitación vale 7 días. Si ya tienes cuenta, entra para aceptarla.',
     noToken: 'Falta el código de la invitación.',
     invalid: 'La invitación no es válida o expiró.',
+    used: 'Esta invitación ya fue usada o venció.',
     acceptFailed: 'No pudimos aceptar la invitación.',
     declineFailed: 'No pudimos rechazar la invitación.'
   },
@@ -983,6 +984,7 @@ export default {
       removed: 'Acceso quitado.',
       roleChanged: 'Rol actualizado.',
       inviteError: 'No pudimos enviar la invitación. Inténtalo de nuevo.',
+      tooManyRequests: 'Enviaste demasiadas invitaciones seguidas. Espera un momento e inténtalo de nuevo.',
       actionError: 'No pudimos completar la acción. Inténtalo de nuevo.'
     },
     padrinos: {
@@ -1290,7 +1292,8 @@ export default {
         invalid_phone: '{n} con número no válido | {n} con número no válido',
         opted_out: '{n} pidió no recibir mensajes | {n} pidieron no recibir mensajes',
         recently_sent: '{n} ya lo recibió hoy | {n} ya lo recibieron hoy',
-        already_responded: '{n} ya respondió | {n} ya respondieron'
+        already_responded: '{n} ya respondió | {n} ya respondieron',
+        daily_limit: '{n} quedaría para mañana por el límite diario | {n} quedarían para mañana por el límite diario'
       },
       next: 'Continuar',
       back: 'Volver',
@@ -1311,7 +1314,8 @@ export default {
         invalid_phone: 'Su número no parece válido. Revísalo con el código del país, por ejemplo +1 305 555 0123.',
         opted_out: 'Pidieron no recibir más mensajes. Respetamos su decisión.',
         recently_sent: 'Ya recibieron este mensaje en las últimas 24 horas.',
-        already_responded: 'Ya respondieron a tu invitación, no hace falta recordarles.'
+        already_responded: 'Ya respondieron a tu invitación, no hace falta recordarles.',
+        daily_limit: 'Llegaste al límite diario de mensajes para este evento. Estos quedaron sin enviar; podrás escribirles mañana.'
       },
       stateLabel: 'WhatsApp',
       state: {
@@ -1324,6 +1328,12 @@ export default {
         opted_out: 'No quiere mensajes'
       },
       failedHelp: 'El mensaje no llegó.',
+      unknownDelivery: 'No sabemos si este mensaje llegó; revisa con tu invitado antes de reintentar.',
+      retryConfirm: {
+        title: '¿Reintentar el mensaje?',
+        body: 'Puede que este mensaje sí haya llegado. Si lo reintentas, tu invitado podría recibirlo dos veces. Revisa con él antes de continuar.',
+        send: 'Reintentar de todos modos'
+      },
       retry: 'Reintentar',
       retried: 'Volvimos a intentarlo.',
       summary: {
@@ -1348,7 +1358,10 @@ export default {
         noRecipients: 'No hay nadie a quien enviar en este grupo.',
         tooMany: 'Puedes enviar a 500 invitados a la vez como máximo. Elige menos o envía por grupos.',
         selectSome: 'Elige al menos un invitado.',
-        notFailed: 'Ese mensaje ya no está fallido.'
+        notFailed: 'Ese mensaje ya no está fallido.',
+        dailyLimit: 'Llegaste al límite diario de mensajes para este evento; podrás seguir mañana.',
+        retryLimit: 'Este mensaje ya se reintentó el máximo de veces.',
+        tooManyRequests: 'Demasiados intentos seguidos. Espera un momento e inténtalo de nuevo.'
       }
     },
     roster: {

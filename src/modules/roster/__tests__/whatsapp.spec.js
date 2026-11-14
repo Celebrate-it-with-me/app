@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { whatsappModuleState, sendErrorKey, groupSkipped, guestWhatsappState, manualShareUrl, MESSAGE_VIEW, SKIP_REASONS } from '../utils/whatsapp'
+import { whatsappModuleState, sendErrorKey, retryErrorKey, isUnknownDelivery, groupSkipped, guestWhatsappState, manualShareUrl, MESSAGE_VIEW, SKIP_REASONS } from '../utils/whatsapp'
 
 const { get, post } = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn() }))
 vi.mock('@/services/axios', () => ({ CWM_API: { get, post } }))
@@ -25,6 +25,23 @@ describe('whatsapp helpers', () => {
     expect(sendErrorKey(err(500, {}))).toBe('generic')
   })
 
+  it('maps the audit errors: daily limit, throttling, retry limit', () => {
+    expect(sendErrorKey(err(429, { code: 'whatsapp_daily_limit' }))).toBe('dailyLimit')
+    expect(sendErrorKey(err(429, {}))).toBe('tooManyRequests')
+    expect(retryErrorKey(err(429, { code: 'whatsapp_daily_limit' }))).toBe('dailyLimit')
+    expect(retryErrorKey(err(409, { code: 'retry_limit' }))).toBe('retryLimit')
+    expect(retryErrorKey(err(409, { code: 'not_failed' }))).toBe('notFailed')
+    expect(retryErrorKey(err(500, {}))).toBe('generic')
+    expect(SKIP_REASONS).toContain('daily_limit')
+    expect(groupSkipped([{ guestId: 1, guestName: 'Ana', reason: 'daily_limit' }])).toEqual([{ reason: 'daily_limit', guests: ['Ana'] }])
+  })
+
+  it('recognises a failed message whose outcome is unknown', () => {
+    expect(isUnknownDelivery({ status: 'failed', errorCode: 'unknown_delivery' })).toBe(true)
+    expect(isUnknownDelivery({ status: 'failed', errorCode: '131026' })).toBe(false)
+    expect(isUnknownDelivery(null)).toBe(false)
+  })
+
   it('groups the skipped guests by reason in a fixed order', () => {
     const groups = groupSkipped([
       { guestId: 1, guestName: 'Ana', reason: 'opted_out' },
@@ -39,7 +56,7 @@ describe('whatsapp helpers', () => {
 
   it('draws every status with an icon', () => {
     for (const key of ['queued', 'sent', 'delivered', 'read', 'failed', 'no_phone', 'opted_out']) expect(MESSAGE_VIEW[key].icon).toBeTruthy()
-    expect(SKIP_REASONS).toHaveLength(5)
+    expect(SKIP_REASONS).toHaveLength(6)
   })
 
   it('shows the last message, or why a guest cannot get one', () => {

@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import i18n, { setLocale } from '@/locales/i18n'
+import { useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { canManage, isFreePlan, normalizeCollaborator, rowActions, sortCollaborators, emailError } from '../utils/collaborators'
 
@@ -158,6 +159,22 @@ describe('CollaboratorsView', () => {
     form.dispatchEvent(new Event('submit', { cancelable: true }))
     await flushPromises()
     expect(api.inviteCollaborator).toHaveBeenCalledWith({ eventId: 7, email: 'nueva@x.com', role: 'editor' })
+  })
+
+  it('tells the organizer to wait when inviting is throttled (429)', async () => {
+    api.inviteCollaborator.mockRejectedValue({ response: { status: 429, data: { message: 'Too Many Attempts.' } } })
+    await setup()
+    await wrapper.findAll('button').find(b => b.text().includes('Invitar')).trigger('click')
+    await flushPromises()
+    const input = body().querySelector('input[type=email]')
+    input.value = 'nueva@x.com'
+    input.dispatchEvent(new Event('input'))
+    await flushPromises()
+    body().querySelector('#invite-collaborator').dispatchEvent(new Event('submit', { cancelable: true }))
+    await flushPromises()
+    const titles = useToast().toasts.map(x => x.title)
+    expect(titles.some(x => x.includes('Enviaste demasiadas invitaciones seguidas'))).toBe(true)
+    expect(titles).not.toContain('Too Many Attempts.')
   })
 
   it('asks for confirmation before removing access, and removes on confirm', async () => {

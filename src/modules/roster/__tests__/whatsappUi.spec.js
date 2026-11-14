@@ -65,6 +65,36 @@ describe('WhatsappSendModal', () => {
     expect(button('Continuar')).toBeTruthy()
   })
 
+  it('explains the daily limit when the send answers 429', async () => {
+    send.mockImplementation(async (id, body) => {
+      if (body.dryRun) return { queued: 3, skipped: [] }
+      throw { response: { status: 429, data: { code: 'whatsapp_daily_limit' } } }
+    })
+    mountModal()
+    await flushPromises()
+    button('Continuar').click()
+    await flushPromises()
+    button('Enviar ahora').click()
+    await flushPromises()
+    expect(body()).toContain('Llegaste al límite diario de mensajes para este evento; podrás seguir mañana.')
+    expect(button('Continuar')).toBeTruthy()
+  })
+
+  it('shows the quota in the preview and the daily_limit omission in the result', async () => {
+    const left = [{ guestId: 8, guestName: 'Eva', reason: 'daily_limit' }, { guestId: 9, guestName: 'Omar', reason: 'daily_limit' }]
+    send.mockImplementation(async (id, body) => (body.dryRun ? { queued: 2, skipped: left } : { batchId: 'b', queued: 2, skipped: left }))
+    mountModal()
+    await flushPromises()
+    expect(body()).toContain('Le llegará a 2 invitados')
+    expect(body()).toContain('2 quedarían para mañana por el límite diario')
+    button('Continuar').click()
+    await flushPromises()
+    button('Enviar ahora').click()
+    await flushPromises()
+    expect(body()).toContain('Estos quedaron sin enviar; podrás escribirles mañana')
+    expect(body()).toContain('Eva, Omar')
+  })
+
   it('offers only manual wa.me links, and the upgrade, on the free plan', async () => {
     send.mockResolvedValue({ queued: 0, skipped: [] })
     const emitted = mountModal({ locked: true })
@@ -104,6 +134,15 @@ describe('GuestCard WhatsApp state', () => {
     const message = { id: 9, status: 'failed', errorMessage: 'Número no registrado en WhatsApp' }
     const wrapper = card({ whatsapp: { key: 'failed', message } })
     expect(wrapper.text()).toContain('Número no registrado en WhatsApp')
+    await wrapper.findAll('button').find(b => b.text() === 'Reintentar').trigger('click')
+    expect(wrapper.emitted('retry')[0][0]).toEqual(message)
+  })
+
+  it('explains an unknown delivery and still lets the organizer retry', async () => {
+    const message = { id: 9, status: 'failed', errorCode: 'unknown_delivery', errorMessage: 'Timeout' }
+    const wrapper = card({ whatsapp: { key: 'failed', message } })
+    expect(wrapper.text()).toContain('No sabemos si este mensaje llegó; revisa con tu invitado antes de reintentar.')
+    expect(wrapper.text()).not.toContain('Timeout')
     await wrapper.findAll('button').find(b => b.text() === 'Reintentar').trigger('click')
     expect(wrapper.emitted('retry')[0][0]).toEqual(message)
   })

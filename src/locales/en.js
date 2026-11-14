@@ -300,6 +300,7 @@ export default {
     validity: 'The invitation is valid for 7 days. If you already have an account, sign in to accept it.',
     noToken: 'The invitation code is missing.',
     invalid: 'The invitation is invalid or has expired.',
+    used: 'This invitation was already used or has expired.',
     acceptFailed: 'We could not accept the invitation.',
     declineFailed: 'We could not decline the invitation.'
   },
@@ -983,6 +984,7 @@ export default {
       removed: 'Access removed.',
       roleChanged: 'Role updated.',
       inviteError: 'We could not send the invitation. Try again.',
+      tooManyRequests: 'You sent too many invitations in a row. Wait a moment and try again.',
       actionError: 'We could not complete the action. Try again.'
     },
     padrinos: {
@@ -1290,7 +1292,8 @@ export default {
         invalid_phone: '{n} with an invalid number | {n} with an invalid number',
         opted_out: '{n} asked not to get messages | {n} asked not to get messages',
         recently_sent: '{n} already got it today | {n} already got it today',
-        already_responded: '{n} already answered | {n} already answered'
+        already_responded: '{n} already answered | {n} already answered',
+        daily_limit: '{n} would wait until tomorrow because of the daily limit | {n} would wait until tomorrow because of the daily limit'
       },
       next: 'Continue',
       back: 'Back',
@@ -1311,7 +1314,8 @@ export default {
         invalid_phone: 'Their number does not look valid. Check it includes the country code, for example +1 305 555 0123.',
         opted_out: 'They asked not to get more messages. We respect that.',
         recently_sent: 'They already got this message in the last 24 hours.',
-        already_responded: 'They already answered your invitation, so no reminder is needed.'
+        already_responded: 'They already answered your invitation, so no reminder is needed.',
+        daily_limit: 'You reached the daily message limit for this event. These were not sent; you can message them tomorrow.'
       },
       stateLabel: 'WhatsApp',
       state: {
@@ -1324,6 +1328,12 @@ export default {
         opted_out: 'Opted out'
       },
       failedHelp: 'The message did not arrive.',
+      unknownDelivery: 'We do not know if this message arrived; check with your guest before retrying.',
+      retryConfirm: {
+        title: 'Retry the message?',
+        body: 'This message may have arrived. If you retry, your guest could get it twice. Check with them before continuing.',
+        send: 'Retry anyway'
+      },
       retry: 'Try again',
       retried: 'We tried again.',
       summary: {
@@ -1348,7 +1358,10 @@ export default {
         noRecipients: 'There is nobody to send to in this group.',
         tooMany: 'You can send to 500 guests at a time at most. Pick fewer or send in groups.',
         selectSome: 'Pick at least one guest.',
-        notFailed: 'That message is no longer failed.'
+        notFailed: 'That message is no longer failed.',
+        dailyLimit: 'You reached the daily message limit for this event; you can keep going tomorrow.',
+        retryLimit: 'This message was already retried the maximum number of times.',
+        tooManyRequests: 'Too many attempts in a row. Wait a moment and try again.'
       }
     },
     roster: {

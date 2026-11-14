@@ -8,6 +8,10 @@ import RosterService from './RosterService'
  *   locked       every call answers 403 module_locked
  *   unavailable  send answers 409 whatsapp_unavailable
  *   unapproved   send answers 409 template_not_approved
+ *   dailylimit   send and retry answer 429 whatsapp_daily_limit (the dry run, stale by then, still counts everybody in)
+ *   partial      only 2 guests fit in today's quota: the rest come back as skipped daily_limit
+ *   retrylimit   retry answers 409 retry_limit
+ *   unknown      failed messages carry errorCode unknown_delivery (the outcome is not known)
  *   modlocked    the module shows as locked in the event's modules (no call is made)
  *   modoff       the module is missing from the event's modules
  * A message moves queued -> sent -> delivered -> read with the clock (2 s, 6 s, 12 s); guests whose id ends in 5
@@ -40,6 +44,9 @@ function fail(status, data) {
   return error
 }
 
+const QUOTA = 2
+const dailyLimit = () => fail(429, { message: 'Daily limit.', code: 'whatsapp_daily_limit' })
+
 function guard(kind) {
   if (mode() === 'locked') throw fail(403, { message: 'Module locked.', code: 'module_locked', module: 'whatsapp' })
   if (kind === 'send' && mode() === 'unavailable') throw fail(409, { message: 'WhatsApp is not configured.', code: 'whatsapp_unavailable' })
@@ -53,6 +60,7 @@ function view(message) {
   const base = { ...message, sentAt: null, deliveredAt: null, readAt: null, failedAt: null, errorCode: null, errorMessage: null, status: 'queued' }
   if (age < 2000) return base
   if (message.guestId % 10 === 5 && !message.retried) {
+    if (mode() === 'unknown') return { ...base, status: 'failed', failedAt: at(2000), errorCode: 'unknown_delivery', errorMessage: 'Timeout waiting for Meta' }
     return { ...base, status: 'failed', failedAt: at(2000), errorCode: '131026', errorMessage: 'Message undeliverable' }
   }
   const sent = { ...base, status: 'sent', sentAt: at(2000), waMessageId: `wamid.MOCK${message.id}` }
@@ -88,8 +96,12 @@ export const mockWhatsapp = {
     let queued = 0
     let dry = 0
     const now = Date.now()
+    let room = mode() === 'partial' ? QUOTA : Infinity
+    if (mode() === 'dailylimit' && !body.dry_run) throw dailyLimit()
     for (const family of pool) {
-      const skip = reasonFor(family, body, now, eventId)
+      let skip = reasonFor(family, body, now, eventId)
+      if (!skip && room <= 0) skip = 'daily_limit'
+      if (!skip) room--
       if (skip) {
         skipped.push({ guestId: family.id, guestName: family.name, reason: skip })
         continue
@@ -138,6 +150,8 @@ export const mockWhatsapp = {
     const message = messages.find(m => m.id === Number(messageId) && m.eventId === eventId)
     if (!message) throw fail(404, { message: 'Not found.', code: 'not_found' })
     if (view(message).status !== 'failed') throw fail(409, { message: 'Not failed.', code: 'not_failed' })
+    if (mode() === 'dailylimit') throw dailyLimit()
+    if (mode() === 'retrylimit') throw fail(409, { message: 'Retry limit.', code: 'retry_limit' })
     // A retry always succeeds in the mock: it goes through the queue again.
     message.queuedAt = new Date().toISOString()
     message.retried = true
