@@ -3,21 +3,11 @@
 /* Legacy theme (spacing, shadows) still used by screens that are not migrated yet. */
 @config '../tailwind.config.js';
 
-@plugin 'flowbite/plugin';
-
-/* Classes used inside these packages (removed when Flowbite is retired). */
-@source '../node_modules/flowbite';
-@source '../node_modules/flowbite-vue';
-
-/* Dark mode by the .dark class. Legacy only: new screens are light-only in phase 1. */
-@custom-variant dark (&:where(.dark, .dark *));
-
 /*
  * Quinvite design tokens
  * ----------------------
  * Warm and elegant, light mode only. Every new screen uses these tokens through
  * Tailwind utilities (bg-cream-100, text-ink-900, border-line, bg-rose-600, font-heading...).
- * `font-display` is a legacy alias (old Poppins screens); new code uses `font-heading`.
  * Prepared for a future dark mode: swap the values of the semantic tokens below,
  * never hard-code hex values in components.
  */

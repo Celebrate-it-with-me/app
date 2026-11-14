@@ -38,8 +38,6 @@ const shouldShowRouteView = computed(() => {
 })
 
 onMounted(async () => {
-  // The app is light-only; make sure no legacy dark class survives.
-  document.documentElement.classList.remove('dark')
   loading.value = true
   if (!hydrationStore.isHydrated) {
     await nextTick(async () => {

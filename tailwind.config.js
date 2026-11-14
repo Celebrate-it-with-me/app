@@ -17,10 +17,6 @@ module.exports = {
           light: '#6B7280'
         }
       },
-      fontFamily: {
-        // Legacy screens used font-display for body text; keep it a sans until they are migrated.
-        display: ['Poppins', 'Figtree', 'sans-serif']
-      },
       boxShadow: {
         glow: '0 0 15px rgba(236, 72, 153, 0.6)'
       },
