@@ -1597,6 +1597,16 @@ export default {
       generic: 'We could not send your message. Please try again in a moment.'
     }
   },
+  maintenance: {
+    title: 'We are making things better',
+    defaultMessage: 'We are down for maintenance to make everything better. Please come back in a few minutes.',
+    bannerTitle: 'Scheduled maintenance.',
+    estimatedEnd: 'We expect to be back around {when}.',
+    reassure: 'Your information is safe. Nothing you already saved is lost.',
+    retry: 'Try again now',
+    autoRetry: 'We will try again on our own; this screen closes when everything is ready.',
+    dismiss: 'Dismiss maintenance notice'
+  },
   moduleLocked: {
     title: 'Go premium',
     text: 'This feature is part of the full event. Go premium to unlock it.',
