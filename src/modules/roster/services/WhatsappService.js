@@ -8,9 +8,13 @@ const mocked = () => !!import.meta.env.VITE_WHATSAPP_MOCK
 
 /** Organizer side of the WhatsApp contract (docs/plans/communications-contract.md). */
 class WhatsappService {
-  /** Queues a batch: `{ batchId, queued, skipped: [{ guestId, guestName, reason }] }`. */
-  async send(eventId, { template, audience, guestIds = [], force = false }) {
+  /**
+   * Queues a batch: `{ batchId, queued, skipped: [{ guestId, guestName, reason }] }`. With `dryRun` nothing is queued
+   * and the answer is the real calculation `{ queued, skipped }` (for the recipients preview).
+   */
+  async send(eventId, { template, audience, guestIds = [], force = false, dryRun = false }) {
     const body = { template, audience, force }
+    if (dryRun) body.dry_run = true
     if (audience === 'selected') body.guest_ids = guestIds
     if (mocked()) return mockWhatsapp.send(eventId, body)
     return (await CWM_API.post(`${base(eventId)}/send`, body)).data.data

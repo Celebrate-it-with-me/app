@@ -57,12 +57,11 @@ export function groupSkipped(skipped) {
 }
 
 /**
- * What to show for a family: its last message status, or why it cannot get one. `optedOut` comes from a
- * recent send (the roster does not carry the opt-out flag).
+ * What to show for a family: opted out (`whatsappOptedOut` of the roster), its last message status, or no phone.
  */
-export function guestWhatsappState(family, message, optedOut = false) {
+export function guestWhatsappState(family, message) {
+  if (family.whatsappOptedOut) return { key: 'opted_out', message: null }
   if (message) return { key: message.status, message }
-  if (optedOut) return { key: 'opted_out', message: null }
   if (!family.phone) return { key: 'no_phone', message: null }
   return null
 }

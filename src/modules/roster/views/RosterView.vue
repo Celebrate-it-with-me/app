@@ -54,9 +54,7 @@ const waLocked = computed(() => moduleState.value === 'locked' || lockedByApi.va
 const waAutomatic = computed(() => !waLocked.value && moduleState.value !== 'off')
 const waMessages = ref({})
 const waSummary = ref(null)
-const optedOut = ref(new Set())
 const sendOpen = ref(false)
-const pendingFamilies = ref(0)
 const selecting = ref(false)
 const selectedIds = ref([])
 let waTimer
@@ -76,22 +74,16 @@ async function loadWhatsapp() {
 }
 onBeforeUnmount(() => clearTimeout(waTimer))
 
-const waStateOf = family => (waAutomatic.value ? guestWhatsappState(family, waMessages.value[family.id], optedOut.value.has(family.id)) : null)
+const waStateOf = family => (waAutomatic.value ? guestWhatsappState(family, waMessages.value[family.id]) : null)
 
-async function openSend() {
+function openSend() {
   sendOpen.value = true
-  if (waLocked.value) return
-  try {
-    pendingFamilies.value = (await RosterService.list(event.value.id, { status: 'pending', perPage: 1 })).meta.total
-  } catch {
-    pendingFamilies.value = counts.value.pending
-  }
 }
 
-function afterSend(result) {
-  for (const skip of result.skipped) if (skip.reason === 'opted_out') optedOut.value = new Set([...optedOut.value, skip.guestId])
+function afterSend() {
   selecting.value = false
   selectedIds.value = []
+  load()
   loadWhatsapp()
 }
 
@@ -378,7 +370,6 @@ async function copyLink(family) {
       :locked="waLocked"
       :manual="!waAutomatic"
       :families="families"
-      :counts="{ all: counts.families, pending: pendingFamilies }"
       :selected-ids="selectedIds"
       @sent="afterSend"
       @unlock="goUnlock"

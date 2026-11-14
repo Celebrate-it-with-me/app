@@ -86,11 +86,16 @@ export const mockWhatsapp = {
     }
     const skipped = []
     let queued = 0
+    let dry = 0
     const now = Date.now()
     for (const family of pool) {
       const skip = reasonFor(family, body, now, eventId)
       if (skip) {
         skipped.push({ guestId: family.id, guestName: family.name, reason: skip })
+        continue
+      }
+      if (body.dry_run) {
+        dry++
         continue
       }
       messages.push({
@@ -100,6 +105,7 @@ export const mockWhatsapp = {
       })
       queued++
     }
+    if (body.dry_run) return { queued: dry, skipped }
     if (!queued) throw fail(422, { message: 'Invalid.', errors: { audience: ['no_recipients'] } })
     return { batchId: `mock-${Date.now()}`, queued, skipped }
   },

@@ -1273,17 +1273,25 @@ export default {
         save_the_date: { name: 'Save the date', help: 'Avisa la fecha antes de enviar la invitación.' }
       },
       audience: {
-        all: 'Toda tu lista ({n} invitado) | Toda tu lista ({n} invitados)',
-        pending: 'Solo pendientes ({n} invitado) | Solo pendientes ({n} invitados)',
-        selected: 'Los que elegí ({n} invitado) | Los que elegí ({n} invitados)',
+        all: 'Toda tu lista',
+        pending: 'Solo los pendientes',
+        selected: 'Los que elegí ({n}) | Los que elegí ({n})',
         selectedHelp: 'Pulsa «Elegir invitados» en la lista para marcarlos.'
       },
-      preview: 'Se enviará a hasta {n} invitado. Quien no tenga un teléfono válido se omite. | Se enviará a hasta {n} invitados. Quien no tenga un teléfono válido se omite.',
+      previewLoading: 'Calculando a quién le llegará…',
+      preview: 'Le llegará a {n} invitado. | Le llegará a {n} invitados.',
+      previewSkip: {
+        no_phone: '{n} sin teléfono | {n} sin teléfono',
+        invalid_phone: '{n} con número no válido | {n} con número no válido',
+        opted_out: '{n} pidió no recibir mensajes | {n} pidieron no recibir mensajes',
+        recently_sent: '{n} ya lo recibió hoy | {n} ya lo recibieron hoy',
+        already_responded: '{n} ya respondió | {n} ya respondieron'
+      },
       next: 'Continuar',
       back: 'Volver',
       close: 'Cerrar',
       confirm: {
-        text: 'Vas a enviar «{template}» a hasta {n} invitado por WhatsApp. | Vas a enviar «{template}» a hasta {n} invitados por WhatsApp.',
+        text: 'Vas a enviar «{template}» a {n} invitado por WhatsApp. | Vas a enviar «{template}» a {n} invitados por WhatsApp.',
         note: 'Los mensajes salen de inmediato. A quien ya recibió esta misma plantilla hoy no se le repite.',
         send: 'Enviar ahora'
       },

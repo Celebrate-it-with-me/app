@@ -46,7 +46,7 @@ describe('whatsapp helpers', () => {
     const message = { status: 'read' }
     expect(guestWhatsappState({ phone: '+1' }, message)).toEqual({ key: 'read', message })
     expect(guestWhatsappState({ phone: null }, undefined)).toEqual({ key: 'no_phone', message: null })
-    expect(guestWhatsappState({ phone: '+1' }, undefined, true).key).toBe('opted_out')
+    expect(guestWhatsappState({ phone: '+1', whatsappOptedOut: true }, message).key).toBe('opted_out')
     expect(guestWhatsappState({ phone: '+1' }, undefined)).toBeNull()
   })
 
@@ -66,6 +66,13 @@ describe('WhatsappService', () => {
     const result = await WhatsappService.send(7, { template: 'invitation', audience: 'selected', guestIds: [1, 2] })
     expect(post).toHaveBeenCalledWith('/event/7/whatsapp/send', { template: 'invitation', audience: 'selected', force: false, guest_ids: [1, 2] })
     expect(result.queued).toBe(2)
+  })
+
+  it('asks for a dry run to preview the recipients', async () => {
+    post.mockResolvedValue({ data: { data: { queued: 5, skipped: [] } } })
+    const result = await WhatsappService.send(7, { template: 'invitation', audience: 'all', dryRun: true })
+    expect(post.mock.calls[0][1]).toEqual({ template: 'invitation', audience: 'all', force: false, dry_run: true })
+    expect(result.queued).toBe(5)
   })
 
   it('does not send guest_ids for other audiences', async () => {

@@ -16,8 +16,6 @@ const props = defineProps({
   manual: { type: Boolean, default: false },
   /** Families on screen, for the manual links. */
   families: { type: Array, default: () => [] },
-  /** People counts of the audiences, to show before sending. */
-  counts: { type: Object, default: () => ({ all: 0, pending: 0 }) },
   selectedIds: { type: Array, default: () => [] }
 })
 const emit = defineEmits(['update:open', 'sent', 'unlock'])
@@ -29,6 +27,29 @@ const step = ref('form') // form | confirm | result
 const sending = ref(false)
 const errorKey = ref(null)
 const result = ref(null)
+// Real recipients of the current choice, from a dry run of the send (`{ queued, skipped }`); null while it is asked.
+const preview = ref(null)
+let previewId = 0
+
+async function loadPreview() {
+  if (!props.open || props.locked || props.manual || !props.eventId) return
+  if (audience.value === 'selected' && (!props.selectedIds.length || props.selectedIds.length > MAX_BATCH)) {
+    preview.value = { queued: 0, skipped: [] }
+    return
+  }
+  const id = ++previewId
+  preview.value = null
+  try {
+    const data = await WhatsappService.send(props.eventId, { template: template.value, audience: audience.value, guestIds: props.selectedIds, dryRun: true })
+    if (id === previewId) preview.value = data
+  } catch (e) {
+    if (id !== previewId) return
+    preview.value = { queued: 0, skipped: [] }
+    errorKey.value = sendErrorKey(e)
+    if (errorKey.value === 'locked') emit('unlock')
+  }
+}
+watch([template, audience, () => props.selectedIds.length], loadPreview)
 
 watch(
   () => props.open,
@@ -39,6 +60,7 @@ watch(
     step.value = 'form'
     errorKey.value = null
     result.value = null
+    loadPreview()
   },
   { immediate: true }
 )
@@ -49,8 +71,8 @@ watch(template, value => {
 
 const templateOptions = computed(() => TEMPLATES.map(key => ({ value: key, label: t(`app.whatsapp.templates.${key}.name`), description: t(`app.whatsapp.templates.${key}.help`) })))
 const audienceOptions = computed(() => [
-  { value: 'all', label: t('app.whatsapp.audience.all', { n: props.counts.all }, props.counts.all) },
-  { value: 'pending', label: t('app.whatsapp.audience.pending', { n: props.counts.pending }, props.counts.pending) },
+  { value: 'all', label: t('app.whatsapp.audience.all') },
+  { value: 'pending', label: t('app.whatsapp.audience.pending') },
   {
     value: 'selected',
     label: t('app.whatsapp.audience.selected', { n: props.selectedIds.length }, props.selectedIds.length),
@@ -58,7 +80,8 @@ const audienceOptions = computed(() => [
     disabled: !props.selectedIds.length
   }
 ])
-const recipients = computed(() => (audience.value === 'all' ? props.counts.all : audience.value === 'pending' ? props.counts.pending : props.selectedIds.length))
+const recipients = computed(() => preview.value?.queued ?? 0)
+const previewSkipped = computed(() => groupSkipped(preview.value?.skipped ?? []))
 const tooMany = computed(() => audience.value === 'selected' && props.selectedIds.length > MAX_BATCH)
 const skippedGroups = computed(() => groupSkipped(result.value?.skipped ?? []))
 const recentlySent = computed(() => (result.value?.skipped ?? []).filter(s => s.reason === 'recently_sent'))
@@ -136,8 +159,12 @@ const title = computed(() => (props.locked || props.manual ? t('app.whatsapp.man
         <UiRadioGroup v-model="audience" :options="audienceOptions" />
       </fieldset>
       <p class="mt-4 rounded-lg bg-cream-100 px-3 py-2 text-sm text-ink-700" aria-live="polite">
-        {{ t('app.whatsapp.preview', { n: recipients }, recipients) }}
+        <template v-if="!preview">{{ t('app.whatsapp.previewLoading') }}</template>
+        <template v-else>{{ t('app.whatsapp.preview', { n: recipients }, recipients) }}</template>
       </p>
+      <ul v-if="preview && previewSkipped.length" class="mt-2 space-y-1 text-sm text-ink-500">
+        <li v-for="group in previewSkipped" :key="group.reason">{{ t('app.whatsapp.previewSkip.' + group.reason, { n: group.guests.length }, group.guests.length) }}</li>
+      </ul>
       <p v-if="tooMany" role="alert" class="mt-2 text-sm text-danger-700">{{ t('app.whatsapp.errors.tooMany') }}</p>
     </template>
 
@@ -179,7 +206,7 @@ const title = computed(() => (props.locked || props.manual ? t('app.whatsapp.man
       </template>
       <template v-else-if="step === 'form'">
         <UiButton variant="ghost" @click="emit('update:open', false)">{{ t('app.roster.cancel') }}</UiButton>
-        <UiButton :disabled="!recipients || tooMany" @click="step = 'confirm'">{{ t('app.whatsapp.next') }}</UiButton>
+        <UiButton :disabled="!preview || !recipients || tooMany" @click="step = 'confirm'">{{ t('app.whatsapp.next') }}</UiButton>
       </template>
       <template v-else>
         <UiButton variant="ghost" :disabled="sending" @click="step = 'form'">{{ t('app.whatsapp.back') }}</UiButton>

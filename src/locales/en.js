@@ -1273,17 +1273,25 @@ export default {
         save_the_date: { name: 'Save the date', help: 'Share the date before the invitation goes out.' }
       },
       audience: {
-        all: 'Your whole list ({n} guest) | Your whole list ({n} guests)',
-        pending: 'Pending only ({n} guest) | Pending only ({n} guests)',
-        selected: 'The ones I picked ({n} guest) | The ones I picked ({n} guests)',
+        all: 'Your whole list',
+        pending: 'Pending guests only',
+        selected: 'The ones I picked ({n}) | The ones I picked ({n})',
         selectedHelp: 'Tap "Pick guests" in the list to mark them.'
       },
-      preview: 'It will go to up to {n} guest. Anyone without a valid phone is skipped. | It will go to up to {n} guests. Anyone without a valid phone is skipped.',
+      previewLoading: 'Working out who will get it…',
+      preview: 'It will reach {n} guest. | It will reach {n} guests.',
+      previewSkip: {
+        no_phone: '{n} without a phone | {n} without a phone',
+        invalid_phone: '{n} with an invalid number | {n} with an invalid number',
+        opted_out: '{n} asked not to get messages | {n} asked not to get messages',
+        recently_sent: '{n} already got it today | {n} already got it today',
+        already_responded: '{n} already answered | {n} already answered'
+      },
       next: 'Continue',
       back: 'Back',
       close: 'Close',
       confirm: {
-        text: 'You are about to send "{template}" to up to {n} guest by WhatsApp. | You are about to send "{template}" to up to {n} guests by WhatsApp.',
+        text: 'You are about to send "{template}" to {n} guest by WhatsApp. | You are about to send "{template}" to {n} guests by WhatsApp.',
         note: 'Messages go out right away. Anyone who already got this same message today will not get it twice.',
         send: 'Send now'
       },

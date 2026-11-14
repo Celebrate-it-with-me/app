@@ -30,14 +30,16 @@ afterEach(() => wrapper?.unmount())
 
 describe('WhatsappSendModal', () => {
   it('previews the recipients, asks to confirm, then shows what was left out and why', async () => {
-    send.mockResolvedValue({ batchId: 'b', queued: 8, skipped: [{ guestId: 3, guestName: 'Luis', reason: 'no_phone' }, { guestId: 4, guestName: 'Eva', reason: 'opted_out' }] })
+    send.mockImplementation(async (id, body) => (body.dryRun ? { queued: 8, skipped: [{ guestId: 3, guestName: 'Luis', reason: 'no_phone' }] } : { batchId: 'b', queued: 8, skipped: [{ guestId: 3, guestName: 'Luis', reason: 'no_phone' }, { guestId: 4, guestName: 'Eva', reason: 'opted_out' }] }))
     const emitted = mountModal()
     await flushPromises()
-    expect(body()).toContain('hasta 10 invitados')
+    expect(send).toHaveBeenCalledWith(7, { template: 'invitation', audience: 'all', guestIds: [], dryRun: true })
+    expect(body()).toContain('Le llegará a 8 invitados')
+    expect(body()).toContain('1 sin teléfono')
     button('Continuar').click()
     await flushPromises()
-    expect(body()).toContain('Vas a enviar «Invitación» a hasta 10 invitados')
-    expect(send).not.toHaveBeenCalled()
+    expect(body()).toContain('Vas a enviar «Invitación» a 8 invitados')
+    expect(send).toHaveBeenCalledTimes(1)
     button('Enviar ahora').click()
     await flushPromises()
     expect(send).toHaveBeenCalledWith(7, { template: 'invitation', audience: 'all', guestIds: [] })
@@ -49,7 +51,10 @@ describe('WhatsappSendModal', () => {
   })
 
   it('shows the contract errors in plain Spanish', async () => {
-    send.mockRejectedValue({ response: { status: 409, data: { code: 'whatsapp_unavailable' } } })
+    send.mockImplementation(async (id, body) => {
+      if (body.dryRun) return { queued: 3, skipped: [] }
+      throw { response: { status: 409, data: { code: 'whatsapp_unavailable' } } }
+    })
     mountModal()
     await flushPromises()
     button('Continuar').click()
@@ -61,6 +66,7 @@ describe('WhatsappSendModal', () => {
   })
 
   it('offers only manual wa.me links, and the upgrade, on the free plan', async () => {
+    send.mockResolvedValue({ queued: 0, skipped: [] })
     const emitted = mountModal({ locked: true })
     await flushPromises()
     expect(body()).toContain('parte del evento completo')
@@ -73,15 +79,21 @@ describe('WhatsappSendModal', () => {
   })
 
   it('reports the selected guests when there are some', async () => {
+    send.mockResolvedValue({ queued: 2, skipped: [] })
     mountModal({ selectedIds: [1, 2] })
     await flushPromises()
-    expect(body()).toContain('Los que elegí (2 invitados)')
-    expect(body()).toContain('hasta 2 invitados')
+    expect(body()).toContain('Los que elegí (2)')
+    expect(send.mock.calls[0][1]).toMatchObject({ audience: 'selected', guestIds: [1, 2], dryRun: true })
+    expect(body()).toContain('Le llegará a 2 invitados')
   })
 })
 
 describe('GuestCard WhatsApp state', () => {
   const card = props => mount(GuestCard, { props: { family, canEdit: true, ...props }, global: { plugins: [i18n], stubs } })
+
+  it('shows the opt-out of the roster even when there are messages', () => {
+    expect(card({ whatsapp: { key: 'opted_out', message: null } }).text()).toContain('No quiere mensajes')
+  })
 
   it('writes the state as text, not only colour', () => {
     expect(card({ whatsapp: { key: 'delivered', message: { status: 'delivered' } } }).text()).toContain('Entregado')
