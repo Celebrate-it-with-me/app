@@ -11,6 +11,7 @@ import GuestLimitNotice from '@/components/internal/limits/GuestLimitNotice.vue'
 import EventAddressField from '../components/EventAddressField.vue'
 import EventStatusBadge from '../components/EventStatusBadge.vue'
 import EventRegionalFields from '../components/EventRegionalFields.vue'
+import EventMusicCard from '../components/EventMusicCard.vue'
 import { useLeaveGuard } from '../composables/useLeaveGuard'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 
@@ -35,6 +36,11 @@ const saving = ref(false)
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 const isOwner = computed(() => event.value?.userRole === 'owner')
 const slugLocked = computed(() => !!event.value?.slugLocked)
+// The plan's answer for the music module: from the modules the API sent with the event (the active one carries them).
+const musicLocked = computed(() => {
+  const modules = event.value?.modules ?? (String(eventsStore.activeEvent?.id) === String(eventId.value) ? eventsStore.activeEvent?.modules : null)
+  return modules?.find(m => m.key === 'background_music')?.state === 'locked'
+})
 const typeLabel = computed(() => {
   const slug = eventsStore.eventTypes.find(type => type.id === event.value?.eventType)?.slug
   return slug ? t(`events.types.${slug}`) : ''
@@ -262,6 +268,8 @@ async function confirmDelete() {
           </div>
         </form>
       </UiCard>
+
+      <EventMusicCard class="mt-6" :event-id="event.id" :locked="musicLocked" :read-only="!canEdit" />
 
       <UiCard v-if="canEdit" class="mt-6" :title="t('events.publication.title')" heading-level="h2">
         <template #actions><EventStatusBadge :status="event.status" /></template>

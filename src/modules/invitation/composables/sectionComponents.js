@@ -6,6 +6,8 @@ import InvitationSaveTheDate from '../components/InvitationSaveTheDate.vue'
 import InvitationPadrinos from '../components/InvitationPadrinos.vue'
 import InvitationItinerary from '../components/InvitationItinerary.vue'
 import InvitationDressCode from '../components/InvitationDressCode.vue'
+import InvitationGallery from '../components/InvitationGallery.vue'
+import InvitationMusic from '../components/InvitationMusic.vue'
 import InvitationRsvp from '../components/InvitationRsvp.vue'
 import InvitationClosing from '../components/InvitationClosing.vue'
 
@@ -17,6 +19,8 @@ export const SECTION_COMPONENTS = {
   locations: InvitationLocations,
   dress_code: InvitationDressCode,
   padrinos: InvitationPadrinos,
+  gallery: InvitationGallery,
+  music: InvitationMusic,
   rsvp: InvitationRsvp,
   closing: InvitationClosing
 }

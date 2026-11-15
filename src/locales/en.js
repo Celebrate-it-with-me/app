@@ -380,6 +380,21 @@ export default {
       google: 'Google Calendar',
       ics: 'Apple, Outlook and others (.ics)'
     },
+    gallery: {
+      photoOf: 'Photo {n} of {total}',
+      open: 'View photo {n} of {total}',
+      viewer: 'Photo viewer',
+      close: 'Close',
+      previous: 'Previous photo',
+      next: 'Next photo',
+      carousel: 'Photos, swipe sideways'
+    },
+    music: {
+      fallbackTitle: 'Background music',
+      play: 'Play music',
+      pause: 'Pause music',
+      error: 'We couldn\'t play the music.'
+    },
     padrinos: { sponsors: 'Sponsors {items}' },
     itinerary: {
       types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
@@ -420,6 +435,18 @@ export default {
       thanksNo: 'Thanks for letting us know. We\'ll miss you.',
       error: 'We couldn\'t save your reply. Please try again.',
       closedError: 'The deadline to reply has passed.',
+      noteLabel: 'A message for the hosts (optional)',
+      noteCount: '{n}/{max}',
+      nameLabel: 'Name of the person',
+      yourNote: 'Your message',
+      errors: {
+        too_long: 'This is too long.',
+        too_short: 'Enter at least 2 characters.',
+        required: 'Enter a name.',
+        invalid_characters: 'The name has characters we can\'t save.',
+        invalid: 'We couldn\'t save the names. Reload the invitation and try again.',
+        too_many_attempts: 'Too many attempts. Wait a moment and try again.'
+      },
       status: {
         attending: 'Will attend',
         'not-attending': 'Will not attend',
@@ -1377,6 +1404,7 @@ export default {
       }
     },
     roster: {
+      rsvpNote: 'Guest message',
       progress: {
         label: 'Your guests’ answers',
         answered: '{n} of {total} have answered',
@@ -1845,6 +1873,39 @@ export default {
       confirmLabel: 'Event name',
       confirm: 'Delete for good',
       deleted: 'Event deleted.'
+    },
+    music: {
+      title: 'Background music',
+      subtitle: 'The song that plays on the invitation when your guests turn it on.',
+      untitled: 'Invitation song',
+      empty: 'No music yet. Your invitation looks the same, without sound.',
+      help: 'MP3, M4A or OGG, up to 10 MB. If your file is a WAV, convert it to MP3 first.',
+      titleLabel: 'Song name (optional)',
+      titleHint: 'Shown as the name of the music button.',
+      upload: 'Upload music',
+      replace: 'Replace music',
+      remove: 'Delete music',
+      play: 'Listen',
+      pause: 'Pause',
+      playError: 'We could not play the file.',
+      uploaded: 'Music uploaded.',
+      replaced: 'Music replaced.',
+      removed: 'Music deleted.',
+      confirmTitle: 'Delete the music',
+      confirmText: 'The invitation will no longer have background music. You can upload another one any time.',
+      locked: 'Background music is part of the full event. Unlock it to upload your invitation song.',
+      unlock: 'Unlock background music',
+      supportSession: 'Music cannot be changed during a support session.',
+      loadError: 'We could not load the event music.',
+      retry: 'Try again',
+      errors: {
+        required: 'Choose a music file.',
+        invalid_type: 'Format not allowed. Use MP3, M4A or OGG.',
+        too_large: 'The file is larger than 10 MB. Choose a lighter one.',
+        title_too_long: 'The name can have up to 60 characters.',
+        title_invalid: 'Check the song name.',
+        tooMany: 'Too many attempts. Wait a minute and try again.'
+      }
     }
   },
   payments: {
@@ -1894,6 +1955,7 @@ export default {
       seating: 'Seat your guests at tables and have the floor plan ready for the venue.',
       suggested_music: 'Your guests suggest songs and vote for the ones they most want to dance to.',
       memories: 'Keep the photos of your party in one album.',
+      background_music: 'Upload the song that plays on your invitation.',
       comments: 'Your guests leave you messages and good wishes on the invitation.',
       whatsapp: 'Automatic WhatsApp delivery of the invitation to your whole list, with the status of every message.',
       collaborators: 'Invite your planner, the quinceañera or whoever helps you, and share the work with the role you choose.'
