@@ -65,6 +65,11 @@
   filter: none !important;
   display: block !important;
 }
+/* The wrapper of a built-in section is a plain block: a package cannot shove it (or, being wider, its box) off the page. */
+.inv-root [data-inv-native] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
 .inv-root .inv-q:not([data-reveal]),
 .inv-root [data-inv-native]:not([data-reveal]) {
   opacity: 1 !important;

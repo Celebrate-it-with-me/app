@@ -11,7 +11,12 @@ const VW = 390
 const VH = 800
 const px = value => (/^-?[\d.]+px$/.test(value ?? '') ? parseFloat(value) : null)
 
+/** Per-element boxes for the cases the stacking model cannot express (a sliver peeking in at the bottom edge). */
+const boxes = new WeakMap()
+const rect = (left, top, right, bottom) => ({ left, top, right, bottom, width: right - left, height: bottom - top })
+
 function rectOf(node) {
+  if (boxes.has(node)) return boxes.get(node)
   const style = getComputedStyle(node)
   const zero = { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 }
   if (style.display === 'none') return zero
@@ -125,6 +130,80 @@ describe('integrity guard: hostile package CSS', () => {
   })
 })
 
+describe('integrity guard: system UI is not an occluder (B-1)', () => {
+  const music = '<div class="inv-music" style="position:absolute;top:700px;bottom:0px;z-index:20"><button>Play</button></div>'
+  const place = (root, name, box) => boxes.set(root.querySelector(`[data-q="${name}"]`), box)
+
+  it('ignores a block that only peeks 25 px in under the fixed music control', () => {
+    const root = page('', `${rsvp}${music}`)
+    boxes.set(root.querySelector('.inv-music'), rect(0, 700, VW, VH))
+    place(root, 'rsvp', rect(0, VH - 25, VW, VH + 175))
+    boxes.set(root.querySelector('[data-q="rsvp"] form'), rect(0, VH - 25, VW, VH + 175))
+    expect(checkIntegrity(root).problems).toEqual([])
+  })
+
+  it('does not count the music control as an occlusion on a block that is fully on screen either', () => {
+    const root = page('', `${rsvp}${music}`)
+    boxes.set(root.querySelector('.inv-music'), rect(0, 700, VW, VH))
+    place(root, 'rsvp', rect(0, 720, VW, 790))
+    boxes.set(root.querySelector('[data-q="rsvp"] form'), rect(0, 720, VW, 790))
+    expect(checkIntegrity(root).problems).toEqual([])
+  })
+
+  it('still detects a package overlay on a half-visible block', () => {
+    const css = '.pkg-ov{position:absolute;top:700px;bottom:0px;left:0;z-index:10}'
+    const root = page(css, `${rsvp}<div class="pkg-ov"><a class="pkg-ova" href="https://evil.example/x">x</a></div>`)
+    boxes.set(root.querySelector('.pkg-ov'), rect(0, 700, VW, VH))
+    place(root, 'rsvp', rect(0, 740, VW, 940))
+    boxes.set(root.querySelector('[data-q="rsvp"]'), rect(0, 740, VW, 940))
+    expect(reasons(checkIntegrity(root))).toContain('rsvp:covered')
+  })
+
+  it('still detects a package overlay that surrounds the music control', () => {
+    const css = '.pkg-ov{position:absolute;top:100px;bottom:0px;left:0;z-index:10}'
+    const root = page(css, `${rsvp}${music}<div class="pkg-ov"><a href="https://evil.example/x">x</a></div>`)
+    boxes.set(root.querySelector('.pkg-ov'), rect(0, 0, VW, VH))
+    boxes.set(root.querySelector('.inv-music'), rect(150, 60, 240, 100)) // only over the centre of the block
+    place(root, 'rsvp', rect(0, 20, VW, 140))
+    expect(reasons(checkIntegrity(root))).toContain('rsvp:covered')
+  })
+})
+
+describe('integrity guard: content shoved sideways (I-2)', () => {
+  const native = '<div data-inv-section="rsvp" data-inv-native="true"><section><button>Confirmar</button></section></div>'
+
+  it('detects the children of a built-in section moved off the page', () => {
+    const result = checkIntegrity(page('[data-inv-native] > *{margin-left:-99999px}', native))
+    expect(reasons(result)).toEqual(['rsvp:off-page'])
+  })
+
+  it('detects a wrapper whose box still touches the viewport but whose content is off the page', () => {
+    const root = page('', native)
+    boxes.set(root.querySelector('[data-inv-native]'), rect(-99999, 20, VW, 60))
+    boxes.set(root.querySelector('section'), rect(-99999, 20, -50000, 60))
+    boxes.set(root.querySelector('button'), rect(-99999, 20, -99800, 60))
+    expect(reasons(checkIntegrity(root))).toEqual(['rsvp:off-page'])
+  })
+
+  it('passes when the button is on screen', () => {
+    expect(checkIntegrity(page('', native)).problems).toEqual([])
+  })
+})
+
+describe('integrity guard: no viewport (I-3)', () => {
+  it('does not measure while the document has no size, and judges once it has one', () => {
+    const root = page('[data-q]{margin-left:-99999px}', `${cta}${rsvp}`)
+    const restore = [window.innerWidth, window.innerHeight, document.documentElement.clientWidth]
+    for (const [key, target] of [['innerWidth', window], ['innerHeight', window], ['clientWidth', document.documentElement]]) Object.defineProperty(target, key, { value: 0, configurable: true })
+    const hidden = checkIntegrity(root)
+    expect(hidden).toMatchObject({ ok: true, skipped: 'no-viewport', problems: [] })
+    Object.defineProperty(window, 'innerWidth', { value: restore[0], configurable: true })
+    Object.defineProperty(window, 'innerHeight', { value: restore[1], configurable: true })
+    Object.defineProperty(document.documentElement, 'clientWidth', { value: restore[2], configurable: true })
+    expect(checkIntegrity(root).ok).toBe(false)
+  })
+})
+
 describe('colorAlpha', () => {
   it.each([
     ['rgba(0, 0, 0, 0)', 0],
@@ -145,6 +224,7 @@ describe('engine guarantees', () => {
     for (const decl of ['position: relative', 'isolation: isolate', 'z-index: 20', 'visibility: visible', 'pointer-events: auto', 'clip-path: none', 'mask: none', 'filter: none', 'display: block']) {
       expect(pins).toContain(`${decl} !important`)
     }
+    expect(rule('.inv-root [data-inv-native] {\n  margin-left')).toContain('margin-right: 0 !important')
     const motion = rule('.inv-root .inv-q:not([data-reveal]),')
     for (const decl of ['opacity: 1', 'transform: none', 'translate: none', 'scale: none', 'rotate: none']) expect(motion).toContain(`${decl} !important`)
   })

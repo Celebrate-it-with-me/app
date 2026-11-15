@@ -66,6 +66,33 @@ describe('useIntegrityGuard', () => {
     expect(check).not.toHaveBeenCalled()
   })
 
+  it('keeps watching while the document has no size, and judges when a ResizeObserver reports one (I-3)', async () => {
+    let notify
+    vi.stubGlobal('ResizeObserver', class { constructor(cb) { notify = cb } observe() {} disconnect() {} })
+    check.mockReturnValue({ ok: true, blocks: 0, problems: [], skipped: 'no-viewport' })
+    const { onViolation } = setup()
+    await nextTick()
+    await vi.advanceTimersByTimeAsync(GUARD_DELAYS[1] + 100)
+    expect(onViolation).not.toHaveBeenCalled()
+    check.mockClear()
+    check.mockReturnValue({ ok: false, problems: [{ block: 'rsvp', reason: 'covered' }] })
+    notify()
+    await vi.advanceTimersByTimeAsync(300)
+    expect(check).toHaveBeenCalledTimes(1)
+    expect(onViolation).toHaveBeenCalledTimes(1)
+  })
+
+  it('re-checks when the tab becomes visible again', async () => {
+    check.mockReturnValue({ ok: true, problems: [] })
+    setup()
+    await nextTick()
+    await vi.advanceTimersByTimeAsync(10)
+    check.mockClear()
+    document.dispatchEvent(new Event('visibilitychange'))
+    await vi.advanceTimersByTimeAsync(300)
+    expect(check).toHaveBeenCalledTimes(1)
+  })
+
   it('re-checks when the window is resized (a media query can hide a block only at some widths)', async () => {
     check.mockReturnValue({ ok: true, problems: [] })
     setup()

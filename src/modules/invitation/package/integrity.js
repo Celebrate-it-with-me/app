@@ -16,6 +16,14 @@ export const BLOCK_SELECTOR = '[data-q], [data-inv-native]'
 const MIN_OPACITY = 0.1
 const MIN_BOX = 2
 const MAX_ANCESTORS = 40
+/** Less than this much of a block on screen (px tall) is not enough to judge who receives the pointer: wait for scroll. */
+const MIN_VISIBLE = 40
+/**
+ * Legitimate system UI that floats over the page (music control, dialogs/popovers): covering a block is its job, so
+ * a hit on it is neither "ok" nor an occlusion by the package. Package classes are forced to `pkg-*` by the
+ * sanitiser, so a package cannot dress its own elements up as these.
+ */
+export const SYSTEM_UI_SELECTOR = '.inv-music, [data-inv-system-ui], [role="dialog"], [data-reka-popper-content-wrapper]'
 
 /** Alpha channel (0..1) of a computed colour string (`rgba(…)`, `rgb(… / 50%)`, `color(srgb … / 0)`, `transparent`). */
 export function colorAlpha(value) {
@@ -112,7 +120,10 @@ function textProblems(block, win) {
   return problems
 }
 
-/** Can the pointer reach `el`? null when no part of it is inside the viewport (nothing to test yet). */
+/**
+ * Can the pointer reach `el`? null when there is nothing to judge: no part of it in the viewport, too little of it
+ * on screen, or every sampled point is under legitimate system UI (the music control).
+ */
 function pointerReach(el, doc, win, clip) {
   const box = el.getBoundingClientRect()
   const x1 = Math.max(box.left, 0, clip?.left ?? 0)
@@ -120,13 +131,47 @@ function pointerReach(el, doc, win, clip) {
   const y1 = Math.max(box.top, 0, clip?.top ?? 0)
   const y2 = Math.min(box.bottom, win.innerHeight, clip?.bottom ?? Infinity)
   if (x2 - x1 < MIN_BOX || y2 - y1 < MIN_BOX || typeof doc.elementFromPoint !== 'function') return null
-  const at = (fx, fy) => {
+  // A sliver peeking in at the edge of the screen: it is judged once enough of it is visible (the guard re-runs on scroll).
+  if (y2 - y1 < Math.min(MIN_VISIBLE, box.height)) return null
+  // Sample inside the visible part only: the middle of the whole box may be far off screen.
+  const sample = (fx, fy) => {
     const hit = doc.elementFromPoint(x1 + (x2 - x1) * fx, y1 + (y2 - y1) * fy)
-    return !!hit && (hit === el || el.contains(hit))
+    if (!hit) return 'other'
+    if (hit === el || el.contains(hit)) return 'ok'
+    return hit.closest?.(SYSTEM_UI_SELECTOR) ? 'system' : 'other'
   }
-  const center = at(0.5, 0.5)
-  const others = [at(0.25, 0.25), at(0.75, 0.25), at(0.25, 0.75), at(0.75, 0.75)].filter(Boolean).length
-  return center && others >= 2
+  const center = sample(0.5, 0.5)
+  const points = [center, sample(0.25, 0.25), sample(0.75, 0.25), sample(0.25, 0.75), sample(0.75, 0.75)].filter(kind => kind !== 'system')
+  if (!points.length) return null
+  if (center === 'other') return false
+  return points.filter(kind => kind === 'ok').length * 2 > points.length
+}
+
+const REACH_SELECTOR = 'img, svg, canvas, video, button, a, input, select, textarea'
+
+/**
+ * A block whose content was shoved out of the screen sideways (negative margins on the block or on its children) can
+ * still have a box that touches the viewport. At least one visible piece of content (control, media or text) must be
+ * inside the horizontal area of the page.
+ */
+function contentOutsideViewport(block, win, doc) {
+  const width = doc.documentElement.clientWidth || win.innerWidth
+  let seen = 0
+  const inside = node => {
+    const rect = node.getBoundingClientRect()
+    if (rect.width < MIN_BOX || rect.height < MIN_BOX) return false
+    seen++
+    return Math.min(rect.right, width) - Math.max(rect.left, 0) >= MIN_BOX
+  }
+  for (const node of block.querySelectorAll(REACH_SELECTOR)) if (inside(node)) return false
+  const walker = doc.createTreeWalker(block, 4 /* NodeFilter.SHOW_TEXT */)
+  let checked = 0
+  for (let text = walker.nextNode(); text && checked < 12; text = walker.nextNode()) {
+    if (!text.nodeValue.trim() || !text.parentElement) continue
+    checked++
+    if (inside(text.parentElement)) return false
+  }
+  return seen > 0
 }
 
 /** The element to measure for a block: music draws a fixed control inside an empty wrapper. */
@@ -169,6 +214,7 @@ export function blockProblem(block, { win = window, doc = window.document } = {}
     const h = Math.min(box.bottom, clip.bottom) - Math.max(box.top, clip.top)
     if (!inCarousel && (w < MIN_BOX || h < MIN_BOX)) return 'clipped'
   }
+  if (!inCarousel && !isProbe && !clip && contentOutsideViewport(probe, win, doc)) return 'off-page'
   const text = textProblems(probe, win)
   if (text.length) return text[0]
   if (!inCarousel) {
@@ -178,6 +224,12 @@ export function blockProblem(block, { win = window, doc = window.document } = {}
   return null
 }
 
+/** False while the viewport has no real size (0×0 iframe in a hidden tab, `display:none` parent). */
+export function viewportMeasurable(win = window, doc = window.document) {
+  const width = doc.documentElement?.clientWidth || win.innerWidth
+  return width > 0 && win.innerHeight > 0
+}
+
 /**
  * Checks every system block under `root`.
  * @returns {{ ok: boolean, blocks: number, problems: { block: string, reason: string }[] }}
@@ -185,6 +237,8 @@ export function blockProblem(block, { win = window, doc = window.document } = {}
 export function checkIntegrity(root, env = {}) {
   const win = env.win ?? root.ownerDocument.defaultView ?? window
   const doc = env.doc ?? root.ownerDocument
+  // Nothing can be measured while the document has no size (an iframe in a hidden tab) or is hidden: not a violation.
+  if (!viewportMeasurable(win, doc)) return { ok: true, blocks: 0, problems: [], skipped: 'no-viewport' }
   const problems = []
   let blocks = 0
   const seen = new Set()

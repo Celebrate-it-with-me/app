@@ -15,6 +15,7 @@ export function useIntegrityGuard({ root, active, onViolation }) {
   let io = null
   let debounce
   let off = () => {}
+  let ro = null
   const observed = new WeakSet()
 
   function run() {
@@ -45,10 +46,21 @@ export function useIntegrityGuard({ root, active, onViolation }) {
     globalThis.document?.fonts?.ready?.then(() => later(0))
     timers = GUARD_DELAYS.map(ms => setTimeout(() => (watchBlocks(), run()), ms))
     window.addEventListener('resize', onResize)
-    if ('IntersectionObserver' in window) io = new IntersectionObserver(entries => entries.some(e => e.isIntersecting) && later(), { threshold: [0, 0.5] })
-    off = () => window.removeEventListener('resize', onResize)
+    globalThis.document?.addEventListener('visibilitychange', onVisible)
+    // A hidden iframe (0×0) cannot be measured: checkIntegrity skips it, and this re-arms the guard once it has a size.
+    if (typeof ResizeObserver === 'function' && globalThis.document?.documentElement) {
+      ro = new ResizeObserver(onResize)
+      ro.observe(globalThis.document.documentElement)
+    }
+    // The pointer test needs enough of a block on screen: re-run at several visibility steps while it scrolls in.
+    if ('IntersectionObserver' in window) io = new IntersectionObserver(entries => entries.some(e => e.isIntersecting) && later(), { threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] })
+    off = () => {
+      window.removeEventListener('resize', onResize)
+      globalThis.document?.removeEventListener('visibilitychange', onVisible)
+    }
   }
   const onResize = () => later(250)
+  const onVisible = () => !globalThis.document?.hidden && later(250)
 
   function stop() {
     timers.forEach(clearTimeout)
@@ -56,6 +68,8 @@ export function useIntegrityGuard({ root, active, onViolation }) {
     clearTimeout(debounce)
     io?.disconnect()
     io = null
+    ro?.disconnect()
+    ro = null
     off()
     off = () => {}
   }
