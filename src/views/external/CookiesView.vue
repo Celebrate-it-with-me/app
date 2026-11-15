@@ -1,12 +1,15 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import LegalPage from '@/components/external/legal/LegalPage.vue'
+import CookiesEs from '@/components/external/legal/CookiesEs.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 </script>
 
 <template>
-  <LegalPage :title="t('titles.cookies')" updated="2026-11-11">
+  <LegalPage :title="t('titles.cookies')" updated="2026-11-11" translated>
+    <CookiesEs v-if="locale !== 'en'" />
+    <template v-else>
         <p>
           This Cookie Policy explains how Quinvite ("we", "us", or "our") uses cookies and
           similar technologies when you visit our website or use our services. This policy explains
@@ -118,6 +121,6 @@ const { t } = useI18n()
         <p>
           <strong>Last Updated:</strong> January 31, 2025
         </p>
-      
+    </template>
   </LegalPage>
 </template>

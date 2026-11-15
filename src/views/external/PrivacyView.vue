@@ -1,12 +1,15 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import LegalPage from '@/components/external/legal/LegalPage.vue'
+import PrivacyEs from '@/components/external/legal/PrivacyEs.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 </script>
 
 <template>
-  <LegalPage :title="t('titles.privacy')" updated="2026-11-11">
+  <LegalPage :title="t('titles.privacy')" updated="2026-11-11" translated>
+    <PrivacyEs v-if="locale !== 'en'" />
+    <template v-else>
         <p>
           At Quinvite ("we", "us", or "our"), we are committed to protecting your privacy
           and ensuring the security of your personal information. This Privacy Policy explains how
@@ -178,6 +181,6 @@ const { t } = useI18n()
         <p>
           <strong>Last Updated:</strong> January 31, 2025
         </p>
-      
+    </template>
   </LegalPage>
 </template>

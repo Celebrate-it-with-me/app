@@ -1828,6 +1828,45 @@ export default {
     textNamed: '{name} is part of the full event. Go premium to unlock it.',
     names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments', whatsapp: 'WhatsApp', collaborators: 'Collaborators' }
   },
+  errorPages: {
+    c401: {
+      heading: 'Session Required',
+      subheading: 'You must be logged in to continue.',
+      title: 'Authentication Required',
+      message: 'Your session has expired or you are not logged in.',
+      hint: 'Please sign in to continue using the platform.',
+      primary: 'Go to Login',
+      secondary: 'Go to Home'
+    },
+    c403: {
+      heading: 'Access Denied',
+      subheading: "You don\u2019t have permission to view this page.",
+      title: 'Access Denied',
+      message: 'You do not have permission to access this resource.',
+      hint: 'If you believe this is a mistake, contact the event owner or try switching events.',
+      primary: 'Back to Dashboard',
+      secondary: 'Go Back'
+    },
+    c409: {
+      heading: 'Conflict Detected',
+      subheading: 'This resource does not match your current context.',
+      title: '409 — Resource Conflict',
+      message: 'This item belongs to a different event or is no longer valid.',
+      hint: 'Try switching events or reloading your workspace.',
+      primary: 'My Events',
+      secondary: 'Dashboard'
+    },
+    c500: {
+      heading: 'Server Error',
+      subheading: 'Something went wrong on our side.',
+      title: '500 — Unexpected Error',
+      message: 'An unexpected error occurred while processing your request.',
+      hint: 'Try again in a few seconds. If the problem persists, contact support.',
+      primary: 'Reload Page',
+      secondary: 'Back to Dashboard'
+    }
+  },
+  rsvpStatsError: 'Failed to load event stats. Please try again later.',
   notFound: {
     title: "We can't find this page",
     text: 'The link may be incomplete or the page may no longer exist. Let us take you back so you can keep planning your celebration.',

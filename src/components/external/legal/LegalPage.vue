@@ -4,7 +4,9 @@ import { UiPageHeader } from '@/ui'
 
 defineProps({
   title: { type: String, required: true },
-  updated: { type: String, default: '' }
+  updated: { type: String, default: '' },
+  // True when the document has a Spanish version, so the "English only" notice is not shown.
+  translated: { type: Boolean, default: false }
 })
 const { t, locale } = useI18n()
 </script>
@@ -12,7 +14,7 @@ const { t, locale } = useI18n()
 <template>
   <article class="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-16">
     <UiPageHeader :title="title" :subtitle="updated ? t('legal.updated', { date: updated }) : ''" />
-    <p v-if="locale !== 'en'" class="mb-6 rounded-lg bg-cream-200 px-4 py-3 text-sm text-ink-700">
+    <p v-if="locale !== 'en' && !translated" class="mb-6 rounded-lg bg-cream-200 px-4 py-3 text-sm text-ink-700">
       {{ t('legal.englishOnly') }}
     </p>
     <div
