@@ -1,5 +1,4 @@
 /* Clásica as a template package: every section is plain HTML (sections/*.html) styled here. The server writes the @font-face block and scopes every selector under [data-inv-theme="classic"]. */
-@font-face { font-family: 'Pinyon Script'; font-weight: 400; font-style: normal; font-display: swap; src: url(assets/pinyon-script-latin-400-normal.woff2) format('woff2'); }
 .pkg-cl, .pkg-sec { --pkg-primary-ink: color-mix(in oklab, var(--inv-primary) 78%, #2b2420); --pkg-accent-ink: color-mix(in oklab, var(--inv-accent) 60%, #3d2a08); --pkg-script: var(--inv-font-script, 'Pinyon Script', 'Snell Roundhand', cursive); --pkg-heading: var(--inv-font-heading, 'Fraunces', Georgia, serif); }
 
 .pkg-cl { position: relative; isolation: isolate; display: flex; min-height: 100svh; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; padding: 5rem 1.5rem 4rem; text-align: center; background-color: #fdfbf8; background-image: url(assets/lattice.svg); background-size: 36px 36px; }
@@ -31,7 +30,7 @@
 .pkg-cl-guest p { margin: 0; }
 .pkg-cl-guest__label { font-size: 0.875rem; line-height: 1.4286; color: var(--inv-ink-soft); }
 .pkg-cl-guest .pkg-cl-guest__name { margin-top: 0.25rem; font-family: var(--pkg-script); font-size: 2.5rem; line-height: 1.25; color: var(--pkg-primary-ink); }
-.pkg-cl-cta { margin-top: 2rem; display: flex; justify-content: center; }
+.pkg-cl-cta { margin-top: 2rem; }
 
 @media (min-width: 640px) {
   .pkg-cl { padding-block: 6rem; }

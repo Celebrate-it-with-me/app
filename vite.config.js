@@ -39,6 +39,15 @@ function devTemplatePackages() {
           }
           const target = path.join(dir, file)
           if (!target.startsWith(dir + path.sep) || !fs.statSync(target).isFile()) return next()
+          if (file === 'theme.css') {
+            // The server writes the @font-face rules from tokens.json and puts them before the package CSS.
+            const tokens = JSON.parse(fs.readFileSync(path.join(dir, 'tokens.json'), 'utf8'))
+            const faces = Object.values(tokens.fonts ?? {}).flatMap(role =>
+              (role.files ?? []).map(f => `@font-face { font-family: '${role.family}'; font-weight: ${f.weight}; font-style: ${f.style}; font-display: swap; src: url(${f.file}) format('woff2'); }`)
+            )
+            res.setHeader('Content-Type', TYPES.css)
+            return res.end(`${[...new Set(faces)].join('\n')}\n${fs.readFileSync(target, 'utf8')}`)
+          }
           res.setHeader('Content-Type', TYPES[path.extname(target).slice(1)] ?? 'application/octet-stream')
           return fs.createReadStream(target).pipe(res)
         } catch {

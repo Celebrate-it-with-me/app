@@ -23,7 +23,7 @@
 .inv-q-photo__emblem { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--inv-font-heading, serif); font-size: 3.75rem; }
 .inv-q--names { margin: 0; font: inherit; color: inherit; letter-spacing: inherit; text-transform: none; }
 .inv-q-names__line { display: block; }
-.inv-q--cta { display: contents; }
+.inv-q--cta { display: flex; justify-content: center; }
 .inv-carousel { position: relative; }
 .inv-carousel__track { display: flex; gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
 .inv-carousel__track > * { flex: 0 0 85%; scroll-snap-align: center; }

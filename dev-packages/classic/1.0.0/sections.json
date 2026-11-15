@@ -1,0 +1,274 @@
+{
+  "wedding": [
+    {
+      "type": "cover",
+      "enabled": true,
+      "order": 1,
+      "title": {
+        "es": "Te invitamos a celebrar",
+        "en": "Join us to celebrate"
+      },
+      "text": {
+        "es": "Queremos compartir este día tan especial contigo.",
+        "en": "We want to share this special day with you."
+      },
+      "settings": {
+        "image": null
+      }
+    },
+    {
+      "type": "itinerary",
+      "enabled": true,
+      "order": 2,
+      "title": {
+        "es": "Programa del día",
+        "en": "Program of the day"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "locations",
+      "enabled": true,
+      "order": 3,
+      "title": {
+        "es": "Dónde celebramos",
+        "en": "Where we celebrate"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "dress_code",
+      "enabled": true,
+      "order": 4,
+      "title": {
+        "es": "Código de vestimenta",
+        "en": "Dress code"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "padrinos",
+      "enabled": true,
+      "order": 5,
+      "title": {
+        "es": "Con el cariño de",
+        "en": "With love from"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "gallery",
+      "enabled": true,
+      "order": 6,
+      "title": {
+        "es": "Nuestros recuerdos",
+        "en": "Our memories"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {
+        "layout": "grid",
+        "maxPhotos": 12,
+        "showCaptions": true
+      }
+    },
+    {
+      "type": "rsvp",
+      "enabled": true,
+      "order": 7,
+      "title": {
+        "es": "¿Nos acompañas?",
+        "en": "Will you join us?"
+      },
+      "text": {
+        "es": "Confirma tu asistencia para que todo salga perfecto.",
+        "en": "Let us know if you can make it so everything is perfect."
+      },
+      "settings": {}
+    },
+    {
+      "type": "closing",
+      "enabled": true,
+      "order": 8,
+      "title": {
+        "es": "Gracias por acompañarnos",
+        "en": "Thank you for celebrating with us"
+      },
+      "text": {
+        "es": "Los esperamos con mucho cariño.",
+        "en": "We can’t wait to see you."
+      },
+      "settings": {}
+    },
+    {
+      "type": "music",
+      "enabled": true,
+      "order": 9,
+      "title": {
+        "es": null,
+        "en": null
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {
+        "title": null
+      }
+    }
+  ],
+  "quinceanera": [
+    {
+      "type": "cover",
+      "enabled": true,
+      "order": 1,
+      "title": {
+        "es": "Te invito a celebrar",
+        "en": "Join me to celebrate"
+      },
+      "text": {
+        "es": "Quiero compartir este día tan especial contigo.",
+        "en": "I want to share this special day with you."
+      },
+      "settings": {
+        "image": null
+      }
+    },
+    {
+      "type": "itinerary",
+      "enabled": true,
+      "order": 2,
+      "title": {
+        "es": "Programa del día",
+        "en": "Program of the day"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "locations",
+      "enabled": true,
+      "order": 3,
+      "title": {
+        "es": "Dónde celebramos",
+        "en": "Where we celebrate"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "dress_code",
+      "enabled": true,
+      "order": 4,
+      "title": {
+        "es": "Código de vestimenta",
+        "en": "Dress code"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "padrinos",
+      "enabled": true,
+      "order": 5,
+      "title": {
+        "es": "Con el cariño de",
+        "en": "With love from"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "gallery",
+      "enabled": true,
+      "order": 6,
+      "title": {
+        "es": "Mis recuerdos",
+        "en": "My memories"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {
+        "layout": "grid",
+        "maxPhotos": 12,
+        "showCaptions": true
+      }
+    },
+    {
+      "type": "rsvp",
+      "enabled": true,
+      "order": 7,
+      "title": {
+        "es": "¿Me acompañas?",
+        "en": "Will you join me?"
+      },
+      "text": {
+        "es": "Confirma tu asistencia para que todo salga perfecto.",
+        "en": "Let me know if you can make it so everything is perfect."
+      },
+      "settings": {}
+    },
+    {
+      "type": "closing",
+      "enabled": true,
+      "order": 8,
+      "title": {
+        "es": "Gracias por ser parte de mi día",
+        "en": "Thank you for being part of my day"
+      },
+      "text": {
+        "es": "Te espero con mucho cariño.",
+        "en": "I can’t wait to see you."
+      },
+      "settings": {}
+    },
+    {
+      "type": "music",
+      "enabled": true,
+      "order": 9,
+      "title": {
+        "es": null,
+        "en": null
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {
+        "title": null
+      }
+    }
+  ]
+}

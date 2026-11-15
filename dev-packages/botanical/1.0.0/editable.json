@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "groups": [
+    {
+      "id": "cover",
+      "label": {
+        "es": "Portada",
+        "en": "Cover"
+      }
+    },
+    {
+      "id": "look",
+      "label": {
+        "es": "Estilo",
+        "en": "Look"
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "cover_photo",
+      "type": "image",
+      "group": "cover",
+      "label": {
+        "es": "Foto de portada",
+        "en": "Cover photo"
+      },
+      "help": {
+        "es": "Vertical, mínimo 960 px de ancho.",
+        "en": "Portrait, at least 960 px wide."
+      },
+      "bind": {
+        "section": "cover",
+        "setting": "image",
+        "focus": "focus"
+      },
+      "minWidth": 960,
+      "required": false,
+      "plan": "free"
+    },
+    {
+      "id": "cover_text",
+      "type": "text",
+      "group": "cover",
+      "label": {
+        "es": "Frase de apoyo",
+        "en": "Support phrase"
+      },
+      "bind": {
+        "section": "cover",
+        "field": "text"
+      },
+      "multiline": true,
+      "max": {
+        "es": 160,
+        "en": 160
+      },
+      "plan": "free"
+    },
+    {
+      "id": "look_preset",
+      "type": "choice",
+      "group": "look",
+      "label": {
+        "es": "Paleta",
+        "en": "Palette"
+      },
+      "bind": {
+        "theme": "preset"
+      },
+      "choices": [
+        {
+          "value": "salvia",
+          "label": {
+            "es": "Salvia y durazno",
+            "en": "Sage & peach"
+          }
+        },
+        {
+          "value": "oliva",
+          "label": {
+            "es": "Oliva y marfil",
+            "en": "Olive & ivory"
+          }
+        },
+        {
+          "value": "rosa",
+          "label": {
+            "es": "Eucalipto y rosa palo",
+            "en": "Eucalyptus & blush"
+          }
+        }
+      ],
+      "plan": "free"
+    },
+    {
+      "id": "color_primary",
+      "type": "color",
+      "group": "look",
+      "label": {
+        "es": "Color principal",
+        "en": "Primary color"
+      },
+      "bind": {
+        "theme": "colors.primary"
+      },
+      "plan": "full"
+    }
+  ]
+}

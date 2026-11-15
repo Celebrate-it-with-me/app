@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "slug": "classic",
+  "name": {
+    "es": "Clásica",
+    "en": "Classic"
+  },
+  "description": {
+    "es": "Papel crema, filigrana dorada y flores en tinta.",
+    "en": "Cream paper, gold filigree and inked flowers."
+  },
+  "version": "1.0.0",
+  "level": 1,
+  "eventTypes": [
+    "quinceanera",
+    "wedding"
+  ],
+  "tier": "free",
+  "visibility": "public",
+  "engineMin": 1,
+  "author": {
+    "name": "Equipo Quinvite",
+    "url": "https://quinvite.com"
+  },
+  "license": {
+    "id": "original-work",
+    "summary": "Obra original del equipo Quinvite; fuente Pinyon Script bajo SIL OFL 1.1.",
+    "document": "LICENSES.md"
+  },
+  "assetsCredits": [
+    {
+      "path": "assets/flourish.svg",
+      "title": "Florón divisor",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/sprig.svg",
+      "title": "Rama de esquina",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/blossoms.svg",
+      "title": "Flores de la rama",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/lattice.svg",
+      "title": "Celosía de fondo",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/fonts/pinyon-script-latin-400-normal.woff2",
+      "title": "Pinyon Script 400",
+      "author": "Nicole Fally",
+      "source": "https://fonts.google.com/specimen/Pinyon+Script",
+      "license": "OFL-1.1"
+    }
+  ],
+  "thirdPartyMarks": []
+}
