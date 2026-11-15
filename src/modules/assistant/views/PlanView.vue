@@ -48,6 +48,17 @@ const groups = computed(() =>
     }))
     .filter(g => g.tasks.length)
 )
+// A long phase folds what is not a recommended step: always keep `next` tasks, fill up to FOLD_VISIBLE, fold the rest.
+const FOLD_LIMIT = 5
+const FOLD_VISIBLE = 4
+const expanded = ref({})
+const visibleTasks = group => {
+  if (group.tasks.length <= FOLD_LIMIT || expanded.value[group.key]) return group.tasks
+  let room = Math.max(FOLD_VISIBLE - group.tasks.filter(task => task.state === 'next').length, 0)
+  return group.tasks.filter(task => task.state === 'next' || room-- > 0)
+}
+const foldedCount = group => group.tasks.length - visibleTasks(group).length
+const canFold = group => group.tasks.length > FOLD_LIMIT
 const doneTasks = computed(() => (plan.value?.phases ?? []).flatMap(p => p.tasks).filter(task => task.state === 'done'))
 const hiddenTasks = computed(() => plan.value?.hidden ?? [])
 const custom = computed(() => plan.value?.custom ?? [])
@@ -218,10 +229,20 @@ const noteKey = computed(() => ({ compressed: 'compressed', event_past: 'eventPa
         <h3 :id="`plan-${group.key}`" class="font-heading text-xl text-ink-900">{{ group.label }}</h3>
         <ul class="mt-3 space-y-3">
           <PlanTaskRow
-            v-for="task in group.tasks" :key="task.key" :task="task" :titles="titles" :event-id="event.id" :can-edit="canEdit" :busy="store.isBusy(task.key)"
+            v-for="task in visibleTasks(group)" :key="task.key" :task="task" :titles="titles" :event-id="event.id" :can-edit="canEdit" :busy="store.isBusy(task.key)"
             @done="done(task)" @snooze="snooze(task, $event)" @hide="hide(task)" @not-applicable="notApplicable(task)" @reset="reset(task)"
           />
         </ul>
+        <UiButton
+          v-if="canFold(group) && (foldedCount(group) || expanded[group.key])"
+          variant="link"
+          class="mt-2"
+          :aria-expanded="!!expanded[group.key]"
+          :data-testid="`fold-${group.key}`"
+          @click="expanded[group.key] = !expanded[group.key]"
+        >
+          {{ expanded[group.key] ? t('app.assistant.action.showLess') : t('app.assistant.action.showMore', { n: foldedCount(group) }) }}
+        </UiButton>
       </section>
 
       <!-- Custom tasks -->

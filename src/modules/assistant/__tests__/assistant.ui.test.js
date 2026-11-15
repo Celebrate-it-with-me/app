@@ -82,6 +82,40 @@ describe('PlanView', () => {
     expect(locked.text()).not.toContain('Marcar hecha')
   })
 
+  it('puts the "Ahora" badge only on recommended (next) tasks, not on available, blocked or locked ones', async () => {
+    const plan = {
+      ...PLAN,
+      phases: [{ key: 'foundation', label: 'Primeros pasos', tasks: [
+        task('n', { state: 'next' }),
+        task('v', { state: 'available' }),
+        task('b', { state: 'available', blockedBy: ['n'] }),
+        task('l', { state: 'next', moduleLocked: true, moduleKey: 'seating' })
+      ] }],
+      overdue: [], hidden: []
+    }
+    await mountPlan({ plan })
+    expect(wrapper.get('[data-testid=task-n]').text()).toContain('Ahora')
+    expect(wrapper.get('[data-testid=task-v]').text()).not.toContain('Ahora')
+    const blocked = wrapper.get('[data-testid=task-b]')
+    expect(blocked.text()).not.toContain('Ahora')
+    expect(blocked.text()).toContain('Primero: Tarea n')
+    const locked = wrapper.get('[data-testid=task-l]')
+    expect(locked.text()).not.toContain('Ahora')
+    expect(locked.find('a').attributes('href')).toBe('/dashboard/unlock/seating')
+  })
+
+  it('folds a long phase keeping the recommended steps visible, and expands on demand', async () => {
+    const tasks = [task('t0', { state: 'next' }), ...[1, 2, 3, 4, 5, 6].map(i => task(`t${i}`))]
+    await mountPlan({ plan: { ...PLAN, phases: [{ key: 'foundation', label: 'Primeros pasos', tasks }], overdue: [], hidden: [] } })
+    expect(wrapper.findAll('[data-testid^=task-t]')).toHaveLength(4)
+    expect(wrapper.find('[data-testid=task-t0]').exists()).toBe(true)
+    const toggle = wrapper.get('[data-testid=fold-foundation]')
+    expect(toggle.text()).toContain('Ver 3 más')
+    await toggle.trigger('click')
+    expect(wrapper.findAll('[data-testid^=task-t]')).toHaveLength(7)
+    expect(wrapper.get('[data-testid=fold-foundation]').text()).toContain('Ver menos')
+  })
+
   it('marks a task done with the API and says so', async () => {
     await mountPlan()
     const doneA = task('a', { state: 'done', doneBy: 'user' })
