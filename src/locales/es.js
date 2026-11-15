@@ -1756,6 +1756,39 @@ export default {
       confirmLabel: 'Nombre del evento',
       confirm: 'Eliminar definitivamente',
       deleted: 'Evento eliminado.'
+    },
+    music: {
+      title: 'Música de fondo',
+      subtitle: 'La canción que suena en la invitación cuando tus invitados la activan.',
+      untitled: 'Canción de la invitación',
+      empty: 'Todavía no hay música. Tu invitación se verá igual, sin sonido.',
+      help: 'MP3, M4A u OGG, hasta 10 MB. Si tu archivo es WAV, conviértelo a MP3 primero.',
+      titleLabel: 'Nombre de la canción (opcional)',
+      titleHint: 'Se muestra como nombre del botón de música.',
+      upload: 'Subir música',
+      replace: 'Reemplazar música',
+      remove: 'Borrar música',
+      play: 'Escuchar',
+      pause: 'Pausar',
+      playError: 'No pudimos reproducir el archivo.',
+      uploaded: 'Música subida.',
+      replaced: 'Música reemplazada.',
+      removed: 'Música borrada.',
+      confirmTitle: 'Borrar la música',
+      confirmText: 'La invitación dejará de tener música de fondo. Puedes subir otra cuando quieras.',
+      locked: 'La música de fondo es parte del evento completo. Desbloquéala para subir la canción de tu invitación.',
+      unlock: 'Desbloquear música de fondo',
+      supportSession: 'En una sesión de soporte no se puede cambiar la música.',
+      loadError: 'No pudimos cargar la música del evento.',
+      retry: 'Reintentar',
+      errors: {
+        required: 'Elige un archivo de música.',
+        invalid_type: 'Formato no permitido. Usa MP3, M4A u OGG.',
+        too_large: 'El archivo pesa más de 10 MB. Elige uno más liviano.',
+        title_too_long: 'El nombre puede tener hasta 60 caracteres.',
+        title_invalid: 'Revisa el nombre de la canción.',
+        tooMany: 'Demasiados intentos. Espera un minuto y vuelve a intentar.'
+      }
     }
   },
   payments: {
@@ -1805,6 +1838,7 @@ export default {
       seating: 'Acomoda a tus invitados en mesas y ten el plano listo para el salón.',
       suggested_music: 'Tus invitados proponen canciones y votan las que más quieren bailar.',
       memories: 'Guarda las fotos de tu fiesta en un álbum.',
+      background_music: 'Sube la canción que suena en tu invitación.',
       comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.',
       whatsapp: 'Envío automático de la invitación por WhatsApp a toda tu lista, con el estado de cada mensaje.',
       collaborators: 'Invita a tu planner, a la quinceañera o a quien te ayude y repartan el trabajo con el rol que quieras.'

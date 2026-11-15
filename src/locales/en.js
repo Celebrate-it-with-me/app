@@ -1756,6 +1756,39 @@ export default {
       confirmLabel: 'Event name',
       confirm: 'Delete for good',
       deleted: 'Event deleted.'
+    },
+    music: {
+      title: 'Background music',
+      subtitle: 'The song that plays on the invitation when your guests turn it on.',
+      untitled: 'Invitation song',
+      empty: 'No music yet. Your invitation looks the same, without sound.',
+      help: 'MP3, M4A or OGG, up to 10 MB. If your file is a WAV, convert it to MP3 first.',
+      titleLabel: 'Song name (optional)',
+      titleHint: 'Shown as the name of the music button.',
+      upload: 'Upload music',
+      replace: 'Replace music',
+      remove: 'Delete music',
+      play: 'Listen',
+      pause: 'Pause',
+      playError: 'We could not play the file.',
+      uploaded: 'Music uploaded.',
+      replaced: 'Music replaced.',
+      removed: 'Music deleted.',
+      confirmTitle: 'Delete the music',
+      confirmText: 'The invitation will no longer have background music. You can upload another one any time.',
+      locked: 'Background music is part of the full event. Unlock it to upload your invitation song.',
+      unlock: 'Unlock background music',
+      supportSession: 'Music cannot be changed during a support session.',
+      loadError: 'We could not load the event music.',
+      retry: 'Try again',
+      errors: {
+        required: 'Choose a music file.',
+        invalid_type: 'Format not allowed. Use MP3, M4A or OGG.',
+        too_large: 'The file is larger than 10 MB. Choose a lighter one.',
+        title_too_long: 'The name can have up to 60 characters.',
+        title_invalid: 'Check the song name.',
+        tooMany: 'Too many attempts. Wait a minute and try again.'
+      }
     }
   },
   payments: {
@@ -1805,6 +1838,7 @@ export default {
       seating: 'Seat your guests at tables and have the floor plan ready for the venue.',
       suggested_music: 'Your guests suggest songs and vote for the ones they most want to dance to.',
       memories: 'Keep the photos of your party in one album.',
+      background_music: 'Upload the song that plays on your invitation.',
       comments: 'Your guests leave you messages and good wishes on the invitation.',
       whatsapp: 'Automatic WhatsApp delivery of the invitation to your whole list, with the status of every message.',
       collaborators: 'Invite your planner, the quinceañera or whoever helps you, and share the work with the role you choose.'
