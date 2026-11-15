@@ -1,12 +1,15 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import LegalPage from '@/components/external/legal/LegalPage.vue'
+import TermsEs from '@/components/external/legal/TermsEs.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 </script>
 
 <template>
-  <LegalPage :title="t('titles.terms')" updated="2026-11-11">
+  <LegalPage :title="t('titles.terms')" updated="2026-11-11" translated>
+    <TermsEs v-if="locale !== \'en\'" />
+    <template v-else>
         <p>
           Welcome to Quinvite ("we", "us", or "our"). These Terms of Service ("Terms")
           govern your use of our website and event planning services. By accessing or using our
@@ -157,6 +160,6 @@ const { t } = useI18n()
         <p>
           <strong>Last Updated:</strong> January 31, 2025
         </p>
-      
+    </template>
   </LegalPage>
 </template>
