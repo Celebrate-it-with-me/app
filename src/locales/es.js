@@ -1828,6 +1828,45 @@ export default {
     textNamed: '{name} es parte del evento completo. Pasa a premium para desbloquearla.',
     names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios', whatsapp: 'WhatsApp', collaborators: 'Colaboradores' }
   },
+  errorPages: {
+    c401: {
+      heading: 'Necesitas iniciar sesión',
+      subheading: 'Debes iniciar sesión para continuar.',
+      title: 'Sesión requerida',
+      message: 'Tu sesión expiró o no has iniciado sesión.',
+      hint: 'Inicia sesión para seguir usando la plataforma.',
+      primary: 'Ir a iniciar sesión',
+      secondary: 'Ir al inicio'
+    },
+    c403: {
+      heading: 'Acceso denegado',
+      subheading: 'No tienes permiso para ver esta página.',
+      title: 'Acceso denegado',
+      message: 'No tienes permiso para acceder a este recurso.',
+      hint: 'Si crees que es un error, contacta al dueño del evento o prueba cambiando de evento.',
+      primary: 'Volver al panel',
+      secondary: 'Regresar'
+    },
+    c409: {
+      heading: 'Conflicto detectado',
+      subheading: 'Este recurso no corresponde a tu contexto actual.',
+      title: '409 — Conflicto de recurso',
+      message: 'Este elemento pertenece a otro evento o ya no es válido.',
+      hint: 'Prueba cambiando de evento o recargando tu espacio de trabajo.',
+      primary: 'Mis eventos',
+      secondary: 'Panel'
+    },
+    c500: {
+      heading: 'Error del servidor',
+      subheading: 'Algo salió mal de nuestro lado.',
+      title: '500 — Error inesperado',
+      message: 'Ocurrió un error inesperado al procesar tu solicitud.',
+      hint: 'Inténtalo de nuevo en unos segundos. Si el problema continúa, contacta a soporte.',
+      primary: 'Recargar la página',
+      secondary: 'Volver al panel'
+    }
+  },
+  rsvpStatsError: 'No pudimos cargar las estadísticas del evento. Inténtalo de nuevo más tarde.',
   notFound: {
     title: 'No encontramos esta página',
     text: 'Puede que el enlace esté incompleto o que la página ya no exista. Te llevamos de vuelta para que sigas con tu celebración.',
