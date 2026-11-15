@@ -1,11 +1,14 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { storeToRefs } from 'pinia'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
 import { useActivityStore } from '@/stores/useActivityStore'
+import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
+import { cardFromNext, resolveTaskRoute } from '@/modules/assistant/utils/assistant'
 import { useToast } from '@/ui'
 import DashboardHeader from './DashboardHeader.vue'
 import DashboardNextStep from './DashboardNextStep.vue'
@@ -17,13 +20,15 @@ import DashboardInvitation from './DashboardInvitation.vue'
 import DashboardMore from './DashboardMore.vue'
 import { summarizeRsvp, pickNextStep, readiness } from './dashboardLogic'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { error: showError } = useToast()
 const eventsStore = useEventsStore()
 const rsvpStore = useRsvpStore()
 const budgetStore = useBudgetStore()
 const timelineStore = useTimelineStore()
 const activityStore = useActivityStore()
+const assistantStore = useAssistantStore()
+const { next: assistantNext, nextStatus } = storeToRefs(assistantStore)
 
 const event = computed(() => eventsStore.activeEvent)
 // A module counts when the event's plan includes it (the API sends `event.modules` from the catalog).
@@ -39,7 +44,10 @@ const published = computed(() => event.value?.status === 'published')
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 const editTarget = computed(() => (event.value ? { name: 'edit-event', params: { id: event.value.id } } : null))
 
-const step = computed(() =>
+// The assistant's step when the server answered; otherwise (loading, failed, unsupported event type, nothing to
+// suggest) the local rules, so the card is never empty.
+const serverStep = computed(() => (nextStatus.value === 'ready' ? cardFromNext(assistantNext.value) : null))
+const localStep = computed(() =>
   pickNextStep({
     guestCount: guestCount.value,
     status: event.value?.status,
@@ -49,6 +57,7 @@ const step = computed(() =>
     budgetItems: budget.value.items
   })
 )
+const step = computed(() => serverStep.value ?? localStep.value)
 const progress = computed(() =>
   readiness({
     hasDate: !!event.value?.startDate,
@@ -58,7 +67,10 @@ const progress = computed(() =>
     budgetItems: budget.value.items
   }).ratio
 )
-const stepTarget = computed(() => (step.value.to === 'edit' ? editTarget.value : step.value.to))
+const stepTarget = computed(() => {
+  if (serverStep.value) return serverStep.value.local ? editTarget.value : resolveTaskRoute(serverStep.value.route, event.value?.id)
+  return step.value.to === 'edit' ? editTarget.value : step.value.to
+})
 
 const budget = computed(() => {
   const summary = budgetStore.summary
@@ -106,6 +118,7 @@ async function load() {
   if (!current?.id) return
   const id = ++loadId
   loadStart(current.id)
+  assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
   const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
   if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
   const results = await Promise.allSettled(jobs)
@@ -113,6 +126,16 @@ async function load() {
 }
 
 watch(() => event.value?.id, load, { immediate: true })
+watch(locale, () => {
+  if (event.value?.id) assistantStore.fetchNext({ eventId: event.value.id, lang: locale.value, force: true })
+})
+
+// Coming back to the tab refreshes the step (the store spaces the queries).
+const onVisible = () => {
+  if (document.visibilityState === 'visible' && event.value?.id) assistantStore.fetchNext({ eventId: event.value.id, lang: locale.value })
+}
+onMounted(() => document.addEventListener('visibilitychange', onVisible))
+onBeforeUnmount(() => document.removeEventListener('visibilitychange', onVisible))
 </script>
 
 <template>
