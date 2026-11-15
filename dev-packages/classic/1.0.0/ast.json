@@ -1,0 +1,1204 @@
+{
+    "templates": {
+        "closing": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--deep"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "span",
+                            "attrs": {
+                                "class": "pkg-sprig pkg-sprig--tl",
+                                "aria-hidden": "true"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-sprig__stem"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-sprig__bloom"
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "span",
+                            "attrs": {
+                                "class": "pkg-sprig pkg-sprig--br",
+                                "aria-hidden": "true"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-sprig__stem"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-sprig__bloom"
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "closing",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "countdown": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--alt"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "countdown",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "cover": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-cl"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "span",
+                            "attrs": {
+                                "class": "pkg-cl-glow",
+                                "aria-hidden": "true"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "el",
+                            "tag": "span",
+                            "attrs": {
+                                "class": "pkg-sprig pkg-cl-sprig--a",
+                                "aria-hidden": "true",
+                                "data-reveal": "fade"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-sprig__stem"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-sprig__bloom"
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "span",
+                            "attrs": {
+                                "class": "pkg-sprig pkg-cl-sprig--b",
+                                "aria-hidden": "true",
+                                "data-reveal": "fade",
+                                "data-reveal-delay": "300"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-sprig__stem"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-sprig__bloom"
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cl-col"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-cl-arch",
+                                        "data-reveal": "zoom"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "cover-photo",
+                                            "props": {
+                                                "priority": true
+                                            },
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-cl-phrase",
+                                                "data-reveal": "rise",
+                                                "data-reveal-delay": "200"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "h1",
+                                    "attrs": {
+                                        "class": "pkg-cl-name",
+                                        "data-reveal": "rise",
+                                        "data-reveal-delay": "300"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "event.name",
+                                            "filter": null
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-cl-text",
+                                                "data-reveal": "rise",
+                                                "data-reveal-delay": "400"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-cl-date",
+                                        "data-reveal": "rise",
+                                        "data-reveal-delay": "600"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "div",
+                                            "attrs": {
+                                                "class": "pkg-cl-date__row"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "el",
+                                                    "tag": "p",
+                                                    "attrs": {
+                                                        "class": "pkg-cl-date__side pkg-cl-date__side--l"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "t": "var",
+                                                            "path": "event.date",
+                                                            "filter": "weekday"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "t": "el",
+                                                    "tag": "p",
+                                                    "attrs": {
+                                                        "class": "pkg-cl-date__day"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "t": "var",
+                                                            "path": "event.date",
+                                                            "filter": "day"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "t": "el",
+                                                    "tag": "p",
+                                                    "attrs": {
+                                                        "class": "pkg-cl-date__side pkg-cl-date__side--r"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "t": "var",
+                                                            "path": "event.date",
+                                                            "filter": "month"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-cl-date__sub"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "event.date",
+                                                    "filter": "year"
+                                                },
+                                                {
+                                                    "t": "text",
+                                                    "v": " · "
+                                                },
+                                                {
+                                                    "t": "var",
+                                                    "path": "event.time",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "event.description",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-cl-desc",
+                                                "data-reveal": "rise",
+                                                "data-reveal-delay": "600"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "event.description",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-cl-guest",
+                                        "data-reveal": "rise",
+                                        "data-reveal-delay": "800"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-cl-guest__label"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "t.invitedFor",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-cl-guest__name"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "guest.name",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-cl-cta",
+                                        "data-reveal": "rise",
+                                        "data-reveal-delay": "800"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "cta",
+                                            "props": {
+                                                "action": "confirm"
+                                            },
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "dress_code": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--plain"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "dress-code",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "gallery": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--plain"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "gallery",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "itinerary": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--plain"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "itinerary",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "locations": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--alt"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "locations",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "music": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "q",
+                    "name": "music",
+                    "props": {},
+                    "attrs": {},
+                    "children": []
+                }
+            ]
+        },
+        "padrinos": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--alt"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "padrinos",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "rsvp": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--alt"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "rsvp",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "save_the_date": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--plain"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "save-the-date",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "layout": null
+}

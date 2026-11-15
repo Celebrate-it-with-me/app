@@ -49,6 +49,7 @@ export default defineComponent({
         isCover ? 'header' : 'section',
         {
           ref: root,
+          id: props.section.type,
           class: 'inv-pkg',
           'data-inv-section': props.section.type,
           'data-inv-position': props.position,

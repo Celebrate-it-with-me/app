@@ -1,104 +1,142 @@
 import { describe, it, expect } from 'vitest'
 import { BLOCKS } from '../blocks'
 import { SECTION_COMPONENTS } from '../../composables/sectionComponents'
+import { FrameScope } from '../../composables/frame'
 import { el, q, text, v, when, renderToDom, renderVNode, SECTIONS } from './helpers'
 
 const FULL = {
-  'q-rsvp': 'rsvp', 'q-gallery': 'gallery', 'q-music': 'music', 'q-countdown': 'countdown', 'q-locations': 'locations',
-  'q-itinerary': 'itinerary', 'q-dress-code': 'dress_code', 'q-padrinos': 'padrinos', 'q-closing': 'closing', 'q-save-the-date': 'save_the_date'
+  rsvp: 'rsvp', gallery: 'gallery', music: 'music', countdown: 'countdown', locations: 'locations',
+  itinerary: 'itinerary', 'dress-code': 'dress_code', padrinos: 'padrinos', closing: 'closing', 'save-the-date': 'save_the_date'
 }
 const all = type => ({ sections: [{ type: 'cover', title: null, data: {} }, { type, title: 't', text: null, data: {} }] })
 
 describe('q-* → existing components', () => {
-  it.each(Object.entries(FULL))('%s renders the real %s component with its section', (name, type) => {
+  it.each(Object.entries(FULL))('q-%s renders the real %s component with its section, bare by default', (name, type) => {
     const { vnode } = renderVNode(q(name), all(type))
-    const inner = vnode.children[0]
+    const scope = vnode.children[0]
+    expect(scope.type).toBe(FrameScope)
+    expect(scope.props.frame).toBe('bare')
+    const inner = scope.children.default()
     expect(inner.type).toBe(SECTION_COMPONENTS[type])
     expect(inner.props.section.type).toBe(type)
   })
 
-  it('every full-section component only takes the `section` prop (what a package can wire today)', () => {
-    for (const type of Object.values(FULL)) expect(Object.keys(SECTION_COMPONENTS[type].props)).toEqual(['section'])
+  it('the 19 blocks of the catalogue exist, and a "q-" prefix is tolerated', () => {
+    expect(Object.keys(BLOCKS).sort()).toEqual(
+      [...Object.keys(FULL), 'cover-photo', 'names', 'date', 'cta', 'language-switch', 'seats', 'address', 'guest', 'sections'].sort()
+    )
+    expect(Object.keys(BLOCKS)).toHaveLength(19)
+    expect(renderToDom(el('div', {}, q('q-cta'))).html).toContain('inv-q--cta')
   })
 
-  it('nothing the package passes reaches a component: props are closed lists', () => {
-    const { vnode, warnings } = renderVNode(q('q-rsvp', { section: { evil: 1 }, onClick: 'x', variant: 'x' }), all('rsvp'))
-    expect(Object.keys(vnode.children[0].props)).toEqual(['section'])
-    expect(warnings.filter(w => w.includes('not allowed'))).toHaveLength(3)
+  it('variant props reach the component after validation; nothing else does', () => {
+    const { vnode, warnings } = renderVNode(q('rsvp', { variant: 'paper', frame: 'no-title', section: { evil: 1 }, onClick: 'x' }), all('rsvp'))
+    expect(vnode.children[0].props.frame).toBe('no-title')
+    const inner = vnode.children[0].children.default()
+    expect(Object.keys(inner.props).sort()).toEqual(['section', 'variant'])
+    expect(inner.props.variant).toBe('paper')
+    expect(warnings.filter(w => w.includes('not allowed'))).toHaveLength(2)
+    const bad = renderVNode(q('rsvp', { variant: 'sparkly' }), all('rsvp')).vnode.children[0].children.default()
+    expect(Object.keys(bad.props)).toEqual(['section'])
+  })
+
+  it('gallery props are typed (layout, columns 2-4, max 1-40, captions bool)', () => {
+    const inner = renderVNode(q('gallery', { layout: 'carousel', columns: 3, max: '6', captions: 'false' }), all('gallery')).vnode.children[0].children.default()
+    expect(inner.props).toMatchObject({ layout: 'carousel', columns: 3, max: 6, captions: false })
+    const bad = renderVNode(q('gallery', { columns: 9, max: 99, layout: 'x' }), all('gallery')).vnode.children[0].children.default()
+    expect(Object.keys(bad.props)).toEqual(['section'])
   })
 
   it('an unknown block is ignored with a warning', () => {
-    const { html, warnings } = renderToDom(el('div', {}, q('q-evil', {}), q('constructor', {}), q('__proto__')))
+    const { html, warnings } = renderToDom(el('div', {}, q('evil', {}), q('constructor', {}), q('__proto__')))
     expect(html).toBe('<div id="out"><div></div></div>')
     expect(warnings).toHaveLength(3)
   })
 
   it('a section that is off, not in the plan or absent draws nothing (and no orphan wrapper)', () => {
-    const { html } = renderToDom(el('div', {}, q('q-rsvp'), q('q-gallery'), q('q-cta')), { sections: [{ type: 'cover', data: {} }] })
+    const { html } = renderToDom(el('div', {}, q('rsvp'), q('gallery'), q('cta')), { sections: [{ type: 'cover', data: {} }] })
     expect(html).toBe('<div id="out"><div></div></div>')
   })
 
-  it('q-cta only exists while the RSVP section does', () => {
-    expect(renderToDom(el('div', {}, q('q-cta'))).html).toContain('inv-q--cta')
-    expect(renderToDom(el('div', {}, q('q-cta')), { sections: SECTIONS.filter(s => s.type !== 'rsvp') }).html).not.toContain('inv-q--cta')
+  it('q-cta targets the section it points to and only exists while that section does', () => {
+    expect(renderToDom(el('div', {}, q('cta'))).html).toContain('inv-q--cta')
+    expect(renderToDom(el('div', {}, q('cta')), { sections: SECTIONS.filter(s => s.type !== 'rsvp') }).html).not.toContain('inv-q--cta')
+    expect(renderToDom(el('div', {}, q('cta', { action: 'locations' }))).html).not.toContain('inv-q--cta')
+    const withLocations = [...SECTIONS, { type: 'locations', data: { items: [] } }]
+    expect(renderToDom(el('div', {}, q('cta', { action: 'locations', variant: 'outline' })), { sections: withLocations }).html).toContain('inv-button--outline')
   })
 
-  it('every documented block exists', () => {
-    expect(Object.keys(BLOCKS).sort()).toEqual([...Object.keys(FULL), 'q-cover-photo', 'q-names', 'q-date', 'q-cta', 'q-language-switch'].sort())
+  it('block wrapper attributes go through the same closed policy', () => {
+    const node = { ...q('cta'), attrs: { class: 'pkg-btn', 'data-reveal': 'rise', 'data-reveal-delay': '200', onclick: 'x()', style: 'position:fixed' } }
+    const { html } = renderToDom(el('div', {}, node))
+    expect(html).toContain('pkg-btn')
+    expect(html).toContain('data-reveal="rise"')
+    expect(html).toContain('--pk-delay: 200ms')
+    expect(html).not.toContain('onclick')
+    expect(html).not.toContain('position')
+  })
+
+  it('q-sections only draws what the layout hands it', () => {
+    const { html } = renderToDom(el('div', {}, q('sections')), { ctx: { renderSections: () => [] } })
+    expect(html).toBe('<div id="out"><div></div></div>')
   })
 })
 
 describe('own blocks', () => {
   it('q-cover-photo: photo with validated focus, never an unsafe URL', () => {
-    const ok = renderToDom(el('div', {}, q('q-cover-photo', { focus: '50% 14%', shape: 'bleed', parallax: '0.06' })))
+    const ok = renderToDom(el('div', {}, q('cover-photo', { focus: '50% 14%', aspect: '4:5', fit: 'cover', priority: true })))
     expect(ok.html).toContain('src="/demo/valentina-portrait.webp"')
     expect(ok.html).toContain('object-position: 50% 14%')
+    expect(ok.html).toContain('aspect-ratio: 4 / 5')
     expect(ok.html).toContain('fetchpriority="high"')
-    const bad = renderToDom(el('div', {}, q('q-cover-photo', { focus: 'url(javascript:1)', shape: 'x' })), { sections: [{ type: 'cover', data: { image: 'javascript:alert(1)' } }] })
+    const bad = renderToDom(el('div', {}, q('cover-photo', { focus: 'url(javascript:1)', aspect: 'x' })), { sections: [{ type: 'cover', data: { image: 'javascript:alert(1)' } }] })
     expect(bad.html).not.toContain('javascript')
     expect(bad.html).not.toContain('object-position')
-    expect(bad.html).toContain('data-shape="rect"')
+    expect(bad.html).not.toContain('aspect-ratio')
   })
 
-  it('q-cover-photo without a photo shows the lettering of the event type (or nothing)', () => {
+  it('q-cover-photo without a photo shows the lettering of the event type', () => {
     const none = { sections: [{ type: 'cover', data: {} }] }
-    expect(renderToDom(el('div', {}, q('q-cover-photo')), none).html).toContain('>XV<')
-    expect(renderToDom(el('div', {}, q('q-cover-photo')), { ...none, invitation: { event: { typeSlug: 'wedding', name: 'A & B' } } }).html).toContain('>&amp;<')
-    const quiet = renderToDom(el('div', {}, q('q-cover-photo', { fallback: 'none' })), none).html
-    expect(quiet).not.toContain('emblem')
-    expect(quiet).toContain('data-empty="true"')
+    expect(renderToDom(el('div', {}, q('cover-photo')), none).html).toContain('>XV<')
+    expect(renderToDom(el('div', {}, q('cover-photo')), { ...none, invitation: { event: { typeSlug: 'wedding', name: 'A & B' } } }).html).toContain('>&amp;<')
+    expect(renderToDom(el('div', {}, q('cover-photo')), none).html).toContain('data-empty="true"')
   })
 
-  it('q-names splits a couple on two lines and leaves other names alone', () => {
-    const couple = renderToDom(el('div', {}, q('q-names', { split: true })), { sections: [{ type: 'cover', data: { eventName: 'Julieta & Camilo' } }] })
-    expect(couple.root.querySelectorAll('.inv-q-names__line')).toHaveLength(2)
-    expect(couple.root.querySelector('h1').textContent).toBe('Julieta &Camilo')
-    const spanish = renderToDom(el('div', {}, q('q-names', { split: true })), { sections: [{ type: 'cover', data: { eventName: 'Ana y Luis' } }] })
-    expect(spanish.root.querySelector('h1').textContent).toBe('Ana &Luis')
-    const quince = renderToDom(el('div', {}, q('q-names', { split: true })))
-    expect(quince.root.querySelectorAll('.inv-q-names__line')).toHaveLength(0)
-    expect(quince.root.querySelector('h1').textContent).toBe('Los XV de Valentina')
+  it('q-names: tag from a closed list, script flag, long and empty names', () => {
+    const r = renderToDom(el('div', {}, q('names', { tag: 'h2', script: true })))
+    expect(r.root.querySelector('h2').className).toContain('inv-q--script')
+    expect(r.root.querySelector('h2').textContent).toBe('Los XV de Valentina')
+    expect(renderToDom(el('div', {}, q('names', { tag: 'script' }))).html).toContain('<h1')
+    expect(() => renderToDom(el('div', {}, q('names')), { invitation: { event: {} } })).not.toThrow()
   })
 
-  it('q-names with a very long name and an empty one', () => {
-    const long = 'María Guadalupe de los Ángeles Fernández-Sánchez & Juan Sebastián Rodríguez-Villanueva de la Cruz'
-    const r = renderToDom(el('div', {}, q('q-names', { split: true, tag: 'h2' })), { sections: [{ type: 'cover', data: { eventName: long } }] })
-    expect(r.root.querySelector('h2').textContent).toContain('Villanueva')
-    expect(() => renderToDom(el('div', {}, q('q-names')), { sections: [{ type: 'cover', data: {} }], invitation: { event: {} } })).not.toThrow()
-    expect(renderToDom(el('div', {}, q('q-names', { tag: 'script' })), {}).html).toContain('<h1')
-  })
-
-  it('q-date formats in the invitation language', () => {
-    const es = renderToDom(el('div', {}, q('q-date', { format: 'long' })))
-    expect(es.root.querySelector('time').textContent).toMatch(/28 de diciembre de 2026/)
+  it('q-date: three formats, in the invitation language', () => {
+    const es = renderToDom(el('div', {}, q('date', { format: 'inline' })))
+    expect(es.root.querySelector('time').textContent).toMatch(/lunes, 28 diciembre 2026/)
     expect(es.root.querySelector('time').getAttribute('datetime')).toBe('2026-12-28T19:00:00')
-    const en = renderToDom(el('div', {}, q('q-date', { format: 'month' })), { ctx: { locale: 'en' } })
-    expect(en.root.querySelector('time').textContent).toBe('December')
+    const en = renderToDom(el('div', {}, q('date', { format: 'ring', month: 'short', weekday: 'none', time: false })), { ctx: { locale: 'en' } })
+    expect(en.root.querySelector('.inv-date__month').textContent).toBe('Dec')
+    expect(en.root.querySelector('.inv-date__weekday')).toBeNull()
+    expect(en.root.querySelector('.inv-date__sub').textContent).toBe('2026')
+    const columns = renderToDom(el('div', {}, q('date')))
+    expect(columns.root.querySelector('[data-format=columns] .inv-date__day').textContent).toBe('28')
+  })
+
+  it('q-seats, q-address, q-guest', () => {
+    const rsvp = { type: 'rsvp', data: { companions: [{ id: 1 }, { id: 2 }] } }
+    expect(renderToDom(el('div', {}, q('seats')), { sections: [rsvp] }).root.querySelector('p').textContent).toBe('3 lugares')
+    expect(renderToDom(el('div', {}, q('seats')), { sections: [] }).html).not.toContain('seats')
+    const place = { type: 'locations', data: { items: [{ name: 'Salón Real', address: 'Calle 8', city: 'Miami', state: 'FL', zipCode: '33101' }] } }
+    expect(renderToDom(el('div', {}, q('address', { line: 'full' })), { sections: [place] }).root.textContent).toContain('Calle 8Miami, FL, 33101')
+    expect(renderToDom(el('div', {}, q('address')), { sections: [] }).html).not.toContain('address')
+    const guest = renderToDom(el('div', {}, q('guest', { greeting: false })))
+    expect(guest.root.querySelector('.inv-guest__label')).toBeNull()
+    expect(guest.root.querySelector('.inv-guest__name').textContent).toBe('Rosa Fernández')
   })
 
   it('conditional node draws only non-empty values', () => {
-    const tree = el('div', {}, when('section.text', el('p', {}, v('section.text'))), when('section.description', el('p', {}, text('d'))))
-    const withText = renderToDom(tree, { sections: [{ type: 'cover', text: 'hola', data: {} }] })
+    const tree = el('div', {}, when('section.text', el('p', {}, v('section.text'))), when('event.description', el('p', {}, text('d'))))
+    const withText = renderToDom(tree, { sections: [{ type: 'cover', text: 'hola', data: {} }], ctx: { section: { type: 'cover', text: 'hola', data: {} } } })
     expect(withText.html).toContain('<p>hola</p>')
     expect(withText.html).not.toContain('<p>d</p>')
   })

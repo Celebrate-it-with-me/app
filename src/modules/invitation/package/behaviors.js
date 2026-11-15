@@ -1,10 +1,12 @@
 /**
  * Behaviour catalogue run by the engine on declarative attributes (the package ships no script):
- *  - data-reveal="rise|fade|zoom"  appear once when scrolled into view (data-delay staggers)
- *  - data-parallax="0.1"           gentle vertical drift while scrolling (max 0.3)
- *  - data-carousel                 handled in the renderer (PackageCarousel)
+ *  - data-reveal="fade|rise|zoom|slide-left|slide-right"  appear once when scrolled into view (data-reveal-delay in ms)
+ *  - data-parallax="subtle|soft|medium"                   gentle vertical drift while scrolling
+ *  - data-carousel="snap"                                 handled in the renderer (PackageCarousel)
  * All of it is off under prefers-reduced-motion: nodes are never armed, so they simply show.
  */
+import { PARALLAX } from './policy'
+
 export function prefersReducedMotion() {
   return typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 }
@@ -44,7 +46,7 @@ export function startBehaviors(root) {
       for (const el of drifters) {
         const box = (el.parentElement ?? el).getBoundingClientRect()
         if (box.bottom < -100 || box.top > vh + 100) continue
-        const k = Math.min(0.3, Math.max(0, parseFloat(el.dataset.parallax) || 0))
+        const k = PARALLAX[el.dataset.parallax] ?? 0
         el.style.setProperty('--pk-py', `${((box.top + box.height / 2 - vh / 2) * -k).toFixed(1)}px`)
       }
     }

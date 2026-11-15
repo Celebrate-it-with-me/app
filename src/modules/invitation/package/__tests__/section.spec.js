@@ -7,7 +7,7 @@ import { startBehaviors } from '../behaviors'
 import { readPackage, allowedAssetUrl, ENGINE } from '../usePackageTheme'
 import { el, q, text, tt } from './helpers'
 
-const ast = el('div', { class: 'pkg-t' }, el('span', { class: 'pkg-wash', 'aria-hidden': 'true' }), el('p', { 'data-reveal': 'rise' }, text('hi')), q('q-rsvp'))
+const ast = el('div', { class: 'pkg-t' }, el('span', { class: 'pkg-wash', 'aria-hidden': 'true' }), el('p', { 'data-reveal': 'rise' }, text('hi')), q('rsvp'))
 
 function sectionsFor(order) {
   const all = {
@@ -33,7 +33,7 @@ afterEach(() => vi.unstubAllGlobals())
 describe('PackageSection wrapper', () => {
   it('stamps the REAL position among the visible sections (reorder / switched-off sections)', () => {
     const a = mountSection(['cover', 'itinerary', 'rsvp'], 'itinerary')
-    expect(a.attributes()).toMatchObject({ 'data-inv-section': 'itinerary', 'data-inv-position': '2', 'data-inv-parity': 'even' })
+    expect(a.attributes()).toMatchObject({ 'data-inv-section': 'itinerary', 'data-inv-position': '2', 'data-inv-parity': 'even', id: 'itinerary' })
     // The itinerary is switched off: the RSVP moves up, so its decoration parity follows.
     const b = mountSection(['cover', 'rsvp'], 'rsvp')
     expect(b.attributes()).toMatchObject({ 'data-inv-position': '2', 'data-inv-parity': 'even', 'data-inv-last': 'true' })
@@ -128,6 +128,13 @@ describe('package payload', () => {
     expect(p.preload).toHaveLength(1)
   })
 
+  it('keeps strings, layout and the version; refuses a package whose ASTs together are too big', () => {
+    const p = readPackage({ ...ok, version: '1.2.0', strings: { es: { a: 'b' } }, layout: { t: 'el', tag: 'div' } }, 'https://assets.test')
+    expect(p).toMatchObject({ version: '1.2.0', strings: { es: { a: 'b' } }, layout: { tag: 'div' } })
+    const big = { t: 'el', tag: 'div', children: [{ t: 'text', v: 'x'.repeat(190 * 1024) }] }
+    expect(readPackage({ ...ok, templates: { a: big, b: structuredClone(big), c: structuredClone(big), d: structuredClone(big), e: structuredClone(big), f: structuredClone(big) } }, 'https://assets.test')).toBeNull()
+  })
+
   it('allowedAssetUrl: same-origin development URLs work, others do not', () => {
     const here = window.location.origin
     expect(allowedAssetUrl('/template-packages/a/theme.css', here)).toBe(`${here}/template-packages/a/theme.css`)
@@ -137,7 +144,7 @@ describe('package payload', () => {
 
 describe('carousel', () => {
   it('data-carousel renders an accessible scroll-snap region with buttons', async () => {
-    const tree = el('div', { class: 'pkg-t' }, el('ul', { 'data-carousel': 'true', class: 'pkg-slides' }, el('li', {}, text('1')), el('li', {}, text('2'))))
+    const tree = el('div', { class: 'pkg-t' }, el('ul', { 'data-carousel': 'snap', 'data-carousel-controls': 'arrows', class: 'pkg-slides' }, el('li', {}, text('1')), el('li', {}, text('2'))))
     const w = mount(PackageSection, {
       props: { ast: tree, section: { type: 'gallery', data: {} }, position: 1, count: 1, base: 'https://a.test/' },
       global: { provide: { [INVITATION_KEY]: { invitation: ref({ event: {}, guest: {}, sections: [] }), locale: ref('es'), tt } } }

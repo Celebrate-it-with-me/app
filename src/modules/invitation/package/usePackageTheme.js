@@ -1,4 +1,5 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { LIMITS, astBytes } from './policy'
 
 /** Version of the package engine this app implements. A package with a higher `engineMin` is ignored. */
 export const ENGINE = 1
@@ -32,8 +33,13 @@ export function readPackage(pkg, origin) {
     .slice(0, 6)
     .map(item => ({ url: allowedAssetUrl(item?.url, origin), as: item?.as === 'font' ? 'font' : item?.as === 'image' ? 'image' : null, type: item?.type }))
     .filter(item => item.url && item.as)
-  const templates = pkg.templates && typeof pkg.templates === 'object' ? pkg.templates : {}
-  return { slug: pkg.slug, cssUrl, base: cssUrl.replace(/[^/]*$/, ''), preload, templates, strings: pkg.strings }
+  const templates = pkg.templates && typeof pkg.templates === 'object' && !Array.isArray(pkg.templates) ? pkg.templates : {}
+  const layout = pkg.layout && typeof pkg.layout === 'object' ? pkg.layout : null
+  // A package whose ASTs together exceed the cap is not drawn at all (the server never produces one).
+  const total = Object.values(templates).reduce((sum, ast) => sum + astBytes(ast), layout ? astBytes(layout) : 0)
+  if (total > LIMITS.packageBytes) return null
+  const strings = pkg.strings && typeof pkg.strings === 'object' ? pkg.strings : undefined
+  return { slug: pkg.slug, version: String(pkg.version ?? ''), cssUrl, base: cssUrl.replace(/[^/]*$/, ''), preload, templates, layout, strings }
 }
 
 /**
@@ -106,6 +112,7 @@ export function usePackageTheme(getPackage) {
     slug: computed(() => (state.value === 'loading' || state.value === 'ready' ? current.value?.slug : undefined)),
     base: computed(() => current.value?.base ?? ''),
     templates: computed(() => current.value?.templates ?? {}),
+    layout: computed(() => current.value?.layout ?? null),
     strings: computed(() => current.value?.strings)
   }
 }

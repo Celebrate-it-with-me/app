@@ -12,6 +12,7 @@ import { themeVars } from '../composables/useInvitationTheme'
 import { loadThemeFonts } from '../composables/useInvitationFonts'
 import { isValidPayload, parseOrigin } from '../composables/previewMessage'
 import { SECTION_COMPONENTS as COMPONENTS } from '../composables/sectionComponents'
+import { ENGINE } from '../package'
 
 const allowedOrigin = parseOrigin(import.meta.env.VITE_ADMIN_URL)
 
@@ -25,7 +26,11 @@ const context = {
   load: () => {},
   slug: () => '',
   code: () => '',
-  preview: true
+  preview: true,
+  // The preview language belongs to the payload the admin posts; a package's language switch only changes it locally.
+  changeLanguage: lang => {
+    if (invitation.value) invitation.value = { ...invitation.value, locale: lang }
+  }
 }
 provideInvitation(context)
 const { tt, locale } = context
@@ -77,7 +82,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="inv-root min-h-svh bg-inv-surface font-inv-body text-inv-ink antialiased" :style="vars">
+  <div
+    class="inv-root min-h-svh bg-inv-surface font-inv-body text-inv-ink antialiased"
+    :style="vars"
+    data-inv-theme="classic"
+    :data-inv-stage="invitation?.stage === 'save_the_date' ? 'save_the_date' : 'invitation'"
+    :data-inv-engine="ENGINE"
+  >
     <main v-if="!allowedOrigin" class="flex min-h-svh items-center justify-center px-6 text-center">
       <p role="alert">{{ tt('preview.notConfigured') }}</p>
     </main>

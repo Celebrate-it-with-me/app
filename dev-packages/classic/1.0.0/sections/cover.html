@@ -1,0 +1,25 @@
+<div class="pkg-cl">
+  <span class="pkg-cl-glow" aria-hidden="true"></span>
+  <span class="pkg-sprig pkg-cl-sprig--a" aria-hidden="true" data-reveal="fade"><span class="pkg-sprig__stem"></span><span class="pkg-sprig__bloom"></span></span>
+  <span class="pkg-sprig pkg-cl-sprig--b" aria-hidden="true" data-reveal="fade" data-reveal-delay="300"><span class="pkg-sprig__stem"></span><span class="pkg-sprig__bloom"></span></span>
+  <div class="pkg-cl-col">
+    <div class="pkg-cl-arch" data-reveal="zoom"><q-cover-photo priority="true"></q-cover-photo></div>
+    <p data-if="section.title" class="pkg-cl-phrase" data-reveal="rise" data-reveal-delay="200">{{section.title}}</p>
+    <h1 class="pkg-cl-name" data-reveal="rise" data-reveal-delay="300">{{event.name}}</h1>
+    <p data-if="section.text" class="pkg-cl-text" data-reveal="rise" data-reveal-delay="400">{{section.text}}</p>
+    <div class="pkg-cl-date" data-reveal="rise" data-reveal-delay="600">
+      <div class="pkg-cl-date__row">
+        <p class="pkg-cl-date__side pkg-cl-date__side--l">{{event.date|weekday}}</p>
+        <p class="pkg-cl-date__day">{{event.date|day}}</p>
+        <p class="pkg-cl-date__side pkg-cl-date__side--r">{{event.date|month}}</p>
+      </div>
+      <p class="pkg-cl-date__sub">{{event.date|year}} · {{event.time}}</p>
+    </div>
+    <p data-if="event.description" class="pkg-cl-desc" data-reveal="rise" data-reveal-delay="600">{{event.description}}</p>
+    <div class="pkg-cl-guest" data-reveal="rise" data-reveal-delay="800">
+      <p class="pkg-cl-guest__label">{{t.invitedFor}}</p>
+      <p class="pkg-cl-guest__name">{{guest.name}}</p>
+    </div>
+    <div class="pkg-cl-cta" data-reveal="rise" data-reveal-delay="800"><q-cta action="confirm"></q-cta></div>
+  </div>
+</div>

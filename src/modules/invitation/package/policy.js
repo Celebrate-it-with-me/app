@@ -5,30 +5,54 @@
  */
 import { safeHttpsUrl } from '../composables/safeUrl'
 
-export const LIMITS = { depth: 24, nodes: 600, text: 2000, classes: 8, carouselSlides: 24 }
+export const LIMITS = {
+  depth: 24,
+  nodes: 1500,
+  text: 2000,
+  classes: 8,
+  carouselSlides: 24,
+  /** JSON bytes of one section AST (the server caps the HTML at 64 KB). */
+  astBytes: 200 * 1024,
+  /** JSON bytes of every AST of a package together. */
+  packageBytes: 1024 * 1024
+}
 
 /** Plain markup only. No script/style/iframe/object/embed/form/input/svg: they are not here. */
 export const TAGS = new Set([
-  'div', 'section', 'header', 'footer', 'article', 'span', 'p', 'h1', 'h2', 'h3', 'h4',
-  'ul', 'ol', 'li', 'a', 'img', 'figure', 'figcaption', 'blockquote', 'em', 'strong', 'small',
-  'br', 'hr', 'time', 'address'
+  'div', 'section', 'header', 'footer', 'nav', 'aside', 'article', 'span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+  'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'a', 'img', 'figure', 'figcaption', 'blockquote', 'em', 'strong', 'b', 'i', 'u',
+  's', 'small', 'sub', 'sup', 'mark', 'br', 'hr', 'time', 'address'
 ])
 export const VOID_TAGS = new Set(['img', 'br', 'hr'])
 
-const ROLES = new Set(['presentation', 'none', 'list', 'listitem', 'group', 'img', 'separator', 'note'])
-const REVEALS = new Set(['rise', 'fade', 'zoom'])
+const ROLES = new Set(['presentation', 'none', 'list', 'listitem', 'group', 'img', 'separator', 'note', 'region'])
 
-/** Attributes whose value may come from a `{t:'var'}` node. */
-export const VAR_ATTRS = new Set(['src', 'alt', 'aria-label', 'href'])
+/** Behaviour catalogue (BlockCatalog::BEHAVIORS). */
+export const BEHAVIOR_VALUES = {
+  'data-reveal': ['fade', 'rise', 'zoom', 'slide-left', 'slide-right'],
+  'data-reveal-delay': ['0', '100', '200', '300', '400', '600', '800'],
+  'data-parallax': ['subtle', 'soft', 'medium'],
+  'data-carousel': ['snap'],
+  'data-carousel-controls': ['arrows', 'dots', 'none'],
+  'data-carousel-peek': ['on', 'off']
+}
+/** Parallax strengths: fraction of the distance to the viewport centre. */
+export const PARALLAX = { subtle: 0.06, soft: 0.12, medium: 0.2 }
+
+/** Attributes whose value may come from a variable template. */
+export const VAR_ATTRS = new Set(['alt', 'aria-label', 'title', 'href'])
 
 const noCredentials = href => (href && !/^https:\/\/[^/]*@/.test(href) ? href : null)
 
-/** Internal paths and fragments, or absolute https. Anything else (javascript:, data:, http:, //host) is null. */
+const SECTION_ANCHORS = /^#(pkg-[a-z0-9-]{1,40}|cover|itinerary|locations|dress_code|padrinos|gallery|rsvp|music|closing|countdown|save_the_date)$/
+
+/** Fragments of the page, https, mailto: and tel:. Anything else (javascript:, data:, http:, //host, paths) is null. */
 export function safeLink(value) {
   if (typeof value !== 'string') return null
   const v = value.trim()
-  if (/^#[\w-]{1,40}$/.test(v)) return v
-  if (/^\/(?![/\\])[^\s\\]{0,300}$/.test(v)) return v
+  if (SECTION_ANCHORS.test(v)) return v
+  if (/^mailto:[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,120}$/.test(v)) return v
+  if (/^tel:\+?[0-9]{5,15}$/.test(v)) return v
   return noCredentials(safeHttpsUrl(v))
 }
 
@@ -53,6 +77,20 @@ export function safeClass(value) {
 
 const int = (v, min, max) => (/^\d{1,4}$/.test(String(v)) && +v >= min && +v <= max ? String(+v) : null)
 
+/** Sum of JSON bytes of an AST, cached per object (the renderer runs on every update). */
+const sizes = new WeakMap()
+export function astBytes(ast) {
+  if (ast === null || typeof ast !== 'object') return 0
+  if (!sizes.has(ast)) {
+    try {
+      sizes.set(ast, JSON.stringify(ast).length)
+    } catch {
+      sizes.set(ast, Infinity)
+    }
+  }
+  return sizes.get(ast)
+}
+
 /**
  * Validates one attribute. Returns the value to render, or undefined to drop the attribute.
  * @param {string} tag
@@ -64,25 +102,27 @@ export function cleanAttr(tag, name, value, base) {
   const v = String(value)
   switch (name) {
     case 'class': return safeClass(v) ?? undefined
+    case 'id':
+    case 'aria-labelledby': return /^pkg-[a-z0-9-]{1,40}$/.test(v) ? v : undefined
+    case 'title':
     case 'aria-label': return v.slice(0, 200)
-    case 'aria-hidden': return v === 'true' ? 'true' : undefined
+    case 'aria-hidden': return v === 'true' || v === 'false' ? v : undefined
     case 'role': return ROLES.has(v) ? v : undefined
     case 'lang': return /^[a-z]{2}(-[A-Z]{2})?$/.test(v) ? v : undefined
-    case 'data-reveal': return REVEALS.has(v) ? v : undefined
-    case 'data-parallax': return /^0?\.\d{1,2}$|^0$/.test(v) && +v <= 0.3 ? v : undefined
-    case 'data-delay': return int(v, 0, 20) ?? undefined
-    case 'data-carousel': return v === '' || v === 'true' ? 'true' : undefined
-    case 'data-variant': return /^[a-z0-9-]{1,24}$/.test(v) ? v : undefined
+    case 'dir': return v === 'ltr' || v === 'rtl' ? v : undefined
     default:
   }
+  if (Object.hasOwn(BEHAVIOR_VALUES, name)) return BEHAVIOR_VALUES[name].includes(v) ? v : undefined
   if (tag === 'a' && name === 'href') return safeLink(v) ?? undefined
   if (tag === 'a' && name === 'target') return v === '_blank' ? '_blank' : undefined
   if (tag === 'img') {
     if (name === 'src') return safeSrc(v, base) ?? undefined
+    if (name === 'srcset') return /^[\w:/.%,\s-]{1,1200}$/.test(v) ? v : undefined
+    if (name === 'sizes') return /^[a-z0-9 ().,:%vwh-]{1,200}$/i.test(v) && !/url/i.test(v) ? v : undefined
     if (name === 'alt') return v.slice(0, 200)
-    if (name === 'width' || name === 'height') return int(v, 1, 4000) ?? undefined
+    if (name === 'width' || name === 'height') return int(v, 1, 4096) ?? undefined
     if (name === 'loading') return v === 'eager' || v === 'lazy' ? v : undefined
-    if (name === 'decoding') return v === 'async' ? v : undefined
+    if (name === 'decoding') return ['async', 'sync', 'auto'].includes(v) ? v : undefined
     if (name === 'fetchpriority') return ['high', 'low', 'auto'].includes(v) ? v : undefined
   }
   if (tag === 'time' && name === 'datetime') return /^[\d\-T:+.Z ]{4,40}$/.test(v) ? v : undefined

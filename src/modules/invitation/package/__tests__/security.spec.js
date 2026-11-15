@@ -28,9 +28,10 @@ describe('closed tag list', () => {
 })
 
 describe('attributes', () => {
-  it('drops on*, style, id, unknown, and srcdoc attributes', () => {
+  it('drops on*, style, ids that are not pkg-*, unknown, and srcdoc attributes', () => {
     const { html } = renderToDom(wrap(el('p', { onclick: 'x()', onmouseover: 'x()', style: 'position:fixed', id: 'rsvp', srcdoc: 'x', formaction: 'x', 'data-evil': '1', class: 'pkg-ok' }, text('hi'))))
     expect(html).toContain('<p class="pkg-ok">hi</p>')
+    expect(renderToDom(wrap(el('p', { id: 'pkg-title' }, text('x')))).html).toContain('<p id="pkg-title">x</p>')
   })
 
   it('drops attribute names written with other casing', () => {
@@ -38,16 +39,17 @@ describe('attributes', () => {
     expect(html).toContain('<p>hi</p>')
   })
 
-  it.each(['javascript:alert(1)', ' JaVaScRiPt:alert(1)', 'data:text/html,<script>1</script>', 'http://insecure.test', '//evil.test', '/\\evil.test', 'vbscript:x', 'file:///etc/passwd', 'mailto:a@b.c', 'https://user:pw@evil.test@x'.replace('@x', '')])('drops href %s', href => {
+  it.each(['javascript:alert(1)', ' JaVaScRiPt:alert(1)', 'data:text/html,<script>1</script>', 'http://insecure.test', '//evil.test', '/\\evil.test', 'vbscript:x', 'file:///etc/passwd', 'mailto:bad', 'tel:abc', '/relative/path', 'https://user:pw@evil.test'])('drops href %s', href => {
     const { html } = renderToDom(wrap(el('a', { href }, text('go'))))
     expect(html).not.toContain('href=')
   })
 
   it('keeps https, internal paths and fragments, and hardens target=_blank', () => {
-    const { html } = renderToDom(wrap(el('a', { href: 'https://example.com/x', target: '_blank' }, text('a')), el('a', { href: '/i/x' }, text('b')), el('a', { href: '#rsvp', target: '_top' }, text('c'))))
+    const { html } = renderToDom(wrap(el('a', { href: 'https://example.com/x', target: '_blank' }, text('a')), el('a', { href: 'mailto:hola@example.com' }, text('b')), el('a', { href: '#rsvp', target: '_top' }, text('c')), el('a', { href: 'tel:+13055550100' }, text('d'))))
     expect(html).toContain('href="https://example.com/x" target="_blank" rel="noopener noreferrer"')
-    expect(html).toContain('<a href="/i/x">b</a>')
+    expect(html).toContain('<a href="mailto:hola@example.com">b</a>')
     expect(html).toContain('<a href="#rsvp">c</a>')
+    expect(html).toContain('<a href="tel:+13055550100">d</a>')
   })
 
   it('drops target without a valid href', () => {
@@ -63,12 +65,16 @@ describe('attributes', () => {
         el('img', { src: 'assets/../../etc/passwd' }),
         el('img', { src: 'data:image/svg+xml,<svg onload=1>' }),
         el('img', { src: 'http://x.test/a.png' }),
-        el('img', { src: 'assets//x' })
+        el('img', { src: 'assets//x' }),
+        el('img', { src: { asset: 'assets/img/b.svg' }, srcset: { assets: [{ path: 'assets/img/b.svg', w: 480 }, { path: 'assets/../x', w: 800 }] }, alt: { tpl: [{ t: 'text', v: 'Hi ' }, { t: 'var', path: 'guest.first_name' }] } })
       )
     )
+    expect(html).toContain('src="https://assets.test/p/1.0.0/assets/img/b.svg"')
+    expect(html).toContain('alt="Hi Rosa"')
+    expect(html).toContain('srcset="https://assets.test/p/1.0.0/assets/img/b.svg 480w"')
     expect(html).toContain('src="https://assets.test/p/1.0.0/assets/img/a.svg"')
-    expect(html.match(/<img/g)).toHaveLength(5)
-    expect(html.match(/src=/g)).toHaveLength(1)
+    expect(html.match(/<img/g)).toHaveLength(6)
+    expect(html.match(/ src=/g)).toHaveLength(2)
   })
 
   it('gives every image an alt (decorative by default)', () => {
@@ -90,22 +96,24 @@ describe('attributes', () => {
   })
 
   it('whitelists role and aria-hidden values', () => {
-    const { html } = renderToDom(wrap(el('div', { role: 'button', 'aria-hidden': 'false' }), el('div', { role: 'presentation', 'aria-hidden': 'true' })))
+    const { html } = renderToDom(wrap(el('div', { role: 'button', 'aria-hidden': 'maybe' }), el('div', { role: 'presentation', 'aria-hidden': 'true' })))
     expect(html).toContain('<div></div><div role="presentation" aria-hidden="true"></div>')
   })
 
   it('validates behaviour attributes', () => {
-    const { html } = renderToDom(wrap(el('div', { 'data-reveal': 'explode', 'data-parallax': '5', 'data-delay': '999' }), el('div', { 'data-reveal': 'rise', 'data-parallax': '.12', 'data-delay': '3' })))
+    const { html } = renderToDom(wrap(el('div', { 'data-reveal': 'explode', 'data-parallax': '5', 'data-reveal-delay': '999', 'data-carousel': 'x' }), el('div', { 'data-reveal': 'slide-left', 'data-parallax': 'soft', 'data-reveal-delay': '300' })))
     expect(html).toContain('<div></div>')
-    expect(html).toContain('data-reveal="rise" data-parallax="0.12"'.replace('0.12', '.12'))
+    expect(html).toContain('data-reveal="slide-left" data-parallax="soft" data-reveal-delay="300"')
   })
 })
 
 describe('policy helpers', () => {
   it('safeLink / safeSrc basics', () => {
     expect(safeLink('https://a.test')).toBe('https://a.test/')
-    expect(safeLink('/path?x=1')).toBe('/path?x=1')
-    expect(safeLink('#top')).toBe('#top')
+    expect(safeLink('/path?x=1')).toBeNull()
+    expect(safeLink('#top')).toBeNull()
+    expect(safeLink('#rsvp')).toBe('#rsvp')
+    expect(safeLink('#pkg-menu')).toBe('#pkg-menu')
     expect(safeLink(null)).toBeNull()
     expect(safeSrc('assets/x.svg', 'https://a/')).toBe('https://a/assets/x.svg')
     expect(safeSrc('assets/x.svg', '')).toBeNull()
@@ -134,6 +142,13 @@ describe('limits', () => {
     junk.children = [null, 7, 'str', [], { t: 'nope' }, { t: 'el' }, { t: 'el', tag: 5 }, { t: 'q' }, { t: 'var' }, { t: 'var', path: '__proto__' }, { t: 'var', path: 'constructor' }, { t: 'text', v: 9 }]
     expect(() => renderToDom(junk)).not.toThrow()
     expect(renderToDom(el('p', {}, v('__proto__')), {}).html).toContain('<p></p>')
+  })
+
+  it('ignores a section AST over the byte cap', () => {
+    const big = el('div', {}, ...Array.from({ length: 900 }, () => el('p', {}, text('x'.repeat(300)))))
+    const { html, warnings } = renderToDom(big)
+    expect(html).toBe('<div id="out"></div>')
+    expect(warnings.some(w => w.includes('larger than'))).toBe(true)
   })
 
   it('truncates very long text', () => {

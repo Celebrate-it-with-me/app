@@ -1,99 +1,102 @@
 /**
  * `{{path|filter}}` marks. The context is a closed list of getters: no expressions, no property
- * walking, no access to anything that is not listed here.
+ * walking, no access to anything that is not listed here. Names, types and filters are the ones of
+ * the server catalogue (BlockCatalog::VARS / FILTERS); the server is authoritative, this table is
+ * the second wall.
  */
-const INTL = { es: 'es-US', en: 'en-US' }
+import { INTL, formatWallClock } from '../composables/wallClock'
+
+/** Re-exported for the blocks: wall-clock formatting, always timeZone 'UTC' (see wallClock.js). */
+export const formatInstant = formatWallClock
 
 /** Engine strings a package may print (everything else must come from the package's own `strings`). */
-const ENGINE_STRINGS = new Set(['invitedFor', 'confirmCta', 'madeWith', 'language'])
+export const ENGINE_STRINGS = new Set(['invitedFor', 'confirmCta', 'madeWith', 'language'])
 
-const HAS_OFFSET = /(?:[zZ]|[+-]\d\d:?\d\d)$/
-
-/**
- * The API sends wall-clock times of the event without offset. Read them as UTC and format with
- * timeZone 'UTC' so the browser's own zone (and DST) can never shift them. With an offset the
- * event's IANA zone is used.
- */
-export function formatInstant(iso, locale, options, timezone) {
-  if (typeof iso !== 'string' || !iso) return ''
-  const withOffset = HAS_OFFSET.test(iso)
-  const date = new Date(withOffset ? iso : `${iso.replace(' ', 'T')}Z`)
-  if (Number.isNaN(date.getTime())) return ''
-  let timeZone = 'UTC'
-  if (withOffset && timezone) {
-    try {
-      new Intl.DateTimeFormat('en', { timeZone: timezone })
-      timeZone = timezone
-    } catch {
-      timeZone = 'UTC'
-    }
-  }
-  return new Intl.DateTimeFormat(INTL[locale] ?? 'es-US', { ...options, timeZone }).format(date)
-}
-
-const DATE_PARTS = {
-  date: { dateStyle: 'long' },
-  'date.weekday': { weekday: 'long' },
-  'date.weekdayShort': { weekday: 'short' },
-  'date.day': { day: 'numeric' },
-  'date.month': { month: 'long' },
-  'date.monthShort': { month: 'short' },
-  'date.year': { year: 'numeric' },
+/** Date filters. `time` is the hour; `upper_month` is the month in capitals. */
+const DATE_FILTERS = {
+  long: { dateStyle: 'long' },
+  short: { dateStyle: 'short' },
+  weekday: { weekday: 'long' },
+  weekday_short: { weekday: 'short' },
+  day: { day: 'numeric' },
+  month: { month: 'long' },
+  month_short: { month: 'short' },
+  year: { year: 'numeric' },
+  upper_month: { month: 'long' },
   time: { timeStyle: 'short' }
 }
+const TEXT_FILTERS = new Set(['upper', 'lower', 'capitalize'])
 
-export const FILTERS = new Set([...Object.keys(DATE_PARTS), 'upper', 'lower'])
-
-/** @returns {Record<string,(ctx:object)=>unknown>} */
-const GETTERS = {
-  'event.name': c => c.invitation.event.name,
-  'event.date': c => c.invitation.event.startsAt,
-  'event.startsAt': c => c.invitation.event.startsAt,
-  'event.timezone': c => c.invitation.event.timezone,
-  'event.type': c => c.invitation.event.typeSlug,
-  'section.title': c => c.section.title,
-  'section.text': c => c.section.text,
-  'section.position': c => c.position,
-  'section.count': c => c.count,
-  'section.image': c => c.section.data?.image,
-  'section.eventName': c => c.section.data?.eventName,
-  'section.description': c => c.section.data?.description,
-  'guest.name': c => c.invitation.guest?.name,
-  'guest.firstName': c => String(c.invitation.guest?.name ?? '').split(/\s+/)[0],
-  'theme.name': c => c.invitation.theme?.name,
-  'theme.preset': c => c.invitation.theme?.preset
+export const FILTERS = {
+  string: [...TEXT_FILTERS],
+  date: Object.keys(DATE_FILTERS),
+  int: []
 }
 
-export const VAR_PATHS = new Set([...Object.keys(GETTERS)])
+const cover = c => c.invitation.sections?.find(s => s.type === 'cover')
+const rsvp = c => c.invitation.sections?.find(s => s.type === 'rsvp')?.data
+
+/** @type {Record<string,{ type:'string'|'date'|'int', get:(ctx:object)=>unknown }>} */
+const VARS = {
+  'event.name': { type: 'string', get: c => c.invitation.event.name },
+  'event.description': { type: 'string', get: c => c.invitation.event.description ?? cover(c)?.data?.description },
+  'event.date': { type: 'date', get: c => c.invitation.event.startsAt },
+  'event.time': { type: 'string', get: c => formatWallClock(c.invitation.event.startsAt, c.locale, DATE_FILTERS.time) },
+  'guest.name': { type: 'string', get: c => c.invitation.guest?.name },
+  'guest.first_name': { type: 'string', get: c => String(c.invitation.guest?.name ?? '').split(/\s+/)[0] },
+  'rsvp.seats': { type: 'int', get: c => (rsvp(c) ? 1 + (rsvp(c).companions?.length ?? 0) : undefined) },
+  'rsvp.deadline': { type: 'date', get: c => rsvp(c)?.deadline },
+  'section.title': { type: 'string', get: c => c.section.title },
+  'section.text': { type: 'string', get: c => c.section.text },
+  'section.position': { type: 'int', get: c => c.position },
+  'theme.slug': { type: 'string', get: c => c.invitation.theme?.package?.slug ?? c.invitation.theme?.name },
+  'theme.preset': { type: 'string', get: c => c.invitation.theme?.preset }
+}
+
+export const VAR_PATHS = new Set(Object.keys(VARS))
+
+function applyText(value, filter, locale) {
+  const text = String(value)
+  const tag = INTL[locale]
+  if (filter === 'upper') return text.toLocaleUpperCase(tag)
+  if (filter === 'lower') return text.toLocaleLowerCase(tag)
+  if (filter === 'capitalize') return text.charAt(0).toLocaleUpperCase(tag) + text.slice(1)
+  return text
+}
 
 /**
  * @param {string} path
- * @param {string|string[]|undefined} filter  'date.month|upper' or ['date.month','upper']
- * @param {{ invitation:object, section:object, position:number, count:number, locale:string, tt:Function, strings?:object }} ctx
+ * @param {string|null|undefined} filter one filter, as the server allows (`{{event.date|day}}`)
+ * @param {{ invitation:object, section:object, position:number, locale:string, tt:Function, strings?:object }} ctx
  * @param {(msg:string)=>void} [warn]
  */
 export function resolveVar(path, filter, ctx, warn = () => {}) {
   let value
+  let type = 'string'
   if (path.startsWith('t.')) {
     const key = path.slice(2)
     value = ctx.strings?.[ctx.locale]?.[key] ?? (ENGINE_STRINGS.has(key) ? ctx.tt(key) : undefined)
-  } else if (Object.hasOwn(GETTERS, path)) {
-    value = GETTERS[path](ctx)
+  } else if (Object.hasOwn(VARS, path)) {
+    type = VARS[path].type
+    value = VARS[path].get(ctx)
   } else {
     warn(`unknown variable "${path}"`)
     return ''
   }
-  if (value === undefined || value === null) return ''
-  const filters = (Array.isArray(filter) ? filter : String(filter ?? '').split('|')).map(s => s.trim()).filter(Boolean).slice(0, 3)
-  let out = value
-  for (const name of filters) {
-    if (!FILTERS.has(name)) {
-      warn(`unknown filter "${name}"`)
-      continue
-    }
-    if (name === 'upper') out = String(out).toLocaleUpperCase(INTL[ctx.locale])
-    else if (name === 'lower') out = String(out).toLocaleLowerCase(INTL[ctx.locale])
-    else out = formatInstant(String(out), ctx.locale, DATE_PARTS[name], ctx.invitation.event?.timezone)
+  if (value === undefined || value === null || value === '') return ''
+  const name = typeof filter === 'string' ? filter.trim() : ''
+  if (name && !FILTERS[type].includes(name)) {
+    warn(`filter "${name.slice(0, 20)}" is not allowed on ${path}`)
   }
-  return String(out).slice(0, 2000)
+  let out
+  if (type === 'date') {
+    const allowed = name && FILTERS.date.includes(name) ? name : 'long'
+    out = formatWallClock(String(value), ctx.locale, DATE_FILTERS[allowed], ctx.invitation.event?.timezone)
+    if (allowed === 'upper_month') out = applyText(out, 'upper', ctx.locale)
+  } else if (type === 'int') {
+    out = String(value)
+  } else {
+    out = applyText(value, FILTERS.string.includes(name) ? name : '', ctx.locale)
+  }
+  return out.slice(0, 2000)
 }

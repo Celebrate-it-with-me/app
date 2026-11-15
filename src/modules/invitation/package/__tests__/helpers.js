@@ -1,7 +1,7 @@
 import { createApp, h, ref } from 'vue'
 import i18n from '@/locales/i18n'
 import { renderAst } from '../renderer'
-import { el, q, text, v, when } from '../fixtures/dsl'
+import { el, q, text, v, when } from './dsl'
 
 export { el, q, text, v, when }
 export const tt = (key, params = {}) => i18n.global.t(`invitation.${key}`, params, { locale: 'es' })
