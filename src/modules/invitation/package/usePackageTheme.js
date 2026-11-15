@@ -14,7 +14,9 @@ export function allowedAssetUrl(value, origin = import.meta.env?.VITE_TEMPLATE_A
   try {
     const url = new URL(value, origin)
     if (url.origin !== new URL(origin).origin) return null
-    if (url.protocol !== 'https:' && url.origin !== globalThis.location?.origin) return null
+    // https only; plain http just in the local dev server (the dev API is http://dev.api.cwm.com).
+    const devHttp = import.meta.env?.DEV && !import.meta.env?.VITEST
+    if (url.protocol !== 'https:' && url.origin !== globalThis.location?.origin && !(devHttp && url.protocol === 'http:')) return null
     if (url.username || url.password) return null
     return url.href
   } catch {
