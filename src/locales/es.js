@@ -277,7 +277,7 @@ export default {
     tooManyAttempts: 'Demasiados intentos. Espera un momento e inténtalo de nuevo.',
     tooManyAttemptsSeconds: 'Demasiados intentos. Espera {seconds} segundos e inténtalo de nuevo.',
     tooManyAttemptsMinutes: 'Demasiados intentos. Espera {minutes} minutos e inténtalo de nuevo.',
-    resetInvalid: 'Este enlace no es válido o ya expiró. Pide uno nuevo desde "Olvidé mi contraseña".',
+    resetInvalid: 'Este enlace caducó o no es válido. Pide uno nuevo desde "Olvidé mi contraseña".',
     newPassword: 'Contraseña nueva',
     confirmPassword: 'Repite la contraseña',
     resetSubmit: 'Cambiar contraseña',
@@ -306,6 +306,11 @@ export default {
     invalid: 'La invitación no es válida o expiró.',
     used: 'Esta invitación ya fue usada o venció.',
     acceptFailed: 'No pudimos aceptar la invitación.',
+    processing: 'Procesando tu invitación...',
+    processingWait: 'Un momento, por favor.',
+    noneValid: 'No encontramos una invitación válida para tu cuenta.',
+    welcome: 'Listo: ya formas parte de "{event}".',
+    processError: 'No pudimos aceptar la invitación. Inténtalo de nuevo más tarde.',
     declineFailed: 'No pudimos rechazar la invitación.'
   },
   validation: {

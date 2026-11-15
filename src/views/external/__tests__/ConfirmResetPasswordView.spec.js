@@ -67,4 +67,16 @@ describe('ConfirmResetPasswordView', () => {
     await fill(w)
     expect(w.find('.err').text()).toContain('45')
   })
+
+  it('explains an expired or tampered signed link (403 invalid_signed_link) and offers a new one', async () => {
+    store.checkResetLink.mockRejectedValue({ response: { status: 403, data: { message: 'Invalid signature.', code: 'invalid_signed_link' } } })
+    const w = mountView()
+    await flushPromises()
+    expect(w.find('form').exists()).toBe(false)
+    expect(store.changePassword).not.toHaveBeenCalled()
+    expect(es.auth.resetInvalid).toContain('caducó')
+    const fallback = w.findComponent({ name: 'UiButton' })
+    expect(fallback.exists()).toBe(true)
+    expect(fallback.props('to')).toBe('/forgot-password')
+  })
 })
