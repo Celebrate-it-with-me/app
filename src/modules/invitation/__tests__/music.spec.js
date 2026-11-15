@@ -85,4 +85,14 @@ describe('InvitationMusic', () => {
     const wrapper = mountMusic({ preview: true })
     expect(wrapper.get('button').attributes('disabled')).toBeDefined()
   })
+
+  it('docks as a bar on phones with a 44px target, so it does not sit over the RSVP form', () => {
+    const wrapper = mountMusic()
+    const button = wrapper.get('[data-testid="invitation-music"]')
+    expect(button.classes()).toEqual(expect.arrayContaining(['h-11', 'w-11']))
+    expect(button.attributes('aria-label')).toContain('Nuestra canción')
+    // the bar spans the width on phones and only floats from `sm` up
+    expect(wrapper.html()).toContain('inset-x-0')
+    expect(wrapper.html()).toContain('sm:right-4')
+  })
 })
