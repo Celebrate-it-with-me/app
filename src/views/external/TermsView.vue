@@ -8,7 +8,7 @@ const { t, locale } = useI18n()
 
 <template>
   <LegalPage :title="t('titles.terms')" updated="2026-11-11" translated>
-    <TermsEs v-if="locale !== \'en\'" />
+    <TermsEs v-if="locale !== 'en'" />
     <template v-else>
         <p>
           Welcome to Quinvite ("we", "us", or "our"). These Terms of Service ("Terms")
