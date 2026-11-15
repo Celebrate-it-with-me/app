@@ -5,7 +5,7 @@
  * Nothing here navigates, calls the API or records analytics, and the payload is only ever
  * rendered through the same text bindings and theme sanitising as the real invitation.
  */
-import { computed, onErrorCaptured, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onErrorCaptured, onMounted, onUnmounted, ref, watch } from 'vue'
 import i18n from '@/locales/i18n'
 import { invitationHelpers, provideInvitation } from '../composables/useInvitation'
 import { themeVars } from '../composables/useInvitationTheme'
@@ -56,6 +56,11 @@ const sections = computed(() =>
   (invitation.value?.sections ?? []).filter(item => item && typeof item === 'object' && COMPONENTS[item.type])
 )
 const vars = computed(() => themeVars(invitation.value?.theme))
+
+// Clásica's script face is only loaded when no package is drawn: also when the CSS failed or the guard dropped it.
+watch(pkg.state, state => {
+  if (state === 'failed' && invitation.value) loadThemeFonts({ script: 'Pinyon Script', ...invitation.value.theme?.fonts })
+})
 
 let previous = null
 
