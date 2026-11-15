@@ -1648,7 +1648,9 @@ export default {
         showHidden: 'Mostrar ocultas ({n})',
         hideHidden: 'Esconder ocultas',
         showDone: 'Ver hechas ({n})',
-        hideDone: 'Esconder hechas'
+        hideDone: 'Esconder hechas',
+        showMore: 'Ver {n} más de esta etapa',
+        showLess: 'Ver menos'
       },
       snooze14: 'Posponer 14 días',
       snooze1m: 'Posponer 1 mes',

@@ -21,10 +21,18 @@ const emit = defineEmits(['done', 'snooze', 'hide', 'not-applicable', 'reset'])
 const { t, locale } = useI18n()
 
 const TONES = { overdue: 'warning', next: 'rose', available: 'rose', upcoming: 'neutral', done: 'success', hidden: 'neutral', not_applicable: 'neutral' }
-const tone = computed(() => TONES[props.task.state] ?? 'neutral')
 
 const isDone = computed(() => props.task.state === 'done')
 const locked = computed(() => props.task.moduleLocked)
+const blocked = computed(() => !isDone.value && !props.hiddenRow && props.task.blockedBy.length > 0)
+// "Ahora" is only for the 1-3 steps the server recommends (`next`): not for plain `available` tasks, and never for
+// a task waiting on a prerequisite or behind a locked module (those show their hint / unlock button instead).
+const badge = computed(() => {
+  const state = props.task.state
+  if (state === 'available') return null
+  if (state === 'next' && (blocked.value || locked.value)) return null
+  return state
+})
 const target = computed(() => (locked.value ? `/dashboard/unlock/${props.task.moduleKey}` : resolveTaskRoute(props.task.route, props.eventId)))
 const showReason = computed(() => !isDone.value && !props.hiddenRow && !locked.value && !!props.task.reason)
 const blockers = computed(() => props.task.blockedBy.map(k => props.titles[k]).filter(Boolean))
@@ -48,13 +56,13 @@ const menu = computed(() => [
 </script>
 
 <template>
-  <li class="rounded-lg border border-line bg-white p-4" :class="isDone && 'bg-cream-50'" :data-testid="`task-${task.key}`" :data-state="task.state">
+  <li class="rounded-lg border border-line bg-white p-4" :class="[isDone && 'bg-cream-50', blocked && 'bg-cream-50/60']" :data-testid="`task-${task.key}`" :data-state="task.state">
     <div class="flex flex-wrap items-start gap-x-3 gap-y-1">
-      <h4 class="min-w-0 flex-1 text-base font-semibold text-ink-900" :class="isDone && 'text-ink-600'">
+      <h4 class="min-w-0 flex-1 text-base font-semibold text-ink-900" :class="(isDone || blocked) && 'text-ink-600'">
         <Check v-if="isDone" class="mr-1 inline h-4 w-4 text-success-700 align-[-2px]" aria-hidden="true" />
         {{ task.title }}
       </h4>
-      <UiBadge :tone="tone" size="sm">{{ t(`app.assistant.state.${task.state}`) }}</UiBadge>
+      <UiBadge v-if="badge" :tone="TONES[badge] ?? 'neutral'" size="sm">{{ t(`app.assistant.state.${badge}`) }}</UiBadge>
     </div>
 
     <p v-if="showReason" class="mt-1 text-sm text-ink-600" data-testid="task-reason">
@@ -76,7 +84,7 @@ const menu = computed(() => [
         </UiButton>
       </template>
       <template v-else>
-        <UiButton v-if="target && !isDone" :to="target" :variant="locked ? 'outline' : 'primary'">
+        <UiButton v-if="target && !isDone" :to="target" :variant="locked || blocked ? 'outline' : 'primary'">
           {{ locked ? t('app.assistant.task.unlock') : t('app.assistant.go') }}
         </UiButton>
         <template v-if="canEdit && !locked">

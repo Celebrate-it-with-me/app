@@ -1648,7 +1648,9 @@ export default {
         showHidden: 'Show hidden ({n})',
         hideHidden: 'Hide the hidden',
         showDone: 'Show done ({n})',
-        hideDone: 'Hide done'
+        hideDone: 'Hide done',
+        showMore: 'Show {n} more in this phase',
+        showLess: 'Show less'
       },
       snooze14: 'Snooze 14 days',
       snooze1m: 'Snooze 1 month',
