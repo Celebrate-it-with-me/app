@@ -32,8 +32,8 @@ const payload = () => ({
   ]
 })
 
-function send(data, origin = ADMIN) {
-  window.dispatchEvent(new MessageEvent('message', { data, origin }))
+function send(data, origin = ADMIN, source = window.parent) {
+  window.dispatchEvent(new MessageEvent('message', { data, origin, source }))
   return flushPromises()
 }
 
@@ -62,6 +62,15 @@ describe('InvitationPreviewView', () => {
     expect(wrapper.text()).not.toContain('Gracias por acompañarme')
   })
 
+  it('ignores messages that do not come from the embedding admin window, even from the right origin', async () => {
+    const stranger = document.createElement('iframe')
+    document.body.appendChild(stranger)
+    await send({ type: 'qv-preview', payload: payload() }, ADMIN, stranger.contentWindow)
+    await send({ type: 'qv-preview', payload: payload() }, ADMIN, null)
+    expect(wrapper.text()).toContain('Esperando vista previa')
+    stranger.remove()
+  })
+
   it('ignores messages of another type', async () => {
     await send({ type: 'other', payload: payload() })
     expect(wrapper.text()).toContain('Esperando vista previa')
@@ -82,6 +91,59 @@ describe('InvitationPreviewView', () => {
     expect(wrapper.text()).toContain('Gracias por acompañarme')
     expect(wrapper.text()).not.toContain('ignored')
     expect(wrapper.find('b').exists()).toBe(false)
+  })
+
+  describe('template packages', () => {
+    const packaged = () => ({
+      locale: 'es',
+      branding: { watermark: false },
+      event: { name: 'Los XV de Valentina', typeSlug: 'quinceanera', startsAt: '2027-06-12T18:00:00', timezone: 'America/New_York' },
+      guest: { name: 'Rosa Fernández' },
+      stage: 'invitation',
+      theme: {
+        colors: { primary: '#b04a62' },
+        fonts: {},
+        package: {
+          slug: 'draftpkg',
+          version: '1.0.0',
+          engineMin: 1,
+          cssUrl: `${window.location.origin}/template-packages/_staging/01ARZ3NDEKTSV4RRFFQ69G5FAV/theme.css`,
+          templates: { cover: { v: 1, kind: 'section', nodes: [{ t: 'el', tag: 'div', attrs: { class: 'pkg-draft' }, children: [{ t: 'text', v: 'Borrador del paquete' }] }] } }
+        }
+      },
+      sections: [{ type: 'cover', render: 'package', title: 'Hola', text: null, data: { eventName: 'Los XV de Valentina' } }]
+    })
+
+    afterEach(() => document.head.querySelectorAll('link[rel="stylesheet"]').forEach(node => node.remove()))
+
+    it('draws theme.package (a draft served from staging) with the package engine', async () => {
+      await send({ type: 'qv-preview', payload: packaged() })
+      expect(wrapper.find('.pkg-draft').exists()).toBe(true)
+      expect(wrapper.text()).toContain('Borrador del paquete')
+      expect(wrapper.get('.inv-root').attributes('data-inv-theme')).toBe('draftpkg')
+      expect(document.head.querySelector('link[rel="stylesheet"][href*="_staging"]')).not.toBeNull()
+    })
+
+    it('ignores a package whose CSS is outside the allowed assets origin and shows the plain theme', async () => {
+      const payload = packaged()
+      payload.theme.package.cssUrl = 'https://evil.example.test/theme.css'
+      await send({ type: 'qv-preview', payload })
+      expect(wrapper.find('.pkg-draft').exists()).toBe(false)
+      expect(wrapper.get('.inv-root').attributes('data-inv-theme')).toBe('classic')
+      expect(document.head.querySelector('link[href*="evil.example"]')).toBeNull()
+    })
+
+    it('goes back to Clásica when the next payload has no package', async () => {
+      await send({ type: 'qv-preview', payload: packaged() })
+      await send({ type: 'qv-preview', payload: payload() })
+      expect(wrapper.find('.pkg-draft').exists()).toBe(false)
+      expect(wrapper.get('.inv-root').attributes('data-inv-theme')).toBe('classic')
+    })
+
+    it('carries the stage (save the date) of the payload to the root', async () => {
+      await send({ type: 'qv-preview', payload: { ...packaged(), stage: 'save_the_date' } })
+      expect(wrapper.get('.inv-root').attributes('data-inv-stage')).toBe('save_the_date')
+    })
   })
 
   it('does not use v-html in the preview or its components', () => {

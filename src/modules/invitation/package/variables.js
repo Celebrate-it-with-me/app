@@ -75,7 +75,9 @@ export function resolveVar(path, filter, ctx, warn = () => {}) {
   let type = 'string'
   if (path.startsWith('t.')) {
     const key = path.slice(2)
-    value = ctx.strings?.[ctx.locale]?.[key] ?? (ENGINE_STRINGS.has(key) ? ctx.tt(key) : undefined)
+    const table = ctx.strings && Object.hasOwn(ctx.strings, ctx.locale) ? ctx.strings[ctx.locale] : undefined
+    const own = table && typeof table === 'object' && Object.hasOwn(table, key) && typeof table[key] === 'string' ? table[key] : undefined
+    value = own ?? (ENGINE_STRINGS.has(key) ? ctx.tt(key) : undefined)
   } else if (Object.hasOwn(VARS, path)) {
     type = VARS[path].type
     value = VARS[path].get(ctx)

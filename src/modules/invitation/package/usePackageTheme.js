@@ -3,8 +3,44 @@ import { LIMITS, astBytes } from './policy'
 
 /** Version of the package engine this app implements. A package with a higher `engineMin` is ignored. */
 export const ENGINE = 1
-/** Longest the page waits for the package CSS before showing the content anyway. */
+/** Longest the page waits for the package CSS and its fonts before showing the content anyway. */
 export const CSS_WAIT_MS = 1500
+const MAX_FACES = 12
+
+/** `font` shorthand strings (for `document.fonts.load`) of the `@font-face` rules the package sheet declares. */
+export function declaredFontQueries(sheet) {
+  let rules
+  try {
+    rules = Array.from(sheet?.cssRules ?? [])
+  } catch {
+    return [] // cross-origin sheet without CORS: rules are unreadable
+  }
+  const queries = []
+  for (const rule of rules) {
+    if (!rule.style || rule.constructor?.name !== 'CSSFontFaceRule') continue
+    const family = rule.style.getPropertyValue('font-family').replace(/["']/g, '').trim()
+    if (!family) continue
+    const style = rule.style.getPropertyValue('font-style').trim() || 'normal'
+    const weight = rule.style.getPropertyValue('font-weight').trim() || '400'
+    queries.push(`${style} ${weight} 1em "${family}"`)
+    if (queries.length >= MAX_FACES) break
+  }
+  return queries
+}
+
+/**
+ * Resolves when the fonts the package declares are loaded (or failed); never rejects. The caller bounds the wait.
+ * Without this the first paint can use the fallback face (font-display: swap) and differ from the settled page.
+ */
+export async function waitForPackageFonts(sheet, fonts = globalThis.document?.fonts) {
+  if (!fonts || typeof fonts.load !== 'function') return
+  try {
+    await Promise.allSettled(declaredFontQueries(sheet).map(query => fonts.load(query)))
+    await fonts.ready
+  } catch {
+    /* a failed font must not block the page */
+  }
+}
 
 const SLUG = /^[a-z][a-z0-9-]{1,31}$/
 
@@ -60,6 +96,13 @@ export function usePackageTheme(getPackage) {
     nodes = []
   }
 
+  /** The integrity guard found a system block that the package made unusable: drop its CSS, fall back to Clásica. */
+  function reject(problems) {
+    cleanup()
+    state.value = 'failed'
+    if (import.meta.env?.DEV) console.warn('[invitation package] integrity guard dropped the package CSS:', problems)
+  }
+
   watch(
     getPackage,
     raw => {
@@ -88,8 +131,13 @@ export function usePackageTheme(getPackage) {
       link.href = pkg.cssUrl
       link.onload = () => {
         performance.mark?.('inv-pkg-css-end')
-        clearTimeout(timer)
-        state.value = 'ready'
+        // The timer keeps running: it bounds CSS + fonts together.
+        waitForPackageFonts(link.sheet).then(() => {
+          if (state.value !== 'loading' || !nodes.includes(link)) return
+          clearTimeout(timer)
+          performance.mark?.('inv-pkg-fonts-end')
+          state.value = 'ready'
+        })
       }
       link.onerror = () => {
         clearTimeout(timer)
@@ -109,6 +157,7 @@ export function usePackageTheme(getPackage) {
 
   return {
     state,
+    reject,
     /** Package sections may be drawn (CSS loading or ready). */
     usable: computed(() => state.value === 'loading' || state.value === 'ready'),
     slug: computed(() => (state.value === 'loading' || state.value === 'ready' ? current.value?.slug : undefined)),
