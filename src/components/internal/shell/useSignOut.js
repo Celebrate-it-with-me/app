@@ -12,7 +12,7 @@ export function useSignOut() {
   return async function signOut() {
     // In a support session "sign out" means leaving it (the server does not allow a real logout there).
     if (impersonation.active) return endSupportSession(router)
-    await userStore.logOut()
+    await userStore.signOut()
     await router.push({ name: 'sign-in' })
   }
 }

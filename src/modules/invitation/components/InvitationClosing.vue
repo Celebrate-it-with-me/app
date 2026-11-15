@@ -21,7 +21,7 @@ const { invitation, tt } = useInvitationContext()
         class="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 rotate-180 text-inv-accent/60 sm:h-60 sm:w-60"
       />
     </template>
-    <p v-if="invitation.branding.watermark" class="text-sm text-inv-surface/70">
+    <p v-if="invitation.branding?.watermark === true" class="text-sm text-inv-surface/70">
       <a href="/" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-inv-surface">
         {{ tt('madeWith') }}
       </a>

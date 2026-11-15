@@ -44,7 +44,7 @@ const CARD = 'md:grid md:grid-rows-subgrid md:row-span-6 flex flex-col gap-0 rou
             </li>
           </ul>
           <div class="mt-8 md:self-start">
-            <UiButton variant="secondary" block to="/sign-up">{{ t('pricing.free.cta') }}</UiButton>
+            <UiButton variant="secondary" block to="/sign-up?code=LANZAMIENTO79">{{ t('pricing.free.cta') }}</UiButton>
           </div>
         </article>
 
@@ -55,11 +55,18 @@ const CARD = 'md:grid md:grid-rows-subgrid md:row-span-6 flex flex-col gap-0 rou
             <UiBadge tone="rose" size="sm">{{ t('pricing.full.badge') }}</UiBadge>
           </div>
           <p class="mt-1 text-base text-ink-500">{{ t('pricing.full.tagline') }}</p>
-          <p class="mt-5 flex flex-wrap items-baseline gap-x-2">
-            <span class="font-heading text-5xl leading-none text-ink-900 tabular-nums">{{ t('pricing.full.price') }}</span>
-            <span class="text-sm font-semibold text-ink-700">{{ t('pricing.full.currency') }}</span>
-            <span class="w-full text-sm text-ink-500 sm:w-auto">{{ t('pricing.full.note') }}</span>
-          </p>
+          <div class="mt-5">
+            <p class="flex flex-wrap items-baseline gap-x-2">
+              <span class="font-heading text-5xl leading-none text-ink-900 tabular-nums">{{ t('pricing.full.price') }}</span>
+              <span class="font-heading text-2xl leading-none text-ink-500 line-through tabular-nums">
+                <span class="sr-only">{{ t('pricing.full.listPriceLabel') }}</span>{{ t('pricing.full.listPrice') }}
+              </span>
+              <span class="text-sm font-semibold text-ink-700">{{ t('pricing.full.currency') }}</span>
+              <span class="w-full text-sm text-ink-500 sm:w-auto">{{ t('pricing.full.note') }}</span>
+            </p>
+            <p class="mt-3 rounded-lg bg-gold-100 px-3 py-2 text-sm font-semibold text-ink-900">{{ t('pricing.full.offer') }}</p>
+            <p class="mt-2 text-sm text-ink-500">{{ t('pricing.full.offerNote') }}</p>
+          </div>
           <p class="mt-6 border-t border-wine-800/20 pt-6 text-sm font-semibold text-ink-900">{{ t('pricing.full.intro') }}</p>
           <ul class="mt-3 flex flex-col gap-3">
             <li v-for="(item, i) in tm('pricing.full.items')" :key="i" class="flex items-start gap-2.5 text-base text-ink-700">
@@ -68,7 +75,7 @@ const CARD = 'md:grid md:grid-rows-subgrid md:row-span-6 flex flex-col gap-0 rou
             </li>
           </ul>
           <div class="mt-8 md:self-start">
-            <UiButton variant="wine" block to="/sign-up">{{ t('pricing.full.cta') }}</UiButton>
+            <UiButton variant="wine" block to="/sign-up?code=LANZAMIENTO79">{{ t('pricing.full.cta') }}</UiButton>
             <p class="mt-2 text-center text-sm text-ink-500">{{ t('pricing.full.helper') }}</p>
           </div>
         </article>

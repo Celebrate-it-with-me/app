@@ -3,6 +3,7 @@ import i18n from '@/locales/i18n'
 import { useHydrationStore } from '@/stores/useHydrationStore'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { moduleRedirect } from './moduleGuard'
+import { safeRedirect } from '@/utils/safeRedirect'
 
 /**
  * Global navigation guard (vue-router 4.1+/5 style: return instead of next()).
@@ -12,6 +13,11 @@ import { moduleRedirect } from './moduleGuard'
 export function routeTitle(route) {
   const pageTitle = route.meta?.titleKey ? i18n.global.t(route.meta.titleKey) : route.meta?.title
   return pageTitle ? `${pageTitle} · Quinvite` : 'Quinvite'
+}
+
+const safeQuery = path => {
+  const redirect = safeRedirect(path)
+  return redirect ? { redirect } : {}
 }
 
 export async function authGuard(to) {
@@ -29,7 +35,7 @@ export async function authGuard(to) {
   // 3. Authentication check
   if (!userStore.isAuthenticated) {
     hydrationStore.reset()
-    return { name: 'sign-in', query: { redirect: to.fullPath } }
+    return { name: 'sign-in', query: safeQuery(to.fullPath) }
   }
 
   // 4. Data hydration if authenticated
@@ -39,7 +45,7 @@ export async function authGuard(to) {
     } catch (error) {
       console.error('Hydration failed during navigation:', error)
       await userStore.logOut()
-      return { name: 'sign-in', query: { redirect: to.fullPath } }
+      return { name: 'sign-in', query: safeQuery(to.fullPath) }
     }
   }
 

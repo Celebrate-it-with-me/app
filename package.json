@@ -28,8 +28,6 @@
     "date-fns": "^4.1.0",
     "detect-browser": "^5.3.0",
     "floating-vue": "^5.2.2",
-    "flowbite": "^4.0.2",
-    "flowbite-vue": "^0.4.0",
     "lightgallery": "^2.8.2",
     "lodash.debounce": "^4.0.8",
     "lucide-vue-next": "^1.0.0",
@@ -64,9 +62,6 @@
   },
   "overrides": {
     "minimatch": "^11.0.1",
-    "glob": "^14.0.4",
-    "flowbite-vue": {
-      "nanoid": "^5.1.16"
-    }
+    "glob": "^14.0.4"
   }
 }

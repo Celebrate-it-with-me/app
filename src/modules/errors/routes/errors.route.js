@@ -24,18 +24,6 @@ export default [
     }
   },
   {
-    path: '/404',
-    name: 'not-found',
-    component: () => import('@/modules/errors/views/C404.vue'),
-    meta: {
-      title: 'Not Found',
-      requiresAuth: false,
-      requiredPermission: [],
-      requiresFeature: 'errors',
-      module: 'errors'
-    }
-  },
-  {
     path: '/409',
     name: 'conflict',
     component: () => import('@/modules/errors/views/C409.vue'),
@@ -53,20 +41,6 @@ export default [
     component: () => import('@/modules/errors/views/C500.vue'),
     meta: {
       title: 'Server Error',
-      requiresAuth: false,
-      requiredPermission: [],
-      requiresFeature: 'errors',
-      module: 'errors'
-    }
-  },
-
-  // Catch-all -> 404
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'catch-all',
-    redirect: { name: 'not-found' },
-    meta: {
-      title: 'Not Found',
       requiresAuth: false,
       requiredPermission: [],
       requiresFeature: 'errors',

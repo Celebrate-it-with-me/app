@@ -41,6 +41,7 @@ export default {
     start: 'First steps',
     home: 'Digital invitations for quinces and weddings',
     signIn: 'Sign in',
+    notFound: 'Page not found',
     signUp: 'Create account',
     forgot: 'Reset password',
     reset: 'New password',
@@ -82,7 +83,7 @@ export default {
       'Create a beautiful invitation, share it on WhatsApp and watch who confirms. No printing, no chasing anyone.',
     cta: 'Create my event for free',
     secondary: 'See a sample invitation',
-    trust: 'Free up to 30 guests · Everything for $79, once'
+    trust: 'Free up to 30 guests · Full event $99, or $79 with the code LANZAMIENTO79'
   },
   mock: {
     demoLabel: 'Sample invitation: Valentina’s XV',
@@ -179,6 +180,10 @@ export default {
       badge: 'To organize it all',
       tagline: 'Her whole celebration, in one place.',
       price: '$79',
+      listPrice: '$99',
+      listPriceLabel: 'Regular price:',
+      offer: 'Launch offer: $79 with the code LANZAMIENTO79',
+      offerNote: 'Limited spots. The regular price is $99. Enter the code when you unlock; we will have it ready for you.',
       currency: 'USD',
       note: 'One payment per event · No subscription',
       intro: 'Everything in Free, plus:',
@@ -221,7 +226,7 @@ export default {
       },
       {
         q: 'When and how do I pay?',
-        a: 'Only if you decide to unlock the full event: one $79 card payment, once. Creating the event and using it on free costs nothing and asks for no card.'
+        a: 'Only if you decide to unlock the full event: one $99 card payment, once. As a launch offer, the code LANZAMIENTO79 makes it $79 (limited spots). Creating the event and using it on free costs nothing and asks for no card.'
       },
       {
         q: 'What happens with my guests’ phone numbers?',
@@ -268,7 +273,11 @@ export default {
     forgotSent: 'Check your email. If an account exists for that address, the link will arrive in a few minutes.',
     resetTitle: 'New password',
     resetText: 'Enter your email and your new password.',
-    resetInvalid: 'This link is invalid or has expired. Request a new one from "Forgot your password".',
+    resetExpired: 'This link has expired or was already used. Request a new one from "Forgot your password".',
+    tooManyAttempts: 'Too many attempts. Wait a moment and try again.',
+    tooManyAttemptsSeconds: 'Too many attempts. Wait {seconds} seconds and try again.',
+    tooManyAttemptsMinutes: 'Too many attempts. Wait {minutes} minutes and try again.',
+    resetInvalid: 'This link has expired or is not valid. Request a new one from "Forgot your password".',
     newPassword: 'New password',
     confirmPassword: 'Repeat the password',
     resetSubmit: 'Change password',
@@ -295,7 +304,13 @@ export default {
     validity: 'The invitation is valid for 7 days. If you already have an account, sign in to accept it.',
     noToken: 'The invitation code is missing.',
     invalid: 'The invitation is invalid or has expired.',
+    used: 'This invitation was already used or has expired.',
     acceptFailed: 'We could not accept the invitation.',
+    processing: 'Processing your invitation...',
+    processingWait: 'One moment, please.',
+    noneValid: 'We could not find a valid invitation for your account.',
+    welcome: 'Welcome! You are now part of "{event}".',
+    processError: 'We could not accept the invitation. Please try again later.',
     declineFailed: 'We could not decline the invitation.'
   },
   validation: {
@@ -695,6 +710,8 @@ export default {
       cancel: 'Cancel',
       loadError: 'We could not load the suggested music.',
       searchError: 'We could not search for songs. Please try again.',
+      searchUnavailable: 'Song search is not available right now, please try again in a moment.',
+      searchInvalid: 'That search is not valid. Try a shorter name.',
       added: 'Song added.',
       addError: 'We could not add the song.',
       removed: 'Song removed.',
@@ -948,7 +965,7 @@ export default {
       loadError: 'Check your connection and try again.',
       emptyTitle: 'No collaborators yet',
       emptyText: 'Invite the birthday girl, your planner or anyone helping you organize the party.',
-      freeNotice: 'On the free plan only the event owner has access. Unlock your full event to invite more people.',
+      locked: { title: 'Inviting collaborators is part of the full event', text: 'You can still see who has access, remove people and cancel invitations. To invite more people, change roles or resend, go premium.', cta: 'Go premium' },
       actionsFor: 'Actions for {name}',
       roles: { owner: 'Owner', editor: 'Editor', viewer: 'View only' },
       roleHelp: { editor: 'Can see and change everything except collaborator invitations and deleting the event.', viewer: 'Can see the event but change nothing.' },
@@ -978,6 +995,7 @@ export default {
       removed: 'Access removed.',
       roleChanged: 'Role updated.',
       inviteError: 'We could not send the invitation. Try again.',
+      tooManyRequests: 'You sent too many invitations in a row. Wait a moment and try again.',
       actionError: 'We could not complete the action. Try again.'
     },
     padrinos: {
@@ -1258,6 +1276,105 @@ export default {
       previewCalendar: 'Add to calendar',
       units: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec' }
     },
+    whatsapp: {
+      title: 'Send by WhatsApp',
+      button: 'Send by WhatsApp',
+      shareButton: 'Share by WhatsApp',
+      select: 'Pick guests',
+      selecting: 'Picked: {n} | Picked: {n}',
+      selectGuest: 'Pick {name}',
+      templateLabel: 'What to send',
+      audienceLabel: 'To whom',
+      templates: {
+        invitation: { name: 'Invitation', help: 'Your invitation with the link and buttons to reply in one tap.' },
+        reminder_pending: { name: 'Reminder to pending guests', help: 'A friendly nudge for whoever has not answered yet.' },
+        save_the_date: { name: 'Save the date', help: 'Share the date before the invitation goes out.' }
+      },
+      audience: {
+        all: 'Your whole list',
+        pending: 'Pending guests only',
+        selected: 'The ones I picked ({n}) | The ones I picked ({n})',
+        selectedHelp: 'Tap "Pick guests" in the list to mark them.'
+      },
+      previewLoading: 'Working out who will get it…',
+      preview: 'It will reach {n} guest. | It will reach {n} guests.',
+      previewSkip: {
+        no_phone: '{n} without a phone | {n} without a phone',
+        invalid_phone: '{n} with an invalid number | {n} with an invalid number',
+        opted_out: '{n} asked not to get messages | {n} asked not to get messages',
+        recently_sent: '{n} already got it today | {n} already got it today',
+        already_responded: '{n} already answered | {n} already answered',
+        daily_limit: '{n} would wait until tomorrow because of the daily limit | {n} would wait until tomorrow because of the daily limit'
+      },
+      next: 'Continue',
+      back: 'Back',
+      close: 'Close',
+      confirm: {
+        text: 'You are about to send "{template}" to {n} guest by WhatsApp. | You are about to send "{template}" to {n} guests by WhatsApp.',
+        note: 'Messages go out right away. Anyone who already got this same message today will not get it twice.',
+        send: 'Send now'
+      },
+      result: {
+        queued: '{n} message on its way | {n} messages on their way',
+        queuedHelp: 'You will see them move to sent, delivered and read in the list.',
+        skipped: '{n} guest was left out | {n} guests were left out',
+        resend: 'Send again to {n} guest | Send again to {n} guests'
+      },
+      skip: {
+        no_phone: 'They have no phone number. Add one so you can message them.',
+        invalid_phone: 'Their number does not look valid. Check it includes the country code, for example +1 305 555 0123.',
+        opted_out: 'They asked not to get more messages. We respect that.',
+        recently_sent: 'They already got this message in the last 24 hours.',
+        already_responded: 'They already answered your invitation, so no reminder is needed.',
+        daily_limit: 'You reached the daily message limit for this event. These were not sent; you can message them tomorrow.'
+      },
+      stateLabel: 'WhatsApp',
+      state: {
+        queued: 'Queued',
+        sent: 'Sent',
+        delivered: 'Delivered',
+        read: 'Read',
+        failed: 'Could not send',
+        no_phone: 'No phone',
+        opted_out: 'Opted out'
+      },
+      failedHelp: 'The message did not arrive.',
+      unknownDelivery: 'We do not know if this message arrived; check with your guest before retrying.',
+      retryConfirm: {
+        title: 'Retry the message?',
+        body: 'This message may have arrived. If you retry, your guest could get it twice. Check with them before continuing.',
+        send: 'Retry anyway'
+      },
+      retry: 'Try again',
+      retried: 'We tried again.',
+      summary: {
+        label: 'WhatsApp delivery summary',
+        title: '{n} message sent by WhatsApp | {n} messages sent by WhatsApp'
+      },
+      manual: {
+        title: 'Share by WhatsApp',
+        lockedTitle: 'Automatic sending is part of the full event',
+        lockedText: 'With the full event we message your whole list at once and you see who received and read each message.',
+        upgrade: 'Go premium',
+        help: 'Meanwhile, open WhatsApp with the invitation ready for each guest and send it yourself.',
+        share: 'Share',
+        shareLabel: 'Share {name}\'s invitation by WhatsApp',
+        empty: 'There are no guests in this view yet.'
+      },
+      errors: {
+        generic: 'We could not send the messages. Please try again in a moment.',
+        locked: 'Automatic sending is part of the full event.',
+        unavailable: 'WhatsApp is not connected yet. Meanwhile you can share each invitation by hand.',
+        templateNotApproved: 'This message is still being reviewed by WhatsApp. Try again later.',
+        noRecipients: 'There is nobody to send to in this group.',
+        tooMany: 'You can send to 500 guests at a time at most. Pick fewer or send in groups.',
+        selectSome: 'Pick at least one guest.',
+        notFailed: 'That message is no longer failed.',
+        dailyLimit: 'You reached the daily message limit for this event; you can keep going tomorrow.',
+        retryLimit: 'This message was already retried the maximum number of times.',
+        tooManyRequests: 'Too many attempts in a row. Wait a moment and try again.'
+      }
+    },
     roster: {
       progress: {
         label: 'Your guests’ answers',
@@ -1433,7 +1550,8 @@ export default {
       comments: 'Comments',
       dressCode: 'Dress code',
       memories: 'Memories',
-      music: 'Music'
+      music: 'Music',
+      whatsapp: 'WhatsApp'
     },
     dashboard: {
       loadError: 'We could not load some of your data. Try again in a moment.',
@@ -1653,12 +1771,15 @@ export default {
     },
     lead: '{module} is part of the full event.',
     generic: 'Available when you unlock your full event.',
+    leads: { collaborators: 'Inviting collaborators is part of the full event.' },
     modules: {
       menus: 'Each guest picks their dish when they confirm, and you see how many chose each option.',
       seating: 'Seat your guests at tables and have the floor plan ready for the venue.',
       suggested_music: 'Your guests suggest songs and vote for the ones they most want to dance to.',
       memories: 'Keep the photos of your party in one album.',
-      comments: 'Your guests leave you messages and good wishes on the invitation.'
+      comments: 'Your guests leave you messages and good wishes on the invitation.',
+      whatsapp: 'Automatic WhatsApp delivery of the invitation to your whole list, with the status of every message.',
+      collaborators: 'Invite your planner, the quinceañera or whoever helps you, and share the work with the role you choose.'
     },
     includes: 'With the full event you get:',
     back: 'Back to home',
@@ -1684,6 +1805,13 @@ export default {
       generic: 'We could not send your message. Please try again in a moment.'
     }
   },
+  announcements: {
+    region: 'Quinvite notices',
+    level: { info: 'Information', news: 'News', warning: 'Important notice' },
+    dismiss: 'Dismiss notice: {title}',
+    dismissFailed: 'We could not dismiss the notice. Please try again.',
+    opensNewTab: '(opens in a new tab)'
+  },
   maintenance: {
     title: 'We are making things better',
     defaultMessage: 'We are down for maintenance to make everything better. Please come back in a few minutes.',
@@ -1698,7 +1826,12 @@ export default {
     title: 'Go premium',
     text: 'This feature is part of the full event. Go premium to unlock it.',
     textNamed: '{name} is part of the full event. Go premium to unlock it.',
-    names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments' }
+    names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments', whatsapp: 'WhatsApp', collaborators: 'Collaborators' }
+  },
+  notFound: {
+    title: "We can't find this page",
+    text: 'The link may be incomplete or the page may no longer exist. Let us take you back so you can keep planning your celebration.',
+    backHome: 'Back to home'
   },
   impersonation: {
     region: 'Support session',
@@ -1781,6 +1914,52 @@ export default {
     download: 'Download PDF',
     noInvoice: 'The invoice for this purchase is not available yet.',
     status: { paid: 'Paid', refunded: 'Refunded' }
+  },
+  accountDeletion: {
+    zoneTitle: 'Danger zone',
+    zoneText: 'Deleting your account is permanent. Before you do, we show you exactly what will happen.',
+    open: 'Delete my account',
+    stepOf: 'Step {step} of {total}',
+    retry: 'Try again',
+    keep: 'I will keep it',
+    steps: {
+      1: { title: 'Before we say goodbye' },
+      2: { title: 'Confirm it is you' },
+      3: { title: 'One last confirmation' }
+    },
+    intro: 'This is what will happen to your account and your events:',
+    published: 'Your published event will be archived for {days} days and then deleted. Invitations you already sent will keep opening, view only, but nobody will be able to RSVP. | Your published event will be archived for {days} days and then deleted. Invitations you already sent will keep opening, view only, but nobody will be able to RSVP. | Your {n} published events will be archived for {days} days and then deleted. Invitations you already sent will keep opening, view only, but nobody will be able to RSVP.',
+    unpublished: 'Your unpublished event will be deleted right now, with its guests. | Your unpublished event will be deleted right now, with its guests. | Your {n} unpublished events will be deleted right now, with their guests.',
+    collaborating: 'You will leave the event where you collaborate with someone else. | You will leave the event where you collaborate with someone else. | You will leave the {n} events where you collaborate with other people.',
+    noEvents: 'You have no events, so none will be deleted.',
+    personal: 'Your name, email, phone and other personal data are erased immediately.',
+    invoices: 'Your invoices and purchases are kept as required by law and accounting, without your contact details.',
+    pendingNote: 'You have a payment in progress. If it does not finish before you confirm, we cannot delete the account yet.',
+    irreversible: 'This cannot be undone. There is no way to restore the account or its events.',
+    typeEmailIntro: 'To be sure it is you, type your account email exactly as it appears here:',
+    emailLabel: 'Your email',
+    emailHint: 'It must be identical to the one above.',
+    passwordLabel: 'Your password',
+    finalText: 'You are about to delete the account of:',
+    confirmButton: 'Yes, delete my account',
+    errors: {
+      preview: 'We could not load your account summary. Please try again.',
+      emailMismatch: 'That email does not match your account.',
+      passwordRequired: 'Enter your password to continue.',
+      invalidPassword: 'The password is not correct.',
+      staff: 'This account is part of the support team. Ask to be removed from the team and try again.',
+      pendingPayment: 'You have a payment in progress. Wait for it to finish or cancel it, then try again.',
+      tooMany: 'Too many attempts. Wait a while before trying again.',
+      tooManyMinutes: 'Too many attempts. Try again in {minutes} minutes.',
+      tooManySeconds: 'Too many attempts. Try again in {seconds} seconds.',
+      generic: 'We could not delete the account. Nothing was erased; please try again.'
+    }
+  },
+  accountDeleted: {
+    title: 'Your account was deleted',
+    message: 'Thank you for celebrating with us. Your personal data is erased and we signed you out.',
+    mail: 'We sent you an email to confirm it. If you ever want to come back, you can create a new account.',
+    home: 'Go to the home page'
   },
   account: {
     title: 'My account',

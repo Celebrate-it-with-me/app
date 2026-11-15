@@ -41,6 +41,7 @@ export default {
     start: 'Primeros pasos',
     home: 'Invitaciones digitales para quince y bodas',
     signIn: 'Entrar',
+    notFound: 'Página no encontrada',
     signUp: 'Crear cuenta',
     forgot: 'Recuperar contraseña',
     reset: 'Nueva contraseña',
@@ -82,7 +83,7 @@ export default {
       'Crea una invitación hermosa, compártela por WhatsApp y mira quién confirma. Sin imprimir, sin perseguir a nadie.',
     cta: 'Crear mi evento gratis',
     secondary: 'Ver una invitación de ejemplo',
-    trust: 'Gratis hasta 30 invitados · Todo por $79, una sola vez'
+    trust: 'Gratis hasta 30 invitados · Evento completo $99, o $79 con el código LANZAMIENTO79'
   },
   mock: {
     demoLabel: 'Ejemplo de invitación: los XV de Valentina',
@@ -179,6 +180,10 @@ export default {
       badge: 'Para organizarlo todo',
       tagline: 'Tu celebración completa, en un solo lugar.',
       price: '$79',
+      listPrice: '$99',
+      listPriceLabel: 'Precio normal:',
+      offer: 'Oferta de lanzamiento: $79 con el código LANZAMIENTO79',
+      offerNote: 'Cupos limitados. El precio normal es $99. Escribe el código al desbloquear; te lo dejamos listo.',
       currency: 'USD',
       note: 'Pago único por evento · Sin suscripción',
       intro: 'Todo lo del plan gratis, más:',
@@ -221,7 +226,7 @@ export default {
       },
       {
         q: '¿Cuándo y cómo pago?',
-        a: 'Solo si decides desbloquear el evento completo: un pago de $79 con tarjeta, una sola vez. Crear el evento y usarlo en gratis no cuesta nada ni pide tarjeta.'
+        a: 'Solo si decides desbloquear el evento completo: un pago único de $99 con tarjeta. De lanzamiento, con el código LANZAMIENTO79 son $79 (cupos limitados). Crear el evento y usarlo en gratis no cuesta nada ni pide tarjeta.'
       },
       {
         q: '¿Qué pasa con los teléfonos de mis invitados?',
@@ -268,7 +273,11 @@ export default {
     forgotSent: 'Revisa tu correo. Si existe una cuenta con esa dirección, recibirás el enlace en unos minutos.',
     resetTitle: 'Nueva contraseña',
     resetText: 'Escribe tu correo y la contraseña nueva.',
-    resetInvalid: 'Este enlace no es válido o ya expiró. Pide uno nuevo desde "Olvidé mi contraseña".',
+    resetExpired: 'Este enlace ya caducó o ya se usó. Pide uno nuevo desde "Olvidé mi contraseña".',
+    tooManyAttempts: 'Demasiados intentos. Espera un momento e inténtalo de nuevo.',
+    tooManyAttemptsSeconds: 'Demasiados intentos. Espera {seconds} segundos e inténtalo de nuevo.',
+    tooManyAttemptsMinutes: 'Demasiados intentos. Espera {minutes} minutos e inténtalo de nuevo.',
+    resetInvalid: 'Este enlace caducó o no es válido. Pide uno nuevo desde "Olvidé mi contraseña".',
     newPassword: 'Contraseña nueva',
     confirmPassword: 'Repite la contraseña',
     resetSubmit: 'Cambiar contraseña',
@@ -295,7 +304,13 @@ export default {
     validity: 'La invitación vale 7 días. Si ya tienes cuenta, entra para aceptarla.',
     noToken: 'Falta el código de la invitación.',
     invalid: 'La invitación no es válida o expiró.',
+    used: 'Esta invitación ya fue usada o venció.',
     acceptFailed: 'No pudimos aceptar la invitación.',
+    processing: 'Procesando tu invitación...',
+    processingWait: 'Un momento, por favor.',
+    noneValid: 'No encontramos una invitación válida para tu cuenta.',
+    welcome: 'Listo: ya formas parte de "{event}".',
+    processError: 'No pudimos aceptar la invitación. Inténtalo de nuevo más tarde.',
     declineFailed: 'No pudimos rechazar la invitación.'
   },
   validation: {
@@ -695,6 +710,8 @@ export default {
       cancel: 'Cancelar',
       loadError: 'No pudimos cargar la música sugerida.',
       searchError: 'No pudimos buscar canciones. Inténtalo de nuevo.',
+      searchUnavailable: 'La búsqueda de canciones no está disponible ahora, inténtalo en un momento.',
+      searchInvalid: 'La búsqueda no es válida. Escribe un nombre más corto.',
       added: 'Canción agregada.',
       addError: 'No pudimos agregar la canción.',
       removed: 'Canción eliminada.',
@@ -948,7 +965,7 @@ export default {
       loadError: 'Revisa tu conexión e inténtalo de nuevo.',
       emptyTitle: 'Aún no hay colaboradores',
       emptyText: 'Invita a la quinceañera, a tu planner o a quien te ayude a organizar la fiesta.',
-      freeNotice: 'En el plan gratis solo tiene acceso la dueña del evento. Desbloquea tu evento completo para invitar a más personas.',
+      locked: { title: 'Invitar colaboradoras es parte del evento completo', text: 'Aquí sigues viendo a quienes ya tienen acceso y puedes quitarlos o cancelar invitaciones. Para invitar a más personas, cambiar roles o reenviar, pasa a premium.', cta: 'Pasa a premium' },
       actionsFor: 'Acciones para {name}',
       roles: { owner: 'Dueña', editor: 'Editor', viewer: 'Solo lectura' },
       roleHelp: { editor: 'Puede ver y cambiar todo menos las invitaciones a colaborar y borrar el evento.', viewer: 'Puede ver el evento, sin cambiar nada.' },
@@ -978,6 +995,7 @@ export default {
       removed: 'Acceso quitado.',
       roleChanged: 'Rol actualizado.',
       inviteError: 'No pudimos enviar la invitación. Inténtalo de nuevo.',
+      tooManyRequests: 'Enviaste demasiadas invitaciones seguidas. Espera un momento e inténtalo de nuevo.',
       actionError: 'No pudimos completar la acción. Inténtalo de nuevo.'
     },
     padrinos: {
@@ -1258,6 +1276,105 @@ export default {
       previewCalendar: 'Agregar al calendario',
       units: { days: 'días', hours: 'horas', minutes: 'min', seconds: 'seg' }
     },
+    whatsapp: {
+      title: 'Enviar por WhatsApp',
+      button: 'Enviar por WhatsApp',
+      shareButton: 'Compartir por WhatsApp',
+      select: 'Elegir invitados',
+      selecting: 'Elegidos: {n} | Elegidos: {n}',
+      selectGuest: 'Elegir a {name}',
+      templateLabel: 'Qué quieres enviar',
+      audienceLabel: 'A quién',
+      templates: {
+        invitation: { name: 'Invitación', help: 'Tu invitación con el enlace y botones para confirmar con un toque.' },
+        reminder_pending: { name: 'Recordatorio a pendientes', help: 'Un recordatorio amable para quien aún no responde.' },
+        save_the_date: { name: 'Save the date', help: 'Avisa la fecha antes de enviar la invitación.' }
+      },
+      audience: {
+        all: 'Toda tu lista',
+        pending: 'Solo los pendientes',
+        selected: 'Los que elegí ({n}) | Los que elegí ({n})',
+        selectedHelp: 'Pulsa «Elegir invitados» en la lista para marcarlos.'
+      },
+      previewLoading: 'Calculando a quién le llegará…',
+      preview: 'Le llegará a {n} invitado. | Le llegará a {n} invitados.',
+      previewSkip: {
+        no_phone: '{n} sin teléfono | {n} sin teléfono',
+        invalid_phone: '{n} con número no válido | {n} con número no válido',
+        opted_out: '{n} pidió no recibir mensajes | {n} pidieron no recibir mensajes',
+        recently_sent: '{n} ya lo recibió hoy | {n} ya lo recibieron hoy',
+        already_responded: '{n} ya respondió | {n} ya respondieron',
+        daily_limit: '{n} quedaría para mañana por el límite diario | {n} quedarían para mañana por el límite diario'
+      },
+      next: 'Continuar',
+      back: 'Volver',
+      close: 'Cerrar',
+      confirm: {
+        text: 'Vas a enviar «{template}» a {n} invitado por WhatsApp. | Vas a enviar «{template}» a {n} invitados por WhatsApp.',
+        note: 'Los mensajes salen de inmediato. A quien ya recibió esta misma plantilla hoy no se le repite.',
+        send: 'Enviar ahora'
+      },
+      result: {
+        queued: '{n} mensaje en camino | {n} mensajes en camino',
+        queuedHelp: 'Verás cómo pasan a enviado, entregado y leído en la lista.',
+        skipped: 'No se envió a {n} invitado | No se envió a {n} invitados',
+        resend: 'Enviar de nuevo a {n} invitado | Enviar de nuevo a {n} invitados'
+      },
+      skip: {
+        no_phone: 'No tienen teléfono. Añade su número para poder escribirles.',
+        invalid_phone: 'Su número no parece válido. Revísalo con el código del país, por ejemplo +1 305 555 0123.',
+        opted_out: 'Pidieron no recibir más mensajes. Respetamos su decisión.',
+        recently_sent: 'Ya recibieron este mensaje en las últimas 24 horas.',
+        already_responded: 'Ya respondieron a tu invitación, no hace falta recordarles.',
+        daily_limit: 'Llegaste al límite diario de mensajes para este evento. Estos quedaron sin enviar; podrás escribirles mañana.'
+      },
+      stateLabel: 'WhatsApp',
+      state: {
+        queued: 'En cola',
+        sent: 'Enviado',
+        delivered: 'Entregado',
+        read: 'Leído',
+        failed: 'No se pudo enviar',
+        no_phone: 'Sin teléfono',
+        opted_out: 'No quiere mensajes'
+      },
+      failedHelp: 'El mensaje no llegó.',
+      unknownDelivery: 'No sabemos si este mensaje llegó; revisa con tu invitado antes de reintentar.',
+      retryConfirm: {
+        title: '¿Reintentar el mensaje?',
+        body: 'Puede que este mensaje sí haya llegado. Si lo reintentas, tu invitado podría recibirlo dos veces. Revisa con él antes de continuar.',
+        send: 'Reintentar de todos modos'
+      },
+      retry: 'Reintentar',
+      retried: 'Volvimos a intentarlo.',
+      summary: {
+        label: 'Resumen de envíos por WhatsApp',
+        title: '{n} mensaje enviado por WhatsApp | {n} mensajes enviados por WhatsApp'
+      },
+      manual: {
+        title: 'Compartir por WhatsApp',
+        lockedTitle: 'El envío automático es parte del evento completo',
+        lockedText: 'Con el evento completo escribimos a toda tu lista de una vez y ves quién recibió y leyó cada mensaje.',
+        upgrade: 'Pasa a premium',
+        help: 'Mientras tanto, abre WhatsApp con la invitación lista para cada invitado y envíala tú.',
+        share: 'Compartir',
+        shareLabel: 'Compartir la invitación de {name} por WhatsApp',
+        empty: 'Aún no hay invitados en esta vista.'
+      },
+      errors: {
+        generic: 'No pudimos enviar los mensajes. Inténtalo de nuevo en un momento.',
+        locked: 'El envío automático es parte del evento completo.',
+        unavailable: 'WhatsApp todavía no está conectado. Mientras tanto puedes compartir cada invitación a mano.',
+        templateNotApproved: 'Este mensaje aún está en revisión por WhatsApp. Prueba de nuevo más tarde.',
+        noRecipients: 'No hay nadie a quien enviar en este grupo.',
+        tooMany: 'Puedes enviar a 500 invitados a la vez como máximo. Elige menos o envía por grupos.',
+        selectSome: 'Elige al menos un invitado.',
+        notFailed: 'Ese mensaje ya no está fallido.',
+        dailyLimit: 'Llegaste al límite diario de mensajes para este evento; podrás seguir mañana.',
+        retryLimit: 'Este mensaje ya se reintentó el máximo de veces.',
+        tooManyRequests: 'Demasiados intentos seguidos. Espera un momento e inténtalo de nuevo.'
+      }
+    },
     roster: {
       progress: {
         label: 'Respuestas de tus invitados',
@@ -1433,7 +1550,8 @@ export default {
       comments: 'Comentarios',
       dressCode: 'Vestimenta',
       memories: 'Recuerdos',
-      music: 'Música'
+      music: 'Música',
+      whatsapp: 'WhatsApp'
     },
     dashboard: {
       loadError: 'No pudimos cargar algunos datos. Intenta de nuevo en un momento.',
@@ -1653,12 +1771,15 @@ export default {
     },
     lead: '{module} es parte del evento completo.',
     generic: 'Disponible cuando desbloqueas tu evento completo.',
+    leads: { collaborators: 'Invitar colaboradoras es parte del evento completo.' },
     modules: {
       menus: 'Cada invitado elige su plato al confirmar y tú ves cuántos pidió cada opción.',
       seating: 'Acomoda a tus invitados en mesas y ten el plano listo para el salón.',
       suggested_music: 'Tus invitados proponen canciones y votan las que más quieren bailar.',
       memories: 'Guarda las fotos de tu fiesta en un álbum.',
-      comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.'
+      comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.',
+      whatsapp: 'Envío automático de la invitación por WhatsApp a toda tu lista, con el estado de cada mensaje.',
+      collaborators: 'Invita a tu planner, a la quinceañera o a quien te ayude y repartan el trabajo con el rol que quieras.'
     },
     includes: 'Con el evento completo tienes:',
     back: 'Volver al inicio',
@@ -1684,6 +1805,13 @@ export default {
       generic: 'No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.'
     }
   },
+  announcements: {
+    region: 'Avisos de Quinvite',
+    level: { info: 'Información', news: 'Novedad', warning: 'Aviso importante' },
+    dismiss: 'Cerrar aviso: {title}',
+    dismissFailed: 'No pudimos cerrar el aviso. Inténtalo de nuevo.',
+    opensNewTab: '(se abre en una pestaña nueva)'
+  },
   maintenance: {
     title: 'Estamos haciendo mejoras',
     defaultMessage: 'Estamos en mantenimiento para dejar todo mejor. Vuelve en unos minutos.',
@@ -1698,7 +1826,12 @@ export default {
     title: 'Pasa a premium',
     text: 'Esta función es parte del evento completo. Pasa a premium para desbloquearla.',
     textNamed: '{name} es parte del evento completo. Pasa a premium para desbloquearla.',
-    names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios' }
+    names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios', whatsapp: 'WhatsApp', collaborators: 'Colaboradores' }
+  },
+  notFound: {
+    title: 'No encontramos esta página',
+    text: 'Puede que el enlace esté incompleto o que la página ya no exista. Te llevamos de vuelta para que sigas con tu celebración.',
+    backHome: 'Volver al inicio'
   },
   impersonation: {
     region: 'Sesión de soporte',
@@ -1781,6 +1914,52 @@ export default {
     download: 'Descargar PDF',
     noInvoice: 'La factura de esta compra todavía no está disponible.',
     status: { paid: 'Pagada', refunded: 'Reembolsada' }
+  },
+  accountDeletion: {
+    zoneTitle: 'Zona de peligro',
+    zoneText: 'Eliminar tu cuenta es definitivo. Antes de hacerlo te mostramos exactamente qué pasará.',
+    open: 'Eliminar mi cuenta',
+    stepOf: 'Paso {step} de {total}',
+    retry: 'Reintentar',
+    keep: 'Mejor me quedo',
+    steps: {
+      1: { title: 'Antes de despedirnos' },
+      2: { title: 'Confirma que eres tú' },
+      3: { title: 'Última confirmación' }
+    },
+    intro: 'Esto es lo que pasará con tu cuenta y tus eventos:',
+    published: 'Tu evento publicado quedará archivado {days} días y luego se borrará. Las invitaciones que ya enviaste seguirán abriéndose, solo para ver, pero nadie podrá confirmar asistencia. | Tu evento publicado quedará archivado {days} días y luego se borrará. Las invitaciones que ya enviaste seguirán abriéndose, solo para ver, pero nadie podrá confirmar asistencia. | Tus {n} eventos publicados quedarán archivados {days} días y luego se borrarán. Las invitaciones que ya enviaste seguirán abriéndose, solo para ver, pero nadie podrá confirmar asistencia.',
+    unpublished: 'Tu evento sin publicar se borrará ahora mismo, con sus invitados. | Tu evento sin publicar se borrará ahora mismo, con sus invitados. | Tus {n} eventos sin publicar se borrarán ahora mismo, con sus invitados.',
+    collaborating: 'Saldrás del evento en el que colaboras con otra persona. | Saldrás del evento en el que colaboras con otra persona. | Saldrás de los {n} eventos en los que colaboras con otras personas.',
+    noEvents: 'No tienes eventos, así que no se borrará ninguno.',
+    personal: 'Tu nombre, correo, teléfono y demás datos personales se borran de inmediato.',
+    invoices: 'Tus facturas y compras se conservan por obligación legal y contable, sin tus datos de contacto.',
+    pendingNote: 'Tienes un pago en curso. Si no termina antes de que confirmes, no podremos eliminar la cuenta todavía.',
+    irreversible: 'Esto no se puede deshacer. No hay forma de restaurar la cuenta ni sus eventos.',
+    typeEmailIntro: 'Para estar seguros de que eres tú, escribe el correo de tu cuenta exactamente como aparece aquí:',
+    emailLabel: 'Tu correo',
+    emailHint: 'Debe ser idéntico al de arriba.',
+    passwordLabel: 'Tu contraseña',
+    finalText: 'Vas a eliminar la cuenta de:',
+    confirmButton: 'Sí, eliminar mi cuenta',
+    errors: {
+      preview: 'No pudimos cargar el resumen de tu cuenta. Inténtalo de nuevo.',
+      emailMismatch: 'Ese correo no coincide con el de tu cuenta.',
+      passwordRequired: 'Escribe tu contraseña para continuar.',
+      invalidPassword: 'La contraseña no es correcta.',
+      staff: 'Esta cuenta forma parte del equipo de soporte. Pide que te quiten del equipo y vuelve a intentarlo.',
+      pendingPayment: 'Tienes un pago en curso. Espera a que termine o cancélalo, y vuelve a intentarlo.',
+      tooMany: 'Hiciste demasiados intentos. Espera un rato antes de volver a probar.',
+      tooManyMinutes: 'Hiciste demasiados intentos. Vuelve a probar en {minutes} minutos.',
+      tooManySeconds: 'Hiciste demasiados intentos. Vuelve a probar en {seconds} segundos.',
+      generic: 'No pudimos eliminar la cuenta. No se borró nada; inténtalo de nuevo.'
+    }
+  },
+  accountDeleted: {
+    title: 'Tu cuenta fue eliminada',
+    message: 'Gracias por haber celebrado con nosotros. Tus datos personales ya se borraron y cerramos tu sesión.',
+    mail: 'Te enviamos un correo para confirmarlo. Si algún día quieres volver, puedes crear una cuenta nueva.',
+    home: 'Ir al inicio'
   },
   account: {
     title: 'Mi cuenta',

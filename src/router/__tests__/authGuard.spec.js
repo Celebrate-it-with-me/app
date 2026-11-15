@@ -96,6 +96,17 @@ describe('authGuard inside a real vue-router 5 router', () => {
     expect(router.currentRoute.value.query.redirect).toBe('/dashboard')
   })
 
+  it('never nests sign-in inside the redirect', async () => {
+    const router = makeRouter()
+    await router.push('/dashboard')
+    // Hydration of a protected route reached from sign-in itself must not point back at sign-in.
+    expect(router.currentRoute.value.query.redirect).toBe('/dashboard')
+    const { authGuard } = await import('../authGuard')
+    const result = await authGuard({ meta: { requiresAuth: true }, fullPath: '/sign-in?redirect=/sign-in?redirect=/dashboard' })
+    expect(result).toEqual({ name: 'sign-in', query: { redirect: '/dashboard' } })
+    expect(await authGuard({ meta: { requiresAuth: true }, fullPath: '/sign-in' })).toEqual({ name: 'sign-in', query: {} })
+  })
+
   it('opens protected routes for authenticated users', async () => {
     userStore.isAuthenticated = true
     const router = makeRouter()

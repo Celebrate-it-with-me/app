@@ -12,13 +12,17 @@ import AuthCard from '@/components/external/auth/AuthCard.vue'
 import GoogleButton from '@/components/external/auth/GoogleButton.vue'
 import { useCaptcha } from '@/components/external/auth/useCaptcha'
 import { storePendingType } from '@/modules/onboarding/utils/pendingType'
+import { storePendingCode } from '@/modules/payments/utils/pendingCode'
 
 const { t } = useI18n()
 const userStore = useUserStore()
 const captcha = useCaptcha()
 
 // The landing can send ?type=quinceanera|wedding: it is remembered until the first event is created.
-storePendingType(useRoute().query.type)
+const route = useRoute()
+storePendingType(route.query.type)
+// ?code=LANZAMIENTO79 from the landing: kept until the payment panel preloads it.
+storePendingCode(route.query.code)
 
 const sending = ref(false)
 const done = ref(false)

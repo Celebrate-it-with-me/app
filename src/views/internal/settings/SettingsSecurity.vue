@@ -5,12 +5,17 @@ import { useI18n } from 'vue-i18n'
 import * as zod from 'zod'
 import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { useUserStore } from '@/stores/useUserStore'
+import { authErrorMessage } from '@/utils/authErrors'
 import { UiCard, UiField, UiInput, UiButton, useToast } from '@/ui'
+import DeleteAccountSection from '@/modules/account-deletion/components/DeleteAccountSection.vue'
+import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 
 const { t } = useI18n()
 const { success, error } = useToast()
 const userStore = useUserStore()
 const saving = ref(false)
+// Support sessions cannot delete the account: the section is not offered.
+const impersonation = useImpersonationStore()
 
 const { handleSubmit, defineField, errors, resetForm, setFieldError } = useForm({
   validationSchema: computed(() => toTypedSchema(
@@ -43,7 +48,8 @@ const onSubmit = handleSubmit(async values => {
     }
   } catch (e) {
     const fieldErrors = e.response?.data?.errors ?? {}
-    if (fieldErrors.currentPassword) setFieldError('currentPassword', t('account.security.wrongCurrent'))
+    if (e.response?.status === 429) error(authErrorMessage(e, t))
+    else if (fieldErrors.currentPassword) setFieldError('currentPassword', t('account.security.wrongCurrent'))
     else error(t('account.saveError'))
   } finally {
     saving.value = false
@@ -71,4 +77,5 @@ const onSubmit = handleSubmit(async values => {
       </UiButton>
     </form>
   </UiCard>
+  <DeleteAccountSection v-if="!impersonation.active" class="mt-6" />
 </template>

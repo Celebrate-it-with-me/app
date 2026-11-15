@@ -13,6 +13,7 @@ import UserMenu from '@/components/internal/shell/UserMenu.vue'
 import AppSidebar from '@/components/internal/shell/AppSidebar.vue'
 import AppBottomNav from '@/components/internal/shell/AppBottomNav.vue'
 import SupportHelpButton from '@/modules/support/components/SupportHelpButton.vue'
+import AnnouncementBanners from '@/modules/announcements/components/AnnouncementBanners.vue'
 import ImpersonationBanner from '@/modules/impersonation/components/ImpersonationBanner.vue'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import CPageLoaderV2 from '@/components/UI/loading/CPageLoaderV2.vue'
@@ -30,7 +31,9 @@ const collaboratorsStore = useCollaboratorsStore()
 const impersonation = useImpersonationStore()
 const route = useRoute()
 const router = useRouter()
-const loading = ref(false)
+// Starts true: the layout loads before it shows a screen. With false the first render mounted the screen, onMounted
+// then unmounted it behind the loader and mounted it again, so every screen fetched its data twice on a full reload.
+const loading = ref(true)
 
 const shouldShowRouteView = computed(() => {
   if (route.name === 'invitations-processor') return true
@@ -38,21 +41,21 @@ const shouldShowRouteView = computed(() => {
 })
 
 onMounted(async () => {
-  // The app is light-only; make sure no legacy dark class survives.
-  document.documentElement.classList.remove('dark')
-  loading.value = true
-  if (!hydrationStore.isHydrated) {
-    await nextTick(async () => {
-      await hydrationStore.hydrateAll()
-    })
-  }
-  await collaboratorsStore.loadInvitations()
+  try {
+    if (!hydrationStore.isHydrated) {
+      await nextTick(async () => {
+        await hydrationStore.hydrateAll()
+      })
+    }
+    await collaboratorsStore.loadInvitations()
 
-  if (userStore.isAuthenticated) {
-    if (userStore.justLogin === true) userStore.justLogin = false
-    if (route.path === '/dashboard' || route.path === '/dashboard/') await determinatePostLoginRoute()
+    if (userStore.isAuthenticated) {
+      if (userStore.justLogin === true) userStore.justLogin = false
+      if (route.path === '/dashboard' || route.path === '/dashboard/') await determinatePostLoginRoute()
+    }
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 })
 
 const determinatePostLoginRoute = async () => {
@@ -83,6 +86,8 @@ const determinatePostLoginRoute = async () => {
       </div>
     </header>
     </div>
+
+    <AnnouncementBanners />
 
     <div class="flex-1 lg:flex">
       <aside

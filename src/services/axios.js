@@ -1,10 +1,10 @@
 import axios from 'axios'
 import { useUserStore } from '@/stores/useUserStore'
 import router from '@/router'
-import { useNotificationStore } from '@/stores/useNotificationStore'
 import { isAccountSuspended, rememberSupportEmail, supportEmailFrom } from '@/utils/accountSuspended'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import { isBlockedError, isEndedError, readBlobBody } from '@/modules/impersonation/utils/impersonation'
+import { safeRedirect } from '@/utils/safeRedirect'
 import { useToast } from '@/ui'
 import i18n from '@/locales/i18n'
 import { isModuleLocked, notifyModuleLocked } from '@/utils/moduleLocked'
@@ -89,6 +89,10 @@ const onError = async error => {
           notifyModuleLocked(error, { toast: useToast().toast, t: i18n.global.t })
           break
         }
+        // The account cannot be deleted while it is support staff: the screen explains it, no redirect.
+        if (error.response.data?.code === 'staff_account') break
+        // An expired or tampered signed link (reset password...): the screen explains it, no redirect.
+        if (error.response.data?.code === 'invalid_signed_link') break
         if (isAccountSuspended(error)) {
           await handleSuspended(error)
           break
@@ -125,12 +129,10 @@ const handleSuspended = async error => {
 
 const handleUnauthorized = async () => {
   const userStore = useUserStore()
-  const notificationStore = useNotificationStore()
-
   await userStore.logOut()
 
-  const currentPath = router.currentRoute.value.fullPath
-  await router.push({ name: 'sign-in', query: { redirect: currentPath } })
+  const redirect = safeRedirect(router.currentRoute.value.fullPath)
+  await router.push({ name: 'sign-in', query: redirect ? { redirect } : {} })
 }
 
 export { CWM_API, onError }

@@ -31,7 +31,13 @@ watchEffect(() => {
 })
 
 const moduleName = computed(() => (isGuestsLimit.value ? t('app.nav.guests') : view.value ? t(view.value.labelKey) : ''))
-const lead = computed(() => (isFull.value ? t('unlock.full.lead') : isGuestsLimit.value ? t('unlock.guestsLimit.lead') : t('unlock.lead', { module: moduleName.value })))
+const lead = computed(() => {
+  if (isFull.value) return t('unlock.full.lead')
+  if (isGuestsLimit.value) return t('unlock.guestsLimit.lead')
+  // A module whose name does not read well in "{module} es parte..." brings its own sentence.
+  if (te(`unlock.leads.${key.value}`)) return t(`unlock.leads.${key.value}`)
+  return t('unlock.lead', { module: moduleName.value })
+})
 const benefit = computed(() => {
   if (isFull.value) return t('unlock.full.benefit')
   if (isGuestsLimit.value) return t('unlock.guestsLimit.benefit')

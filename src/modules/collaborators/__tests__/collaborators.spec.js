@@ -4,8 +4,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import i18n, { setLocale } from '@/locales/i18n'
+import { useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { canManage, isFreePlan, normalizeCollaborator, rowActions, sortCollaborators, emailError } from '../utils/collaborators'
+import { canManage, isCollaboratorsLocked, normalizeCollaborator, rowActions, sortCollaborators, emailError } from '../utils/collaborators'
 
 const api = vi.hoisted(() => ({
   loadCollaborators: vi.fn(),
@@ -50,10 +51,11 @@ describe('collaborator helpers', () => {
     expect(canManage({ userRole: 'editor' }, () => false)).toBe(false)
   })
 
-  it('detects the free plan from locked modules only', () => {
-    expect(isFreePlan({ modules: [{ state: 'locked' }] })).toBe(true)
-    expect(isFreePlan({ modules: [{ state: 'active' }] })).toBe(false)
-    expect(isFreePlan({})).toBe(false)
+  it('detects the locked collaborators module, and no other', () => {
+    expect(isCollaboratorsLocked({ modules: [{ key: 'collaborators', state: 'locked' }] })).toBe(true)
+    expect(isCollaboratorsLocked({ modules: [{ key: 'menus', state: 'locked' }] })).toBe(false)
+    expect(isCollaboratorsLocked({ modules: [{ key: 'collaborators', state: 'active' }] })).toBe(false)
+    expect(isCollaboratorsLocked({})).toBe(false)
   })
 
   it('validates the email', () => {
@@ -114,13 +116,53 @@ describe('CollaboratorsView', () => {
     expect(wrapper.text()).not.toContain('Invitar')
   })
 
-  it('tells the free plan that only the owner is in, without blocking the invite button', async () => {
-    await setup({ modules: [{ key: 'menus', state: 'locked' }] })
-    expect(wrapper.get('[data-testid=free-plan-note]').text()).toContain('En el plan gratis solo tiene acceso la dueña')
-    expect(wrapper.text()).toContain('Invitar')
-    wrapper.unmount()
-    await setup({ modules: [{ key: 'menus', state: 'active' }] })
-    expect(wrapper.find('[data-testid=free-plan-note]').exists()).toBe(false)
+  describe('when collaborators is locked', () => {
+    const lockedModules = [{ key: 'collaborators', state: 'locked' }]
+
+    it('shows the warm notice with the premium CTA, disables inviting and keeps the list', async () => {
+      await setup({ modules: lockedModules })
+      expect(wrapper.get('[data-testid=locked-note]').text()).toContain('Invitar colaboradoras es parte del evento completo')
+      expect(wrapper.get('[data-testid=locked-cta]').attributes('href')).toBe('/dashboard/unlock/collaborators')
+      expect(wrapper.text()).toContain('Lucía Planner')
+      const invite = wrapper.findAll('button').find(b => b.text() === 'Invitar')
+      expect(invite.attributes('disabled')).toBeDefined()
+    })
+
+    it('disables role change and resend but keeps remove and cancel', async () => {
+      await setup({ modules: lockedModules })
+      const open = async key => {
+        await wrapper.get(`[data-testid=collaborator-${key}] button`).trigger('click')
+        await flushPromises()
+        const items = [...body().querySelectorAll('[role=menuitem]')]
+        const state = Object.fromEntries(items.map(i => [i.textContent.trim(), i.hasAttribute('data-disabled')]))
+        document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+        await flushPromises()
+        return state
+      }
+      expect(await open('member-2')).toMatchObject({ 'Pasar a solo lectura': true, 'Quitar acceso': false })
+      expect(await open('invite-3')).toMatchObject({ 'Reenviar invitación': true, 'Cancelar invitación': false })
+    })
+
+    it('locks the screen on a 403 module_locked without a second toast', async () => {
+      api.inviteCollaborator.mockRejectedValue({ response: { status: 403, data: { code: 'module_locked', message: 'x' } } })
+      await setup()
+      expect(wrapper.find('[data-testid=locked-note]').exists()).toBe(false)
+      await wrapper.findAll('button').find(b => b.text() === 'Invitar').trigger('click')
+      await flushPromises()
+      const input = body().querySelector('input[type=email]')
+      input.value = 'nueva@x.com'
+      input.dispatchEvent(new Event('input'))
+      await flushPromises()
+      body().querySelector('#invite-collaborator').dispatchEvent(new Event('submit', { cancelable: true }))
+      await flushPromises()
+      expect(wrapper.find('[data-testid=locked-note]').exists()).toBe(true)
+      expect(body().textContent).not.toContain('No pudimos')
+    })
+  })
+
+  it('shows no locked notice when collaborators is active', async () => {
+    await setup({ modules: [{ key: 'collaborators', state: 'active' }, { key: 'menus', state: 'locked' }] })
+    expect(wrapper.find('[data-testid=locked-note]').exists()).toBe(false)
   })
 
   it('shows the empty state', async () => {
@@ -158,6 +200,22 @@ describe('CollaboratorsView', () => {
     form.dispatchEvent(new Event('submit', { cancelable: true }))
     await flushPromises()
     expect(api.inviteCollaborator).toHaveBeenCalledWith({ eventId: 7, email: 'nueva@x.com', role: 'editor' })
+  })
+
+  it('tells the organizer to wait when inviting is throttled (429)', async () => {
+    api.inviteCollaborator.mockRejectedValue({ response: { status: 429, data: { message: 'Too Many Attempts.' } } })
+    await setup()
+    await wrapper.findAll('button').find(b => b.text().includes('Invitar')).trigger('click')
+    await flushPromises()
+    const input = body().querySelector('input[type=email]')
+    input.value = 'nueva@x.com'
+    input.dispatchEvent(new Event('input'))
+    await flushPromises()
+    body().querySelector('#invite-collaborator').dispatchEvent(new Event('submit', { cancelable: true }))
+    await flushPromises()
+    const titles = useToast().toasts.map(x => x.title)
+    expect(titles.some(x => x.includes('Enviaste demasiadas invitaciones seguidas'))).toBe(true)
+    expect(titles).not.toContain('Too Many Attempts.')
   })
 
   it('asks for confirmation before removing access, and removes on confirm', async () => {

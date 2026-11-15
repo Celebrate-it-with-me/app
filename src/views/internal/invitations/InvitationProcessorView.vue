@@ -1,10 +1,13 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/useUserStore'
 import { useCollaboratorsStore } from '@/stores/useCollaboratorsStore'
 import { useHydrationStore } from '@/stores/useHydrationStore'
+import { acceptOnce } from './acceptOnce'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 
@@ -15,41 +18,40 @@ const userStore = useUserStore()
 const collaboratorsStore = useCollaboratorsStore()
 const hydrationStore = useHydrationStore()
 
+function pendingInvitations() {
+  try {
+    const list = JSON.parse(localStorage.getItem('pending_invitations') || '[]')
+    return Array.isArray(list) ? list : []
+  } catch {
+    return []
+  }
+}
+
 onMounted(async () => {
   const eventId = Number(route.params.id)
-  const currentEmail = userStore.email
-
-  const invites = JSON.parse(localStorage.getItem('pending_invitations'))
-
-  const invite = invites.find(
-    i => i.event.id === eventId && i.email === currentEmail && i.status === 'pending'
+  const invite = pendingInvitations().find(
+    i => i.event?.id === eventId && i.email === userStore.email && i.status === 'pending'
   )
 
   if (!invite) {
-    error.value = 'No valid invitation found for your account.'
+    error.value = t('invite.noneValid')
     loading.value = false
     return
   }
 
   try {
-    const response = await collaboratorsStore.acceptInvitation(invite)
-
-    if (response) {
-      await hydrationStore.hydrateAll()
+    const accepted = await acceptOnce(invite.id, () => collaboratorsStore.acceptInvitation(invite))
+    if (!accepted) {
+      error.value = t('invite.processError')
+      return
     }
-
-    // Send request to accept the invitation
-    /*await axios.post('/api/event-invitations/accept', {
-      invitation_id: invite.id,
-    })*/
-
-    invites.remove(invite.id)
-    success.value = `Welcome! You've been added to “${invite.event.event_name}”`
+    await hydrationStore.hydrateAll()
+    success.value = t('invite.welcome', { event: invite.event.event_name })
     setTimeout(() => {
       router.push('/dashboard/events')
     }, 2000)
   } catch {
-    error.value = 'There was an error accepting the invitation. Please try again later.'
+    error.value = t('invite.processError')
   } finally {
     loading.value = false
   }
@@ -57,18 +59,14 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="max-w-lg mx-auto mt-20 text-center px-4">
+  <div class="mx-auto mt-20 max-w-lg px-4 text-center" aria-live="polite">
     <div v-if="loading">
-      <p class="text-lg font-semibold text-gray-700">Processing your invitation...</p>
-      <p class="text-sm text-gray-500 mt-2">Please wait.</p>
+      <p class="text-lg font-semibold text-ink-800">{{ t('invite.processing') }}</p>
+      <p class="mt-2 text-sm text-ink-600">{{ t('invite.processingWait') }}</p>
     </div>
 
-    <div v-if="error" class="text-red-600 mt-4 text-sm">
-      {{ error }}
-    </div>
+    <p v-if="error" role="alert" class="mt-4 text-sm text-danger-700">{{ error }}</p>
 
-    <div v-if="success" class="text-green-600 mt-4 text-sm">
-      {{ success }}
-    </div>
+    <p v-if="success" class="mt-4 text-sm text-success-700">{{ success }}</p>
   </div>
 </template>

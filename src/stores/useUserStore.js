@@ -208,12 +208,13 @@ export const useUserStore = defineStore('userStore', {
      * Change password for non-authenticated user (password reset)
      * @param {Object} passwordData - Password change data
      * @param {string} passwordData.email - User email
+     * @param {string} passwordData.token - Reset token from the checked link
      * @param {string} passwordData.password - New password
      * @param {string} passwordData.passwordConfirmation - Password confirmation
      * @returns {Promise} API response
      */
-    async changePassword({ email, password, passwordConfirmation }) {
-      return await UserService.changePassword({ email, password, passwordConfirmation })
+    async changePassword({ email, token, password, passwordConfirmation }) {
+      return await UserService.changePassword({ email, token, password, passwordConfirmation })
     },
 
     /**
@@ -278,6 +279,19 @@ export const useUserStore = defineStore('userStore', {
      * Log out the current user and reset all stores
      */
     async logOut() {
+      smartResetAllStores()
+    },
+
+    /**
+     * User-initiated sign out: closes the server session first (best effort), then clears local state.
+     * Not used by the 401 handler, which must not call the API again.
+     */
+    async signOut() {
+      try {
+        await UserService.logOut()
+      } catch {
+        // Already expired or offline: the local state is cleared either way.
+      }
       smartResetAllStores()
     },
 

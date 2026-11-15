@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 import * as zod from 'zod'
 import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { useUserStore } from '@/stores/useUserStore'
+import { authErrorMessage, tokenFromLink } from '@/utils/authErrors'
 import { UiField, UiInput, UiButton, UiSkeleton } from '@/ui'
 import AuthCard from '@/components/external/auth/AuthCard.vue'
 
@@ -19,6 +20,7 @@ const sending = ref(false)
 const valid = ref(false)
 const accountEmail = ref('')
 const backendError = ref('')
+const resetToken = ref('')
 
 const { handleSubmit, defineField, errors } = useForm({
   validationSchema: computed(() => toTypedSchema(
@@ -49,7 +51,8 @@ onMounted(async () => {
     const response = await userStore.checkResetLink(confirmUrl)
     if (response.status === 200) {
       accountEmail.value = response.data?.data?.email ?? ''
-      valid.value = Boolean(accountEmail.value)
+      resetToken.value = response.data?.token ?? tokenFromLink(confirmUrl)
+      valid.value = Boolean(accountEmail.value && resetToken.value)
     } else {
       backendError.value = response.response?.data?.message ?? ''
     }
@@ -66,13 +69,14 @@ const onSubmit = handleSubmit(async values => {
   try {
     const response = await userStore.changePassword({
       email: values.email,
+      token: resetToken.value,
       password: values.password,
       passwordConfirmation: values.confirmPassword
     })
     if (response.status === 200) return router.push('/password-updated')
     backendError.value = response.response?.data?.message ?? t('common.genericError')
   } catch (e) {
-    backendError.value = e.response?.data?.message ?? t('common.genericError')
+    backendError.value = authErrorMessage(e, t)
   } finally {
     sending.value = false
   }
