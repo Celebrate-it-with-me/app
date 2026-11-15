@@ -9,7 +9,9 @@ import InvitationSection from './InvitationSection.vue'
 import InvitationButton from './InvitationButton.vue'
 
 const props = defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** Show the add-to-calendar buttons. */
+  calendar: { type: Boolean, default: true }
 })
 
 const { tt } = useInvitationContext()
@@ -28,7 +30,7 @@ const icsUrl = computed(() => {
 <template>
   <InvitationSection id="save-the-date" :title="section.title" :text="section.text">
     <p v-if="message" class="mx-auto max-w-prose whitespace-pre-line text-xl text-inv-ink-soft text-pretty">{{ message }}</p>
-    <div v-if="calendar" class="mt-8 flex flex-col items-center gap-3">
+    <div v-if="calendar && props.calendar" class="mt-8 flex flex-col items-center gap-3">
       <p class="flex items-center gap-2 text-sm font-medium text-inv-ink-soft">
         <CalendarPlus class="h-4 w-4" aria-hidden="true" />
         {{ tt('saveTheDate.addToCalendar') }}

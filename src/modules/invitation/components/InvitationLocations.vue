@@ -9,7 +9,11 @@ import InvitationPanel from './InvitationPanel.vue'
 import InvitationButton from './InvitationButton.vue'
 
 const props = defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** cards (a panel per place, default) | list (no panel) */
+  variant: { type: String, default: 'cards' },
+  /** Show the "see map" toggle. */
+  maps: { type: Boolean, default: true }
 })
 
 const { tt, locale } = useInvitationContext()
@@ -40,17 +44,17 @@ const mapSrc = place => {
 
 <template>
   <InvitationSection id="locations" :title="section.title" :text="section.text" variant="alt">
-    <ul class="flex flex-col gap-6">
-      <li v-for="place in places" :key="place.key">
-        <InvitationPanel>
+    <ul class="inv-locations flex flex-col gap-6" :data-variant="variant">
+      <li v-for="place in places" :key="place.key" class="inv-locations__item">
+        <component :is="variant === 'list' ? 'div' : InvitationPanel">
           <div class="flex flex-col items-center text-center">
-            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50">
+            <span class="inv-badge flex h-14 w-14 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50">
               <component :is="place.icon" class="h-6 w-6" aria-hidden="true" />
             </span>
             <p class="mt-4 text-sm font-medium text-inv-ink-soft">
               {{ tt(`locations.types.${place.type}`) }}<template v-if="place.time"> · {{ tt('locations.at', { time: place.time }) }}</template>
             </p>
-            <h3 class="mt-1 font-inv-heading text-2xl text-balance">{{ place.name }}</h3>
+            <h3 class="inv-locations__name mt-1 font-inv-heading text-2xl text-balance">{{ place.name }}</h3>
             <p class="mt-2 text-inv-ink-soft">{{ place.address }}</p>
             <p class="text-inv-ink-soft">{{ cityLine(place) }}</p>
             <p v-if="place.directions" class="mt-4 max-w-sm text-inv-ink-soft text-pretty">
@@ -69,6 +73,7 @@ const mapSrc = place => {
               <InvitationButton v-if="link(place.links?.waze)" variant="outline" :href="link(place.links?.waze)" target="_blank" rel="noopener">{{ tt('locations.waze') }}</InvitationButton>
             </div>
             <button
+              v-if="maps"
               type="button"
               class="mt-4 min-h-11 text-sm font-medium text-inv-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-inv-primary"
               :aria-expanded="!!mapOpen[place.key]"
@@ -77,7 +82,7 @@ const mapSrc = place => {
               {{ tt(mapOpen[place.key] ? 'locations.hideMap' : 'locations.showMap') }}
             </button>
             <iframe
-              v-if="mapOpen[place.key]"
+              v-if="maps && mapOpen[place.key]"
               :src="mapSrc(place)"
               :title="tt('locations.map', { name: place.name })"
               class="mt-2 h-72 w-full rounded-xl border-0"
@@ -85,7 +90,7 @@ const mapSrc = place => {
               referrerpolicy="no-referrer-when-downgrade"
             />
           </div>
-        </InvitationPanel>
+        </component>
       </li>
     </ul>
   </InvitationSection>

@@ -1,11 +1,9 @@
 import { computed, inject, provide, ref } from 'vue'
 import i18n from '@/locales/i18n'
 import InvitationService from '@/services/PublicEvents/InvitationService'
+import { formatWallClock } from './wallClock'
 
 export const INVITATION_KEY = Symbol('invitation')
-
-/** 'es' → 'es-US', 'en' → 'en-US': Intl locales for dates (Miami audience). */
-const INTL = { es: 'es-US', en: 'en-US' }
 
 /**
  * Language and data helpers shared by the public invitation and the admin preview:
@@ -17,9 +15,8 @@ export function invitationHelpers(invitation) {
   /** Translate `invitation.<key>` in the invitation's language. */
   const tt = (key, params = {}) => i18n.global.t(`invitation.${key}`, params, { locale: locale.value })
 
-  /** Wall-clock times: the API sends them without offset, the browser must not convert them. */
-  const formatDate = (iso, options = { dateStyle: 'long' }) =>
-    iso ? new Intl.DateTimeFormat(INTL[locale.value], options).format(new Date(iso)) : ''
+  /** Wall-clock times: the API sends them without offset, the browser must not convert them (see wallClock.js). */
+  const formatDate = (iso, options = { dateStyle: 'long' }) => formatWallClock(iso, locale.value, options)
 
   /** Replace the data of one section after the guest changed it (e.g. the RSVP answer). */
   function updateSection(type, data) {

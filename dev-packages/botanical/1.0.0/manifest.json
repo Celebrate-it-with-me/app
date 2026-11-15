@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "slug": "botanical",
+  "name": {
+    "es": "Botánica acuarela",
+    "en": "Watercolor botanical"
+  },
+  "description": {
+    "es": "Papel marfil, acuarela y eucalipto.",
+    "en": "Ivory paper, watercolor and eucalyptus."
+  },
+  "version": "1.0.0",
+  "level": 1,
+  "eventTypes": [
+    "wedding",
+    "quinceanera"
+  ],
+  "tier": "premium",
+  "visibility": "public",
+  "engineMin": 1,
+  "author": {
+    "name": "Equipo Quinvite",
+    "url": "https://quinvite.com"
+  },
+  "license": {
+    "id": "original-work",
+    "summary": "Obra original del equipo Quinvite; fuentes Cormorant Garamond y Great Vibes bajo SIL OFL 1.1.",
+    "document": "LICENSES.md"
+  },
+  "assetsCredits": [
+    {
+      "path": "assets/img/garland.svg",
+      "title": "Guirnalda de eucalipto",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/img/paper.svg",
+      "title": "Textura de papel",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/img/torn-edge.svg",
+      "title": "Borde de papel rasgado",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/img/wash-a.svg",
+      "title": "Mancha acuarela A",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/img/wash-b.svg",
+      "title": "Mancha acuarela B",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/fonts/cormorant-garamond-latin-400-normal.woff2",
+      "title": "Cormorant Garamond 400",
+      "author": "Christian Thalmann",
+      "source": "https://fonts.google.com/specimen/Cormorant+Garamond",
+      "license": "OFL-1.1"
+    },
+    {
+      "path": "assets/fonts/cormorant-garamond-latin-600-normal.woff2",
+      "title": "Cormorant Garamond 600",
+      "author": "Christian Thalmann",
+      "source": "https://fonts.google.com/specimen/Cormorant+Garamond",
+      "license": "OFL-1.1"
+    },
+    {
+      "path": "assets/fonts/great-vibes-latin-400-normal.woff2",
+      "title": "Great Vibes 400",
+      "author": "Robert Leuschke",
+      "source": "https://fonts.google.com/specimen/Great+Vibes",
+      "license": "OFL-1.1"
+    }
+  ],
+  "thirdPartyMarks": []
+}

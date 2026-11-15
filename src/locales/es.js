@@ -370,6 +370,7 @@ export default {
     retry: 'Reintentar',
     language: 'Idioma',
     invitedFor: 'Invitación para',
+    seats: '{n} lugar | {n} lugares',
     confirmCta: 'Confirmar asistencia',
     directions: 'Cómo llegar',
     madeWith: 'Hecho con Quinvite',

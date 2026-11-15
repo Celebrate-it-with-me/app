@@ -1,0 +1,41 @@
+/* Botanical (watercolor) cover package. Fonts are self-hosted OFL .woff2 (the server generates these @font-face). */
+
+
+
+.pkg-bot { --pkg-wash-a: #f0cdb6; --pkg-wash-b: #cdd6c3; --pkg-olive-ink: #6a6536; }
+
+.pkg-bot { position: relative; min-height: 100svh; background: var(--inv-surface-alt); }
+.pkg-bot-card { position: relative; max-width: 37.5rem; margin-inline: auto; overflow: hidden; background-color: var(--inv-surface); background-image: url(assets/img/paper.svg); text-align: center; }
+.pkg-bot-photo { position: relative; height: 21rem; /* torn-paper bottom edge: opaque block + jagged SVG strip as mask */
+  mask-image: linear-gradient(#000, #000), url(assets/img/torn-edge.svg);
+  mask-size: 100% calc(100% - 43px), 100% 44px; mask-position: top, bottom; mask-repeat: no-repeat; }
+.pkg-bot-body { position: relative; isolation: isolate; padding: 0.5rem 2rem 0; display: flex; flex-direction: column; align-items: center; }
+.pkg-bot-body > * { position: relative; z-index: 1; }
+.pkg-bot-body > .pkg-bot-wash { position: absolute; z-index: 0; pointer-events: none; mask: url(assets/img/wash-a.svg) center / 100% 100% no-repeat; }
+.pkg-bot-wash--a { left: -32%; top: 22%; width: 95%; height: 44%; background-color: var(--pkg-wash-a); opacity: 0.8; }
+.pkg-bot-wash--b { right: -30%; top: -4%; width: 80%; height: 36%; background-color: var(--pkg-wash-b); opacity: 0.7; mask-image: url(assets/img/wash-b.svg); }
+[data-inv-parity="even"] .pkg-bot-wash--a { transform: scaleX(-1); }
+
+.pkg-bot-phrase { margin: 0; max-width: 21rem; font-family: var(--inv-font-body); font-size: 1.25rem; line-height: 1.35; color: var(--inv-ink); text-wrap: balance; }
+.pkg-bot-names { margin-top: 1.5rem; font-family: var(--inv-font-script); font-size: 3.6rem; line-height: 1.02; color: var(--inv-accent); }
+.pkg-bot-names h1 { margin: 0; font-weight: 400; }
+.pkg-bot-desc { margin: 1.25rem 0 0; max-width: 20rem; font-size: 1.15rem; line-height: 1.35; color: var(--inv-ink-soft); text-wrap: pretty; }
+.pkg-bot-date { margin-top: 2rem; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; width: 100%; gap: 0.75rem; }
+.pkg-bot-date__side { display: block; text-transform: uppercase; padding: 0.55rem 0; border-block: 1px solid color-mix(in oklab, var(--inv-accent) 55%, transparent); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.12em; color: var(--pkg-olive-ink); }
+.pkg-bot-date__ring { display: grid; place-items: center; align-content: center; width: 5.5rem; height: 5.5rem; border-radius: 9999px; border: 1px solid var(--inv-accent); box-shadow: 0 0 0 4px var(--inv-surface), 0 0 0 5px color-mix(in oklab, var(--inv-accent) 55%, transparent); }
+.pkg-bot-date__wd { text-transform: uppercase; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.14em; line-height: 1; color: var(--pkg-olive-ink); }
+.pkg-bot-date__num { font-weight: 600; font-size: 2.5rem; line-height: 1; color: var(--pkg-olive-ink); }
+.pkg-bot-guest { margin: 2rem 0 0; font-size: 1.2rem; line-height: 1.4; }
+.pkg-bot-guest strong { font-weight: 600; }
+.pkg-bot-cta { margin-top: 1.5rem; }
+.pkg-bot-garland { display: block; width: 100%; height: clamp(7rem, 30vw, 11rem); margin-top: 1.5rem; object-fit: cover; object-position: center bottom; }
+
+@media (min-width: 768px) {
+  .pkg-bot { padding: 3rem 1rem; }
+  .pkg-bot-card { border-radius: 1.5rem; box-shadow: 0 4px 12px rgba(52,56,44,.08), 0 32px 64px -24px rgba(52,56,44,.28); }
+  .pkg-bot-photo { height: 25rem; }
+}
+
+.pkg-bot-page { background-color: var(--inv-surface-alt); }
+.pkg-bot-foot { padding: 1.5rem 1rem 5rem; text-align: center; color: var(--inv-ink-soft); font-size: 0.95rem; letter-spacing: 0.04em; }
+.pkg-bot-foot p { margin: 0; }

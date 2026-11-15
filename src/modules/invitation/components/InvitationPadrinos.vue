@@ -4,7 +4,9 @@ import { useInvitationContext } from '../composables/useInvitation'
 import InvitationSection from './InvitationSection.vue'
 
 defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** list (default) | grid */
+  variant: { type: String, default: 'list' }
 })
 
 const { tt, locale } = useInvitationContext()
@@ -15,12 +17,12 @@ const sponsorsLine = items => tt('padrinos.sponsors', { items: new Intl.ListForm
 
 <template>
   <InvitationSection id="padrinos" :title="section.title" :text="section.text" variant="alt">
-    <ul class="mx-auto flex max-w-xl flex-col gap-8">
-      <li v-for="(padrino, index) in section.data.items" :key="index" class="flex flex-col items-center text-center">
-        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50">
+    <ul :class="['inv-padrinos mx-auto max-w-xl gap-8', variant === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2' : 'flex flex-col']" :data-variant="variant">
+      <li v-for="(padrino, index) in section.data.items" :key="index" class="inv-padrinos__item flex flex-col items-center text-center">
+        <span class="inv-badge flex h-11 w-11 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50">
           <Heart class="h-5 w-5" aria-hidden="true" />
         </span>
-        <h3 class="mt-3 font-inv-heading text-2xl text-inv-primary-ink text-balance">{{ padrino.name }}</h3>
+        <h3 class="inv-padrinos__name mt-3 font-inv-heading text-2xl text-inv-primary-ink text-balance">{{ padrino.name }}</h3>
         <p v-if="padrino.relationship" class="text-sm text-inv-ink-soft">{{ padrino.relationship }}</p>
         <p v-if="padrino.sponsors.length" class="mt-1 text-inv-ink-soft">{{ sponsorsLine(padrino.sponsors) }}</p>
         <p v-if="padrino.thanks" class="mt-3 font-inv-script text-3xl text-inv-primary text-pretty">{{ padrino.thanks }}</p>

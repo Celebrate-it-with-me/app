@@ -1,0 +1,46 @@
+/* Engine CSS for template packages: behaviours and block bases. Owned by the app, not the package. */
+/* Reveal: hidden while armed, then a keyframe entrance that fills forwards (same curves as the built-in cover). */
+@keyframes pk-rise { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
+@keyframes pk-zoom { from { opacity: 0; translate: 0 22px; scale: 0.95; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes pk-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pk-slide-left { from { opacity: 0; translate: -18px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes pk-slide-right { from { opacity: 0; translate: 18px 0; } to { opacity: 1; translate: 0 0; } }
+.inv-root [data-reveal].pk-armed { opacity: 0; }
+.inv-root [data-reveal].pk-in { animation: pk-rise 640ms cubic-bezier(0.23, 1, 0.32, 1) both; animation-delay: var(--pk-delay, 0ms); }
+.inv-root [data-reveal="fade"].pk-in { animation-name: pk-fade; animation-duration: 900ms; animation-timing-function: ease-out; }
+.inv-root [data-reveal="zoom"].pk-in { animation-name: pk-zoom; animation-duration: 760ms; }
+.inv-root [data-reveal="slide-left"].pk-in { animation-name: pk-slide-left; }
+.inv-root [data-reveal="slide-right"].pk-in { animation-name: pk-slide-right; }
+.inv-root [data-parallax] { translate: 0 var(--pk-py, 0px); }
+@media (prefers-reduced-motion: reduce) {
+  .inv-root [data-reveal].pk-armed { opacity: 1; }
+  .inv-root [data-reveal].pk-in { animation: none !important; }
+  .inv-root [data-parallax] { translate: none; }
+}
+.inv-pkg { position: relative; }
+.inv-q--cover-photo { position: relative; overflow: hidden; width: 100%; height: 100%; }
+.inv-q--cover-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.inv-q-photo__emblem { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--inv-font-heading, serif); font-size: 3.75rem; }
+.inv-q--names { margin: 0; font: inherit; color: inherit; letter-spacing: inherit; text-transform: none; }
+.inv-q-names__line { display: block; }
+.inv-q--cta { display: flex; justify-content: center; }
+.inv-carousel { position: relative; }
+.inv-carousel__track { display: flex; gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+.inv-carousel__track > * { flex: 0 0 85%; scroll-snap-align: center; }
+.inv-carousel__btn { position: absolute; top: 50%; translate: 0 -50%; width: 2.75rem; height: 2.75rem; border-radius: 9999px; border: 0; background: color-mix(in oklab, var(--inv-surface) 88%, transparent); color: var(--inv-ink); font-size: 1.5rem; }
+.inv-carousel__btn--prev { left: 0.25rem; }
+.inv-carousel__btn--next { right: 0.25rem; }
+.inv-carousel__btn:focus-visible, .inv-carousel__track:focus-visible { outline: 2px solid var(--inv-primary); outline-offset: 2px; }
+/* The page waits (at most 1.5 s) for the package's CSS so nothing shows unstyled. */
+.inv-root[data-inv-pkg="loading"] main { visibility: hidden; }
+.inv-carousel--peek .inv-carousel__track > * { flex-basis: 78%; }
+.inv-q--cover-photo[data-sized] { height: auto; }
+.inv-q-photo__tint { position: absolute; inset: 0; background: linear-gradient(to bottom, color-mix(in oklab, var(--inv-primary) 14%, transparent), color-mix(in oklab, var(--inv-accent) 18%, transparent)); }
+.inv-q--names.inv-q--script { font-family: var(--inv-font-script, 'Pinyon Script', 'Snell Roundhand', cursive); }
+.inv-q--date { display: block; }
+.inv-q--date .inv-date__row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; }
+.inv-q--date[data-format="ring"] .inv-date__row { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+.inv-q--date .inv-date__sub { display: block; margin-top: 0.5rem; }
+.inv-q--address, .inv-q--guest { margin: 0; }
+.inv-address__name, .inv-address__line { display: block; }
+.inv-q--seats { margin: 0; }

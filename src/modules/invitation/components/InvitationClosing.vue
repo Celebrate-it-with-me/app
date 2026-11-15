@@ -4,14 +4,16 @@ import InvitationSection from './InvitationSection.vue'
 import InvitationSprig from '../art/InvitationSprig.vue'
 
 defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** band (deep theme band, default) | plain (paper) */
+  variant: { type: String, default: 'band' }
 })
 
 const { invitation, tt } = useInvitationContext()
 </script>
 
 <template>
-  <InvitationSection id="closing" :title="section.title" :text="section.text" variant="deep">
+  <InvitationSection id="closing" :title="section.title" :text="section.text" :variant="variant === 'plain' ? 'plain' : 'deep'">
     <template #decor>
       <InvitationSprig
         class="pointer-events-none absolute -left-10 -top-10 h-44 w-44 text-inv-accent/60 sm:h-60 sm:w-60"
@@ -21,7 +23,7 @@ const { invitation, tt } = useInvitationContext()
         class="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 rotate-180 text-inv-accent/60 sm:h-60 sm:w-60"
       />
     </template>
-    <p v-if="invitation.branding?.watermark === true" class="text-sm text-inv-surface/70">
+    <p v-if="invitation.branding?.watermark === true" class="inv-watermark text-sm text-inv-surface/70">
       <a href="/" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-inv-surface">
         {{ tt('madeWith') }}
       </a>
