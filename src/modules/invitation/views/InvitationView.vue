@@ -61,9 +61,9 @@ watch(
 </script>
 
 <template>
-  <div class="inv-root min-h-svh bg-inv-surface font-inv-body text-inv-ink antialiased" :style="vars">
+  <div class="inv-root relative min-h-svh bg-inv-surface font-inv-body text-inv-ink antialiased" :style="vars">
     <template v-if="status === 'ready' && invitation">
-      <nav class="fixed top-3 right-3 z-10" :aria-label="tt('language')">
+      <nav class="absolute top-3 right-3 z-10" :aria-label="tt('language')">
         <InvitationLangSwitch :current="locale" :label="tt('language')" @change="changeLanguage" />
       </nav>
       <main>

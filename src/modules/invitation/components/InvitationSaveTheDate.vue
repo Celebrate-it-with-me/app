@@ -4,6 +4,7 @@ import { CalendarPlus } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import { CWM_API } from '@/services/axios'
 import { useInvitationContext } from '../composables/useInvitation'
+import { safeHttpsUrl } from '../composables/safeUrl'
 import InvitationSection from './InvitationSection.vue'
 import InvitationButton from './InvitationButton.vue'
 
@@ -17,6 +18,7 @@ const route = useRoute()
 const message = computed(() => props.section.data.message)
 const calendar = computed(() => props.section.data.calendar)
 // The .ics file is served by the API under the same invitation address.
+const googleUrl = computed(() => safeHttpsUrl(calendar.value?.google))
 const icsUrl = computed(() => {
   const base = String(CWM_API.defaults.baseURL ?? '').replace(/\/$/, '')
   return `${base}/invitation/${encodeURIComponent(route.params.slug)}/${encodeURIComponent(route.params.code)}/${calendar.value?.icsPath ?? 'calendar.ics'}`
@@ -32,7 +34,7 @@ const icsUrl = computed(() => {
         {{ tt('saveTheDate.addToCalendar') }}
       </p>
       <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-        <InvitationButton variant="outline" :href="calendar.google" target="_blank" rel="noopener">{{ tt('saveTheDate.google') }}</InvitationButton>
+        <InvitationButton v-if="googleUrl" variant="outline" :href="googleUrl" target="_blank" rel="noopener">{{ tt('saveTheDate.google') }}</InvitationButton>
         <InvitationButton variant="outline" :href="icsUrl">{{ tt('saveTheDate.ics') }}</InvitationButton>
       </div>
     </div>

@@ -16,7 +16,7 @@ defineEmits(['change'])
       type="button"
       :aria-pressed="lang === current"
       :class="[
-        'min-h-9 min-w-11 rounded-full px-3 font-semibold uppercase transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-inv-primary',
+        'min-h-11 min-w-11 rounded-full px-3 font-semibold uppercase transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-inv-primary',
         lang === current ? 'bg-inv-primary text-inv-on-primary' : 'text-inv-ink-soft hover:text-inv-ink'
       ]"
       @click="$emit('change', lang)"

@@ -98,7 +98,7 @@ const onError = async error => {
           break
         }
         await router.push('/403')
-        console.log('Forbidden:', error.message)
+        console.warn('Forbidden:', error.message)
         break
       case 503:
         // Maintenance mode: a full-screen notice that retries by itself. Any other 503 is left alone.
@@ -107,10 +107,10 @@ const onError = async error => {
         }
         break
       case 404:
-        console.log('Not Found:', error.message)
+        console.warn('Not Found:', error.message)
         break
       case 419:
-        console.log('CSRF Token Mismatch:', error.message)
+        console.warn('CSRF Token Mismatch:', error.message)
         break
     }
   }

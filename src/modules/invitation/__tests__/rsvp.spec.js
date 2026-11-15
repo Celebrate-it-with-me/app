@@ -128,4 +128,68 @@ describe('InvitationRsvp', () => {
     expect(wrapper.find('button').exists()).toBe(false)
     expect(wrapper.text()).toContain(tt('rsvp.closed'))
   })
+
+  it('sends the message and renamed companions only when they changed', async () => {
+    saveRsvp.mockResolvedValue({ data: { data: rsvpData({ guest: { id: 1, name: 'Rosa', status: 'attending' }, note: 'Hola' }) } })
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[0].setValue(true)
+    await radios(wrapper, 2)[0].setValue(true)
+    await wrapper.get('input[name="name"]').setValue('  Jorge Pérez ')
+    await wrapper.get('textarea').setValue('Hola')
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+
+    expect(saveRsvp).toHaveBeenCalledWith({
+      slug: 'xv-de-valentina',
+      code: 'AB1234',
+      guest: 'attending',
+      companions: { 2: 'attending' },
+      names: { 2: 'Jorge Pérez' },
+      note: 'Hola'
+    })
+  })
+
+  it('validates names and the message size before calling the API', async () => {
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[0].setValue(true)
+    await radios(wrapper, 2)[0].setValue(true)
+    await wrapper.get('input[name="name"]').setValue('J')
+    await wrapper.get('textarea').setValue('x'.repeat(501))
+    await wrapper.get('form').trigger('submit')
+
+    expect(saveRsvp).not.toHaveBeenCalled()
+    expect(wrapper.text()).toContain(tt('rsvp.errors.too_short'))
+    expect(wrapper.text()).toContain(tt('rsvp.errors.too_long'))
+    expect(wrapper.text()).toContain('501/500')
+  })
+
+  it('shows server error codes next to the field', async () => {
+    failure.error = Object.assign(new Error('422'), {
+      response: { status: 422, data: { errors: { 'companions.0.name': ['invalid_characters'] } } }
+    })
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[0].setValue(true)
+    await radios(wrapper, 2)[0].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.get('input[name="name"]').attributes('aria-invalid')).toBe('true')
+    expect(wrapper.text()).toContain(tt('rsvp.errors.invalid_characters'))
+  })
+
+  it('keeps the closed message for a closed window', async () => {
+    failure.error = Object.assign(new Error('422'), { response: { status: 422, data: { errors: { rsvp: ['closed'] } } } })
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[1].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.get('[role="status"]').text()).toBe(tt('rsvp.closedError'))
+  })
+
+  it('renders the saved message as plain text', () => {
+    const { wrapper } = mountRsvp(
+      rsvpData({ guest: { id: 1, name: 'Rosa', status: 'attending' }, companions: [], note: '<i>hola</i>' })
+    )
+    expect(wrapper.find('i').exists()).toBe(false)
+    expect(wrapper.text()).toContain('<i>hola</i>')
+  })
 })

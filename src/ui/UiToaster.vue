@@ -47,7 +47,7 @@ const TONES = {
       </ToastClose>
     </ToastRoot>
     <ToastViewport
-      class="pointer-events-none fixed inset-x-4 bottom-4 z-100 flex max-w-md flex-col gap-2 sm:left-auto sm:right-6 sm:bottom-6"
+      class="pointer-events-none fixed inset-x-4 top-[max(1rem,env(safe-area-inset-top))] z-100 flex max-w-md flex-col gap-2 sm:inset-x-auto sm:right-6 sm:top-auto sm:bottom-6"
     />
   </ToastProvider>
 </template>

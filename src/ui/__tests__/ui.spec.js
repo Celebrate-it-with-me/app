@@ -79,6 +79,19 @@ describe('UiAvatar', () => {
 })
 
 describe('useToast', () => {
+  it('does not stack identical toasts and keeps at most three', () => {
+    const { toasts, toast, dismiss } = useToast()
+    ;[...toasts].forEach(t => dismiss(t.id))
+    const first = toast({ title: 'Igual', tone: 'success' })
+    expect(toast({ title: 'Igual', tone: 'success' })).toBe(first)
+    expect(toasts.length).toBe(1)
+    toast('b')
+    toast('c')
+    toast('d')
+    expect(toasts.map(t => t.title)).toEqual(['b', 'c', 'd'])
+    ;[...toasts].forEach(t => dismiss(t.id))
+  })
+
   it('queues and dismisses toasts', () => {
     const { toasts, toast, dismiss } = useToast()
     const before = toasts.length

@@ -60,6 +60,7 @@ export default {
     unlock: 'Pasa a premium',
     purchases: 'Mis compras',
     timeline: 'Programa del día',
+    plan: 'Mi plan',
     locations: 'Ubicaciones',
     guests: 'Invitados',
     saveTheDate: 'Save the date',
@@ -379,6 +380,21 @@ export default {
       google: 'Google Calendar',
       ics: 'Apple, Outlook y otros (.ics)'
     },
+    gallery: {
+      photoOf: 'Foto {n} de {total}',
+      open: 'Ver foto {n} de {total}',
+      viewer: 'Visor de fotos',
+      close: 'Cerrar',
+      previous: 'Foto anterior',
+      next: 'Foto siguiente',
+      carousel: 'Fotos, desliza hacia los lados'
+    },
+    music: {
+      fallbackTitle: 'Música de fondo',
+      play: 'Reproducir música',
+      pause: 'Pausar música',
+      error: 'No pudimos reproducir la música.'
+    },
     padrinos: { sponsors: 'Apadrina {items}' },
     itinerary: {
       types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' }
@@ -419,6 +435,18 @@ export default {
       thanksNo: 'Gracias por avisarnos. Te vamos a extrañar.',
       error: 'No pudimos guardar tu respuesta. Inténtalo de nuevo.',
       closedError: 'El plazo para confirmar ya terminó.',
+      noteLabel: 'Un mensaje para los anfitriones (opcional)',
+      noteCount: '{n}/{max}',
+      nameLabel: 'Nombre de la persona',
+      yourNote: 'Tu mensaje',
+      errors: {
+        too_long: 'Es demasiado largo.',
+        too_short: 'Escribe al menos 2 letras.',
+        required: 'Escribe un nombre.',
+        invalid_characters: 'El nombre tiene caracteres que no podemos guardar.',
+        invalid: 'No pudimos guardar los nombres. Recarga la invitación e inténtalo de nuevo.',
+        too_many_attempts: 'Demasiados intentos. Espera un momento e inténtalo de nuevo.'
+      },
       status: {
         attending: 'Asistirá',
         'not-attending': 'No asistirá',
@@ -1376,6 +1404,7 @@ export default {
       }
     },
     roster: {
+      rsvpNote: 'Mensaje del invitado',
       progress: {
         label: 'Respuestas de tus invitados',
         answered: '{n} de {total} ya respondieron',
@@ -1540,6 +1569,7 @@ export default {
       collaborators: 'Colaboradores',
       premium: 'Premium',
       home: 'Inicio',
+      plan: 'Mi plan',
       guests: 'Invitados',
       rsvp: 'Confirmaciones',
       budget: 'Presupuesto',
@@ -1552,6 +1582,123 @@ export default {
       memories: 'Recuerdos',
       music: 'Música',
       whatsapp: 'WhatsApp'
+    },
+    assistant: {
+      go: 'Ir a hacerla',
+      viewPlan: 'Ver mi plan',
+      whyNow: 'Por qué ahora',
+      noDate: {
+        title: 'Define la fecha de tu evento',
+        text: 'Sin fecha no podemos decirte qué toca hacer y cuándo.',
+        cta: 'Definir la fecha'
+      },
+      state: {
+        next: 'Ahora',
+        available: 'Ahora',
+        upcoming: 'Próximamente',
+        overdue: 'Atrasada',
+        done: 'Hecha',
+        hidden: 'Oculta',
+        not_applicable: 'No me aplica'
+      },
+      plan: {
+        title: 'Mi plan',
+        subtitle: 'Lo que toca hacer en tu evento, en orden y con el porqué.',
+        progress: '{done} de {total} listas',
+        progressLabel: 'Avance de tu plan',
+        readOnly: 'Estás viendo el plan en modo lectura. Solo quien organiza el evento puede cambiarlo.',
+        loadError: 'No pudimos cargar tu plan. Intenta de nuevo en un momento.',
+        retry: 'Reintentar',
+        empty: { title: 'Todavía no hay nada en tu plan', text: 'Cuando haya tareas para tu evento aparecerán aquí.' },
+        unsupported: { title: 'El plan no está disponible para este tipo de evento', text: 'Por ahora el asistente solo cubre quinceañeras y bodas.' },
+        noDate: { title: 'Falta la fecha del evento', text: 'Define la fecha y te armamos el plan con los tiempos de cada cosa.', cta: 'Definir la fecha' },
+        compressed: 'Tu fecha está cerca, así que dejamos solo lo esencial y en el orden que más ayuda.',
+        eventPast: 'Tu evento ya pasó. Aquí quedan los cierres pendientes.'
+      },
+      sections: {
+        overdue: 'Atrasadas',
+        overdueHint: 'Ya pasó el mejor momento, pero todavía se puede.',
+        done: 'Hechas',
+        hidden: 'Ocultas',
+        mine: 'Mis tareas'
+      },
+      phases: {
+        foundation: 'Primeros pasos',
+        planning: 'Reservas',
+        details: 'Detalles',
+        invitations: 'Invitaciones',
+        final: 'Recta final',
+        after: 'Después'
+      },
+      task: {
+        doneByData: 'Detectada en tu evento',
+        blockedBy: 'Primero: {titles}',
+        snoozedUntil: 'Pospuesta hasta el {date}',
+        locked: 'Incluida en el plan premium',
+        unlock: 'Conocer premium',
+        moreActions: 'Más acciones para {title}'
+      },
+      action: {
+        markDone: 'Marcar hecha',
+        undo: 'Deshacer',
+        snooze: 'Posponer',
+        hide: 'Ocultar',
+        notApplicable: 'No me aplica',
+        restore: 'Restaurar',
+        showHidden: 'Mostrar ocultas ({n})',
+        hideHidden: 'Esconder ocultas',
+        showDone: 'Ver hechas ({n})',
+        hideDone: 'Esconder hechas',
+        showMore: 'Ver {n} más de esta etapa',
+        showLess: 'Ver menos'
+      },
+      snooze14: 'Posponer 14 días',
+      snooze1m: 'Posponer 1 mes',
+      snooze3m: 'Posponer 3 meses',
+      custom: {
+        add: 'Agregar tarea',
+        empty: 'Anota aquí lo tuyo: cotizar el mariachi, probar el pastel…',
+        edit: 'Editar',
+        remove: 'Borrar',
+        editTitle: 'Editar tarea',
+        modalHint: 'Solo la ven quienes organizan el evento.',
+        newTitle: 'Nueva tarea',
+        titleLabel: 'Qué hay que hacer',
+        titlePlaceholder: 'Ej.: Cotizar el mariachi',
+        notesLabel: 'Notas',
+        dueLabel: 'Para cuándo',
+        optional: 'Opcional',
+        save: 'Guardar',
+        cancel: 'Cancelar',
+        due: 'Para el {date}',
+        markDone: 'Marcar como hecha: {title}',
+        markUndone: 'Marcar como pendiente: {title}',
+        confirmTitle: '¿Borrar esta tarea?',
+        confirmText: 'Se borra «{title}» y no se puede recuperar.',
+        errors: {
+          required: 'Escribe qué hay que hacer.',
+          title_too_long: 'El título puede tener hasta 120 caracteres.',
+          notes_too_long: 'Las notas pueden tener hasta 500 caracteres.',
+          invalid_date: 'Elige una fecha válida.'
+        }
+      },
+      toast: {
+        done: 'Marcada como hecha',
+        snoozed: 'La retomamos más adelante',
+        hidden: 'Tarea oculta',
+        notApplicable: 'Listo, no te la volvemos a mostrar',
+        restored: 'Tarea restaurada',
+        customSaved: 'Tarea guardada',
+        customRemoved: 'Tarea borrada'
+      },
+      errors: {
+        generic: 'No pudimos guardar el cambio. Intenta de nuevo.',
+        forbidden: 'Solo quien organiza el evento puede hacer este cambio.',
+        notFound: 'Esa tarea ya no existe. Actualizamos tu plan.',
+        tooMany: 'Demasiados intentos seguidos. Espera un momento.',
+        limit: 'Llegaste al máximo de tareas propias. Borra alguna para agregar otra.',
+        impersonation: 'En una sesión de soporte el plan es solo de lectura.'
+      }
     },
     dashboard: {
       loadError: 'No pudimos cargar algunos datos. Intenta de nuevo en un momento.',
@@ -1728,6 +1875,39 @@ export default {
       confirmLabel: 'Nombre del evento',
       confirm: 'Eliminar definitivamente',
       deleted: 'Evento eliminado.'
+    },
+    music: {
+      title: 'Música de fondo',
+      subtitle: 'La canción que suena en la invitación cuando tus invitados la activan.',
+      untitled: 'Canción de la invitación',
+      empty: 'Todavía no hay música. Tu invitación se verá igual, sin sonido.',
+      help: 'MP3, M4A u OGG, hasta 10 MB. Si tu archivo es WAV, conviértelo a MP3 primero.',
+      titleLabel: 'Nombre de la canción (opcional)',
+      titleHint: 'Se muestra como nombre del botón de música.',
+      upload: 'Subir música',
+      replace: 'Reemplazar música',
+      remove: 'Borrar música',
+      play: 'Escuchar',
+      pause: 'Pausar',
+      playError: 'No pudimos reproducir el archivo.',
+      uploaded: 'Música subida.',
+      replaced: 'Música reemplazada.',
+      removed: 'Música borrada.',
+      confirmTitle: 'Borrar la música',
+      confirmText: 'La invitación dejará de tener música de fondo. Puedes subir otra cuando quieras.',
+      locked: 'La música de fondo es parte del evento completo. Desbloquéala para subir la canción de tu invitación.',
+      unlock: 'Desbloquear música de fondo',
+      supportSession: 'En una sesión de soporte no se puede cambiar la música.',
+      loadError: 'No pudimos cargar la música del evento.',
+      retry: 'Reintentar',
+      errors: {
+        required: 'Elige un archivo de música.',
+        invalid_type: 'Formato no permitido. Usa MP3, M4A u OGG.',
+        too_large: 'El archivo pesa más de 10 MB. Elige uno más liviano.',
+        title_too_long: 'El nombre puede tener hasta 60 caracteres.',
+        title_invalid: 'Revisa el nombre de la canción.',
+        tooMany: 'Demasiados intentos. Espera un minuto y vuelve a intentar.'
+      }
     }
   },
   payments: {
@@ -1777,6 +1957,7 @@ export default {
       seating: 'Acomoda a tus invitados en mesas y ten el plano listo para el salón.',
       suggested_music: 'Tus invitados proponen canciones y votan las que más quieren bailar.',
       memories: 'Guarda las fotos de tu fiesta en un álbum.',
+      background_music: 'Sube la canción que suena en tu invitación.',
       comments: 'Tus invitados te dejan mensajes y buenos deseos en la invitación.',
       whatsapp: 'Envío automático de la invitación por WhatsApp a toda tu lista, con el estado de cada mensaje.',
       collaborators: 'Invita a tu planner, a la quinceañera o a quien te ayude y repartan el trabajo con el rol que quieras.'
@@ -1828,6 +2009,45 @@ export default {
     textNamed: '{name} es parte del evento completo. Pasa a premium para desbloquearla.',
     names: { guests: 'Invitados', rsvp: 'Confirmaciones', save_the_date: 'Guarda la fecha', timeline: 'Programa del día', locations: 'Lugares', dress_code: 'Código de vestimenta', budget: 'Presupuesto', padrinos: 'Padrinos', menus: 'Menús', seating: 'Mesas', suggested_music: 'Música sugerida', memories: 'Dulces recuerdos', comments: 'Comentarios', whatsapp: 'WhatsApp', collaborators: 'Colaboradores' }
   },
+  errorPages: {
+    c401: {
+      heading: 'Necesitas iniciar sesión',
+      subheading: 'Debes iniciar sesión para continuar.',
+      title: 'Sesión requerida',
+      message: 'Tu sesión expiró o no has iniciado sesión.',
+      hint: 'Inicia sesión para seguir usando la plataforma.',
+      primary: 'Ir a iniciar sesión',
+      secondary: 'Ir al inicio'
+    },
+    c403: {
+      heading: 'Acceso denegado',
+      subheading: 'No tienes permiso para ver esta página.',
+      title: 'Acceso denegado',
+      message: 'No tienes permiso para acceder a este recurso.',
+      hint: 'Si crees que es un error, contacta al dueño del evento o prueba cambiando de evento.',
+      primary: 'Volver al panel',
+      secondary: 'Regresar'
+    },
+    c409: {
+      heading: 'Conflicto detectado',
+      subheading: 'Este recurso no corresponde a tu contexto actual.',
+      title: '409 — Conflicto de recurso',
+      message: 'Este elemento pertenece a otro evento o ya no es válido.',
+      hint: 'Prueba cambiando de evento o recargando tu espacio de trabajo.',
+      primary: 'Mis eventos',
+      secondary: 'Panel'
+    },
+    c500: {
+      heading: 'Error del servidor',
+      subheading: 'Algo salió mal de nuestro lado.',
+      title: '500 — Error inesperado',
+      message: 'Ocurrió un error inesperado al procesar tu solicitud.',
+      hint: 'Inténtalo de nuevo en unos segundos. Si el problema continúa, contacta a soporte.',
+      primary: 'Recargar la página',
+      secondary: 'Volver al panel'
+    }
+  },
+  rsvpStatsError: 'No pudimos cargar las estadísticas del evento. Inténtalo de nuevo más tarde.',
   notFound: {
     title: 'No encontramos esta página',
     text: 'Puede que el enlace esté incompleto o que la página ya no exista. Te llevamos de vuelta para que sigas con tu celebración.',

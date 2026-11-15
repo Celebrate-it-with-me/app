@@ -60,6 +60,7 @@ export default {
     unlock: 'Go premium',
     purchases: 'My purchases',
     timeline: 'Program of the day',
+    plan: 'My plan',
     locations: 'Locations',
     guests: 'Guests',
     saveTheDate: 'Save the date',
@@ -379,6 +380,21 @@ export default {
       google: 'Google Calendar',
       ics: 'Apple, Outlook and others (.ics)'
     },
+    gallery: {
+      photoOf: 'Photo {n} of {total}',
+      open: 'View photo {n} of {total}',
+      viewer: 'Photo viewer',
+      close: 'Close',
+      previous: 'Previous photo',
+      next: 'Next photo',
+      carousel: 'Photos, swipe sideways'
+    },
+    music: {
+      fallbackTitle: 'Background music',
+      play: 'Play music',
+      pause: 'Pause music',
+      error: 'We couldn\'t play the music.'
+    },
     padrinos: { sponsors: 'Sponsors {items}' },
     itinerary: {
       types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
@@ -419,6 +435,18 @@ export default {
       thanksNo: 'Thanks for letting us know. We\'ll miss you.',
       error: 'We couldn\'t save your reply. Please try again.',
       closedError: 'The deadline to reply has passed.',
+      noteLabel: 'A message for the hosts (optional)',
+      noteCount: '{n}/{max}',
+      nameLabel: 'Name of the person',
+      yourNote: 'Your message',
+      errors: {
+        too_long: 'This is too long.',
+        too_short: 'Enter at least 2 characters.',
+        required: 'Enter a name.',
+        invalid_characters: 'The name has characters we can\'t save.',
+        invalid: 'We couldn\'t save the names. Reload the invitation and try again.',
+        too_many_attempts: 'Too many attempts. Wait a moment and try again.'
+      },
       status: {
         attending: 'Will attend',
         'not-attending': 'Will not attend',
@@ -1376,6 +1404,7 @@ export default {
       }
     },
     roster: {
+      rsvpNote: 'Guest message',
       progress: {
         label: 'Your guests’ answers',
         answered: '{n} of {total} have answered',
@@ -1540,6 +1569,7 @@ export default {
       collaborators: 'Collaborators',
       premium: 'Premium',
       home: 'Home',
+      plan: 'My plan',
       guests: 'Guests',
       rsvp: 'RSVPs',
       budget: 'Budget',
@@ -1552,6 +1582,123 @@ export default {
       memories: 'Memories',
       music: 'Music',
       whatsapp: 'WhatsApp'
+    },
+    assistant: {
+      go: 'Go do it',
+      viewPlan: 'See my plan',
+      whyNow: 'Why now',
+      noDate: {
+        title: 'Set your event date',
+        text: 'Without a date we cannot tell you what to do and when.',
+        cta: 'Set the date'
+      },
+      state: {
+        next: 'Now',
+        available: 'Now',
+        upcoming: 'Coming up',
+        overdue: 'Overdue',
+        done: 'Done',
+        hidden: 'Hidden',
+        not_applicable: 'Does not apply'
+      },
+      plan: {
+        title: 'My plan',
+        subtitle: 'What to do for your event, in order and with the reason why.',
+        progress: '{done} of {total} done',
+        progressLabel: 'Your plan progress',
+        readOnly: 'You are viewing the plan read-only. Only the people organizing the event can change it.',
+        loadError: 'We could not load your plan. Please try again in a moment.',
+        retry: 'Try again',
+        empty: { title: 'Nothing in your plan yet', text: 'When there are tasks for your event they will show up here.' },
+        unsupported: { title: 'The plan is not available for this type of event', text: 'For now the assistant only covers quinceañeras and weddings.' },
+        noDate: { title: 'Your event has no date yet', text: 'Set the date and we will build your plan with the timing of each thing.', cta: 'Set the date' },
+        compressed: 'Your date is close, so we kept only the essentials, in the order that helps most.',
+        eventPast: 'Your event is over. Here are the wrap-ups still pending.'
+      },
+      sections: {
+        overdue: 'Overdue',
+        overdueHint: 'The best time has passed, but there is still time.',
+        done: 'Done',
+        hidden: 'Hidden',
+        mine: 'My tasks'
+      },
+      phases: {
+        foundation: 'First steps',
+        planning: 'Bookings',
+        details: 'Details',
+        invitations: 'Invitations',
+        final: 'Final stretch',
+        after: 'Afterwards'
+      },
+      task: {
+        doneByData: 'Detected in your event',
+        blockedBy: 'First: {titles}',
+        snoozedUntil: 'Snoozed until {date}',
+        locked: 'Included in the premium plan',
+        unlock: 'Learn about premium',
+        moreActions: 'More actions for {title}'
+      },
+      action: {
+        markDone: 'Mark done',
+        undo: 'Undo',
+        snooze: 'Snooze',
+        hide: 'Hide',
+        notApplicable: 'Does not apply',
+        restore: 'Restore',
+        showHidden: 'Show hidden ({n})',
+        hideHidden: 'Hide the hidden',
+        showDone: 'Show done ({n})',
+        hideDone: 'Hide done',
+        showMore: 'Show {n} more in this phase',
+        showLess: 'Show less'
+      },
+      snooze14: 'Snooze 14 days',
+      snooze1m: 'Snooze 1 month',
+      snooze3m: 'Snooze 3 months',
+      custom: {
+        add: 'Add task',
+        empty: 'Jot down your own: quote the mariachi, taste the cake…',
+        edit: 'Edit',
+        remove: 'Delete',
+        editTitle: 'Edit task',
+        modalHint: 'Only the people organizing the event can see it.',
+        newTitle: 'New task',
+        titleLabel: 'What needs doing',
+        titlePlaceholder: 'E.g.: Quote the mariachi',
+        notesLabel: 'Notes',
+        dueLabel: 'Due date',
+        optional: 'Optional',
+        save: 'Save',
+        cancel: 'Cancel',
+        due: 'Due {date}',
+        markDone: 'Mark as done: {title}',
+        markUndone: 'Mark as pending: {title}',
+        confirmTitle: 'Delete this task?',
+        confirmText: '"{title}" will be deleted for good.',
+        errors: {
+          required: 'Write what needs doing.',
+          title_too_long: 'The title can have up to 120 characters.',
+          notes_too_long: 'Notes can have up to 500 characters.',
+          invalid_date: 'Pick a valid date.'
+        }
+      },
+      toast: {
+        done: 'Marked as done',
+        snoozed: 'We will bring it back later',
+        hidden: 'Task hidden',
+        notApplicable: 'Done, we will not show it again',
+        restored: 'Task restored',
+        customSaved: 'Task saved',
+        customRemoved: 'Task deleted'
+      },
+      errors: {
+        generic: 'We could not save the change. Please try again.',
+        forbidden: 'Only the people organizing the event can make this change.',
+        notFound: 'That task no longer exists. We refreshed your plan.',
+        tooMany: 'Too many attempts in a row. Please wait a moment.',
+        limit: 'You reached the maximum of your own tasks. Delete one to add another.',
+        impersonation: 'In a support session the plan is read-only.'
+      }
     },
     dashboard: {
       loadError: 'We could not load some of your data. Try again in a moment.',
@@ -1728,6 +1875,39 @@ export default {
       confirmLabel: 'Event name',
       confirm: 'Delete for good',
       deleted: 'Event deleted.'
+    },
+    music: {
+      title: 'Background music',
+      subtitle: 'The song that plays on the invitation when your guests turn it on.',
+      untitled: 'Invitation song',
+      empty: 'No music yet. Your invitation looks the same, without sound.',
+      help: 'MP3, M4A or OGG, up to 10 MB. If your file is a WAV, convert it to MP3 first.',
+      titleLabel: 'Song name (optional)',
+      titleHint: 'Shown as the name of the music button.',
+      upload: 'Upload music',
+      replace: 'Replace music',
+      remove: 'Delete music',
+      play: 'Listen',
+      pause: 'Pause',
+      playError: 'We could not play the file.',
+      uploaded: 'Music uploaded.',
+      replaced: 'Music replaced.',
+      removed: 'Music deleted.',
+      confirmTitle: 'Delete the music',
+      confirmText: 'The invitation will no longer have background music. You can upload another one any time.',
+      locked: 'Background music is part of the full event. Unlock it to upload your invitation song.',
+      unlock: 'Unlock background music',
+      supportSession: 'Music cannot be changed during a support session.',
+      loadError: 'We could not load the event music.',
+      retry: 'Try again',
+      errors: {
+        required: 'Choose a music file.',
+        invalid_type: 'Format not allowed. Use MP3, M4A or OGG.',
+        too_large: 'The file is larger than 10 MB. Choose a lighter one.',
+        title_too_long: 'The name can have up to 60 characters.',
+        title_invalid: 'Check the song name.',
+        tooMany: 'Too many attempts. Wait a minute and try again.'
+      }
     }
   },
   payments: {
@@ -1777,6 +1957,7 @@ export default {
       seating: 'Seat your guests at tables and have the floor plan ready for the venue.',
       suggested_music: 'Your guests suggest songs and vote for the ones they most want to dance to.',
       memories: 'Keep the photos of your party in one album.',
+      background_music: 'Upload the song that plays on your invitation.',
       comments: 'Your guests leave you messages and good wishes on the invitation.',
       whatsapp: 'Automatic WhatsApp delivery of the invitation to your whole list, with the status of every message.',
       collaborators: 'Invite your planner, the quinceañera or whoever helps you, and share the work with the role you choose.'
@@ -1828,6 +2009,45 @@ export default {
     textNamed: '{name} is part of the full event. Go premium to unlock it.',
     names: { guests: 'Guests', rsvp: 'RSVP', save_the_date: 'Save the date', timeline: 'Program of the day', locations: 'Locations', dress_code: 'Dress code', budget: 'Budget', padrinos: 'Padrinos', menus: 'Menus', seating: 'Seating', suggested_music: 'Suggested music', memories: 'Sweet memories', comments: 'Comments', whatsapp: 'WhatsApp', collaborators: 'Collaborators' }
   },
+  errorPages: {
+    c401: {
+      heading: 'Session Required',
+      subheading: 'You must be logged in to continue.',
+      title: 'Authentication Required',
+      message: 'Your session has expired or you are not logged in.',
+      hint: 'Please sign in to continue using the platform.',
+      primary: 'Go to Login',
+      secondary: 'Go to Home'
+    },
+    c403: {
+      heading: 'Access Denied',
+      subheading: "You don\u2019t have permission to view this page.",
+      title: 'Access Denied',
+      message: 'You do not have permission to access this resource.',
+      hint: 'If you believe this is a mistake, contact the event owner or try switching events.',
+      primary: 'Back to Dashboard',
+      secondary: 'Go Back'
+    },
+    c409: {
+      heading: 'Conflict Detected',
+      subheading: 'This resource does not match your current context.',
+      title: '409 — Resource Conflict',
+      message: 'This item belongs to a different event or is no longer valid.',
+      hint: 'Try switching events or reloading your workspace.',
+      primary: 'My Events',
+      secondary: 'Dashboard'
+    },
+    c500: {
+      heading: 'Server Error',
+      subheading: 'Something went wrong on our side.',
+      title: '500 — Unexpected Error',
+      message: 'An unexpected error occurred while processing your request.',
+      hint: 'Try again in a few seconds. If the problem persists, contact support.',
+      primary: 'Reload Page',
+      secondary: 'Back to Dashboard'
+    }
+  },
+  rsvpStatsError: 'Failed to load event stats. Please try again later.',
   notFound: {
     title: "We can't find this page",
     text: 'The link may be incomplete or the page may no longer exist. Let us take you back so you can keep planning your celebration.',

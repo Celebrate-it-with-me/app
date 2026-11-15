@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { MapPin, Church, GlassWater } from 'lucide-vue-next'
 import { useInvitationContext } from '../composables/useInvitation'
+import { safeHttpsUrl } from '../composables/safeUrl'
 import { parseMoment } from '@/modules/timeline/utils/program'
 import InvitationSection from './InvitationSection.vue'
 import InvitationPanel from './InvitationPanel.vue'
@@ -29,6 +30,7 @@ const places = computed(() => {
 // The map is only loaded when a guest asks for it: no cost per view, and the buttons work without it.
 const mapOpen = ref({})
 const toggleMap = key => (mapOpen.value = { ...mapOpen.value, [key]: !mapOpen.value[key] })
+const link = safeHttpsUrl
 const mapSrc = place => {
   const point = place.latitude !== null && place.longitude !== null
   const query = point ? `${place.latitude},${place.longitude}` : [place.name, place.address, place.city].filter(Boolean).join(', ')
@@ -62,9 +64,9 @@ const mapSrc = place => {
             </ul>
 
             <div class="mt-6 flex w-full flex-col gap-3 sm:flex-row sm:justify-center">
-              <InvitationButton variant="outline" :href="place.links.google" target="_blank" rel="noopener">{{ tt('locations.google') }}</InvitationButton>
-              <InvitationButton variant="outline" :href="place.links.apple" target="_blank" rel="noopener">{{ tt('locations.apple') }}</InvitationButton>
-              <InvitationButton variant="outline" :href="place.links.waze" target="_blank" rel="noopener">{{ tt('locations.waze') }}</InvitationButton>
+              <InvitationButton v-if="link(place.links?.google)" variant="outline" :href="link(place.links?.google)" target="_blank" rel="noopener">{{ tt('locations.google') }}</InvitationButton>
+              <InvitationButton v-if="link(place.links?.apple)" variant="outline" :href="link(place.links?.apple)" target="_blank" rel="noopener">{{ tt('locations.apple') }}</InvitationButton>
+              <InvitationButton v-if="link(place.links?.waze)" variant="outline" :href="link(place.links?.waze)" target="_blank" rel="noopener">{{ tt('locations.waze') }}</InvitationButton>
             </div>
             <button
               type="button"
