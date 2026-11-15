@@ -129,7 +129,9 @@ export function usePackageTheme(getPackage) {
       link.rel = 'stylesheet'
       link.crossOrigin = 'anonymous'
       link.href = pkg.cssUrl
+      let cssArrived = false
       link.onload = () => {
+        cssArrived = true
         performance.mark?.('inv-pkg-css-end')
         // The timer keeps running: it bounds CSS + fonts together.
         waitForPackageFonts(link.sheet).then(() => {
@@ -148,7 +150,17 @@ export function usePackageTheme(getPackage) {
       document.head.appendChild(link)
       nodes.push(link)
       timer = setTimeout(() => {
-        if (state.value === 'loading') state.value = 'ready'
+        if (state.value !== 'loading') return
+        if (cssArrived) {
+          state.value = 'ready' // CSS is in; only a slow font was holding the page back
+          return
+        }
+        // The stylesheet itself did not arrive in time. Showing the package markup unstyled and restyling it later is
+        // a layout jump (CLS 0.47 on a slow link): drop the package and draw Clásica, whose first paint is final.
+        link.remove()
+        nodes = nodes.filter(node => node !== link)
+        state.value = 'failed'
+        if (import.meta.env?.DEV) console.warn('[invitation package] CSS too slow: falling back to Clásica')
       }, CSS_WAIT_MS)
     },
     { immediate: true }
