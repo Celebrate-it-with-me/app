@@ -1,0 +1,30 @@
+/* Engine CSS for template packages: behaviours and block bases. Owned by the app, not the package. */
+.inv-root [data-reveal].pk-armed { opacity: 0; }
+.inv-root [data-reveal="rise"].pk-armed { translate: 0 14px; }
+.inv-root [data-reveal="zoom"].pk-armed { scale: 0.96; }
+.inv-root [data-reveal].pk-in {
+  opacity: 1; translate: 0 0; scale: 1;
+  transition: opacity 640ms ease-out, translate 640ms cubic-bezier(0.23, 1, 0.32, 1), scale 640ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition-delay: calc(var(--pk-delay, 0) * 90ms);
+}
+.inv-root [data-parallax] { translate: 0 var(--pk-py, 0px); }
+@media (prefers-reduced-motion: reduce) {
+  .inv-root [data-reveal].pk-armed { opacity: 1; translate: none; scale: 1; }
+  .inv-root [data-parallax] { translate: none; }
+}
+.inv-pkg { position: relative; }
+.inv-q--cover-photo { position: relative; overflow: hidden; }
+.inv-q--cover-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.inv-q-photo__emblem { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--inv-font-heading, serif); font-size: 3.75rem; }
+.inv-q--names { margin: 0; font: inherit; color: inherit; letter-spacing: inherit; text-transform: none; }
+.inv-q-names__line { display: block; }
+.inv-q--cta { display: contents; }
+.inv-carousel { position: relative; }
+.inv-carousel__track { display: flex; gap: 0.75rem; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+.inv-carousel__track > * { flex: 0 0 85%; scroll-snap-align: center; }
+.inv-carousel__btn { position: absolute; top: 50%; translate: 0 -50%; width: 2.75rem; height: 2.75rem; border-radius: 9999px; border: 0; background: color-mix(in oklab, var(--inv-surface) 88%, transparent); color: var(--inv-ink); font-size: 1.5rem; }
+.inv-carousel__btn--prev { left: 0.25rem; }
+.inv-carousel__btn--next { right: 0.25rem; }
+.inv-carousel__btn:focus-visible, .inv-carousel__track:focus-visible { outline: 2px solid var(--inv-primary); outline-offset: 2px; }
+/* The page waits (at most 1.5 s) for the package's CSS so nothing shows unstyled. */
+.inv-root[data-inv-pkg="loading"] main { visibility: hidden; }
