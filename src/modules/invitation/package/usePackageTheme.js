@@ -96,6 +96,13 @@ export function usePackageTheme(getPackage) {
     nodes = []
   }
 
+  /** The integrity guard found a system block that the package made unusable: drop its CSS, fall back to Clásica. */
+  function reject(problems) {
+    cleanup()
+    state.value = 'failed'
+    if (import.meta.env?.DEV) console.warn('[invitation package] integrity guard dropped the package CSS:', problems)
+  }
+
   watch(
     getPackage,
     raw => {
@@ -150,6 +157,7 @@ export function usePackageTheme(getPackage) {
 
   return {
     state,
+    reject,
     /** Package sections may be drawn (CSS loading or ready). */
     usable: computed(() => state.value === 'loading' || state.value === 'ready'),
     slug: computed(() => (state.value === 'loading' || state.value === 'ready' ? current.value?.slug : undefined)),

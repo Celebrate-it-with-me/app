@@ -20,7 +20,7 @@ const isObject = v => v !== null && typeof v === 'object' && !Array.isArray(v)
 
 /** @param {{ ctx:object, base:string, warnings?:string[] }} env */
 export function renderAst(root, env) {
-  const state = { nodes: 0, stop: false }
+  const state = { nodes: 0, stop: false, links: 0 }
   const warnings = env.warnings ?? []
   if (astBytes(root) > LIMITS.astBytes) {
     warnings.push(`AST larger than ${LIMITS.astBytes} bytes: section ignored`)
@@ -84,6 +84,11 @@ export function renderAst(root, env) {
         return typeof node.path === 'string' ? resolveVar(node.path, node.filter, env.ctx, warn) : null
       case 'q': {
         const name = typeof node.name === 'string' ? node.name.replace(/^q-/, '') : ''
+        if (state.links > 0) {
+          // A link around a system block would hijack its clicks (W6-03): the block is not drawn.
+          warn(`block "${name.slice(0, 40)}" inside <a>: ignored`)
+          return null
+        }
         const block = Object.hasOwn(BLOCKS, name) ? BLOCKS[name] : null
         if (!block) {
           warn(`unknown block "${String(node.name).slice(0, 40)}": ignored`)
@@ -152,11 +157,13 @@ export function renderAst(root, env) {
     const props = cleanAttrs(tag, node.attrs)
     if (tag === 'a') {
       if (!props.href) delete props.target
-      if (props.target === '_blank') props.rel = 'noopener noreferrer'
+      if (props.href?.startsWith('https:')) props.rel = 'noopener noreferrer'
     }
     if (tag === 'img' && props.alt === undefined) props.alt = ''
     if (VOID_TAGS.has(tag)) return h(tag, props)
+    if (tag === 'a') state.links++
     const kids = children(node.children, depth)
+    if (tag === 'a') state.links--
     if (props['data-carousel']) {
       const labels = { carousel: env.ctx.tt('gallery.carousel'), previous: env.ctx.tt('gallery.previous'), next: env.ctx.tt('gallery.next') }
       return h(PackageCarousel, { tag, labels, controls: props['data-carousel-controls'] ?? 'arrows', peek: props['data-carousel-peek'] === 'on', ...props }, () => kids.slice(0, LIMITS.carouselSlides))

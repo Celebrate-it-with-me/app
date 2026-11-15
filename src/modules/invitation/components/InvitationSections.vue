@@ -31,6 +31,7 @@ const fromPackage = section => !!props.pkg && section.render === 'package' && !!
     <div
       v-else-if="pkg"
       :data-inv-section="section.type"
+      data-inv-native="true"
       :data-inv-position="index + 1"
       :data-inv-parity="(index + 1) % 2 === 0 ? 'even' : 'odd'"
     >

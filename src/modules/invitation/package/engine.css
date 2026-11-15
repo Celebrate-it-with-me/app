@@ -44,3 +44,43 @@
 .inv-q--address, .inv-q--guest { margin: 0; }
 .inv-address__name, .inv-address__line { display: block; }
 .inv-q--seats { margin: 0; }
+
+/*
+ * Engine guarantees (security audit W6-02 / W6-03). A package is third-party CSS: whatever it says, the system blocks
+ * (the `<q-*>` wrappers and the built-in sections drawn inside a package page) stay visible, clickable and above the
+ * package's own content (the sanitiser caps package z-index at 10). `!important` is reserved to the engine: a
+ * package can never use it, so these always win. Blocks with data-reveal keep their entrance (opacity/transform
+ * belong to the reveal animation); the runtime integrity guard (integrity.js) still watches them.
+ */
+.inv-root .inv-q,
+.inv-root [data-inv-native] {
+  position: relative !important;
+  isolation: isolate !important;
+  z-index: 20 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  clip-path: none !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+  filter: none !important;
+  display: block !important;
+}
+.inv-root .inv-q:not([data-reveal]),
+.inv-root [data-inv-native]:not([data-reveal]) {
+  opacity: 1 !important;
+  transform: none !important;
+  translate: none !important;
+  scale: none !important;
+  rotate: none !important;
+}
+.inv-root .inv-q--cta { display: flex !important; }
+/* The system's reduced-motion rule: stronger than anything the package ships (a flashing package is not an option). */
+@media (prefers-reduced-motion: reduce) {
+  .inv-root[data-inv-pkg],
+  .inv-root[data-inv-pkg] *,
+  .inv-root[data-inv-pkg] *::before,
+  .inv-root[data-inv-pkg] *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

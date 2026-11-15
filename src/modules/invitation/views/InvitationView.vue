@@ -4,7 +4,7 @@
  * ordered sections and the theme, and this view only maps section types to components and
  * applies the theme as CSS variables.
  */
-import { computed, onMounted, onUnmounted, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import i18n, { LOCALES } from '@/locales/i18n'
 import { provideInvitation, useInvitationData } from '../composables/useInvitation'
@@ -14,7 +14,7 @@ import { SECTION_COMPONENTS as COMPONENTS } from '../composables/sectionComponen
 import InvitationLangSwitch from '../components/InvitationLangSwitch.vue'
 import InvitationState from '../components/InvitationState.vue'
 import InvitationSections from '../components/InvitationSections.vue'
-import { PackageLayout, layoutIsValid, usePackageTheme, ENGINE } from '../package'
+import { PackageLayout, layoutIsValid, usePackageTheme, useIntegrityGuard, ENGINE } from '../package'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,6 +28,10 @@ provideInvitation(context)
 
 // Template packages: sections marked render:'package' draw from an AST; the rest are untouched.
 const pkg = usePackageTheme(() => invitation.value?.theme?.package)
+
+// Runtime guard: if the package CSS makes a system block unusable, its CSS is dropped (back to Clásica).
+const rootEl = ref(null)
+useIntegrityGuard({ root: rootEl, active: computed(() => pkg.state.value === 'ready' && status.value === 'ready'), onViolation: pkg.reject })
 
 const requestedLang = computed(() => (LOCALES.includes(route.query.lang) ? route.query.lang : undefined))
 watch(requestedLang, lang => load(lang), { immediate: true })
@@ -90,6 +94,7 @@ watch(pkg.state, state => {
 
 <template>
   <div
+    ref="rootEl"
     class="inv-root relative min-h-svh bg-inv-surface font-inv-body text-inv-ink antialiased"
     :style="vars"
     :data-inv-theme="pkg.slug.value ?? 'classic'"
