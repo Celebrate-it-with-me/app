@@ -5,6 +5,7 @@ import {
   CheckSquare,
   AlarmClock,
   CalendarClock,
+  ListChecks,
   MapPin,
   Shirt,
   Wallet,
@@ -62,6 +63,18 @@ export const HOME_ITEM = {
   primary: true
 }
 
+/** "Mi plan" (the assistant): not a catalog module and free for every plan, so it is drawn whenever there is an event. */
+export const PLAN_ITEM = {
+  key: 'plan',
+  to: '/dashboard/plan',
+  icon: ListChecks,
+  labelKey: 'app.nav.plan',
+  section: 'main',
+  order: 0.5,
+  state: 'active',
+  primary: false
+}
+
 /** Where a locked module leads: the "pass to premium" screen, never the module itself. */
 export const unlockPath = key => `/dashboard/unlock/${key}`
 
@@ -90,7 +103,8 @@ export function buildNavSections(modules) {
     })
     .filter(item => item && SECTIONS.includes(item.section))
 
-  const all = [HOME_ITEM, ...drawn].sort(
+  const withPlan = Array.isArray(modules) && modules.length ? [PLAN_ITEM] : []
+  const all = [HOME_ITEM, ...withPlan, ...drawn].sort(
     (a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section) || a.order - b.order
   )
 

@@ -60,6 +60,7 @@ export default {
     unlock: 'Pasa a premium',
     purchases: 'Mis compras',
     timeline: 'Programa del día',
+    plan: 'Mi plan',
     locations: 'Ubicaciones',
     guests: 'Invitados',
     saveTheDate: 'Save the date',
@@ -1540,6 +1541,7 @@ export default {
       collaborators: 'Colaboradores',
       premium: 'Premium',
       home: 'Inicio',
+      plan: 'Mi plan',
       guests: 'Invitados',
       rsvp: 'Confirmaciones',
       budget: 'Presupuesto',
@@ -1552,6 +1554,121 @@ export default {
       memories: 'Recuerdos',
       music: 'Música',
       whatsapp: 'WhatsApp'
+    },
+    assistant: {
+      go: 'Ir a hacerla',
+      viewPlan: 'Ver mi plan',
+      whyNow: 'Por qué ahora',
+      noDate: {
+        title: 'Define la fecha de tu evento',
+        text: 'Sin fecha no podemos decirte qué toca hacer y cuándo.',
+        cta: 'Definir la fecha'
+      },
+      state: {
+        next: 'Ahora',
+        available: 'Ahora',
+        upcoming: 'Próximamente',
+        overdue: 'Atrasada',
+        done: 'Hecha',
+        hidden: 'Oculta',
+        not_applicable: 'No me aplica'
+      },
+      plan: {
+        title: 'Mi plan',
+        subtitle: 'Lo que toca hacer en tu evento, en orden y con el porqué.',
+        progress: '{done} de {total} listas',
+        progressLabel: 'Avance de tu plan',
+        readOnly: 'Estás viendo el plan en modo lectura. Solo quien organiza el evento puede cambiarlo.',
+        loadError: 'No pudimos cargar tu plan. Intenta de nuevo en un momento.',
+        retry: 'Reintentar',
+        empty: { title: 'Todavía no hay nada en tu plan', text: 'Cuando haya tareas para tu evento aparecerán aquí.' },
+        unsupported: { title: 'El plan no está disponible para este tipo de evento', text: 'Por ahora el asistente solo cubre quinceañeras y bodas.' },
+        noDate: { title: 'Falta la fecha del evento', text: 'Define la fecha y te armamos el plan con los tiempos de cada cosa.', cta: 'Definir la fecha' },
+        compressed: 'Tu fecha está cerca, así que dejamos solo lo esencial y en el orden que más ayuda.',
+        eventPast: 'Tu evento ya pasó. Aquí quedan los cierres pendientes.'
+      },
+      sections: {
+        overdue: 'Atrasadas',
+        overdueHint: 'Ya pasó el mejor momento, pero todavía se puede.',
+        done: 'Hechas',
+        hidden: 'Ocultas',
+        mine: 'Mis tareas'
+      },
+      phases: {
+        foundation: 'Primeros pasos',
+        planning: 'Reservas',
+        details: 'Detalles',
+        invitations: 'Invitaciones',
+        final: 'Recta final',
+        after: 'Después'
+      },
+      task: {
+        doneByData: 'Detectada en tu evento',
+        blockedBy: 'Primero: {titles}',
+        snoozedUntil: 'Pospuesta hasta el {date}',
+        locked: 'Incluida en el plan premium',
+        unlock: 'Conocer premium',
+        moreActions: 'Más acciones para {title}'
+      },
+      action: {
+        markDone: 'Marcar hecha',
+        undo: 'Deshacer',
+        snooze: 'Posponer',
+        hide: 'Ocultar',
+        notApplicable: 'No me aplica',
+        restore: 'Restaurar',
+        showHidden: 'Mostrar ocultas ({n})',
+        hideHidden: 'Esconder ocultas',
+        showDone: 'Ver hechas ({n})',
+        hideDone: 'Esconder hechas'
+      },
+      snooze14: 'Posponer 14 días',
+      snooze1m: 'Posponer 1 mes',
+      snooze3m: 'Posponer 3 meses',
+      custom: {
+        add: 'Agregar tarea',
+        empty: 'Anota aquí lo tuyo: cotizar el mariachi, probar el pastel…',
+        edit: 'Editar',
+        remove: 'Borrar',
+        editTitle: 'Editar tarea',
+        modalHint: 'Solo la ven quienes organizan el evento.',
+        newTitle: 'Nueva tarea',
+        titleLabel: 'Qué hay que hacer',
+        titlePlaceholder: 'Ej.: Cotizar el mariachi',
+        notesLabel: 'Notas',
+        dueLabel: 'Para cuándo',
+        optional: 'Opcional',
+        save: 'Guardar',
+        cancel: 'Cancelar',
+        due: 'Para el {date}',
+        markDone: 'Marcar como hecha: {title}',
+        markUndone: 'Marcar como pendiente: {title}',
+        confirmTitle: '¿Borrar esta tarea?',
+        confirmText: 'Se borra «{title}» y no se puede recuperar.',
+        errors: {
+          required: 'Escribe qué hay que hacer.',
+          title_too_long: 'El título puede tener hasta 120 caracteres.',
+          notes_too_long: 'Las notas pueden tener hasta 500 caracteres.',
+          invalid_date: 'Elige una fecha válida.'
+        }
+      },
+      toast: {
+        done: 'Marcada como hecha',
+        snoozed: 'La retomamos más adelante',
+        hidden: 'Tarea oculta',
+        notApplicable: 'Listo, no te la volvemos a mostrar',
+        restored: 'Tarea restaurada',
+        customSaved: 'Tarea guardada',
+        customRemoved: 'Tarea borrada'
+      },
+      errors: {
+        generic: 'No pudimos guardar el cambio. Intenta de nuevo.',
+        forbidden: 'Solo quien organiza el evento puede hacer este cambio.',
+        notFound: 'Esa tarea ya no existe. Actualizamos tu plan.',
+        tooMany: 'Demasiados intentos seguidos. Espera un momento.',
+        limit: 'Llegaste al máximo de tareas propias. Borra alguna para agregar otra.',
+        impersonation: 'En una sesión de soporte el plan es solo de lectura.'
+      }
     },
     dashboard: {
       loadError: 'No pudimos cargar algunos datos. Intenta de nuevo en un momento.',

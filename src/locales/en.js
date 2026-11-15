@@ -60,6 +60,7 @@ export default {
     unlock: 'Go premium',
     purchases: 'My purchases',
     timeline: 'Program of the day',
+    plan: 'My plan',
     locations: 'Locations',
     guests: 'Guests',
     saveTheDate: 'Save the date',
@@ -1540,6 +1541,7 @@ export default {
       collaborators: 'Collaborators',
       premium: 'Premium',
       home: 'Home',
+      plan: 'My plan',
       guests: 'Guests',
       rsvp: 'RSVPs',
       budget: 'Budget',
@@ -1552,6 +1554,121 @@ export default {
       memories: 'Memories',
       music: 'Music',
       whatsapp: 'WhatsApp'
+    },
+    assistant: {
+      go: 'Go do it',
+      viewPlan: 'See my plan',
+      whyNow: 'Why now',
+      noDate: {
+        title: 'Set your event date',
+        text: 'Without a date we cannot tell you what to do and when.',
+        cta: 'Set the date'
+      },
+      state: {
+        next: 'Now',
+        available: 'Now',
+        upcoming: 'Coming up',
+        overdue: 'Overdue',
+        done: 'Done',
+        hidden: 'Hidden',
+        not_applicable: 'Does not apply'
+      },
+      plan: {
+        title: 'My plan',
+        subtitle: 'What to do for your event, in order and with the reason why.',
+        progress: '{done} of {total} done',
+        progressLabel: 'Your plan progress',
+        readOnly: 'You are viewing the plan read-only. Only the people organizing the event can change it.',
+        loadError: 'We could not load your plan. Please try again in a moment.',
+        retry: 'Try again',
+        empty: { title: 'Nothing in your plan yet', text: 'When there are tasks for your event they will show up here.' },
+        unsupported: { title: 'The plan is not available for this type of event', text: 'For now the assistant only covers quinceañeras and weddings.' },
+        noDate: { title: 'Your event has no date yet', text: 'Set the date and we will build your plan with the timing of each thing.', cta: 'Set the date' },
+        compressed: 'Your date is close, so we kept only the essentials, in the order that helps most.',
+        eventPast: 'Your event is over. Here are the wrap-ups still pending.'
+      },
+      sections: {
+        overdue: 'Overdue',
+        overdueHint: 'The best time has passed, but there is still time.',
+        done: 'Done',
+        hidden: 'Hidden',
+        mine: 'My tasks'
+      },
+      phases: {
+        foundation: 'First steps',
+        planning: 'Bookings',
+        details: 'Details',
+        invitations: 'Invitations',
+        final: 'Final stretch',
+        after: 'Afterwards'
+      },
+      task: {
+        doneByData: 'Detected in your event',
+        blockedBy: 'First: {titles}',
+        snoozedUntil: 'Snoozed until {date}',
+        locked: 'Included in the premium plan',
+        unlock: 'Learn about premium',
+        moreActions: 'More actions for {title}'
+      },
+      action: {
+        markDone: 'Mark done',
+        undo: 'Undo',
+        snooze: 'Snooze',
+        hide: 'Hide',
+        notApplicable: 'Does not apply',
+        restore: 'Restore',
+        showHidden: 'Show hidden ({n})',
+        hideHidden: 'Hide the hidden',
+        showDone: 'Show done ({n})',
+        hideDone: 'Hide done'
+      },
+      snooze14: 'Snooze 14 days',
+      snooze1m: 'Snooze 1 month',
+      snooze3m: 'Snooze 3 months',
+      custom: {
+        add: 'Add task',
+        empty: 'Jot down your own: quote the mariachi, taste the cake…',
+        edit: 'Edit',
+        remove: 'Delete',
+        editTitle: 'Edit task',
+        modalHint: 'Only the people organizing the event can see it.',
+        newTitle: 'New task',
+        titleLabel: 'What needs doing',
+        titlePlaceholder: 'E.g.: Quote the mariachi',
+        notesLabel: 'Notes',
+        dueLabel: 'Due date',
+        optional: 'Optional',
+        save: 'Save',
+        cancel: 'Cancel',
+        due: 'Due {date}',
+        markDone: 'Mark as done: {title}',
+        markUndone: 'Mark as pending: {title}',
+        confirmTitle: 'Delete this task?',
+        confirmText: '"{title}" will be deleted for good.',
+        errors: {
+          required: 'Write what needs doing.',
+          title_too_long: 'The title can have up to 120 characters.',
+          notes_too_long: 'Notes can have up to 500 characters.',
+          invalid_date: 'Pick a valid date.'
+        }
+      },
+      toast: {
+        done: 'Marked as done',
+        snoozed: 'We will bring it back later',
+        hidden: 'Task hidden',
+        notApplicable: 'Done, we will not show it again',
+        restored: 'Task restored',
+        customSaved: 'Task saved',
+        customRemoved: 'Task deleted'
+      },
+      errors: {
+        generic: 'We could not save the change. Please try again.',
+        forbidden: 'Only the people organizing the event can make this change.',
+        notFound: 'That task no longer exists. We refreshed your plan.',
+        tooMany: 'Too many attempts in a row. Please wait a moment.',
+        limit: 'You reached the maximum of your own tasks. Delete one to add another.',
+        impersonation: 'In a support session the plan is read-only.'
+      }
     },
     dashboard: {
       loadError: 'We could not load some of your data. Try again in a moment.',
