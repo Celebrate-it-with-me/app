@@ -137,7 +137,7 @@ describe('colorAlpha', () => {
 })
 
 describe('engine guarantees', () => {
-  const css = readFileSync('src/modules/invitation/package/engine.css', 'utf8')
+  const css = readFileSync('src/modules/invitation/package/engine.css', 'utf8').replace(/\r\n/g, '\n') // CRLF or LF checkout
   const rule = selector => css.slice(css.indexOf(selector), css.indexOf('}', css.indexOf(selector)))
 
   it('pins the system blocks with !important (visibility, hit testing, stacking, no transforms/clips)', () => {
