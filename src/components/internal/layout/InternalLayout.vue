@@ -31,7 +31,9 @@ const collaboratorsStore = useCollaboratorsStore()
 const impersonation = useImpersonationStore()
 const route = useRoute()
 const router = useRouter()
-const loading = ref(false)
+// Starts true: the layout loads before it shows a screen. With false the first render mounted the screen, onMounted
+// then unmounted it behind the loader and mounted it again, so every screen fetched its data twice on a full reload.
+const loading = ref(true)
 
 const shouldShowRouteView = computed(() => {
   if (route.name === 'invitations-processor') return true
@@ -39,19 +41,21 @@ const shouldShowRouteView = computed(() => {
 })
 
 onMounted(async () => {
-  loading.value = true
-  if (!hydrationStore.isHydrated) {
-    await nextTick(async () => {
-      await hydrationStore.hydrateAll()
-    })
-  }
-  await collaboratorsStore.loadInvitations()
+  try {
+    if (!hydrationStore.isHydrated) {
+      await nextTick(async () => {
+        await hydrationStore.hydrateAll()
+      })
+    }
+    await collaboratorsStore.loadInvitations()
 
-  if (userStore.isAuthenticated) {
-    if (userStore.justLogin === true) userStore.justLogin = false
-    if (route.path === '/dashboard' || route.path === '/dashboard/') await determinatePostLoginRoute()
+    if (userStore.isAuthenticated) {
+      if (userStore.justLogin === true) userStore.justLogin = false
+      if (route.path === '/dashboard' || route.path === '/dashboard/') await determinatePostLoginRoute()
+    }
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 })
 
 const determinatePostLoginRoute = async () => {
