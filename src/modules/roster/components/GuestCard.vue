@@ -71,6 +71,10 @@ const items = computed(() => {
           </li>
         </ul>
         <p v-if="family.notes" class="mt-2 text-sm text-ink-500">{{ family.notes }}</p>
+        <figure v-if="family.rsvpNote" class="mt-2 rounded-xl bg-cream-100 px-3 py-2">
+          <figcaption class="text-xs font-medium text-ink-500">{{ t('app.roster.rsvpNote') }}</figcaption>
+          <blockquote class="mt-0.5 whitespace-pre-line break-words text-sm text-ink-700">{{ family.rsvpNote }}</blockquote>
+        </figure>
         <GuestLocaleSelect :family="family" :event-locale="eventLocale" :disabled="!canEdit" @change="emit('locale', family, $event)" />
         <p class="mt-2 text-xs text-ink-500">{{ t('app.roster.people', { n: peopleIn(family) }, peopleIn(family)) }}</p>
       </div>

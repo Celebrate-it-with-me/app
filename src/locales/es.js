@@ -379,6 +379,21 @@ export default {
       google: 'Google Calendar',
       ics: 'Apple, Outlook y otros (.ics)'
     },
+    gallery: {
+      photoOf: 'Foto {n} de {total}',
+      open: 'Ver foto {n} de {total}',
+      viewer: 'Visor de fotos',
+      close: 'Cerrar',
+      previous: 'Foto anterior',
+      next: 'Foto siguiente',
+      carousel: 'Fotos, desliza hacia los lados'
+    },
+    music: {
+      fallbackTitle: 'Música de fondo',
+      play: 'Reproducir música',
+      pause: 'Pausar música',
+      error: 'No pudimos reproducir la música.'
+    },
     padrinos: { sponsors: 'Apadrina {items}' },
     itinerary: {
       types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' }
@@ -419,6 +434,18 @@ export default {
       thanksNo: 'Gracias por avisarnos. Te vamos a extrañar.',
       error: 'No pudimos guardar tu respuesta. Inténtalo de nuevo.',
       closedError: 'El plazo para confirmar ya terminó.',
+      noteLabel: 'Un mensaje para los anfitriones (opcional)',
+      noteCount: '{n}/{max}',
+      nameLabel: 'Nombre de la persona',
+      yourNote: 'Tu mensaje',
+      errors: {
+        too_long: 'Es demasiado largo.',
+        too_short: 'Escribe al menos 2 letras.',
+        required: 'Escribe un nombre.',
+        invalid_characters: 'El nombre tiene caracteres que no podemos guardar.',
+        invalid: 'No pudimos guardar los nombres. Recarga la invitación e inténtalo de nuevo.',
+        too_many_attempts: 'Demasiados intentos. Espera un momento e inténtalo de nuevo.'
+      },
       status: {
         attending: 'Asistirá',
         'not-attending': 'No asistirá',
@@ -1376,6 +1403,7 @@ export default {
       }
     },
     roster: {
+      rsvpNote: 'Mensaje del invitado',
       progress: {
         label: 'Respuestas de tus invitados',
         answered: '{n} de {total} ya respondieron',

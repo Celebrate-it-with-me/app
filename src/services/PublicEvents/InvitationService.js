@@ -18,14 +18,22 @@ class InvitationService {
   }
 
   /**
-   * @param {{ slug: string, code: string, guest: string, companions: Record<number, string> }} params
-   *   guest: 'attending' | 'not-attending'; companions: { [id]: status }
+   * @param {{ slug: string, code: string, guest: string, companions: Record<number, string>,
+   *   names?: Record<number, string>, note?: string }} params
+   *   guest: 'attending' | 'not-attending'; companions: { [id]: status }; names: { [id]: name }
+   *   (only the ones that changed); note: the guest's message ('' clears it, undefined leaves it).
    */
-  async saveRsvp({ slug, code, guest, companions }) {
-    return PUBLIC_API.post(`${path(slug, code)}/rsvp`, {
+  async saveRsvp({ slug, code, guest, companions, names = {}, note }) {
+    const body = {
       guest: { rsvpStatus: guest },
-      companions: Object.entries(companions).map(([id, rsvpStatus]) => ({ id: Number(id), rsvpStatus }))
-    })
+      companions: Object.entries(companions).map(([id, rsvpStatus]) => ({
+        id: Number(id),
+        rsvpStatus,
+        ...(id in names ? { name: names[id] } : {})
+      }))
+    }
+    if (note !== undefined) body.note = note
+    return PUBLIC_API.post(`${path(slug, code)}/rsvp`, body)
   }
 }
 

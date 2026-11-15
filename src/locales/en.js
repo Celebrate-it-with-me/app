@@ -379,6 +379,21 @@ export default {
       google: 'Google Calendar',
       ics: 'Apple, Outlook and others (.ics)'
     },
+    gallery: {
+      photoOf: 'Photo {n} of {total}',
+      open: 'View photo {n} of {total}',
+      viewer: 'Photo viewer',
+      close: 'Close',
+      previous: 'Previous photo',
+      next: 'Next photo',
+      carousel: 'Photos, swipe sideways'
+    },
+    music: {
+      fallbackTitle: 'Background music',
+      play: 'Play music',
+      pause: 'Pause music',
+      error: 'We couldn\'t play the music.'
+    },
     padrinos: { sponsors: 'Sponsors {items}' },
     itinerary: {
       types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
@@ -419,6 +434,18 @@ export default {
       thanksNo: 'Thanks for letting us know. We\'ll miss you.',
       error: 'We couldn\'t save your reply. Please try again.',
       closedError: 'The deadline to reply has passed.',
+      noteLabel: 'A message for the hosts (optional)',
+      noteCount: '{n}/{max}',
+      nameLabel: 'Name of the person',
+      yourNote: 'Your message',
+      errors: {
+        too_long: 'This is too long.',
+        too_short: 'Enter at least 2 characters.',
+        required: 'Enter a name.',
+        invalid_characters: 'The name has characters we can\'t save.',
+        invalid: 'We couldn\'t save the names. Reload the invitation and try again.',
+        too_many_attempts: 'Too many attempts. Wait a moment and try again.'
+      },
       status: {
         attending: 'Will attend',
         'not-attending': 'Will not attend',
@@ -1376,6 +1403,7 @@ export default {
       }
     },
     roster: {
+      rsvpNote: 'Guest message',
       progress: {
         label: 'Your guests’ answers',
         answered: '{n} of {total} have answered',
