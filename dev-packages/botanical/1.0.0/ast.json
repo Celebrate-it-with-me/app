@@ -280,5 +280,56 @@
             ]
         }
     },
-    "layout": null
+    "layout": {
+        "v": 1,
+        "kind": "layout",
+        "nodes": [
+            {
+                "t": "el",
+                "tag": "div",
+                "attrs": {
+                    "class": "pkg-bot-page"
+                },
+                "children": [
+                    {
+                        "t": "q",
+                        "name": "sections",
+                        "props": {},
+                        "attrs": {},
+                        "children": []
+                    },
+                    {
+                        "t": "el",
+                        "tag": "footer",
+                        "attrs": {
+                            "class": "pkg-bot-foot"
+                        },
+                        "children": [
+                            {
+                                "t": "el",
+                                "tag": "p",
+                                "attrs": {},
+                                "children": [
+                                    {
+                                        "t": "var",
+                                        "path": "event.name",
+                                        "filter": null
+                                    },
+                                    {
+                                        "t": "text",
+                                        "v": " · "
+                                    },
+                                    {
+                                        "t": "var",
+                                        "path": "event.date",
+                                        "filter": "long"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
 }

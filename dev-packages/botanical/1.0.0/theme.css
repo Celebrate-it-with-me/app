@@ -38,3 +38,7 @@
   .pkg-bot-card { border-radius: 1.5rem; box-shadow: 0 4px 12px rgba(52,56,44,.08), 0 32px 64px -24px rgba(52,56,44,.28); }
   .pkg-bot-photo { height: 25rem; }
 }
+
+.pkg-bot-page { background-color: var(--inv-surface-alt); }
+.pkg-bot-foot { padding: 1.5rem 1rem 5rem; text-align: center; color: var(--inv-ink-soft); font-size: 0.95rem; letter-spacing: 0.04em; }
+.pkg-bot-foot p { margin: 0; }
