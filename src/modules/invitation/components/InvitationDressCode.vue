@@ -8,7 +8,9 @@ import { isHex } from '../composables/useInvitationTheme'
 import InvitationSection from './InvitationSection.vue'
 
 const props = defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** swatches (colour circles, default) | plain (names only) */
+  variant: { type: String, default: 'swatches' }
 })
 
 const { invitation, tt } = useInvitationContext()
@@ -45,9 +47,9 @@ onMounted(async () => {
 
 <template>
   <InvitationSection id="dress-code" :title="section.title" :text="section.text">
-    <div class="flex flex-col items-center">
+    <div class="inv-dresscode flex flex-col items-center" :data-variant="variant">
       <span
-        class="flex h-14 w-14 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50"
+        class="inv-badge flex h-14 w-14 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50"
       >
         <Shirt class="h-6 w-6" aria-hidden="true" />
       </span>
@@ -57,17 +59,17 @@ onMounted(async () => {
       </p>
     </div>
 
-    <div v-for="palette in palettes" :key="palette.id" class="mt-10">
+    <div v-for="palette in palettes" :key="palette.id" class="inv-dresscode__palette mt-10">
       <p class="text-sm font-medium text-inv-ink-soft">{{ palette.label }}</p>
       <ul class="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-5">
         <li v-for="color in palette.colors" :key="color.name" class="flex w-20 flex-col items-center gap-2">
           <span
-            v-if="color.swatch"
+            v-if="color.swatch && variant !== 'plain'"
             class="h-14 w-14 rounded-full shadow-soft ring-1 ring-inv-ink/15 ring-offset-2 ring-offset-inv-surface"
             :style="{ backgroundColor: color.swatch }"
             aria-hidden="true"
           />
-          <span :class="color.isCode ? 'sr-only' : 'text-sm text-inv-ink-soft'">{{ color.name }}</span>
+          <span :class="color.isCode && variant !== 'plain' ? 'sr-only' : 'text-sm text-inv-ink-soft'">{{ color.name }}</span>
         </li>
       </ul>
     </div>

@@ -9,7 +9,9 @@ import { Pause, Play } from 'lucide-vue-next'
 import { useInvitationContext } from '../composables/useInvitation'
 
 const props = defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** Default: slim bar on phones, floating button from sm up. bar: bar at every width. button: button at every width. */
+  variant: { type: String, default: undefined }
 })
 
 const { tt, preview } = useInvitationContext()
@@ -21,6 +23,18 @@ let audio = null
 const url = computed(() => props.section.data?.url ?? '')
 const title = computed(() => props.section.data?.title || props.section.settings?.title || tt('music.fallbackTitle'))
 const label = computed(() => `${tt(playing.value ? 'music.pause' : 'music.play')}: ${title.value}`)
+const BUTTON_OUTER = 'inset-x-auto bottom-4 right-4'
+const BAR_OUTER = 'inset-x-0 bottom-0'
+const BAR_INNER = 'border-t border-inv-ink/10 bg-inv-surface/95 px-4 py-2 backdrop-blur'
+const BUTTON_INNER = 'flex-col-reverse items-end gap-2'
+const layout = computed(() => {
+  if (props.variant === 'bar') return { outer: BAR_OUTER, inner: BAR_INNER }
+  if (props.variant === 'button') return { outer: BUTTON_OUTER, inner: BUTTON_INNER }
+  return {
+    outer: 'inset-x-0 bottom-0 sm:inset-x-auto sm:bottom-4 sm:right-4',
+    inner: `${BAR_INNER} sm:flex-col-reverse sm:items-end sm:gap-2 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none`
+  }
+})
 const unavailable = computed(() => preview || failed.value || !url.value)
 
 function fail() {
@@ -78,11 +92,9 @@ onBeforeUnmount(() => {
 
 <template>
   <!-- Phone: a slim bar docked at the bottom, so it never sits on top of the form; the spacer keeps the page end clear. -->
-  <div class="h-16 sm:hidden" aria-hidden="true" />
-  <div class="pointer-events-none fixed inset-x-0 bottom-0 z-20 sm:inset-x-auto sm:bottom-4 sm:right-4">
-    <div
-      class="pointer-events-auto flex items-center gap-3 border-t border-inv-ink/10 bg-inv-surface/95 px-4 py-2 backdrop-blur sm:flex-col-reverse sm:items-end sm:gap-2 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none"
-    >
+  <div v-if="variant !== 'button'" :class="['h-16', variant === 'bar' ? '' : 'sm:hidden']" aria-hidden="true" />
+  <div :class="['inv-music pointer-events-none fixed z-20', layout.outer]" :data-variant="variant">
+    <div :class="['pointer-events-auto flex items-center gap-3', layout.inner]">
       <p
         role="status"
         aria-live="polite"
@@ -90,7 +102,7 @@ onBeforeUnmount(() => {
       >
         {{ failed ? tt('music.error') : '' }}
       </p>
-      <span v-if="!failed" class="min-w-0 flex-1 truncate text-sm text-inv-ink-soft sm:hidden" aria-hidden="true">{{ title }}</span>
+      <span v-if="!failed && variant !== 'button'" :class="['min-w-0 flex-1 truncate text-sm text-inv-ink-soft', variant === 'bar' ? '' : 'sm:hidden']" aria-hidden="true">{{ title }}</span>
       <button
         type="button"
         class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-inv-primary text-inv-on-primary shadow-card transition-[opacity,scale] duration-150 ease-out hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary active:scale-[0.97] disabled:opacity-50 sm:h-12 sm:w-12"

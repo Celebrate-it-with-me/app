@@ -5,7 +5,9 @@ import { iconFor, parseMoment } from '@/modules/timeline/utils/program'
 import InvitationSection from './InvitationSection.vue'
 
 const props = defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** timeline (icon badges, default) | list (plain) */
+  variant: { type: String, default: 'timeline' }
 })
 
 const { locale } = useInvitationContext()
@@ -23,16 +25,17 @@ const items = computed(() => {
 
 <template>
   <InvitationSection id="itinerary" :title="section.title" :text="section.text">
-    <ol class="mx-auto max-w-md space-y-6 text-left">
-      <li v-for="(item, index) in items" :key="index" class="flex gap-4">
+    <ol class="inv-itinerary mx-auto max-w-md space-y-6 text-left" :data-variant="variant">
+      <li v-for="(item, index) in items" :key="index" class="inv-itinerary__item flex gap-4">
         <span
-          class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50"
+          v-if="variant !== 'list'"
+          class="inv-badge flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-inv-primary/10 text-inv-primary ring-1 ring-inv-accent/50"
         >
           <component :is="item.icon" class="h-5 w-5" aria-hidden="true" />
         </span>
         <div class="min-w-0">
-          <p class="text-sm font-medium text-inv-ink-soft">{{ item.until ? `${item.time} – ${item.until}` : item.time }}</p>
-          <h3 class="font-inv-heading text-xl text-inv-primary-ink">{{ item.title }}</h3>
+          <p class="inv-itinerary__time text-sm font-medium text-inv-ink-soft">{{ item.until ? `${item.time} – ${item.until}` : item.time }}</p>
+          <h3 class="inv-itinerary__title font-inv-heading text-xl text-inv-primary-ink">{{ item.title }}</h3>
           <p v-if="item.description" class="mt-1 text-inv-ink-soft text-pretty">{{ item.description }}</p>
         </div>
       </li>
