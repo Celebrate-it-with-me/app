@@ -12,7 +12,7 @@
  */
 import { Fragment, cloneVNode, h } from 'vue'
 import { BLOCKS } from './blocks'
-import { LIMITS, TAGS, VAR_ATTRS, VOID_TAGS, astBytes, cleanAttr } from './policy'
+import { LIMITS, TAGS, VAR_ATTRS, VOID_TAGS, astBytes, cleanAttr, packageAsset } from './policy'
 import { resolveVar } from './variables'
 import PackageCarousel from './PackageCarousel'
 
@@ -32,10 +32,10 @@ export function renderAst(root, env) {
   }
 
   /** Resolves an attribute value to a string (or undefined). Asset forms are resolved against the package base. */
-  function attrValue(raw) {
+  function attrValue(raw, assetsOnly = false) {
     if (!isObject(raw)) return raw
-    if (raw.t === 'var' && typeof raw.path === 'string') return resolveVar(raw.path, raw.filter, env.ctx, warn)
-    if (Array.isArray(raw.tpl)) {
+    if (!assetsOnly && raw.t === 'var' && typeof raw.path === 'string') return resolveVar(raw.path, raw.filter, env.ctx, warn)
+    if (!assetsOnly && Array.isArray(raw.tpl)) {
       return raw.tpl
         .slice(0, 40)
         .map(part => (part?.t === 'var' && typeof part.path === 'string' ? resolveVar(part.path, part.filter, env.ctx, warn) : part?.t === 'text' ? String(part.v ?? '') : ''))
@@ -45,14 +45,13 @@ export function renderAst(root, env) {
     if (Array.isArray(raw.assets)) {
       return raw.assets
         .slice(0, 6)
-        .map(item => (typeof item?.path === 'string' && /^\d{2,4}$/.test(String(item.w)) && safeAsset(item.path) ? `${safeAsset(item.path)} ${item.w}w` : null))
+        .map(item => (typeof item?.path === 'string' && /^\d{2,4}$/.test(String(item.w)) && packageAsset(item.path, '/') ? `${item.path.trim()} ${item.w}w` : null))
         .filter(Boolean)
         .join(', ')
     }
     return undefined
   }
 
-  const safeAsset = path => (/^assets\/[a-z0-9][a-z0-9._/-]{0,120}$/.test(path) && !path.includes('..') && !path.includes('//') && env.base ? env.base + path : '')
 
   function children(list, depth) {
     if (!Array.isArray(list)) return []
@@ -139,7 +138,14 @@ export function renderAst(root, env) {
     const raw = isObject(rawAttrs) ? rawAttrs : {}
     for (const [name, value] of Object.entries(raw)) {
       const lower = name.toLowerCase()
-      const resolved = isObject(value) ? (VAR_ATTRS.has(lower) || ['src', 'srcset'].includes(lower) ? attrValue(value) : undefined) : value
+      // href/src/srcset never take variables; src and srcset may name a package asset ({ asset } / { assets }).
+      const resolved = isObject(value)
+        ? ['src', 'srcset'].includes(lower)
+          ? attrValue(value, true)
+          : VAR_ATTRS.has(lower)
+            ? attrValue(value)
+            : undefined
+        : value
       const clean = cleanAttr(tag, lower, resolved, env.base)
       if (clean === undefined) warn(`attribute "${name.slice(0, 30)}" on <${tag}> dropped`)
       else props[lower] = clean
