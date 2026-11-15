@@ -538,24 +538,17 @@
                                     ]
                                 },
                                 {
-                                    "t": "el",
-                                    "tag": "div",
+                                    "t": "q",
+                                    "name": "cta",
+                                    "props": {
+                                        "action": "confirm"
+                                    },
                                     "attrs": {
                                         "class": "pkg-cl-cta",
                                         "data-reveal": "rise",
                                         "data-reveal-delay": "800"
                                     },
-                                    "children": [
-                                        {
-                                            "t": "q",
-                                            "name": "cta",
-                                            "props": {
-                                                "action": "confirm"
-                                            },
-                                            "attrs": {},
-                                            "children": []
-                                        }
-                                    ]
+                                    "children": []
                                 }
                             ]
                         }

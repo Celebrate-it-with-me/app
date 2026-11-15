@@ -109,6 +109,10 @@ export function renderAst(root, env) {
         const attrs = cleanAttrs('div', node.attrs)
         return Object.keys(attrs).length ? cloneVNode(vnode, attrs) : vnode
       }
+      case 'fragment': {
+        const list = children(node.children, depth)
+        return list.length ? h(Fragment, null, list) : null
+      }
       case 'if': {
         // Declarative condition: draw the children only when the variable is not empty. No logic beyond that.
         const value = typeof node.path === 'string' ? resolveVar(node.path, node.filter, env.ctx, warn) : ''
@@ -160,5 +164,7 @@ export function renderAst(root, env) {
     return h(tag, props, kids)
   }
 
-  return walk(root, 0)
+  // The server wraps a template as { v, kind, nodes:[…] }: a list of top-level nodes.
+  const top = isObject(root) && Array.isArray(root.nodes) ? { t: 'fragment', children: root.nodes } : root
+  return walk(top, 0)
 }

@@ -1,0 +1,20 @@
+<div class="pkg-bot">
+  <div class="pkg-bot-card">
+    <div class="pkg-bot-photo"><q-cover-photo focus="50% 14%" priority="true"></q-cover-photo></div>
+    <div class="pkg-bot-body">
+      <span class="pkg-bot-wash pkg-bot-wash--a" aria-hidden="true"></span>
+      <span class="pkg-bot-wash pkg-bot-wash--b" aria-hidden="true"></span>
+      <p data-if="section.text" class="pkg-bot-phrase" data-reveal="rise">{{section.text}}</p>
+      <div class="pkg-bot-names" data-reveal="rise" data-reveal-delay="200"><q-names tag="h1" script="true"></q-names></div>
+      <p data-if="event.description" class="pkg-bot-desc" data-reveal="rise" data-reveal-delay="300">{{event.description}}</p>
+      <div class="pkg-bot-date" data-reveal="rise" data-reveal-delay="400">
+        <span class="pkg-bot-date__side">{{event.date|upper_month}}</span>
+        <div class="pkg-bot-date__ring"><span class="pkg-bot-date__wd">{{event.date|weekday_short}}</span><span class="pkg-bot-date__num">{{event.date|day}}</span></div>
+        <span class="pkg-bot-date__side">{{event.time}}</span>
+      </div>
+      <p class="pkg-bot-guest" data-reveal="rise" data-reveal-delay="600">{{t.invitedFor}}<br><strong>{{guest.name}}</strong></p>
+      <div class="pkg-bot-cta" data-reveal="rise" data-reveal-delay="600"><q-cta action="confirm"></q-cta></div>
+    </div>
+    <img class="pkg-bot-garland" src="assets/img/garland.svg" alt="" width="1200" height="300" loading="lazy">
+  </div>
+</div>

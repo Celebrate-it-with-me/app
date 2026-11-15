@@ -13,7 +13,7 @@ export function layoutIsValid(ast) {
       if (underIf) hidden = true
     }
     const next = underIf || node.t === 'if'
-    for (const child of Array.isArray(node.children) ? node.children : []) walk(child, next, depth + 1)
+    for (const child of Array.isArray(node.children) ? node.children : Array.isArray(node.nodes) ? node.nodes : []) walk(child, next, depth + 1)
   }
   walk(ast, false, 0)
   return count === 1 && !hidden

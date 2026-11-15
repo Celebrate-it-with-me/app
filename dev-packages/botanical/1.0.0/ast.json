@@ -1,0 +1,284 @@
+{
+    "templates": {
+        "cover": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-bot"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-bot-card"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-bot-photo"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "cover-photo",
+                                            "props": {
+                                                "focus": "50% 14%",
+                                                "priority": true
+                                            },
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-bot-body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-bot-wash pkg-bot-wash--a",
+                                                "aria-hidden": "true"
+                                            },
+                                            "children": []
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-bot-wash pkg-bot-wash--b",
+                                                "aria-hidden": "true"
+                                            },
+                                            "children": []
+                                        },
+                                        {
+                                            "t": "if",
+                                            "path": "section.text",
+                                            "children": [
+                                                {
+                                                    "t": "el",
+                                                    "tag": "p",
+                                                    "attrs": {
+                                                        "class": "pkg-bot-phrase",
+                                                        "data-reveal": "rise"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "t": "var",
+                                                            "path": "section.text",
+                                                            "filter": null
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "div",
+                                            "attrs": {
+                                                "class": "pkg-bot-names",
+                                                "data-reveal": "rise",
+                                                "data-reveal-delay": "200"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "q",
+                                                    "name": "names",
+                                                    "props": {
+                                                        "tag": "h1",
+                                                        "script": true
+                                                    },
+                                                    "attrs": {},
+                                                    "children": []
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "t": "if",
+                                            "path": "event.description",
+                                            "children": [
+                                                {
+                                                    "t": "el",
+                                                    "tag": "p",
+                                                    "attrs": {
+                                                        "class": "pkg-bot-desc",
+                                                        "data-reveal": "rise",
+                                                        "data-reveal-delay": "300"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "t": "var",
+                                                            "path": "event.description",
+                                                            "filter": null
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "div",
+                                            "attrs": {
+                                                "class": "pkg-bot-date",
+                                                "data-reveal": "rise",
+                                                "data-reveal-delay": "400"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "el",
+                                                    "tag": "span",
+                                                    "attrs": {
+                                                        "class": "pkg-bot-date__side"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "t": "var",
+                                                            "path": "event.date",
+                                                            "filter": "upper_month"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "t": "el",
+                                                    "tag": "div",
+                                                    "attrs": {
+                                                        "class": "pkg-bot-date__ring"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "t": "el",
+                                                            "tag": "span",
+                                                            "attrs": {
+                                                                "class": "pkg-bot-date__wd"
+                                                            },
+                                                            "children": [
+                                                                {
+                                                                    "t": "var",
+                                                                    "path": "event.date",
+                                                                    "filter": "weekday_short"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "t": "el",
+                                                            "tag": "span",
+                                                            "attrs": {
+                                                                "class": "pkg-bot-date__num"
+                                                            },
+                                                            "children": [
+                                                                {
+                                                                    "t": "var",
+                                                                    "path": "event.date",
+                                                                    "filter": "day"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "t": "el",
+                                                    "tag": "span",
+                                                    "attrs": {
+                                                        "class": "pkg-bot-date__side"
+                                                    },
+                                                    "children": [
+                                                        {
+                                                            "t": "var",
+                                                            "path": "event.time",
+                                                            "filter": null
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-bot-guest",
+                                                "data-reveal": "rise",
+                                                "data-reveal-delay": "600"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "t.invitedFor",
+                                                    "filter": null
+                                                },
+                                                {
+                                                    "t": "el",
+                                                    "tag": "br",
+                                                    "attrs": {},
+                                                    "children": []
+                                                },
+                                                {
+                                                    "t": "el",
+                                                    "tag": "strong",
+                                                    "attrs": {},
+                                                    "children": [
+                                                        {
+                                                            "t": "var",
+                                                            "path": "guest.name",
+                                                            "filter": null
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "div",
+                                            "attrs": {
+                                                "class": "pkg-bot-cta",
+                                                "data-reveal": "rise",
+                                                "data-reveal-delay": "600"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "q",
+                                                    "name": "cta",
+                                                    "props": {
+                                                        "action": "confirm"
+                                                    },
+                                                    "attrs": {},
+                                                    "children": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "img",
+                                    "attrs": {
+                                        "class": "pkg-bot-garland",
+                                        "src": {
+                                            "asset": "assets/img/garland.svg"
+                                        },
+                                        "alt": "",
+                                        "width": 1200,
+                                        "height": 300,
+                                        "loading": "lazy"
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "layout": null
+}

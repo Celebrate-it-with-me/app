@@ -168,7 +168,7 @@ async function submit() {
     <div class="relative">
       <InvitationPetals v-if="celebrate" @done="celebrate = false" />
 
-      <component :is="variant === 'inline' ? 'div' : InvitationPanel" class="inv-rsvp" :data-variant="variant" v-bind="variant === 'paper' ? { variant: 'flat' } : {}">
+      <component :is="variant === 'inline' ? 'div' : InvitationPanel" class="inv-rsvp" :data-rsvp="variant" v-bind="variant === 'paper' ? { variant: 'flat' } : {}">
         <!-- Summary of what was answered -->
         <div v-if="showSummary">
           <ul class="divide-y divide-inv-ink/10">

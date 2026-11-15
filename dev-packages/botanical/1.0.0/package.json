@@ -1,0 +1,10 @@
+{
+  "slug": "botanical", "version": "1.0.0", "engineMin": 1,
+  "preload": [{ "path": "assets/fonts/great-vibes-latin-400-normal.woff2", "as": "font" }, { "path": "assets/fonts/cormorant-garamond-latin-400-normal.woff2", "as": "font" }],
+  "devTheme": {
+    "name": "botanical", "preset": "salvia",
+    "colors": { "surface": "#fbf8f1", "surfaceAlt": "#f1efe3", "ink": "#34382c", "inkSoft": "#555a47", "accent": "#8c8658", "primary": "#566f52" },
+    "fonts": { "heading": "Cormorant Garamond", "body": "Cormorant Garamond", "script": "Great Vibes" },
+    "weddingText": "Dos caminos se encontraron, dos vidas se unen para siempre. Acompáñanos a celebrar nuestro matrimonio."
+  }
+}
