@@ -17,6 +17,7 @@ import {
   buildPayload,
   errorKeyFor,
   isButtonHidden,
+  nextTucked,
   validateMessage
 } from '../utils/supportContext'
 
@@ -46,8 +47,20 @@ const checkDialogs = () => {
 const onFocusIn = event => { focusedElement.value = event.target }
 const onFocusOut = () => { focusedElement.value = null }
 
+// While reading down the page the button tucks against the edge (and loses its label on desktop) so it never sits on top
+// of a link or badge; scrolling up, hovering or focusing it brings it back.
+const tucked = ref(false)
+let lastY = 0
+const onScroll = () => {
+  const y = window.scrollY
+  tucked.value = nextTucked({ tucked: tucked.value, lastY, y })
+  lastY = y
+}
+
 let observer
 onMounted(() => {
+  lastY = window.scrollY
+  window.addEventListener('scroll', onScroll, { passive: true })
   document.addEventListener('focusin', onFocusIn)
   document.addEventListener('focusout', onFocusOut)
   observer = new MutationObserver(checkDialogs)
@@ -55,6 +68,7 @@ onMounted(() => {
   checkDialogs()
 })
 onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
   document.removeEventListener('focusin', onFocusIn)
   document.removeEventListener('focusout', onFocusOut)
   observer?.disconnect()
@@ -121,13 +135,15 @@ const submit = async () => {
       ref="triggerRef"
       type="button"
       data-testid="support-help-button"
-      class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-40 flex h-12 w-12 items-center justify-center gap-2 rounded-full bg-rose-600 text-white shadow-pop transition-colors hover:bg-rose-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 active:bg-rose-800 lg:bottom-6 lg:right-6 lg:w-auto lg:px-5"
+      :data-tucked="tucked"
+      class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-40 flex h-12 w-12 items-center justify-center gap-2 rounded-full bg-rose-600 text-white shadow-pop transition-[opacity,translate,background-color] duration-200 ease-out hover:bg-rose-700 hover:translate-x-0 hover:opacity-100 focus-visible:translate-x-0 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 active:bg-rose-800 motion-reduce:transition-none lg:bottom-6 lg:right-6 lg:w-auto lg:px-5 lg:data-[tucked=true]:w-12 lg:data-[tucked=true]:px-0"
+      :class="tucked && 'translate-x-[45%] opacity-75 lg:translate-x-0 lg:opacity-100'"
       :aria-label="t('support.open')"
       aria-haspopup="dialog"
       @click="open = true"
     >
       <LifeBuoy class="h-5 w-5 shrink-0" aria-hidden="true" />
-      <span class="hidden text-sm font-semibold lg:inline">{{ t('support.button') }}</span>
+      <span class="hidden text-sm font-semibold lg:inline" :class="tucked && 'lg:hidden'">{{ t('support.button') }}</span>
     </button>
   </Transition>
 
