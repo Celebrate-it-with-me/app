@@ -23,6 +23,7 @@ import UnlockView from '@/views/internal/unlock/UnlockView.vue'
 import seatingRoutes from '@/modules/seating/routes/seating.route'
 import onboardingRoutes from '@/modules/onboarding/routes/onboarding.route'
 import collaboratorsRoutes from '@/modules/collaborators/routes/collaborators.route'
+import assistantRoutes from '@/modules/assistant/routes/assistant.route'
 
 const authRoutes = [
   {
@@ -105,6 +106,7 @@ const authRoutes = [
   ...eventsRoutes,
   ...seatingRoutes,
   ...onboardingRoutes,
+  ...assistantRoutes,
   {
     path: '/logout',
     name: 'logout',
