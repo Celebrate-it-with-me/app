@@ -366,7 +366,7 @@ export default {
     errorTitle: 'No pudimos cargar la invitación',
     errorText: 'Revisa tu conexión e inténtalo de nuevo.',
     previewNotice: 'Vista previa: las respuestas no se guardan.',
-    preview: { waiting: 'Esperando vista previa…', notConfigured: 'Vista previa no configurada', invalidKept: 'El contenido recibido no es válido. Se mantiene la última vista previa válida.', invalid: 'El contenido recibido no es válido.' },
+    preview: { waiting: 'Esperando vista previa…', notConfigured: 'Vista previa no configurada', invalidKept: 'El contenido recibido no es válido. Se mantiene la última vista previa válida.', invalid: 'El contenido recibido no es válido.', packageDropped: 'El paquete tapaba un bloque del sistema (confirmación, cuenta atrás…): se descartó su estilo y se muestra Clásica.' },
     retry: 'Reintentar',
     language: 'Idioma',
     invitedFor: 'Invitación para',
