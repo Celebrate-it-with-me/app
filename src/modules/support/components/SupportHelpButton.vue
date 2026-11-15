@@ -47,8 +47,8 @@ const checkDialogs = () => {
 const onFocusIn = event => { focusedElement.value = event.target }
 const onFocusOut = () => { focusedElement.value = null }
 
-// While reading down the page the button tucks against the edge (and loses its label on desktop) so it never sits on top
-// of a link or badge; scrolling up, hovering or focusing it brings it back.
+// Icon-only (the label is the tooltip and the accessible name). While reading down the page it tucks against the edge so
+// it does not sit on top of a link or badge; scrolling up, hovering or focusing it brings it back.
 const tucked = ref(false)
 let lastY = 0
 const onScroll = () => {
@@ -136,14 +136,14 @@ const submit = async () => {
       type="button"
       data-testid="support-help-button"
       :data-tucked="tucked"
-      class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-40 flex h-12 w-12 items-center justify-center gap-2 rounded-full bg-rose-600 text-white shadow-pop transition-[opacity,translate,background-color] duration-200 ease-out hover:bg-rose-700 hover:translate-x-0 hover:opacity-100 focus-visible:translate-x-0 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 active:bg-rose-800 motion-reduce:transition-none lg:bottom-6 lg:right-6 lg:w-auto lg:px-5 lg:data-[tucked=true]:w-12 lg:data-[tucked=true]:px-0"
-      :class="tucked && 'translate-x-[45%] opacity-75 lg:translate-x-0 lg:opacity-100'"
+      class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-40 flex h-12 w-12 items-center justify-center gap-2 rounded-full bg-rose-600 text-white shadow-pop transition-[opacity,translate,background-color] duration-200 ease-out hover:bg-rose-700 hover:translate-x-0 hover:opacity-100 focus-visible:translate-x-0 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 active:bg-rose-800 motion-reduce:transition-none lg:bottom-6 lg:right-6"
+      :class="tucked && 'translate-x-[45%] opacity-75'"
       :aria-label="t('support.open')"
+      :title="t('support.button')"
       aria-haspopup="dialog"
       @click="open = true"
     >
       <LifeBuoy class="h-5 w-5 shrink-0" aria-hidden="true" />
-      <span class="hidden text-sm font-semibold lg:inline" :class="tucked && 'lg:hidden'">{{ t('support.button') }}</span>
     </button>
   </Transition>
 
