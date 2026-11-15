@@ -32,47 +32,6 @@ export const useUserStore = defineStore('userStore', {
   },
   actions: {
     /**
-     * Disable two-factor authentication for the current user
-     * @returns {Promise} API response
-     */
-    async disable2FA() {
-      return await UserService.disable2FA()
-    },
-
-    /**
-     * Get backup codes for two-factor authentication
-     * @returns {Promise} API response with backup codes
-     */
-    async getBackupCodes() {
-      return await UserService.getBackupCodes()
-    },
-
-    /**
-     * Get the current status of two-factor authentication
-     * @returns {Promise} API response with 2FA status
-     */
-    async get2FAStatus() {
-      return await UserService.get2FAStatus()
-    },
-
-    /**
-     * Verify and enable two-factor authentication
-     * @param {string} authCode - Authentication code for verification
-     * @returns {Promise} API response
-     */
-    async verifyAndEnable2FA(authCode) {
-      return await UserService.verifyAndEnable2FA(authCode)
-    },
-
-    /**
-     * Set up two-factor authentication
-     * @returns {Promise} API response with setup information
-     */
-    async setup2FA() {
-      return await UserService.setup2FA()
-    },
-
-    /**
      * Get user preferences
      * @returns {Promise} API response with user preferences
      */
