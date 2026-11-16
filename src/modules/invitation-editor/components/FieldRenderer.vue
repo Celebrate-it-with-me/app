@@ -8,8 +8,7 @@ import TextField from './TextField.vue'
 import ColorField from './ColorField.vue'
 import ChoiceField from './ChoiceField.vue'
 import ToggleField from './ToggleField.vue'
-import ImageField from './ImageField.vue'
-
+import CoverPhotoField from '@/modules/template-picker/components/CoverPhotoField.vue'
 
 const props = defineProps({
   field: { type: Object, required: true },
@@ -46,7 +45,7 @@ const unlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
     :base-id="baseId"
     :error="message"
     :label-for="field.type === 'color' ? `${baseId}-hex` : ''"
-    :hide-label="field.type === 'toggle'"
+    :hide-label="field.type === 'toggle' || field.type === 'image'"
     :read-only="readOnly"
     @reset="emit('reset')"
     @unlock="unlock"
@@ -55,6 +54,6 @@ const unlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
     <ColorField v-else-if="field.type === 'color'" :field="field" :base-id="baseId" :described-by="describedBy" :invalid="Boolean(error)" :disabled="disabled" @update="v => emit('update', v)" />
     <ChoiceField v-else-if="field.type === 'choice'" :field="field" :base-id="baseId" :described-by="describedBy" :disabled="disabled" @update="v => emit('update', v)" />
     <ToggleField v-else-if="field.type === 'toggle'" :field="field" :disabled="disabled" @update="v => emit('update', v)" />
-    <ImageField v-else-if="field.type === 'image'" :field="field" :event-id="eventId" :disabled="disabled" @changed="v => emit('image-changed', v)" />
+    <CoverPhotoField v-else-if="field.type === 'image' && eventId != null" :field="field" :event-id="eventId" :disabled="disabled" @changed="v => emit('image-changed', v)" />
   </FieldShell>
 </template>

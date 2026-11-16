@@ -94,7 +94,7 @@ describe('TemplatePickerSheet', () => {
     expect(text()).toContain('Otros ajustes de estilo')
     expect(text()).toContain('Podrás deshacerlo durante 10 minutos.')
     await click('Cambiar')
-    expect(mocks.apply).toHaveBeenCalledWith(5, 2, { confirm: false })
+    expect(mocks.apply).toHaveBeenCalledWith(5, 2, { undo: false })
     const [data, template, undo] = wrapper.emitted('changed')[0]
     expect(data.undo.templateId).toBe(1)
     expect(template.id).toBe(2)
@@ -108,7 +108,7 @@ describe('TemplatePickerSheet', () => {
     await click('Usar esta plantilla')
     await click('Cambiar')
     await wrapper.vm.undo()
-    expect(mocks.apply).toHaveBeenLastCalledWith(5, 1, { confirm: false })
+    expect(mocks.apply).toHaveBeenLastCalledWith(5, 1, { undo: true })
     expect(wrapper.emitted('undone')).toHaveLength(1)
   })
 
@@ -141,6 +141,35 @@ describe('TemplatePickerSheet', () => {
     expect(text()).toContain('conservamos tus enlaces')
     expect(button('Contactar con soporte').getAttribute('href')).toMatch(/^mailto:/)
     expect(wrapper.emitted('changed')).toBeUndefined()
+  })
+
+  it('says the event is archived (422 status) instead of a generic error', async () => {
+    mocks.apply.mockRejectedValue(apiError(422, { errors: { status: ['event_archived'] } }))
+    await mountSheet()
+    await click('Rosas')
+    await click('Usar esta plantilla')
+    await click('Cambiar')
+    expect(text()).toContain('Este evento está archivado y no se puede editar.')
+  })
+
+  it('says the role cannot change the template (403 without a code)', async () => {
+    mocks.apply.mockRejectedValue(apiError(403, {}))
+    await mountSheet()
+    await click('Rosas')
+    await click('Usar esta plantilla')
+    await click('Cambiar')
+    expect(text()).toContain('Tu rol solo permite ver la invitación')
+  })
+
+  it('never offers a way to apply over a published invitation: only support', async () => {
+    mocks.apply.mockRejectedValue(apiError(409, { code: 'template_locked' }))
+    await mountSheet()
+    await click('Rosas')
+    await click('Usar esta plantilla')
+    await click('Cambiar')
+    expect(mocks.apply).toHaveBeenCalledTimes(1)
+    expect(button('Cambiar')).toBeUndefined()
+    expect(button('Contactar con soporte')).toBeDefined()
   })
 
   it('reloads the list when the template is no longer available', async () => {

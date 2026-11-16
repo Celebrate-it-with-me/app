@@ -75,6 +75,22 @@ export const PLAN_ITEM = {
   primary: false
 }
 
+/**
+ * "Tu invitación": the editor and the template selector. Like "Mi plan" it is not gated by the module catalog (the catalog row
+ * `invitation` starts switched off and the phone's bottom bar always draws this entry): without it the desktop sidebar would
+ * have no way into the screen. If the catalog does send `invitation` as active, its own row wins.
+ */
+export const INVITATION_ITEM = {
+  key: 'invitation',
+  to: '/dashboard/invitation',
+  icon: Sparkles,
+  labelKey: 'app.nav.invitation',
+  section: 'main',
+  order: 0.6,
+  state: 'active',
+  primary: false
+}
+
 /** Where a locked module leads: the "pass to premium" screen, never the module itself. */
 export const unlockPath = key => `/dashboard/unlock/${key}`
 
@@ -103,8 +119,10 @@ export function buildNavSections(modules) {
     })
     .filter(item => item && SECTIONS.includes(item.section))
 
-  const withPlan = Array.isArray(modules) && modules.length ? [PLAN_ITEM] : []
-  const all = [HOME_ITEM, ...withPlan, ...drawn].sort(
+  const withModules = Array.isArray(modules) && modules.length
+  const withPlan = withModules ? [PLAN_ITEM] : []
+  const withInvitation = withModules && !drawn.some(item => item.key === 'invitation') ? [INVITATION_ITEM] : []
+  const all = [HOME_ITEM, ...withPlan, ...withInvitation, ...drawn].sort(
     (a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section) || a.order - b.order
   )
 

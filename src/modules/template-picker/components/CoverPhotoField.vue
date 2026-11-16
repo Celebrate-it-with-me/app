@@ -15,7 +15,7 @@ import { ImagePlus, Move, Trash2, Upload } from 'lucide-vue-next'
 import { UiButton, UiModal, useToast } from '@/ui'
 import TemplatePickerService from '../services/TemplatePickerService'
 import CoverFocusPicker from './CoverFocusPicker.vue'
-import { COVER_ACCEPT, COVER_ERRORS, errorCode, parseAspect, readImageSize, validateCoverFile, validateCoverWidth } from '../utils/templatePicker'
+import { COVER_ACCEPT, COVER_ERRORS, errorCode, parseAspect, readImageSize, validateCoverFile, validateCoverWidth, writeErrorCode } from '../utils/templatePicker'
 
 const props = defineProps({
   eventId: { type: [Number, String], required: true },
@@ -37,6 +37,7 @@ const broken = ref(false)
 const focusOpen = ref(false)
 const focusDraft = ref('50% 50%')
 const focusError = ref(false)
+const focusMessage = ref('')
 const removeOpen = ref(false)
 
 watch(
@@ -60,17 +61,19 @@ function textOf(text) {
 }
 
 function message(code) {
-  const known = COVER_ERRORS.includes(code) || ['package_no_cover_field', 'too_many_attempts'].includes(code)
+  const known = COVER_ERRORS.includes(code) || ['package_no_cover_field', 'too_many_attempts', 'required', 'event_archived', 'forbidden', 'invalid_focus', 'template_locked'].includes(code)
   const key = `coverPhoto.errors.${known ? code : 'generic'}`
   return te(key) ? t(key, { min: minWidth.value || 960 }) : t('coverPhoto.errors.generic')
 }
 
-/** The API's reason for a failed upload: 422 field code, 409 code, 429 or the proxy's 413 (too big for the server). */
+/**
+ * The API's reason for a failed write: 422 `photo` / `focus` code, `event_archived`, 409 code, 403, 429 or the proxy's
+ * 413 (too big for the server).
+ */
 function uploadCode(e) {
   const status = e?.response?.status
-  if (status === 429) return 'too_many_attempts'
   if (status === 413) return 'too_large'
-  return errorCode(e, 'photo')
+  return writeErrorCode(e, 'photo') ?? errorCode(e, 'focus')
 }
 
 function choose() {
@@ -107,6 +110,7 @@ async function onPick(event) {
 function openFocus() {
   focusDraft.value = value.value?.focus || '50% 50%'
   focusError.value = false
+  focusMessage.value = ''
   focusOpen.value = true
 }
 
@@ -122,8 +126,10 @@ async function saveFocus() {
     value.value = { ...value.value, focus: focusDraft.value }
     emit('changed', value.value)
     focusOpen.value = false
-  } catch {
+  } catch (e) {
     focusError.value = true
+    const code = uploadCode(e)
+    focusMessage.value = ['event_archived', 'forbidden', 'invalid_focus', 'template_locked', 'too_many_attempts'].includes(code) ? message(code) : ''
   } finally {
     savingFocus.value = false
   }
@@ -137,8 +143,8 @@ async function remove() {
     emit('changed', null)
     removeOpen.value = false
     toast.success(t('coverPhoto.removed'))
-  } catch {
-    toast.error(t('coverPhoto.errors.generic'))
+  } catch (e) {
+    toast.error(message(uploadCode(e)))
   } finally {
     removing.value = false
   }
@@ -197,7 +203,7 @@ async function remove() {
     <UiModal v-model:open="focusOpen" :title="t('coverPhoto.focus.title')" :description="t('coverPhoto.focus.help')" size="md">
       <CoverFocusPicker v-if="value" v-model="focusDraft" :src="value.url" :width="value.width" :height="value.height" :aspect="field.aspect || '4:5'" />
       <p class="mt-3 text-center text-xs text-ink-500">{{ t('coverPhoto.focus.keyboard') }}</p>
-      <p v-if="focusError" class="mt-3 rounded-xl bg-danger-50 p-3 text-sm text-danger-700" role="alert">{{ t('coverPhoto.focus.failed') }}</p>
+      <p v-if="focusError" class="mt-3 rounded-xl bg-danger-50 p-3 text-sm text-danger-700" role="alert">{{ focusMessage || t('coverPhoto.focus.failed') }}</p>
       <template #footer>
         <UiButton variant="ghost" :disabled="savingFocus" @click="focusOpen = false">{{ t('coverPhoto.focus.cancel') }}</UiButton>
         <UiButton :loading="savingFocus" @click="saveFocus">{{ t('coverPhoto.focus.done') }}</UiButton>

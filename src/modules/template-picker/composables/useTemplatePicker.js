@@ -1,6 +1,6 @@
 import { ref, toValue } from 'vue'
 import TemplatePickerService from '../services/TemplatePickerService'
-import { errorCode, sortTemplates } from '../utils/templatePicker'
+import { sortTemplates, writeErrorCode } from '../utils/templatePicker'
 
 /**
  * State of the template selector for one event: the list, the live preview payload of the template being looked at,
@@ -33,18 +33,18 @@ export function useTemplatePicker(eventId) {
   }
 
   /** Renders `template` with the event's real data. Only the latest request may write the result. */
-  async function loadPreview(template, { locale, state, preset } = {}) {
+  async function loadPreview(template, { locale, state, preset, fields } = {}) {
     const ticket = ++previewTicket
     previewStatus.value = 'loading'
     previewError.value = null
     try {
-      const payload = await TemplatePickerService.preview(toValue(eventId), { templateId: template.id, locale, state, preset })
+      const payload = await TemplatePickerService.preview(toValue(eventId), { templateId: template?.id, locale, state, preset, fields })
       if (ticket !== previewTicket) return
       previewPayload.value = payload
       previewStatus.value = 'ready'
     } catch (e) {
       if (ticket !== previewTicket) return
-      previewError.value = errorCode(e)
+      previewError.value = writeErrorCode(e)
       previewStatus.value = 'error'
     }
   }
@@ -71,17 +71,17 @@ export function useTemplatePicker(eventId) {
     }
   }
 
-  /** `{ ok: true, data }` or `{ ok: false, code }` (`plan_required`, `template_locked`, `template_not_available`, `template_not_found`, `other`). */
-  async function apply(template, { confirm = false } = {}) {
+  /** `{ ok: true, data }` or `{ ok: false, code }` (`plan_required`, `template_locked`, `template_not_available`, `template_not_found`, `event_archived`, `forbidden`, `other`). */
+  async function apply(template, { undo: isUndo = false } = {}) {
     applying.value = true
     try {
       const previous = templates.value.find(item => item.current)
-      const data = await TemplatePickerService.apply(toValue(eventId), template.id, { confirm })
+      const data = await TemplatePickerService.apply(toValue(eventId), template.id, { undo: isUndo })
       undo.value = data?.undo ? { ...data.undo, name: templates.value.find(item => item.id === data.undo.templateId)?.name ?? previous?.name ?? '' } : null
       templates.value = sortTemplates(templates.value.map(item => ({ ...item, current: item.id === template.id })))
       return { ok: true, data }
     } catch (e) {
-      return { ok: false, code: errorCode(e) ?? 'other' }
+      return { ok: false, code: writeErrorCode(e) ?? 'other' }
     } finally {
       applying.value = false
     }
@@ -91,7 +91,7 @@ export function useTemplatePicker(eventId) {
   async function undoLast() {
     if (!undo.value) return { ok: false, code: 'other' }
     const target = { id: undo.value.templateId }
-    const result = await apply(target)
+    const result = await apply(target, { undo: true })
     if (result.ok) undo.value = null
     return result
   }

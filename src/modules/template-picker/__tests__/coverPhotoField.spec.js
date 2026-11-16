@@ -37,6 +37,34 @@ afterEach(() => {
   document.body.innerHTML = ''
 })
 
+describe('CoverPhotoField API failures', () => {
+  it.each([
+    [{ status: 422, data: { errors: { photo: ['required'] } } }, 'Elige una foto.'],
+    [{ status: 422, data: { errors: { status: ['event_archived'] } } }, 'Este evento está archivado y no se puede editar.'],
+    [{ status: 422, data: { errors: { focus: ['invalid_focus'] } } }, 'El punto de la foto no es válido.'],
+    [{ status: 403, data: {} }, 'Tu rol solo permite ver la invitación.'],
+    [{ status: 409, data: { code: 'package_no_cover_field' } }, 'no tiene espacio para una foto de portada']
+  ])('speaks of the real reason of a failed upload %#', async (response, message) => {
+    mocks.uploadCover.mockRejectedValue(apiError(response.status, response.data))
+    await mountField()
+    await pick(photo())
+    expect(text()).toContain(message)
+  })
+
+  it('reads invalid_focus when saving the focus, not a generic error', async () => {
+    mocks.saveFocus.mockRejectedValue(apiError(422, { errors: { 'fields.cover_photo': ['invalid_focus'], focus: ['invalid_focus'] } }))
+    await mountField(VALUE)
+    await button('Ajustar encuadre').click()
+    await flushPromises()
+    const handle = document.body.querySelector('[role=slider]')
+    handle?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))
+    await flushPromises()
+    await button('Listo').click()
+    await flushPromises()
+    expect(text()).toContain('El punto de la foto no es válido.')
+  })
+})
+
 describe('CoverPhotoField', () => {
   it('explains the empty state and offers to upload', async () => {
     await mountField()

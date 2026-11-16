@@ -5,6 +5,7 @@ import {
   canMove,
   classify,
   cleanValue,
+  FAILURE_CODES,
   fieldErrorsFrom,
   generalFieldsError,
   moveSection,
@@ -67,6 +68,9 @@ export function useInvitationEditor(eventId, { notify = () => {} } = {}) {
         f.isDefault = true
       }
       notify({ kind: 'plan', ids })
+    },
+    onFailed(kind) {
+      notify({ kind: 'generalError', code: FAILURE_CODES[kind] })
     },
     onTemplateLocked() {
       if (data.value) data.value.state.templateLocked = true
@@ -144,7 +148,8 @@ export function useInvitationEditor(eventId, { notify = () => {} } = {}) {
         } else if (kind === 'locked') {
           data.value.state.templateLocked = true
           notify({ kind: 'locked' })
-        } else notify({ kind: 'sectionError', code: 'network' })
+        } else if (kind === 'archived' || kind === 'forbidden') notify({ kind: 'sectionError', code: FAILURE_CODES[kind] })
+        else notify({ kind: 'sectionError', code: 'network' })
       }
     })
     return sectionQueue

@@ -24,8 +24,9 @@ const emit = defineEmits(['reset', 'unlock'])
 const { t, locale } = useI18n()
 
 const label = computed(() => pick(props.field.label, locale.value))
-const help = computed(() => pick(props.field.help, locale.value))
-const canReset = computed(() => !props.field.isDefault && !props.field.locked && !props.readOnly)
+const help = computed(() => (props.field.type === 'image' ? '' : pick(props.field.help, locale.value)))
+// A photo has its own remove button (CoverPhotoField): "back to the template's value" is not offered for it.
+const canReset = computed(() => !props.field.isDefault && !props.field.locked && !props.readOnly && props.field.type !== 'image')
 const describedBy = computed(() => [help.value && `${props.baseId}-help`, props.error && `${props.baseId}-error`].filter(Boolean).join(' ') || undefined)
 </script>
 

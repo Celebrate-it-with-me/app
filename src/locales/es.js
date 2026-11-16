@@ -1963,6 +1963,9 @@ export default {
     title: 'Tu invitación',
     subtitle: 'Personaliza lo que verán tus invitados. Todo se guarda solo.',
     loading: 'Cargando tu invitación…',
+    previewHint: 'Así se ve con tus cambios, aunque todavía no se hayan guardado.',
+    previewFrameTitle: 'Vista previa de tu invitación',
+    previewClose: 'Cerrar',
     offline: 'Sin conexión. Guardaremos tus cambios cuando vuelvas a estar en línea; no cierres esta pantalla.',
     readOnly: 'Tu rol solo permite ver la invitación. Para cambiarla pide acceso de edición.',
     status: { draft: 'Borrador', published: 'Publicada', saveTheDate: 'Guarda la fecha publicada' },
@@ -2013,6 +2016,9 @@ export default {
       invalid_focus: 'El punto de la foto no es válido.',
       unknown_field: 'Esta plantilla ya no tiene este campo.',
       field_not_found: 'Esta plantilla ya no tiene este campo.',
+      event_archived: 'Este evento está archivado y no se puede editar.',
+      forbidden: 'Tu rol solo permite ver la invitación, no editarla.',
+      package_no_cover_field: 'Esta plantilla no tiene espacio para una foto de portada.',
       config_too_large: 'Hay demasiados cambios guardados. Vuelve a la plantilla en algunos campos.',
       generic: 'No se pudo guardar este campo.'
     },
@@ -2028,13 +2034,21 @@ export default {
         countdown: 'Cuenta regresiva',
         program: 'Programa',
         gallery: 'Galería',
-        rsvp: 'Confirmación'
+        rsvp: 'Confirmación',
+        itinerary: 'Programa del día',
+        locations: 'Dónde celebramos',
+        dress_code: 'Código de vestimenta',
+        padrinos: 'Con el cariño de',
+        music: 'Música',
+        closing: 'Gracias por ser parte de mi día'
       },
       errors: {
         required_section: 'Esa sección es obligatoria y no se puede ocultar.',
         cover_first: 'La portada siempre va primero.',
         invalid_type: 'Esa sección no existe en esta plantilla.',
         module_locked: 'Esa sección es parte del evento completo.',
+        event_archived: 'Este evento está archivado y no se puede editar.',
+        forbidden: 'Tu rol solo permite ver la invitación.',
         network: 'No pudimos guardar las secciones. Revisa tu conexión e inténtalo de nuevo.',
         generic: 'No pudimos guardar las secciones.'
       }
@@ -2163,6 +2177,9 @@ export default {
     },
     errors: {
       notAvailable: 'Esa plantilla ya no está disponible. Actualizamos la lista.',
+      archived: 'Este evento está archivado y no se puede editar.',
+      forbidden: 'Tu rol solo permite ver la invitación, no cambiar la plantilla.',
+      previewForbidden: 'Tu rol no puede preparar la vista previa.',
       generic: 'No pudimos cambiar la plantilla. Inténtalo de nuevo.'
     }
   },
@@ -2202,6 +2219,11 @@ export default {
       corrupt: 'No pudimos leer la foto. Prueba con otra.',
       package_no_cover_field: 'Esta plantilla no tiene espacio para una foto de portada.',
       too_many_attempts: 'Demasiados intentos seguidos. Espera un minuto.',
+      required: 'Elige una foto.',
+      event_archived: 'Este evento está archivado y no se puede editar.',
+      forbidden: 'Tu rol solo permite ver la invitación.',
+      invalid_focus: 'El punto de la foto no es válido.',
+      template_locked: 'Tu invitación ya está publicada. Escríbenos para cambiarla.',
       generic: 'No pudimos subir la foto. Inténtalo de nuevo.'
     }
   },

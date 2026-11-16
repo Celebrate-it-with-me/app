@@ -22,6 +22,22 @@ export function errorCode(error, field) {
   return first ? String(first) : null
 }
 
+/**
+ * The reason a WRITE (apply, upload, focus, preview) failed, as a code the screens can speak about:
+ * `event_archived` (422 `errors.status`), the API's own code (`plan_required`, `template_locked`, ...), a 422 field code,
+ * `forbidden` (403 without a code: the role cannot write), `too_many_attempts` (429), or null.
+ */
+export function writeErrorCode(error, field) {
+  const status = error?.response?.status
+  const errors = error?.response?.data?.errors
+  if (errors?.status?.[0] === 'event_archived') return 'event_archived'
+  const own = errorCode(error, field)
+  if (own) return own
+  if (status === 403) return 'forbidden'
+  if (status === 429) return 'too_many_attempts'
+  return null
+}
+
 // ---- unlock bridge (D-2): the person leaves for the payment screen and comes back to the selector ----
 
 const RETURN_KEY = 'qv.templateReturn'

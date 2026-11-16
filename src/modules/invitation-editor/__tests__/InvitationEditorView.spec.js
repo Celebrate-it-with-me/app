@@ -9,6 +9,9 @@ import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 const svc = vi.hoisted(() => ({ get: vi.fn(), saveFields: vi.fn(), saveSections: vi.fn() }))
 vi.mock('../services/InvitationEditorService', () => ({ default: svc }))
 vi.mock('@/services/axios', () => ({ CWM_API: {} }))
+const picker = vi.hoisted(() => ({ templates: vi.fn(), preview: vi.fn(), uploadCover: vi.fn(), removeCover: vi.fn(), saveFocus: vi.fn(), impact: vi.fn(), apply: vi.fn() }))
+vi.mock('@/modules/template-picker/services/TemplatePickerService', () => ({ default: picker }))
+vi.mock('@/modules/payments/services/PaymentsService', () => ({ default: { quote: vi.fn() } }))
 
 import InvitationEditorView from '../views/InvitationEditorView.vue'
 
@@ -57,6 +60,8 @@ describe('InvitationEditorView', () => {
     svc.get.mockResolvedValue(payload())
     svc.saveFields.mockResolvedValue({ fields: [], savedAt: 'now' })
     svc.saveSections.mockResolvedValue({})
+    picker.templates.mockResolvedValue([{ id: 12, name: 'Botánica', tier: 'premium', current: true, locked: false, previewImage: null }])
+    picker.preview.mockResolvedValue({ locale: 'es', sections: [], theme: {} })
   })
   afterEach(() => {
     wrapper?.unmount()
@@ -68,7 +73,7 @@ describe('InvitationEditorView', () => {
     await setup()
     expect(wrapper.find('[data-testid=editor]').exists()).toBe(true)
     expect(wrapper.findAll('details').map(d => d.attributes('data-group'))).toEqual(['cover', 'look']) // a group without fields is not drawn
-    expect(wrapper.find('[data-field=cover_photo] [data-testid=image-preview]').exists()).toBe(true)
+    expect(wrapper.find('[data-field=cover_photo] input[type=file]').exists()).toBe(true) // the cover photo field of the picker module
     expect(wrapper.find('[data-field=cover_text] textarea').exists()).toBe(true)
     expect(wrapper.findAll('[data-field=preset] input[type=radio]')).toHaveLength(2)
     expect(wrapper.find('[data-field=color_accent] [data-testid=color-hex]').exists()).toBe(true)
@@ -161,8 +166,10 @@ describe('InvitationEditorView', () => {
     await setup()
     await wrapper.get('[data-testid=choice-b]').setValue(true)
     await flushPromises()
-    expect(wrapper.get('[data-testid=template-locked]').text()).toContain('escríbenos')
-    expect(wrapper.get('[data-testid=template-card] button').attributes('disabled')).toBeDefined()
+    expect(wrapper.text()).toContain('escríbenos')
+    expect(wrapper.get('a[href^="mailto:"]').exists()).toBe(true)
+    const change = wrapper.findAll('button').find(b => b.text().includes('Cambiar plantilla'))
+    expect(change.attributes('disabled')).toBeDefined()
   })
 
   it('toggles and moves sections with PATCH sections, keeping the cover first', async () => {
@@ -219,6 +226,45 @@ describe('InvitationEditorView', () => {
     expect(wrapper.get('[data-field=color_accent] [data-testid=color-hex]').attributes('disabled')).toBeDefined()
     expect(wrapper.get('[data-section=program] [role=switch]').attributes('disabled')).toBeDefined()
     expect(wrapper.find('[data-testid=reset]').exists()).toBe(false)
+    expect(wrapper.findAll('button').find(b => b.text().includes('Vista previa')).attributes('disabled')).toBeDefined() // the API refuses a viewer's preview (403)
+  })
+
+  it('opens the preview with the edits that are not saved yet, and writes nothing', async () => {
+    await setup()
+    await wrapper.get('[data-field=cover_text] [data-testid=text-es]').setValue('Hola amigo')
+    const open = wrapper.findAll('button').find(b => b.text().includes('Vista previa'))
+    expect(open.attributes('disabled')).toBeUndefined()
+    await open.trigger('click')
+    await flushPromises()
+    expect(picker.preview).toHaveBeenCalledWith(7, expect.objectContaining({ locale: 'es', state: 'invitation', fields: { cover_text: { es: 'Hola amigo', en: 'Hi' } } }))
+    expect(svc.saveFields).not.toHaveBeenCalled()
+    expect(document.body.querySelector('[data-testid=editor-preview] iframe')).not.toBeNull()
+  })
+
+  it('redraws the form from the state the picker answers after applying a template', async () => {
+    picker.templates.mockResolvedValue([
+      { id: 12, name: 'Botánica', tier: 'premium', current: true, locked: false, previewImage: null, description: { es: 'a', en: 'a' } },
+      { id: 1, name: 'Clásica', tier: 'free', current: false, locked: false, previewImage: null, description: { es: 'b', en: 'b' } }
+    ])
+    picker.impact.mockResolvedValue({ templateId: 1, tier: 'free', locked: false, keeps: [], resets: [] })
+    const next = payload()
+    next.template = { ...next.template, id: 1, name: 'Clásica', tier: 'free' }
+    next.fields = next.fields.filter(f => f.id !== 'ornaments')
+    picker.apply.mockResolvedValue({ ...next, undo: { until: new Date(Date.now() + 600000).toISOString(), templateId: 12 } })
+    await setup()
+    expect(wrapper.find('[data-field=ornaments]').exists()).toBe(true)
+    const click = async label => {
+      const all = [...document.body.querySelectorAll('button')]
+      const clean = b => b.textContent.replace(/\s+/g, ' ').trim()
+      ;(all.find(b => clean(b) === label) ?? all.find(b => clean(b).includes(label))).click()
+      await flushPromises()
+    }
+    await click('Cambiar plantilla')
+    await click('Clásica')
+    await click('Usar esta plantilla')
+    await click('Cambiar')
+    expect(picker.apply).toHaveBeenCalledWith(7, 1, { undo: false })
+    expect(wrapper.find('[data-field=ornaments]').exists()).toBe(false)
   })
 
   it('draws the labels in English when the interface is in English', async () => {

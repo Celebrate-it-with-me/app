@@ -24,7 +24,9 @@ const props = defineProps({
   /** The invitation is published: the API refuses the change (409 template_locked) and soporte does it. */
   templateLocked: { type: Boolean, default: false },
   /** The event's template is gone and the invitation falls back to Clásica (`fallbackToClassic`). */
-  unavailable: { type: Boolean, default: false }
+  unavailable: { type: Boolean, default: false },
+  /** The role cannot edit (viewer): the change button stays off. */
+  disabled: { type: Boolean, default: false }
 })
 const emit = defineEmits(['changed'])
 
@@ -137,7 +139,7 @@ watch(() => props.eventId, loadCurrent)
     </div>
 
     <div class="mt-4">
-      <UiButton block variant="secondary" :disabled="templateLocked" aria-describedby="template-picker-locked" @click="openPicker">
+      <UiButton block variant="secondary" :disabled="templateLocked || disabled" :aria-describedby="templateLocked ? 'template-picker-locked' : undefined" @click="openPicker">
         <LayoutTemplate class="h-4 w-4" aria-hidden="true" />
         {{ t('templatePicker.entry.change') }}
       </UiButton>

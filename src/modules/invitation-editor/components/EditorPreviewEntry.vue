@@ -1,20 +1,31 @@
 <script setup>
 /**
- * Where the preview sheet plugs in (Lira B, step 5.6): the "Vista previa" button of the action row.
- * Until the preview exists it explains itself instead of leading nowhere. Lira B replaces the body and keeps the props.
+ * The "Vista previa" button of the action row. It opens the preview sheet of the template module with the edits of the
+ * form that are not saved yet, so the person sees them before they are autosaved.
  */
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Eye } from 'lucide-vue-next'
 import { UiButton } from '@/ui'
+import InvitationPreviewSheet from '@/modules/template-picker/components/InvitationPreviewSheet.vue'
 
-defineProps({ eventId: { type: [Number, String], default: null } })
-const emit = defineEmits(['open'])
+defineProps({
+  eventId: { type: [Number, String], default: null },
+  /** The API answers 403 to a viewer asking for a preview: the button stays off. */
+  disabled: { type: Boolean, default: false },
+  /** `{ <fieldId>: value }` of the form's current edits (see `previewOverrides`). */
+  overrides: { type: Object, default: () => ({}) }
+})
 const { t } = useI18n()
+const open = ref(false)
 </script>
 
 <template>
-  <UiButton variant="secondary" block disabled :title="t('invitationEditor.actions.previewSoon')" @click="emit('open')">
-    <Eye class="h-4 w-4" aria-hidden="true" />
-    {{ t('invitationEditor.actions.preview') }}
-  </UiButton>
+  <div>
+    <UiButton variant="secondary" block :disabled="eventId == null || disabled" @click="open = true">
+      <Eye class="h-4 w-4" aria-hidden="true" />
+      {{ t('invitationEditor.actions.preview') }}
+    </UiButton>
+    <InvitationPreviewSheet v-if="eventId != null" v-model:open="open" :event-id="eventId" :fields="overrides" />
+  </div>
 </template>
