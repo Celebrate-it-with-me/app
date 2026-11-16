@@ -112,6 +112,16 @@ describe('usePackageTheme font gate', () => {
     expect(api.state.value).toBe('ready')
   })
 
+  it('CSS that has not arrived within the cap falls back to Clásica instead of showing the page unstyled (CLS)', async () => {
+    stubFonts({ load: () => new Promise(() => {}), ready: new Promise(() => {}) })
+    const { api } = setup()
+    await vi.advanceTimersByTimeAsync(CSS_WAIT_MS - 1)
+    expect(api.state.value).toBe('loading')
+    await vi.advanceTimersByTimeAsync(2)
+    expect(api.state.value).toBe('failed')
+    expect(document.head.querySelector('link[rel=stylesheet]')).toBeNull()
+  })
+
   it('CSS failure still falls back, ignoring fonts', async () => {
     stubFonts({ load: () => new Promise(() => {}), ready: new Promise(() => {}) })
     const { api, cssFailed } = setup()

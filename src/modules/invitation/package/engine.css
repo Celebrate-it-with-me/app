@@ -31,8 +31,13 @@
 .inv-carousel__btn--prev { left: 0.25rem; }
 .inv-carousel__btn--next { right: 0.25rem; }
 .inv-carousel__btn:focus-visible, .inv-carousel__track:focus-visible { outline: 2px solid var(--inv-primary); outline-offset: 2px; }
-/* The page waits (at most 1.5 s) for the package's CSS so nothing shows unstyled. */
-.inv-root[data-inv-pkg="loading"] main { visibility: hidden; }
+/*
+ * The page waits (at most 1.5 s) for the package's CSS so nothing shows unstyled. Every descendant is hidden, with
+ * !important: the system-block pins below set `visibility: visible !important` on the blocks, which would otherwise
+ * punch through the gate and paint them unstyled until the CSS lands (CLS 0.47 on a slow link).
+ */
+.inv-root[data-inv-pkg="loading"] main,
+.inv-root[data-inv-pkg="loading"] main * { visibility: hidden !important; }
 .inv-carousel--peek .inv-carousel__track > * { flex-basis: 78%; }
 .inv-q--cover-photo[data-sized] { height: auto; }
 .inv-q-photo__tint { position: absolute; inset: 0; background: linear-gradient(to bottom, color-mix(in oklab, var(--inv-primary) 14%, transparent), color-mix(in oklab, var(--inv-accent) 18%, transparent)); }
@@ -65,8 +70,18 @@
   filter: none !important;
   display: block !important;
 }
-.inv-root .inv-q:not([data-reveal]),
-.inv-root [data-inv-native]:not([data-reveal]) {
+/* The wrapper of a built-in section is a plain block: a package cannot shove it (or, being wider, its box) off the page. */
+.inv-root [data-inv-native] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+/*
+ * Not for music: its wrapper holds a `position: fixed` control, and any transform (the build folds `translate/scale/
+ * rotate: none` into `transform: translate(0,0) scale(1)…`) would make the wrapper its containing block, so the
+ * control would scroll away with the page. The guard still measures the control itself.
+ */
+.inv-root .inv-q:not([data-reveal], [data-q="music"]),
+.inv-root [data-inv-native]:not([data-reveal], [data-inv-section="music"]) {
   opacity: 1 !important;
   transform: none !important;
   translate: none !important;
