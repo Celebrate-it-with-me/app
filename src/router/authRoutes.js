@@ -13,6 +13,7 @@ import locationsRoutes from '@/modules/locations/routes/locations.route'
 import dressCodeRoutes from '@/modules/dress-code/routes/dressCode.route'
 import saveTheDateRoutes from '@/modules/save-the-date/routes/saveTheDate.route'
 import timelineRoutes from '@/modules/timeline/routes/timeline.route'
+import invitationEditorRoutes from '@/modules/invitation-editor/routes/invitationEditor.route'
 import errorsRoutes from '@/modules/errors/routes/errors.route'
 import rosterRoutes from '@/modules/roster/routes/roster.route'
 import menusRoutes from '@/modules/menus/routes/menus.routes'
@@ -92,6 +93,7 @@ const authRoutes = [
   ...dressCodeRoutes,
   ...saveTheDateRoutes,
   ...timelineRoutes,
+  ...invitationEditorRoutes,
   ...paymentsRoutes,
   ...purchasesRoutes,
   {

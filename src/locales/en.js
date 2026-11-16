@@ -1959,6 +1959,119 @@ export default {
     mailSubject: 'My account is suspended',
     home: 'Back to home'
   },
+  invitationEditor: {
+    title: 'Your invitation',
+    subtitle: 'Customize what your guests will see. Everything saves by itself.',
+    loading: 'Loading your invitation…',
+    previewHint: 'This is how it looks with your changes, even if they are not saved yet.',
+    previewFrameTitle: 'Preview of your invitation',
+    previewClose: 'Close',
+    offline: 'No connection. We will save your changes when you are back online; keep this screen open.',
+    readOnly: 'Your role can only view the invitation. Ask for edit access to change it.',
+    status: { draft: 'Draft', published: 'Published', saveTheDate: 'Save the date published' },
+    save: {
+      saving: 'Saving…',
+      saved: 'Saved',
+      offline: 'No connection, retrying…',
+      error: 'Could not save',
+      retry: 'Try again'
+    },
+    template: {
+      label: 'Template',
+      tier: { free: 'Free', premium: 'Premium' },
+      change: 'Change template',
+      lockedText: 'Your invitation is already published. To change the template, write to us and we will keep your links.',
+      contactSupport: 'Contact support',
+      supportSubject: 'I want to change my invitation template',
+      supportBody: 'Hi, my invitation is already published and I want to change the template (event {event}).',
+      fallback: 'Your template is no longer available. We show Classic until you pick another one.'
+    },
+    group: { problems: 'Check', other: 'Other' },
+    field: {
+      lang: { es: 'Spanish', en: 'English' },
+      textIn: 'Text in {lang}',
+      counter: '{n} of {max}',
+      reset: 'Template value',
+      resetFor: 'Back to the template value: {name}',
+      lockedSr: 'included in the full event',
+      lockedText: 'It is part of the full event.',
+      unlock: 'Unlock',
+      color: {
+        pick: 'Pick a color',
+        hex: 'Color code, for example #7b2d5b',
+        swatches: 'Suggested colors',
+        lowContrast: 'This color has little contrast with the light background. Check that it is easy to read.'
+      }
+    },
+    image: {
+      empty: 'No photo',
+      emptyHelp: 'If you do not upload a photo, your cover will show the initials.',
+      soon: 'Soon you will be able to upload your photo here.'
+    },
+    errors: {
+      too_long: 'It is too long. Maximum {max} characters.',
+      invalid_color: 'Enter a valid color, for example #7b2d5b.',
+      invalid_choice: 'Pick one of the options.',
+      invalid_type: 'This value is not valid. Remove symbols such as < or >.',
+      invalid_focus: 'The photo point is not valid.',
+      unknown_field: 'This template no longer has this field.',
+      field_not_found: 'This template no longer has this field.',
+      event_archived: 'This event is archived and cannot be edited.',
+      forbidden: 'Your role can only view the invitation, not edit it.',
+      package_no_cover_field: 'This template has no space for a cover photo.',
+      config_too_large: 'Too many changes are saved. Put some fields back to the template value.',
+      generic: 'This field could not be saved.'
+    },
+    sections: {
+      title: 'Sections',
+      hint: 'Choose what is shown and in which order. The cover always goes first.',
+      required: 'Required',
+      moduleLocked: 'This section is part of the full event.',
+      moveUp: 'Move {name} up',
+      moveDown: 'Move {name} down',
+      types: {
+        cover: 'Cover',
+        countdown: 'Countdown',
+        program: 'Program',
+        gallery: 'Gallery',
+        rsvp: 'RSVP',
+        itinerary: 'Program of the day',
+        locations: 'Where we celebrate',
+        dress_code: 'Dress code',
+        padrinos: 'With the love of',
+        music: 'Music',
+        closing: 'Thank you for being part of my day'
+      },
+      errors: {
+        required_section: 'That section is required and cannot be hidden.',
+        cover_first: 'The cover always goes first.',
+        invalid_type: 'That section does not exist in this template.',
+        module_locked: 'That section is part of the full event.',
+        event_archived: 'This event is archived and cannot be edited.',
+        forbidden: 'Your role can only view the invitation.',
+        network: 'We could not save the sections. Check your connection and try again.',
+        generic: 'We could not save the sections.'
+      }
+    },
+    empty: {
+      title: 'This template has nothing to customize',
+      text: 'You can change the template or adjust the sections below.'
+    },
+    loadError: {
+      title: 'We could not load your invitation',
+      text: 'Check your connection and try again.',
+      retry: 'Try again'
+    },
+    toasts: {
+      planRequired: 'That change is part of the full event. We kept the template value.',
+      templateLocked: 'Your invitation is already published. To change the template, write to us.'
+    },
+    actions: {
+      preview: 'Preview',
+      previewSoon: 'Coming very soon',
+      publish: 'Publish'
+    }
+  },
   unlock: {
     full: {
       lead: 'Your full event, right away.',
@@ -1983,6 +2096,136 @@ export default {
     },
     includes: 'With the full event you get:',
     back: 'Back to home',
+  },
+  templatePicker: {
+    title: 'Choose your template',
+    subtitle: 'See how it looks with your event details before you use it.',
+    loading: 'Loading templates',
+    loadFailed: 'We could not load the templates',
+    loadFailedHint: 'Check your connection and try again. Your invitation stays as it was.',
+    retry: 'Try again',
+    empty: 'There are no templates available right now.',
+    free: 'Free',
+    premium: 'Premium',
+    inUse: 'In use',
+    noPreview: 'No image',
+    lockedShort: 'locked',
+    lockedHint: 'Unlocked with the full event',
+    applied: 'Done, you now use {name}.',
+    undoNotice: 'You changed templates. You were using {name}.',
+    undoNoticeGeneric: 'You changed templates.',
+    undo: 'Undo',
+    undone: 'Back to {name}.',
+    backToTemplates: 'Back to templates',
+    useAfterPayment: 'Choose my template',
+    entry: {
+      title: 'Template',
+      change: 'Change template',
+      none: 'No template',
+      unavailable: 'Your template is no longer available. Until you pick another one, your invitation shows Classic.'
+    },
+    preview: {
+      back: 'Back',
+      language: 'Preview language',
+      state: 'What to see',
+      preset: 'Palette',
+      states: { invitation: 'Invitation', saveTheDate: 'Save the date', noPhoto: 'No photo' },
+      frameTitle: 'Preview of {name}',
+      loading: 'Preparing the preview...',
+      failed: 'We could not prepare the preview.',
+      premiumTitle: 'Premium template',
+      premiumText: 'You can see it with your event details. To use it, unlock your full event.',
+      price: 'Full event: {price}',
+      paid: 'You already unlocked your event. Use {name} now?',
+      inUse: 'This is the template you use now.',
+      inUseButton: 'Already in use',
+      unlock: 'Unlock to use it',
+      use: 'Use this template',
+      useNow: 'Use it now'
+    },
+    confirm: {
+      title: 'Change to {name}?',
+      loading: 'Working out the changes',
+      failed: 'We could not work out what changes.',
+      keepsTitle: 'Kept',
+      resetsTitle: 'Reset',
+      keeps: {
+        sections: 'Your sections, their order and your texts',
+        cover_photo: 'Your cover photo',
+        other: 'Other details of your event'
+      },
+      resets: {
+        preset: 'The color palette (back to the template one)',
+        options: 'The template style options ({count})',
+        colors: 'The colors you changed',
+        fonts: 'The fonts you changed',
+        other: 'Other style settings'
+      },
+      restores: 'We restored your earlier style for this template.',
+      publishedLook: 'Your shared Save the date will change its look.',
+      undoHint: 'You can undo it for 10 minutes.',
+      apply: 'Change',
+      cancel: 'Cancel'
+    },
+    published: {
+      title: 'Your invitation is already published',
+      text: 'Your invitation is already published. To change the template, write to us and we keep your links.',
+      hint: 'Write to us at {email} and we do it for you.',
+      contact: 'Contact support',
+      close: 'Close',
+      mailSubject: 'I want to change the template of my invitation'
+    },
+    errors: {
+      notAvailable: 'That template is no longer available. We refreshed the list.',
+      archived: 'This event is archived and cannot be edited.',
+      forbidden: 'Your role can only view the invitation, not change the template.',
+      previewForbidden: 'Your role cannot prepare the preview.',
+      generic: 'We could not change the template. Please try again.'
+    }
+  },
+  coverPhoto: {
+    title: 'Cover photo',
+    help: 'A portrait photo looks best. At least {min} px wide.',
+    helpNoMin: 'A portrait photo looks best.',
+    empty: 'No photo',
+    emptyHint: 'Without a photo, your cover shows your initials.',
+    upload: 'Upload photo',
+    change: 'Change photo',
+    adjust: 'Adjust framing',
+    remove: 'Remove',
+    uploading: 'Uploading...',
+    saved: 'Photo saved',
+    removed: 'We removed your photo',
+    removeTitle: 'Remove the cover photo?',
+    removeText: 'Your cover will show the initials again.',
+    removeConfirm: 'Remove photo',
+    focus: {
+      title: 'Choose what shows',
+      help: 'Tap the part of the photo that must not be cut off. The frame shows what the cover will display.',
+      label: 'Point of the photo that stays visible',
+      valueText: 'Horizontal {x}%, vertical {y}%',
+      keyboard: 'With the keyboard, move the point with the arrow keys.',
+      preview: 'How it will look',
+      done: 'Done',
+      cancel: 'Cancel',
+      failed: 'We could not save the framing. Please try again.'
+    },
+    errors: {
+      not_an_image: 'That file is not an image.',
+      unsupported_type: 'Use a JPG, PNG or WebP photo (not HEIC or GIF).',
+      too_large: 'The photo is over 10 MB. Pick another one or make it smaller.',
+      too_small: 'The photo is too small: it needs to be at least {min} px wide.',
+      too_many_pixels: 'The photo has too many pixels (40 megapixels at most). Pick a smaller one.',
+      corrupt: 'We could not read the photo. Try another one.',
+      package_no_cover_field: 'This template has no space for a cover photo.',
+      too_many_attempts: 'Too many tries in a row. Wait a minute.',
+      required: 'Choose a photo.',
+      event_archived: 'This event is archived and cannot be edited.',
+      forbidden: 'Your role can only view the invitation.',
+      invalid_focus: 'The photo point is not valid.',
+      template_locked: 'Your invitation is already published. Write to us to change it.',
+      generic: 'We could not upload the photo. Please try again.'
+    }
   },
   support: {
     button: 'Help',

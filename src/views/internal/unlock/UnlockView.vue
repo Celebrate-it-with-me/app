@@ -7,6 +7,7 @@ import { UiButton, UiCard } from '@/ui'
 import PurchasePanel from '@/modules/payments/components/PurchasePanel.vue'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { MODULE_VIEWS } from '@/components/internal/shell/navModules'
+import { pickerReturnPath, rememberTemplateReturn } from '@/modules/template-picker/utils/templatePicker'
 
 const { t, te, tm, rt } = useI18n()
 const route = useRoute()
@@ -18,6 +19,13 @@ const key = computed(() => String(route.params.module ?? ''))
 const isFull = computed(() => key.value === 'full')
 const isGuestsLimit = computed(() => key.value === 'guests-limit' || isFull.value)
 const eventId = computed(() => eventsStore.activeEvent?.id)
+// Opened from a premium template (?from=template&template=<id>): remember it, because the payment's return address cannot
+// carry it, and let "back" lead to the selector instead of home.
+const fromTemplate = computed(() => (route.query.from === 'template' && route.query.template ? String(route.query.template) : null))
+const backTo = computed(() => (fromTemplate.value ? pickerReturnPath(fromTemplate.value) : '/dashboard'))
+watchEffect(() => {
+  if (fromTemplate.value && eventId.value) rememberTemplateReturn(eventId.value, fromTemplate.value)
+})
 const view = computed(() => (isGuestsLimit.value ? null : (MODULE_VIEWS[key.value] ?? null)))
 const state = computed(() =>
   isGuestsLimit.value ? 'locked' : (eventsStore.activeEvent?.modules?.find(m => m.key === key.value)?.state ?? null)
@@ -68,7 +76,7 @@ const included = computed(() => tm('pricing.full.items').map(item => rt(item)))
 
       <div class="mt-6 rounded-lg bg-cream-100 p-4">
         <PurchasePanel v-if="eventId" :event-id="eventId" />
-        <UiButton class="mt-3" variant="ghost" to="/dashboard">{{ t('unlock.back') }}</UiButton>
+        <UiButton class="mt-3" variant="ghost" :to="backTo">{{ fromTemplate ? t('templatePicker.backToTemplates') : t('unlock.back') }}</UiButton>
       </div>
     </UiCard>
   </div>

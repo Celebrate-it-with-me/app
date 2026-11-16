@@ -1959,6 +1959,119 @@ export default {
     mailSubject: 'Mi cuenta está suspendida',
     home: 'Volver al inicio'
   },
+  invitationEditor: {
+    title: 'Tu invitación',
+    subtitle: 'Personaliza lo que verán tus invitados. Todo se guarda solo.',
+    loading: 'Cargando tu invitación…',
+    previewHint: 'Así se ve con tus cambios, aunque todavía no se hayan guardado.',
+    previewFrameTitle: 'Vista previa de tu invitación',
+    previewClose: 'Cerrar',
+    offline: 'Sin conexión. Guardaremos tus cambios cuando vuelvas a estar en línea; no cierres esta pantalla.',
+    readOnly: 'Tu rol solo permite ver la invitación. Para cambiarla pide acceso de edición.',
+    status: { draft: 'Borrador', published: 'Publicada', saveTheDate: 'Guarda la fecha publicada' },
+    save: {
+      saving: 'Guardando…',
+      saved: 'Guardado',
+      offline: 'Sin conexión, reintentando…',
+      error: 'No se pudo guardar',
+      retry: 'Reintentar'
+    },
+    template: {
+      label: 'Plantilla',
+      tier: { free: 'Gratis', premium: 'Premium' },
+      change: 'Cambiar plantilla',
+      lockedText: 'Tu invitación ya está publicada. Para cambiar de plantilla escríbenos y conservamos tus enlaces.',
+      contactSupport: 'Contactar con soporte',
+      supportSubject: 'Quiero cambiar la plantilla de mi invitación',
+      supportBody: 'Hola, mi invitación ya está publicada y quiero cambiar de plantilla (evento {event}).',
+      fallback: 'Tu plantilla ya no está disponible. Mostramos la Clásica mientras eliges otra.'
+    },
+    group: { problems: 'Revisar', other: 'Otros' },
+    field: {
+      lang: { es: 'Español', en: 'Inglés' },
+      textIn: 'Texto en {lang}',
+      counter: '{n} de {max}',
+      reset: 'Valor de la plantilla',
+      resetFor: 'Volver al valor de la plantilla: {name}',
+      lockedSr: 'incluido en el evento completo',
+      lockedText: 'Es parte del evento completo.',
+      unlock: 'Desbloquear',
+      color: {
+        pick: 'Elegir color',
+        hex: 'Código de color, por ejemplo #7b2d5b',
+        swatches: 'Colores sugeridos',
+        lowContrast: 'Este color tiene poco contraste con el fondo claro. Revisa que se lea bien.'
+      }
+    },
+    image: {
+      empty: 'Sin foto',
+      emptyHelp: 'Si no subes foto, tu portada mostrará las iniciales.',
+      soon: 'Pronto podrás subir tu foto aquí.'
+    },
+    errors: {
+      too_long: 'Es demasiado largo. Máximo {max} caracteres.',
+      invalid_color: 'Escribe un color válido, por ejemplo #7b2d5b.',
+      invalid_choice: 'Elige una de las opciones.',
+      invalid_type: 'Este valor no es válido. Quita símbolos como < o >.',
+      invalid_focus: 'El punto de la foto no es válido.',
+      unknown_field: 'Esta plantilla ya no tiene este campo.',
+      field_not_found: 'Esta plantilla ya no tiene este campo.',
+      event_archived: 'Este evento está archivado y no se puede editar.',
+      forbidden: 'Tu rol solo permite ver la invitación, no editarla.',
+      package_no_cover_field: 'Esta plantilla no tiene espacio para una foto de portada.',
+      config_too_large: 'Hay demasiados cambios guardados. Vuelve a la plantilla en algunos campos.',
+      generic: 'No se pudo guardar este campo.'
+    },
+    sections: {
+      title: 'Secciones',
+      hint: 'Elige qué se muestra y en qué orden. La portada va primero.',
+      required: 'Obligatoria',
+      moduleLocked: 'Esta sección es parte del evento completo.',
+      moveUp: 'Subir {name}',
+      moveDown: 'Bajar {name}',
+      types: {
+        cover: 'Portada',
+        countdown: 'Cuenta regresiva',
+        program: 'Programa',
+        gallery: 'Galería',
+        rsvp: 'Confirmación',
+        itinerary: 'Programa del día',
+        locations: 'Dónde celebramos',
+        dress_code: 'Código de vestimenta',
+        padrinos: 'Con el cariño de',
+        music: 'Música',
+        closing: 'Gracias por ser parte de mi día'
+      },
+      errors: {
+        required_section: 'Esa sección es obligatoria y no se puede ocultar.',
+        cover_first: 'La portada siempre va primero.',
+        invalid_type: 'Esa sección no existe en esta plantilla.',
+        module_locked: 'Esa sección es parte del evento completo.',
+        event_archived: 'Este evento está archivado y no se puede editar.',
+        forbidden: 'Tu rol solo permite ver la invitación.',
+        network: 'No pudimos guardar las secciones. Revisa tu conexión e inténtalo de nuevo.',
+        generic: 'No pudimos guardar las secciones.'
+      }
+    },
+    empty: {
+      title: 'Esta plantilla no tiene nada que personalizar',
+      text: 'Puedes cambiar de plantilla o ajustar las secciones de abajo.'
+    },
+    loadError: {
+      title: 'No pudimos cargar tu invitación',
+      text: 'Revisa tu conexión e inténtalo otra vez.',
+      retry: 'Reintentar'
+    },
+    toasts: {
+      planRequired: 'Ese cambio es parte del evento completo. Dejamos el valor de la plantilla.',
+      templateLocked: 'Tu invitación ya está publicada. Para cambiar de plantilla escríbenos.'
+    },
+    actions: {
+      preview: 'Vista previa',
+      previewSoon: 'Disponible muy pronto',
+      publish: 'Publicar'
+    }
+  },
   unlock: {
     full: {
       lead: 'Tu evento completo, de una vez.',
@@ -1983,6 +2096,136 @@ export default {
     },
     includes: 'Con el evento completo tienes:',
     back: 'Volver al inicio',
+  },
+  templatePicker: {
+    title: 'Elige tu plantilla',
+    subtitle: 'Mira cómo queda con los datos de tu evento antes de usarla.',
+    loading: 'Cargando plantillas',
+    loadFailed: 'No pudimos cargar las plantillas',
+    loadFailedHint: 'Revisa tu conexión e inténtalo de nuevo. Tu invitación sigue como estaba.',
+    retry: 'Reintentar',
+    empty: 'Por ahora no hay plantillas disponibles.',
+    free: 'Gratis',
+    premium: 'Premium',
+    inUse: 'En uso',
+    noPreview: 'Sin imagen',
+    lockedShort: 'bloqueada',
+    lockedHint: 'Se desbloquea con el evento completo',
+    applied: 'Listo, ahora usas {name}.',
+    undoNotice: 'Cambiaste de plantilla. Antes usabas {name}.',
+    undoNoticeGeneric: 'Cambiaste de plantilla.',
+    undo: 'Deshacer',
+    undone: 'Volvimos a {name}.',
+    backToTemplates: 'Volver a las plantillas',
+    useAfterPayment: 'Elegir mi plantilla',
+    entry: {
+      title: 'Plantilla',
+      change: 'Cambiar plantilla',
+      none: 'Sin plantilla',
+      unavailable: 'Tu plantilla ya no está disponible. Mientras eliges otra, tu invitación se ve con la Clásica.'
+    },
+    preview: {
+      back: 'Volver',
+      language: 'Idioma de la vista previa',
+      state: 'Qué ver',
+      preset: 'Paleta',
+      states: { invitation: 'Invitación', saveTheDate: 'Guarda la fecha', noPhoto: 'Sin foto' },
+      frameTitle: 'Vista previa de {name}',
+      loading: 'Preparando la vista previa...',
+      failed: 'No pudimos preparar la vista previa.',
+      premiumTitle: 'Plantilla premium',
+      premiumText: 'Puedes verla con los datos de tu evento. Para usarla, desbloquea tu evento completo.',
+      price: 'Evento completo: {price}',
+      paid: 'Ya desbloqueaste tu evento. ¿Usamos {name} ahora?',
+      inUse: 'Es la plantilla que usas ahora.',
+      inUseButton: 'Ya la usas',
+      unlock: 'Desbloquear para usarla',
+      use: 'Usar esta plantilla',
+      useNow: 'Usar ahora'
+    },
+    confirm: {
+      title: '¿Cambiar a {name}?',
+      loading: 'Calculando los cambios',
+      failed: 'No pudimos calcular qué cambia.',
+      keepsTitle: 'Se conserva',
+      resetsTitle: 'Se reinicia',
+      keeps: {
+        sections: 'Tus secciones, su orden y tus textos',
+        cover_photo: 'Tu foto de portada',
+        other: 'Otros datos de tu evento'
+      },
+      resets: {
+        preset: 'La paleta de colores (vuelve a la de la plantilla)',
+        options: 'Las opciones de estilo de la plantilla ({count})',
+        colors: 'Los colores que cambiaste',
+        fonts: 'Las letras que cambiaste',
+        other: 'Otros ajustes de estilo'
+      },
+      restores: 'Recuperamos tu estilo anterior de esta plantilla.',
+      publishedLook: 'Tu Guarda la fecha ya compartida cambiará de aspecto.',
+      undoHint: 'Podrás deshacerlo durante 10 minutos.',
+      apply: 'Cambiar',
+      cancel: 'Cancelar'
+    },
+    published: {
+      title: 'Tu invitación ya está publicada',
+      text: 'Tu invitación ya está publicada. Para cambiar de plantilla escríbenos y conservamos tus enlaces.',
+      hint: 'Escríbenos a {email} y lo hacemos por ti.',
+      contact: 'Contactar con soporte',
+      close: 'Cerrar',
+      mailSubject: 'Quiero cambiar la plantilla de mi invitación'
+    },
+    errors: {
+      notAvailable: 'Esa plantilla ya no está disponible. Actualizamos la lista.',
+      archived: 'Este evento está archivado y no se puede editar.',
+      forbidden: 'Tu rol solo permite ver la invitación, no cambiar la plantilla.',
+      previewForbidden: 'Tu rol no puede preparar la vista previa.',
+      generic: 'No pudimos cambiar la plantilla. Inténtalo de nuevo.'
+    }
+  },
+  coverPhoto: {
+    title: 'Foto de portada',
+    help: 'Una foto vertical se ve mejor. Mínimo {min} px de ancho.',
+    helpNoMin: 'Una foto vertical se ve mejor.',
+    empty: 'Sin foto',
+    emptyHint: 'Si no subes foto, tu portada mostrará las iniciales.',
+    upload: 'Subir foto',
+    change: 'Cambiar foto',
+    adjust: 'Ajustar encuadre',
+    remove: 'Quitar',
+    uploading: 'Subiendo...',
+    saved: 'Foto guardada',
+    removed: 'Quitamos tu foto',
+    removeTitle: '¿Quitar la foto de portada?',
+    removeText: 'Tu portada volverá a mostrar las iniciales.',
+    removeConfirm: 'Quitar foto',
+    focus: {
+      title: 'Elige qué se ve',
+      help: 'Toca la parte de la foto que no puede quedar fuera. El recuadro muestra lo que se verá en la portada.',
+      label: 'Punto de la foto que se mantiene visible',
+      valueText: 'Horizontal {x}%, vertical {y}%',
+      keyboard: 'Con el teclado, mueve el punto con las flechas.',
+      preview: 'Así se verá',
+      done: 'Listo',
+      cancel: 'Cancelar',
+      failed: 'No pudimos guardar el encuadre. Inténtalo de nuevo.'
+    },
+    errors: {
+      not_an_image: 'Ese archivo no es una imagen.',
+      unsupported_type: 'Usa una foto JPG, PNG o WebP (no HEIC ni GIF).',
+      too_large: 'La foto pesa más de 10 MB. Elige otra o reduce su tamaño.',
+      too_small: 'La foto es muy pequeña: necesita al menos {min} px de ancho.',
+      too_many_pixels: 'La foto tiene demasiados píxeles (máximo 40 megapíxeles). Elige una más pequeña.',
+      corrupt: 'No pudimos leer la foto. Prueba con otra.',
+      package_no_cover_field: 'Esta plantilla no tiene espacio para una foto de portada.',
+      too_many_attempts: 'Demasiados intentos seguidos. Espera un minuto.',
+      required: 'Elige una foto.',
+      event_archived: 'Este evento está archivado y no se puede editar.',
+      forbidden: 'Tu rol solo permite ver la invitación.',
+      invalid_focus: 'El punto de la foto no es válido.',
+      template_locked: 'Tu invitación ya está publicada. Escríbenos para cambiarla.',
+      generic: 'No pudimos subir la foto. Inténtalo de nuevo.'
+    }
   },
   support: {
     button: 'Ayuda',

@@ -31,7 +31,7 @@ export const SECTIONS = ['main', 'guests', 'organization', 'extras']
  * screen yet (`to: null`), is simply not drawn: nobody can expose a link that leads nowhere.
  */
 export const MODULE_VIEWS = {
-  invitation: { to: null, icon: Sparkles, labelKey: 'app.nav.invitation' }, // the editor is not built yet
+  invitation: { to: '/dashboard/invitation', icon: Sparkles, labelKey: 'app.nav.invitation' },
   guests: { to: '/dashboard/guests', icon: Users, labelKey: 'app.nav.guests', primary: true },
   rsvp: { to: null, icon: CheckSquare, labelKey: 'app.nav.rsvp' }, // a tab of the guest list now
   save_the_date: { to: '/dashboard/save-the-date', icon: AlarmClock, labelKey: 'app.nav.saveTheDate' },
@@ -75,6 +75,22 @@ export const PLAN_ITEM = {
   primary: false
 }
 
+/**
+ * "Tu invitación": the editor and the template selector. Like "Mi plan" it is not gated by the module catalog (the catalog row
+ * `invitation` starts switched off and the phone's bottom bar always draws this entry): without it the desktop sidebar would
+ * have no way into the screen. If the catalog does send `invitation` as active, its own row wins.
+ */
+export const INVITATION_ITEM = {
+  key: 'invitation',
+  to: '/dashboard/invitation',
+  icon: Sparkles,
+  labelKey: 'app.nav.invitation',
+  section: 'main',
+  order: 0.6,
+  state: 'active',
+  primary: false
+}
+
 /** Where a locked module leads: the "pass to premium" screen, never the module itself. */
 export const unlockPath = key => `/dashboard/unlock/${key}`
 
@@ -103,8 +119,10 @@ export function buildNavSections(modules) {
     })
     .filter(item => item && SECTIONS.includes(item.section))
 
-  const withPlan = Array.isArray(modules) && modules.length ? [PLAN_ITEM] : []
-  const all = [HOME_ITEM, ...withPlan, ...drawn].sort(
+  const withModules = Array.isArray(modules) && modules.length
+  const withPlan = withModules ? [PLAN_ITEM] : []
+  const withInvitation = withModules && !drawn.some(item => item.key === 'invitation') ? [INVITATION_ITEM] : []
+  const all = [HOME_ITEM, ...withPlan, ...withInvitation, ...drawn].sort(
     (a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section) || a.order - b.order
   )
 
@@ -117,8 +135,9 @@ export function buildNavSections(modules) {
  * The phone's bottom bar, built from the same sections as the sidebar (one source of truth).
  *
  * Tabs: Home, "Tu invitación", Guests, "Organización" and "Más".
- * - "Tu invitación" has no editor yet: it leads to the event screen where the invitation's status is changed
- *   (`edit-event`). It needs an event, and it is not a module of the catalog, so it is always drawn when there is one.
+ * - "Tu invitación" leads to the invitation editor. It needs an event, so it is always drawn when there is one; the catalog's
+ *   own `invitation` module (sidebar) is not repeated in the "Más" sheet.
+ *   Publishing still lives on the event screen (`edit-event`), reached from the editor's "Publicar".
  * - Guests is a plain link and only shows while the module is on and usable.
  * - "Organización" opens a sheet with the whole section (locked ones with their padlock).
  * - "Más" opens a sheet with everything else: what is left of the guests section and the extras.
@@ -129,7 +148,7 @@ export function buildMobileNav(sections, eventId = null) {
   const guests = items.find(item => item.key === 'guests' && item.state === 'active') ?? null
   const organization = items.filter(item => item.section === 'organization')
   const more = items.filter(
-    item => item.key !== 'home' && item !== guests && item.section !== 'organization'
+    item => item.key !== 'home' && item.key !== 'invitation' && item !== guests && item.section !== 'organization'
   )
   const home = items.find(item => item.key === 'home')
 
@@ -138,8 +157,8 @@ export function buildMobileNav(sections, eventId = null) {
     tabs.push({
       key: 'invitation',
       kind: 'link',
-      to: { name: 'edit-event', params: { id: eventId } },
-      routeNames: ['edit-event'],
+      to: '/dashboard/invitation',
+      routeNames: ['invitation-editor'],
       icon: MODULE_VIEWS.invitation.icon,
       labelKey: MODULE_VIEWS.invitation.labelKey
     })

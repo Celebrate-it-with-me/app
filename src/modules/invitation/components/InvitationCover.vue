@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { Sparkles } from 'lucide-vue-next'
 import { useInvitationContext } from '../composables/useInvitation'
 import InvitationButton from './InvitationButton.vue'
@@ -16,7 +16,10 @@ const event = computed(() => invitation.value.event)
 const hasRsvp = computed(() => invitation.value.sections.some(item => item.type === 'rsvp'))
 
 /** Same-origin paths and https URLs only. */
-const image = computed(() => (/^(\/(?!\/)|https?:\/\/)/.test(data.value.image ?? '') ? data.value.image : null))
+const photoFailed = ref(false)
+const image = computed(() => (!photoFailed.value && /^(\/(?!\/)|https?:\/\/)/.test(data.value.image ?? '') ? data.value.image : null))
+/** Where the photo is centred when the frame crops it: `"40% 25%"` (the API validates it); anything else is the centre. */
+const focus = computed(() => (/^\d{1,3}% \d{1,3}%$/.test(data.value.focus ?? '') ? data.value.focus : '50% 50%'))
 
 /** Lettering for the arch when there is no photo: XV for a quinceañera, & for a wedding. */
 const emblem = computed(() => ({ quinceanera: 'XV', wedding: '&' })[event.value.typeSlug] ?? null)
@@ -63,7 +66,7 @@ function goToRsvp() {
         <div
           class="relative flex h-64 w-48 items-center justify-center overflow-hidden rounded-t-full bg-inv-surface-alt shadow-pop ring-1 ring-inv-accent/60 sm:h-80 sm:w-64 lg:h-[26rem] lg:w-80"
         >
-          <img v-if="image" :src="image" alt="" class="h-full w-full object-cover" />
+          <img v-if="image" :src="image" alt="" class="h-full w-full object-cover" :style="{ objectPosition: focus }" @error="photoFailed = true" />
           <template v-else>
             <span
               aria-hidden="true"

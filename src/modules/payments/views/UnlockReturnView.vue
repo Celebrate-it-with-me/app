@@ -8,6 +8,7 @@ import { SUPPORT_EMAIL, mailtoLink } from '@/config/brand'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import PaymentsService from '../services/PaymentsService'
 import { waitForOutcome } from '../utils/money'
+import { clearTemplateReturn, pickerReturnPath, readTemplateReturn } from '@/modules/template-picker/utils/templatePicker'
 
 const { t, te } = useI18n()
 const route = useRoute()
@@ -23,6 +24,8 @@ const state = ref(route.query.cancelled ? 'cancelled' : 'waiting')
 const failureCode = ref(null)
 const invoiceId = ref(null)
 const refreshing = ref(false)
+// She left for the payment from a premium template: after paying she goes back to it.
+const templateReturn = readTemplateReturn(eventId)
 
 // Dev-only fake of the endpoints (never in the production bundle).
 let api = PaymentsService
@@ -49,6 +52,12 @@ async function settle() {
     await eventsStore.fetchEvent(eventId).catch(() => {})
     state.value = 'done'
   }
+}
+
+function goBackToTemplate() {
+  const path = pickerReturnPath(templateReturn.templateId)
+  clearTemplateReturn()
+  router.push(path)
 }
 
 async function refresh() {
@@ -98,7 +107,9 @@ onMounted(async () => {
         <h1 class="mt-4 font-heading text-3xl text-ink-900">{{ t('payments.done.title') }}</h1>
         <p class="mt-2 text-ink-600">{{ t('payments.done.text') }}</p>
         <div class="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
-          <UiButton @click="router.push('/dashboard')">{{ t('payments.done.cta') }}</UiButton>
+          <UiButton v-if="templateReturn" @click="goBackToTemplate">{{ t('templatePicker.useAfterPayment') }}</UiButton>
+          <UiButton v-else @click="router.push('/dashboard')">{{ t('payments.done.cta') }}</UiButton>
+          <UiButton v-if="templateReturn" variant="ghost" @click="router.push('/dashboard')">{{ t('payments.done.cta') }}</UiButton>
           <UiButton v-if="invoiceId" variant="secondary" to="/settings/purchases">{{ t('payments.done.invoice') }}</UiButton>
         </div>
       </div>
