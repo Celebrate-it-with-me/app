@@ -11,9 +11,34 @@ const PUBLIC_API = axios.create({
 
 const path = (slug, code) => `invitation/${encodeURIComponent(slug)}/${encodeURIComponent(code)}`
 
+/** Requests started before the view exists (see `prefetch`), keyed by what is asked. One use each, short-lived. */
+const early = new Map()
+const EARLY_TTL_MS = 15_000
+const keyOf = ({ slug, code, lang }) => `${slug}/${code}/${lang ?? ''}`
+
 class InvitationService {
+  /**
+   * Starts the invitation request without waiting for the view's chunk, so both download at the same time. The view's
+   * own `get` for the same slug, code and language takes this request over (once); anything else makes its own.
+   * @param {{ slug: string, code: string, lang?: string }} params
+   */
+  prefetch(params) {
+    const key = keyOf(params)
+    if (early.has(key)) return
+    const request = PUBLIC_API.get(path(params.slug, params.code), { params: params.lang ? { lang: params.lang } : {} })
+    request.catch(() => {}) // a failure surfaces where it is consumed; never as an unhandled rejection
+    early.set(key, request)
+    setTimeout(() => early.delete(key), EARLY_TTL_MS)
+  }
+
   /** @param {{ slug: string, code: string, lang?: string }} params */
   async get({ slug, code, lang }) {
+    const key = keyOf({ slug, code, lang })
+    const started = early.get(key)
+    if (started) {
+      early.delete(key)
+      return started
+    }
     return PUBLIC_API.get(path(slug, code), { params: lang ? { lang } : {} })
   }
 

@@ -1,9 +1,10 @@
 import { useUserStore } from '@/stores/useUserStore'
-import i18n from '@/locales/i18n'
+import i18n, { LOCALES } from '@/locales/i18n'
 import { useHydrationStore } from '@/stores/useHydrationStore'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { moduleRedirect } from './moduleGuard'
 import { safeRedirect } from '@/utils/safeRedirect'
+import InvitationService from '@/services/PublicEvents/InvitationService'
 
 /**
  * Global navigation guard (vue-router 4.1+/5 style: return instead of next()).
@@ -40,6 +41,12 @@ export async function authGuard(to) {
 
   // 1. Set document title
   document.title = routeTitle(to)
+
+  // The public invitation asks for its data right away: the request goes out while the view's chunk downloads.
+  if (to.name === 'invitation' && to.params?.slug && to.params?.code) {
+    const lang = LOCALES.includes(to.query?.lang) ? to.query.lang : undefined
+    InvitationService.prefetch({ slug: to.params.slug, code: to.params.code, lang })
+  }
 
   const requiresAuth = to.meta?.requiresAuth ?? false
 
