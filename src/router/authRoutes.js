@@ -1,9 +1,4 @@
-import DashboardView from '../views/internal/dashboard/Dashboard.vue'
 import { useUserStore } from '@/stores/useUserStore'
-import AccountLayout from '@/components/internal/layout/AccountLayout.vue'
-import SettingsProfile from '@/views/internal/settings/SettingsProfile.vue'
-import SettingsPreferences from '@/views/internal/settings/SettingsPreferences.vue'
-import SettingsSecurity from '@/views/internal/settings/SettingsSecurity.vue'
 import commentsRoutes from '@/modules/comments/routes/comment.routes'
 import suggestedMusicRoutes from '@/modules/suggested-music/routes/suggestedMusic.routes'
 import sweetMemoriesRoutes from '@/modules/sweet-memories/routes/sweetMemories.routes'
@@ -20,7 +15,6 @@ import menusRoutes from '@/modules/menus/routes/menus.routes'
 import eventsRoutes from '@/modules/events/routes/events.routes'
 import paymentsRoutes from '@/modules/payments/routes/payments.route'
 import purchasesRoutes from '@/modules/purchases/routes/purchases.route'
-import UnlockView from '@/views/internal/unlock/UnlockView.vue'
 import seatingRoutes from '@/modules/seating/routes/seating.route'
 import onboardingRoutes from '@/modules/onboarding/routes/onboarding.route'
 import collaboratorsRoutes from '@/modules/collaborators/routes/collaborators.route'
@@ -30,7 +24,7 @@ const authRoutes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: DashboardView,
+    component: () => import('../views/internal/dashboard/Dashboard.vue'),
     meta: {
       title: 'Dashboard',
       requiresAuth: true
@@ -39,12 +33,12 @@ const authRoutes = [
   },
   {
     path: '/settings',
-    component: AccountLayout,
+    component: () => import('@/components/internal/layout/AccountLayout.vue'),
     children: [
       {
         path: 'profile',
         name: 'settings-profile',
-        component: SettingsProfile,
+        component: () => import('@/views/internal/settings/SettingsProfile.vue'),
         meta: {
           titleKey: 'titles.profile',
           requiresAuth: true,
@@ -54,7 +48,7 @@ const authRoutes = [
       {
         path: 'preferences',
         name: 'settings-preferences',
-        component: SettingsPreferences,
+        component: () => import('@/views/internal/settings/SettingsPreferences.vue'),
         meta: {
           titleKey: 'titles.preferences',
           requiresAuth: true,
@@ -64,7 +58,7 @@ const authRoutes = [
       {
         path: 'security',
         name: 'settings-security',
-        component: SettingsSecurity,
+        component: () => import('@/views/internal/settings/SettingsSecurity.vue'),
         meta: {
           titleKey: 'titles.security',
           requiresAuth: true,
@@ -99,7 +93,7 @@ const authRoutes = [
   {
     path: '/dashboard/unlock/:module',
     name: 'unlock',
-    component: UnlockView,
+    component: () => import('@/views/internal/unlock/UnlockView.vue'),
     meta: { titleKey: 'titles.unlock', requiresAuth: true }
   },
   ...errorsRoutes,

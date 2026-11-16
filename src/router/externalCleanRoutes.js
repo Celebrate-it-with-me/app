@@ -1,14 +1,9 @@
-import ForgotPasswordView from '@/views/external/ForgotPasswordView.vue'
-import ConfirmResetPasswordView from '@/views/external/ConfirmResetPasswordView.vue'
-import PasswordUpdatedView from '@/views/external/PasswordUpdatedView.vue'
-import AccountSuspendedView from '@/views/external/AccountSuspendedView.vue'
-import AccountDeletedView from '@/modules/account-deletion/views/AccountDeletedView.vue'
 
 const externalCleanRoutes = [
   {
     path: '/account-suspended',
     name: 'account-suspended',
-    component: AccountSuspendedView,
+    component: () => import('@/views/external/AccountSuspendedView.vue'),
     meta: {
       titleKey: 'accountSuspended.title',
       requiresAuth: false
@@ -17,7 +12,7 @@ const externalCleanRoutes = [
   {
     path: '/account-deleted',
     name: 'account-deleted',
-    component: AccountDeletedView,
+    component: () => import('@/modules/account-deletion/views/AccountDeletedView.vue'),
     meta: {
       titleKey: 'accountDeleted.title',
       requiresAuth: false
@@ -26,7 +21,7 @@ const externalCleanRoutes = [
   {
     path: '/forgot-password',
     name: 'forgot-password',
-    component: ForgotPasswordView,
+    component: () => import('@/views/external/ForgotPasswordView.vue'),
     meta: {
       titleKey: 'titles.forgot'
     }
@@ -34,7 +29,7 @@ const externalCleanRoutes = [
   {
     path: '/confirm-reset',
     name: 'confirm-reset',
-    component: ConfirmResetPasswordView,
+    component: () => import('@/views/external/ConfirmResetPasswordView.vue'),
     meta: {
       titleKey: 'titles.reset'
     }
@@ -42,7 +37,7 @@ const externalCleanRoutes = [
   {
     path: '/password-updated',
     name: 'password-updated',
-    component: PasswordUpdatedView,
+    component: () => import('@/views/external/PasswordUpdatedView.vue'),
     meta: {
       titleKey: 'titles.passwordUpdated'
     }
