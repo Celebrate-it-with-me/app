@@ -1959,6 +1959,105 @@ export default {
     mailSubject: 'Mi cuenta está suspendida',
     home: 'Volver al inicio'
   },
+  invitationEditor: {
+    title: 'Tu invitación',
+    subtitle: 'Personaliza lo que verán tus invitados. Todo se guarda solo.',
+    loading: 'Cargando tu invitación…',
+    offline: 'Sin conexión. Guardaremos tus cambios cuando vuelvas a estar en línea; no cierres esta pantalla.',
+    readOnly: 'Tu rol solo permite ver la invitación. Para cambiarla pide acceso de edición.',
+    status: { draft: 'Borrador', published: 'Publicada', saveTheDate: 'Guarda la fecha publicada' },
+    save: {
+      saving: 'Guardando…',
+      saved: 'Guardado',
+      offline: 'Sin conexión, reintentando…',
+      error: 'No se pudo guardar',
+      retry: 'Reintentar'
+    },
+    template: {
+      label: 'Plantilla',
+      tier: { free: 'Gratis', premium: 'Premium' },
+      change: 'Cambiar plantilla',
+      lockedText: 'Tu invitación ya está publicada. Para cambiar de plantilla escríbenos y conservamos tus enlaces.',
+      contactSupport: 'Contactar con soporte',
+      supportSubject: 'Quiero cambiar la plantilla de mi invitación',
+      supportBody: 'Hola, mi invitación ya está publicada y quiero cambiar de plantilla (evento {event}).',
+      fallback: 'Tu plantilla ya no está disponible. Mostramos la Clásica mientras eliges otra.'
+    },
+    group: { problems: 'Revisar', other: 'Otros' },
+    field: {
+      lang: { es: 'Español', en: 'Inglés' },
+      textIn: 'Texto en {lang}',
+      counter: '{n} de {max}',
+      reset: 'Valor de la plantilla',
+      resetFor: 'Volver al valor de la plantilla: {name}',
+      lockedSr: 'incluido en el evento completo',
+      lockedText: 'Es parte del evento completo.',
+      unlock: 'Desbloquear',
+      color: {
+        pick: 'Elegir color',
+        hex: 'Código de color, por ejemplo #7b2d5b',
+        swatches: 'Colores sugeridos',
+        lowContrast: 'Este color tiene poco contraste con el fondo claro. Revisa que se lea bien.'
+      }
+    },
+    image: {
+      empty: 'Sin foto',
+      emptyHelp: 'Si no subes foto, tu portada mostrará las iniciales.',
+      soon: 'Pronto podrás subir tu foto aquí.'
+    },
+    errors: {
+      too_long: 'Es demasiado largo. Máximo {max} caracteres.',
+      invalid_color: 'Escribe un color válido, por ejemplo #7b2d5b.',
+      invalid_choice: 'Elige una de las opciones.',
+      invalid_type: 'Este valor no es válido. Quita símbolos como < o >.',
+      invalid_focus: 'El punto de la foto no es válido.',
+      unknown_field: 'Esta plantilla ya no tiene este campo.',
+      field_not_found: 'Esta plantilla ya no tiene este campo.',
+      config_too_large: 'Hay demasiados cambios guardados. Vuelve a la plantilla en algunos campos.',
+      generic: 'No se pudo guardar este campo.'
+    },
+    sections: {
+      title: 'Secciones',
+      hint: 'Elige qué se muestra y en qué orden. La portada va primero.',
+      required: 'Obligatoria',
+      moduleLocked: 'Esta sección es parte del evento completo.',
+      moveUp: 'Subir {name}',
+      moveDown: 'Bajar {name}',
+      types: {
+        cover: 'Portada',
+        countdown: 'Cuenta regresiva',
+        program: 'Programa',
+        gallery: 'Galería',
+        rsvp: 'Confirmación'
+      },
+      errors: {
+        required_section: 'Esa sección es obligatoria y no se puede ocultar.',
+        cover_first: 'La portada siempre va primero.',
+        invalid_type: 'Esa sección no existe en esta plantilla.',
+        module_locked: 'Esa sección es parte del evento completo.',
+        network: 'No pudimos guardar las secciones. Revisa tu conexión e inténtalo de nuevo.',
+        generic: 'No pudimos guardar las secciones.'
+      }
+    },
+    empty: {
+      title: 'Esta plantilla no tiene nada que personalizar',
+      text: 'Puedes cambiar de plantilla o ajustar las secciones de abajo.'
+    },
+    loadError: {
+      title: 'No pudimos cargar tu invitación',
+      text: 'Revisa tu conexión e inténtalo otra vez.',
+      retry: 'Reintentar'
+    },
+    toasts: {
+      planRequired: 'Ese cambio es parte del evento completo. Dejamos el valor de la plantilla.',
+      templateLocked: 'Tu invitación ya está publicada. Para cambiar de plantilla escríbenos.'
+    },
+    actions: {
+      preview: 'Vista previa',
+      previewSoon: 'Disponible muy pronto',
+      publish: 'Publicar'
+    }
+  },
   unlock: {
     full: {
       lead: 'Tu evento completo, de una vez.',
