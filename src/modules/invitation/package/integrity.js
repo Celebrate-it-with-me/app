@@ -138,7 +138,8 @@ function pointerReach(el, doc, win, clip) {
     const hit = doc.elementFromPoint(x1 + (x2 - x1) * fx, y1 + (y2 - y1) * fy)
     if (!hit) return 'other'
     if (hit === el || el.contains(hit)) return 'ok'
-    return hit.closest?.(SYSTEM_UI_SELECTOR) ? 'system' : 'other'
+    // Another system block (a section scrolling under the fixed music control, say) is not the package's doing either.
+    return hit.closest?.(`${SYSTEM_UI_SELECTOR}, ${BLOCK_SELECTOR}`) ? 'system' : 'other'
   }
   const center = sample(0.5, 0.5)
   const points = [center, sample(0.25, 0.25), sample(0.75, 0.25), sample(0.25, 0.75), sample(0.75, 0.75)].filter(kind => kind !== 'system')

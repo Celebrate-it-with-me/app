@@ -150,6 +150,18 @@ describe('integrity guard: system UI is not an occluder (B-1)', () => {
     expect(checkIntegrity(root).problems).toEqual([])
   })
 
+  it('does not flag the music control when a section scrolls over it (another system block is not a package overlay)', () => {
+    const musicBlock = '<div class="inv-q inv-q--music" data-q="music" style="height:0px"><div class="inv-music" style="position:absolute;top:700px;bottom:0px;z-index:20"><button>Play</button></div></div>'
+    const root = page('', `${musicBlock}${rsvp}`)
+    boxes.set(root.querySelector('.inv-music'), rect(0, 700, VW, VH))
+    boxes.set(root.querySelector('.inv-music button'), rect(10, 720, 60, 770))
+    boxes.set(root.querySelector('[data-q="rsvp"]'), rect(0, 650, VW, 900))
+    boxes.set(root.querySelector('[data-q="rsvp"] form'), rect(0, 650, VW, 900))
+    boxes.set(root.querySelector('[data-q="rsvp"] label'), rect(0, 650, VW, 900))
+    boxes.set(root.querySelector('[data-q="rsvp"] button'), rect(0, 650, VW, 900))
+    expect(checkIntegrity(root).problems).toEqual([])
+  })
+
   it('still detects a package overlay on a half-visible block', () => {
     const css = '.pkg-ov{position:absolute;top:700px;bottom:0px;left:0;z-index:10}'
     const root = page(css, `${rsvp}<div class="pkg-ov"><a class="pkg-ova" href="https://evil.example/x">x</a></div>`)
@@ -225,8 +237,18 @@ describe('engine guarantees', () => {
       expect(pins).toContain(`${decl} !important`)
     }
     expect(rule('.inv-root [data-inv-native] {\n  margin-left')).toContain('margin-right: 0 !important')
-    const motion = rule('.inv-root .inv-q:not([data-reveal]),')
+    // Music keeps a fixed control inside its wrapper: no transform pin there (it would become the containing block).
+    const motionSelectors = css.slice(css.indexOf('.inv-root .inv-q:not([data-reveal]'), css.indexOf('{', css.indexOf('.inv-root .inv-q:not([data-reveal]')))
+    expect(motionSelectors).toContain('[data-q="music"]')
+    expect(motionSelectors).toContain('[data-inv-section="music"]')
+    const motion = rule('.inv-root .inv-q:not([data-reveal], [data-q="music"]),')
     for (const decl of ['opacity: 1', 'transform: none', 'translate: none', 'scale: none', 'rotate: none']) expect(motion).toContain(`${decl} !important`)
+  })
+
+  it('keeps every block hidden, pins included, while the package CSS loads (no unstyled paint, no CLS)', () => {
+    const gate = css.slice(css.indexOf('.inv-root[data-inv-pkg="loading"] main,'), css.indexOf('}', css.indexOf('.inv-root[data-inv-pkg="loading"] main,')))
+    expect(gate).toContain('.inv-root[data-inv-pkg="loading"] main *')
+    expect(gate).toContain('visibility: hidden !important')
   })
 
   it('forces reduced motion over whatever the package animates', () => {
