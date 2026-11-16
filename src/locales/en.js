@@ -1959,6 +1959,105 @@ export default {
     mailSubject: 'My account is suspended',
     home: 'Back to home'
   },
+  invitationEditor: {
+    title: 'Your invitation',
+    subtitle: 'Customize what your guests will see. Everything saves by itself.',
+    loading: 'Loading your invitation…',
+    offline: 'No connection. We will save your changes when you are back online; keep this screen open.',
+    readOnly: 'Your role can only view the invitation. Ask for edit access to change it.',
+    status: { draft: 'Draft', published: 'Published', saveTheDate: 'Save the date published' },
+    save: {
+      saving: 'Saving…',
+      saved: 'Saved',
+      offline: 'No connection, retrying…',
+      error: 'Could not save',
+      retry: 'Try again'
+    },
+    template: {
+      label: 'Template',
+      tier: { free: 'Free', premium: 'Premium' },
+      change: 'Change template',
+      lockedText: 'Your invitation is already published. To change the template, write to us and we will keep your links.',
+      contactSupport: 'Contact support',
+      supportSubject: 'I want to change my invitation template',
+      supportBody: 'Hi, my invitation is already published and I want to change the template (event {event}).',
+      fallback: 'Your template is no longer available. We show Classic until you pick another one.'
+    },
+    group: { problems: 'Check', other: 'Other' },
+    field: {
+      lang: { es: 'Spanish', en: 'English' },
+      textIn: 'Text in {lang}',
+      counter: '{n} of {max}',
+      reset: 'Template value',
+      resetFor: 'Back to the template value: {name}',
+      lockedSr: 'included in the full event',
+      lockedText: 'It is part of the full event.',
+      unlock: 'Unlock',
+      color: {
+        pick: 'Pick a color',
+        hex: 'Color code, for example #7b2d5b',
+        swatches: 'Suggested colors',
+        lowContrast: 'This color has little contrast with the light background. Check that it is easy to read.'
+      }
+    },
+    image: {
+      empty: 'No photo',
+      emptyHelp: 'If you do not upload a photo, your cover will show the initials.',
+      soon: 'Soon you will be able to upload your photo here.'
+    },
+    errors: {
+      too_long: 'It is too long. Maximum {max} characters.',
+      invalid_color: 'Enter a valid color, for example #7b2d5b.',
+      invalid_choice: 'Pick one of the options.',
+      invalid_type: 'This value is not valid. Remove symbols such as < or >.',
+      invalid_focus: 'The photo point is not valid.',
+      unknown_field: 'This template no longer has this field.',
+      field_not_found: 'This template no longer has this field.',
+      config_too_large: 'Too many changes are saved. Put some fields back to the template value.',
+      generic: 'This field could not be saved.'
+    },
+    sections: {
+      title: 'Sections',
+      hint: 'Choose what is shown and in which order. The cover always goes first.',
+      required: 'Required',
+      moduleLocked: 'This section is part of the full event.',
+      moveUp: 'Move {name} up',
+      moveDown: 'Move {name} down',
+      types: {
+        cover: 'Cover',
+        countdown: 'Countdown',
+        program: 'Program',
+        gallery: 'Gallery',
+        rsvp: 'RSVP'
+      },
+      errors: {
+        required_section: 'That section is required and cannot be hidden.',
+        cover_first: 'The cover always goes first.',
+        invalid_type: 'That section does not exist in this template.',
+        module_locked: 'That section is part of the full event.',
+        network: 'We could not save the sections. Check your connection and try again.',
+        generic: 'We could not save the sections.'
+      }
+    },
+    empty: {
+      title: 'This template has nothing to customize',
+      text: 'You can change the template or adjust the sections below.'
+    },
+    loadError: {
+      title: 'We could not load your invitation',
+      text: 'Check your connection and try again.',
+      retry: 'Try again'
+    },
+    toasts: {
+      planRequired: 'That change is part of the full event. We kept the template value.',
+      templateLocked: 'Your invitation is already published. To change the template, write to us.'
+    },
+    actions: {
+      preview: 'Preview',
+      previewSoon: 'Coming very soon',
+      publish: 'Publish'
+    }
+  },
   unlock: {
     full: {
       lead: 'Your full event, right away.',

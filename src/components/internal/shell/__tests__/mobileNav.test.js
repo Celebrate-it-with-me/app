@@ -28,10 +28,10 @@ describe('buildMobileNav', () => {
     expect(tabs.map(t => t.kind)).toEqual(['link', 'link', 'link', 'sheet', 'sheet'])
   })
 
-  it('sends "Tu invitación" to the event screen where the invitation is published (no editor yet)', () => {
+  it('sends "Tu invitación" to the invitation editor', () => {
     const invitation = tabsFor(MODULES, 7)[1]
-    expect(invitation.to).toEqual({ name: 'edit-event', params: { id: 7 } })
-    expect(invitation.routeNames).toEqual(['edit-event'])
+    expect(invitation.to).toBe('/dashboard/invitation')
+    expect(invitation.routeNames).toEqual(['invitation-editor'])
   })
 
   it('leaves "Tu invitación" out while there is no active event', () => {
@@ -82,7 +82,7 @@ describe('AppBottomNav', () => {
       routes: ['/dashboard', '/dashboard/guests', '/dashboard/timeline', '/dashboard/save-the-date', '/dashboard/collaborators', '/dashboard/unlock/:module'].map(path => ({
         path,
         component: { template: '<div />' }
-      })).concat({ path: '/dashboard/events/:id/edit', name: 'edit-event', component: { template: '<div />' } })
+      })).concat({ path: '/dashboard/invitation', name: 'invitation-editor', component: { template: '<div />' } })
     })
 
   async function setup(path, { userRole = 'viewer', permissions = [] } = {}) {
@@ -117,8 +117,8 @@ describe('AppBottomNav', () => {
     expect(wrapper.get('[data-testid=tab-home]').attributes('aria-current')).toBeUndefined()
   })
 
-  it('marks "Tu invitación" active on the event screen', async () => {
-    await setup('/dashboard/events/7/edit')
+  it('marks "Tu invitación" active on the editor', async () => {
+    await setup('/dashboard/invitation')
     expect(wrapper.get('[data-testid=tab-invitation]').attributes('aria-current')).toBe('page')
   })
 

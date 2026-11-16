@@ -46,7 +46,7 @@ describe('buildNavSections', () => {
   })
 
   it('does not draw a module that has no screen yet, or that the app does not know', () => {
-    const keys = buildNavSections([mod('invitation', 'main', 10), mod('brand_new', 'extras', 1), mod('guests', 'guests', 10)]).flatMap(s => s.items.map(i => i.key))
+    const keys = buildNavSections([mod('rsvp', 'main', 10), mod('brand_new', 'extras', 1), mod('guests', 'guests', 10)]).flatMap(s => s.items.map(i => i.key))
     expect(keys).toEqual(['home', 'plan', 'guests'])
   })
 
