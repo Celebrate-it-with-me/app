@@ -46,21 +46,31 @@
                                     "children": [
                                         {
                                             "t": "el",
-                                            "tag": "span",
+                                            "tag": "div",
                                             "attrs": {
-                                                "class": "pkg-bot-wash pkg-bot-wash--a",
+                                                "class": "pkg-bot-washes",
                                                 "aria-hidden": "true"
                                             },
-                                            "children": []
-                                        },
-                                        {
-                                            "t": "el",
-                                            "tag": "span",
-                                            "attrs": {
-                                                "class": "pkg-bot-wash pkg-bot-wash--b",
-                                                "aria-hidden": "true"
-                                            },
-                                            "children": []
+                                            "children": [
+                                                {
+                                                    "t": "el",
+                                                    "tag": "span",
+                                                    "attrs": {
+                                                        "class": "pkg-bot-wash pkg-bot-wash--a",
+                                                        "aria-hidden": "true"
+                                                    },
+                                                    "children": []
+                                                },
+                                                {
+                                                    "t": "el",
+                                                    "tag": "span",
+                                                    "attrs": {
+                                                        "class": "pkg-bot-wash pkg-bot-wash--b",
+                                                        "aria-hidden": "true"
+                                                    },
+                                                    "children": []
+                                                }
+                                            ]
                                         },
                                         {
                                             "t": "if",
@@ -237,24 +247,17 @@
                                             ]
                                         },
                                         {
-                                            "t": "el",
-                                            "tag": "div",
+                                            "t": "q",
+                                            "name": "cta",
+                                            "props": {
+                                                "action": "confirm"
+                                            },
                                             "attrs": {
                                                 "class": "pkg-bot-cta",
                                                 "data-reveal": "rise",
                                                 "data-reveal-delay": "600"
                                             },
-                                            "children": [
-                                                {
-                                                    "t": "q",
-                                                    "name": "cta",
-                                                    "props": {
-                                                        "action": "confirm"
-                                                    },
-                                                    "attrs": {},
-                                                    "children": []
-                                                }
-                                            ]
+                                            "children": []
                                         }
                                     ]
                                 },
@@ -332,4 +335,4 @@
             }
         ]
     }
-}
+}

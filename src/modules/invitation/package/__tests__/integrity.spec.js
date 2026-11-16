@@ -18,6 +18,7 @@ const rect = (left, top, right, bottom) => ({ left, top, right, bottom, width: r
 function rectOf(node) {
   if (boxes.has(node)) return boxes.get(node)
   const style = getComputedStyle(node)
+  if (node.tagName === 'BODY' || node.tagName === 'HTML') return { left: 0, top: 0, right: VW, bottom: VH, width: VW, height: VH }
   const zero = { left: 0, top: 0, right: 0, bottom: 0, width: 0, height: 0 }
   if (style.display === 'none') return zero
   if (node.classList.contains('inv-root') || node.tagName === 'MAIN') return { left: 0, top: 0, right: VW, bottom: VH, width: VW, height: VH }
@@ -55,6 +56,7 @@ beforeEach(() => {
   Object.defineProperty(window, 'innerWidth', { value: VW, configurable: true })
   Object.defineProperty(window, 'innerHeight', { value: VH, configurable: true })
   Object.defineProperty(document.documentElement, 'clientWidth', { value: VW, configurable: true })
+  Object.defineProperty(document.documentElement, 'clientHeight', { value: VH, configurable: true })
   Element.prototype.getBoundingClientRect = function () {
     return rectOf(this)
   }
@@ -118,7 +120,7 @@ describe('integrity guard: hostile package CSS', () => {
   })
 
   it('does not flag the music control, which lives in a fixed container inside an empty wrapper', () => {
-    const music = '<div class="inv-q inv-q--music" data-q="music" style="height:0px"><div class="inv-music"><button>Play</button></div></div>'
+    const music = '<div class="inv-q inv-q--music" data-q="music" style="height:0px"><div class="inv-music" style="position:fixed"><button>Play</button></div></div>'
     expect(checkIntegrity(page('', music)).ok).toBe(true)
     expect(reasons(checkIntegrity(page('.inv-music button{display:none}', music)))).toEqual(['music:display-none'])
   })
@@ -151,7 +153,7 @@ describe('integrity guard: system UI is not an occluder (B-1)', () => {
   })
 
   it('does not flag the music control when a section scrolls over it (another system block is not a package overlay)', () => {
-    const musicBlock = '<div class="inv-q inv-q--music" data-q="music" style="height:0px"><div class="inv-music" style="position:absolute;top:700px;bottom:0px;z-index:20"><button>Play</button></div></div>'
+    const musicBlock = '<div class="inv-q inv-q--music" data-q="music" style="height:0px"><div class="inv-music" style="position:fixed;top:700px;bottom:0px;z-index:20"><button>Play</button></div></div>'
     const root = page('', `${musicBlock}${rsvp}`)
     boxes.set(root.querySelector('.inv-music'), rect(0, 700, VW, VH))
     boxes.set(root.querySelector('.inv-music button'), rect(10, 720, 60, 770))
@@ -205,13 +207,12 @@ describe('integrity guard: content shoved sideways (I-2)', () => {
 describe('integrity guard: no viewport (I-3)', () => {
   it('does not measure while the document has no size, and judges once it has one', () => {
     const root = page('[data-q]{margin-left:-99999px}', `${cta}${rsvp}`)
-    const restore = [window.innerWidth, window.innerHeight, document.documentElement.clientWidth]
-    for (const [key, target] of [['innerWidth', window], ['innerHeight', window], ['clientWidth', document.documentElement]]) Object.defineProperty(target, key, { value: 0, configurable: true })
+    const restore = [document.documentElement.clientWidth, document.documentElement.clientHeight]
+    for (const key of ['clientWidth', 'clientHeight']) Object.defineProperty(document.documentElement, key, { value: 0, configurable: true })
     const hidden = checkIntegrity(root)
     expect(hidden).toMatchObject({ ok: true, skipped: 'no-viewport', problems: [] })
-    Object.defineProperty(window, 'innerWidth', { value: restore[0], configurable: true })
-    Object.defineProperty(window, 'innerHeight', { value: restore[1], configurable: true })
-    Object.defineProperty(document.documentElement, 'clientWidth', { value: restore[2], configurable: true })
+    Object.defineProperty(document.documentElement, 'clientWidth', { value: restore[0], configurable: true })
+    Object.defineProperty(document.documentElement, 'clientHeight', { value: restore[1], configurable: true })
     expect(checkIntegrity(root).ok).toBe(false)
   })
 })
