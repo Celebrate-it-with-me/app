@@ -1,10 +1,9 @@
-import AccountLayout from '@/components/internal/layout/AccountLayout.vue'
 
 // A sibling of the /settings tabs, under the same account layout.
 export default [
   {
     path: '/settings/purchases',
-    component: AccountLayout,
+    component: () => import('@/components/internal/layout/AccountLayout.vue'),
     children: [
       {
         path: '',

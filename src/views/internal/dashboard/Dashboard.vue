@@ -58,6 +58,11 @@ const localStep = computed(() =>
   })
 )
 const step = computed(() => serverStep.value ?? localStep.value)
+// While the assistant answers, a block of the card's size holds its place: showing the local rules first and swapping
+// them for the server's step (longer text, one more button) moved everything below. It gives up waiting after a moment.
+const STEP_WAIT_MS = 2500
+const stepWaitedTooLong = ref(false)
+const stepPending = computed(() => ['idle', 'loading'].includes(nextStatus.value) && !stepWaitedTooLong.value)
 const progress = computed(() =>
   readiness({
     hasDate: !!event.value?.startDate,
@@ -99,14 +104,36 @@ const program = computed(() =>
 
 // First steps: a calm link while some are pending. A failure here just hides the link.
 const start = ref(null)
+const startLoading = ref(false)
 const showStart = computed(() => start.value && !allDone(start.value))
+// The link's slot is held while its data loads, but only when it was there last time (or never seen): people who
+// finished the first steps would otherwise see the slot appear and collapse on every visit.
+const startKey = id => `quinvite.dashboard.start.${id}`
+const startWasShown = id => {
+  try {
+    return localStorage.getItem(startKey(id)) !== '0'
+  } catch {
+    return true
+  }
+}
+const holdStartSlot = computed(() => startLoading.value && !showStart.value && startWasShown(event.value?.id))
 async function loadStart(eventId) {
   start.value = null
+  startLoading.value = true
   try {
     const data = normalizeProgress(await OnboardingService.progress(eventId))
     if (eventId === event.value?.id) start.value = data
   } catch {
     start.value = null
+  } finally {
+    if (eventId === event.value?.id) {
+      startLoading.value = false
+      try {
+        localStorage.setItem(startKey(eventId), showStart.value ? '1' : '0')
+      } catch {
+        // Storage can be unavailable (private mode): the slot just follows the default.
+      }
+    }
   }
 }
 
@@ -117,6 +144,10 @@ async function load() {
   const current = event.value
   if (!current?.id) return
   const id = ++loadId
+  stepWaitedTooLong.value = false
+  setTimeout(() => {
+    if (id === loadId) stepWaitedTooLong.value = true
+  }, STEP_WAIT_MS)
   loadStart(current.id)
   assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
   const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
@@ -142,8 +173,10 @@ onBeforeUnmount(() => document.removeEventListener('visibilitychange', onVisible
   <div v-if="event">
     <DashboardHeader :name="event.eventName" :start-date="event.startDate" :progress="progress" :edit-to="canEdit ? editTarget : null" />
 
-    <DashboardNextStep :step="step" :target="stepTarget" />
+    <div v-if="stepPending" class="h-72 animate-pulse rounded-xl bg-cream-300 sm:h-48" aria-hidden="true" data-testid="next-step-placeholder" />
+    <DashboardNextStep v-else :step="step" :target="stepTarget" />
     <DashboardStartLink v-if="showStart" :done="start.done" :total="start.total" />
+    <div v-else-if="holdStartSlot" class="mt-3 h-[4.125rem] rounded-xl border border-line bg-white" aria-hidden="true" data-testid="start-link-slot" />
 
     <div class="mt-6 grid gap-4 lg:grid-cols-3">
       <DashboardRsvp class="lg:col-span-2" :rsvp="rsvp" />

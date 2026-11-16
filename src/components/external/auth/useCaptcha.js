@@ -1,8 +1,9 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 
 /**
- * hCaptcha widget rendered into `#hcaptcha-container`. The hCaptcha script is only loaded when a
- * screen that uses the widget (login, registration) mounts, not on every page of the app.
+ * hCaptcha widget rendered into `#hcaptcha-container`. The hCaptcha script (about 1 MB with its frames) is not loaded when
+ * the screen mounts but when the person first touches the form (focus or pointer) or tries to submit, so it never competes
+ * with the first paint. The token stays as mandatory as before: only WHEN the script is fetched changes.
  * In the local environment the token is not required.
  */
 const HCAPTCHA_SRC = 'https://js.hcaptcha.com/1/api.js'
@@ -30,13 +31,15 @@ export function useCaptcha() {
     if (window.hcaptcha && widgetId !== null) window.hcaptcha.reset(widgetId)
   }
 
-  onMounted(() => {
-    window.onCaptchaSuccess = value => {
-      token.value = value
-    }
+  /** Downloads the script (once) and draws the widget as soon as `window.hcaptcha` exists. */
+  let started = false
+  function start() {
+    if (started) return
+    started = true
+    stopWatching()
     if (!siteKey || !document.getElementById('hcaptcha-container')) return
     loadHcaptchaScript()
-    // api.js loads async: it lands after this view mounts. Retry for up to ~10 s.
+    // api.js loads async: it lands after this call. Retry for up to ~10 s.
     let tries = 0
     const render = () => {
       if (window.hcaptcha) {
@@ -46,12 +49,39 @@ export function useCaptcha() {
       if (tries++ < 50) poll = setTimeout(render, 200)
     }
     render()
+  }
+
+  let form = null
+  const TOUCH_EVENTS = ['focusin', 'pointerdown', 'keydown']
+  function stopWatching() {
+    TOUCH_EVENTS.forEach(name => form?.removeEventListener(name, start))
+    form = null
+  }
+
+  onMounted(() => {
+    window.onCaptchaSuccess = value => {
+      token.value = value
+    }
+    const container = document.getElementById('hcaptcha-container')
+    if (!siteKey || !container) return
+    // Inside a form: wait for the first touch. Anywhere else there is nothing to wait for.
+    form = container.closest('form')
+    if (!form) return start()
+    TOUCH_EVENTS.forEach(name => form.addEventListener(name, start, { once: true }))
   })
 
   onUnmounted(() => {
+    stopWatching()
     clearTimeout(poll)
     delete window.onCaptchaSuccess
   })
 
-  return { token, required, siteKey, reset, isReady: () => !required || Boolean(token.value) }
+  /** Ready to submit; when it is not, the script is fetched now (submitting before touching the form: autofill, Enter). */
+  function isReady() {
+    const ready = !required || Boolean(token.value)
+    if (!ready) start()
+    return ready
+  }
+
+  return { token, required, siteKey, reset, isReady }
 }

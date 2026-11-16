@@ -9,6 +9,12 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     isReady: false
   }),
+  // Remembered for the life of the tab: after a reload the session cookies are long set, so the `/auth/ready` round trip
+  // (which only protects the moment right after login) is not repeated before the hydration. Logging out resets it.
+  persist: {
+    key: 'auth-ready',
+    storage: sessionStorage
+  },
   actions: {
     async ensureReady() {
       if (this.isReady) return
