@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject } from 'vue'
+import { computed, inject, ref } from 'vue'
 import {
   SelectRoot,
   SelectTrigger,
@@ -24,10 +24,17 @@ const props = defineProps({
   size: { type: String, default: 'md' },
   invalid: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
-  id: { type: String, default: '' }
+  id: { type: String, default: '' },
+  /**
+   * For long lists of selects (one per row): draws a plain button that looks the same and mounts the real select, already
+   * open, on the first click or arrow key. Hundreds of idle Reka selects make a page slow to render and to type in.
+   */
+  lazy: { type: Boolean, default: false }
 })
 const emit = defineEmits(['update:modelValue'])
 const field = inject('ui-field', null)
+const activated = ref(!props.lazy)
+const currentLabel = computed(() => props.options.find(o => String(o.value) === String(props.modelValue))?.label ?? props.placeholder)
 
 const triggerId = computed(() => props.id || field?.id.value)
 const isInvalid = computed(() => props.invalid || field?.invalid.value)
@@ -55,7 +62,25 @@ function onUpdate(value) {
 </script>
 
 <template>
-  <SelectRoot :model-value="selected" :disabled="disabled" @update:model-value="onUpdate">
+  <button
+    v-if="!activated"
+    :id="triggerId"
+    type="button"
+    role="combobox"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    :disabled="disabled"
+    :class="triggerClasses"
+    :aria-invalid="isInvalid || undefined"
+    :aria-describedby="field?.describedBy.value"
+    :aria-required="field?.required.value || undefined"
+    @click="activated = true"
+    @keydown.down.prevent="activated = true"
+  >
+    <span class="truncate">{{ currentLabel }}</span>
+    <ChevronDown class="h-4 w-4 shrink-0 text-ink-400" aria-hidden="true" />
+  </button>
+  <SelectRoot v-else :model-value="selected" :disabled="disabled" :default-open="lazy" @update:model-value="onUpdate">
     <SelectTrigger
       :id="triggerId"
       :class="triggerClasses"
