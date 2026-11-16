@@ -91,8 +91,8 @@ const onError = async error => {
         }
         // The account cannot be deleted while it is support staff: the screen explains it, no redirect.
         if (error.response.data?.code === 'staff_account') break
-        // The invitation editor answers 403 plan_required / template_not_available for a field or template the plan or
-        // the catalog does not allow: the editor shows it on the field, it is not a forbidden page.
+        // Invitation editor and template selector: 403 plan_required / template_not_available (plan or catalog refusal) is
+        // explained by the screen itself, with a way forward; it is not a forbidden page.
         if (['plan_required', 'template_not_available'].includes(error.response.data?.code)) break
         // An expired or tampered signed link (reset password...): the screen explains it, no redirect.
         if (error.response.data?.code === 'invalid_signed_link') break

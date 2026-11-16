@@ -79,6 +79,12 @@ const router = createRouter({
             name: 'dev-ui-kit',
             component: () => import('@/views/dev/UiKitView.vue'),
             meta: { title: 'UI kit', requiresAuth: false }
+          },
+          {
+            path: '/dev/template-picker',
+            name: 'dev-template-picker',
+            component: () => import('@/views/dev/TemplatePickerDevView.vue'),
+            meta: { title: 'Template picker', requiresAuth: true }
           }
         ]
       : []),
