@@ -15,7 +15,12 @@ import { SECTION_COMPONENTS as COMPONENTS } from '../composables/sectionComponen
 import InvitationSections from '../components/InvitationSections.vue'
 import { PackageLayout, layoutIsValid, usePackageTheme, useIntegrityGuard, ENGINE } from '../package'
 
-const allowedOrigin = parseOrigin(import.meta.env.VITE_ADMIN_URL)
+// Two windows may drive this page: the admin (its configured origin) and the app itself, where an organizer's template
+// selector embeds it in an iframe. Both are exact origins, and the sender must still be the window that embeds us.
+const adminOrigin = parseOrigin(import.meta.env.VITE_ADMIN_URL)
+const ownOrigin = window.location.origin
+const allowedOrigins = [adminOrigin, ownOrigin].filter(Boolean)
+const allowedOrigin = allowedOrigins.length > 0
 
 const invitation = ref(null)
 const invalid = ref(false)
@@ -76,7 +81,7 @@ onErrorCaptured(() => {
  * send `{ type: 'qv-preview', payload }`. Anything else is ignored without a trace.
  */
 function onMessage(event) {
-  if (!allowedOrigin || event.origin !== allowedOrigin) return
+  if (!allowedOrigin || !allowedOrigins.includes(event.origin)) return
   if (event.source !== window.parent) return
   const message = event.data
   if (!message || typeof message !== 'object' || message.type !== 'qv-preview') return
@@ -101,7 +106,7 @@ onMounted(() => {
   document.head.appendChild(robots)
   if (!allowedOrigin) return
   window.addEventListener('message', onMessage)
-  window.parent?.postMessage({ type: 'qv-preview-ready' }, allowedOrigin)
+  for (const target of allowedOrigins) window.parent?.postMessage({ type: 'qv-preview-ready' }, target)
 })
 onUnmounted(() => {
   window.removeEventListener('message', onMessage)
