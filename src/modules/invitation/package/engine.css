@@ -89,6 +89,71 @@
   rotate: none !important;
 }
 .inv-root .inv-q--cta { display: flex !important; }
+/*
+ * Wave 7 (defence in depth; the server sanitiser rejects most of this at the source, the runtime guard measures the rest).
+ * 1. The elements that wrap a block (the package's own containers, one level up) cannot cut, mask, stack or move it:
+ *    no overflow/clip/mask/filter, no stacking context of their own, no grid placement. Their opacity is the reveal's
+ *    business (`data-reveal`), so it is pinned only where there is no reveal. The photo block is purely decorative
+ *    (no controls), so the frame that shapes it (a torn-paper mask, a rounded arch) is left alone.
+ * 2. The blocks themselves cannot be moved around in a grid/flex layout or floated away.
+ * Only under a drawn package: the built-in Clásica layout is not touched.
+ */
+.inv-root[data-inv-pkg] :is(:has(> .inv-q:not(.inv-q--cover-photo)), :has(> [data-inv-native])):not(.inv-q, [data-inv-native]) {
+  isolation: auto !important;
+  z-index: auto !important;
+  overflow: visible !important;
+  clip-path: none !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  grid-area: auto !important;
+  order: 0 !important;
+  float: none !important;
+}
+.inv-root[data-inv-pkg] :is(:has(> .inv-q:not(.inv-q--cover-photo)), :has(> [data-inv-native])):not(.inv-q, [data-inv-native], [data-reveal]) {
+  opacity: 1 !important;
+}
+.inv-root[data-inv-pkg] .inv-q,
+.inv-root[data-inv-pkg] [data-inv-native] {
+  grid-area: auto !important;
+  order: 0 !important;
+  float: none !important;
+}
+.inv-root[data-inv-pkg] .inv-q:not(.inv-q--cover-photo),
+.inv-root[data-inv-pkg] [data-inv-native] {
+  overflow: visible !important;
+}
+/*
+ * W7 N-5: the music control is `position: fixed`, which only holds while no ancestor is its containing block. A transform,
+ * translate, scale, rotate, perspective, filter, containment or `will-change` on any ancestor (a `data-reveal` entrance
+ * leaves `translate: 0 0` behind) would make the player scroll away with the page. Nothing above the player may have them.
+ */
+.inv-root[data-inv-pkg] :has(.inv-music) {
+  transform: none !important;
+  perspective: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  clip-path: none !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+  contain: none !important;
+  container-type: normal !important;
+  will-change: auto !important;
+  animation: none !important;
+}
+/*
+ * translate/scale/rotate live in a rule of their own: next to `transform: none` the production minifier (lightningcss)
+ * folds all four into `transform: translate(0,0) scale(1) rotate(0)`, which is NOT `none` and makes the ancestor the
+ * containing block of the fixed player (the same trap as the music bug of wave 6). The extra :not() keeps the two
+ * selectors different so they are never merged back.
+ */
+.inv-root[data-inv-pkg] :has(.inv-music):not(.pk-none) {
+  translate: none !important;
+  scale: none !important;
+  rotate: none !important;
+}
+.inv-root[data-inv-pkg] .inv-music { position: fixed !important; }
 /* The system's reduced-motion rule: stronger than anything the package ships (a flashing package is not an option). */
 @media (prefers-reduced-motion: reduce) {
   .inv-root[data-inv-pkg],

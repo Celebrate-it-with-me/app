@@ -2,8 +2,10 @@
   <div class="pkg-bot-card">
     <div class="pkg-bot-photo"><q-cover-photo focus="50% 14%" priority="true"></q-cover-photo></div>
     <div class="pkg-bot-body">
-      <span class="pkg-bot-wash pkg-bot-wash--a" aria-hidden="true"></span>
-      <span class="pkg-bot-wash pkg-bot-wash--b" aria-hidden="true"></span>
+      <div class="pkg-bot-washes" aria-hidden="true">
+        <span class="pkg-bot-wash pkg-bot-wash--a" aria-hidden="true"></span>
+        <span class="pkg-bot-wash pkg-bot-wash--b" aria-hidden="true"></span>
+      </div>
       <p data-if="section.text" class="pkg-bot-phrase" data-reveal="rise">{{section.text}}</p>
       <div class="pkg-bot-names" data-reveal="rise" data-reveal-delay="200"><q-names tag="h1" script="true"></q-names></div>
       <p data-if="event.description" class="pkg-bot-desc" data-reveal="rise" data-reveal-delay="300">{{event.description}}</p>

@@ -1,7 +1,10 @@
 /* Clásica as a template package: every section is plain HTML (sections/*.html) styled here. The server writes the @font-face block and scopes every selector under [data-inv-theme="classic"]. */
 .pkg-cl, .pkg-sec { --pkg-primary-ink: color-mix(in oklab, var(--inv-primary) 78%, #2b2420); --pkg-accent-ink: color-mix(in oklab, var(--inv-accent) 60%, #3d2a08); --pkg-script: var(--inv-font-script, 'Pinyon Script', 'Snell Roundhand', cursive); --pkg-heading: var(--inv-font-heading, 'Fraunces', Georgia, serif); }
 
-.pkg-cl { position: relative; isolation: isolate; display: flex; min-height: 100svh; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; padding: 5rem 1.5rem 4rem; text-align: center; background-color: #fdfbf8; background-image: url(assets/lattice.svg); background-size: 36px 36px; }
+.pkg-cl { position: relative; display: flex; min-height: 100svh; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 1.5rem 4rem; text-align: center; background-color: #fdfbf8; background-image: url(assets/lattice.svg); background-size: 36px 36px; }
+/* Decoration lives in its own layer (clipped and isolated here), so the containers of blocks need neither overflow nor a stacking context. */
+.pkg-cl-decor, .pkg-sec-decor { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.pkg-cl-decor { isolation: isolate; }
 .pkg-cl-glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 80% 55% at 50% 0%, color-mix(in oklab, var(--inv-primary) 11%, transparent), transparent 70%); }
 .pkg-cl-sprig--a, .pkg-cl-sprig--b { width: 12rem; height: 12rem; }
 .pkg-cl-sprig--a { left: -2rem; top: -2rem; z-index: -1; --pkg-stem: 80%; }
@@ -53,7 +56,7 @@
 .pkg-sprig { position: absolute; pointer-events: none; }
 .pkg-sprig__stem { position: absolute; inset: 0; background-color: color-mix(in oklab, var(--inv-accent) var(--pkg-stem, 60%), transparent); mask: url(assets/sprig.svg) center / contain no-repeat; }
 .pkg-sprig__bloom { position: absolute; inset: 0; background-color: var(--inv-primary); mask: url(assets/blossoms.svg) center / contain no-repeat; }
-.pkg-sec { position: relative; overflow: hidden; padding: 5rem 1.5rem; }
+.pkg-sec { position: relative; padding: 5rem 1.5rem; }
 .pkg-sec--alt { background-color: var(--inv-surface-alt); }
 .pkg-sec--deep { background-color: color-mix(in oklab, var(--inv-primary) 38%, #1b0f12); color: var(--inv-surface); }
 .pkg-sec__in { position: relative; margin-inline: auto; max-width: 42rem; text-align: center; }
