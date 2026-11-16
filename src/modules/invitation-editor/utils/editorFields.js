@@ -200,9 +200,13 @@ export function orderedSections(sections) {
   return [...sections].sort((a, b) => a.order - b.order)
 }
 
-/** Body of `PATCH sections`: only type, enabled and order, order renumbered 1..n. */
+/**
+ * Body of `PATCH sections`: only type, enabled and order, order renumbered 1..n.
+ * A section of a locked module is sent as `enabled: false` even if `GET` reports it on: the API answers 422 `module_locked`
+ * (`sections.<n>.enabled`) to the whole request otherwise, and a free event could then never reorder or toggle anything.
+ */
 export function sectionsPayload(sections) {
-  return orderedSections(sections).map((s, i) => ({ type: s.type, enabled: s.enabled, order: i + 1 }))
+  return orderedSections(sections).map((s, i) => ({ type: s.type, enabled: s.moduleState === 'locked' ? false : s.enabled, order: i + 1 }))
 }
 
 /** Can this section move one place (`-1` up, `1` down)? The cover stays first; nothing goes above it. */

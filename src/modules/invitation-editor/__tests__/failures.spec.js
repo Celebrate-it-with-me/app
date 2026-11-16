@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { createApp, defineComponent, h } from 'vue'
 import { useAutosave } from '../composables/useAutosave'
-import { classify, FAILURE_CODES, previewOverrides } from '../utils/editorFields'
+import { classify, FAILURE_CODES, previewOverrides, sectionsPayload } from '../utils/editorFields'
 
 const http = (status, data = {}) => Object.assign(new Error(`http ${status}`), { response: { status, data } })
 
@@ -43,6 +43,21 @@ describe('useAutosave with failures that are not about a field', () => {
     expect(onFailed).toHaveBeenCalledWith(kind, ['cover_text'], error)
     expect(api.status.value).toBe('error')
     expect(api.isDirty('cover_text')).toBe(false)
+  })
+})
+
+describe('sectionsPayload', () => {
+  it('never sends a section of a locked module as enabled (the API refuses the whole request)', () => {
+    const body = sectionsPayload([
+      { type: 'cover', enabled: true, order: 1 },
+      { type: 'gallery', enabled: true, order: 2, moduleState: 'locked' },
+      { type: 'rsvp', enabled: true, order: 3, moduleState: 'active' }
+    ])
+    expect(body).toEqual([
+      { type: 'cover', enabled: true, order: 1 },
+      { type: 'gallery', enabled: false, order: 2 },
+      { type: 'rsvp', enabled: true, order: 3 }
+    ])
   })
 })
 

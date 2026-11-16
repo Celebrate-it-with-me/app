@@ -165,7 +165,7 @@ function onImageChanged(id, value) {
       </section>
 
       <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <EditorPreviewEntry :event-id="eventId" :overrides="overrides" />
+        <EditorPreviewEntry :event-id="eventId" :overrides="overrides" :disabled="readOnly" />
         <UiButton block :to="{ name: 'edit-event', params: { id: eventId } }" :aria-busy="hasPendingWork || undefined">{{ t('invitationEditor.actions.publish') }}</UiButton>
       </div>
     </div>

@@ -2034,7 +2034,13 @@ export default {
         countdown: 'Countdown',
         program: 'Program',
         gallery: 'Gallery',
-        rsvp: 'RSVP'
+        rsvp: 'RSVP',
+        itinerary: 'Program of the day',
+        locations: 'Where we celebrate',
+        dress_code: 'Dress code',
+        padrinos: 'With the love of',
+        music: 'Music',
+        closing: 'Thank you for being part of my day'
       },
       errors: {
         required_section: 'That section is required and cannot be hidden.',

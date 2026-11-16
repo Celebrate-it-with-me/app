@@ -226,6 +226,7 @@ describe('InvitationEditorView', () => {
     expect(wrapper.get('[data-field=color_accent] [data-testid=color-hex]').attributes('disabled')).toBeDefined()
     expect(wrapper.get('[data-section=program] [role=switch]').attributes('disabled')).toBeDefined()
     expect(wrapper.find('[data-testid=reset]').exists()).toBe(false)
+    expect(wrapper.findAll('button').find(b => b.text().includes('Vista previa')).attributes('disabled')).toBeDefined() // the API refuses a viewer's preview (403)
   })
 
   it('opens the preview with the edits that are not saved yet, and writes nothing', async () => {

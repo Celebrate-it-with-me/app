@@ -11,6 +11,8 @@ import InvitationPreviewSheet from '@/modules/template-picker/components/Invitat
 
 defineProps({
   eventId: { type: [Number, String], default: null },
+  /** The API answers 403 to a viewer asking for a preview: the button stays off. */
+  disabled: { type: Boolean, default: false },
   /** `{ <fieldId>: value }` of the form's current edits (see `previewOverrides`). */
   overrides: { type: Object, default: () => ({}) }
 })
@@ -20,7 +22,7 @@ const open = ref(false)
 
 <template>
   <div>
-    <UiButton variant="secondary" block :disabled="eventId == null" @click="open = true">
+    <UiButton variant="secondary" block :disabled="eventId == null || disabled" @click="open = true">
       <Eye class="h-4 w-4" aria-hidden="true" />
       {{ t('invitationEditor.actions.preview') }}
     </UiButton>

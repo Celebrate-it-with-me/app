@@ -2034,7 +2034,13 @@ export default {
         countdown: 'Cuenta regresiva',
         program: 'Programa',
         gallery: 'Galería',
-        rsvp: 'Confirmación'
+        rsvp: 'Confirmación',
+        itinerary: 'Programa del día',
+        locations: 'Dónde celebramos',
+        dress_code: 'Código de vestimenta',
+        padrinos: 'Con el cariño de',
+        music: 'Música',
+        closing: 'Gracias por ser parte de mi día'
       },
       errors: {
         required_section: 'Esa sección es obligatoria y no se puede ocultar.',
