@@ -2,8 +2,8 @@
 /**
  * "Tu invitación": the screen where the organizer edits what the template exposes (contract §3.1, §5).
  * The form comes from the API (`editable.json` of the version the event draws); here every field is only mapped to
- * a control and saved by id, automatically. The selector, the preview and the cover upload are plugged in by
- * `TemplatePickerEntry`, `EditorPreviewEntry` and `ImageFieldActions`.
+ * a control and saved by id, automatically. The selector (`TemplatePickerEntry`), the preview sheet and the cover photo
+ * (`CoverPhotoField`) come from the `template-picker` module.
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -11,8 +11,9 @@ import { CloudOff, TriangleAlert, WandSparkles } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiEmptyState, UiPageHeader, UiSkeleton, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useInvitationEditor } from '../composables/useInvitationEditor'
+import { previewOverrides } from '../utils/editorFields'
 import SaveIndicator from '../components/SaveIndicator.vue'
-import TemplatePickerEntry from '../components/TemplatePickerEntry.vue'
+import TemplatePickerEntry from '@/modules/template-picker/components/TemplatePickerEntry.vue'
 import EditorPreviewEntry from '../components/EditorPreviewEntry.vue'
 import EditorGroup from '../components/EditorGroup.vue'
 import FieldRenderer from '../components/FieldRenderer.vue'
@@ -74,6 +75,7 @@ const visibleGroups = computed(() => {
 })
 const problemsIn = entry => entry.fields.filter(f => fieldErrors.value[f.id]).length
 
+const overrides = computed(() => previewOverrides(fields.value, fieldErrors.value))
 const hasPendingWork = computed(() => saveStatus.value === 'saving')
 const hasErrorCode = id => fieldErrors.value[id] ?? null
 
@@ -118,12 +120,13 @@ function onImageChanged(id, value) {
 
       <p v-if="readOnly" class="rounded-lg bg-cream-100 p-3 text-sm text-ink-600" role="note">{{ t('invitationEditor.readOnly') }}</p>
 
+      <!-- After applying or undoing a template the API answers the new editor state: the form is redrawn from it. -->
       <TemplatePickerEntry
-        :template="data.template"
         :template-locked="Boolean(data.state?.templateLocked)"
+        :unavailable="Boolean(data.template?.fallbackToClassic)"
         :event-id="eventId"
         :disabled="readOnly"
-        @applied="editor.applyState"
+        @changed="editor.applyState"
       />
 
       <UiEmptyState
@@ -162,7 +165,7 @@ function onImageChanged(id, value) {
       </section>
 
       <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <EditorPreviewEntry :event-id="eventId" />
+        <EditorPreviewEntry :event-id="eventId" :overrides="overrides" />
         <UiButton block :to="{ name: 'edit-event', params: { id: eventId } }" :aria-busy="hasPendingWork || undefined">{{ t('invitationEditor.actions.publish') }}</UiButton>
       </div>
     </div>

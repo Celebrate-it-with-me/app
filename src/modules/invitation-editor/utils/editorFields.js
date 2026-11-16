@@ -108,8 +108,9 @@ export function sameValue(a, b) {
 }
 
 /**
- * 422 body -> `{ [fieldId]: { code, lang? } }`. The API may send flat dotted keys (`fields.cover_text.es`) or a nested
- * `errors.fields.<id>`; both are read. Ids are matched against `known` so an id that contains a dot still resolves.
+ * 422 body -> `{ [fieldId]: { code, lang? } }`. The API (InvitationEditor) sends FLAT dotted keys,
+ * `errors["fields.<id>"][0]` and `errors["fields.<id>.es"][0]` for a language of a text; a nested `errors.fields.<id>`
+ * is read too in case a validator ever sends it. Ids are matched against `known` so an id that contains a dot still resolves.
  */
 export function fieldErrorsFrom(error, known = []) {
   const errors = error?.response?.data?.errors
@@ -157,16 +158,41 @@ export function sectionErrorFrom(error) {
   return null
 }
 
-/** Classifies a failed request: 'network' | 'validation' | 'plan' | 'locked' | 'server' | 'other'. */
+/**
+ * Classifies a failed request: 'network' | 'validation' | 'plan' | 'locked' | 'archived' | 'forbidden' | 'notfound' |
+ * 'nocover' | 'server' | 'other'. `archived` is the 422 `errors.status = ['event_archived']` of every write, which is not
+ * about any field; `notfound` is 404 `field_not_found` and `nocover` 409 `package_no_cover_field`.
+ */
 export function classify(error) {
   const res = error?.response
   if (!res) return 'network'
   const code = res.data?.code
+  if (res.status === 422 && res.data?.errors?.status?.[0] === 'event_archived') return 'archived'
   if (res.status === 422) return 'validation'
   if (res.status === 403 && code === 'plan_required') return 'plan'
+  if (res.status === 403) return 'forbidden'
+  if (res.status === 404 && code === 'field_not_found') return 'notfound'
   if (res.status === 409 && code === 'template_locked') return 'locked'
+  if (res.status === 409 && code === 'package_no_cover_field') return 'nocover'
   if (res.status >= 500 || res.status === 429 || res.status === 408) return 'server'
   return 'other'
+}
+
+/** The i18n code (`invitationEditor.errors.<code>`) that speaks for a failure `classify` knows by kind, or null. */
+export const FAILURE_CODES = { archived: 'event_archived', forbidden: 'forbidden', notfound: 'field_not_found', nocover: 'package_no_cover_field' }
+
+/**
+ * What the form sends to `POST preview` to see the unsaved edits: `{ <fieldId>: value }` for every field that differs from
+ * the template's value, skipping photos (they have their own endpoint), locked fields and the ones with an error.
+ */
+export function previewOverrides(fields, errors = {}) {
+  const out = {}
+  for (const f of fields ?? []) {
+    if (f.type === 'image' || f.locked || f.isDefault || errors[f.id] || !['text', 'color', 'choice', 'toggle'].includes(f.type)) continue
+    const value = cleanValue(f, f.value)
+    if (!validateValue(f, value)) out[f.id] = value
+  }
+  return out
 }
 
 /** Sections in display order. */

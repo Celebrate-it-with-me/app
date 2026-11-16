@@ -18,7 +18,8 @@ class InvitationEditorService {
 
   /**
    * `PATCH event/{id}/invitation` with `{ fields: { <id>: value | null } }` -> `{ fields: [touched], savedAt }`.
-   * `null` goes back to the template's value. 403 plan_required, 409 template_locked, 422 `errors.fields.<id>[0]`.
+   * `null` goes back to the template's value. 403 plan_required, 409 template_locked / package_no_cover_field, 404 field_not_found,
+   * 422 with FLAT keys, `errors["fields.<id>"][0]` (and `errors["fields.<id>.es"][0]` for a language), or `errors.status[0] = event_archived`.
    */
   async saveFields(eventId, fields) {
     const mock = await getMock()

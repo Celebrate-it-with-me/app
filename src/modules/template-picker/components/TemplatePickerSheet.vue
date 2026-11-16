@@ -37,7 +37,7 @@ const selected = ref(null)
 const previewLocale = ref('es')
 const previewState = ref('invitation')
 const previewPreset = ref('')
-const confirmError = ref(false)
+const confirmError = ref('') // '' or the key of templatePicker.errors.*
 const quote = ref(null)
 
 const isCurrent = computed(() => !!selected.value?.current)
@@ -47,6 +47,9 @@ const included = computed(() => tm('pricing.full.items').slice(0, 4).map(item =>
 const price = computed(() => (quote.value ? formatMoney(quote.value.amountCents, quote.value.currency, locale.value) : ''))
 const presets = computed(() => (Array.isArray(selected.value?.presets) ? selected.value.presets : []))
 const presetOptions = computed(() => presets.value.map(preset => ({ value: preset.value, label: pickText(preset.label, locale.value) })))
+const previewErrorText = computed(() =>
+  picker.previewError.value === 'forbidden' ? t('templatePicker.errors.previewForbidden') : t('templatePicker.preview.failed')
+)
 const mailHref = computed(() => mailtoLink({ subject: t('templatePicker.published.mailSubject') }))
 
 const title = computed(() => {
@@ -98,7 +101,7 @@ function backToList() {
 }
 
 function startUse() {
-  confirmError.value = false
+  confirmError.value = ''
   view.value = 'confirm'
   picker.loadImpact(selected.value)
 }
@@ -109,8 +112,8 @@ function goUnlock() {
 }
 
 async function confirm() {
-  confirmError.value = false
-  const result = await picker.apply(selected.value, { confirm: view.value === 'published' })
+  confirmError.value = ''
+  const result = await picker.apply(selected.value)
   if (result.ok) {
     emit('changed', result.data, selected.value, picker.undo.value)
     emit('update:open', false)
@@ -127,7 +130,7 @@ async function confirm() {
     await picker.load()
     return
   }
-  confirmError.value = true
+  confirmError.value = result.code === 'event_archived' ? 'archived' : result.code === 'forbidden' ? 'forbidden' : 'generic'
 }
 
 async function undo() {
@@ -136,7 +139,10 @@ async function undo() {
   if (result.ok) {
     emit('undone', result.data)
     toast.success(t('templatePicker.undone', { name }))
-  } else toast.error(t('templatePicker.errors.generic'))
+  } else {
+    const key = { event_archived: 'archived', forbidden: 'forbidden' }[result.code]
+    toast.error(result.code === 'template_locked' ? t('templatePicker.published.text') : t(`templatePicker.errors.${key ?? 'generic'}`))
+  }
   return result
 }
 
@@ -164,7 +170,7 @@ watch(
 // A new view starts at its top, not where the previous one was scrolled to.
 watch(view, async () => {
   await nextTick()
-  body.value?.closest('.overflow-y-auto')?.scrollTo({ top: 0 })
+  body.value?.closest('.overflow-y-auto')?.scrollTo?.({ top: 0 })
 })
 watch([previewLocale, previewState, previewPreset], () => {
   if (view.value === 'preview') renderPreview()
@@ -209,8 +215,8 @@ defineExpose({ undo, picker })
             {{ t('templatePicker.preview.loading') }}
           </div>
           <div v-else-if="picker.previewStatus.value === 'error'" class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-cream-100 px-6 text-center" role="alert">
-            <p class="text-ink-700">{{ t('templatePicker.preview.failed') }}</p>
-            <UiButton size="sm" variant="secondary" @click="renderPreview">{{ t('templatePicker.retry') }}</UiButton>
+            <p class="text-ink-700">{{ previewErrorText }}</p>
+            <UiButton v-if="picker.previewError.value !== 'forbidden'" size="sm" variant="secondary" @click="renderPreview">{{ t('templatePicker.retry') }}</UiButton>
           </div>
         </div>
       </div>
@@ -270,7 +276,7 @@ defineExpose({ undo, picker })
         <p v-if="picker.impact.value.changesPublishedLook" class="rounded-xl bg-warning-50 p-3 text-sm text-warning-700" role="note">{{ t('templatePicker.confirm.publishedLook') }}</p>
         <p class="text-sm text-ink-500">{{ t('templatePicker.confirm.undoHint') }}</p>
       </template>
-      <p v-if="confirmError" class="rounded-xl bg-danger-50 p-3 text-sm text-danger-700" role="alert">{{ t('templatePicker.errors.generic') }}</p>
+      <p v-if="confirmError" class="rounded-xl bg-danger-50 p-3 text-sm text-danger-700" role="alert">{{ t(`templatePicker.errors.${confirmError}`) }}</p>
     </div>
 
     <!-- 4. already published -->

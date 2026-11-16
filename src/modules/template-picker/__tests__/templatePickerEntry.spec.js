@@ -89,7 +89,7 @@ describe('TemplatePickerEntry', () => {
     expect(wrapper.emitted('changed')).toHaveLength(1)
     expect(text()).toContain('Antes usabas Clásica')
     await click('Deshacer')
-    expect(mocks.apply).toHaveBeenLastCalledWith(5, 1, { confirm: false })
+    expect(mocks.apply).toHaveBeenLastCalledWith(5, 1, { undo: true })
     expect(wrapper.emitted('changed')).toHaveLength(2)
     expect(text()).not.toContain('Antes usabas')
   })

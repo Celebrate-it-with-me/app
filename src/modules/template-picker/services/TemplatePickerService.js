@@ -24,19 +24,27 @@ class TemplatePickerService {
     return (await CWM_API.get(`${base(eventId)}/templates/${templateId}/impact`)).data.data
   }
 
-  /** Applies the template. Answers the editor state (like GET invitation) with `undo: { until, templateId }`. */
-  async apply(eventId, templateId, { confirm = false } = {}) {
+  /**
+   * Applies the template. Answers the editor state (like GET invitation) with `undo: { until, templateId }`.
+   * `undo: true` marks the call as the "Deshacer" of the last change (the API only logs it differently).
+   * A published invitation answers 409 `template_locked` (D-1): there is no "confirm" way around it, only support.
+   */
+  async apply(eventId, templateId, { undo = false } = {}) {
     const body = { template_id: templateId }
-    if (confirm) body.confirm = true
+    if (undo) body.undo = true
     const mock = await getMock()
     if (mock) return mock.apply(eventId, body)
     return (await CWM_API.put(`${base(eventId)}/template`, body)).data.data
   }
 
-  /** The invitation payload (same shape as the public one) with the real event data and the changes applied in memory. */
-  async preview(eventId, { templateId, locale, state, preset } = {}) {
+  /**
+   * The invitation payload (same shape as the public one) with the real event data and the changes applied in memory.
+   * `fields` is `{ <fieldId>: value }` (unsaved edits of the editor).
+   */
+  async preview(eventId, { templateId, locale, state, preset, fields } = {}) {
     const body = {}
     if (templateId != null) body.template_id = templateId
+    if (fields && Object.keys(fields).length) body.fields = fields
     if (locale) body.locale = locale
     if (state) body.state = state
     if (preset) body.preset = preset

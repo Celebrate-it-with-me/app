@@ -10,6 +10,8 @@ import { classify } from '../utils/editorFields'
  *   Changes live only in memory, never in localStorage.
  * - A 422 is not retried: the fields the API names are dropped from the batch and reported to `onRejected`, the rest is resent.
  * - A 403 plan_required / 409 template_locked are reported (`onPlanRequired`, `onTemplateLocked`) and the batch is dropped.
+ * - An archived event (422 status), a forbidden role (403), 404 field_not_found and 409 package_no_cover_field are not retried either:
+ *   they go to `onFailed(kind)` so the screen can say exactly that.
  *
  * `status`: 'idle' | 'saving' | 'saved' | 'offline' (retrying) | 'error' (gave up, `retryNow()` tries again).
  */
@@ -22,6 +24,7 @@ export function useAutosave({
   onRejected = () => {},
   onPlanRequired = () => {},
   onTemplateLocked = () => {},
+  onFailed = () => {},
   errorsFrom
 } = {}) {
   const status = ref('idle')
@@ -106,10 +109,11 @@ export function useAutosave({
             else onTemplateLocked(error)
             return
           }
-          if (kind === 'other') {
+          if (kind === 'other' || kind === 'archived' || kind === 'forbidden' || kind === 'notfound' || kind === 'nocover') {
             for (const id of ids) fieldState[id] = 'error'
             drop(ids)
             status.value = 'error'
+            if (kind !== 'other') onFailed(kind, ids, error)
             return
           }
           // network / server: keep the batch (newer edits win) and retry

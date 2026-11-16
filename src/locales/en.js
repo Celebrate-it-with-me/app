@@ -1963,6 +1963,9 @@ export default {
     title: 'Your invitation',
     subtitle: 'Customize what your guests will see. Everything saves by itself.',
     loading: 'Loading your invitation…',
+    previewHint: 'This is how it looks with your changes, even if they are not saved yet.',
+    previewFrameTitle: 'Preview of your invitation',
+    previewClose: 'Close',
     offline: 'No connection. We will save your changes when you are back online; keep this screen open.',
     readOnly: 'Your role can only view the invitation. Ask for edit access to change it.',
     status: { draft: 'Draft', published: 'Published', saveTheDate: 'Save the date published' },
@@ -2013,6 +2016,9 @@ export default {
       invalid_focus: 'The photo point is not valid.',
       unknown_field: 'This template no longer has this field.',
       field_not_found: 'This template no longer has this field.',
+      event_archived: 'This event is archived and cannot be edited.',
+      forbidden: 'Your role can only view the invitation, not edit it.',
+      package_no_cover_field: 'This template has no space for a cover photo.',
       config_too_large: 'Too many changes are saved. Put some fields back to the template value.',
       generic: 'This field could not be saved.'
     },
@@ -2035,6 +2041,8 @@ export default {
         cover_first: 'The cover always goes first.',
         invalid_type: 'That section does not exist in this template.',
         module_locked: 'That section is part of the full event.',
+        event_archived: 'This event is archived and cannot be edited.',
+        forbidden: 'Your role can only view the invitation.',
         network: 'We could not save the sections. Check your connection and try again.',
         generic: 'We could not save the sections.'
       }
@@ -2163,6 +2171,9 @@ export default {
     },
     errors: {
       notAvailable: 'That template is no longer available. We refreshed the list.',
+      archived: 'This event is archived and cannot be edited.',
+      forbidden: 'Your role can only view the invitation, not change the template.',
+      previewForbidden: 'Your role cannot prepare the preview.',
       generic: 'We could not change the template. Please try again.'
     }
   },
@@ -2202,6 +2213,11 @@ export default {
       corrupt: 'We could not read the photo. Try another one.',
       package_no_cover_field: 'This template has no space for a cover photo.',
       too_many_attempts: 'Too many tries in a row. Wait a minute.',
+      required: 'Choose a photo.',
+      event_archived: 'This event is archived and cannot be edited.',
+      forbidden: 'Your role can only view the invitation.',
+      invalid_focus: 'The photo point is not valid.',
+      template_locked: 'Your invitation is already published. Write to us to change it.',
       generic: 'We could not upload the photo. Please try again.'
     }
   },
