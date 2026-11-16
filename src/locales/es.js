@@ -2227,6 +2227,33 @@ export default {
       generic: 'No pudimos subir la foto. Inténtalo de nuevo.'
     }
   },
+  assistantGuide: {
+    eyebrow: 'Tu siguiente paso',
+    pill: { label: 'Tu siguiente paso', withTitle: 'Tu siguiente paso: {title}', calm: 'Tu plan está al día' },
+    newDot: 'Hay un paso nuevo para ti.',
+    welcome: 'Aquí te voy diciendo qué hacer a continuación, sin prisa.',
+    welcomeOk: 'Entendido',
+    go: 'Hacerlo ahora',
+    done: 'Ya lo hice',
+    later: 'Ahora no',
+    after: 'Después de esto',
+    seeAll: 'Ver todo mi plan',
+    help: '¿Necesitas ayuda?',
+    hideToday: 'Ocultar por hoy',
+    hiddenToast: 'Quedó como un iconito. Aquí sigue cuando lo necesites.',
+    snoozedToast: 'Perfecto, te lo recordamos en una semana.',
+    close: 'Cerrar',
+    overdue: 'Conviene hacerlo pronto',
+    celebrate: { quince: '¡Listo, una menos!', wedding: 'Hecho, gracias.' },
+    celebrateHint: 'Tarea marcada como hecha. Buscando tu siguiente paso.',
+    progress: { quince: 'Tu fiesta va al {percent} %', wedding: 'Tu boda va al {percent} %' },
+    countdown: { days: 'Falta {n} día | Faltan {n} días', months: 'Faltan {n} meses' },
+    allSet: {
+      quince: { title: '¡Todo al día! 🎉', text: 'Tu fiesta va viento en popa. Te avisamos cuando toque lo siguiente.' },
+      wedding: { title: 'Todo al día', text: 'Tu boda está en orden por ahora. Te avisaremos cuando toque algo más.' }
+    },
+    helpOnly: { title: '¿En qué te ayudamos?', text: 'Si algo no te queda claro, escríbenos y te respondemos por correo.' }
+  },
   support: {
     button: 'Ayuda',
     open: 'Pedir ayuda',

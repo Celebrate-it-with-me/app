@@ -2227,6 +2227,33 @@ export default {
       generic: 'We could not upload the photo. Please try again.'
     }
   },
+  assistantGuide: {
+    eyebrow: 'Your next step',
+    pill: { label: 'Your next step', withTitle: 'Your next step: {title}', calm: 'Your plan is up to date' },
+    newDot: 'There is a new step for you.',
+    welcome: 'I will tell you what to do next here, no rush.',
+    welcomeOk: 'Got it',
+    go: 'Do it now',
+    done: 'I did it',
+    later: 'Not now',
+    after: 'After this',
+    seeAll: 'See my whole plan',
+    help: 'Need help?',
+    hideToday: 'Hide for today',
+    hiddenToast: 'It is now a small icon. It stays here when you need it.',
+    snoozedToast: 'Perfect, we will remind you in a week.',
+    close: 'Close',
+    overdue: 'Best to do it soon',
+    celebrate: { quince: 'Done, one less!', wedding: 'Done, thank you.' },
+    celebrateHint: 'Task marked as done. Looking for your next step.',
+    progress: { quince: 'Your party is {percent}% there', wedding: 'Your wedding is {percent}% planned' },
+    countdown: { days: '{n} day left | {n} days left', months: '{n} months left' },
+    allSet: {
+      quince: { title: 'All caught up! 🎉', text: 'Your party is on track. We will tell you when the next thing comes up.' },
+      wedding: { title: 'All caught up', text: 'Your wedding is in order for now. We will let you know when something else is due.' }
+    },
+    helpOnly: { title: 'How can we help?', text: 'If something is not clear, write to us and we will answer by email.' }
+  },
   support: {
     button: 'Help',
     open: 'Ask for help',

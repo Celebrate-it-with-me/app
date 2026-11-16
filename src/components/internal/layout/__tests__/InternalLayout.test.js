@@ -38,7 +38,7 @@ function mountLayout() {
         UserMenu: Stub,
         AppSidebar: Stub,
         AppBottomNav: Stub,
-        SupportHelpButton: Stub,
+        AssistantGuide: Stub,
         AnnouncementBanners: Stub,
         ImpersonationBanner: Stub,
         CPageLoaderV2: { template: '<div data-test="loader" />' }
