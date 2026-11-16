@@ -13,9 +13,9 @@
                     "children": [
                         {
                             "t": "el",
-                            "tag": "span",
+                            "tag": "div",
                             "attrs": {
-                                "class": "pkg-sprig pkg-sprig--tl",
+                                "class": "pkg-sec-decor",
                                 "aria-hidden": "true"
                             },
                             "children": [
@@ -23,43 +23,53 @@
                                     "t": "el",
                                     "tag": "span",
                                     "attrs": {
-                                        "class": "pkg-sprig__stem"
+                                        "class": "pkg-sprig pkg-sprig--tl",
+                                        "aria-hidden": "true"
                                     },
-                                    "children": []
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-sprig__stem"
+                                            },
+                                            "children": []
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-sprig__bloom"
+                                            },
+                                            "children": []
+                                        }
+                                    ]
                                 },
                                 {
                                     "t": "el",
                                     "tag": "span",
                                     "attrs": {
-                                        "class": "pkg-sprig__bloom"
+                                        "class": "pkg-sprig pkg-sprig--br",
+                                        "aria-hidden": "true"
                                     },
-                                    "children": []
-                                }
-                            ]
-                        },
-                        {
-                            "t": "el",
-                            "tag": "span",
-                            "attrs": {
-                                "class": "pkg-sprig pkg-sprig--br",
-                                "aria-hidden": "true"
-                            },
-                            "children": [
-                                {
-                                    "t": "el",
-                                    "tag": "span",
-                                    "attrs": {
-                                        "class": "pkg-sprig__stem"
-                                    },
-                                    "children": []
-                                },
-                                {
-                                    "t": "el",
-                                    "tag": "span",
-                                    "attrs": {
-                                        "class": "pkg-sprig__bloom"
-                                    },
-                                    "children": []
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-sprig__stem"
+                                            },
+                                            "children": []
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-sprig__bloom"
+                                            },
+                                            "children": []
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -243,27 +253,18 @@
                     "children": [
                         {
                             "t": "el",
-                            "tag": "span",
+                            "tag": "div",
                             "attrs": {
-                                "class": "pkg-cl-glow",
+                                "class": "pkg-cl-decor",
                                 "aria-hidden": "true"
                             },
-                            "children": []
-                        },
-                        {
-                            "t": "el",
-                            "tag": "span",
-                            "attrs": {
-                                "class": "pkg-sprig pkg-cl-sprig--a",
-                                "aria-hidden": "true",
-                                "data-reveal": "fade"
-                            },
                             "children": [
                                 {
                                     "t": "el",
                                     "tag": "span",
                                     "attrs": {
-                                        "class": "pkg-sprig__stem"
+                                        "class": "pkg-cl-glow",
+                                        "aria-hidden": "true"
                                     },
                                     "children": []
                                 },
@@ -271,37 +272,56 @@
                                     "t": "el",
                                     "tag": "span",
                                     "attrs": {
-                                        "class": "pkg-sprig__bloom"
+                                        "class": "pkg-sprig pkg-cl-sprig--a",
+                                        "aria-hidden": "true",
+                                        "data-reveal": "fade"
                                     },
-                                    "children": []
-                                }
-                            ]
-                        },
-                        {
-                            "t": "el",
-                            "tag": "span",
-                            "attrs": {
-                                "class": "pkg-sprig pkg-cl-sprig--b",
-                                "aria-hidden": "true",
-                                "data-reveal": "fade",
-                                "data-reveal-delay": "300"
-                            },
-                            "children": [
-                                {
-                                    "t": "el",
-                                    "tag": "span",
-                                    "attrs": {
-                                        "class": "pkg-sprig__stem"
-                                    },
-                                    "children": []
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-sprig__stem"
+                                            },
+                                            "children": []
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-sprig__bloom"
+                                            },
+                                            "children": []
+                                        }
+                                    ]
                                 },
                                 {
                                     "t": "el",
                                     "tag": "span",
                                     "attrs": {
-                                        "class": "pkg-sprig__bloom"
+                                        "class": "pkg-sprig pkg-cl-sprig--b",
+                                        "aria-hidden": "true",
+                                        "data-reveal": "fade",
+                                        "data-reveal-delay": "300"
                                     },
-                                    "children": []
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-sprig__stem"
+                                            },
+                                            "children": []
+                                        },
+                                        {
+                                            "t": "el",
+                                            "tag": "span",
+                                            "attrs": {
+                                                "class": "pkg-sprig__bloom"
+                                            },
+                                            "children": []
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -1194,4 +1214,4 @@
         }
     },
     "layout": null
-}
+}

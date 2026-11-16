@@ -5,13 +5,15 @@
 .pkg-bot { --pkg-wash-a: #f0cdb6; --pkg-wash-b: #cdd6c3; --pkg-olive-ink: #6a6536; }
 
 .pkg-bot { position: relative; min-height: 100svh; background: var(--inv-surface-alt); }
-.pkg-bot-card { position: relative; max-width: 37.5rem; margin-inline: auto; overflow: hidden; background-color: var(--inv-surface); background-image: url(assets/img/paper.svg); text-align: center; }
+.pkg-bot-card { position: relative; max-width: 37.5rem; margin-inline: auto; background-color: var(--inv-surface); background-image: url(assets/img/paper.svg); text-align: center; }
 .pkg-bot-photo { position: relative; height: 21rem; /* torn-paper bottom edge: opaque block + jagged SVG strip as mask */
   mask-image: linear-gradient(#000, #000), url(assets/img/torn-edge.svg);
   mask-size: 100% calc(100% - 43px), 100% 44px; mask-position: top, bottom; mask-repeat: no-repeat; }
-.pkg-bot-body { position: relative; isolation: isolate; padding: 0.5rem 2rem 0; display: flex; flex-direction: column; align-items: center; }
-.pkg-bot-body > * { position: relative; z-index: 1; }
-.pkg-bot-body > .pkg-bot-wash { position: absolute; z-index: 0; pointer-events: none; mask: url(assets/img/wash-a.svg) center / 100% 100% no-repeat; }
+.pkg-bot-body { position: relative; padding: 0.5rem 2rem 0; display: flex; flex-direction: column; align-items: center; }
+.pkg-bot-body > * { position: relative; }
+/* The washes bleed past the card: their own clipped, isolated layer (it holds no block), painted before the content. */
+.pkg-bot-body > .pkg-bot-washes { position: absolute; inset: 0; z-index: 0; overflow: hidden; isolation: isolate; pointer-events: none; }
+.pkg-bot-washes > .pkg-bot-wash { position: absolute; z-index: 0; pointer-events: none; mask: url(assets/img/wash-a.svg) center / 100% 100% no-repeat; }
 .pkg-bot-wash--a { left: -32%; top: 22%; width: 95%; height: 44%; background-color: var(--pkg-wash-a); opacity: 0.8; }
 .pkg-bot-wash--b { right: -30%; top: -4%; width: 80%; height: 36%; background-color: var(--pkg-wash-b); opacity: 0.7; mask-image: url(assets/img/wash-b.svg); }
 [data-inv-parity="even"] .pkg-bot-wash--a { transform: scaleX(-1); }
