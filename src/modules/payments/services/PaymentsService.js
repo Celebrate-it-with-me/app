@@ -23,9 +23,19 @@ class PaymentsService {
     return (await CWM_API.post(`${base(eventId)}/checkout`, code ? { code } : {})).data.data
   }
 
-  /** `{ unlocked, status }`: polled while the payment confirmation arrives. */
-  async status(eventId) {
-    return (await CWM_API.get(`${base(eventId)}/status`)).data.data
+  /**
+   * `{ unlocked, status, purchaseId, failureCode, amountCents, currency, invoiceId }`, polled while the payment confirmation arrives.
+   * With `purchase` it asks about that purchase (the one Stripe sent the buyer back from); without it, the latest one.
+   * `status`: pending | paid | failed | refunded | chargeback | null.
+   */
+  async status(eventId, purchase) {
+    const params = purchase ? { purchase } : {}
+    return (await CWM_API.get(`${base(eventId)}/status`, { params })).data.data
+  }
+
+  /** The buyer left the Stripe page: closes the session and releases the code. `{ status: 'failed', failureCode: 'cancelled' }`; 409 `not_pending` if it moved on. */
+  async cancel(eventId, purchase) {
+    return (await CWM_API.post(`${base(eventId)}/${purchase}/cancel`)).data.data
   }
 }
 

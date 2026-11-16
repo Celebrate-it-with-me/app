@@ -59,3 +59,35 @@ describe('PurchasePanel with a code from the landing', () => {
     expect(quote).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('PurchasePanel summary and legal text', () => {
+  beforeEach(() => {
+    quote.mockReset()
+    localStorage.clear()
+  })
+
+  it('shows list price, the code discount and the total, plus the Stripe, refund and legal notes', async () => {
+    localStorage.setItem(PENDING_CODE_KEY, LAUNCH_CODE)
+    quote.mockResolvedValue(offer)
+    const wrapper = mountPanel()
+    await flushPromises()
+    const summary = wrapper.get('[data-testid="purchase-summary"]').text()
+    expect(summary).toContain('$99')
+    expect(summary).toContain(LAUNCH_CODE)
+    expect(summary).toContain('$20')
+    expect(wrapper.get('[data-testid="purchase-total"]').text()).toBe('$79')
+    expect(wrapper.get('[data-testid="stripe-note"]').text()).toContain('Stripe')
+    expect(wrapper.text()).toContain(es.payments.refundNote)
+    expect(wrapper.text()).toContain(es.payments.stripeFee)
+    const links = wrapper.get('[data-testid="legal-links"]').findAll('a')
+    expect(links.map(a => a.attributes('href'))).toEqual(['/terms', '/terms#refunds'])
+  })
+
+  it('does not mention Stripe when the event is free', async () => {
+    quote.mockResolvedValue({ ...full, amountCents: 0 })
+    const wrapper = mountPanel()
+    await flushPromises()
+    expect(wrapper.find('[data-testid="stripe-note"]').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain(es.payments.stripeFee)
+  })
+})
