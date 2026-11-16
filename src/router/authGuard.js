@@ -15,6 +15,20 @@ export function routeTitle(route) {
   return pageTitle ? `${pageTitle} · Quinvite` : 'Quinvite'
 }
 
+/**
+ * Starts downloading the lazy views of the target route. vue-router only loads them after the guards finish, so on
+ * a private page the chunks would queue behind the hydration; asking for them now makes both download at once.
+ * (A dynamic import is cached: the router's own call afterwards returns the same promise.)
+ */
+function prefetchRouteChunks(route) {
+  for (const record of route.matched ?? []) {
+    for (const component of Object.values(record.components ?? {})) {
+      const lazy = typeof component === 'function' && !('displayName' in component || 'props' in component || '__vccOpts' in component)
+      if (lazy) Promise.resolve(component()).catch(() => {})
+    }
+  }
+}
+
 const safeQuery = path => {
   const redirect = safeRedirect(path)
   return redirect ? { redirect } : {}
@@ -40,6 +54,7 @@ export async function authGuard(to) {
 
   // 4. Data hydration if authenticated
   if (!hydrationStore.isHydrated) {
+    prefetchRouteChunks(to)
     try {
       await hydrationStore.hydrateAll()
     } catch (error) {
