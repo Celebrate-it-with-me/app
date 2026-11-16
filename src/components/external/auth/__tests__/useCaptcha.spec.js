@@ -15,6 +15,13 @@ const Host = defineComponent({
   }
 })
 
+const FormHost = defineComponent({
+  setup() {
+    const captcha = useCaptcha()
+    return () => h('form', [h('input', { id: 'email' }), h('div', { id: 'hcaptcha-container' }), h('button', { type: 'button', id: 'go', onClick: () => captcha.isReady() })])
+  }
+})
+
 describe('hCaptcha script loading', () => {
   afterEach(() => {
     scripts().forEach(node => node.remove())
@@ -32,5 +39,25 @@ describe('hCaptcha script loading', () => {
     expect(scripts()).toHaveLength(1)
     first.unmount()
     second.unmount()
+  })
+
+  it('inside a form it waits for the first touch (focus), then loads once', () => {
+    import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY = 'site-key'
+    const wrapper = mount(FormHost, { attachTo: document.body })
+    expect(scripts()).toHaveLength(0)
+    wrapper.find('#email').element.dispatchEvent(new FocusEvent('focusin', { bubbles: true }))
+    wrapper.find('#email').element.dispatchEvent(new FocusEvent('focusin', { bubbles: true }))
+    expect(scripts()).toHaveLength(1)
+    wrapper.unmount()
+  })
+
+  it('inside a form it also loads when she submits without touching it first', async () => {
+    import.meta.env.VITE_APP_HCAPTCHA_SITE_KEY = 'site-key'
+    import.meta.env.VITE_APP_ENVIRONMENT = 'production' // the token is mandatory outside local
+    const wrapper = mount(FormHost, { attachTo: document.body })
+    expect(scripts()).toHaveLength(0)
+    await wrapper.find('#go').trigger('click')
+    expect(scripts()).toHaveLength(1)
+    wrapper.unmount()
   })
 })
