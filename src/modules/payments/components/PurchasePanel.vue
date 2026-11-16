@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Lock } from 'lucide-vue-next'
 import { UiButton, UiField, UiInput, useToast } from '@/ui'
 import PaymentsService from '../services/PaymentsService'
 import { formatMoney, isInvalidCode } from '../utils/money'
@@ -26,6 +27,7 @@ const price = computed(() => (quote.value ? formatMoney(quote.value.amountCents,
 const listPrice = computed(() => (quote.value ? formatMoney(quote.value.listPriceCents, quote.value.currency, locale.value) : ''))
 const discounted = computed(() => quote.value && quote.value.amountCents < quote.value.listPriceCents)
 const isFree = computed(() => quote.value?.amountCents === 0)
+const saving = computed(() => (discounted.value ? formatMoney(quote.value.listPriceCents - quote.value.amountCents, quote.value.currency, locale.value) : ''))
 
 async function load(withCode) {
   loading.value = true
@@ -63,11 +65,21 @@ async function pay() {
 
 <template>
   <div class="flex flex-col gap-5">
-    <p v-if="quote" class="text-ink-900">
-      <span class="font-heading text-4xl">{{ price }}</span>
-      <span v-if="discounted" class="ml-2 text-base text-ink-500 line-through">{{ listPrice }}</span>
-      <span class="ml-2 text-sm text-ink-600">{{ t('payments.note', { n: quote.maxGuests }) }}</span>
-    </p>
+    <dl v-if="quote" class="rounded-lg border border-line bg-cream-100 p-4 text-sm text-ink-700" data-testid="purchase-summary">
+      <div class="flex items-baseline justify-between gap-3">
+        <dt>{{ t('payments.summary.item') }}</dt>
+        <dd :class="discounted ? 'text-ink-500 line-through' : 'text-ink-900'">{{ listPrice }}</dd>
+      </div>
+      <div v-if="discounted" class="mt-1 flex items-baseline justify-between gap-3 text-success-700">
+        <dt>{{ t('payments.summary.code', { code: quote.code }) }}</dt>
+        <dd>&minus;{{ saving }}</dd>
+      </div>
+      <div class="mt-3 flex items-baseline justify-between gap-3 border-t border-line pt-3 text-ink-900">
+        <dt class="font-semibold">{{ t('payments.summary.total') }}</dt>
+        <dd class="font-heading text-3xl" data-testid="purchase-total">{{ price }}</dd>
+      </div>
+      <p class="mt-1 text-right text-xs text-ink-600">{{ t('payments.note', { n: quote.maxGuests }) }}</p>
+    </dl>
 
     <form class="flex flex-col gap-2 sm:flex-row sm:items-end" novalidate @submit.prevent="apply">
       <UiField :label="t('payments.codeLabel')" :error="codeError" id="purchase_code" class="flex-1">
@@ -80,6 +92,23 @@ async function pay() {
     <UiButton :loading="paying" :disabled="!quote" @click="pay">
       {{ isFree ? t('payments.unlockFree') : t('payments.pay', { price }) }}
     </UiButton>
-    <p class="text-sm text-ink-600">{{ t('payments.refundNote') }}</p>
+    <div class="flex flex-col gap-2 text-sm text-ink-600">
+      <p v-if="!isFree" class="flex items-start gap-2" data-testid="stripe-note">
+        <Lock class="mt-0.5 h-4 w-4 shrink-0 text-ink-500" aria-hidden="true" />
+        <span>{{ t('payments.secure') }}</span>
+      </p>
+      <p>{{ t('payments.refundNote') }}</p>
+      <p v-if="!isFree">{{ t('payments.stripeFee') }}</p>
+      <p data-testid="legal-links">
+        <i18n-t keypath="payments.legal" tag="span">
+          <template #terms>
+            <a href="/terms" target="_blank" rel="noopener" class="text-rose-600 underline underline-offset-2">{{ t('payments.termsLink') }}</a>
+          </template>
+          <template #refunds>
+            <a href="/terms#refunds" target="_blank" rel="noopener" class="text-rose-600 underline underline-offset-2">{{ t('payments.refundLink') }}</a>
+          </template>
+        </i18n-t>
+      </p>
+    </div>
   </div>
 </template>

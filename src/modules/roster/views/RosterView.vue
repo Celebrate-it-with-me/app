@@ -11,7 +11,6 @@ import { isModuleLocked } from '@/utils/moduleLocked'
 import { unlockPath } from '@/components/internal/shell/navModules'
 import RosterService from '../services/RosterService'
 import WhatsappService from '../services/WhatsappService'
-import { mockModuleState } from '../services/whatsappMock'
 import GuestCard from '../components/GuestCard.vue'
 import GuestFormModal from '../components/GuestFormModal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
@@ -50,7 +49,12 @@ const retrying = ref(null) // unknown-delivery message waiting for the organizer
 const retryBusy = ref(false)
 
 // WhatsApp: last message of each guest, the event's delivery summary, and the send dialog.
-const moduleState = computed(() => mockModuleState() ?? whatsappModuleState(event.value))
+// Dev-only mock of the module state (see whatsappMock.js); the import is dropped from production builds.
+const mockState = ref(null)
+if (import.meta.env.DEV && import.meta.env.VITE_WHATSAPP_MOCK) {
+  import('../services/whatsappMock').then(m => { mockState.value = m.mockModuleState() })
+}
+const moduleState = computed(() => mockState.value ?? whatsappModuleState(event.value))
 const lockedByApi = ref(false)
 const waLocked = computed(() => moduleState.value === 'locked' || lockedByApi.value)
 const waAutomatic = computed(() => !waLocked.value && moduleState.value !== 'off')

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { formatMoney, waitForUnlock, isInvalidCode } from '../utils/money'
+import { formatMoney, waitForUnlock, waitForOutcome, isInvalidCode } from '../utils/money'
 
 describe('formatMoney', () => {
   it('shows whole dollars without decimals', () => expect(formatMoney(9900, 'USD', 'en')).toBe('$99'))
@@ -31,5 +31,22 @@ describe('isInvalidCode', () => {
     expect(isInvalidCode({ response: { status: 422, data: { errors: { event: ['x'] } } } })).toBe(false)
     expect(isInvalidCode({ response: { status: 500 } })).toBe(false)
     expect(isInvalidCode(undefined)).toBe(false)
+  })
+})
+
+describe('waitForOutcome', () => {
+  const sleep = vi.fn(() => Promise.resolve())
+  it('returns as soon as it is unlocked', async () => {
+    const check = vi.fn().mockResolvedValueOnce({ status: 'pending' }).mockResolvedValueOnce({ unlocked: true, status: 'paid' })
+    expect((await waitForOutcome(check, { sleep })).status).toBe('paid')
+  })
+  it.each(['failed', 'refunded', 'chargeback'])('stops on %s', async status => {
+    const check = vi.fn().mockResolvedValue({ unlocked: false, status })
+    expect((await waitForOutcome(check, { sleep })).status).toBe(status)
+    expect(check).toHaveBeenCalledTimes(1)
+  })
+  it('gives null when still pending', async () => {
+    const check = vi.fn().mockResolvedValue({ unlocked: false, status: 'pending' })
+    expect(await waitForOutcome(check, { tries: 2, sleep })).toBeNull()
   })
 })
