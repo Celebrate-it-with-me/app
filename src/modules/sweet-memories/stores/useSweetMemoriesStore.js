@@ -15,6 +15,11 @@ export const useSweetMemoriesStore = defineStore('sweetMemories', {
 
   actions: {
     async loadMemories() {
+      // No active event yet: asking for `event/0/...` would answer 404.
+      if (!currentEventId()) {
+        this.memories = []
+        return
+      }
       const response = await SweetMemoriesService.loadImages({ eventId: currentEventId() })
       this.memories = response.data?.data || []
     },

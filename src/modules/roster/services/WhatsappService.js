@@ -1,10 +1,12 @@
 import { CWM_API } from '@/services/axios'
-import { mockWhatsapp } from './whatsappMock'
 
 const base = eventId => `/event/${eventId}/whatsapp`
 
-/** `VITE_WHATSAPP_MOCK` swaps the API for an in-memory copy of the contract (see whatsappMock.js). */
-const mocked = () => !!import.meta.env.VITE_WHATSAPP_MOCK
+/**
+ * `VITE_WHATSAPP_MOCK` swaps the API for an in-memory copy of the contract (see whatsappMock.js). Dev only:
+ * `import.meta.env.DEV` is a build-time constant, so production bundles drop the dynamic import and the mock chunk.
+ */
+const getMock = async () => (import.meta.env.DEV && import.meta.env.VITE_WHATSAPP_MOCK ? (await import('./whatsappMock')).mockWhatsapp : null)
 
 /** Organizer side of the WhatsApp contract (docs/plans/communications-contract.md). */
 class WhatsappService {
@@ -16,7 +18,8 @@ class WhatsappService {
     const body = { template, audience, force }
     if (dryRun) body.dry_run = true
     if (audience === 'selected') body.guest_ids = guestIds
-    if (mocked()) return mockWhatsapp.send(eventId, body)
+    const mock = await getMock()
+    if (mock) return mock.send(eventId, body)
     return (await CWM_API.post(`${base(eventId)}/send`, body)).data.data
   }
 
@@ -26,7 +29,8 @@ class WhatsappService {
     if (guestId) params.guest_id = guestId
     if (status) params.status = status
     if (latestPerGuest) params.latest_per_guest = 1
-    if (mocked()) return mockWhatsapp.messages(eventId, params)
+    const mock = await getMock()
+    if (mock) return mock.messages(eventId, params)
     return (await CWM_API.get(`${base(eventId)}/messages`, { params })).data
   }
 
@@ -43,13 +47,15 @@ class WhatsappService {
 
   /** `{ total, queued, sent, delivered, read, failed }`. */
   async summary(eventId) {
-    if (mocked()) return mockWhatsapp.summary(eventId)
+    const mock = await getMock()
+    if (mock) return mock.summary(eventId)
     return (await CWM_API.get(`${base(eventId)}/summary`)).data.data
   }
 
   /** Re-queues a failed message; answers the Message. */
   async retry(eventId, messageId) {
-    if (mocked()) return mockWhatsapp.retry(eventId, messageId)
+    const mock = await getMock()
+    if (mock) return mock.retry(eventId, messageId)
     return (await CWM_API.post(`${base(eventId)}/messages/${messageId}/retry`)).data.data
   }
 }
