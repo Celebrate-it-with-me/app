@@ -1,6 +1,7 @@
 // Must stay first: in a support tab it switches persistence to this tab's sessionStorage before any store loads.
 import '@/modules/impersonation/bootstrap'
 import './assets/main.css'
+import './assets/fonts/fonts.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
