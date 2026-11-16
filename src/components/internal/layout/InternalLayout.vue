@@ -12,7 +12,7 @@ import EventSwitcher from '@/components/internal/shell/EventSwitcher.vue'
 import UserMenu from '@/components/internal/shell/UserMenu.vue'
 import AppSidebar from '@/components/internal/shell/AppSidebar.vue'
 import AppBottomNav from '@/components/internal/shell/AppBottomNav.vue'
-import SupportHelpButton from '@/modules/support/components/SupportHelpButton.vue'
+import AssistantGuide from '@/modules/assistant/guide/AssistantGuide.vue'
 import AnnouncementBanners from '@/modules/announcements/components/AnnouncementBanners.vue'
 import ImpersonationBanner from '@/modules/impersonation/components/ImpersonationBanner.vue'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
@@ -112,6 +112,7 @@ const determinatePostLoginRoute = async () => {
     </div>
 
     <AppBottomNav />
-    <SupportHelpButton v-if="!impersonation.active" />
+    <!-- The one floating button: "Tu siguiente paso" (and the way to ask for help). It hides itself during impersonation. -->
+    <AssistantGuide />
   </div>
 </template>
