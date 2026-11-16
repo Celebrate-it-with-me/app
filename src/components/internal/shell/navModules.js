@@ -5,7 +5,6 @@ import {
   CheckSquare,
   AlarmClock,
   CalendarClock,
-  ListChecks,
   MapPin,
   Shirt,
   Wallet,
@@ -63,20 +62,8 @@ export const HOME_ITEM = {
   primary: true
 }
 
-/** "Mi plan" (the assistant): not a catalog module and free for every plan, so it is drawn whenever there is an event. */
-export const PLAN_ITEM = {
-  key: 'plan',
-  to: '/dashboard/plan',
-  icon: ListChecks,
-  labelKey: 'app.nav.plan',
-  section: 'main',
-  order: 0.5,
-  state: 'active',
-  primary: false
-}
-
 /**
- * "Tu invitación": the editor and the template selector. Like "Mi plan" it is not gated by the module catalog (the catalog row
+ * "Tu invitación": the editor and the template selector. It is not gated by the module catalog (the catalog row
  * `invitation` starts switched off and the phone's bottom bar always draws this entry): without it the desktop sidebar would
  * have no way into the screen. If the catalog does send `invitation` as active, its own row wins.
  */
@@ -120,9 +107,8 @@ export function buildNavSections(modules) {
     .filter(item => item && SECTIONS.includes(item.section))
 
   const withModules = Array.isArray(modules) && modules.length
-  const withPlan = withModules ? [PLAN_ITEM] : []
   const withInvitation = withModules && !drawn.some(item => item.key === 'invitation') ? [INVITATION_ITEM] : []
-  const all = [HOME_ITEM, ...withPlan, ...withInvitation, ...drawn].sort(
+  const all = [HOME_ITEM, ...withInvitation, ...drawn].sort(
     (a, b) => SECTIONS.indexOf(a.section) - SECTIONS.indexOf(b.section) || a.order - b.order
   )
 

@@ -17,12 +17,12 @@ describe('buildNavSections', () => {
   it('always starts with Home, alone in the untitled section', () => {
     const [first] = buildNavSections(modules)
     expect(first.section).toBe('main')
-    expect(first.items.map(i => i.key)).toEqual(['home', 'plan', 'invitation'])
+    expect(first.items.map(i => i.key)).toEqual(['home', 'invitation'])
   })
 
-  it('draws "Mi plan" (the assistant, free for every plan) right after Home whenever the event has modules', () => {
-    const plan = buildNavSections(modules)[0].items[1]
-    expect(plan).toMatchObject({ key: 'plan', to: '/dashboard/plan', state: 'active', primary: false })
+  it('does not draw "Mi plan" anywhere: it lives in the floating guide, the route stays', () => {
+    const keys = buildNavSections(modules).flatMap(s => s.items.map(i => i.key))
+    expect(keys).not.toContain('plan')
   })
 
   it('draws "Tu invitación" even though the catalog row starts switched off, and does not repeat it when the catalog sends it', () => {
@@ -54,12 +54,12 @@ describe('buildNavSections', () => {
 
   it('does not draw a module that has no screen yet, or that the app does not know', () => {
     const keys = buildNavSections([mod('rsvp', 'main', 10), mod('brand_new', 'extras', 1), mod('guests', 'guests', 10)]).flatMap(s => s.items.map(i => i.key))
-    expect(keys).toEqual(['home', 'plan', 'invitation', 'guests'])
+    expect(keys).toEqual(['home', 'invitation', 'guests'])
   })
 
   it('ignores a module in a section the menu does not know', () => {
     const keys = buildNavSections([mod('guests', 'secret', 1)]).flatMap(s => s.items.map(i => i.key))
-    expect(keys).toEqual(['home', 'plan', 'invitation'])
+    expect(keys).toEqual(['home', 'invitation'])
   })
 
   it('without modules (no event) shows only Home', () => {

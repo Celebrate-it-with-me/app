@@ -46,7 +46,7 @@ describe('buildMobileNav', () => {
 
   it('puts the rest under Más, locked extras with their padlock state and unlock address', () => {
     const more = tabsFor(MODULES).find(t => t.key === 'more')
-    expect(keys(more.items)).toEqual(['plan', 'save_the_date', 'menus', 'seating'])
+    expect(keys(more.items)).toEqual(['save_the_date', 'menus', 'seating'])
     expect(more.items.filter(i => i.state === 'locked').map(i => i.to)).toEqual(['/dashboard/unlock/menus', '/dashboard/unlock/seating'])
   })
 
