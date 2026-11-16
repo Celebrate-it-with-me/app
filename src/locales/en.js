@@ -1920,7 +1920,13 @@ export default {
     codeApplied: 'Code {code} applied.',
     pay: 'Pay {price}',
     unlockFree: 'Unlock my event',
-    refundNote: 'If you change your mind before publishing your invitation, we refund everything.',
+    refundNote: 'Full refund if you change your mind before you publish your invitation. After publishing it is no longer possible.',
+    stripeFee: 'Stripe\'s processing fee is not refunded.',
+    secure: 'You pay on Stripe\'s secure page. We never see or store your card details.',
+    legal: 'By paying you accept the {terms} and the {refunds}.',
+    termsLink: 'terms of service',
+    refundLink: 'refund policy',
+    summary: { item: 'Full event', code: 'Code {code}', total: 'Total' },
     checkoutFailed: 'We could not start the payment. Please try again.',
     createWith: 'Create with everything included',
     createFree: 'Start free',
@@ -1928,8 +1934,20 @@ export default {
     planFree: 'Free · up to 30 guests',
     planFull: 'Full event · one-time payment',
     waiting: { title: 'Confirming your payment…', text: 'This takes a few seconds. Do not close this page.' },
-    done: { title: 'Your event is complete!', text: 'You can now invite your whole list and use every module.', cta: 'Go to my event' },
-    late: { title: 'We are still confirming', text: 'Your payment may take a moment to arrive. If your event stays the same in a few minutes, write to us.' },
+    done: { title: 'Your event is complete!', text: 'You can now invite your whole list and use every module.', cta: 'Go to my event', invoice: 'View my invoice' },
+    late: { title: 'We are still confirming', text: 'Your payment may take a few minutes to arrive. We will email you when it is confirmed.', noRepay: 'You do not need to pay again.', refresh: 'Refresh', mailSubject: 'My payment is still not confirmed' },
+    failed: {
+      title: 'The payment was not completed',
+      cta: 'Try again',
+      codes: {
+        expired: 'The payment session expired and you were not charged. You can start again.',
+        payment_failed: 'Your bank or card declined the payment and you were not charged. Try another card.',
+        gateway_error: 'We could not reach the payment service and you were not charged. Please try again in a few minutes.',
+        other: 'The payment was not completed and you were not charged. Please try again.'
+      }
+    },
+    refunded: { title: 'This payment was refunded', text: 'We returned your payment. It can take a few business days to show in your bank. Your event went back to the free plan.' },
+    chargeback: { title: 'This payment is under review', text: 'Your bank opened a dispute on this payment. Write to us and we will sort it out with you.' },
     cancelled: { title: 'No payment was made', text: 'You were not charged. Your event is as it was.', cta: 'Try again' }
   },
   accountSuspended: {

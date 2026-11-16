@@ -1920,7 +1920,13 @@ export default {
     codeApplied: 'Código {code} aplicado.',
     pay: 'Pagar {price}',
     unlockFree: 'Desbloquear mi evento',
-    refundNote: 'Si cambias de opinión antes de publicar tu invitación, te devolvemos todo.',
+    refundNote: 'Reembolso completo si cambias de opinión antes de publicar tu invitación. Después de publicar ya no es posible.',
+    stripeFee: 'La comisión de procesamiento de Stripe no se reembolsa.',
+    secure: 'Pagas en Stripe, en su página segura. Nosotros nunca vemos ni guardamos los datos de tu tarjeta.',
+    legal: 'Al pagar aceptas los {terms} y la {refunds}.',
+    termsLink: 'términos del servicio',
+    refundLink: 'política de reembolso',
+    summary: { item: 'Evento completo', code: 'Código {code}', total: 'Total' },
     checkoutFailed: 'No pudimos iniciar el pago. Inténtalo de nuevo.',
     createWith: 'Crear con todo incluido',
     createFree: 'Empezar gratis',
@@ -1928,8 +1934,20 @@ export default {
     planFree: 'Gratis · hasta 30 invitados',
     planFull: 'Evento completo · pago único',
     waiting: { title: 'Confirmando tu pago…', text: 'Esto toma unos segundos. No cierres esta página.' },
-    done: { title: '¡Tu evento está completo!', text: 'Ya puedes invitar a toda tu lista y usar todos los módulos.', cta: 'Ir a mi evento' },
-    late: { title: 'Todavía estamos confirmando', text: 'Tu pago puede tardar un poco en llegar. Si en unos minutos tu evento sigue igual, escríbenos.' },
+    done: { title: '¡Tu evento está completo!', text: 'Ya puedes invitar a toda tu lista y usar todos los módulos.', cta: 'Ir a mi evento', invoice: 'Ver mi factura' },
+    late: { title: 'Todavía estamos confirmando', text: 'Tu pago puede tardar unos minutos en llegar. Te avisaremos por correo cuando se confirme.', noRepay: 'No necesitas pagar de nuevo.', refresh: 'Actualizar', mailSubject: 'Mi pago sigue sin confirmarse' },
+    failed: {
+      title: 'El pago no se completó',
+      cta: 'Intentar de nuevo',
+      codes: {
+        expired: 'La sesión de pago venció y no se hizo ningún cargo. Puedes empezar de nuevo.',
+        payment_failed: 'Tu banco o tarjeta rechazó el pago y no se hizo ningún cargo. Prueba con otra tarjeta.',
+        gateway_error: 'No pudimos conectar con el servicio de pagos y no se hizo ningún cargo. Inténtalo de nuevo en unos minutos.',
+        other: 'El pago no se completó y no se hizo ningún cargo. Inténtalo de nuevo.'
+      }
+    },
+    refunded: { title: 'Este pago fue reembolsado', text: 'Te devolvimos el pago. El reembolso puede tardar unos días hábiles en verse en tu banco. Tu evento volvió al plan gratis.' },
+    chargeback: { title: 'Este pago está en revisión', text: 'Tu banco abrió una disputa sobre este pago. Escríbenos y lo resolvemos contigo.' },
     cancelled: { title: 'No se hizo el pago', text: 'No te cobramos nada. Tu evento sigue como estaba.', cta: 'Intentar de nuevo' }
   },
   accountSuspended: {

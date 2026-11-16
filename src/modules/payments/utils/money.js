@@ -18,6 +18,21 @@ export async function waitForUnlock(check, { tries = 15, delay = 2000, sleep = m
   return false
 }
 
+const FINAL = ['failed', 'refunded', 'chargeback']
+
+/**
+ * Wait for the outcome of a purchase: resolves with the last answer as soon as it is unlocked or ended badly
+ * (failed, refunded, chargeback); with `null` after `tries` when it is still pending.
+ */
+export async function waitForOutcome(check, { tries = 15, delay = 2000, sleep = ms => new Promise(r => setTimeout(r, ms)) } = {}) {
+  for (let i = 0; i < tries; i++) {
+    const res = await check()
+    if (res && (res.unlocked || FINAL.includes(res.status))) return res
+    if (i < tries - 1) await sleep(delay)
+  }
+  return null
+}
+
 /** The API answers 422 with `errors.code` when a code is unknown, expired or used up. */
 export function isInvalidCode(error) {
   return error?.response?.status === 422 && Boolean(error.response.data?.errors?.code)
