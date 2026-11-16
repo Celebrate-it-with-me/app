@@ -1,0 +1,72 @@
+/* Clásica as a template package: every section is plain HTML (sections/*.html) styled here. The server writes the @font-face block and scopes every selector under [data-inv-theme="classic"]. */
+.pkg-cl, .pkg-sec { --pkg-primary-ink: color-mix(in oklab, var(--inv-primary) 78%, #2b2420); --pkg-accent-ink: color-mix(in oklab, var(--inv-accent) 60%, #3d2a08); --pkg-script: var(--inv-font-script, 'Pinyon Script', 'Snell Roundhand', cursive); --pkg-heading: var(--inv-font-heading, 'Fraunces', Georgia, serif); }
+
+.pkg-cl { position: relative; isolation: isolate; display: flex; min-height: 100svh; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; padding: 5rem 1.5rem 4rem; text-align: center; background-color: #fdfbf8; background-image: url(assets/lattice.svg); background-size: 36px 36px; }
+.pkg-cl-glow { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 80% 55% at 50% 0%, color-mix(in oklab, var(--inv-primary) 11%, transparent), transparent 70%); }
+.pkg-cl-sprig--a, .pkg-cl-sprig--b { width: 12rem; height: 12rem; }
+.pkg-cl-sprig--a { left: -2rem; top: -2rem; z-index: -1; --pkg-stem: 80%; }
+.pkg-cl-sprig--b { right: -2rem; bottom: -2rem; transform: scaleY(-1); z-index: -1; --pkg-stem: 80%; }
+.pkg-cl-col { position: relative; display: flex; width: 100%; max-width: 36rem; flex-direction: column; align-items: center; margin-inline: auto; }
+
+.pkg-cl-arch { position: relative; margin-bottom: 2.5rem; }
+.pkg-cl-arch::before { content: ""; position: absolute; inset: -0.75rem; border: 1px solid color-mix(in oklab, var(--inv-accent) 45%, transparent); border-radius: 9999px 9999px 0 0; pointer-events: none; }
+.pkg-cl-arch .inv-q--cover-photo { width: 12rem; height: 16rem; display: flex; align-items: center; justify-content: center; border-radius: 9999px 9999px 0 0; background-color: var(--inv-surface-alt); box-shadow: 0 0 0 1px color-mix(in oklab, var(--inv-accent) 60%, transparent), 0 4px 12px rgba(43,36,32,.08), 0 24px 48px -16px rgba(43,36,32,.24); }
+.pkg-cl-arch .inv-q--cover-photo[data-empty] { background-image: linear-gradient(to bottom, color-mix(in oklab, var(--inv-primary) 14%, transparent), color-mix(in oklab, var(--inv-accent) 18%, transparent)); }
+.pkg-cl-arch .inv-q-photo__emblem { color: var(--pkg-accent-ink); }
+
+.pkg-cl-phrase { margin: 0; font-family: var(--pkg-script); font-size: 2.5rem; line-height: 1.5; color: var(--pkg-primary-ink); }
+.pkg-cl-name { margin: 0.5rem 0 0; font-family: var(--pkg-heading); font-size: 2.75rem; line-height: 1.04; letter-spacing: -0.01em; text-wrap: balance; }
+.pkg-cl-text { margin: 1.25rem 0 0; max-width: 28rem; font-size: 1.125rem; line-height: 1.5556; color: var(--inv-ink-soft); text-wrap: pretty; }
+.pkg-cl-date { margin-top: 2rem; width: 100%; max-width: 24rem; }
+.pkg-cl-date__row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 1rem; }
+.pkg-cl-date__row p { margin: 0; }
+.pkg-cl-date__side { padding-block: 0.625rem; border-block: 1px solid color-mix(in oklab, var(--inv-accent) 50%, transparent); font-size: 0.875rem; line-height: 1.4286; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; }
+.pkg-cl-date__side--l { text-align: right; }
+.pkg-cl-date__side--r { text-align: left; }
+.pkg-cl-date__day { font-family: var(--pkg-heading); font-size: 3.75rem; line-height: 1; }
+.pkg-cl-date__sub { margin: 0.75rem 0 0; color: var(--inv-ink-soft); }
+.pkg-cl-desc { margin: 1.75rem 0 0; max-width: 28rem; color: var(--inv-ink-soft); text-wrap: pretty; }
+.pkg-cl-guest { margin-top: 2rem; display: flex; flex-direction: column; align-items: center; }
+.pkg-cl-guest p { margin: 0; }
+.pkg-cl-guest__label { font-size: 0.875rem; line-height: 1.4286; color: var(--inv-ink-soft); }
+.pkg-cl-guest .pkg-cl-guest__name { margin-top: 0.25rem; font-family: var(--pkg-script); font-size: 2.5rem; line-height: 1.25; color: var(--pkg-primary-ink); }
+.pkg-cl-cta { margin-top: 2rem; }
+
+@media (min-width: 640px) {
+  .pkg-cl { padding-block: 6rem; }
+  .pkg-cl-sprig--a, .pkg-cl-sprig--b { width: 18rem; height: 18rem; }
+  .pkg-cl-sprig--a { left: -1rem; top: -1rem; }
+  .pkg-cl-sprig--b { right: -1rem; bottom: -1rem; }
+  .pkg-cl-arch .inv-q--cover-photo { width: 16rem; height: 20rem; }
+  .pkg-cl-phrase { font-size: 3rem; line-height: 1; }
+  .pkg-cl-name { font-size: 3.75rem; }
+  .pkg-cl-date__day { font-size: 4.5rem; }
+  .pkg-cl-guest .pkg-cl-guest__name { font-size: 3rem; }
+}
+@media (min-width: 1024px) {
+  .pkg-cl-col { max-width: 42rem; }
+  .pkg-cl-arch .inv-q--cover-photo { width: 20rem; height: 26rem; }
+  .pkg-cl-name { font-size: 4.5rem; }
+}
+
+/* Shared by every section: band, flourish, heading, text, body. */
+.pkg-sprig { position: absolute; pointer-events: none; }
+.pkg-sprig__stem { position: absolute; inset: 0; background-color: color-mix(in oklab, var(--inv-accent) var(--pkg-stem, 60%), transparent); mask: url(assets/sprig.svg) center / contain no-repeat; }
+.pkg-sprig__bloom { position: absolute; inset: 0; background-color: var(--inv-primary); mask: url(assets/blossoms.svg) center / contain no-repeat; }
+.pkg-sec { position: relative; overflow: hidden; padding: 5rem 1.5rem; }
+.pkg-sec--alt { background-color: var(--inv-surface-alt); }
+.pkg-sec--deep { background-color: color-mix(in oklab, var(--inv-primary) 38%, #1b0f12); color: var(--inv-surface); }
+.pkg-sec__in { position: relative; margin-inline: auto; max-width: 42rem; text-align: center; }
+.pkg-flourish { display: block; margin-inline: auto; width: 12rem; height: 1.5rem; background-color: var(--inv-accent); mask: url(assets/flourish.svg) center / 100% 100% no-repeat; }
+.pkg-sec--deep .pkg-flourish { filter: brightness(1.25); }
+.pkg-sec__title { margin: 1.5rem 0 0; font-family: var(--pkg-heading); font-size: 1.875rem; line-height: 1.25; text-wrap: balance; }
+.pkg-sec__text { margin: 1rem auto 0; max-width: 65ch; font-size: 1.125rem; line-height: 1.5556; text-wrap: pretty; color: var(--inv-ink-soft); }
+.pkg-sec--deep .pkg-sec__text { color: color-mix(in oklab, var(--inv-surface) 80%, transparent); }
+.pkg-sec__body { margin-top: 2.5rem; }
+.pkg-sec--deep .pkg-sprig--tl { left: -2.5rem; top: -2.5rem; width: 11rem; height: 11rem; }
+.pkg-sec--deep .pkg-sprig--br { right: -2.5rem; bottom: -2.5rem; width: 11rem; height: 11rem; transform: scaleY(-1); }
+@media (min-width: 640px) {
+  .pkg-sec { padding-block: 6rem; }
+  .pkg-sec__title { font-size: 2.5rem; }
+  .pkg-sec--deep .pkg-sprig--tl, .pkg-sec--deep .pkg-sprig--br { width: 15rem; height: 15rem; }
+}

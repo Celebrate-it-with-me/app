@@ -12,15 +12,21 @@ import { useInvitationContext } from '../composables/useInvitation'
 import InvitationSection from './InvitationSection.vue'
 
 const props = defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** Overrides of the section settings, set by a template package block. */
+  layout: { type: String, default: undefined },
+  columns: { type: Number, default: undefined },
+  max: { type: Number, default: undefined },
+  captions: { type: Boolean, default: undefined }
 })
 
 const { tt } = useInvitationContext()
 
-const photos = computed(() => (Array.isArray(props.section.data?.photos) ? props.section.data.photos : []))
+const photos = computed(() => (Array.isArray(props.section.data?.photos) ? props.section.data.photos : []).slice(0, props.max ?? Infinity))
 const total = computed(() => photos.value.length)
-const carousel = computed(() => props.section.settings?.layout === 'carousel')
-const showCaptions = computed(() => props.section.settings?.showCaptions !== false)
+const carousel = computed(() => (props.layout ?? props.section.settings?.layout) === 'carousel')
+const showCaptions = computed(() => (props.captions ?? props.section.settings?.showCaptions) !== false)
+const gridClass = computed(() => ({ 2: 'grid-cols-2 sm:grid-cols-2', 3: 'grid-cols-2 sm:grid-cols-3', 4: 'grid-cols-2 sm:grid-cols-4' })[props.columns] ?? 'grid-cols-2 sm:grid-cols-3')
 
 const open = ref(false)
 const index = ref(0)
@@ -57,13 +63,13 @@ const navButton =
   <InvitationSection v-if="total" id="gallery" :title="section.title" :text="section.text">
     <ul
       v-if="!carousel"
-      class="grid grid-cols-2 gap-3 sm:grid-cols-3"
+:class="['inv-gallery grid gap-3', gridClass]"
       data-layout="grid"
     >
       <li v-for="(photo, position) in photos" :key="photo.id" class="min-w-0">
         <button
           type="button"
-          class="block aspect-square w-full overflow-hidden rounded-2xl bg-inv-surface-alt ring-1 ring-inv-ink/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary"
+          class="inv-gallery__photo block aspect-square w-full overflow-hidden rounded-2xl bg-inv-surface-alt ring-1 ring-inv-ink/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary"
           :aria-label="tt('gallery.open', params(position))"
           @click="show(position)"
         >
@@ -83,7 +89,7 @@ const navButton =
 
     <ul
       v-else
-      class="-mx-6 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-6 pb-2 focus-visible:outline-2 focus-visible:outline-inv-primary"
+      class="inv-gallery -mx-6 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-6 pb-2 focus-visible:outline-2 focus-visible:outline-inv-primary"
       data-layout="carousel"
       role="list"
       tabindex="0"
@@ -92,7 +98,7 @@ const navButton =
       <li v-for="(photo, position) in photos" :key="photo.id" class="w-[72%] shrink-0 snap-center sm:w-64">
         <button
           type="button"
-          class="block aspect-[4/5] w-full overflow-hidden rounded-2xl bg-inv-surface-alt ring-1 ring-inv-ink/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary"
+          class="inv-gallery__photo block aspect-[4/5] w-full overflow-hidden rounded-2xl bg-inv-surface-alt ring-1 ring-inv-ink/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary"
           :aria-label="tt('gallery.open', params(position))"
           @click="show(position)"
         >

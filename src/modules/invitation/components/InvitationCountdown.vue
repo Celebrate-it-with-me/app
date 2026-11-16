@@ -5,7 +5,9 @@ import { timeLeft } from '@/modules/save-the-date/utils/stage'
 import InvitationSection from './InvitationSection.vue'
 
 const props = defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** full (four boxes, default) | compact (one line) */
+  format: { type: String, default: 'full' }
 })
 
 const { tt } = useInvitationContext()
@@ -26,9 +28,14 @@ const pad = n => String(n).padStart(2, '0')
 
 <template>
   <InvitationSection id="countdown" :title="section.title" :text="section.text" variant="alt">
-    <p v-if="over" class="font-inv-heading text-3xl text-inv-primary-ink">{{ tt('saveTheDate.passed') }}</p>
-    <dl v-else class="mx-auto grid max-w-md grid-cols-4 gap-3">
-      <div v-for="unit in units" :key="unit" class="rounded-2xl bg-inv-surface px-2 py-4 shadow-soft ring-1 ring-inv-accent/30">
+    <p v-if="over" class="inv-countdown inv-countdown--over font-inv-heading text-3xl text-inv-primary-ink">{{ tt('saveTheDate.passed') }}</p>
+    <p v-else-if="format === 'compact'" class="inv-countdown inv-countdown--compact font-inv-heading text-3xl tabular-nums text-inv-primary-ink" data-format="compact">
+      <span v-for="unit in units" :key="unit" class="mx-1 inline-block">
+        <span class="inv-countdown__value">{{ unit === 'days' ? left[unit] : pad(left[unit]) }}</span><span class="inv-countdown__unit text-base text-inv-ink-soft">{{ tt(`saveTheDate.units.${unit}`).charAt(0) }}</span>
+      </span>
+    </p>
+    <dl v-else class="inv-countdown mx-auto grid max-w-md grid-cols-4 gap-3">
+      <div v-for="unit in units" :key="unit" class="inv-countdown__unit rounded-2xl bg-inv-surface px-2 py-4 shadow-soft ring-1 ring-inv-accent/30">
         <dt class="order-2 mt-1 text-xs text-inv-ink-soft sm:text-sm">{{ tt(`saveTheDate.units.${unit}`) }}</dt>
         <dd class="font-inv-heading text-3xl tabular-nums text-inv-primary-ink sm:text-5xl">{{ unit === 'days' ? left[unit] : pad(left[unit]) }}</dd>
       </div>

@@ -9,7 +9,9 @@ import InvitationButton from './InvitationButton.vue'
 import InvitationPetals from '../art/InvitationPetals.vue'
 
 const props = defineProps({
-  section: { type: Object, required: true }
+  section: { type: Object, required: true },
+  /** card (default) | paper (flat panel) | inline (no panel) */
+  variant: { type: String, default: 'card' }
 })
 
 const { tt, formatDate, slug, code, updateSection, preview } = useInvitationContext()
@@ -166,7 +168,7 @@ async function submit() {
     <div class="relative">
       <InvitationPetals v-if="celebrate" @done="celebrate = false" />
 
-      <InvitationPanel>
+      <component :is="variant === 'inline' ? 'div' : InvitationPanel" class="inv-rsvp" :data-rsvp="variant" v-bind="variant === 'paper' ? { variant: 'flat' } : {}">
         <!-- Summary of what was answered -->
         <div v-if="showSummary">
           <ul class="divide-y divide-inv-ink/10">
@@ -227,7 +229,7 @@ async function submit() {
                     @change="answers[person.id] = option"
                   />
                   <span
-                    class="flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-inv-ink/20 bg-inv-surface px-3 text-center font-medium transition-[background-color,color,border-color,scale] duration-150 ease-out active:scale-[0.98] peer-checked:border-inv-primary peer-checked:bg-inv-primary peer-checked:text-inv-on-primary peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-inv-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-60"
+                    class="inv-rsvp__option flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-inv-ink/20 bg-inv-surface px-3 text-center font-medium transition-[background-color,color,border-color,scale] duration-150 ease-out active:scale-[0.98] peer-checked:border-inv-primary peer-checked:bg-inv-primary peer-checked:text-inv-on-primary peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-inv-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-60"
                   >
                     <component :is="option === ATTENDING ? Check : Minus" class="h-4 w-4 shrink-0" aria-hidden="true" />
                     {{ tt(option === ATTENDING ? 'rsvp.attending' : 'rsvp.notAttending') }}
@@ -260,14 +262,14 @@ async function submit() {
             {{ tt(hasAnswered ? 'rsvp.update' : 'rsvp.submit') }}
           </InvitationButton>
         </form>
-      </InvitationPanel>
+      </component>
     </div>
 
     <p
       role="status"
       aria-live="polite"
       :class="[
-        'mt-6 min-h-8 text-pretty',
+        'inv-rsvp__note mt-6 min-h-8 text-pretty',
         failed ? 'text-danger-700' : 'font-inv-script text-4xl text-inv-primary-ink sm:text-5xl'
       ]"
     >

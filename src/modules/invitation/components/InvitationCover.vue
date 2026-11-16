@@ -40,7 +40,7 @@ function goToRsvp() {
 
 <template>
   <header
-    class="bg-pattern-lattice relative isolate flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 pb-16 pt-20 text-center sm:py-24"
+    class="inv-cover bg-pattern-lattice relative isolate flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 pb-16 pt-20 text-center sm:py-24"
   >
     <!-- warm light from the top, and two sprigs on opposite corners -->
     <div
@@ -59,7 +59,7 @@ function goToRsvp() {
 
     <div class="relative mx-auto flex w-full max-w-xl flex-col items-center lg:max-w-2xl">
       <!-- arch window: the photo, or the lettering when there is none -->
-      <div class="inv-arch relative mb-10">
+      <div class="inv-arch inv-cover__media relative mb-10">
         <div
           class="relative flex h-64 w-48 items-center justify-center overflow-hidden rounded-t-full bg-inv-surface-alt shadow-pop ring-1 ring-inv-accent/60 sm:h-80 sm:w-64 lg:h-[26rem] lg:w-80"
         >
@@ -79,21 +79,21 @@ function goToRsvp() {
         <span aria-hidden="true" class="pointer-events-none absolute -inset-3 rounded-t-full border border-inv-accent/45" />
       </div>
 
-      <p v-if="section.title" style="--i: 2" class="inv-rise font-inv-script text-[2.5rem] text-inv-primary-ink sm:text-5xl">
+      <p v-if="section.title" style="--i: 2" class="inv-rise inv-cover__phrase font-inv-script text-[2.5rem] text-inv-primary-ink sm:text-5xl">
         {{ section.title }}
       </p>
       <h1
         style="--i: 3"
-        class="inv-rise mt-2 font-inv-heading text-[2.75rem] leading-[1.04] tracking-[-0.01em] text-balance sm:text-6xl lg:text-7xl"
+        class="inv-rise inv-cover__name mt-2 font-inv-heading text-[2.75rem] leading-[1.04] tracking-[-0.01em] text-balance sm:text-6xl lg:text-7xl"
       >
         {{ data.eventName }}
       </h1>
-      <p v-if="section.text" style="--i: 4" class="inv-rise mt-5 max-w-md text-lg text-inv-ink-soft text-pretty">
+      <p v-if="section.text" style="--i: 4" class="inv-rise inv-cover__text mt-5 max-w-md text-lg text-inv-ink-soft text-pretty">
         {{ section.text }}
       </p>
 
       <!-- date lockup -->
-      <div style="--i: 5" class="inv-rise mt-8 w-full max-w-sm">
+      <div style="--i: 5" class="inv-rise inv-cover__date mt-8 w-full max-w-sm">
         <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
           <p class="border-y border-inv-accent/50 py-2.5 text-right text-sm font-medium uppercase tracking-[0.16em]">
             {{ parts.weekday }}
@@ -106,17 +106,17 @@ function goToRsvp() {
         <p class="mt-3 text-inv-ink-soft">{{ parts.year }} · {{ parts.time }}</p>
       </div>
 
-      <p v-if="data.description" style="--i: 6" class="inv-rise mt-7 max-w-md text-inv-ink-soft text-pretty">
+      <p v-if="data.description" style="--i: 6" class="inv-rise inv-cover__description mt-7 max-w-md text-inv-ink-soft text-pretty">
         {{ data.description }}
       </p>
 
       <!-- place card for the guest -->
-      <div style="--i: 7" class="inv-rise mt-8 flex flex-col items-center">
+      <div style="--i: 7" class="inv-rise inv-cover__guest mt-8 flex flex-col items-center">
         <p class="text-sm text-inv-ink-soft">{{ tt('invitedFor') }}</p>
         <p class="mt-1 font-inv-script text-[2.5rem] leading-tight text-inv-primary-ink sm:text-5xl">{{ invitation.guest.name }}</p>
       </div>
 
-      <InvitationButton v-if="hasRsvp" style="--i: 8" class="inv-rise mt-8" @click="goToRsvp">
+      <InvitationButton v-if="hasRsvp" style="--i: 8" class="inv-rise inv-cover__cta mt-8" @click="goToRsvp">
         {{ tt('confirmCta') }}
       </InvitationButton>
     </div>
