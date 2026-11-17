@@ -5,6 +5,7 @@
  */
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { Sparkles } from 'lucide-vue-next'
 
 const props = defineProps({
   /** Preview image URL of the active template; empty for the fallback card. */
@@ -38,13 +39,16 @@ const showImage = computed(() => !!props.image && !failed.value)
       />
       <div
         v-else
-        class="flex h-full flex-col items-center justify-center gap-3 bg-gradient-to-b from-cream-50 via-cream-100 to-rose-100 px-4 text-center"
+        class="h-full w-full bg-gradient-to-b from-cream-50 via-cream-100 to-rose-100 p-3 sm:p-4"
         data-testid="hero-phone-fallback"
       >
-        <span class="h-px w-10 bg-gold-500" aria-hidden="true"></span>
-        <p class="font-heading text-lg leading-tight text-ink-900 text-balance sm:text-2xl">{{ name }}</p>
-        <p v-if="dateLabel" class="text-xs text-ink-600 first-letter:uppercase sm:text-sm">{{ dateLabel }}</p>
-        <span class="h-px w-10 bg-gold-500" aria-hidden="true"></span>
+        <div class="flex h-full flex-col items-center justify-center gap-3 rounded-xl border border-gold-300 px-3 text-center">
+          <Sparkles class="h-4 w-4 text-gold-500 sm:h-5 sm:w-5" aria-hidden="true" />
+          <span class="h-px w-10 bg-gold-500" aria-hidden="true"></span>
+          <p class="font-heading text-lg leading-tight text-ink-900 text-balance sm:text-2xl">{{ name }}</p>
+          <p v-if="dateLabel" class="text-xs text-ink-600 first-letter:uppercase sm:text-sm">{{ dateLabel }}</p>
+          <span class="h-px w-10 bg-gold-500" aria-hidden="true"></span>
+        </div>
       </div>
     </div>
   </div>
