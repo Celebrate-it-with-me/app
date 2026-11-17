@@ -12,7 +12,7 @@ import { SUPPORT_EMAIL, mailtoLink } from '@/config/brand'
 import PaymentsService from '@/modules/payments/services/PaymentsService'
 import { formatMoney } from '@/modules/payments/utils/money'
 import { useTemplatePicker } from '../composables/useTemplatePicker'
-import { pickText } from '../utils/templatePicker'
+import { conflictingModules, moduleNames, pickText } from '../utils/templatePicker'
 import TemplateCard from './TemplateCard.vue'
 import TemplatePreviewFrame from './TemplatePreviewFrame.vue'
 import SegmentedControl from './SegmentedControl.vue'
@@ -23,7 +23,9 @@ const props = defineProps({
   /** Open straight on the preview of this template (coming back from the payment, or a deep link). */
   initialTemplateId: { type: [Number, String], default: null },
   /** True when she just came back from paying: the preview offers "use it now". */
-  fromPayment: { type: Boolean, default: false }
+  fromPayment: { type: Boolean, default: false },
+  /** Slugs of the event's active modules: changing to a template that lacks one asks for confirmation first. */
+  activeModules: { type: Array, default: () => [] }
 })
 const emit = defineEmits(['update:open', 'changed', 'unlock', 'undone'])
 
@@ -39,7 +41,9 @@ const previewState = ref('invitation')
 const previewPreset = ref('')
 const confirmError = ref('') // '' or the key of templatePicker.errors.*
 const quote = ref(null)
+const missingAsk = ref(false) // the "this template lacks a module you use" dialog
 
+const conflictNames = computed(() => moduleNames(conflictingModules(selected.value, props.activeModules), { t, te }).join(', '))
 const isCurrent = computed(() => !!selected.value?.current)
 const isLocked = computed(() => !!selected.value?.locked)
 const paidNow = computed(() => props.fromPayment && !isCurrent.value && !isLocked.value && selected.value?.tier === 'premium')
@@ -101,6 +105,16 @@ function backToList() {
 }
 
 function startUse() {
+  if (!missingAsk.value && conflictNames.value) {
+    missingAsk.value = true
+    return
+  }
+  continueUse()
+}
+
+/** She accepted losing the module in this template (or there is nothing to lose): on to the usual confirmation. */
+function continueUse() {
+  missingAsk.value = false
   confirmError.value = ''
   view.value = 'confirm'
   picker.loadImpact(selected.value)
@@ -311,5 +325,13 @@ defineExpose({ undo, picker })
         <UiButton :href="mailHref">{{ t('templatePicker.published.contact') }}</UiButton>
       </template>
     </template>
+
+    <UiModal :open="missingAsk" :title="t('templatePicker.missing.title')" size="sm" @update:open="value => (missingAsk = value)">
+      <p class="text-base text-ink-700" data-testid="missing-ask">{{ t('templatePicker.missing.ask', { names: conflictNames }) }}</p>
+      <template #footer>
+        <UiButton variant="ghost" @click="missingAsk = false">{{ t('templatePicker.missing.cancel') }}</UiButton>
+        <UiButton data-testid="missing-accept" @click="continueUse">{{ t('templatePicker.missing.accept') }}</UiButton>
+      </template>
+    </UiModal>
   </UiModal>
 </template>

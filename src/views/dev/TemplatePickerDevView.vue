@@ -7,6 +7,7 @@ import { onMounted, ref } from 'vue'
 import { UiPageHeader } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import TemplatePickerEntry from '@/modules/template-picker/components/TemplatePickerEntry.vue'
+import ModuleTemplateNotice from '@/modules/template-picker/components/ModuleTemplateNotice.vue'
 import CoverPhotoField from '@/modules/template-picker/components/CoverPhotoField.vue'
 
 const eventsStore = useEventsStore()
@@ -25,6 +26,8 @@ onMounted(async () => {
   <div class="mx-auto flex w-full max-w-xl flex-col gap-5 p-4">
     <UiPageHeader title="Template picker (dev)" />
     <TemplatePickerEntry :event-id="eventId" :template-locked="$route.query.published === '1'" />
+    <!-- 409 template_missing_module demo: /dev/template-picker?blocked=comments -->
+    <ModuleTemplateNotice v-if="$route.query.blocked" :event-id="eventId" :module="String($route.query.blocked)" template-name="Botánica acuarela" />
     <div v-if="ready" class="rounded-2xl border border-line bg-white p-4">
       <CoverPhotoField :event-id="eventId" :field="field" @changed="value => (field = { ...field, value })" />
     </div>
