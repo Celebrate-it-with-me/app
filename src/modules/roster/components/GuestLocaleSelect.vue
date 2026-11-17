@@ -32,7 +32,7 @@ function onChange(value) {
   <div class="mt-3 flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3">
     <label :for="id" class="text-xs font-medium text-ink-500">{{ t('app.roster.locale.label') }}</label>
     <div class="sm:w-56" :data-effective="effectiveLocale(family, eventLocale)">
-      <UiSelect :id="id" :model-value="model" :options="options" size="sm" :disabled="disabled" @update:model-value="onChange" />
+      <UiSelect :id="id" :model-value="model" :options="options" size="sm" :disabled="disabled" lazy @update:model-value="onChange" />
     </div>
   </div>
 </template>

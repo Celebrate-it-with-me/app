@@ -1,5 +1,5 @@
-import { computed, inject, provide, ref } from 'vue'
-import i18n from '@/locales/i18n'
+import { computed, inject, provide, ref, watch } from 'vue'
+import i18n, { loadLocale } from '@/locales/i18n'
 import InvitationService from '@/services/PublicEvents/InvitationService'
 import { formatWallClock } from './wallClock'
 
@@ -11,6 +11,8 @@ export const INVITATION_KEY = Symbol('invitation')
  */
 export function invitationHelpers(invitation) {
   const locale = computed(() => invitation.value?.locale ?? i18n.global.locale.value)
+  // The invitation's language is independent of the app's: make sure its messages are registered (a no-op when they are).
+  watch(locale, value => loadLocale(value).catch(() => {}), { immediate: true })
 
   /** Translate `invitation.<key>` in the invitation's language. */
   const tt = (key, params = {}) => i18n.global.t(`invitation.${key}`, params, { locale: locale.value })
@@ -44,6 +46,8 @@ export function useInvitationData(slug, code) {
     if (!invitation.value) status.value = 'loading'
     try {
       const { data } = await InvitationService.get({ slug: slug(), code: code(), lang })
+      // The texts of the invitation's language must be there before the first paint (no raw keys on screen).
+      await loadLocale(data.data?.locale).catch(() => {})
       if (request !== requested) return
       invitation.value = data.data
       status.value = 'ready'

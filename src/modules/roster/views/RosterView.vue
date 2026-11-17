@@ -281,6 +281,14 @@ async function copyLink(family) {
     <UiPageHeader :title="t('app.roster.title')" :subtitle="counter" />
     <GuestLimitBanner class="mt-4" />
 
+    <!-- The progress card appears with the first answer; when the event is known to have guests its place is held meanwhile
+         (otherwise the search box and the tabs jump down when the list arrives). -->
+    <div
+      v-if="!counts.all && loading && (event?.guestsCount ?? 0) > 0"
+      class="mt-5 h-[7.15rem] rounded-2xl border border-line bg-white"
+      aria-hidden="true"
+      data-testid="progress-placeholder"
+    />
     <section v-if="counts.all" class="mt-5 rounded-2xl border border-line bg-white p-4" :aria-label="t('app.roster.progress.label')">
       <div class="flex items-baseline justify-between gap-3">
         <p class="font-heading text-lg text-ink-900">{{ t('app.roster.progress.answered', { n: answered, total: counts.all }) }}</p>
@@ -305,6 +313,7 @@ async function copyLink(family) {
         />
       </div>
       <div class="flex flex-col gap-2 sm:flex-row">
+        <div v-if="!counts.all && loading && (event?.guestsCount ?? 0) > 0" class="h-11 sm:w-36" aria-hidden="true" data-testid="download-placeholder" />
         <RosterDownloadMenu v-if="event?.id && counts.all" :event-id="event.id" :status="status" :search="search" />
         <template v-if="canEdit">
           <UiButton variant="secondary" @click="importOpen = true">
@@ -319,6 +328,7 @@ async function copyLink(family) {
       </div>
     </div>
 
+    <div v-if="!counts.all && loading && canEdit && (event?.guestsCount ?? 0) > 0" class="mt-3 h-10" aria-hidden="true" data-testid="actions-placeholder" />
     <div v-if="canEdit && counts.all" class="mt-3 flex flex-wrap gap-2">
       <UiButton variant="secondary" @click="openSend">
         <MessageCircle class="h-4 w-4" aria-hidden="true" />

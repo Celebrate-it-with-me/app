@@ -76,6 +76,16 @@ export default defineConfig({
   build: {
     commonjsOptions: {
       esmExternals: true
+    },
+    rolldownOptions: {
+      output: {
+        // Vendor code in stable chunks: an app release does not invalidate what users already cached.
+        codeSplitting: {
+          groups: [
+            { name: 'vendor-vue', test: /node_modules[\\/](?:@vue|vue|vue-router|pinia|pinia-plugin-persistedstate)[\\/]/, priority: 30 }
+          ]
+        }
+      }
     }
   },
   server: {

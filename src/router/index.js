@@ -2,10 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { nonAuthRoutes } from '@/router/nonAuthRoutes'
 import { authRoutes } from '@/router/authRoutes'
 import { invitationRoutes } from '@/router/invitationRoutes'
-import ExternalLayout from '@/components/external/layout/ExternalLayout.vue'
-import ExternalCleanLayout from '@/components/external/layout/ExternalCleanLayout.vue'
 import { externalCleanRoutes } from '@/router/externalCleanRoutes'
-import InternalLayout from '@/components/internal/layout/InternalLayout.vue'
 import { authGuard } from '@/router/authGuard'
 
 const router = createRouter({
@@ -38,19 +35,19 @@ const router = createRouter({
     {
       path: '/password',
       name: 'External Clean',
-      component: ExternalCleanLayout,
+      component: () => import('@/components/external/layout/ExternalCleanLayout.vue'),
       children: [...externalCleanRoutes]
     },
     {
       path: '',
       name: 'Non Authenticated',
-      component: ExternalLayout,
+      component: () => import('@/components/external/layout/ExternalLayout.vue'),
       children: [...nonAuthRoutes]
     },
     {
       path: '',
       name: 'Authenticated',
-      component: InternalLayout,
+      component: () => import('@/components/internal/layout/InternalLayout.vue'),
       children: [...authRoutes]
     },
     {

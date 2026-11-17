@@ -1,11 +1,3 @@
-import HomeView from '@/views/external/HomeView.vue'
-import SignUpView from '@/views/external/SignUpView.vue'
-import SignInView from '@/views/external/SignInView.vue'
-import ConfirmEmailView from '@/views/external/ConfirmEmailView.vue'
-import TermsView from '@/views/external/TermsView.vue'
-import PrivacyView from '@/views/external/PrivacyView.vue'
-import CookiesView from '@/views/external/CookiesView.vue'
-import HelpView from '@/views/external/HelpView.vue'
 
 const nonAuthRoutes = [
   {
@@ -20,7 +12,7 @@ const nonAuthRoutes = [
   {
     path: '',
     name: 'home',
-    component: HomeView,
+    component: () => import('@/views/external/HomeView.vue'),
     meta: {
       titleKey: 'titles.home'
     }
@@ -28,7 +20,7 @@ const nonAuthRoutes = [
   {
     path: '/sign-up',
     name: 'sign-up',
-    component: SignUpView,
+    component: () => import('@/views/external/SignUpView.vue'),
     meta: {
       titleKey: 'titles.signUp'
     }
@@ -45,7 +37,7 @@ const nonAuthRoutes = [
   {
     path: '/confirm-email',
     name: 'confirm-email',
-    component: ConfirmEmailView,
+    component: () => import('@/views/external/ConfirmEmailView.vue'),
     meta: {
       titleKey: 'titles.confirmEmail'
     }
@@ -53,7 +45,7 @@ const nonAuthRoutes = [
   {
     path: '/sign-in',
     name: 'sign-in',
-    component: SignInView,
+    component: () => import('@/views/external/SignInView.vue'),
     meta: {
       titleKey: 'titles.signIn'
     }
@@ -61,7 +53,7 @@ const nonAuthRoutes = [
   {
     path: '/terms',
     name: 'terms',
-    component: TermsView,
+    component: () => import('@/views/external/TermsView.vue'),
     meta: {
       titleKey: 'titles.terms'
     }
@@ -69,7 +61,7 @@ const nonAuthRoutes = [
   {
     path: '/privacy',
     name: 'privacy',
-    component: PrivacyView,
+    component: () => import('@/views/external/PrivacyView.vue'),
     meta: {
       titleKey: 'titles.privacy'
     }
@@ -77,7 +69,7 @@ const nonAuthRoutes = [
   {
     path: '/cookies',
     name: 'cookies',
-    component: CookiesView,
+    component: () => import('@/views/external/CookiesView.vue'),
     meta: {
       titleKey: 'titles.cookies'
     }
@@ -85,7 +77,7 @@ const nonAuthRoutes = [
   {
     path: '/help',
     name: 'help',
-    component: HelpView,
+    component: () => import('@/views/external/HelpView.vue'),
     meta: {
       titleKey: 'titles.help'
     }

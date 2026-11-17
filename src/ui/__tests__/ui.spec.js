@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import { UiButton, UiField, UiInput, UiBadge, UiPagination, UiAvatar, useToast } from '@/ui'
+import { UiButton, UiField, UiInput, UiBadge, UiPagination, UiAvatar, UiSelect, useToast } from '@/ui'
 import { initials, avatarTone, cx } from '@/ui/utils'
 
 describe('utils', () => {
@@ -99,5 +99,35 @@ describe('useToast', () => {
     expect(toasts.length).toBe(before + 1)
     dismiss(id)
     expect(toasts.length).toBe(before)
+  })
+})
+
+describe('UiSelect lazy', () => {
+  const options = [
+    { value: 'event', label: 'The event' },
+    { value: 'es', label: 'Spanish' }
+  ]
+
+  it('draws a plain combobox button with the current label, and the id the label points to', () => {
+    const wrapper = mount(UiSelect, { props: { id: 'lang', modelValue: 'es', options, lazy: true }, attachTo: document.body })
+    const button = wrapper.get('button#lang')
+    expect(button.attributes('role')).toBe('combobox')
+    expect(button.attributes('aria-expanded')).toBe('false')
+    expect(button.text()).toBe('Spanish')
+    wrapper.unmount()
+  })
+
+  it('mounts the real select (open) on the first click', async () => {
+    const wrapper = mount(UiSelect, { props: { id: 'lang', modelValue: 'es', options, lazy: true }, attachTo: document.body })
+    await wrapper.get('button#lang').trigger('click')
+    await nextTick()
+    expect(wrapper.find('button#lang').attributes('data-state')).toBe('open')
+    wrapper.unmount()
+  })
+
+  it('is the real select straight away when it is not lazy', () => {
+    const wrapper = mount(UiSelect, { props: { id: 'lang', modelValue: 'es', options }, attachTo: document.body })
+    expect(wrapper.get('button#lang').attributes('data-state')).toBe('closed')
+    wrapper.unmount()
   })
 })
