@@ -45,6 +45,7 @@ const SECTION_BLOCKS = {
   'dress-code': { type: 'dress_code', props: { frame: FRAME, variant: oneOf('plain', 'swatches') } },
   padrinos: { type: 'padrinos', props: { frame: FRAME, variant: oneOf('list', 'grid') } },
   tables: { type: 'tables', props: { frame: FRAME, variant: oneOf('inline', 'card') } },
+  'suggested-music': { type: 'suggested_music', props: { frame: FRAME, variant: oneOf('list', 'cards') } },
   comments: { type: 'comments', props: { frame: FRAME, variant: oneOf('list', 'cards'), max: int(1, 20) } },
   closing: { type: 'closing', props: { frame: FRAME, variant: oneOf('band', 'plain') } },
   'save-the-date': { type: 'save_the_date', props: { frame: FRAME, calendar: bool } }

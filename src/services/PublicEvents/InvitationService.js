@@ -72,6 +72,35 @@ class InvitationService {
   async postComment({ slug, code, comment }) {
     return PUBLIC_API.post(`${path(slug, code)}/comments`, { comment })
   }
+
+  /**
+   * One page of the event's suggested songs. No ids or names of other guests: only `votedByMe` / `suggestedByMe`.
+   * @param {{ slug: string, code: string, orderBy?: 'popular'|'recent', page?: number }} params
+   * 200 { data: [{ id, title, artist, thumbnailUrl, previewUrl, votes, votedByMe, suggestedByMe }], meta }
+   */
+  async listSongs({ slug, code, orderBy = 'popular', page = 1 }) {
+    return PUBLIC_API.get(`${path(slug, code)}/songs`, { params: { orderBy, page } })
+  }
+
+  /** Spotify search for guests (`q` <= 100, `limit` 1-10). 503 spotify_unavailable when Spotify is down. */
+  async searchSongs({ slug, code, q, limit = 8 }) {
+    return PUBLIC_API.get(`${path(slug, code)}/songs/search`, { params: { q, limit } })
+  }
+
+  /** @param {{ slug: string, code: string, song: { platformId: string, title: string, artist: string, album?: string, thumbnailUrl?: string, previewUrl?: string } }} params  201 { data: item } */
+  async suggestSong({ slug, code, song }) {
+    return PUBLIC_API.post(`${path(slug, code)}/songs`, song)
+  }
+
+  /** Only the guest's own suggestion (404 otherwise). 204. */
+  async removeSong({ slug, code, id }) {
+    return PUBLIC_API.delete(`${path(slug, code)}/songs/${encodeURIComponent(id)}`)
+  }
+
+  /** @param {{ slug: string, code: string, id: number|string, vote: boolean }} params  200 { data: item } (vote: true adds, false removes) */
+  async voteSong({ slug, code, id, vote }) {
+    return PUBLIC_API.post(`${path(slug, code)}/songs/${encodeURIComponent(id)}/vote`, { vote })
+  }
 }
 
 export default new InvitationService()

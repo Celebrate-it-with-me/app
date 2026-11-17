@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ChevronDown, Download } from 'lucide-vue-next'
+import ModuleTemplateGate from '@/modules/template-picker/components/ModuleTemplateGate.vue'
 import { UiPageHeader, UiButton, UiDropdown, UiModal, UiSkeleton } from '@/ui'
 import { useSuggestedMusicAdminController } from '@/modules/suggested-music/composables/useSuggestedMusicAdminController'
 import SuggestedMusicSearchAdd from '@/modules/suggested-music/components/SuggestedMusicSearchAdd.vue'
@@ -67,6 +68,7 @@ const exportItems = computed(() => [
         </UiDropdown>
       </template>
     </UiPageHeader>
+    <ModuleTemplateGate module="suggested_music" />
 
     <div v-if="loading" class="mt-6 space-y-4" aria-busy="true">
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

@@ -7,7 +7,7 @@ import { el, q, text, v, when, renderToDom, renderVNode, SECTIONS } from './help
 const FULL = {
   rsvp: 'rsvp', gallery: 'gallery', music: 'music', countdown: 'countdown', locations: 'locations',
   itinerary: 'itinerary', 'dress-code': 'dress_code', padrinos: 'padrinos', closing: 'closing', 'save-the-date': 'save_the_date',
-  tables: 'tables', comments: 'comments'
+  tables: 'tables', comments: 'comments', 'suggested-music': 'suggested_music'
 }
 const all = type => ({ sections: [{ type: 'cover', title: null, data: {} }, { type, title: 't', text: null, data: {} }] })
 
@@ -22,11 +22,11 @@ describe('q-* → existing components', () => {
     expect(inner.props.section.type).toBe(type)
   })
 
-  it('the 21 blocks of the catalogue exist, and a "q-" prefix is tolerated', () => {
+  it('the 22 blocks of the catalogue exist, and a "q-" prefix is tolerated', () => {
     expect(Object.keys(BLOCKS).sort()).toEqual(
       [...Object.keys(FULL), 'cover-photo', 'names', 'date', 'cta', 'language-switch', 'seats', 'address', 'guest', 'sections'].sort()
     )
-    expect(Object.keys(BLOCKS)).toHaveLength(21)
+    expect(Object.keys(BLOCKS)).toHaveLength(22)
     expect(renderToDom(el('div', {}, q('q-cta'))).html).toContain('inv-q--cta')
   })
 

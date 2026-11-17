@@ -10,6 +10,7 @@ import InvitationGallery from '../components/InvitationGallery.vue'
 import InvitationMusic from '../components/InvitationMusic.vue'
 import InvitationRsvp from '../components/InvitationRsvp.vue'
 import InvitationTables from '../components/InvitationTables.vue'
+import InvitationSuggestedMusic from '../components/InvitationSuggestedMusic.vue'
 import InvitationComments from '../components/InvitationComments.vue'
 import InvitationClosing from '../components/InvitationClosing.vue'
 
@@ -25,6 +26,7 @@ export const SECTION_COMPONENTS = {
   music: InvitationMusic,
   rsvp: InvitationRsvp,
   tables: InvitationTables,
+  suggested_music: InvitationSuggestedMusic,
   comments: InvitationComments,
   closing: InvitationClosing
 }
