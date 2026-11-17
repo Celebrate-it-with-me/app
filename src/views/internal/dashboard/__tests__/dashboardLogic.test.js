@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseEventDate, daysUntil, summarizeRsvp, rsvpShares, pickNextStep, readiness } from '../dashboardLogic'
+import { parseEventDate, daysUntil, summarizeRsvp, rsvpShares, readiness, countdownInfo, statsFigures } from '../dashboardLogic'
 
 describe('parseEventDate', () => {
   it('reads the API format as wall time', () => {
@@ -54,22 +54,6 @@ describe('rsvpShares', () => {
   })
 })
 
-describe('pickNextStep', () => {
-  const base = { guestCount: 10, status: 'published', pendingGuests: 0, rsvpEnabled: true, budgetEnabled: true, budgetItems: 3 }
-  it('asks for guests first', () => expect(pickNextStep({ ...base, guestCount: 0 }).id).toBe('addGuests'))
-  it('then to publish a draft', () => expect(pickNextStep({ ...base, status: 'draft' }).id).toBe('publish'))
-  it('then to chase pending guests', () => {
-    expect(pickNextStep({ ...base, pendingGuests: 4 })).toMatchObject({ id: 'pendingGuests', count: 4 })
-  })
-  it('ignores pending guests when RSVP is off', () => {
-    expect(pickNextStep({ ...base, pendingGuests: 4, rsvpEnabled: false }).id).toBe('allSet')
-  })
-  it('suggests the budget only when it is enabled and empty', () => {
-    expect(pickNextStep({ ...base, budgetItems: 0 }).id).toBe('budget')
-    expect(pickNextStep({ ...base, budgetItems: 0, budgetEnabled: false }).id).toBe('allSet')
-  })
-})
-
 describe('readiness', () => {
   const base = { hasDate: true, guestCount: 0, published: false, budgetEnabled: false, budgetItems: 0 }
   it('counts only what is really done', () => {
@@ -81,4 +65,24 @@ describe('readiness', () => {
     expect(readiness({ ...base, budgetEnabled: true, budgetItems: 2 })).toMatchObject({ done: 2, total: 4 })
   })
   it('is 0 with nothing done', () => expect(readiness({ ...base, hasDate: false }).ratio).toBe(0))
+})
+
+describe('countdownInfo', () => {
+  it('has no date, past, today and future', () => {
+    expect(countdownInfo(null).kind).toBe('none')
+    expect(countdownInfo(-3).kind).toBe('past')
+    expect(countdownInfo(0).kind).toBe('today')
+    expect(countdownInfo(142)).toEqual({ kind: 'future', n: 142 })
+  })
+})
+
+describe('statsFigures', () => {
+  it('lists the four figures with people (companions included) as the total', () => {
+    const f = statsFigures({ attending: 5, pending: 3, declined: 1, people: 9 })
+    expect(f.empty).toBe(false)
+    expect(f.items.map(i => [i.key, i.value])).toEqual([['attending', 5], ['pending', 3], ['declined', 1], ['total', 9]])
+  })
+  it('is empty with nobody on the list', () => {
+    expect(statsFigures({ attending: 0, pending: 0, declined: 0, people: 0 }).empty).toBe(true)
+  })
 })

@@ -291,12 +291,11 @@ const countdown = computed(() => countdownOf(next.value))
           <CircleCheck v-else-if="variant === 'calm'" class="h-5 w-5 shrink-0" aria-hidden="true" />
           <Sparkles v-else class="h-5 w-5 shrink-0 text-gold-500" aria-hidden="true" />
           <span v-if="variant === 'pill'" class="truncate">{{ t('assistantGuide.pill.label') }}</span>
-          <span
-            v-if="showDot"
-            class="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-rose-500"
-            data-testid="guide-dot"
-            aria-hidden="true"
-          />
+          <span v-if="showDot" class="absolute -right-0.5 -top-0.5 h-3.5 w-3.5" data-testid="guide-dot" aria-hidden="true">
+            <!-- A soft ring that grows and fades (transform + opacity only); with reduced motion only the still dot is left. -->
+            <span class="guide-pulse absolute inset-0 rounded-full bg-rose-500 motion-reduce:hidden" data-testid="guide-pulse"></span>
+            <span class="absolute inset-0 rounded-full border-2 border-white bg-rose-500"></span>
+          </span>
         </button>
       </div>
     </Transition>

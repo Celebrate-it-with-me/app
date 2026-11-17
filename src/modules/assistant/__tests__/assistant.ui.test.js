@@ -13,7 +13,6 @@ const imp = vi.hoisted(() => ({ active: false }))
 vi.mock('@/modules/impersonation/stores/useImpersonationStore', () => ({ useImpersonationStore: () => imp }))
 
 import PlanView from '../views/PlanView.vue'
-import DashboardNextStep from '@/views/internal/dashboard/DashboardNextStep.vue'
 
 const task = (key, over = {}) => ({
   key, phase: 'foundation', title: `Tarea ${key}`, state: 'available', reason: `Razon ${key}`, reasonCode: 'time_window', reasonParams: {},
@@ -227,40 +226,5 @@ describe('PlanView', () => {
   it('shows the empty state when the plan has nothing', async () => {
     await mountPlan({ plan: { ...PLAN, phases: [], overdue: [], hidden: [], custom: [], progress: { done: 0, total: 0, ratio: 0 } } })
     expect(wrapper.find('[data-testid=plan-empty]').exists()).toBe(true)
-  })
-})
-
-describe('DashboardNextStep', () => {
-  const router = () => createRouter({ history: createMemoryHistory(), routes: ROUTES })
-  const mountCard = (step, target = '/dashboard/budget') => mount(DashboardNextStep, { props: { step, target }, global: { plugins: [i18n, router()] } })
-
-  beforeEach(() => setLocale('es'))
-
-  it('keeps drawing the legacy shape from the dashboard texts', () => {
-    const w = mountCard({ id: 'addGuests', to: '/dashboard/guests' }, '/dashboard/guests')
-    expect(w.text()).toContain('Agrega a tus invitados')
-    expect(w.get('section').attributes('data-step')).toBe('guest_list')
-    expect(w.find('[data-testid=see-plan]').exists()).toBe(false)
-  })
-
-  it('draws the server shape with its own title and reason, an overdue badge and the plan link', () => {
-    const w = mountCard({ key: 'book_venue', title: 'Reserva el salón', reason: 'Faltan 11 meses.', state: 'overdue', total: 3 })
-    expect(w.text()).toContain('Reserva el salón')
-    expect(w.text()).toContain('Por qué ahora: Faltan 11 meses.')
-    expect(w.text()).toContain('Atrasada')
-    expect(w.get('[data-testid=see-plan]').attributes('href')).toBe('/dashboard/plan')
-  })
-
-  it('renders server text as plain text, never HTML', () => {
-    const w = mountCard({ key: 'x', title: '<b>hola</b>', reason: '<img src=x onerror=alert(1)>', total: 1 })
-    expect(w.find('h2 b').exists()).toBe(false)
-    expect(w.find('img').exists()).toBe(false)
-  })
-
-  it('has the allSet and no_date variants', () => {
-    expect(mountCard({ key: 'allSet' }).text()).toContain('Todo al día')
-    const w = mountCard({ key: 'set_date', local: true }, '/dashboard/events/7/edit')
-    expect(w.text()).toContain('Define la fecha de tu evento')
-    expect(w.text()).toContain('Definir la fecha')
   })
 })
