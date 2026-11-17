@@ -290,6 +290,14 @@ export default {
     confirmedText: 'Your account is ready. Sign in and create your first event.',
     confirmFailedTitle: 'This link is not valid',
     confirmFailedText: 'It may have expired. Register again or request a new link.',
+    social: {
+      backToSignIn: 'Back to sign in',
+      accessDenied: { title: 'You cancelled the sign-in', text: 'No worries: you did not sign in with {provider} and nothing changed in your account. You can try again whenever you like.' },
+      emailRequired: { title: 'We need your email', text: '{provider} did not share your email address, and we need it to create your account. Check the permissions of your {provider} account or sign up with your email.' },
+      accountExists: { title: 'You already have an account', text: 'An account with the email of your {provider} account already exists. For your security, sign in with your password.' },
+      oauthFailed: { title: 'We could not sign you in', text: 'We could not sign you in with {provider}. Try again in a moment or use your email and password.' },
+      sessionFailed: { title: 'We could not start your session', text: 'You signed in with {provider}, but we could not open your session. Please try again.' }
+    },
     socialSigning: 'Signing in with {provider}…',
     socialFailed: 'We could not sign you in with your social account.',
     sessionFailed: 'We could not start your session. Please try again.'
