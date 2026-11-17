@@ -6,6 +6,8 @@ import { useImpersonationStore } from '@/modules/impersonation/stores/useImperso
 import { isBlockedError, isEndedError, readBlobBody } from '@/modules/impersonation/utils/impersonation'
 import { safeRedirect } from '@/utils/safeRedirect'
 import { useToast } from '@/ui'
+import { isEmailNotVerified } from '@/modules/email-verification/utils/emailVerification'
+import { useEmailVerificationStore } from '@/modules/email-verification/stores/useEmailVerificationStore'
 import i18n from '@/locales/i18n'
 import { isModuleLocked, notifyModuleLocked } from '@/utils/moduleLocked'
 import { isMaintenanceError } from '@/modules/maintenance/utils/maintenance'
@@ -87,6 +89,11 @@ const onError = async error => {
         // A module the plan does not include: an upgrade notice, never the generic forbidden page.
         if (isModuleLocked(error)) {
           notifyModuleLocked(error, { toast: useToast().toast, t: i18n.global.t })
+          break
+        }
+        // Publishing or buying before verifying the email: a dialog explains it and offers to resend; the screen keeps its state.
+        if (isEmailNotVerified(error)) {
+          useEmailVerificationStore().openDialog()
           break
         }
         // The account cannot be deleted while it is support staff: the screen explains it, no redirect.

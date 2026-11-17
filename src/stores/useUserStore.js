@@ -16,6 +16,8 @@ export const useUserStore = defineStore('userStore', {
     activeEvent: null,
     justLogin: false,
     isFirstLogin: false,
+    // False only when the API says so; anything else (old persisted state, support sessions) shows no notice.
+    emailVerified: true,
     preferences: {
       language: '',
       timezone: '',
@@ -213,7 +215,8 @@ export const useUserStore = defineStore('userStore', {
       justLogin,
       avatar,
       phone,
-      isFirstLogin
+      isFirstLogin,
+      emailVerified
     }) {
       this.name = name
       this.email = email
@@ -224,6 +227,23 @@ export const useUserStore = defineStore('userStore', {
       this.avatar = avatar
       this.phone = phone
       this.isFirstLogin = isFirstLogin
+      this.setEmailVerified(emailVerified)
+    },
+
+    /** Only an explicit `false` from the API raises the notice. */
+    setEmailVerified(value) {
+      this.emailVerified = value !== false
+    },
+
+    /** Reads just the verification flag from the API (the notice and the /email-verified page use it). Best effort. */
+    async syncEmailVerified() {
+      try {
+        const response = await UserService.refreshUser()
+        const flag = response.data?.data?.user?.emailVerified
+        if (typeof flag === 'boolean') this.emailVerified = flag
+      } catch {
+        // Offline or expired session: the notice keeps its last known state.
+      }
     },
 
     /**
@@ -280,7 +300,8 @@ export const useUserStore = defineStore('userStore', {
           id,
           last_active_event_id: activeEvent,
           avatar_url: avatar,
-          phone
+          phone,
+          emailVerified
         } = response.data?.data?.user ?? {}
 
         this.name = name
@@ -291,6 +312,7 @@ export const useUserStore = defineStore('userStore', {
         this.justLogin = true
         this.avatar = avatar
         this.phone = phone
+        this.setEmailVerified(emailVerified)
       }
 
       return response

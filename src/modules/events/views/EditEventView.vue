@@ -13,6 +13,7 @@ import EventStatusBadge from '../components/EventStatusBadge.vue'
 import EventRegionalFields from '../components/EventRegionalFields.vue'
 import EventMusicCard from '../components/EventMusicCard.vue'
 import { useLeaveGuard } from '../composables/useLeaveGuard'
+import { isEmailNotVerified } from '@/modules/email-verification/utils/emailVerification'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 
 const { t } = useI18n()
@@ -106,6 +107,8 @@ function validate() {
 }
 
 function showServerError(e, fallbackKey = 'common.genericError') {
+  // Unverified email: the global dialog already explains it, so no toast on top of it.
+  if (isEmailNotVerified(e)) return
   if (e.response?.status === 403) return showError(t('events.edit.forbidden'))
   showError(t(fallbackKey))
 }
