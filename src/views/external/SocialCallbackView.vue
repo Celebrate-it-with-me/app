@@ -1,18 +1,29 @@
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/useUserStore'
 import { CWM_API } from '@/services/axios'
-import { UiSkeleton } from '@/ui'
+import { UiButton, UiSkeleton } from '@/ui'
 import AuthCard from '@/components/external/auth/AuthCard.vue'
 import { isSuspendedSocialCallback, rememberSupportEmail } from '@/utils/accountSuspended'
+import { internalRedirect, providerName } from '@/utils/socialProviders'
+
+const REASONS = ['access_denied', 'email_required', 'account_exists', 'oauth_failed']
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
-const provider = computed(() => route.query.provider || 'Google')
+const provider = computed(() => providerName(route.query.provider) || 'Google')
+const redirect = computed(() => internalRedirect(route.query.redirect))
+/** Reason to explain, or '' while the session is still being set up. */
+const failure = ref('')
+
+const failureKey = computed(() => (failure.value === 'session_failed' ? 'sessionFailed' : failure.value === 'access_denied' ? 'accessDenied' : failure.value === 'email_required' ? 'emailRequired' : failure.value === 'account_exists' ? 'accountExists' : 'oauthFailed'))
+const signInTarget = computed(() => ({ name: 'sign-in', query: redirect.value ? { redirect: redirect.value } : {} }))
+// Cancelling is not an error: neutral tone, no alert banner.
+const cancelled = computed(() => failure.value === 'access_denied')
 
 onMounted(async () => {
   if (isSuspendedSocialCallback(route.query)) {
@@ -20,7 +31,9 @@ onMounted(async () => {
     return router.replace({ name: 'account-suspended' })
   }
   if (route.query.status !== 'ok') {
-    return router.push({ name: 'sign-in', query: { message: 'social-failed' } })
+    const reason = String(route.query.reason ?? '')
+    failure.value = REASONS.includes(reason) ? reason : 'oauth_failed'
+    return
   }
   try {
     await CWM_API.get('sanctum/csrf-cookie', { baseURL: import.meta.env.VITE_API_URL })
@@ -28,19 +41,37 @@ onMounted(async () => {
     if (response.status === 200) {
       const preferences = await userStore.getPreferences()
       if (preferences?.status === 200) userStore.setPreferences(preferences.data?.data ?? {})
-      return router.push(route.query.redirect || { name: 'dashboard' })
+      return router.push(redirect.value || { name: 'dashboard' })
     }
   } catch (error) {
     console.error('Social callback error:', error)
   }
-  return router.push({ name: 'sign-in', query: { message: 'session-failed' } })
+  failure.value = 'session_failed'
 })
 </script>
 
 <template>
   <section class="flex justify-center px-4 py-10 sm:py-16">
-    <AuthCard :title="t('auth.socialSigning', { provider })">
+    <AuthCard
+      v-if="!failure"
+      :title="t('auth.socialSigning', { provider })"
+    >
       <UiSkeleton :lines="2" />
+    </AuthCard>
+    <AuthCard
+      v-else
+      :title="t(`auth.social.${failureKey}.title`)"
+      :error="cancelled ? '' : t(`auth.social.${failureKey}.text`, { provider })"
+    >
+      <p v-if="cancelled" class="mb-5 text-center text-base text-ink-500" role="status">
+        {{ t(`auth.social.${failureKey}.text`, { provider }) }}
+      </p>
+      <UiButton block :to="signInTarget">{{ t('auth.social.backToSignIn') }}</UiButton>
+      <template v-if="failure === 'account_exists'" #footer>
+        <router-link to="/forgot-password" class="font-semibold text-rose-600 hover:underline">
+          {{ t('auth.forgot') }}
+        </router-link>
+      </template>
     </AuthCard>
   </section>
 </template>
