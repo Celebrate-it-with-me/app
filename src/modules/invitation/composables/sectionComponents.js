@@ -9,6 +9,8 @@ import InvitationDressCode from '../components/InvitationDressCode.vue'
 import InvitationGallery from '../components/InvitationGallery.vue'
 import InvitationMusic from '../components/InvitationMusic.vue'
 import InvitationRsvp from '../components/InvitationRsvp.vue'
+import InvitationTables from '../components/InvitationTables.vue'
+import InvitationComments from '../components/InvitationComments.vue'
 import InvitationClosing from '../components/InvitationClosing.vue'
 
 export const SECTION_COMPONENTS = {
@@ -22,5 +24,7 @@ export const SECTION_COMPONENTS = {
   gallery: InvitationGallery,
   music: InvitationMusic,
   rsvp: InvitationRsvp,
+  tables: InvitationTables,
+  comments: InvitationComments,
   closing: InvitationClosing
 }
