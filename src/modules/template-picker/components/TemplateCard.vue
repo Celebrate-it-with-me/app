@@ -1,19 +1,20 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Check, ImageOff, Lock } from 'lucide-vue-next'
+import { Check, ImageOff, Lock, Puzzle } from 'lucide-vue-next'
 import { UiBadge } from '@/ui'
-import { pickText } from '../utils/templatePicker'
+import { missingModulesOf, moduleNames, pickText } from '../utils/templatePicker'
 
 const props = defineProps({
   template: { type: Object, required: true }
 })
 defineEmits(['select'])
 
-const { t, locale } = useI18n()
+const { t, te, locale } = useI18n()
 const description = computed(() => pickText(props.template.description, locale.value))
+const missing = computed(() => moduleNames(missingModulesOf(props.template), { t, te }).join(', '))
 const label = computed(() =>
-  [props.template.name, props.template.tier === 'premium' ? t('templatePicker.premium') : t('templatePicker.free'), props.template.current ? t('templatePicker.inUse') : '', props.template.locked ? t('templatePicker.lockedShort') : '']
+  [props.template.name, props.template.tier === 'premium' ? t('templatePicker.premium') : t('templatePicker.free'), props.template.current ? t('templatePicker.inUse') : '', props.template.locked ? t('templatePicker.lockedShort') : '', missing.value ? t('templatePicker.missing.label', { names: missing.value }) : '']
     .filter(Boolean)
     .join(', ')
 )
@@ -49,6 +50,10 @@ const label = computed(() =>
         </UiBadge>
       </span>
       <span v-if="description" class="line-clamp-2 text-sm text-ink-600">{{ description }}</span>
+      <span v-if="missing" class="flex items-start gap-1.5 text-xs text-warning-700" data-testid="template-missing">
+        <Puzzle class="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <span>{{ t('templatePicker.missing.label', { names: missing }) }}</span>
+      </span>
       <span v-if="template.locked" class="mt-auto pt-1 text-xs font-medium text-gold-700">{{ t('templatePicker.lockedHint') }}</span>
     </span>
   </button>

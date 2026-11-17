@@ -2149,6 +2149,16 @@ export default {
     inUse: 'In use',
     noPreview: 'No image',
     lockedShort: 'locked',
+    missing: {
+      label: 'Does not include: {names}',
+      title: 'This template lacks something you use',
+      ask: 'This template does not include {names}, which you have turned on. It will not show on your invitation. Change anyway?',
+      accept: 'Change anyway',
+      cancel: 'Not now',
+      blocked: 'Cannot turn on {module}: the "{template}" template does not include it. Change template to use it.',
+      blockedGeneric: 'Cannot turn on {module}: your invitation template does not include it. Change template to use it.',
+      change: 'Change template'
+    },
     lockedHint: 'Unlocked with the full event',
     applied: 'Done, you now use {name}.',
     undoNotice: 'You changed templates. You were using {name}.',

@@ -15,7 +15,8 @@ import { ImageOff, LayoutTemplate, Undo2 } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiCard, UiSkeleton, useToast } from '@/ui'
 import { SUPPORT_EMAIL, mailtoLink } from '@/config/brand'
 import TemplatePickerService from '../services/TemplatePickerService'
-import { unlockLocation } from '../utils/templatePicker'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
+import { activeModuleKeys, unlockLocation } from '../utils/templatePicker'
 import TemplatePickerSheet from './TemplatePickerSheet.vue'
 
 const props = defineProps({
@@ -34,6 +35,8 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
+const eventsStore = useEventsStore()
+const activeModules = computed(() => activeModuleKeys(eventsStore.activeEvent?.modules))
 
 const open = ref(false)
 const sheet = ref(null)
@@ -155,6 +158,7 @@ watch(() => props.eventId, loadCurrent)
       :event-id="eventId"
       :initial-template-id="initialTemplateId"
       :from-payment="fromPayment"
+      :active-modules="activeModules"
       @changed="onChanged"
       @unlock="goUnlock"
     />

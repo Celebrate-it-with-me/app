@@ -63,6 +63,8 @@ const CATALOG = [
   { id: 4, slug: 'golden-night', name: 'Noche dorada', description: { es: 'Fondo oscuro con detalles en oro.', en: 'Dark background with gold details.' }, tier: 'premium', previewImage: poster('#3a2f4b', '#17121f', 'XV'), hasPresets: false, color: '#c9a24b' }
 ]
 
+const MISSING = { 2: ['seating'], 3: ['comments', 'seating'], 4: ['seating'] }
+
 const state = { current: 1, undo: null, cover: null }
 
 function snapshot() {
@@ -72,6 +74,8 @@ function snapshot() {
   return CATALOG.map(template => ({
     ...Object.fromEntries(Object.entries(template).filter(([key]) => key !== 'color')),
     eventTypes: ['quinceanera', 'wedding'],
+    // Contract module-template-compat: slugs of the modules this template has no block for (native templates: none).
+    missingModules: MISSING[template.id] ?? [],
     locked: template.tier === 'premium' && !unlocked,
     current: template.id === state.current
   }))

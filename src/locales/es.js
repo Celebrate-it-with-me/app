@@ -2149,6 +2149,16 @@ export default {
     inUse: 'En uso',
     noPreview: 'Sin imagen',
     lockedShort: 'bloqueada',
+    missing: {
+      label: 'No incluye: {names}',
+      title: 'Esta plantilla no trae todo lo que usas',
+      ask: 'Esta plantilla no incluye {names}, que tienes activo. No se mostrará en tu invitación. ¿Cambiar de todos modos?',
+      accept: 'Cambiar de todos modos',
+      cancel: 'Mejor no',
+      blocked: 'No se puede activar {module}: la plantilla «{template}» no lo incluye. Cambia de plantilla para usarlo.',
+      blockedGeneric: 'No se puede activar {module}: la plantilla de tu invitación no lo incluye. Cambia de plantilla para usarlo.',
+      change: 'Cambiar plantilla'
+    },
     lockedHint: 'Se desbloquea con el evento completo',
     applied: 'Listo, ahora usas {name}.',
     undoNotice: 'Cambiaste de plantilla. Antes usabas {name}.',
