@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Lock } from 'lucide-vue-next'
 import { UiButton, UiField, UiInput, useToast } from '@/ui'
 import PaymentsService from '../services/PaymentsService'
+import { isEmailNotVerified } from '@/modules/email-verification/utils/emailVerification'
 import { formatMoney, isInvalidCode } from '../utils/money'
 import { readPendingCode, clearPendingCode } from '../utils/pendingCode'
 
@@ -57,6 +58,8 @@ async function pay() {
     window.location.assign(url)
   } catch (e) {
     paying.value = false
+    // Unverified email: the global dialog explains it; the code and quote stay as they were.
+    if (isEmailNotVerified(e)) return
     if (isInvalidCode(e)) codeError.value = t('payments.invalidCode')
     else showError(t('payments.checkoutFailed'))
   }

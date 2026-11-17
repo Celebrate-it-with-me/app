@@ -47,6 +47,7 @@ export default {
     reset: 'New password',
     passwordUpdated: 'Password updated',
     confirmEmail: 'Confirm email',
+    emailVerified: 'Email verified',
     invite: 'Collaboration invite',
     terms: 'Terms of Service',
     privacy: 'Privacy Policy',
@@ -1946,6 +1947,31 @@ export default {
         title_invalid: 'Check the song name.',
         tooMany: 'Too many attempts. Wait a minute and try again.'
       }
+    }
+  },
+  emailVerify: {
+    resend: 'Resend email',
+    limited: 'You have asked for too many emails. Wait a few minutes and try again.',
+    error: 'We could not send the email. Please try again in a moment.',
+    alreadyVerified: 'Your email is already verified.',
+    notice: {
+      title: 'Verify your email',
+      text: 'We sent a link to {email}. You can keep building your event; you will need it to publish the invitation and to pay.',
+      sent: 'Done, we sent a new email to {email}.'
+    },
+    dialog: {
+      title: 'Verify your email to continue',
+      text: 'To publish your invitation or pay, first confirm your email with the link we sent to {email}.',
+      sent: 'Done, we sent a new email to {email}. Open the link and try again.',
+      alreadyVerified: 'Your email is already verified. Try again.',
+      close: 'Close'
+    },
+    page: {
+      goDashboard: 'Go to my dashboard',
+      sent: 'Done, we sent a new email. Open the link to verify.',
+      ok: { title: 'Email verified', text: 'Thank you, your email is confirmed. You can now publish your invitation.' },
+      expired: { title: 'The link has expired', text: 'Links last 60 minutes. Ask for a new one and open it from your email.' },
+      invalid: { title: 'Invalid link', text: 'This link does not work. Ask for a new one from your dashboard.' }
     }
   },
   payments: {
