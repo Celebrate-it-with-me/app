@@ -61,7 +61,8 @@ const onSubmit = handleSubmit(async values => {
         activeEvent: user.activeEvent ?? null,
         justLogin: true,
         avatar: user.avatar_url ?? '',
-        phone: user.phone ?? ''
+        phone: user.phone ?? '',
+        emailVerified: user.emailVerified
       })
       const preferences = await userStore.getPreferences()
       if (preferences?.status === 200) userStore.setPreferences(preferences.data?.data ?? {})

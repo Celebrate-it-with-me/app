@@ -43,6 +43,14 @@ const nonAuthRoutes = [
     }
   },
   {
+    path: '/email-verified',
+    name: 'email-verified',
+    component: () => import('@/modules/email-verification/views/EmailVerifiedView.vue'),
+    meta: {
+      titleKey: 'titles.emailVerified'
+    }
+  },
+  {
     path: '/sign-in',
     name: 'sign-in',
     component: () => import('@/views/external/SignInView.vue'),

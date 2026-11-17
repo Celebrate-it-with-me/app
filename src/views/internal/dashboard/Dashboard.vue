@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
@@ -8,6 +8,8 @@ import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
 import { useActivityStore } from '@/stores/useActivityStore'
 import TemplatePickerService from '@/modules/template-picker/services/TemplatePickerService'
 import { useToast } from '@/ui'
+import { useUserStore } from '@/stores/useUserStore'
+import EmailVerifyNotice from '@/modules/email-verification/components/EmailVerifyNotice.vue'
 import DashboardHero from './DashboardHero.vue'
 import DashboardStats from './DashboardStats.vue'
 import DashboardActivity from './DashboardActivity.vue'
@@ -140,10 +142,14 @@ async function load() {
 }
 
 watch(() => event.value?.id, load, { immediate: true })
+
+// The permanent notice follows the API's flag; read it fresh on every visit so it disappears once the email is verified.
+onMounted(() => useUserStore().syncEmailVerified())
 </script>
 
 <template>
   <div v-if="event">
+    <EmailVerifyNotice />
     <DashboardHero
       :event-id="event.id"
       :name="event.eventName"

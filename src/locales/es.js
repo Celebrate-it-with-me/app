@@ -47,6 +47,7 @@ export default {
     reset: 'Nueva contraseña',
     passwordUpdated: 'Contraseña actualizada',
     confirmEmail: 'Confirmar correo',
+    emailVerified: 'Correo verificado',
     invite: 'Invitación para colaborar',
     terms: 'Términos del servicio',
     privacy: 'Política de privacidad',
@@ -1946,6 +1947,31 @@ export default {
         title_invalid: 'Revisa el nombre de la canción.',
         tooMany: 'Demasiados intentos. Espera un minuto y vuelve a intentar.'
       }
+    }
+  },
+  emailVerify: {
+    resend: 'Reenviar correo',
+    limited: 'Has pedido demasiados correos. Espera unos minutos y vuelve a intentarlo.',
+    error: 'No pudimos enviar el correo. Inténtalo de nuevo en un momento.',
+    alreadyVerified: 'Tu correo ya está verificado.',
+    notice: {
+      title: 'Verifica tu correo',
+      text: 'Te enviamos un enlace a {email}. Puedes seguir armando tu evento; lo necesitarás para publicar la invitación y para pagar.',
+      sent: 'Listo, te enviamos un correo nuevo a {email}.'
+    },
+    dialog: {
+      title: 'Verifica tu correo para continuar',
+      text: 'Para publicar tu invitación o pagar, confirma primero tu correo con el enlace que enviamos a {email}.',
+      sent: 'Listo, te enviamos un correo nuevo a {email}. Abre el enlace y vuelve a intentarlo.',
+      alreadyVerified: 'Tu correo ya está verificado. Vuelve a intentarlo.',
+      close: 'Cerrar'
+    },
+    page: {
+      goDashboard: 'Ir a mi panel',
+      sent: 'Listo, te enviamos un correo nuevo. Abre el enlace para verificar.',
+      ok: { title: 'Correo verificado', text: 'Gracias, tu correo quedó confirmado. Ya puedes publicar tu invitación.' },
+      expired: { title: 'El enlace caducó', text: 'Los enlaces duran 60 minutos. Pide uno nuevo y ábrelo desde tu correo.' },
+      invalid: { title: 'Enlace no válido', text: 'Este enlace no funciona. Pide uno nuevo desde tu panel.' }
     }
   },
   payments: {
