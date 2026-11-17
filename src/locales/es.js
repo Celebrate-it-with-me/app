@@ -290,6 +290,14 @@ export default {
     confirmedText: 'Tu cuenta está lista. Entra y crea tu primer evento.',
     confirmFailedTitle: 'El enlace no es válido',
     confirmFailedText: 'Puede que haya expirado. Vuelve a registrarte o pide un enlace nuevo.',
+    social: {
+      backToSignIn: 'Volver a iniciar sesión',
+      accessDenied: { title: 'Cancelaste el inicio de sesión', text: 'No pasa nada: no entraste con {provider} y no cambiamos nada en tu cuenta. Puedes intentarlo de nuevo cuando quieras.' },
+      emailRequired: { title: 'Necesitamos tu correo', text: '{provider} no nos compartió tu correo electrónico, y lo necesitamos para crear tu cuenta. Revisa los permisos de tu cuenta en {provider} o regístrate con tu correo.' },
+      accountExists: { title: 'Ya tienes una cuenta', text: 'Ya existe una cuenta con el correo de tu cuenta de {provider}. Por seguridad, inicia sesión con tu contraseña.' },
+      oauthFailed: { title: 'No pudimos entrar', text: 'No pudimos entrar con {provider}. Inténtalo de nuevo en un momento o usa tu correo y contraseña.' },
+      sessionFailed: { title: 'No pudimos iniciar la sesión', text: 'Entraste con {provider}, pero no pudimos abrir tu sesión. Inténtalo de nuevo.' }
+    },
     socialSigning: 'Entrando con {provider}…',
     socialFailed: 'No pudimos entrar con tu cuenta social.',
     sessionFailed: 'No pudimos iniciar la sesión. Inténtalo de nuevo.'

@@ -9,7 +9,7 @@ import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { useUserStore } from '@/stores/useUserStore'
 import { UiField, UiInput, UiCheckbox, UiButton } from '@/ui'
 import AuthCard from '@/components/external/auth/AuthCard.vue'
-import GoogleButton from '@/components/external/auth/GoogleButton.vue'
+import SocialButtons from '@/components/external/auth/SocialButtons.vue'
 import { useCaptcha } from '@/components/external/auth/useCaptcha'
 import { isAccountSuspended } from '@/utils/accountSuspended'
 import { authErrorMessage } from '@/utils/authErrors'
@@ -104,7 +104,7 @@ const onSubmit = handleSubmit(async values => {
         <UiButton type="submit" block :loading="sending" class="mt-2">{{ t('common.signIn') }}</UiButton>
       </form>
 
-      <GoogleButton :disabled="sending" />
+      <SocialButtons :disabled="sending" />
 
       <template #footer>
         {{ t('auth.noAccount') }}
