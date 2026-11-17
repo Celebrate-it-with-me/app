@@ -14,14 +14,14 @@ const props = defineProps({
 
 const { t } = useI18n()
 const figures = computed(() => statsFigures(props.rsvp))
-const TONES = { success: 'bg-success-500', gold: 'bg-gold-500', ink: 'bg-ink-400', rose: 'bg-rose-500' }
+const TONES = { success: 'bg-success-500', gold: 'bg-gold-100/500', ink: 'bg-ink-400', rose: 'bg-rose-500' }
 </script>
 
 <template>
   <section aria-labelledby="stats-title" data-testid="dashboard-stats">
     <h2 id="stats-title" class="sr-only">{{ t('app.dashboard.stats.title') }}</h2>
 
-    <div v-if="figures.empty" class="flex flex-col items-start gap-3 rounded-xl border border-dashed border-gold-300 bg-gold-50 p-5 sm:flex-row sm:items-center sm:justify-between" data-testid="stats-empty">
+    <div v-if="figures.empty" class="flex flex-col items-start gap-3 rounded-xl border border-dashed border-gold-300 bg-gold-100/50 p-5 sm:flex-row sm:items-center sm:justify-between" data-testid="stats-empty">
       <div class="min-w-0">
         <p class="font-heading text-xl text-ink-900">{{ t('app.dashboard.stats.emptyTitle') }}</p>
         <p class="mt-1 text-base text-ink-600">{{ t('app.dashboard.stats.emptyText') }}</p>

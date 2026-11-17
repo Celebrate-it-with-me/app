@@ -84,3 +84,19 @@ export function statsFigures(rsvp) {
     ]
   }
 }
+
+/** Colour names the API sends for activity entries -> soft chip classes (text on tinted background, contrast >= 4.5:1). */
+export const ACTIVITY_TONES = {
+  blue: 'bg-blue-50 text-blue-700',
+  cyan: 'bg-cyan-50 text-cyan-700',
+  green: 'bg-success-50 text-success-700',
+  indigo: 'bg-indigo-50 text-indigo-700',
+  orange: 'bg-orange-50 text-orange-700',
+  pink: 'bg-rose-50 text-rose-700',
+  red: 'bg-danger-50 text-danger-700',
+  yellow: 'bg-gold-100 text-gold-700'
+}
+export const ACTIVITY_TONE_FALLBACK = 'bg-cream-200 text-ink-700'
+
+/** The tone classes for an API colour; an unknown or missing one gets the neutral chip, never nothing. */
+export const activityTone = color => ACTIVITY_TONES[String(color ?? '').toLowerCase()] ?? ACTIVITY_TONE_FALLBACK
