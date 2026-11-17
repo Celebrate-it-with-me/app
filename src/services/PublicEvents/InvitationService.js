@@ -60,6 +60,18 @@ class InvitationService {
     if (note !== undefined) body.note = note
     return PUBLIC_API.post(`${path(slug, code)}/rsvp`, body)
   }
+  /**
+   * One page (10) of the visible comments, pinned first. The authors are first names only.
+   * @param {{ slug: string, code: string, page?: number }} params
+   */
+  async listComments({ slug, code, page = 1 }) {
+    return PUBLIC_API.get(`${path(slug, code)}/comments`, { params: { page } })
+  }
+
+  /** @param {{ slug: string, code: string, comment: string }} params  201 { data: item } */
+  async postComment({ slug, code, comment }) {
+    return PUBLIC_API.post(`${path(slug, code)}/comments`, { comment })
+  }
 }
 
 export default new InvitationService()

@@ -424,6 +424,35 @@ export default {
       reservedWedding: 'Colores reservados para los novios',
       suggested: 'Colores sugeridos'
     },
+    comments: {
+      title: 'Deja unos saludos',
+      label: 'Tu mensaje',
+      placeholder: 'Escribe unas palabras para los anfitriones…',
+      count: '{n}/{max}',
+      send: 'Enviar',
+      sending: 'Enviando…',
+      thanks: 'Gracias, tu mensaje ya está publicado.',
+      empty: 'Sé el primero en dejar un mensaje.',
+      loading: 'Cargando mensajes…',
+      loadError: 'No pudimos cargar los mensajes.',
+      more: 'Ver más mensajes',
+      pinned: 'Destacado',
+      readOnly: 'Los mensajes están cerrados, pero puedes leerlos.',
+      list: 'Mensajes de los invitados',
+      errors: {
+        required: 'Escribe un mensaje antes de enviarlo.',
+        too_long: 'El mensaje es demasiado largo.',
+        too_many_attempts: 'Espera unos minutos antes de enviar otro mensaje.',
+        module_locked: 'Los mensajes no están disponibles en este momento.',
+        comments_full: 'Ya se alcanzó el máximo de mensajes.',
+        generic: 'No pudimos enviar tu mensaje. Inténtalo de nuevo.'
+      }
+    },
+    tables: {
+      title: 'Tu mesa',
+      table: 'Mesa {name}',
+      seat: 'Asiento {seat}'
+    },
     rsvp: {
       attending: 'Asistiré',
       notAttending: 'No podré asistir',
@@ -2048,6 +2077,8 @@ export default {
         dress_code: 'Código de vestimenta',
         padrinos: 'Con el cariño de',
         music: 'Música',
+        tables: 'Tu mesa',
+        comments: 'Comentarios',
         closing: 'Gracias por ser parte de mi día'
       },
       errors: {

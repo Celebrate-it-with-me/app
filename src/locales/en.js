@@ -424,6 +424,35 @@ export default {
       reservedWedding: 'Colors reserved for the couple',
       suggested: 'Suggested colors'
     },
+    comments: {
+      title: 'Leave a few words',
+      label: 'Your message',
+      placeholder: 'Write a few words for the hosts…',
+      count: '{n}/{max}',
+      send: 'Send',
+      sending: 'Sending…',
+      thanks: 'Thank you, your message is now posted.',
+      empty: 'Be the first to leave a message.',
+      loading: 'Loading messages…',
+      loadError: 'We could not load the messages.',
+      more: 'Show more messages',
+      pinned: 'Pinned',
+      readOnly: 'Messages are closed, but you can still read them.',
+      list: 'Guest messages',
+      errors: {
+        required: 'Write a message before sending it.',
+        too_long: 'The message is too long.',
+        too_many_attempts: 'Please wait a few minutes before sending another message.',
+        module_locked: 'Messages are not available right now.',
+        comments_full: 'The maximum number of messages has been reached.',
+        generic: 'We could not send your message. Please try again.'
+      }
+    },
+    tables: {
+      title: 'Your table',
+      table: 'Table {name}',
+      seat: 'Seat {seat}'
+    },
     rsvp: {
       attending: 'I\'ll be there',
       notAttending: 'I can\'t make it',
@@ -2048,6 +2077,8 @@ export default {
         dress_code: 'Dress code',
         padrinos: 'With the love of',
         music: 'Music',
+        tables: 'Your table',
+        comments: 'Comments',
         closing: 'Thank you for being part of my day'
       },
       errors: {
