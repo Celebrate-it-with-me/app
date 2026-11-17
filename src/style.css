@@ -377,3 +377,24 @@
     animation-duration: 1.5s;
   }
 }
+
+/* Ring behind the guide button's dot: a pending step she has not seen yet. */
+@keyframes guide-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.guide-pulse {
+  animation: guide-pulse 2.2s ease-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .guide-pulse {
+    animation: none;
+  }
+}
