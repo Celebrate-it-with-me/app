@@ -73,6 +73,15 @@ describe('AssistantGuide pill', () => {
     expect(q('guide-dot')).not.toBeNull()
   })
 
+  it('pulses softly while the step is unseen, and stops once the sheet was opened', async () => {
+    await mountGuide()
+    const pulse = q('guide-pulse')
+    expect(pulse).not.toBeNull()
+    expect(pulse.className).toContain('motion-reduce:hidden')
+    await open()
+    expect(q('guide-pulse')).toBeNull()
+  })
+
   it('shrinks to an icon on work screens', async () => {
     await mountGuide({ path: '/dashboard/invitation' })
     expect(trigger().dataset.variant).toBe('icon')

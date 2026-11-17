@@ -60,13 +60,43 @@ export function readiness({ hasDate, guestCount, published, budgetEnabled, budge
 }
 
 /**
- * The single most useful thing to do next, from real data only.
- * Returns `{ id, to }` (route target) or `{ id: 'allSet' }` when nothing is pending.
+ * What the hero's big countdown shows. `kind`: `none` (no date), `past`, `today` or `future` (with `n` days).
  */
-export function pickNextStep({ guestCount, status, pendingGuests, rsvpEnabled, budgetEnabled, budgetItems }) {
-  if (!guestCount) return { id: 'addGuests', to: '/dashboard/guests' }
-  if (status === 'draft') return { id: 'publish', to: 'edit' }
-  if (rsvpEnabled && pendingGuests > 0) return { id: 'pendingGuests', to: { path: '/dashboard/guests', query: { status: 'pending' } }, count: pendingGuests }
-  if (budgetEnabled && budgetItems === 0) return { id: 'budget', to: '/dashboard/budget' }
-  return { id: 'allSet' }
+export function countdownInfo(days) {
+  if (days === null || days === undefined) return { kind: 'none', n: 0 }
+  if (days < 0) return { kind: 'past', n: 0 }
+  if (days === 0) return { kind: 'today', n: 0 }
+  return { kind: 'future', n: days }
 }
+
+/**
+ * The four figures of the strip. `empty` is true when there is nobody on the list yet (the strip then invites to add guests).
+ * People include companions when the stats say so.
+ */
+export function statsFigures(rsvp) {
+  return {
+    empty: !rsvp.people,
+    items: [
+      { key: 'attending', value: rsvp.attending, tone: 'success' },
+      { key: 'pending', value: rsvp.pending, tone: 'gold' },
+      { key: 'declined', value: rsvp.declined, tone: 'ink' },
+      { key: 'total', value: rsvp.people, tone: 'rose' }
+    ]
+  }
+}
+
+/** Colour names the API sends for activity entries -> soft chip classes (text on tinted background, contrast >= 4.5:1). */
+export const ACTIVITY_TONES = {
+  blue: 'bg-blue-50 text-blue-700',
+  cyan: 'bg-cyan-50 text-cyan-700',
+  green: 'bg-success-50 text-success-700',
+  indigo: 'bg-indigo-50 text-indigo-700',
+  orange: 'bg-orange-50 text-orange-700',
+  pink: 'bg-rose-50 text-rose-700',
+  red: 'bg-danger-50 text-danger-700',
+  yellow: 'bg-gold-100 text-gold-700'
+}
+export const ACTIVITY_TONE_FALLBACK = 'bg-cream-200 text-ink-700'
+
+/** The tone classes for an API colour; an unknown or missing one gets the neutral chip, never nothing. */
+export const activityTone = color => ACTIVITY_TONES[String(color ?? '').toLowerCase()] ?? ACTIVITY_TONE_FALLBACK

@@ -1708,14 +1708,6 @@ export default {
       past: 'Ya pasó',
       edit: 'Editar evento',
       setup: 'Tu evento está al {n} % listo',
-      next: {
-        label: 'Tu siguiente paso',
-        addGuests: { title: 'Agrega a tus invitados', text: 'Sin lista no hay a quién enviar la invitación. Empieza con la familia.', cta: 'Agregar invitados' },
-        publish: { title: 'Publica tu invitación', text: 'Mientras esté en borrador, tus invitados no pueden verla ni confirmar.', cta: 'Revisar y publicar' },
-        pendingGuests: { title: '{n} invitados no han respondido | {n} invitado no ha respondido | {n} invitados no han respondido', text: 'Mira quién falta y ve quién necesita un recordatorio.', cta: 'Ver confirmaciones' },
-        budget: { title: 'Organiza tu presupuesto', text: 'Anota lo que ya contrataste y cuánto llevas pagado.', cta: 'Ir al presupuesto' },
-        allSet: { title: 'Todo al día', text: 'Tus invitados ya respondieron. Vuelve cuando haya novedades.' }
-      },
       rsvp: {
         title: 'Confirmaciones',
         attending: 'Confirmados',
@@ -1727,12 +1719,28 @@ export default {
         viewAll: 'Ver detalle'
       },
       invitation: {
-        title: 'Tu invitación',
         published: 'Publicada',
-        draft: 'Borrador',
-        publishedText: 'Tus invitados ya pueden verla y confirmar.',
-        draftText: 'Nadie puede verla todavía.',
-        manage: 'Gestionar publicación'
+        draft: 'Borrador'
+      },
+      hero: {
+        thumbAlt: 'Vista en miniatura de la invitación de {name}',
+        daysLeft: 'día para tu evento | días para tu evento',
+        today: '¡Es hoy!',
+        setDate: 'Definir la fecha',
+        publish: 'Publicar invitación',
+        share: 'Compartir',
+        view: 'Ver invitación',
+        draftHint: 'Es un borrador: nadie puede verla todavía. Publícala para poder compartirla.'
+      },
+      stats: {
+        title: 'Resumen de invitados',
+        attending: 'Confirmados',
+        pending: 'Pendientes',
+        declined: 'No asisten',
+        total: 'Invitados en total',
+        emptyTitle: 'Aún no tienes invitados',
+        emptyText: 'Agrega a tu familia y amigos para poder enviarles la invitación y ver quién confirma.',
+        emptyCta: 'Agregar invitados'
       },
       more: {
         title: 'Más sobre tu evento',
