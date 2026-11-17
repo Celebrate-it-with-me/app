@@ -60,13 +60,41 @@ export function readiness({ hasDate, guestCount, published, budgetEnabled, budge
 }
 
 /**
- * The single most useful thing to do next, from real data only.
- * Returns `{ id, to }` (route target) or `{ id: 'allSet' }` when nothing is pending.
+ * What the hero's big countdown shows. `kind`: `none` (no date), `past`, `today` or `future` (with `n` days).
  */
-export function pickNextStep({ guestCount, status, pendingGuests, rsvpEnabled, budgetEnabled, budgetItems }) {
-  if (!guestCount) return { id: 'addGuests', to: '/dashboard/guests' }
-  if (status === 'draft') return { id: 'publish', to: 'edit' }
-  if (rsvpEnabled && pendingGuests > 0) return { id: 'pendingGuests', to: { path: '/dashboard/guests', query: { status: 'pending' } }, count: pendingGuests }
-  if (budgetEnabled && budgetItems === 0) return { id: 'budget', to: '/dashboard/budget' }
-  return { id: 'allSet' }
+export function countdownInfo(days) {
+  if (days === null || days === undefined) return { kind: 'none', n: 0 }
+  if (days < 0) return { kind: 'past', n: 0 }
+  if (days === 0) return { kind: 'today', n: 0 }
+  return { kind: 'future', n: days }
+}
+
+/**
+ * The four figures of the strip. `empty` is true when there is nobody on the list yet (the strip then invites to add guests).
+ * People include companions when the stats say so.
+ */
+export function statsFigures(rsvp) {
+  return {
+    empty: !rsvp.people,
+    items: [
+      { key: 'attending', value: rsvp.attending, tone: 'success' },
+      { key: 'pending', value: rsvp.pending, tone: 'gold' },
+      { key: 'declined', value: rsvp.declined, tone: 'ink' },
+      { key: 'total', value: rsvp.people, tone: 'rose' }
+    ]
+  }
+}
+
+/**
+ * Public link of the invitation to copy. TODO(owner decision, TASKS.md "enlace genérico"): today a real link needs a guest
+ * code (`/i/:slug/:code`); until the generic link exists this is the slug address and only this function changes.
+ */
+export function invitationShareUrl(slug, origin = typeof window !== 'undefined' ? window.location.origin : '') {
+  if (!slug) return ''
+  return `${origin}/i/${encodeURIComponent(slug)}`
+}
+
+/** `wa.me` link with the message already written (WhatsApp is the main channel). */
+export function whatsappShareUrl(message) {
+  return `https://wa.me/?text=${encodeURIComponent(message)}`
 }

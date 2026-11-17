@@ -1,39 +1,34 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { storeToRefs } from 'pinia'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
 import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
 import { useActivityStore } from '@/stores/useActivityStore'
-import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
-import { cardFromNext, resolveTaskRoute } from '@/modules/assistant/utils/assistant'
+import TemplatePickerService from '@/modules/template-picker/services/TemplatePickerService'
 import { useToast } from '@/ui'
-import DashboardHeader from './DashboardHeader.vue'
-import DashboardNextStep from './DashboardNextStep.vue'
+import DashboardHero from './DashboardHero.vue'
+import DashboardStats from './DashboardStats.vue'
+import DashboardActivity from './DashboardActivity.vue'
 import DashboardStartLink from './DashboardStartLink.vue'
 import OnboardingService from '@/modules/onboarding/services/OnboardingService'
 import { allDone, normalizeProgress } from '@/modules/onboarding/utils/steps'
 import DashboardRsvp from './DashboardRsvp.vue'
-import DashboardInvitation from './DashboardInvitation.vue'
 import DashboardMore from './DashboardMore.vue'
-import { summarizeRsvp, pickNextStep, readiness } from './dashboardLogic'
+import { summarizeRsvp, readiness } from './dashboardLogic'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const { error: showError } = useToast()
 const eventsStore = useEventsStore()
 const rsvpStore = useRsvpStore()
 const budgetStore = useBudgetStore()
 const timelineStore = useTimelineStore()
 const activityStore = useActivityStore()
-const assistantStore = useAssistantStore()
-const { next: assistantNext, nextStatus } = storeToRefs(assistantStore)
 
 const event = computed(() => eventsStore.activeEvent)
 // A module counts when the event's plan includes it (the API sends `event.modules` from the catalog).
 const moduleActive = key => !!event.value?.modules?.some(m => m.key === key && m.state === 'active')
-const rsvpEnabled = computed(() => moduleActive('rsvp'))
 const budgetEnabled = computed(() => moduleActive('budget'))
 
 const rsvp = computed(() => summarizeRsvp(rsvpStore.stats))
@@ -44,25 +39,6 @@ const published = computed(() => event.value?.status === 'published')
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 const editTarget = computed(() => (event.value ? { name: 'edit-event', params: { id: event.value.id } } : null))
 
-// The assistant's step when the server answered; otherwise (loading, failed, unsupported event type, nothing to
-// suggest) the local rules, so the card is never empty.
-const serverStep = computed(() => (nextStatus.value === 'ready' ? cardFromNext(assistantNext.value) : null))
-const localStep = computed(() =>
-  pickNextStep({
-    guestCount: guestCount.value,
-    status: event.value?.status,
-    pendingGuests: rsvp.value.pendingGuests,
-    rsvpEnabled: rsvpEnabled.value,
-    budgetEnabled: budgetEnabled.value,
-    budgetItems: budget.value.items
-  })
-)
-const step = computed(() => serverStep.value ?? localStep.value)
-// While the assistant answers, a block of the card's size holds its place: showing the local rules first and swapping
-// them for the server's step (longer text, one more button) moved everything below. It gives up waiting after a moment.
-const STEP_WAIT_MS = 2500
-const stepWaitedTooLong = ref(false)
-const stepPending = computed(() => ['idle', 'loading'].includes(nextStatus.value) && !stepWaitedTooLong.value)
 const progress = computed(() =>
   readiness({
     hasDate: !!event.value?.startDate,
@@ -72,11 +48,6 @@ const progress = computed(() =>
     budgetItems: budget.value.items
   }).ratio
 )
-const stepTarget = computed(() => {
-  if (serverStep.value) return serverStep.value.local ? editTarget.value : resolveTaskRoute(serverStep.value.route, event.value?.id)
-  return step.value.to === 'edit' ? editTarget.value : step.value.to
-})
-
 const budget = computed(() => {
   const summary = budgetStore.summary
   const count = (summary?.categories ?? []).reduce((total, c) => total + c.itemCount, 0) + (summary?.uncategorized?.itemCount ?? 0)
@@ -139,17 +110,27 @@ async function loadStart(eventId) {
 
 const activity = computed(() => (activityStore.activities ?? []).slice(0, 5))
 
+// The invitation's thumbnail: the preview image of the template in use (the only place the app gets it). Best effort: a
+// failure or a template without image just leaves the hero on its fallback card.
+const thumb = ref('')
+async function loadThumb(eventId) {
+  thumb.value = ''
+  if (!canEdit.value) return
+  try {
+    const current = (await TemplatePickerService.templates(eventId)).find(item => item.current)
+    if (eventId === event.value?.id) thumb.value = current?.previewImage ?? ''
+  } catch {
+    // Viewers and unsupported event types get an error here; the fallback card is fine.
+  }
+}
+
 let loadId = 0
 async function load() {
   const current = event.value
   if (!current?.id) return
   const id = ++loadId
-  stepWaitedTooLong.value = false
-  setTimeout(() => {
-    if (id === loadId) stepWaitedTooLong.value = true
-  }, STEP_WAIT_MS)
   loadStart(current.id)
-  assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
+  loadThumb(current.id)
   const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
   if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
   const results = await Promise.allSettled(jobs)
@@ -157,32 +138,32 @@ async function load() {
 }
 
 watch(() => event.value?.id, load, { immediate: true })
-watch(locale, () => {
-  if (event.value?.id) assistantStore.fetchNext({ eventId: event.value.id, lang: locale.value, force: true })
-})
-
-// Coming back to the tab refreshes the step (the store spaces the queries).
-const onVisible = () => {
-  if (document.visibilityState === 'visible' && event.value?.id) assistantStore.fetchNext({ eventId: event.value.id, lang: locale.value })
-}
-onMounted(() => document.addEventListener('visibilitychange', onVisible))
-onBeforeUnmount(() => document.removeEventListener('visibilitychange', onVisible))
 </script>
 
 <template>
   <div v-if="event">
-    <DashboardHeader :name="event.eventName" :start-date="event.startDate" :progress="progress" :edit-to="canEdit ? editTarget : null" />
+    <DashboardHero
+      :event-id="event.id"
+      :name="event.eventName"
+      :start-date="event.startDate"
+      :progress="progress"
+      :published="published"
+      :slug="event.customUrlSlug"
+      :image="thumb"
+      :can-edit="canEdit"
+      :edit-to="editTarget"
+    />
 
-    <div v-if="stepPending" class="h-72 animate-pulse rounded-xl bg-cream-300 sm:h-48" aria-hidden="true" data-testid="next-step-placeholder" />
-    <DashboardNextStep v-else :step="step" :target="stepTarget" />
     <DashboardStartLink v-if="showStart" :done="start.done" :total="start.total" />
     <div v-else-if="holdStartSlot" class="mt-3 h-[4.125rem] rounded-xl border border-line bg-white" aria-hidden="true" data-testid="start-link-slot" />
 
-    <div class="mt-6 grid gap-4 lg:grid-cols-3">
-      <DashboardRsvp class="lg:col-span-2" :rsvp="rsvp" />
-      <DashboardInvitation :published="published" :edit-to="canEdit ? editTarget : null" />
+    <DashboardStats class="mt-6" :rsvp="rsvp" :can-edit="canEdit" />
+
+    <div class="mt-4 grid gap-4 lg:grid-cols-3">
+      <DashboardRsvp v-if="rsvp.people" class="lg:col-span-2" :rsvp="rsvp" />
+      <DashboardActivity :activity="activity" :class="rsvp.people ? '' : 'lg:col-span-3'" />
     </div>
 
-    <DashboardMore :budget-enabled="budgetEnabled" :budget="budget" :program="program" :activity="activity" />
+    <DashboardMore :budget-enabled="budgetEnabled" :budget="budget" :program="program" />
   </div>
 </template>

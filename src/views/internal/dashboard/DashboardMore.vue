@@ -7,9 +7,7 @@ const props = defineProps({
   budgetEnabled: { type: Boolean, default: false },
   budget: { type: Object, default: () => ({ cap: 0, estimated: 0, paid: 0, items: 0 }) },
   /** Next moments of the day, already sorted: `[{ id, title, time }]`. */
-  program: { type: Array, default: () => [] },
-  /** `[{ id, message, createdAt }]`. */
-  activity: { type: Array, default: () => [] }
+  program: { type: Array, default: () => [] }
 })
 
 const { t, locale } = useI18n()
@@ -27,7 +25,7 @@ const money = computed(() => value =>
     <h2 id="more-title" class="font-heading text-2xl text-ink-900">{{ t('app.dashboard.more.title') }}</h2>
     <p class="mt-1 text-sm text-ink-600">{{ t('app.dashboard.more.subtitle') }}</p>
 
-    <div class="mt-4 grid gap-4 lg:grid-cols-3">
+    <div class="mt-4 grid gap-4 md:grid-cols-2">
       <UiCard v-if="budgetEnabled" :title="t('app.dashboard.more.budget')" heading-level="h3" padding="sm" flat>
         <p v-if="!budget.items" class="text-sm text-ink-600">{{ t('app.dashboard.more.budgetEmpty') }}</p>
         <dl v-else class="space-y-1.5 text-sm">
@@ -56,16 +54,6 @@ const money = computed(() => value =>
           </li>
         </ul>
         <router-link to="/dashboard/timeline" class="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-rose-700 underline-offset-4 hover:underline">{{ t('app.dashboard.more.programOpen') }}</router-link>
-      </UiCard>
-
-      <UiCard :title="t('app.dashboard.more.activity')" heading-level="h3" padding="sm" flat>
-        <p v-if="!activity.length" class="text-sm text-ink-600">{{ t('app.dashboard.more.activityEmpty') }}</p>
-        <ul v-else class="space-y-2 text-sm">
-          <li v-for="item in activity" :key="item.id">
-            <p class="text-ink-900">{{ item.message }}</p>
-            <p class="text-xs text-ink-500">{{ item.createdAt }}</p>
-          </li>
-        </ul>
       </UiCard>
     </div>
   </section>

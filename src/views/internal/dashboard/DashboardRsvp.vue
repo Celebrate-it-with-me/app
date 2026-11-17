@@ -27,18 +27,8 @@ const rows = computed(() => [
     <p v-if="!rsvp.people" class="text-base text-ink-600">{{ t('app.dashboard.rsvp.empty') }}</p>
 
     <template v-else>
-      <dl class="grid grid-cols-3 gap-3">
-        <div v-for="row in rows" :key="row.key" class="min-w-0">
-          <dt class="flex items-start gap-1.5 text-sm text-ink-600">
-            <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full" :class="row.dot" aria-hidden="true"></span>
-            <span>{{ t(`app.dashboard.rsvp.${row.key}`) }}</span>
-          </dt>
-          <dd class="font-heading text-3xl leading-tight text-ink-900 tabular-nums">{{ row.value }}</dd>
-        </div>
-      </dl>
-
       <div
-        class="mt-4 flex h-2 overflow-hidden rounded-full bg-cream-300"
+        class="flex h-3 overflow-hidden rounded-full bg-cream-300"
         role="img"
         :aria-label="`${t('app.dashboard.rsvp.bar')}: ${shares.attending} %, ${shares.pending} %, ${shares.declined} %`"
       >
@@ -46,7 +36,16 @@ const rows = computed(() => [
         <div class="bg-gold-500" :style="{ width: shares.pending + '%' }"></div>
         <div class="bg-ink-400" :style="{ width: shares.declined + '%' }"></div>
       </div>
-      <p class="mt-2 text-sm text-ink-600">{{ rsvp.people }} {{ t('app.dashboard.rsvp.people') }}</p>
+      <ul class="mt-4 space-y-2 text-base">
+        <li v-for="row in rows" :key="row.key" class="flex items-center justify-between gap-3">
+          <span class="flex items-center gap-2 text-ink-700">
+            <span class="h-2 w-2 shrink-0 rounded-full" :class="row.dot" aria-hidden="true"></span>
+            {{ t(`app.dashboard.rsvp.${row.key}`) }}
+          </span>
+          <span class="tabular-nums text-ink-900">{{ shares[row.key] }} %</span>
+        </li>
+      </ul>
+      <p class="mt-3 text-sm text-ink-600">{{ rsvp.people }} {{ t('app.dashboard.rsvp.people') }}</p>
     </template>
   </UiCard>
 </template>

@@ -1708,14 +1708,6 @@ export default {
       past: 'Already happened',
       edit: 'Edit event',
       setup: 'Your event is {n}% ready',
-      next: {
-        label: 'Your next step',
-        addGuests: { title: 'Add your guests', text: 'With no list there is no one to send the invitation to. Start with family.', cta: 'Add guests' },
-        publish: { title: 'Publish your invitation', text: 'While it is a draft your guests cannot see it or confirm.', cta: 'Review and publish' },
-        pendingGuests: { title: '{n} guests have not replied | {n} guest has not replied | {n} guests have not replied', text: 'See who is missing and who needs a reminder.', cta: 'See confirmations' },
-        budget: { title: 'Set up your budget', text: 'Note what you already booked and how much you have paid.', cta: 'Go to budget' },
-        allSet: { title: 'All caught up', text: 'Your guests have replied. Come back when there is news.' }
-      },
       rsvp: {
         title: 'Confirmations',
         attending: 'Attending',
@@ -1727,12 +1719,32 @@ export default {
         viewAll: 'See details'
       },
       invitation: {
-        title: 'Your invitation',
         published: 'Published',
-        draft: 'Draft',
-        publishedText: 'Your guests can already see it and confirm.',
-        draftText: 'No one can see it yet.',
-        manage: 'Manage publishing'
+        draft: 'Draft'
+      },
+      hero: {
+        thumbAlt: 'Thumbnail of the invitation for {name}',
+        daysLeft: 'day to go | days to go',
+        today: 'It is today!',
+        setDate: 'Set the date',
+        publish: 'Publish invitation',
+        share: 'Copy link',
+        whatsapp: 'WhatsApp',
+        view: 'View invitation',
+        copied: 'Link copied',
+        copyFailed: 'We could not copy the link. Copy it by hand.',
+        draftHint: 'It is a draft: no one can see it yet. Publish it to be able to share it.',
+        whatsappText: 'You are invited to {name}. Here is your invitation: {url}'
+      },
+      stats: {
+        title: 'Guest summary',
+        attending: 'Attending',
+        pending: 'Pending',
+        declined: 'Not attending',
+        total: 'Guests in total',
+        emptyTitle: 'You have no guests yet',
+        emptyText: 'Add your family and friends so you can send them the invitation and see who confirms.',
+        emptyCta: 'Add guests'
       },
       more: {
         title: 'More about your event',
