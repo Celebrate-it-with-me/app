@@ -3,7 +3,10 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Plus } from 'lucide-vue-next'
 import { UiButton, UiCard, UiModal, UiPageHeader, UiStat, UiTabs } from '@/ui'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useSeatingController } from '@/modules/seating/composables/useSeatingController'
+import ModuleTemplateNotice from '@/modules/template-picker/components/ModuleTemplateNotice.vue'
+import ModuleTemplateGate from '@/modules/template-picker/components/ModuleTemplateGate.vue'
 import SeatingTablesList from '@/modules/seating/components/SeatingTablesList.vue'
 import SeatingTableDetails from '@/modules/seating/components/SeatingTableDetails.vue'
 import SeatingUnassignedGuests from '@/modules/seating/components/SeatingUnassignedGuests.vue'
@@ -13,6 +16,7 @@ import SeatingRemoveGuestModal from '@/modules/seating/components/SeatingRemoveG
 
 const { t } = useI18n()
 const c = useSeatingController()
+const eventsStore = useEventsStore()
 
 const tabs = computed(() => [
   { value: 'tables', label: t('app.seating.tabs.tables'), count: c.tables.value.length },
@@ -31,6 +35,7 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
         </UiButton>
       </template>
     </UiPageHeader>
+    <ModuleTemplateGate module="seating" />
 
     <div class="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
       <UiStat :label="t('app.seating.stats.tables')" :value="c.tables.value.length" tone="rose" />
@@ -113,7 +118,11 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
       :saving="c.saving.value"
       @update:open="val => (c.showFormModal.value = val)"
       @save="c.saveTable"
-    />
+    >
+      <template #notice>
+        <ModuleTemplateNotice v-if="c.blocked.value" class="mb-4" :event-id="eventsStore.activeEvent?.id" module="seating" :template-name="c.blocked.value.templateName" />
+      </template>
+    </SeatingTableFormModal>
     <SeatingDeleteTableModal
       :table="c.tableToDelete.value"
       :saving="c.saving.value"

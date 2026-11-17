@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock('../services/TemplatePickerService', () => ({ default: mocks }))
 vi.mock('@/modules/payments/services/PaymentsService', () => ({ default: { quote: mocks.quote } }))
 vi.mock('vue-router', () => ({ useRoute: () => ({ query: mocks.query }), useRouter: () => ({ push: mocks.push, replace: mocks.replace }) }))
+vi.mock('@/modules/events/stores/useEventsStore', () => ({ useEventsStore: () => ({ activeEvent: { modules: [{ key: 'comments', state: 'active' }] } }) }))
 
 import TemplatePickerEntry from '../components/TemplatePickerEntry.vue'
 

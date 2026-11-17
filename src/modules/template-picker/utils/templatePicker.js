@@ -38,6 +38,39 @@ export function writeErrorCode(error, field) {
   return null
 }
 
+// ---- module <-> template compatibility (docs/plans/module-template-compat-contract.md) ----
+
+/** The API answers 409 `{ code: 'template_missing_module', module, template: { slug, name } }` when the template lacks a module's block. */
+export const TEMPLATE_MISSING_MODULE = 'template_missing_module'
+
+/** `{ module, templateName }` if the failed request is that 409, else null. */
+export function templateMissingFrom(error) {
+  const data = error?.response?.data
+  if (error?.response?.status !== 409 || data?.code !== TEMPLATE_MISSING_MODULE) return null
+  return { module: String(data.module ?? ''), templateName: String(data.template?.name ?? '') }
+}
+
+/** The module slugs a template does not include (`missingModules`), always an array of strings. */
+export function missingModulesOf(template) {
+  return Array.isArray(template?.missingModules) ? template.missingModules.map(String) : []
+}
+
+/** The template's missing modules that the event has active: the ones the confirmation talks about. */
+export function conflictingModules(template, activeModules = []) {
+  const active = new Set((activeModules ?? []).map(String))
+  return missingModulesOf(template).filter(slug => active.has(slug))
+}
+
+/** Slugs of the event's modules in `active` state (the plan includes them and the admin has them on), from `event.modules`. */
+export function activeModuleKeys(modules) {
+  return (Array.isArray(modules) ? modules : []).filter(module => module?.state === 'active').map(module => String(module.key))
+}
+
+/** Translated module names (`moduleLocked.names.*`); an unknown slug is shown as it came. `t`/`te` are the i18n functions. */
+export function moduleNames(slugs, { t, te }) {
+  return slugs.map(slug => (te(`moduleLocked.names.${slug}`) ? t(`moduleLocked.names.${slug}`) : slug))
+}
+
 // ---- unlock bridge (D-2): the person leaves for the payment screen and comes back to the selector ----
 
 const RETURN_KEY = 'qv.templateReturn'

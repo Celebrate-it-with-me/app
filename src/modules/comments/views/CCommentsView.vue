@@ -5,6 +5,7 @@ import { MessageCircle, Plus, Search, SearchX } from 'lucide-vue-next'
 import { UiPageHeader, UiCard, UiButton, UiSelect, UiSkeleton, UiEmptyState, UiModal } from '@/ui'
 import { useEventCommentsStore } from '@/modules/comments/stores/useEventCommentsStore'
 import { useCommentsAdminController } from '@/modules/comments/composables/useCommentsAdminController'
+import ModuleTemplateGate from '@/modules/template-picker/components/ModuleTemplateGate.vue'
 import CommentRow from '../components/CommentRow.vue'
 import CommentDetails from '../components/CommentDetails.vue'
 import CommentFormModal from '../components/CommentFormModal.vue'
@@ -70,6 +71,7 @@ onBeforeUnmount(() => media?.removeEventListener('change', syncMedia))
         </UiButton>
       </template>
     </UiPageHeader>
+    <ModuleTemplateGate module="comments" />
 
     <div v-if="loading && !eventComments.length" class="mt-6 space-y-3">
       <UiSkeleton class="h-24" />

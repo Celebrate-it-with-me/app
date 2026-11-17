@@ -10,7 +10,7 @@ const getMock = async () => (import.meta.env.DEV && import.meta.env.VITE_INVITAT
 
 /** Organizer side of the template selector and cover photo (docs/plans/template-stage5-contract-draft.md, section 4). */
 class TemplatePickerService {
-  /** `Template[]` the event may see: `{ id, slug, name, description, tier, locked, current, previewImage, eventTypes, hasPresets }`. */
+  /** `Template[]` the event may see: `{ id, slug, name, description, tier, locked, current, previewImage, eventTypes, hasPresets, missingModules }` (`missingModules`: slugs of modules the template has no block for; API since feat/module-template-compat-api). */
   async templates(eventId) {
     const mock = await getMock()
     if (mock) return mock.templates(eventId)
