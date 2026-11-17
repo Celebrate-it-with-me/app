@@ -65,7 +65,7 @@ const publicHttps = href => {
   }
 }
 
-const SECTION_ANCHORS = /^#(pkg-[a-z0-9-]{1,40}|cover|itinerary|locations|dress_code|padrinos|gallery|rsvp|music|closing|countdown|save_the_date)$/
+const SECTION_ANCHORS = /^#(pkg-[a-z0-9-]{1,40}|cover|itinerary|locations|dress_code|padrinos|gallery|rsvp|music|closing|countdown|save_the_date|comments|tables|suggested-music|suggested_music)$/
 
 /** Fragments of the page, https, mailto: and tel:. Anything else (javascript:, data:, http:, //host, paths) is null. */
 export function safeLink(value) {
