@@ -19,7 +19,9 @@ const props = defineProps({
   /** Slug of the module the switch belongs to (`comments`, `seating`). */
   module: { type: String, required: true },
   /** `template.name` of the 409. */
-  templateName: { type: String, default: '' }
+  templateName: { type: String, default: '' },
+  /** `blocked`: the switch was refused (409). `current`: the fixed notice on the module's own screen. */
+  mode: { type: String, default: 'blocked' }
 })
 const emit = defineEmits(['changed'])
 
@@ -35,7 +37,8 @@ const activeModules = computed(() => activeModuleKeys(eventsStore.activeEvent?.m
     <div class="flex min-w-0 items-start gap-3">
       <Puzzle class="mt-0.5 h-5 w-5 shrink-0 text-warning-700" aria-hidden="true" />
       <p class="text-sm text-warning-700">
-        <template v-if="templateName">{{ t('templatePicker.missing.blocked', { module: name, template: templateName }) }}</template>
+        <template v-if="mode === 'current'">{{ t('templatePicker.missing.current', { module: name.toLowerCase() }) }}</template>
+        <template v-else-if="templateName">{{ t('templatePicker.missing.blocked', { module: name, template: templateName }) }}</template>
         <template v-else>{{ t('templatePicker.missing.blockedGeneric', { module: name }) }}</template>
       </p>
     </div>

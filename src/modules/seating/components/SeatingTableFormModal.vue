@@ -61,7 +61,8 @@ function submit() {
     size="md"
     @update:open="emit('update:open', $event)"
   >
-    <form id="seating-table-form" class="space-y-4" novalidate @submit.prevent="submit">
+    <slot name="notice" />
+    <form id="seating-table-form" class="mt-0 space-y-4" novalidate @submit.prevent="submit">
       <UiField :label="t('app.seating.form.name')" :hint="t('app.seating.form.nameHint')" :error="err('name')" required>
         <UiInput
           v-model="form.name"

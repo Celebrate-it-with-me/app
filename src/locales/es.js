@@ -2157,6 +2157,7 @@ export default {
       cancel: 'Mejor no',
       blocked: 'No se puede activar {module}: la plantilla «{template}» no lo incluye. Cambia de plantilla para usarlo.',
       blockedGeneric: 'No se puede activar {module}: la plantilla de tu invitación no lo incluye. Cambia de plantilla para usarlo.',
+      current: 'Tu plantilla actual no muestra {module} en la invitación.',
       change: 'Cambiar plantilla'
     },
     lockedHint: 'Se desbloquea con el evento completo',

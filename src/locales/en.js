@@ -2157,6 +2157,7 @@ export default {
       cancel: 'Not now',
       blocked: 'Cannot turn on {module}: the "{template}" template does not include it. Change template to use it.',
       blockedGeneric: 'Cannot turn on {module}: your invitation template does not include it. Change template to use it.',
+      current: 'Your current template does not show {module} on the invitation.',
       change: 'Change template'
     },
     lockedHint: 'Unlocked with the full event',

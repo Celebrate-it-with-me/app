@@ -10,6 +10,7 @@ import {
   isTableFull,
   sortTables
 } from '@/modules/seating/utils/seating'
+import { templateMissingFrom } from '@/modules/template-picker/utils/templatePicker'
 
 export function useSeatingController() {
   const { t } = useI18n()
@@ -28,6 +29,8 @@ export function useSeatingController() {
   const tableToDelete = ref(null)
   const guestToRemove = ref(null)
   const showDetailsModal = ref(false)
+  /** `{ module, templateName }` after the API refused the first table with 409 template_missing_module (the form stays open). */
+  const blocked = ref(null)
 
   const tables = computed(() => sortTables(store.tables))
   const selectedTable = computed(() => store.selectedTable)
@@ -72,6 +75,7 @@ export function useSeatingController() {
 
   async function saveTable(form) {
     saving.value = true
+    blocked.value = null
     try {
       const payload = formToPayload(form)
       if (editingTable.value) {
@@ -83,7 +87,8 @@ export function useSeatingController() {
       }
       showFormModal.value = false
     } catch (e) {
-      fail(e)
+      blocked.value = templateMissingFrom(e)
+      if (!blocked.value) fail(e)
     } finally {
       saving.value = false
     }
@@ -162,6 +167,7 @@ export function useSeatingController() {
     tableToDelete,
     guestToRemove,
     showDetailsModal,
+    blocked,
     tables,
     selectedTable,
     unassigned,

@@ -75,7 +75,7 @@ function snapshot() {
     ...Object.fromEntries(Object.entries(template).filter(([key]) => key !== 'color')),
     eventTypes: ['quinceanera', 'wedding'],
     // Contract module-template-compat: slugs of the modules this template has no block for (native templates: none).
-    missingModules: MISSING[template.id] ?? [],
+    missingModules: flags.includes('missingcurrent') && template.id === 1 ? ['comments', 'seating'] : (MISSING[template.id] ?? []), // flag `missingcurrent`: the one in use lacks both
     locked: template.tier === 'premium' && !unlocked,
     current: template.id === state.current
   }))
