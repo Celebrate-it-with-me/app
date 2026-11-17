@@ -58,6 +58,7 @@ describe('module compatibility helpers', () => {
     const t = i18n.global.t
     const te = i18n.global.te
     expect(moduleNames(['comments', 'seating', 'zzz'], { t, te })).toEqual(['Comentarios', 'Mesas', 'zzz'])
+    expect(moduleNames(['suggested_music'], { t, te })).toEqual(['Música sugerida'])
   })
 })
 

@@ -7,6 +7,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { Pause, Play } from 'lucide-vue-next'
 import { useInvitationContext } from '../composables/useInvitation'
+import { AUDIO_EVENT, announceAudio } from '../composables/audioBus'
 
 const props = defineProps({
   section: { type: Object, required: true },
@@ -47,7 +48,10 @@ function ensureAudio() {
   audio = new Audio()
   audio.preload = 'none'
   audio.loop = props.section.data?.loop !== false
-  audio.addEventListener('play', () => (playing.value = true))
+  audio.addEventListener('play', () => {
+    playing.value = true
+    announceAudio('background')
+  })
   audio.addEventListener('pause', () => (playing.value = false))
   audio.addEventListener('ended', () => (playing.value = false))
   audio.addEventListener('error', fail)
@@ -70,6 +74,11 @@ async function toggle() {
   }
 }
 
+// A suggested-song preview starts: the background music steps aside.
+function onOtherAudio(event) {
+  if (event.detail?.source !== 'background' && audio && !audio.paused) audio.pause()
+}
+
 function onVisibility() {
   if (document.hidden && audio && !audio.paused) audio.pause()
 }
@@ -78,10 +87,12 @@ function onVisibility() {
 const bar = typeof window !== 'undefined' && window.matchMedia?.('(max-width: 639px)')?.matches
 onMounted(() => {
   document.addEventListener('visibilitychange', onVisibility)
+  window.addEventListener(AUDIO_EVENT, onOtherAudio)
   if (bar) document.documentElement.style.scrollPaddingBottom = '5rem'
 })
 onBeforeUnmount(() => {
   document.removeEventListener('visibilitychange', onVisibility)
+  window.removeEventListener(AUDIO_EVENT, onOtherAudio)
   if (bar) document.documentElement.style.scrollPaddingBottom = ''
   if (!audio) return
   audio.pause()
