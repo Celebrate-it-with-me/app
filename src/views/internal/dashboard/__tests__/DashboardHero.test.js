@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
@@ -22,14 +22,13 @@ const mountHero = (props = {}) => {
   createApp({}).use(pinia)
   setActivePinia(pinia)
   return mount(DashboardHero, {
-    props: { eventId: 7, name: 'Los XV de Valentina', startDate: inDays(142), progress: 0.5, published: true, slug: 'xv-de-valentina', canEdit: true, editTo, ...props },
+    props: { eventId: 7, name: 'Los XV de Valentina', startDate: inDays(142), progress: 0.5, published: true, canViewGuests: true, canEdit: true, editTo, ...props },
     global: { plugins: [i18n, pinia], stubs }
   })
 }
 const button = (w, id) => w.find(`[data-testid=${id}]`)
 
 beforeEach(() => setLocale('es'))
-afterEach(() => vi.restoreAllMocks())
 
 describe('DashboardHero countdown', () => {
   it('shows the days as the protagonist number', () => {
@@ -60,21 +59,19 @@ describe('DashboardHero countdown', () => {
 })
 
 describe('DashboardHero published', () => {
-  it('copies the invitation link', async () => {
-    const writeText = vi.fn().mockResolvedValue()
-    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
-    await button(mountHero(), 'hero-share').trigger('click')
-    expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/i/xv-de-valentina`)
+  it('Share goes to the guest list, where each invitation is sent with its code', () => {
+    const share = button(mountHero(), 'hero-share')
+    expect(share.text()).toContain('Compartir')
+    expect(JSON.parse(share.attributes('data-to'))).toBe('/dashboard/guests')
   })
-  it('offers WhatsApp with the message and link, in the current language', () => {
-    const href = decodeURIComponent(button(mountHero(), 'hero-whatsapp').attributes('href'))
-    expect(href.startsWith('https://wa.me/?text=')).toBe(true)
-    expect(href).toContain('Te invito a Los XV de Valentina')
-    expect(href).toContain('/i/xv-de-valentina')
-  })
-  it('writes the WhatsApp text in English', () => {
+  it('says Share in English', () => {
     setLocale('en')
-    expect(decodeURIComponent(button(mountHero(), 'hero-whatsapp').attributes('href'))).toContain('You are invited to')
+    expect(button(mountHero(), 'hero-share').text()).toContain('Share')
+  })
+  it('hides Share from people who cannot see guests', () => {
+    const w = mountHero({ canViewGuests: false })
+    expect(button(w, 'hero-share').exists()).toBe(false)
+    expect(button(w, 'hero-publish').exists()).toBe(false)
   })
   it('has no publish button and opens the preview', async () => {
     const w = mountHero()
@@ -91,7 +88,6 @@ describe('DashboardHero draft', () => {
     expect(button(w, 'hero-publish').exists()).toBe(true)
     expect(JSON.parse(button(w, 'hero-publish').attributes('data-to')).name).toBe('edit-event')
     expect(button(w, 'hero-share').exists()).toBe(false)
-    expect(button(w, 'hero-whatsapp').exists()).toBe(false)
     expect(button(w, 'hero-draft-hint').text()).toContain('borrador')
     expect(button(w, 'hero-status').text()).toContain('Borrador')
   })

@@ -36,6 +36,8 @@ const guestCount = computed(() => event.value?.guestsCount ?? rsvp.value.people)
 const published = computed(() => event.value?.status === 'published')
 
 // Only owners and editors (`edit_event`) change the event; a viewer just reads.
+// Owners always see their guests; other roles by the `view_guests` permission (same rule as the collaborators menu).
+const canViewGuests = computed(() => event.value?.userRole === 'owner' || eventsStore.hasPermission('view_guests'))
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 const editTarget = computed(() => (event.value ? { name: 'edit-event', params: { id: event.value.id } } : null))
 
@@ -148,7 +150,7 @@ watch(() => event.value?.id, load, { immediate: true })
       :start-date="event.startDate"
       :progress="progress"
       :published="published"
-      :slug="event.customUrlSlug"
+      :can-view-guests="canViewGuests"
       :image="thumb"
       :can-edit="canEdit"
       :edit-to="editTarget"

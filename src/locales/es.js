@@ -1728,13 +1728,9 @@ export default {
         today: '¡Es hoy!',
         setDate: 'Definir la fecha',
         publish: 'Publicar invitación',
-        share: 'Copiar enlace',
-        whatsapp: 'WhatsApp',
+        share: 'Compartir',
         view: 'Ver invitación',
-        copied: 'Enlace copiado',
-        copyFailed: 'No pudimos copiar el enlace. Cópialo a mano.',
-        draftHint: 'Es un borrador: nadie puede verla todavía. Publícala para poder compartirla.',
-        whatsappText: 'Te invito a {name}. Aquí está tu invitación: {url}'
+        draftHint: 'Es un borrador: nadie puede verla todavía. Publícala para poder compartirla.'
       },
       stats: {
         title: 'Resumen de invitados',

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseEventDate, daysUntil, summarizeRsvp, rsvpShares, readiness, countdownInfo, statsFigures, invitationShareUrl, whatsappShareUrl } from '../dashboardLogic'
+import { parseEventDate, daysUntil, summarizeRsvp, rsvpShares, readiness, countdownInfo, statsFigures } from '../dashboardLogic'
 
 describe('parseEventDate', () => {
   it('reads the API format as wall time', () => {
@@ -84,15 +84,5 @@ describe('statsFigures', () => {
   })
   it('is empty with nobody on the list', () => {
     expect(statsFigures({ attending: 0, pending: 0, declined: 0, people: 0 }).empty).toBe(true)
-  })
-})
-
-describe('share links', () => {
-  it('builds the invitation address from the slug', () => {
-    expect(invitationShareUrl('xv-de-valentina', 'https://quinvite.com')).toBe('https://quinvite.com/i/xv-de-valentina')
-    expect(invitationShareUrl('', 'https://quinvite.com')).toBe('')
-  })
-  it('writes the WhatsApp message into a wa.me link', () => {
-    expect(whatsappShareUrl('Hola & bienvenida')).toBe('https://wa.me/?text=Hola%20%26%20bienvenida')
   })
 })

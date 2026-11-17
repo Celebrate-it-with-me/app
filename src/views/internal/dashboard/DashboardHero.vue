@@ -1,11 +1,11 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { CalendarDays, Eye, MessageCircle, Pencil, Send, Share2 } from 'lucide-vue-next'
-import { UiBadge, UiButton, useToast } from '@/ui'
+import { CalendarDays, Eye, Pencil, Send, Share2 } from 'lucide-vue-next'
+import { UiBadge, UiButton } from '@/ui'
 import InvitationPreviewSheet from '@/modules/template-picker/components/InvitationPreviewSheet.vue'
 import DashboardPhone from './DashboardPhone.vue'
-import { parseEventDate, daysUntil, countdownInfo, invitationShareUrl, whatsappShareUrl } from './dashboardLogic'
+import { parseEventDate, daysUntil, countdownInfo } from './dashboardLogic'
 
 const props = defineProps({
   eventId: { type: [Number, String], default: null },
@@ -14,8 +14,8 @@ const props = defineProps({
   /** 0..1 as sent by the API (`setupProgress`). */
   progress: { type: Number, default: 0 },
   published: { type: Boolean, default: false },
-  /** The public address of the invitation (`customUrlSlug`). */
-  slug: { type: String, default: '' },
+  /** Sending goes through the guest list (each invitation has its own code): needs `view_guests`. */
+  canViewGuests: { type: Boolean, default: false },
   /** Preview image of the active template; empty draws the fallback card. */
   image: { type: String, default: '' },
   /** Only owners and editors change or publish the event; viewers just look. */
@@ -25,7 +25,6 @@ const props = defineProps({
 })
 
 const { t, locale } = useI18n()
-const { success, error: showError } = useToast()
 
 const date = computed(() => parseEventDate(props.startDate))
 const countdown = computed(() => countdownInfo(daysUntil(date.value)))
@@ -35,19 +34,6 @@ const dateLabel = computed(() =>
     : t('app.dashboard.noDate')
 )
 const percent = computed(() => Math.round(Math.min(1, Math.max(0, props.progress)) * 100))
-
-const link = computed(() => invitationShareUrl(props.slug))
-const whatsappHref = computed(() => whatsappShareUrl(t('app.dashboard.hero.whatsappText', { name: props.name, url: link.value })))
-const canShare = computed(() => props.published && !!link.value)
-
-async function copyLink() {
-  try {
-    await navigator.clipboard.writeText(link.value)
-    success(t('app.dashboard.hero.copied'))
-  } catch {
-    showError(t('app.dashboard.hero.copyFailed'))
-  }
-}
 
 const previewOpen = ref(false)
 </script>
@@ -97,17 +83,11 @@ const previewOpen = ref(false)
       </div>
 
       <div class="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-        <template v-if="published">
-          <UiButton v-if="canShare" class="col-span-2 sm:col-span-1" data-testid="hero-share" @click="copyLink">
-            <Share2 class="h-4 w-4" aria-hidden="true" />
-            {{ t('app.dashboard.hero.share') }}
-          </UiButton>
-          <UiButton v-if="canShare" :href="whatsappHref" target="_blank" rel="noopener noreferrer" variant="secondary" data-testid="hero-whatsapp">
-            <MessageCircle class="h-4 w-4" aria-hidden="true" />
-            {{ t('app.dashboard.hero.whatsapp') }}
-          </UiButton>
-        </template>
-        <UiButton v-else-if="canEdit && editTo" :to="editTo" class="col-span-2 sm:col-span-1" data-testid="hero-publish">
+        <UiButton v-if="published && canViewGuests" to="/dashboard/guests" class="col-span-2 sm:col-span-1" data-testid="hero-share">
+          <Share2 class="h-4 w-4" aria-hidden="true" />
+          {{ t('app.dashboard.hero.share') }}
+        </UiButton>
+        <UiButton v-if="!published && canEdit && editTo" :to="editTo" class="col-span-2 sm:col-span-1" data-testid="hero-publish">
           <Send class="h-4 w-4" aria-hidden="true" />
           {{ t('app.dashboard.hero.publish') }}
         </UiButton>

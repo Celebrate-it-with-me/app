@@ -84,17 +84,3 @@ export function statsFigures(rsvp) {
     ]
   }
 }
-
-/**
- * Public link of the invitation to copy. TODO(owner decision, TASKS.md "enlace genérico"): today a real link needs a guest
- * code (`/i/:slug/:code`); until the generic link exists this is the slug address and only this function changes.
- */
-export function invitationShareUrl(slug, origin = typeof window !== 'undefined' ? window.location.origin : '') {
-  if (!slug) return ''
-  return `${origin}/i/${encodeURIComponent(slug)}`
-}
-
-/** `wa.me` link with the message already written (WhatsApp is the main channel). */
-export function whatsappShareUrl(message) {
-  return `https://wa.me/?text=${encodeURIComponent(message)}`
-}

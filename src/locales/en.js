@@ -1728,13 +1728,9 @@ export default {
         today: 'It is today!',
         setDate: 'Set the date',
         publish: 'Publish invitation',
-        share: 'Copy link',
-        whatsapp: 'WhatsApp',
+        share: 'Share',
         view: 'View invitation',
-        copied: 'Link copied',
-        copyFailed: 'We could not copy the link. Copy it by hand.',
-        draftHint: 'It is a draft: no one can see it yet. Publish it to be able to share it.',
-        whatsappText: 'You are invited to {name}. Here is your invitation: {url}'
+        draftHint: 'It is a draft: no one can see it yet. Publish it to be able to share it.'
       },
       stats: {
         title: 'Guest summary',
