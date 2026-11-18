@@ -487,6 +487,9 @@ export default {
       vote: 'Vote',
       unvote: 'Remove my vote',
       votesCount: '{n} votes',
+      votesLeft: 'You have {n} votes left.',
+      votesLeftOne: 'You have 1 vote left.',
+      votesLeftNone: 'You have used all your votes.',
       playPreview: 'Play preview',
       pausePreview: 'Pause preview',
       previewError: 'We could not play the preview.',
@@ -504,6 +507,9 @@ export default {
         spotify_unavailable: 'Search is not available right now. Please try again in a moment.',
         too_many_attempts: 'Please wait a few minutes before trying again.',
         module_locked: 'Music suggestions are not available right now.',
+        read_only: 'Suggestions are closed: you can only see the list now.',
+        retry_later: 'We could not complete that right now. Please try again in a moment.',
+        invalid_query: 'Type between 2 and 100 characters to search.',
         not_found: 'That song is no longer available.',
         generic: 'We could not complete that. Please try again.'
       }
