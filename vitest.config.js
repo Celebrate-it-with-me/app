@@ -18,6 +18,8 @@ export default mergeConfig(
         reporter: ['text-summary', 'html', 'json-summary'],
         // Git-ignored (see `coverage` in .gitignore).
         reportsDirectory: './coverage',
+        // Still write the report when some test fails, so the baseline is never lost.
+        reportOnFailure: true,
         // `include` makes untested files count as 0 % (vitest >= 4 has no `all` option).
         include: ['src/**/*.{js,vue}'],
         exclude: [
