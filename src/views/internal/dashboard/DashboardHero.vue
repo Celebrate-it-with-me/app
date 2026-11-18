@@ -40,7 +40,7 @@ const previewOpen = ref(false)
 
 <template>
   <header class="grid gap-6 pb-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center sm:gap-10" data-testid="dashboard-hero">
-    <DashboardPhone :image="image" :name="name" :date-label="date ? dateLabel : ''" class="mx-auto sm:mx-0" />
+    <DashboardPhone :event-id="eventId" :live="canEdit && eventId != null" :image="image" :name="name" :date-label="date ? dateLabel : ''" class="mx-auto sm:mx-0" />
 
     <div class="min-w-0">
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
