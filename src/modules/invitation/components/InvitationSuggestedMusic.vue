@@ -25,17 +25,18 @@ const DEFAULT_MAX = 5
 const data = computed(() => props.section.data ?? {})
 const title = computed(() => props.section.title || data.value.heading || tt('songs.title'))
 const text = computed(() => props.section.text || data.value.subHeading || null)
-const canWrite = computed(() => data.value.canWrite !== false)
+const canWrite = computed(() => data.value.canWrite !== false && !readOnlyNow.value)
 const maxSuggestions = computed(() => Number(data.value.maxSuggestions) || DEFAULT_MAX)
 const usePreview = computed(() => data.value.usePreview === true)
 const votesOff = ref(false) // flips on a 403 votes_disabled, in case the hydrated flag is stale
+const readOnlyNow = ref(false) // flips on a 403 read_only, in case the hydrated flag is stale
 const useVotes = computed(() => data.value.useVotes !== false && !votesOff.value)
 
 const fieldId = useId()
 const root = ref(null)
 
 // ---- Codes ---------------------------------------------------------------------------------------------------------
-const KNOWN = ['limit', 'duplicate', 'required', 'votes_disabled', 'votes_exhausted', 'spotify_unavailable', 'module_locked', 'too_many_attempts']
+const KNOWN = ['limit', 'duplicate', 'required', 'votes_disabled', 'votes_exhausted', 'spotify_unavailable', 'module_locked', 'too_many_attempts', 'read_only']
 
 /** The contract names its errors by code: look for one in `code`, `error`, `message` and in the values of `errors`. */
 function codeOf(error) {
@@ -45,14 +46,19 @@ function codeOf(error) {
   return candidates.find(value => typeof value === 'string' && KNOWN.includes(value)) ?? null
 }
 
-/** Maps a failed request to an i18n key under `songs.errors`. */
-function errorKey(error) {
+/**
+ * Maps a failed request to an i18n key under `songs.errors`.
+ * `scope` says what the request was about: a 404 only means "that song is gone" when it targets a song (vote, remove);
+ * on search/suggest it is a generic failure, and a 422 on search is a bad query.
+ */
+function errorKey(error, scope = 'song') {
   const status = error?.response?.status
   const known = codeOf(error)
   if (status === 429) return 'too_many_attempts'
   if (status === 503) return 'spotify_unavailable'
-  if (status === 404) return 'not_found'
-  if (status === 403) return known === 'votes_disabled' ? 'votes_disabled' : 'module_locked'
+  if (status === 404) return scope === 'song' ? 'not_found' : 'retry_later'
+  if (status === 403) return known === 'votes_disabled' ? 'votes_disabled' : known === 'read_only' ? 'read_only' : 'module_locked'
+  if (status === 422 && scope === 'search') return 'invalid_query'
   if (status === 422) return known && ['limit', 'duplicate', 'required', 'votes_exhausted'].includes(known) ? known : 'generic'
   return 'generic'
 }
@@ -68,7 +74,17 @@ const listError = ref(false)
 const notice = ref('') // success or failure of the last action on the list, as an i18n key under songs.*
 const noticeTone = ref('error')
 const mySuggestions = ref(Number(data.value.mySuggestions) || 0)
+const votesRemaining = ref(null) // from the API's meta; null until it says
 const busy = ref(new Set()) // song ids with a request in flight
+
+/** Reads the per-guest counters the API puts in `meta` (votes left, optionally suggestions left). */
+function readCounters(m) {
+  if (!m) return
+  const left = m.votesRemaining
+  if (left !== null && left !== undefined && Number.isFinite(Number(left))) votesRemaining.value = Math.max(0, Number(left))
+  const sLeft = m.suggestionsRemaining
+  if (sLeft !== null && sLeft !== undefined && Number.isFinite(Number(sLeft))) mySuggestions.value = Math.max(0, maxSuggestions.value - Number(sLeft))
+}
 
 const limitReached = computed(() => mySuggestions.value >= maxSuggestions.value)
 const hasMore = computed(() => meta.value.currentPage < meta.value.lastPage)
@@ -81,6 +97,7 @@ async function load() {
     const { data: body } = await InvitationService.listSongs({ slug: slug(), code: code(), orderBy: orderBy.value, page: 1 })
     items.value = body.data ?? []
     meta.value = body.meta ?? { currentPage: 1, lastPage: 1, total: items.value.length }
+    readCounters(body.meta)
     status.value = 'ready'
   } catch {
     status.value = 'error'
@@ -96,6 +113,7 @@ async function more() {
     const known = new Set(items.value.map(item => item.id))
     items.value = [...items.value, ...(body.data ?? []).filter(item => !known.has(item.id))]
     meta.value = body.meta ?? meta.value
+    readCounters(body.meta)
   } catch {
     listError.value = true
   } finally {
@@ -190,7 +208,7 @@ async function runSearch() {
     // The typed text stays: the guest can retry without writing it again.
     results.value = []
     searched.value = false
-    searchError.value = errorKey(error)
+    searchError.value = errorKey(error, 'search')
   } finally {
     if (seq === searchSeq) searching.value = false
   }
@@ -228,6 +246,7 @@ async function suggest(song) {
     const { data: body } = await InvitationService.suggestSong({ slug: slug(), code: code(), song })
     suggestedIds.value = new Set([...suggestedIds.value, song.platformId])
     mySuggestions.value += 1
+    readCounters(body?.meta)
     if (body?.data) {
       replaceItem({ ...body.data, suggestedByMe: true })
       meta.value = { ...meta.value, total: (meta.value.total || 0) + 1 }
@@ -235,8 +254,9 @@ async function suggest(song) {
     if (status.value !== 'ready') status.value = 'ready'
     say('suggested', 'ok')
   } catch (error) {
-    const key = errorKey(error)
+    const key = errorKey(error, 'suggest')
     if (key === 'duplicate') suggestedIds.value = new Set([...suggestedIds.value, song.platformId])
+    if (key === 'read_only') readOnlyNow.value = true
     say(`errors.${key}`)
   } finally {
     suggesting.value = null
@@ -256,6 +276,7 @@ async function remove(item) {
     say('removed', 'ok')
   } catch (error) {
     const key = errorKey(error)
+    if (key === 'read_only') readOnlyNow.value = true
     if (key === 'not_found') items.value = items.value.filter(entry => entry.id !== item.id)
     say(`errors.${key}`)
   } finally {
@@ -270,9 +291,12 @@ async function vote(item) {
   try {
     const { data: body } = await InvitationService.voteSong({ slug: slug(), code: code(), id: item.id, vote: !item.votedByMe })
     if (body?.data) replaceItem(body.data)
+    readCounters(body?.meta)
   } catch (error) {
     const key = errorKey(error)
     if (key === 'votes_disabled') votesOff.value = true
+    if (key === 'read_only') readOnlyNow.value = true
+    if (key === 'votes_exhausted') votesRemaining.value = 0
     say(`errors.${key}`)
   } finally {
     track(item.id, false)
@@ -361,6 +385,11 @@ const sampleItems = computed(() =>
 )
 const shown = computed(() => (preview ? sampleItems.value : items.value))
 const noticeText = computed(() => (notice.value ? tt(`songs.${notice.value}`) : ''))
+const votesLeftText = computed(() => {
+  const n = votesRemaining.value
+  if (n === null || preview || !useVotes.value || !canWrite.value) return ''
+  return tt(n === 1 ? 'songs.votesLeftOne' : n === 0 ? 'songs.votesLeftNone' : 'songs.votesLeft', { n })
+})
 const searchErrorText = computed(() => (searchError.value ? tt(`songs.errors.${searchError.value}`) : ''))
 const initial = song => [...(song.title || '?')][0].toUpperCase()
 const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
@@ -484,6 +513,8 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
             </button>
           </div>
         </div>
+
+        <p v-if="votesLeftText" class="mb-3 text-sm text-inv-ink-soft" data-testid="songs-votes-left">{{ votesLeftText }}</p>
 
         <div aria-live="polite">
           <ul v-if="!preview && (status === 'loading' || status === 'idle')" class="flex flex-col gap-3" role="status" :aria-label="tt('songs.loading')">
