@@ -487,6 +487,9 @@ export default {
       vote: 'Votar',
       unvote: 'Quitar mi voto',
       votesCount: '{n} votos',
+      votesLeft: 'Te quedan {n} votos.',
+      votesLeftOne: 'Te queda 1 voto.',
+      votesLeftNone: 'Ya usaste todos tus votos.',
       playPreview: 'Escuchar avance',
       pausePreview: 'Pausar avance',
       previewError: 'No pudimos reproducir el avance.',
@@ -504,6 +507,9 @@ export default {
         spotify_unavailable: 'La búsqueda no está disponible ahora. Inténtalo en un momento.',
         too_many_attempts: 'Espera unos minutos antes de intentarlo de nuevo.',
         module_locked: 'Las sugerencias de música no están disponibles ahora.',
+        read_only: 'Las sugerencias están cerradas: ya solo puedes ver la lista.',
+        retry_later: 'Ahora mismo no pudimos completarlo. Inténtalo de nuevo en un momento.',
+        invalid_query: 'Escribe entre 2 y 100 caracteres para buscar.',
         not_found: 'Esa canción ya no está disponible.',
         generic: 'No pudimos completar la acción. Inténtalo de nuevo.'
       }
