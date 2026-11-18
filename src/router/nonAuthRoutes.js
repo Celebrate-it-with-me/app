@@ -75,6 +75,15 @@ const nonAuthRoutes = [
     }
   },
   {
+    path: '/data-deletion',
+    name: 'data-deletion',
+    component: () => import('@/views/external/DataDeletionView.vue'),
+    meta: {
+      titleKey: 'titles.dataDeletion',
+      requiresAuth: false
+    }
+  },
+  {
     path: '/cookies',
     name: 'cookies',
     component: () => import('@/views/external/CookiesView.vue'),

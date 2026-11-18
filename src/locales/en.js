@@ -33,6 +33,7 @@ export default {
     terms: 'Terms',
     privacy: 'Privacy',
     cookies: 'Cookies',
+    dataDeletion: 'Delete my data',
     menu: 'Menu',
     primary: 'Main',
     mobile: 'Mobile menu'
@@ -52,6 +53,7 @@ export default {
     terms: 'Terms of Service',
     privacy: 'Privacy Policy',
     cookies: 'Cookie Policy',
+    dataDeletion: 'Data deletion',
     help: 'Help',
     profile: 'Profile',
     preferences: 'Preferences',
@@ -2651,6 +2653,32 @@ export default {
       saved: 'Password updated.',
       wrongCurrent: 'The current password is not correct.'
     }
+  },
+  dataDeletion: {
+    intro: 'This page explains how to delete your Quinvite account and the data associated with it. It applies to every account, including those created with Facebook or Google.',
+    dataTitle: 'What data we store',
+    dataText: 'We store your account data (name, email, phone and profile photo), the events you create, your guests\' information and the purchases tied to your account. Full details are in our {privacy}.',
+    privacyLink: 'privacy policy',
+    howTitle: 'How to delete your account',
+    howSteps: [
+      'Sign in to your Quinvite account.',
+      'Go to Settings, Security section.',
+      'In the "Danger zone", click "Delete my account" and follow the confirmation steps.'
+    ],
+    goToSettings: 'Go to Security',
+    goToSignIn: 'Sign in to my account',
+    cannotTitle: 'If you cannot sign in',
+    cannotText: 'Email us at {email} from the address you signed up with and ask us to delete your account. We may ask for additional details to confirm it is you.',
+    whatTitle: 'What gets deleted',
+    whatItems: [
+      'Your name, email, phone and other personal data are deleted immediately.',
+      'Your unpublished events are deleted along with their guests. Published events are archived for a while and then deleted.',
+      'Your invoices and purchases are kept for legal and accounting obligations, without your contact details.'
+    ],
+    socialTitle: 'If you signed in with Facebook or Google',
+    socialText: 'Deleting your Quinvite account also deletes the associated data we received from Facebook or Google. You can also remove Quinvite\'s access from those services\' settings: on Facebook, Settings and privacy, Apps and websites; on Google, Google Account, Security, Third-party apps and services.',
+    contactTitle: 'Contact',
+    contactText: 'If you have questions about your data, email us at {email}.'
   },
   legal: {
     updated: 'Last updated: {date}',
