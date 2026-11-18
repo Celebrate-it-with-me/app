@@ -50,3 +50,13 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+### Test coverage
+
+```sh
+docker exec cwm_app npm run test:coverage        # report only (default)
+COVERAGE_ENFORCE=1 npm run test:coverage         # fail below 95 % (lines, branches, functions, statements)
+COVERAGE_ENFORCE=1 COVERAGE_THRESHOLD=90 ...     # different target
+```
+
+Writes a console summary, `coverage/index.html` (per-file detail) and `coverage/coverage-summary.json`; the folder is git-ignored. Target is 95 %. Excluded from measurement (see `test.coverage.exclude` in `vitest.config.js`): tests and mocks, `src/views/dev` showcase pages, `src/locales/{en,es}.js` dictionaries, `src/main.js`, `src/data`, `src/assets`.

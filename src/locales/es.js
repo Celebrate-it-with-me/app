@@ -33,6 +33,7 @@ export default {
     terms: 'Términos',
     privacy: 'Privacidad',
     cookies: 'Cookies',
+    dataDeletion: 'Eliminar mis datos',
     menu: 'Menú',
     primary: 'Principal',
     mobile: 'Menú móvil'
@@ -52,6 +53,7 @@ export default {
     terms: 'Términos del servicio',
     privacy: 'Política de privacidad',
     cookies: 'Política de cookies',
+    dataDeletion: 'Eliminación de datos',
     help: 'Ayuda',
     profile: 'Perfil',
     preferences: 'Preferencias',
@@ -2651,6 +2653,32 @@ export default {
       saved: 'Contraseña actualizada.',
       wrongCurrent: 'La contraseña actual no es correcta.'
     }
+  },
+  dataDeletion: {
+    intro: 'Aquí te explicamos cómo eliminar tu cuenta de Quinvite y los datos asociados a ella. Esta página aplica a todas las cuentas, incluidas las creadas con Facebook o Google.',
+    dataTitle: 'Qué datos guardamos',
+    dataText: 'Guardamos los datos de tu cuenta (nombre, correo, teléfono y foto de perfil), los eventos que creas, la información de tus invitados y las compras asociadas a tu cuenta. El detalle completo está en nuestra {privacy}.',
+    privacyLink: 'política de privacidad',
+    howTitle: 'Cómo eliminar tu cuenta',
+    howSteps: [
+      'Entra a tu cuenta de Quinvite.',
+      'Ve a Ajustes, sección Seguridad.',
+      'En la "Zona de peligro", pulsa "Eliminar mi cuenta" y sigue los pasos de confirmación.'
+    ],
+    goToSettings: 'Ir a Seguridad',
+    goToSignIn: 'Entrar a mi cuenta',
+    cannotTitle: 'Si no puedes entrar a tu cuenta',
+    cannotText: 'Escríbenos a {email} desde el correo con el que te registraste y pide la eliminación de tu cuenta. Podemos pedirte datos adicionales para confirmar que eres tú.',
+    whatTitle: 'Qué se elimina',
+    whatItems: [
+      'Tu nombre, correo, teléfono y demás datos personales se borran de inmediato.',
+      'Tus eventos sin publicar se borran junto con sus invitados. Los eventos publicados quedan archivados por un tiempo y luego se borran.',
+      'Tus facturas y compras se conservan por obligación legal y contable, sin tus datos de contacto.'
+    ],
+    socialTitle: 'Si entraste con Facebook o Google',
+    socialText: 'Al eliminar tu cuenta de Quinvite también se eliminan los datos asociados que recibimos de Facebook o Google. Además, puedes quitar el acceso de Quinvite desde la configuración de esos servicios: en Facebook, Configuración y privacidad, Aplicaciones y sitios web; en Google, Cuenta de Google, Seguridad, Conexiones con apps y servicios de terceros.',
+    contactTitle: 'Contacto',
+    contactText: 'Si tienes dudas sobre tus datos, escríbenos a {email}.'
   },
   legal: {
     updated: 'Última actualización: {date}',
