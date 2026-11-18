@@ -15,7 +15,8 @@ const product = [
 const legal = [
   { label: 'nav.terms', to: '/terms' },
   { label: 'nav.privacy', to: '/privacy' },
-  { label: 'nav.cookies', to: '/cookies' }
+  { label: 'nav.cookies', to: '/cookies' },
+  { label: 'nav.dataDeletion', to: '/data-deletion' }
 ]
 </script>
 
