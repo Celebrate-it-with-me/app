@@ -13,7 +13,6 @@ vi.mock('../services/RosterService', () => ({ default: roster }))
 vi.mock('../services/SendWizardService', () => ({ default: wizard }))
 vi.mock('../services/WhatsappService', () => ({ default: { send: vi.fn(), retry: vi.fn() } }))
 import RosterView from '../views/RosterView.vue'
-import GuestCard from '../components/GuestCard.vue'
 
 const family = (id, name, extra = {}) => ({ id, name, phone: '+13055550123', email: null, status: 'pending', link: `https://q.test/i/xv/${id}`, companions: [], notes: null, locale: null, delivery: { state: 'none' }, ...extra })
 const counts = { all: 3, attending: 0, notAttending: 0, pending: 3, delivery: { unsent: 3 } }
@@ -91,12 +90,15 @@ describe('RosterView send wizard (manual)', () => {
     expect(body()).not.toContain('Qué quieres enviar')
   })
 
-  it('keeps the previous dialog when the WhatsApp module is on', async () => {
+  it('runs the wizard in automatic mode when the WhatsApp module is on and unlocked, and in manual otherwise', async () => {
     await setup({ modules: [{ key: 'whatsapp', state: 'active' }] })
-    wrapper.findAllComponents(GuestCard)[0].vm.$emit('send', family(1, 'Ana Perez'))
-    await flushPromises()
-    expect(body()).toContain('Qué quieres enviar')
-    expect(wizard.audience).not.toHaveBeenCalled()
+    expect(wrapper.findComponent({ name: 'SendWizard' }).props('mode')).toBe('automatic')
+    wrapper.unmount()
+    await setup({ modules: [{ key: 'whatsapp', state: 'locked' }] })
+    expect(wrapper.findComponent({ name: 'SendWizard' }).props('mode')).toBe('manual')
+    wrapper.unmount()
+    await setup({ modules: [] })
+    expect(wrapper.findComponent({ name: 'SendWizard' }).props('mode')).toBe('manual')
   })
 
   it('opens the form over the wizard to fix a phone, using the family of the page', async () => {

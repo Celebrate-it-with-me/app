@@ -1,4 +1,5 @@
 import { CWM_API } from '@/services/axios'
+import { getMock } from './mockLoader'
 import { MAX_PAGES } from '../utils/sendWizard'
 
 const base = eventId => `/event/${eventId}`
@@ -10,7 +11,9 @@ const base = eventId => `/event/${eventId}`
 class SendWizardService {
   /** Counts, blocks, RSVP window and mode: `{ mode, event, rsvp, totalFamilies, categories, blocked, ... }`. */
   async audience(eventId, template = 'invitation') {
-    return (await CWM_API.get(`${base(eventId)}/whatsapp/audience`, { params: { template } })).data.data
+    const data = (await CWM_API.get(`${base(eventId)}/whatsapp/audience`, { params: { template } })).data.data
+    const mock = await getMock()
+    return mock ? mock.audience(data) : data
   }
 
   /** Every family with its reason and delivery, walked page by page: `[{ id, name, people, phone, status, reason, delivery }]`. */

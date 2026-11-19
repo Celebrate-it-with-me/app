@@ -100,7 +100,7 @@ describe('RosterView list', () => {
     expect(document.querySelector('[data-testid="send-bar"]').textContent).toContain('Enviar invitaciones · 3 sin enviar')
     button('Enviar invitaciones ·').click()
     await flushPromises()
-    expect(body()).toContain('Qué quieres enviar')
+    expect(body()).toContain('Nadie por ahora')
   })
 
   it('shows the plain label in the bar when nothing is left to send', async () => {
@@ -117,12 +117,14 @@ describe('RosterView list', () => {
     expect(body()).toContain('Ana Perez')
   })
 
-  it('sends to one family from her menu: the dialog opens with her preselected (automatic)', async () => {
+  it('sends to one family from her menu: the wizard opens with her preselected (automatic)', async () => {
     await setup()
     wrapper.findAllComponents(GuestCard)[0].vm.$emit('send', family(1, 'Ana Perez'))
     await flushPromises()
-    expect(body()).toContain('Qué quieres enviar')
-    expect(body()).toContain('Los que elegí (1)')
+    const wizardProps = wrapper.findComponent({ name: 'SendWizard' }).props()
+    expect(wizardProps.preselectedIds).toEqual([1])
+    expect(wizardProps.mode).toBe('automatic')
+    expect(wizardProps.open).toBe(true)
   })
 
   it('opens the wizard with one family preselected in manual mode', async () => {

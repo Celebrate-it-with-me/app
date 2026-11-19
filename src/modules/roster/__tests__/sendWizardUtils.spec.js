@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   BIG_BATCH, MODE_DEFAULT, STEPS, blockReason, blockedGroups, categoryAllowed, categoryCounts, keepsLink, loadErrorKey, manualLink, manualProgress,
+  BATCH_COUNTERS, allowedTemplates, batchProgress, chunk, localeCounts, mergeBatches, pollDelay, retryable, withoutTemplate, wizardSendErrorKey,
   membersOf, mergeFamilies, needsBigBatchConfirm, optedOutIn, renderMessage, templateFor, withoutPhone
 } from '../utils/sendWizard'
 
@@ -42,6 +43,8 @@ describe('blockReason', () => {
     const [a, , noPhone, invalid, optedOut, answered, noLink] = families()
     expect(blockReason(a, 'invitation')).toBeNull()
     expect(blockReason(noPhone, 'invitation')).toBeNull()
+    expect(blockReason(noPhone, 'invitation', 'automatic')).toBe('no_phone')
+    expect(blockReason(noLink, 'invitation', 'automatic')).toBeNull()
     expect(blockReason(invalid, 'invitation')).toBe('invalid_phone')
     expect(blockReason(optedOut, 'invitation', 'automatic')).toBe('opted_out')
     // manual mode: an opt-out can still be shared by hand (owner decision 2026-11-19)
@@ -58,7 +61,7 @@ describe('categories', () => {
   it('splits the families into the cards (P5, P6)', () => {
     const list = families()
     expect(membersOf(list, 'unsent').map(f => f.id)).toEqual([1, 3, 5, 8])
-    expect(membersOf(list, 'unsent', { mode: 'automatic' }).map(f => f.id)).toEqual([1, 3])
+    expect(membersOf(list, 'unsent', { mode: 'automatic' }).map(f => f.id)).toEqual([1, 7])
     expect(membersOf(list, 'pending', { template: 'reminder_pending' }).map(f => f.id)).toEqual([2])
     expect(membersOf(list, 'all').map(f => f.id)).toEqual([1, 2, 3, 5, 6, 8])
     expect(membersOf(list, 'selected', { selectedIds: [1, 5, 99] }).map(f => f.id)).toEqual([1, 5])
@@ -70,7 +73,7 @@ describe('categories', () => {
   it('lists what cannot be shared and who has no phone', () => {
     const list = families()
     expect(blockedGroups(list).map(g => [g.reason, g.families.map(f => f.id)])).toEqual([['invalid_phone', [4]]])
-    expect(blockedGroups(list, 'invitation', 'automatic').map(g => [g.reason, g.families.map(f => f.id)])).toEqual([['invalid_phone', [4]], ['opted_out', [5, 8]]])
+    expect(blockedGroups(list, 'invitation', 'automatic').map(g => [g.reason, g.families.map(f => f.id)])).toEqual([['no_phone', [3]], ['invalid_phone', [4]], ['opted_out', [5, 8]]])
     expect(optedOutIn(list).map(f => f.id)).toEqual([5, 8])
     expect(blockedGroups([])).toEqual([])
     expect(withoutPhone(membersOf(list, 'all')).map(f => f.id)).toEqual([3, 8])
@@ -90,7 +93,7 @@ describe('categories', () => {
     expect(needsBigBatchConfirm(BIG_BATCH + 1, 'automatic')).toBe(true)
     expect(needsBigBatchConfirm(BIG_BATCH + 1)).toBe(false)
     expect(needsBigBatchConfirm(BIG_BATCH + 1, 'manual')).toBe(false)
-    expect(STEPS).toEqual(['who', 'confirm'])
+    expect(STEPS).toEqual(['who', 'preview', 'confirm'])
   })
 })
 
@@ -113,5 +116,70 @@ describe('message and progress', () => {
     expect(loadErrorKey({ response: { status: 403 } })).toBe('forbidden')
     expect(loadErrorKey({ response: { status: 409, data: { code: 'event_archived' } } })).toBe('archived')
     expect(loadErrorKey(new Error('x'))).toBe('generic')
+  })
+})
+
+
+describe('F4 helpers', () => {
+  it('allows only save_the_date when the RSVP window is closed (P9)', () => {
+    expect(allowedTemplates()).toEqual(['invitation', 'reminder_pending', 'save_the_date'])
+    expect(allowedTemplates({ rsvpOpen: false })).toEqual(['save_the_date'])
+  })
+
+  it('counts languages and finds the families without an approved template', () => {
+    const list = [{ locale: 'es' }, { locale: 'en' }, { locale: 'es' }, {}]
+    expect(localeCounts(list)).toEqual([{ locale: 'es', n: 3 }, { locale: 'en', n: 1 }])
+    expect(localeCounts([{ locale: 'fr' }, { locale: 'en' }]).map(l => l.locale)).toEqual(['en', 'fr'])
+    expect(withoutTemplate(list, { en: { sendable: false }, es: { sendable: true } })).toEqual([{ locale: 'en' }])
+    expect(withoutTemplate(list, undefined)).toEqual([])
+  })
+
+  it('cuts a list in chunks of 500 by default', () => {
+    expect(chunk([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]])
+    expect(chunk(Array.from({ length: 501 }, (_, i) => i)).map(c => c.length)).toEqual([500, 1])
+    expect(chunk([])).toEqual([])
+  })
+
+  it('merges chained batches into one progress', () => {
+    expect(mergeBatches(null)).toBeNull()
+    expect(mergeBatches([null])).toBeNull()
+    const a = { batchId: 'a', startedAt: 't', total: 500, queued: 0, sent: 400, delivered: 50, read: 40, failed: 10, cancelled: 0, done: true, messages: [{ guestId: 1 }] }
+    const b = { batchId: 'b', total: 3, queued: 2, sent: 1, done: false }
+    const merged = mergeBatches([a, b])
+    expect(merged).toMatchObject({ batchId: 'a', batchIds: ['a', 'b'], startedAt: 't', total: 503, queued: 2, sent: 401, delivered: 50, read: 40, failed: 10, done: false })
+    expect(merged.messages).toEqual([{ guestId: 1 }])
+    expect(mergeBatches([a]).done).toBe(true)
+    expect(BATCH_COUNTERS).toEqual(['queued', 'sent', 'failed', 'delivered', 'read'])
+  })
+
+  it('computes the progress as everything that left the queue', () => {
+    expect(batchProgress({ total: 38, queued: 14 })).toEqual({ processed: 24, total: 38, percent: 63 })
+    expect(batchProgress({ total: 0, queued: 0 })).toEqual({ processed: 0, total: 0, percent: 0 })
+    expect(batchProgress(null)).toEqual({ processed: 0, total: 0, percent: 0 })
+  })
+
+  it('lists the failed messages and how many have an unknown outcome', () => {
+    const batch = { messages: [{ status: 'sent' }, { status: 'failed', errorCode: '131026' }, { status: 'failed', errorCode: 'unknown_delivery' }] }
+    expect(retryable(batch).messages).toHaveLength(2)
+    expect(retryable(batch).unknown).toBe(1)
+    expect(retryable(null)).toEqual({ messages: [], unknown: 0 })
+  })
+
+  it('polls every 2 s while queued, every 5 s for a minute, then stops', () => {
+    expect(pollDelay({ queued: 3 }, 0)).toBe(2000)
+    expect(pollDelay({ queued: 0 }, 0)).toBe(5000)
+    expect(pollDelay({ queued: 0 }, 59999)).toBe(5000)
+    expect(pollDelay({ queued: 0 }, 60000)).toBeNull()
+    expect(pollDelay(null)).toBe(5000)
+  })
+
+  it('maps the 409 codes of the wizard and delegates the rest', () => {
+    const e = (status, code) => ({ response: { status, data: { code } } })
+    const fallback = () => 'other'
+    expect(wizardSendErrorKey(e(409, 'event_not_published'), fallback)).toBe('notPublished')
+    expect(wizardSendErrorKey(e(409, 'rsvp_closed'), fallback)).toBe('rsvpClosed')
+    expect(wizardSendErrorKey(e(409, 'event_archived'), fallback)).toBe('archived')
+    expect(wizardSendErrorKey(e(500, 'x'), fallback)).toBe('other')
+    expect(wizardSendErrorKey(null, fallback)).toBe('other')
   })
 })

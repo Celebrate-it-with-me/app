@@ -53,7 +53,7 @@ describe('SendWizard step 1', () => {
     serve()
     await open()
     expect(body()).toContain('¿A quién se lo enviamos?')
-    expect(body()).toContain('Paso 1 de 2')
+    expect(body()).toContain('Paso 1 de 3')
     expect(body()).toContain('Aún sin invitación · 4 familias')
     expect(body()).toContain('Pendientes de responder · 0 familias')
     expect(body()).toContain('Todos · 4 familias')
@@ -68,9 +68,13 @@ describe('SendWizard step 1', () => {
     serve()
     await open()
     await click('Siguiente')
-    expect(body()).toContain('Paso 2 de 2')
+    expect(body()).toContain('Paso 2 de 3')
+    expect(body()).toContain('Así lo recibirán')
+    await click('Siguiente')
+    expect(body()).toContain('Paso 3 de 3')
     expect(body()).toContain('Enviar a mano · 4 familias')
     expect(document.querySelectorAll('[data-testid="manual-row"]')).toHaveLength(4)
+    await click('Atrás')
     await click('Atrás')
     expect(body()).toContain('¿A quién se lo enviamos?')
   })
@@ -95,27 +99,21 @@ describe('SendWizard step 1', () => {
     expect(w.emitted('add-guest')).toHaveLength(1)
   })
 
-  it('does not ask to confirm a batch above 100 families in manual mode', async () => {
+  it('does not ask for the big-batch confirmation in manual mode (P7b)', async () => {
     serve({ recipients: Array.from({ length: 101 }, (_, i) => rec(i + 1)) })
     await open()
-    expect(document.querySelector('[data-testid="who-big"]')).toBeNull()
     expect(button('Siguiente').disabled).toBe(false)
-  })
-
-  it('asks to confirm a batch above 100 families in automatic mode (rule ready for F4)', async () => {
-    serve({ recipients: Array.from({ length: 101 }, (_, i) => rec(i + 1)) })
-    await open({ mode: 'automatic' })
-    expect(button('Siguiente').disabled).toBe(true)
-    document.querySelector('[data-testid="who-big"] button').click()
-    await flushPromises()
-    expect(button('Siguiente').disabled).toBe(false)
+    await click('Siguiente')
+    await click('Siguiente')
+    expect(body()).toContain('Enviar a mano · 101 familias')
   })
 
   it('keeps blocking an opt-out in automatic mode and lists it', async () => {
-    serve()
+    serve({ audience: info({ mode: { automatic: true } }) })
     await open({ mode: 'automatic' })
-    expect(body()).toContain('Aún sin invitación · 3 familias')
+    expect(body()).toContain('Aún sin invitación · 2 familias')
     expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('Pidió no recibir mensajes')
+    expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('Falta el teléfono')
     expect(document.querySelector('[data-testid="who-optedout"]')).toBeNull()
   })
 
@@ -129,6 +127,7 @@ describe('SendWizard step 1', () => {
     expect(badge.textContent).toContain('Pidió no recibir mensajes')
     await click('Elegir las visibles')
     await click('Siguiente')
+    await click('Siguiente')
     const note = document.querySelector('[data-testid="manual-optedout"]')
     expect(note.textContent).toContain('Pidió no recibir mensajes')
     expect(document.querySelectorAll('[data-testid="manual-optedout"]')).toHaveLength(1)
@@ -138,6 +137,7 @@ describe('SendWizard step 1', () => {
     const recipients = [rec(1, { link: 'https://q.test/api/1' }), rec(2)]
     serve({ recipients })
     await open({ preselectedIds: [1, 2] })
+    await click('Siguiente')
     const links = [...document.querySelectorAll('[data-testid="manual-row"] a')].map(a => decodeURIComponent(a.getAttribute('href')))
     expect(links[0]).toContain('https://q.test/api/1')
     expect(links[1]).toContain('https://q.test/i/xv/2')
@@ -282,7 +282,7 @@ describe('SendWizard banners and errors', () => {
     await wrapper.setProps({ reloadToken: 2 })
     await flushPromises()
     expect(svc.audience).toHaveBeenCalledTimes(2)
-    expect(body()).toContain('Paso 1 de 2')
+    expect(body()).toContain('Paso 1 de 3')
   })
 
   it('emits closed from Cancel and from the close button', async () => {
@@ -301,8 +301,10 @@ describe('SendWizard preselected family', () => {
   it('jumps straight to the list when the family can be shared', async () => {
     serve()
     await open({ preselectedIds: [2] })
+    expect(body()).toContain('Paso 2 de 3')
+    expect(body()).toContain('Así lo recibirán')
+    await click('Siguiente')
     expect(body()).toContain('Enviar a mano · 1 familia')
-    expect(body()).toContain('Paso 2 de 2')
   })
 
   it('stays on step 1 when the family cannot be shared', async () => {
@@ -317,6 +319,7 @@ describe('SendWizard manual list', () => {
   const goToList = async () => {
     serve({ recipients: [rec(1), rec(2, { delivery: { state: 'manual', sharedAt: '2026-11-19T15:00:00Z' } }), rec(3, { phone: '', reason: 'no_phone' })] })
     await open({ preselectedIds: [1, 2, 3] })
+    await click('Siguiente')
   }
 
   it('shows progress, the sample message and the links with the message ready', async () => {
@@ -324,7 +327,6 @@ describe('SendWizard manual list', () => {
     expect(document.querySelector('[data-testid="manual-progress"]').textContent).toContain('Abiertos 1 de 3')
     expect(body()).toContain('Quedan 2 por enviar')
     expect(document.querySelector('[role="progressbar"]').getAttribute('aria-valuenow')).toBe('1')
-    expect(document.querySelector('[data-testid="message-sample"]').textContent).toContain('Hola Familia 1, te invitamos a Los XV')
     const links = [...document.querySelectorAll('[data-testid="manual-row"] a')].map(a => a.getAttribute('href'))
     expect(links[0]).toContain('https://wa.me/13055550101?text=')
     expect(decodeURIComponent(links[0])).toContain('https://q.test/i/xv/1')
@@ -373,29 +375,46 @@ describe('SendWizard manual list', () => {
   it('says it is done when every family was opened', async () => {
     serve({ recipients: [rec(1, { delivery: { state: 'manual', sharedAt: '2026-11-19T15:00:00Z' } })] })
     await open({ preselectedIds: [1] })
+    await click('Siguiente')
     expect(body()).toContain('Listo: abriste todas las conversaciones.')
   })
 
-  it('edits the message, warns when the link is missing and restores it (P1)', async () => {
-    await goToList()
-    await click('Cambiar mensaje')
+  it('keeps the edited text from step 2 in the links of step 3, and a template change drops it', async () => {
+    serve({ recipients: [rec(1)] })
+    await open({ preselectedIds: [1] })
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('Hola Familia 1, te invitamos a Los XV')
+    await click('Editar el texto')
     const area = document.querySelector('textarea')
     expect(area.value).toBe('Hola {name}, te invitamos a {event}. Aquí está tu invitación: {link}')
-    area.value = 'Hola {name}!'
+    area.value = 'Hola {name}! {link}'
     area.dispatchEvent(new Event('input'))
     await flushPromises()
-    expect(document.querySelector('[data-testid="message-sample"]').textContent).toContain('Hola Familia 1!')
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('Hola Familia 1! https://q.test/i/xv/1')
+    await click('Siguiente')
+    expect(decodeURIComponent(document.querySelector('[data-testid="manual-row"] a').getAttribute('href'))).toContain('Hola Familia 1! https://q.test/i/xv/1')
+    await click('Atrás')
+    await click('Editar el texto')
+    expect(document.querySelector('textarea').value).toBe('Hola {name}! {link}')
+    document.querySelector('textarea').value = 'Hola {name}!'
+    document.querySelector('textarea').dispatchEvent(new Event('input'))
+    await flushPromises()
     expect(body()).toContain('no incluye {link}')
     await click('Restaurar mensaje')
     expect(document.querySelector('textarea').value).toContain('{link}')
-    await click('Ocultar mensaje')
+    await click('Cambiar mensaje')
+    document.querySelectorAll('[data-testid="preview-templates"] [role="radio"]')[1].click()
+    await flushPromises()
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('aún no has respondido')
+    await click('Ocultar el texto')
     expect(document.querySelector('textarea')).toBeNull()
   })
 
   it('uses the save-the-date text when RSVP is closed', async () => {
     serve({ recipients: [rec(1)], audience: info({ rsvp: { isOpen: false } }) })
     await open({ preselectedIds: [1] })
-    expect(document.querySelector('[data-testid="message-sample"]').textContent).toContain('guarda la fecha')
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('guarda la fecha')
+    await click('Cambiar mensaje')
+    expect(document.querySelectorAll('[data-testid="preview-templates"] [role="radio"]')).toHaveLength(1)
   })
 
   it('closes from the footer', async () => {
@@ -409,16 +428,5 @@ describe('SendWizard edge cases', () => {
   it('does nothing without an event', async () => {
     await open({ eventId: null })
     expect(svc.audience).not.toHaveBeenCalled()
-  })
-
-  it('drops an edited message when the template changes', async () => {
-    const { default: SendStepManual } = await import('../components/send/SendStepManual.vue')
-    const step = mount(SendStepManual, { props: { eventId: 7, eventName: 'XV', families: [{ id: 1, name: 'Ana', people: 1, phone: '1', link: 'l', sharedAt: null }], template: 'invitation' }, global: { plugins: [i18n] }, attachTo: document.body })
-    await step.findAll('button')[0].trigger('click')
-    await step.find('textarea').setValue('custom {link}')
-    expect(step.find('[data-testid="message-sample"]').text()).toContain('custom l')
-    await step.setProps({ template: 'reminder_pending' })
-    expect(step.find('[data-testid="message-sample"]').text()).toContain('aún no has respondido')
-    step.unmount()
   })
 })

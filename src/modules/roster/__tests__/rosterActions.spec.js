@@ -343,7 +343,7 @@ describe('RosterView: events of the send wizard (manual mode)', () => {
   })
 })
 
-describe('RosterView: roles and the old dialog (automatic mode)', () => {
+describe('RosterView: roles and the send wizard (automatic mode)', () => {
   it('a viewer has no way to add, import, edit or send', async () => {
     await setup({ role: 'viewer' })
     expect(button('Agregar')).toBeUndefined()
@@ -357,21 +357,21 @@ describe('RosterView: roles and the old dialog (automatic mode)', () => {
     expect(card(0).props('canEdit')).toBe(true)
   })
 
-  it('sends from the header with nobody preselected, and unlock closes the dialog', async () => {
+  it('sends from the header with nobody preselected, and unlock closes the wizard', async () => {
     await setup()
     document.body.querySelector('[data-testid="send-header"]').click()
     await flushPromises()
-    expect(body()).toContain('Qué quieres enviar')
+    expect(body()).toContain('Nadie por ahora')
     expect(wrapper.vm.sendIds).toEqual([])
-    wrapper.findComponent({ name: 'WhatsappSendModal' }).vm.$emit('unlock')
+    wrapper.findComponent({ name: 'SendWizard' }).vm.$emit('unlock')
     await flushPromises()
-    expect(wrapper.vm.sendOpen).toBe(false)
+    expect(wrapper.vm.wizardOpen).toBe(false)
   })
 
-  it('reloads the list after the old dialog sent something', async () => {
+  it('reloads the list when the wizard closes', async () => {
     await setup()
     roster.list.mockClear()
-    wrapper.findComponent({ name: 'WhatsappSendModal' }).vm.$emit('sent')
+    wrapper.findComponent({ name: 'SendWizard' }).vm.$emit('closed')
     await flushPromises()
     expect(roster.list).toHaveBeenCalledTimes(1)
   })
