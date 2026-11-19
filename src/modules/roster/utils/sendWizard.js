@@ -8,7 +8,7 @@ import { whatsappUrl } from './roster'
 /** Cards of step 1, in order. `selected` opens the picker. */
 export const CATEGORIES = ['unsent', 'pending', 'all', 'selected']
 
-/** Decision P7: a batch of more families than this asks for an explicit "I understand". */
+/** Decision P7: an automatic batch of more families than this asks for an explicit "I understand" (not in manual mode). */
 export const BIG_BATCH = 100
 
 /**
@@ -23,6 +23,12 @@ export const WIZARD_HANDLES_AUTOMATIC = false
  */
 export const STEPS = ['who', 'confirm']
 
+/** Send modes: `manual` (wa.me, the organizer opens each chat) and `automatic` (Meta API, F4). */
+export const MODES = ['manual', 'automatic']
+
+/** Mode the wizard runs in until F4 turns the automatic send on. */
+export const MODE_DEFAULT = 'manual'
+
 /** Delivery states that mean "this family already got it, or the organizer opened it". */
 export const SENT_STATES = ['manual', 'queued', 'sent', 'delivered', 'read']
 
@@ -31,7 +37,8 @@ export const MAX_PAGES = 20
 
 /**
  * Joins the wizard's two reads of the same families: `recipients` (reason and delivery, from the audience endpoints)
- * and the `roster` rows (the link and the raw phone, which only the roster knows).
+ * and the `roster` rows (the raw phone, and the link when the API does not send `recipient.link` yet: the recipient's
+ * own link wins, the roster is the fallback).
  * Returns `[{ id, name, people, phone, status, reason, state, sharedAt, link, optedOut }]`.
  */
 export function mergeFamilies(recipients, roster) {
@@ -47,7 +54,7 @@ export function mergeFamilies(recipients, roster) {
       reason: r.reason ?? null,
       state: r.delivery?.state ?? 'none',
       sharedAt: r.delivery?.sharedAt ?? row?.delivery?.sharedAt ?? null,
-      link: row?.link ?? null,
+      link: r.link ?? row?.link ?? null,
       optedOut: !!row?.whatsappOptedOut || r.reason === 'opted_out'
     }
   })
@@ -55,10 +62,11 @@ export function mergeFamilies(recipients, roster) {
 
 /**
  * Why a family cannot be shared by hand, or null. A family without phone is NOT blocked in manual mode: wa.me opens
- * the contact picker for it. A malformed number and an opt-out are.
+ * the contact picker for it. A malformed number is blocked. An opt-out is blocked only in automatic mode: in manual
+ * mode the organizer can still share by hand (owner decision 2026-11-19), and the UI says the guest asked not to get messages.
  */
-export function blockReason(family, template) {
-  if (family.optedOut) return 'opted_out'
+export function blockReason(family, template, mode = 'manual') {
+  if (family.optedOut && mode === 'automatic') return 'opted_out'
   if (family.reason === 'invalid_phone') return 'invalid_phone'
   if (!family.link) return 'no_link'
   if (template === 'reminder_pending' && family.status !== 'pending') return 'already_responded'
@@ -73,8 +81,8 @@ const isUnsent = family => !wasSent(family)
 const isPending = family => family.status === 'pending' && wasSent(family)
 
 /** Families of a card. `selectedIds` only matters for `selected`. */
-export function membersOf(families, category, { template = 'invitation', selectedIds = [] } = {}) {
-  const usable = families.filter(f => blockReason(f, template) === null)
+export function membersOf(families, category, { template = 'invitation', selectedIds = [], mode = 'manual' } = {}) {
+  const usable = families.filter(f => blockReason(f, template, mode) === null)
   switch (category) {
     case 'unsent':
       return usable.filter(isUnsent)
@@ -99,10 +107,10 @@ export function categoryCounts(families, options = {}) {
 }
 
 /** Families that cannot be shared, grouped by reason (`invalid_phone`, `opted_out`), in the order step 1 lists them. */
-export function blockedGroups(families, template = 'invitation') {
+export function blockedGroups(families, template = 'invitation', mode = 'manual') {
   const groups = { invalid_phone: [], opted_out: [] }
   for (const family of families) {
-    const reason = blockReason(family, template)
+    const reason = blockReason(family, template, mode)
     if (reason && groups[reason]) groups[reason].push(family)
   }
   return Object.entries(groups)
@@ -125,8 +133,11 @@ export function templateFor(category, { rsvpOpen = true } = {}) {
 /** Whether a card can be used: the reminder needs the RSVP window open. */
 export const categoryAllowed = (category, { rsvpOpen = true } = {}) => !(category === 'pending' && !rsvpOpen)
 
-/** Whether the chosen number of families asks for the explicit confirmation of P7. */
-export const needsBigBatchConfirm = count => count > BIG_BATCH
+/** Whether the chosen number of families asks for the explicit confirmation of P7: automatic mode only. */
+export const needsBigBatchConfirm = (count, mode = 'manual') => mode === 'automatic' && count > BIG_BATCH
+
+/** Families of a set that asked not to receive messages (shared by hand anyway in manual mode). */
+export const optedOutIn = families => families.filter(f => f.optedOut)
 
 /** Fills the `{name}`, `{event}` and `{link}` of a message. Plain replacement: the text is the organizer's own. */
 export function renderMessage(text, vars) {

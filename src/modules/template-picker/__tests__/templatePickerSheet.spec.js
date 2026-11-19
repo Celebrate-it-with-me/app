@@ -51,21 +51,33 @@ describe('TemplatePickerSheet', () => {
     expect(text()).not.toContain('Sin imagen')
   })
 
+  // The miniature queue spaces its calls 400 ms apart (API limit), so the calls are checked on a fake clock: with real timers the
+  // number of calls seen depended on how long the awaits took (under load or coverage the second call landed inside the test).
   it('draws each card with its own template and does not repeat the calls when coming back from a detail or reopening', async () => {
-    await mountSheet()
-    const cover = () => mocks.preview.mock.calls.filter(([, body]) => body.state === undefined).map(([, body]) => body.templateId)
-    expect(cover()).toEqual([1])
-    await click('Clásica')
-    await click('Volver')
-    await click('Clásica')
-    await click('Volver')
-    expect(cover()).toEqual([1])
-    await wrapper.setProps({ open: false })
-    await flushPromises()
-    await wrapper.setProps({ open: true })
-    await flushPromises()
-    expect(cover()).toEqual([1])
-    expect(document.body.querySelectorAll('[data-testid=invitation-miniature]').length).toBe(3)
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+    try {
+      const cover = () => mocks.preview.mock.calls.filter(([, body]) => body.state === undefined).map(([, body]) => body.templateId)
+      const settle = () => vi.advanceTimersByTimeAsync(2000)
+      await mountSheet()
+      expect(cover()).toEqual([1])
+      await settle()
+      expect(cover()).toEqual([1, 2, 3])
+      await click('Clásica')
+      await click('Volver')
+      await click('Clásica')
+      await click('Volver')
+      await settle()
+      expect(cover()).toEqual([1, 2, 3])
+      await wrapper.setProps({ open: false })
+      await flushPromises()
+      await wrapper.setProps({ open: true })
+      await flushPromises()
+      await settle()
+      expect(cover()).toEqual([1, 2, 3])
+      expect(document.body.querySelectorAll('[data-testid=invitation-miniature]').length).toBe(3)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('shows an error with a retry when the list fails, and recovers', async () => {

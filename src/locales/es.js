@@ -1643,6 +1643,7 @@ export default {
           optedOut: 'Pidió no recibir mensajes',
           fixPhone: 'Corregir',
           addPhone: 'Añadir teléfono',
+          optedOutNote: '{n} pidió no recibir mensajes; si la compartes, es decisión tuya. | {n} pidieron no recibir mensajes; si las compartes, es decisión tuya.',
           noPhoneTitle: 'Sin número'
         },
         pick: {
@@ -1662,6 +1663,7 @@ export default {
         },
         manual: {
           title: 'Enviar a mano · {n} familia | Enviar a mano · {n} familias',
+          optedOutNote: 'Pidió no recibir mensajes. Compártela solo si tú decides hacerlo.',
           help: 'Toca cada nombre: se abre WhatsApp con el mensaje listo. Envíalo y vuelve aquí.',
           progress: 'Abiertos {done} de {total}',
           left: 'Quedan {n} por enviar | Quedan {n} por enviar',

@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Lock, TriangleAlert } from 'lucide-vue-next'
 import { UiModal, UiButton, UiCard, UiSkeleton, UiEmptyState } from '@/ui'
 import SendWizardService from '../../services/SendWizardService'
-import { STEPS, loadErrorKey, mergeFamilies, membersOf, needsBigBatchConfirm, templateFor } from '../../utils/sendWizard'
+import { MODE_DEFAULT, STEPS, loadErrorKey, mergeFamilies, membersOf, needsBigBatchConfirm, templateFor } from '../../utils/sendWizard'
 import SendStepWho from './SendStepWho.vue'
 import SendStepManual from './SendStepManual.vue'
 
@@ -23,7 +23,9 @@ const props = defineProps({
   /** Families to start with (the row menu): step 1 is skipped when they can be shared. */
   preselectedIds: { type: Array, default: () => [] },
   /** Bumped by the parent after it edits a guest, so the wizard reads the families again. */
-  reloadToken: { type: Number, default: 0 }
+  reloadToken: { type: Number, default: 0 },
+  /** `manual` (wa.me) or `automatic` (Meta, F4). Opt-outs are shareable and big batches need no confirmation in manual mode. */
+  mode: { type: String, default: MODE_DEFAULT }
 })
 const emit = defineEmits(['update:open', 'closed', 'unlock', 'publish', 'edit-guest', 'add-guest'])
 const { t } = useI18n()
@@ -45,8 +47,8 @@ const step = computed(() => STEPS[stepIndex.value])
 const rsvpOpen = computed(() => audience.value?.rsvp?.isOpen !== false)
 const archived = computed(() => !!audience.value?.event?.archived)
 const template = computed(() => templateFor(category.value, { rsvpOpen: rsvpOpen.value }))
-const members = computed(() => membersOf(families.value, category.value, { template: template.value, selectedIds: selectedIds.value }))
-const big = computed(() => needsBigBatchConfirm(members.value.length))
+const members = computed(() => membersOf(families.value, category.value, { template: template.value, selectedIds: selectedIds.value, mode: props.mode }))
+const big = computed(() => needsBigBatchConfirm(members.value.length, props.mode))
 const canNext = computed(() => members.value.length > 0 && !archived.value && (!big.value || confirmedBig.value))
 const published = computed(() => (audience.value ? audience.value.event?.published !== false : props.published))
 
@@ -79,7 +81,7 @@ function start() {
   if (props.preselectedIds.length) {
     category.value = 'selected'
     selectedIds.value = [...props.preselectedIds]
-    const ready = membersOf(families.value, 'selected', { template: template.value, selectedIds: selectedIds.value })
+    const ready = membersOf(families.value, 'selected', { template: template.value, selectedIds: selectedIds.value, mode: props.mode })
     if (ready.length) {
       chosen.value = ready
       stepIndex.value = STEPS.indexOf('confirm')
@@ -88,7 +90,7 @@ function start() {
   }
   selectedIds.value = []
   const open = rsvpOpen.value
-  const first = ['unsent', 'pending', 'all'].find(key => membersOf(families.value, key, { template: templateFor(key, { rsvpOpen: open }) }).length)
+  const first = ['unsent', 'pending', 'all'].find(key => membersOf(families.value, key, { template: templateFor(key, { rsvpOpen: open }), mode: props.mode }).length)
   category.value = first === 'pending' && !open ? 'all' : (first ?? 'unsent')
 }
 
@@ -160,6 +162,7 @@ const bannerKey = computed(() => (props.locked ? 'locked' : 'off'))
           v-model:confirmed-big="confirmedBig"
           :families="families"
           :rsvp-open="rsvpOpen"
+          :mode="mode"
           :can-edit="canEdit"
           @edit-guest="emit('edit-guest', $event)"
           @add-guest="emit('add-guest')"

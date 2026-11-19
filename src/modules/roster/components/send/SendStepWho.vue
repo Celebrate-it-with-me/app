@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiRadioGroup, UiButton, UiCheckbox, UiEmptyState } from '@/ui'
-import { CATEGORIES, blockedGroups, categoryAllowed, categoryCounts, membersOf, needsBigBatchConfirm, templateFor, withoutPhone } from '../../utils/sendWizard'
+import { CATEGORIES, blockedGroups, categoryAllowed, categoryCounts, membersOf, MODE_DEFAULT, needsBigBatchConfirm, optedOutIn, templateFor, withoutPhone } from '../../utils/sendWizard'
 import SendPickList from './SendPickList.vue'
 
 const props = defineProps({
@@ -11,18 +11,20 @@ const props = defineProps({
   selectedIds: { type: Array, default: () => [] },
   rsvpOpen: { type: Boolean, default: true },
   confirmedBig: { type: Boolean, default: false },
-  canEdit: { type: Boolean, default: true }
+  canEdit: { type: Boolean, default: true },
+  mode: { type: String, default: MODE_DEFAULT }
 })
 const emit = defineEmits(['update:category', 'update:selectedIds', 'update:confirmedBig', 'edit-guest', 'add-guest'])
 const { t } = useI18n()
 
 const template = computed(() => templateFor(props.category, { rsvpOpen: props.rsvpOpen }))
-const counts = computed(() => categoryCounts(props.families, { template: 'invitation' }))
-const members = computed(() => membersOf(props.families, props.category, { template: template.value, selectedIds: props.selectedIds }))
-const blocked = computed(() => blockedGroups(props.families, 'invitation'))
+const counts = computed(() => categoryCounts(props.families, { template: 'invitation', mode: props.mode }))
+const members = computed(() => membersOf(props.families, props.category, { template: template.value, selectedIds: props.selectedIds, mode: props.mode }))
+const blocked = computed(() => blockedGroups(props.families, 'invitation', props.mode))
 const blockedTotal = computed(() => blocked.value.reduce((sum, g) => sum + g.families.length, 0))
 const phoneless = computed(() => withoutPhone(members.value))
-const big = computed(() => needsBigBatchConfirm(members.value.length))
+const optedOut = computed(() => optedOutIn(members.value))
+const big = computed(() => needsBigBatchConfirm(members.value.length, props.mode))
 
 const options = computed(() =>
   CATEGORIES.map(key => {
@@ -57,6 +59,10 @@ const options = computed(() =>
       </p>
       <p v-if="phoneless.length" class="mt-2 text-sm text-ink-500" data-testid="who-nophone">
         {{ t('app.whatsapp.wizard.who.noPhone', { n: phoneless.length }, phoneless.length) }}
+      </p>
+
+      <p v-if="optedOut.length" class="mt-2 text-sm text-ink-500" data-testid="who-optedout">
+        {{ t('app.whatsapp.wizard.who.optedOutNote', { n: optedOut.length }, optedOut.length) }}
       </p>
 
       <details v-if="blockedTotal" class="mt-4 rounded-xl border border-line px-3 py-2" data-testid="who-blocked">
