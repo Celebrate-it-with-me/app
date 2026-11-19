@@ -39,13 +39,6 @@ const mountModal = (props = {}) => {
   wrapper = mount(GuestImportModal, { props: { open: true, eventId: 7, ...props }, global: { plugins: [i18n] }, attachTo: document.body })
   return flushPromises()
 }
-const setText = async (label, value) => {
-  const el = document.body.querySelector(`[aria-label="${label}"]`)
-  el.value = value
-  el.dispatchEvent(new Event('input'))
-  await flushPromises()
-}
-
 beforeEach(() => {
   setLocale('es')
   Object.values(service).forEach(fn => fn.mockReset())
