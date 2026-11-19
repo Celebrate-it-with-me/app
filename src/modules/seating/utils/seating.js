@@ -6,6 +6,16 @@ export const NO_LOCATION = 'none'
 
 export const DEFAULT_PRIORITY = 5
 
+/** Same limits as the API (StoreTableRequest / UpdateTableRequest). */
+export const LIMITS = {
+  nameMax: 50,
+  reservedMax: 100,
+  capacityMin: 1,
+  capacityMax: 50,
+  priorityMin: 1,
+  priorityMax: 10
+}
+
 export function emptyTableForm() {
   return {
     name: '',
@@ -40,16 +50,39 @@ export function formToPayload(form) {
   }
 }
 
-/** Returns an object of error codes (empty when the form is valid). */
+/**
+ * Returns an object of error codes (empty when the form is valid), with the same rules as the API:
+ * name 1-50, reserved_for up to 100, capacity an integer 1-50, priority an integer 1-10.
+ */
 export function validateTableForm(form) {
   const errors = {}
-  if (!String(form?.name ?? '').trim()) errors.name = 'required'
-  const capacity = Number(form?.capacity)
-  if (form?.capacity === '' || form?.capacity == null || !Number.isInteger(capacity) || capacity < 1) {
+  const name = String(form?.name ?? '').trim()
+  if (!name) errors.name = 'required'
+  else if (name.length > LIMITS.nameMax) errors.name = 'tooLong'
+
+  const raw = form?.capacity
+  const capacity = Number(raw)
+  if (raw === '' || raw == null || !Number.isInteger(capacity) || capacity < LIMITS.capacityMin) {
     errors.capacity = 'invalid'
+  } else if (capacity > LIMITS.capacityMax) {
+    errors.capacity = 'tooBig'
   }
+
   if (!TABLE_TYPES.includes(form?.type)) errors.type = 'invalid'
+
+  const priority = Number(form?.priority)
+  if (!Number.isInteger(priority) || priority < LIMITS.priorityMin || priority > LIMITS.priorityMax) {
+    errors.priority = 'invalid'
+  }
+
+  if (String(form?.reserved_for ?? '').trim().length > LIMITS.reservedMax) errors.reserved_for = 'tooLong'
   return errors
+}
+
+/** i18n key suffix for a field error: `name` + `tooLong` -> `nameTooLong`; the common codes use the field name. */
+export function errorMessageKey(field, code) {
+  if (code === 'required' || code === 'invalid') return field
+  return field + code.charAt(0).toUpperCase() + code.slice(1)
 }
 
 export function assignedCount(table) {
@@ -123,12 +156,63 @@ export function countByStatus(guests) {
   return counts
 }
 
-/** Extracts a human readable code from an API error: 'full' | 'validation' | 'generic'. */
+/**
+ * Classifies an API error: 'full' | 'already' | 'missing' | 'validation' | 'generic'.
+ * Accepts the stable `table_full` code (data.code or errors.table) and the legacy `full` marker.
+ */
 export function errorKind(error) {
+  const status = error?.response?.status
   const data = error?.response?.data
-  if (error?.response?.status === 422) {
-    if (data?.errors?.table?.includes?.('full')) return 'full'
+  const tableErrors = data?.errors?.table
+  if (status === 422) {
+    if (data?.code === 'table_full' || tableErrors?.includes?.('table_full') || tableErrors?.includes?.('full')) {
+      return 'full'
+    }
+    if (data?.code === 'guest_already_seated' || /already/i.test(String(data?.message ?? ''))) return 'already'
     return 'validation'
   }
+  if (status === 404) return 'missing'
   return 'generic'
+}
+
+/** Looks a guest up by id across several lists. */
+export function indexGuests(...lists) {
+  const map = new Map()
+  for (const list of lists) for (const guest of list || []) if (guest) map.set(guest.id, guest)
+  return map
+}
+
+/** Name of the guest this one comes with: from the API (`companionOf`) or from `parentId` when the host is known. */
+export function companionOfName(guest, index) {
+  if (guest?.companionOf?.name) return guest.companionOf.name
+  if (guest?.parentId && index?.get(guest.parentId)) return index.get(guest.parentId).name
+  return ''
+}
+
+/** The guest plus everyone who travels with them (host and companions) among the given pool. */
+export function groupOf(guest, pool) {
+  if (!guest) return []
+  const rootId = guest.companionOf?.id ?? guest.parentId ?? guest.id
+  return (pool || []).filter(
+    g => g.id === rootId || g.parentId === rootId || g.companionOf?.id === rootId
+  )
+}
+
+/** Tables sorted for the "seat at..." sheet: the preferred one first, then those with room, fullest last. */
+export function tablesForSheet(tables, { need = 1, preferredId = null, excludeId = null } = {}) {
+  return sortTables(tables)
+    .filter(table => table.id !== excludeId)
+    .map(table => ({ table, left: seatsLeft(table), fits: seatsLeft(table) >= need }))
+    .sort((a, b) => {
+      if (a.table.id === preferredId) return -1
+      if (b.table.id === preferredId) return 1
+      return Number(b.fits) - Number(a.fits)
+    })
+}
+
+/** Plain-text summary of names: "Ana, Luis y 2 más". */
+export function namesPreview(names, max = 3, more = (n) => `+${n}`) {
+  const list = (names || []).filter(Boolean)
+  if (list.length <= max) return list.join(', ')
+  return `${list.slice(0, max).join(', ')} ${more(list.length - max)}`
 }
