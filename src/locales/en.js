@@ -1505,11 +1505,6 @@ export default {
     },
     whatsapp: {
       title: 'Send by WhatsApp',
-      button: 'Send by WhatsApp',
-      shareButton: 'Share by WhatsApp',
-      select: 'Pick guests',
-      selecting: 'Picked: {n} | Picked: {n}',
-      selectGuest: 'Pick {name}',
       templateLabel: 'What to send',
       audienceLabel: 'To whom',
       templates: {
@@ -1521,7 +1516,7 @@ export default {
         all: 'Your whole list',
         pending: 'Pending guests only',
         selected: 'The ones I picked ({n}) | The ones I picked ({n})',
-        selectedHelp: 'Tap "Pick guests" in the list to mark them.'
+        selectedHelp: 'Available when sending to one family from its menu.'
       },
       previewLoading: 'Working out who will get it…',
       preview: 'It will reach {n} guest. | It will reach {n} guests.',
@@ -1557,6 +1552,8 @@ export default {
       },
       stateLabel: 'WhatsApp',
       state: {
+        none: 'Not sent',
+        manual: 'Opened',
         queued: 'Queued',
         sent: 'Sent',
         delivered: 'Delivered',
@@ -1574,10 +1571,6 @@ export default {
       },
       retry: 'Try again',
       retried: 'We tried again.',
-      summary: {
-        label: 'WhatsApp delivery summary',
-        title: '{n} message sent by WhatsApp | {n} messages sent by WhatsApp'
-      },
       manual: {
         title: 'Share by WhatsApp',
         lockedTitle: 'Automatic sending is part of the full event',
@@ -1610,6 +1603,22 @@ export default {
         detail: '{yes} attending · {no} declined · {pending} pending'
       },
       title: 'Guests',
+      addPhone: 'Add phone',
+      sendInvitations: 'Send invitations',
+      sendInvitationsCount: 'Send invitations · {n} not sent',
+      filters: {
+        answers: 'Responses',
+        delivery: 'Delivery',
+        deliveryAll: 'All deliveries'
+      },
+      delivery: {
+        unsent: 'Not sent',
+        sent: 'Sent',
+        opened: 'Opened',
+        problem: 'Has a problem'
+      },
+      listLoadError: 'We could not load your list.',
+      retryLoad: 'Try again',
       counter: '{n} person | {n} people',
       counterLimit: '{n} of {limit} people on your plan',
       search: 'Search by name, phone or email',
@@ -1643,7 +1652,7 @@ export default {
       },
       menu: {
         label: 'Actions for {name}',
-        whatsapp: 'Send on WhatsApp',
+        send: 'Send invitation',
         copy: 'Copy link',
         edit: 'Edit',
         confirm: 'Confirm by phone',

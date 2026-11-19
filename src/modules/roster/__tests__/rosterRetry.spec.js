@@ -7,7 +7,7 @@ import i18n, { setLocale } from '@/locales/i18n'
 import { useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
-const wa = vi.hoisted(() => ({ latestByGuest: vi.fn(), summary: vi.fn(), retry: vi.fn(), send: vi.fn() }))
+const wa = vi.hoisted(() => ({ retry: vi.fn(), send: vi.fn() }))
 const roster = vi.hoisted(() => ({ list: vi.fn() }))
 vi.mock('../services/WhatsappService', () => ({ default: wa }))
 vi.mock('../services/RosterService', () => ({ default: roster }))
@@ -28,9 +28,8 @@ async function setup(message) {
   createApp({}).use(pinia)
   setActivePinia(pinia)
   useEventsStore().activeEvent = { id: 7, userRole: 'owner', modules: [{ key: 'whatsapp', state: 'active' }] }
-  wa.latestByGuest.mockResolvedValue({ 1: message })
-  wa.summary.mockResolvedValue({ total: 1, queued: 0, sent: 0, delivered: 0, read: 0, failed: 1 })
-  roster.list.mockResolvedValue({ data: [family], meta: { currentPage: 1, lastPage: 1, total: 1 }, counts: { ...counts, ...counter } })
+  const row = { ...family, delivery: { state: 'failed', lastMessageId: message.id, errorCode: message.errorCode, errorMessage: message.errorMessage ?? null } }
+  roster.list.mockResolvedValue({ data: [row], meta: { currentPage: 1, lastPage: 1, total: 1 }, counts: { ...counts, ...counter } })
   const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: { template: '<div />' } }] })
   await router.push('/')
   wrapper = mount(RosterView, { global: { plugins: [i18n, pinia, router] }, attachTo: document.body })
