@@ -95,7 +95,7 @@ onUnmounted(() => robots?.remove())
               inputmode="text"
               enterkeyhint="go"
               maxlength="32"
-              class="text-center font-semibold tracking-widest uppercase"
+              class="text-center font-semibold tracking-widest uppercase placeholder:font-normal placeholder:tracking-normal placeholder:normal-case"
               :placeholder="t('invitationAccess.placeholder')"
               @update:model-value="access.setCode"
             />
