@@ -33,6 +33,13 @@ const pkg = usePackageTheme(() => invitation.value?.theme?.package)
 const rootEl = ref(null)
 useIntegrityGuard({ root: rootEl, active: computed(() => pkg.state.value === 'ready' && status.value === 'ready'), onViolation: pkg.reject })
 
+// A code that does not open anything sends the visitor to the access screen with the code and the error,
+// without saying whether the event exists.
+watch(status, value => {
+  if (value !== 'notFound') return
+  router.replace({ name: 'invitation-access', params: { slug: route.params.slug }, query: { code: route.params.code, error: 'invalid' } })
+})
+
 const requestedLang = computed(() => (LOCALES.includes(route.query.lang) ? route.query.lang : undefined))
 watch(requestedLang, lang => load(lang), { immediate: true })
 

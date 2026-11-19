@@ -298,6 +298,7 @@ export default {
       emailRequired: { title: 'Necesitamos tu correo', text: '{provider} no nos compartió tu correo electrónico, y lo necesitamos para crear tu cuenta. Revisa los permisos de tu cuenta en {provider} o regístrate con tu correo.' },
       accountExists: { title: 'Ya tienes una cuenta', text: 'Ya existe una cuenta con el correo de tu cuenta de {provider}. Por seguridad, inicia sesión con tu contraseña.' },
       oauthFailed: { title: 'No pudimos entrar', text: 'No pudimos entrar con {provider}. Inténtalo de nuevo en un momento o usa tu correo y contraseña.' },
+      rateLimited: { title: 'Demasiados intentos', text: 'Hiciste varios intentos seguidos y, por seguridad, pausamos el inicio de sesión con {provider}. Espera un momento (un par de minutos) y vuelve a intentarlo.' },
       sessionFailed: { title: 'No pudimos iniciar la sesión', text: 'Entraste con {provider}, pero no pudimos abrir tu sesión. Inténtalo de nuevo.' }
     },
     socialSigning: 'Entrando con {provider}…',
@@ -368,6 +369,25 @@ export default {
         a: 'Sí. Desde "Colaboradores" invitas a la quinceañera, a tu pareja o al planner con un rol de edición o solo lectura.'
       }
     ]
+  },
+  invitationAccess: {
+    pageTitle: 'Acceso a la invitación',
+    title: 'Entra a tu invitación',
+    text: 'Para entrar a esta invitación necesitas tu código de invitado.',
+    label: 'Introduce tu código',
+    placeholder: 'Por ejemplo, ABC123',
+    submit: 'Entrar',
+    loadingContact: 'Cargando…',
+    contact: '¿No tienes tu código? Contacta a {name}.',
+    contactGeneric: '¿No tienes tu código? Contacta a quien te invitó.',
+    contactFailed: 'No pudimos cargar los datos de contacto. Revisa tu conexión.',
+    retry: 'Reintentar',
+    errorEmpty: 'Introduce tu código para continuar.',
+    errorInvalid: 'Ese código no es válido. Revísalo o contacta a {name}.',
+    errorInvalidGeneric: 'Ese código no es válido. Revísalo o contacta a quien te invitó.',
+    errorLimited: 'Demasiados intentos, espera un momento e inténtalo de nuevo.',
+    errorFailed: 'No pudimos comprobar el código. Revisa tu conexión e inténtalo de nuevo.',
+    signIn: 'Volver al inicio de sesión'
   },
   invitation: {
     pageTitle: 'Invitación',

@@ -298,6 +298,7 @@ export default {
       emailRequired: { title: 'We need your email', text: '{provider} did not share your email address, and we need it to create your account. Check the permissions of your {provider} account or sign up with your email.' },
       accountExists: { title: 'You already have an account', text: 'An account with the email of your {provider} account already exists. For your security, sign in with your password.' },
       oauthFailed: { title: 'We could not sign you in', text: 'We could not sign you in with {provider}. Try again in a moment or use your email and password.' },
+      rateLimited: { title: 'Too many attempts', text: 'You made several attempts in a row, so for security we paused signing in with {provider}. Wait a moment (a couple of minutes) and try again.' },
       sessionFailed: { title: 'We could not start your session', text: 'You signed in with {provider}, but we could not open your session. Please try again.' }
     },
     socialSigning: 'Signing in with {provider}…',
@@ -368,6 +369,25 @@ export default {
         a: 'Yes. From "Collaborators" you invite the quinceañera, your partner or the planner with an edit or read-only role.'
       }
     ]
+  },
+  invitationAccess: {
+    pageTitle: 'Invitation access',
+    title: 'Open your invitation',
+    text: 'To open this invitation you need your guest code.',
+    label: 'Enter your code',
+    placeholder: 'For example, ABC123',
+    submit: 'Continue',
+    loadingContact: 'Loading…',
+    contact: 'Don\'t have your code? Contact {name}.',
+    contactGeneric: 'Don\'t have your code? Contact whoever invited you.',
+    contactFailed: 'We couldn\'t load the contact details. Check your connection.',
+    retry: 'Try again',
+    errorEmpty: 'Enter your code to continue.',
+    errorInvalid: 'That code is not valid. Check it or contact {name}.',
+    errorInvalidGeneric: 'That code is not valid. Check it or contact whoever invited you.',
+    errorLimited: 'Too many attempts, wait a moment and try again.',
+    errorFailed: 'We couldn\'t check the code. Check your connection and try again.',
+    signIn: 'Back to sign in'
   },
   invitation: {
     pageTitle: 'Invitation',

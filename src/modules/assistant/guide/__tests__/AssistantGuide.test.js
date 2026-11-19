@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { createApp, nextTick } from 'vue'
+import { createApp, effectScope, nextTick, ref } from 'vue'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import i18n, { setLocale } from '@/locales/i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
@@ -14,6 +14,7 @@ const support = vi.hoisted(() => ({ send: vi.fn() }))
 vi.mock('@/modules/support/services/SupportService', () => ({ default: support }))
 
 import AssistantGuide from '../AssistantGuide.vue'
+import { useFloatingBarSpace } from '@/composables/useFloatingBarSpace'
 
 const task = (key, over = {}) => ({
   key, phase: 'foundation', title: `Tarea ${key}`, state: 'next', reason: `Razon ${key}`, reasonCode: 'time_window', reasonParams: {},
@@ -193,5 +194,53 @@ describe('AssistantGuide sheet', () => {
     document.querySelector('#support-form').dispatchEvent(new Event('submit', { cancelable: true }))
     await flushPromises()
     expect(support.send).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('AssistantGuide lifts above a fixed bottom bar', () => {
+  const lift = () => q('assistant-guide').style.getPropertyValue('--assistant-lift')
+  const declareBar = height => {
+    const bar = document.createElement('div')
+    bar.getBoundingClientRect = () => ({ height })
+    const el = ref(null)
+    const scope = effectScope()
+    scope.run(() => useFloatingBarSpace(el))
+    el.value = bar
+    return { el, stop: () => scope.stop() }
+  }
+
+  it('stays at its base position without a bar, and lifts by the bar height plus a gap when one shows up', async () => {
+    await mountGuide()
+    expect(lift()).toBe('0px')
+    const bar = declareBar(48)
+    await nextTick()
+    expect(lift()).toBe('56px')
+    bar.el.value = null
+    await nextTick()
+    expect(lift()).toBe('0px')
+    bar.stop()
+  })
+
+  it('takes the tallest of several bars and drops back when they go away', async () => {
+    await mountGuide()
+    const a = declareBar(40)
+    const b = declareBar(64)
+    await nextTick()
+    expect(lift()).toBe('72px')
+    b.stop()
+    await nextTick()
+    expect(lift()).toBe('48px')
+    a.stop()
+    await nextTick()
+    expect(lift()).toBe('0px')
+  })
+
+  it('animates the move and keeps the safe area in its base offset', async () => {
+    await mountGuide()
+    const cls = q('assistant-guide').className
+    expect(cls).toContain('transition-[bottom]')
+    expect(cls).toContain('motion-reduce:transition-none')
+    expect(cls).toContain('env(safe-area-inset-bottom')
+    expect(cls).toContain('var(--assistant-lift')
   })
 })
