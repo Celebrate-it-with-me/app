@@ -58,7 +58,8 @@ const onSubmit = handleSubmit(async values => {
         email: user.email ?? '',
         userId: user.id ?? '',
         lastLogin: user.last_login_session ?? null,
-        activeEvent: user.activeEvent ?? null,
+        // The hydration (right after) sets the active event; the login payload may only carry its id.
+        activeEvent: user.last_active_event_id ?? null,
         justLogin: true,
         avatar: user.avatar_url ?? '',
         phone: user.phone ?? '',
