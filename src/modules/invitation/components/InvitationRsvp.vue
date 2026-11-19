@@ -1,6 +1,6 @@
 <script setup>
 import { computed, reactive, ref, useId } from 'vue'
-import { CalendarClock, Check, Minus } from 'lucide-vue-next'
+import { CalendarClock, Check, Minus, Utensils } from 'lucide-vue-next'
 import InvitationService from '@/services/PublicEvents/InvitationService'
 import { useInvitationContext } from '../composables/useInvitation'
 import InvitationSection from './InvitationSection.vue'
@@ -55,6 +55,57 @@ const showSummary = computed(() => !rsvp.value.isOpen || (hasAnswered.value && !
 
 /** Nobody attends under an invitation the main guest declined: mirror the server rule. */
 const valueFor = id => (id !== mainId.value && mainDeclined.value ? NOT_ATTENDING : answers[id])
+
+/**
+ * Optional menu step. `menu` only arrives when the event has one with items; one dish per `type` per person,
+ * never required, and only for people who attend.
+ */
+const menu = computed(() => (rsvp.value.menu?.items?.length ? rsvp.value.menu : null))
+const menuEditable = computed(() => Boolean(menu.value) && menu.value.editable !== false && rsvp.value.isOpen)
+const MENU_TYPES = ['starter', 'main', 'dessert']
+const everyone = computed(() => [rsvp.value.guest, ...rsvp.value.companions])
+const menuGroups = computed(() =>
+  MENU_TYPES.map(type => ({ type, items: menu.value.items.filter(item => item.type === type) })).filter(group => group.items.length)
+)
+/** Chosen dish id per person and type: `{ [personId]: { [type]: itemId } }`. */
+const choices = reactive({})
+function loadChoices(data) {
+  for (const key of Object.keys(choices)) delete choices[key]
+  for (const person of [data.guest, ...data.companions]) {
+    choices[person.id] = {}
+    for (const id of person.menuItemIds ?? []) {
+      const type = data.menu?.items?.find(item => item.id === id)?.type
+      if (type) choices[person.id][type] = id
+    }
+  }
+}
+loadChoices(rsvp.value)
+const attends = id => valueFor(id) === ATTENDING
+const attendees = computed(() => everyone.value.filter(person => attends(person.id)))
+const showMenu = computed(() => menuEditable.value && attendees.value.length > 0)
+const isChosen = (personId, item) => choices[personId]?.[item.type] === item.id
+const pickDish = (personId, item) => {
+  const current = (choices[personId] ??= {})
+  if (current[item.type] === item.id) delete current[item.type]
+  else current[item.type] = item.id
+}
+const dishIds = id => (attends(id) ? Object.values(choices[id]) : [])
+const dishNames = id => {
+  const person = everyone.value.find(item => item.id === id)
+  return (rsvp.value.menu?.items ?? []).filter(item => person?.menuItemIds?.includes(item.id)).map(item => item.name)
+}
+const dietLabel = diet => {
+  if (!diet || diet === 'none' || diet === 'regular') return ''
+  const label = tt(`rsvp.menu.diets.${diet}`)
+  return label.endsWith(diet) ? diet : label
+}
+/** Changing an answer to "not attending" drops that person's dishes (everyone's when the main guest declines). */
+function setAnswer(id, option) {
+  answers[id] = option
+  if (option !== NOT_ATTENDING) return
+  for (const person of everyone.value) if (person.id === id || id === mainId.value) choices[person.id] = {}
+}
+
 const canSubmit = computed(
   () =>
     answers[mainId.value] !== null &&
@@ -96,6 +147,10 @@ function applyServerErrors(errors = {}) {
   })
   if (first('note')) fieldErrors.note = first('note')
   if (Object.keys(fieldErrors).length) return tt('rsvp.error')
+  if (Object.keys(errors).some(key => key.endsWith('menuItemIds'))) {
+    fieldErrors.menu = 'invalid'
+    return tt('rsvp.menu.errors.invalid')
+  }
   if (first('companions') === 'invalid') return errorText('invalid')
   return null
 }
@@ -103,6 +158,7 @@ function applyServerErrors(errors = {}) {
 function syncDrafts(data) {
   note.value = data.note ?? ''
   for (const item of data.companions) names[item.id] = item.name
+  loadChoices(data)
 }
 
 async function submit() {
@@ -127,6 +183,13 @@ async function submit() {
     if (changed.length) payload.names = Object.fromEntries(changed.map(item => [item.id, names[item.id].trim()]))
   }
   if (note.value.trim() !== (rsvp.value.note ?? '')) payload.note = note.value.trim()
+  // Dishes travel only when the event has a menu; an empty list clears a person who no longer attends.
+  if (menuEditable.value) {
+    payload.menu = {
+      guest: dishIds(mainId.value),
+      companions: Object.fromEntries(rsvp.value.companions.map(item => [item.id, dishIds(item.id)]))
+    }
+  }
   try {
     const { data } = await InvitationService.saveRsvp(payload)
     updateSection('rsvp', data.data)
@@ -175,10 +238,13 @@ async function submit() {
             <li
               v-for="person in [rsvp.guest, ...rsvp.companions]"
               :key="person.id"
-              class="flex items-center justify-between gap-4 py-3.5 first:pt-0 last:pb-0"
+              class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-3.5 first:pt-0 last:pb-0"
             >
               <span class="min-w-0 truncate font-inv-heading text-lg">{{ person.name }}</span>
               <span class="shrink-0 text-inv-ink-soft">{{ statusLabel(person.status) }}</span>
+              <p v-if="dishNames(person.id).length" class="basis-full text-sm text-inv-ink-soft">
+                <Utensils class="mr-1 inline h-4 w-4 align-text-bottom" aria-hidden="true" />{{ dishNames(person.id).join(' · ') }}
+              </p>
             </li>
           </ul>
           <div v-if="rsvp.note" class="mt-6 border-t border-inv-ink/10 pt-5">
@@ -226,7 +292,7 @@ async function submit() {
                     :name="`rsvp-${person.id}`"
                     :value="option"
                     :checked="valueFor(person.id) === option"
-                    @change="answers[person.id] = option"
+                    @change="setAnswer(person.id, option)"
                   />
                   <span
                     class="inv-rsvp__option flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-inv-ink/20 bg-inv-surface px-3 text-center font-medium transition-[background-color,color,border-color,scale] duration-150 ease-out active:scale-[0.98] peer-checked:border-inv-primary peer-checked:bg-inv-primary peer-checked:text-inv-on-primary peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-inv-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-60"
@@ -235,6 +301,40 @@ async function submit() {
                     {{ tt(option === ATTENDING ? 'rsvp.attending' : 'rsvp.notAttending') }}
                   </span>
                 </label>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- Optional menu: one dish per type for each person who attends -->
+          <div v-if="showMenu" class="flex flex-col gap-6 border-b border-inv-ink/10 pb-6" data-rsvp-menu>
+            <div>
+              <h3 class="font-inv-heading text-xl">{{ menu.title || tt('rsvp.menu.title') }}</h3>
+              <p class="mt-1 text-sm text-inv-ink-soft text-pretty">{{ menu.description || tt('rsvp.menu.help') }}</p>
+              <p v-if="fieldErrors.menu" role="alert" class="mt-2 text-sm text-danger-700">{{ tt('rsvp.menu.errors.invalid') }}</p>
+            </div>
+            <fieldset v-for="person in attendees" :key="person.id" class="min-w-0" :data-menu-person="person.id">
+              <legend class="font-inv-heading text-lg">{{ person.id === mainId ? person.name : names[person.id] || person.name }}</legend>
+              <div v-for="group in menuGroups" :key="group.type" class="mt-3" role="group" :aria-label="tt(`rsvp.menu.types.${group.type}`)">
+                <p class="text-sm font-medium text-inv-ink-soft">{{ tt(`rsvp.menu.types.${group.type}`) }}</p>
+                <div class="mt-2 grid gap-2">
+                  <button
+                    v-for="item in group.items"
+                    :key="item.id"
+                    type="button"
+                    :aria-pressed="isChosen(person.id, item) ? 'true' : 'false'"
+                    :data-dish="item.id"
+                    class="inv-rsvp__option flex min-h-14 w-full cursor-pointer items-center gap-3 rounded-2xl border border-inv-ink/20 bg-inv-surface px-3 py-2 text-left font-medium text-inv-ink transition-[background-color,color,border-color,scale] duration-150 ease-out active:scale-[0.98] aria-pressed:border-inv-primary aria-pressed:bg-inv-primary aria-pressed:text-inv-on-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary"
+                    @click="pickDish(person.id, item)"
+                  >
+                    <img v-if="item.imageUrl" :src="item.imageUrl" alt="" loading="lazy" class="h-10 w-10 shrink-0 rounded-xl object-cover" />
+                    <span class="min-w-0 flex-1">
+                      <span class="block break-words">{{ item.name }}</span>
+                      <span v-if="dietLabel(item.dietType)" class="block text-xs font-normal opacity-80">{{ dietLabel(item.dietType) }}</span>
+                      <span v-if="item.notes" class="block break-words text-xs font-normal opacity-80">{{ item.notes }}</span>
+                    </span>
+                    <Check v-if="isChosen(person.id, item)" class="h-4 w-4 shrink-0" aria-hidden="true" />
+                  </button>
+                </div>
               </div>
             </fieldset>
           </div>

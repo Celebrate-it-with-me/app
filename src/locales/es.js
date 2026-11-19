@@ -537,6 +537,13 @@ export default {
       noteCount: '{n}/{max}',
       nameLabel: 'Nombre de la persona',
       yourNote: 'Tu mensaje',
+      menu: {
+        title: '¿Qué quieres comer?',
+        help: 'Elige un plato de cada tipo para cada persona. Es opcional y puedes cambiarlo después.',
+        types: { starter: 'Entrada', main: 'Plato fuerte', dessert: 'Postre' },
+        diets: { vegan: 'Vegano', vegetarian: 'Vegetariano', gluten_free: 'Sin gluten' },
+        errors: { invalid: 'No pudimos guardar el menú. Recarga la invitación e inténtalo de nuevo.' }
+      },
       errors: {
         too_long: 'Es demasiado largo.',
         too_short: 'Escribe al menos 2 letras.',
