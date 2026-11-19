@@ -139,15 +139,6 @@ export const useUserStore = defineStore('userStore', {
     },
 
     /**
-     * Confirm user email
-     * @param {string} confirmUrl - Email confirmation URL
-     * @returns {Promise} API response
-     */
-    async confirmEmail(confirmUrl) {
-      return await UserService.confirmEmail(confirmUrl)
-    },
-
-    /**
      * Send password reset link
      * @param {Object} form - Form data with email
      * @returns {Promise} API response
