@@ -43,6 +43,24 @@ class InvitationService {
   }
 
   /**
+   * Access screen of a link without a guest code. Always 200 `{ data: { organizer_name: string|null } }`
+   * (null for an unknown slug or an unpublished event: the API does not say which).
+   * @param {string} slug
+   */
+  async getAccess(slug) {
+    return PUBLIC_API.get(`invitation/${encodeURIComponent(slug)}/access`)
+  }
+
+  /**
+   * 200 `{ data: { valid: true, code } }`; 422 `invalid_code` for any wrong, unknown or unpublished case; 429 too many attempts.
+   * @param {string} slug
+   * @param {string} code
+   */
+  async verifyAccess(slug, code) {
+    return PUBLIC_API.post(`invitation/${encodeURIComponent(slug)}/access/verify`, { code })
+  }
+
+  /**
    * @param {{ slug: string, code: string, guest: string, companions: Record<number, string>,
    *   names?: Record<number, string>, note?: string }} params
    *   guest: 'attending' | 'not-attending'; companions: { [id]: status }; names: { [id]: name }

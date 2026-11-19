@@ -369,6 +369,25 @@ export default {
       }
     ]
   },
+  invitationAccess: {
+    pageTitle: 'Acceso a la invitación',
+    title: 'Entra a tu invitación',
+    text: 'Para entrar a esta invitación necesitas tu código de invitado.',
+    label: 'Introduce tu código',
+    placeholder: 'Por ejemplo, ABC123',
+    submit: 'Entrar',
+    loadingContact: 'Cargando…',
+    contact: '¿No tienes tu código? Contacta a {name}.',
+    contactGeneric: '¿No tienes tu código? Contacta a quien te invitó.',
+    contactFailed: 'No pudimos cargar los datos de contacto. Revisa tu conexión.',
+    retry: 'Reintentar',
+    errorEmpty: 'Introduce tu código para continuar.',
+    errorInvalid: 'Ese código no es válido. Revísalo o contacta a {name}.',
+    errorInvalidGeneric: 'Ese código no es válido. Revísalo o contacta a quien te invitó.',
+    errorLimited: 'Demasiados intentos, espera un momento e inténtalo de nuevo.',
+    errorFailed: 'No pudimos comprobar el código. Revisa tu conexión e inténtalo de nuevo.',
+    signIn: 'Volver al inicio de sesión'
+  },
   invitation: {
     pageTitle: 'Invitación',
     loading: 'Preparando tu invitación…',
