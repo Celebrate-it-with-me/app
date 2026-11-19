@@ -7,6 +7,7 @@ import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPa
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { planLimitFrom } from '@/utils/planLimit'
+import { useFloatingBarSpace } from '@/composables/useFloatingBarSpace'
 import { unlockPath } from '@/components/internal/shell/navModules'
 import RosterService from '../services/RosterService'
 import WhatsappService from '../services/WhatsappService'
@@ -170,6 +171,9 @@ onBeforeUnmount(() => clearTimeout(pollTimer))
 // never covers the first card of the list. Without IntersectionObserver the bar is simply always there.
 const inlineSend = ref(null)
 const inlineSendVisible = ref(false)
+const sendBar = ref(null)
+// The assistant's "next step" button lifts above this bar (it measures it through the shared registry).
+useFloatingBarSpace(sendBar)
 let sendObserver
 // The button exists only once the list has people: observe it when it appears.
 watch(inlineSend, el => {
@@ -458,11 +462,12 @@ async function copyLink(family) {
 
     <UiPagination v-if="meta.lastPage > 1" :page="page" :pages="meta.lastPage" class="mt-6" @update:page="page = $event" />
 
-    <!-- Phones: once the inline button has scrolled away, the main action stays in reach. It floats above the assistant's "next step" pill (fixed at 5rem, z-40),
-         which sits over the bottom navigation, so the two never overlap. -->
+    <!-- Phones: once the inline button has scrolled away, the main action stays in reach, right above the bottom navigation.
+         It declares itself through useFloatingBarSpace, so the assistant's "next step" pill lifts above it instead. -->
     <div
       v-if="canSend && !inlineSendVisible"
-      class="pointer-events-none fixed inset-x-0 bottom-[calc(8.25rem+env(safe-area-inset-bottom))] z-20 px-4 sm:hidden"
+      ref="sendBar"
+      class="pointer-events-none fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-20 px-4 sm:hidden"
       data-testid="send-bar"
     >
       <UiButton block class="pointer-events-auto shadow-pop" @click="openSend">

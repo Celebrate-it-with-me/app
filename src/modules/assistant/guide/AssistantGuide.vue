@@ -14,6 +14,7 @@ import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { CircleCheck, LifeBuoy, Sparkles } from 'lucide-vue-next'
 import { useToast } from '@/ui'
+import { floatingBarSpace } from '@/composables/useFloatingBarSpace'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import SupportSheet from '@/modules/support/components/SupportSheet.vue'
@@ -249,7 +250,8 @@ const countdown = computed(() => countdownOf(next.value))
     >
       <div
         v-show="!hidden"
-        class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-40 flex flex-col items-end gap-2 lg:bottom-6 lg:right-6"
+        class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px)+var(--assistant-lift,0px))] z-40 flex flex-col items-end gap-2 transition-[bottom] duration-200 ease-out motion-reduce:transition-none lg:bottom-[calc(1.5rem+var(--assistant-lift,0px))] lg:right-6"
+        :style="{ '--assistant-lift': `${floatingBarSpace}px` }"
         data-testid="assistant-guide"
         :data-variant="variant"
       >
