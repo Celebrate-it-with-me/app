@@ -9,7 +9,9 @@ import AuthCard from '@/components/external/auth/AuthCard.vue'
 import { isSuspendedSocialCallback, rememberSupportEmail } from '@/utils/accountSuspended'
 import { internalRedirect, providerName } from '@/utils/socialProviders'
 
-const REASONS = ['access_denied', 'email_required', 'account_exists', 'oauth_failed']
+// `rate_limited`: the API's attempts limit (HTTP 429) on the social login; it sends the user back with this reason.
+const REASONS = ['access_denied', 'email_required', 'account_exists', 'oauth_failed', 'rate_limited']
+const KEYS = { session_failed: 'sessionFailed', access_denied: 'accessDenied', email_required: 'emailRequired', account_exists: 'accountExists', rate_limited: 'rateLimited' }
 
 const { t } = useI18n()
 const route = useRoute()
@@ -20,7 +22,7 @@ const redirect = computed(() => internalRedirect(route.query.redirect))
 /** Reason to explain, or '' while the session is still being set up. */
 const failure = ref('')
 
-const failureKey = computed(() => (failure.value === 'session_failed' ? 'sessionFailed' : failure.value === 'access_denied' ? 'accessDenied' : failure.value === 'email_required' ? 'emailRequired' : failure.value === 'account_exists' ? 'accountExists' : 'oauthFailed'))
+const failureKey = computed(() => KEYS[failure.value] ?? 'oauthFailed')
 const signInTarget = computed(() => ({ name: 'sign-in', query: redirect.value ? { redirect: redirect.value } : {} }))
 // Cancelling is not an error: neutral tone, no alert banner.
 const cancelled = computed(() => failure.value === 'access_denied')
@@ -45,6 +47,10 @@ onMounted(async () => {
     }
   } catch (error) {
     console.error('Social callback error:', error)
+    if (error?.response?.status === 429) {
+      failure.value = 'rate_limited'
+      return
+    }
   }
   failure.value = 'session_failed'
 })

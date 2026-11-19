@@ -98,6 +98,27 @@ describe('SocialCallbackView', () => {
     await open('status=ok&provider=google')
     expect(wrapper.text()).toContain('No pudimos iniciar la sesión')
   })
+  it('shows a friendly rate-limit screen with the wait hint and the way back (reason from the API)', async () => {
+    await open('status=error&reason=rate_limited&provider=google')
+    expect(wrapper.text()).toContain('Demasiados intentos')
+    expect(wrapper.text()).toContain('Espera un momento')
+    expect(wrapper.text()).toContain('Google')
+    expect(wrapper.find('a[href="/sign-in"]').text()).toContain('Volver a iniciar sesión')
+  })
+  it('shows the same screen when opening the session answers 429', async () => {
+    mocks.refreshUser.mockRejectedValue({ response: { status: 429 } })
+    await open('status=ok&provider=facebook&redirect=/events/4')
+    expect(wrapper.text()).toContain('Demasiados intentos')
+    expect(wrapper.text()).toContain('Facebook')
+    expect(wrapper.find('a[href="/sign-in?redirect=/events/4"]').exists()).toBe(true)
+  })
+  it('speaks English on the rate-limit screen', async () => {
+    setLocale('en')
+    await open('status=error&reason=rate_limited&provider=google')
+    expect(wrapper.text()).toContain('Too many attempts')
+    expect(wrapper.text()).toContain('Wait a moment')
+    expect(wrapper.text()).toContain('Back to sign in')
+  })
   it('speaks English', async () => {
     setLocale('en')
     await open('status=error&reason=access_denied&provider=google')
