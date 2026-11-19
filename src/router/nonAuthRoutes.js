@@ -35,14 +35,6 @@ const nonAuthRoutes = [
     }
   },
   {
-    path: '/confirm-email',
-    name: 'confirm-email',
-    component: () => import('@/views/external/ConfirmEmailView.vue'),
-    meta: {
-      titleKey: 'titles.confirmEmail'
-    }
-  },
-  {
     path: '/email-verified',
     name: 'email-verified',
     component: () => import('@/modules/email-verification/views/EmailVerifiedView.vue'),
