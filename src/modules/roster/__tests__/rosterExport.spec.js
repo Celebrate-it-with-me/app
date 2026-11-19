@@ -18,6 +18,7 @@ vi.mock('@/modules/events/stores/useEventsStore', () => ({
   useEventsStore: () => ({ activeEvent: { id: 7, userRole: 'owner', eventName: 'XV' }, fetchEvent: () => Promise.resolve() })
 }))
 vi.mock('../services/RosterService', () => ({ default: hoisted.service }))
+vi.mock('../services/SendWizardService', () => ({ default: {} }))
 vi.mock('../services/WhatsappService', () => ({ default: { latestByGuest: () => Promise.resolve({}), summary: () => Promise.resolve({ total: 0, queued: 0, sent: 0, delivered: 0, read: 0, failed: 0 }) } }))
 vi.mock('vue-router', () => ({ useRoute: () => ({ query: {} }), useRouter: () => ({ replace: vi.fn() }) }))
 vi.mock('@/ui/useToast', () => ({ useToast: () => ({ success: hoisted.success, error: hoisted.error }) }))

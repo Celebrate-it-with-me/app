@@ -21,6 +21,8 @@ const props = defineProps({
   size: { type: String, default: 'md' },
   /** On phones a sheet slides up from the bottom; on larger screens both look centered. */
   sheet: { type: Boolean, default: true },
+  /** On phones the dialog covers the whole screen (a flow with steps); larger screens keep the centered card. */
+  fullscreenMobile: { type: Boolean, default: false },
   closeLabel: { type: String, default: () => uiText('common.close') }
 })
 const emit = defineEmits(['update:open'])
@@ -29,10 +31,14 @@ const WIDTHS = { sm: 'sm:max-w-sm', md: 'sm:max-w-lg', lg: 'sm:max-w-2xl', full:
 
 const contentClasses = computed(() =>
   cx(
-    'fixed z-50 flex max-h-[92dvh] w-full flex-col bg-white shadow-pop focus:outline-none',
+    'fixed z-50 flex w-full flex-col bg-white shadow-pop focus:outline-none',
+    props.fullscreenMobile ? 'h-dvh sm:h-auto sm:max-h-[92dvh]' : 'max-h-[92dvh]',
     'data-[state=open]:animate-in data-[state=closed]:animate-out',
     props.sheet
-      ? 'inset-x-0 bottom-0 rounded-t-2xl sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl'
+      ? [
+          'inset-x-0 bottom-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-2xl',
+          props.fullscreenMobile ? 'top-0 rounded-none' : 'rounded-t-2xl'
+        ]
       : 'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-2xl',
     WIDTHS[props.size] ?? WIDTHS.md
   )

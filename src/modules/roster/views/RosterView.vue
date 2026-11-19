@@ -16,8 +16,10 @@ import ConfirmModal from '../components/ConfirmModal.vue'
 import GuestImportModal from '../components/GuestImportModal.vue'
 import RosterDownloadMenu from '../components/RosterDownloadMenu.vue'
 import WhatsappSendModal from '../components/WhatsappSendModal.vue'
-import { TABS, noCounts, personPayload, whatsappUrl } from '../utils/roster'
+import SendWizard from '../components/send/SendWizard.vue'
+import { TABS, noCounts, personPayload } from '../utils/roster'
 import { whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/whatsapp'
+import { WIZARD_HANDLES_AUTOMATIC } from '../utils/sendWizard'
 import { DELIVERY_FILTERS, deliveryChips, deliveryOf } from '../utils/delivery'
 
 const { t } = useI18n()
@@ -58,22 +60,51 @@ if (import.meta.env.DEV && import.meta.env.VITE_WHATSAPP_MOCK) {
 const moduleState = computed(() => mockState.value ?? whatsappModuleState(event.value))
 const waLocked = computed(() => moduleState.value === 'locked')
 const waAutomatic = computed(() => !waLocked.value && moduleState.value !== 'off')
+// Manual mode (and, until F4, nothing else) goes through the send wizard; events with the module on keep the old dialog.
+const useWizard = computed(() => !waAutomatic.value || WIZARD_HANDLES_AUTOMATIC)
+const wizardOpen = ref(false)
+const reloadToken = ref(0)
 const sendOpen = ref(false)
 const sendIds = ref([])
 let pollTimer
 
 const deliveryOfRow = family => deliveryOf(family)
 
-/** One family from its menu: the manual mode opens its wa.me link, the automatic one the dialog with her preselected. */
+/** One family from its menu: the wizard (or the old dialog) opens with her preselected. */
 function sendTo(family) {
-  if (!waAutomatic.value) return openWhatsapp(family)
   sendIds.value = [family.id]
-  sendOpen.value = true
+  if (useWizard.value) wizardOpen.value = true
+  else sendOpen.value = true
 }
 
 function openSend() {
   sendIds.value = []
-  sendOpen.value = true
+  if (useWizard.value) wizardOpen.value = true
+  else sendOpen.value = true
+}
+
+/** The wizard asks to fix a guest's phone: the same form as the list, over the wizard. */
+async function editFromWizard(guest) {
+  let family = families.value.find(f => f.id === guest.id)
+  if (!family) {
+    try {
+      family = (await RosterService.list(event.value.id, { search: guest.name, perPage: 100 })).data.find(f => f.id === guest.id)
+    } catch {
+      family = null
+    }
+  }
+  if (family) openForm(family)
+  else showError(t('app.roster.listLoadError'))
+}
+
+function wizardClosed() {
+  sendIds.value = []
+  load({ silent: true })
+}
+
+function publishFromWizard() {
+  wizardOpen.value = false
+  router.push({ name: 'edit-event', params: { id: event.value.id } })
 }
 
 function afterSend() {
@@ -82,6 +113,7 @@ function afterSend() {
 
 function goUnlock() {
   sendOpen.value = false
+  wizardOpen.value = false
   router.push(unlockPath('whatsapp'))
 }
 
@@ -133,6 +165,21 @@ function schedulePoll() {
   if (families.value.some(f => f.delivery?.state === 'queued')) pollTimer = setTimeout(() => load({ silent: true }), 5000)
 }
 onBeforeUnmount(() => clearTimeout(pollTimer))
+
+// Phones: the send button sits in the flow under the title; the fixed bar only appears once it has scrolled away, so it
+// never covers the first card of the list. Without IntersectionObserver the bar is simply always there.
+const inlineSend = ref(null)
+const inlineSendVisible = ref(false)
+let sendObserver
+// The button exists only once the list has people: observe it when it appears.
+watch(inlineSend, el => {
+  sendObserver?.disconnect()
+  inlineSendVisible.value = false
+  if (!el || typeof IntersectionObserver === 'undefined') return
+  sendObserver = new IntersectionObserver(([entry]) => (inlineSendVisible.value = entry.isIntersecting))
+  sendObserver.observe(el)
+})
+onBeforeUnmount(() => sendObserver?.disconnect())
 
 let timer
 watch(search, () => {
@@ -195,6 +242,7 @@ async function save({ person, companions, removed }) {
     }
     formOpen.value = false
     success(t('app.roster.saved'))
+    reloadToken.value += 1
     await refresh()
   } catch (e) {
     const limit = planLimitFrom(e)
@@ -260,8 +308,6 @@ async function confirmRemove() {
   }
 }
 
-const shareText = family => t('app.roster.shareText', { name: family.name, event: event.value?.eventName ?? '', link: family.link })
-const openWhatsapp = family => window.open(whatsappUrl(family.phone, shareText(family)), '_blank', 'noopener')
 async function copyLink(family) {
   try {
     await navigator.clipboard.writeText(family.link)
@@ -273,7 +319,7 @@ async function copyLink(family) {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl" :class="canSend && 'pb-36 sm:pb-0'">
+  <div class="mx-auto max-w-3xl" :class="canSend && !inlineSendVisible && 'pb-[calc(12.5rem+env(safe-area-inset-bottom))] sm:pb-0'">
     <UiPageHeader :title="t('app.roster.title')" :subtitle="counter">
       <template v-if="canEdit" #actions>
         <div v-if="canSend" class="hidden sm:block">
@@ -285,6 +331,12 @@ async function copyLink(family) {
         </div>
       </template>
     </UiPageHeader>
+    <div v-if="canSend" ref="inlineSend" class="mb-4 sm:hidden" data-testid="send-inline">
+      <UiButton block @click="openSend">
+        <Send class="h-4 w-4" aria-hidden="true" />
+        {{ unsent ? t('app.roster.sendInvitationsCount', { n: unsent }) : t('app.roster.sendInvitations') }}
+      </UiButton>
+    </div>
     <GuestLimitBanner />
 
     <!-- The progress card appears with the first answer; when the event is known to have guests its place is held meanwhile
@@ -406,10 +458,10 @@ async function copyLink(family) {
 
     <UiPagination v-if="meta.lastPage > 1" :page="page" :pages="meta.lastPage" class="mt-6" @update:page="page = $event" />
 
-    <!-- Phones: the main action stays in reach. It floats above the assistant's "next step" pill (fixed at 5rem, z-40),
+    <!-- Phones: once the inline button has scrolled away, the main action stays in reach. It floats above the assistant's "next step" pill (fixed at 5rem, z-40),
          which sits over the bottom navigation, so the two never overlap. -->
     <div
-      v-if="canSend"
+      v-if="canSend && !inlineSendVisible"
       class="pointer-events-none fixed inset-x-0 bottom-[calc(8.25rem+env(safe-area-inset-bottom))] z-20 px-4 sm:hidden"
       data-testid="send-bar"
     >
@@ -420,8 +472,23 @@ async function copyLink(family) {
     </div>
 
     <GuestImportModal v-if="event" v-model:open="importOpen" :event-id="event.id" @imported="refresh" />
+    <SendWizard
+      v-if="event && useWizard"
+      v-model:open="wizardOpen"
+      :event-id="event.id"
+      :event-name="event.eventName ?? ''"
+      :locked="waLocked"
+      :can-edit="canEdit"
+      :preselected-ids="sendIds"
+      :reload-token="reloadToken"
+      @closed="wizardClosed"
+      @unlock="goUnlock"
+      @publish="publishFromWizard"
+      @edit-guest="editFromWizard"
+      @add-guest="wizardOpen = false; openForm()"
+    />
     <WhatsappSendModal
-      v-if="event"
+      v-if="event && !useWizard"
       v-model:open="sendOpen"
       :event-id="event.id"
       :event-name="event.eventName ?? ''"
