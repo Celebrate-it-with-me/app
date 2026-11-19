@@ -1,16 +1,17 @@
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Check, ExternalLink, MessageCircle, RotateCcw } from 'lucide-vue-next'
-import { UiButton, UiTextarea, useToast } from '@/ui'
+import { Check, ExternalLink, MessageCircle } from 'lucide-vue-next'
+import { UiButton, useToast } from '@/ui'
 import SendWizardService from '../../services/SendWizardService'
-import { keepsLink, manualLink, manualProgress, renderMessage } from '../../utils/sendWizard'
+import { manualLink, manualProgress, renderMessage } from '../../utils/sendWizard'
 
 const props = defineProps({
   eventId: { type: [Number, String], required: true },
   eventName: { type: String, default: '' },
   families: { type: Array, required: true },
-  template: { type: String, default: 'invitation' }
+  /** Message with {name}, {event} and {link}, chosen in step 2. */
+  text: { type: String, required: true }
 })
 const emit = defineEmits(['changed'])
 const { t, d } = useI18n()
@@ -19,19 +20,10 @@ const { error: showError } = useToast()
 // Moment each family was opened (ISO), seeded from the server and updated as the organizer taps.
 const shared = reactive(Object.fromEntries(props.families.map(f => [f.id, f.sharedAt])))
 const busy = reactive({})
-const custom = ref(null)
-const editing = ref(false)
 
-// Plain text with the three tokens: i18n would try to fill them, so they are passed back as themselves.
-const TOKENS = { name: '{name}', event: '{event}', link: '{link}' }
-const defaultText = computed(() => t(`app.whatsapp.wizard.messages.${props.template}`, TOKENS))
-const text = computed(() => custom.value ?? defaultText.value)
-watch(() => props.template, () => (custom.value = null))
-
-const messageOf = family => renderMessage(text.value, { name: family.name, event: props.eventName, link: family.link ?? '' })
+const messageOf = family => renderMessage(props.text, { name: family.name, event: props.eventName, link: family.link ?? '' })
 const urlOf = family => manualLink(family, messageOf(family))
 const progress = computed(() => manualProgress(props.families, shared))
-const sample = computed(() => props.families[0] ?? null)
 const timeOf = iso => d(new Date(iso), { hour: '2-digit', minute: '2-digit' })
 
 async function mark(family) {
@@ -70,28 +62,6 @@ async function unmark(family) {
   <div>
     <h3 class="font-heading text-xl text-ink-900" data-step-title tabindex="-1">{{ t('app.whatsapp.wizard.manual.title', { n: families.length }, families.length) }}</h3>
     <p class="mt-1 text-sm text-ink-500">{{ t('app.whatsapp.wizard.manual.help') }}</p>
-
-    <section class="mt-4 rounded-xl border border-line p-3" :aria-label="t('app.whatsapp.wizard.manual.message')">
-      <div class="flex items-center justify-between gap-2">
-        <p class="text-sm font-semibold text-ink-900">{{ t('app.whatsapp.wizard.manual.message') }} · {{ t(`app.whatsapp.wizard.templates.${template}`) }}</p>
-        <UiButton size="sm" variant="ghost" :aria-expanded="editing" @click="editing = !editing">
-          {{ editing ? t('app.whatsapp.wizard.manual.hideMessage') : t('app.whatsapp.wizard.manual.editMessage') }}
-        </UiButton>
-      </div>
-      <div v-if="editing" class="mt-2">
-        <UiTextarea :model-value="text" :rows="4" :aria-label="t('app.whatsapp.wizard.manual.message')" @update:model-value="custom = $event" />
-        <p class="mt-1 text-xs text-ink-500">{{ t('app.whatsapp.wizard.manual.messageHelp', TOKENS) }}</p>
-        <p v-if="!keepsLink(text)" role="alert" class="mt-1 text-xs text-danger-700">{{ t('app.whatsapp.wizard.manual.missingLink', TOKENS) }}</p>
-        <UiButton v-if="custom !== null" class="mt-2" size="sm" variant="secondary" @click="custom = null">
-          <RotateCcw class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.whatsapp.wizard.manual.restore') }}
-        </UiButton>
-      </div>
-      <p v-if="sample" class="mt-2 whitespace-pre-line break-words rounded-lg bg-cream-100 px-3 py-2 text-sm text-ink-700" data-testid="message-sample">
-        <span class="mb-1 block text-xs font-medium text-ink-500">{{ t('app.whatsapp.wizard.manual.sample', { name: sample.name }) }}</span>
-        {{ messageOf(sample) }}
-      </p>
-    </section>
 
     <div class="mt-4" aria-live="polite">
       <div class="flex items-baseline justify-between gap-3 text-sm">

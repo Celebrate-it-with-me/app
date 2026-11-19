@@ -13,6 +13,11 @@ describe('SendWizardService', () => {
     expect(api.get).toHaveBeenCalledWith('/event/7/whatsapp/audience', { params: { template: 'invitation' } })
   })
 
+  it('keeps the real audience when the dev mock is off', async () => {
+    api.get.mockResolvedValue({ data: { data: { mode: { automatic: false } } } })
+    expect((await service.audience(7)).mode.automatic).toBe(false)
+  })
+
   it('walks the recipients pages', async () => {
     api.get
       .mockResolvedValueOnce({ data: { data: [{ id: 1 }], meta: { perPage: 1, total: 2 } } })

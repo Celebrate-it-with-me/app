@@ -1,12 +1,9 @@
 import { CWM_API } from '@/services/axios'
+import { getMock } from './mockLoader'
 
 const base = eventId => `/event/${eventId}/whatsapp`
 
-/**
- * `VITE_WHATSAPP_MOCK` swaps the API for an in-memory copy of the contract (see whatsappMock.js). Dev only:
- * `import.meta.env.DEV` is a build-time constant, so production bundles drop the dynamic import and the mock chunk.
- */
-const getMock = async () => (import.meta.env.DEV && import.meta.env.VITE_WHATSAPP_MOCK ? (await import('./whatsappMock')).mockWhatsapp : null)
+// `VITE_WHATSAPP_MOCK` swaps the API for an in-memory copy of the contract (see whatsappMock.js). Dev only.
 
 /** Organizer side of the WhatsApp contract (docs/plans/communications-contract.md). */
 class WhatsappService {
@@ -14,8 +11,9 @@ class WhatsappService {
    * Queues a batch: `{ batchId, queued, skipped: [{ guestId, guestName, reason }] }`. With `dryRun` nothing is queued
    * and the answer is the real calculation `{ queued, skipped }` (for the recipients preview).
    */
-  async send(eventId, { template, audience, guestIds = [], force = false, dryRun = false }) {
+  async send(eventId, { template, audience, guestIds = [], force = false, dryRun = false, confirmLarge = false }) {
     const body = { template, audience, force }
+    if (confirmLarge) body.confirm_large = true
     if (dryRun) body.dry_run = true
     if (audience === 'selected') body.guest_ids = guestIds
     const mock = await getMock()
@@ -50,6 +48,39 @@ class WhatsappService {
     const mock = await getMock()
     if (mock) return mock.summary(eventId)
     return (await CWM_API.get(`${base(eventId)}/summary`)).data.data
+  }
+
+  /**
+   * Real format (atlas-f4, guests module, owner/editor only): the message exactly as it will go out.
+   * `{ template, locale, category, guest: { id, name } | null, sample, body, buttons: [{ id, text }], link, sendable, event, linkPreview }`. It queues
+   * nothing and counts no quota. Adjust here (and in whatsappMock.preview) when Atlas reports the real shape.
+   */
+  async preview(eventId, { template, guestId = null, locale = null }) {
+    const body = { template }
+    if (guestId != null) body.guest_id = guestId
+    if (locale) body.locale = locale
+    const mock = await getMock()
+    if (mock) return mock.preview(eventId, body)
+    return (await CWM_API.post(`${base(eventId)}/preview`, body)).data.data
+  }
+
+  /**
+   * Real format (atlas-f4): progress of one batch.
+   * `{ batchId, template, startedAt, total, queued, sent, delivered, read, failed, cancelled, processed, done,
+   * messages: [{ messageId, guestId, guestName, status, errorCode, errorMessage, retryCount }], meta }`, `messages` paged
+   * (`page`, `per_page` <= 100). Counts are exclusive per status; the bar uses `processed` (= total - queued).
+   */
+  async batch(eventId, batchId, { page = 1, perPage = 100 } = {}) {
+    const mock = await getMock()
+    if (mock) return mock.batch(eventId, batchId, { page, per_page: perPage })
+    return (await CWM_API.get(`${base(eventId)}/batches/${batchId}`, { params: { page, per_page: perPage } })).data.data
+  }
+
+  /** The latest batch of the event with `queued > 0` (same shape as `batch`), or `null`. */
+  async activeBatch(eventId) {
+    const mock = await getMock()
+    if (mock) return mock.activeBatch(eventId)
+    return (await CWM_API.get(`${base(eventId)}/batches/active`)).data.data ?? null
   }
 
   /** Re-queues a failed message; answers the Message. */

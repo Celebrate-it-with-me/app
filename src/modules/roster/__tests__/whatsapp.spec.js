@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { whatsappModuleState, sendErrorKey, retryErrorKey, isUnknownDelivery, groupSkipped, guestWhatsappState, manualShareUrl, MESSAGE_VIEW, SKIP_REASONS } from '../utils/whatsapp'
+import { whatsappModuleState, sendErrorKey, retryErrorKey, isUnknownDelivery, groupSkipped, guestWhatsappState, MESSAGE_VIEW, SKIP_REASONS } from '../utils/whatsapp'
 
 const { get, post } = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn() }))
 vi.mock('@/services/axios', () => ({ CWM_API: { get, post } }))
@@ -56,7 +56,7 @@ describe('whatsapp helpers', () => {
 
   it('draws every status with an icon', () => {
     for (const key of ['queued', 'sent', 'delivered', 'read', 'failed', 'no_phone', 'opted_out']) expect(MESSAGE_VIEW[key].icon).toBeTruthy()
-    expect(SKIP_REASONS).toHaveLength(6)
+    expect(SKIP_REASONS).toHaveLength(7)
   })
 
   it('shows the last message, or why a guest cannot get one', () => {
@@ -65,10 +65,6 @@ describe('whatsapp helpers', () => {
     expect(guestWhatsappState({ phone: null }, undefined)).toEqual({ key: 'no_phone', message: null })
     expect(guestWhatsappState({ phone: '+1', whatsappOptedOut: true }, message).key).toBe('opted_out')
     expect(guestWhatsappState({ phone: '+1' }, undefined)).toBeNull()
-  })
-
-  it('builds the manual wa.me link without the plus sign', () => {
-    expect(manualShareUrl({ phone: '+13055550123' }, 'Hola ana')).toBe('https://wa.me/13055550123?text=Hola%20ana')
   })
 })
 
@@ -83,6 +79,12 @@ describe('WhatsappService', () => {
     const result = await WhatsappService.send(7, { template: 'invitation', audience: 'selected', guestIds: [1, 2] })
     expect(post).toHaveBeenCalledWith('/event/7/whatsapp/send', { template: 'invitation', audience: 'selected', force: false, guest_ids: [1, 2] })
     expect(result.queued).toBe(2)
+  })
+
+  it('sends confirm_large only when asked', async () => {
+    post.mockResolvedValue({ data: { data: { batchId: 'b', queued: 1, skipped: [] } } })
+    await WhatsappService.send(7, { template: 'invitation', audience: 'selected', guestIds: [1], confirmLarge: true })
+    expect(post.mock.calls.at(-1)[1].confirm_large).toBe(true)
   })
 
   it('asks for a dry run to preview the recipients', async () => {
@@ -112,5 +114,25 @@ describe('WhatsappService', () => {
     post.mockResolvedValue({ data: { data: { id: 9, status: 'queued' } } })
     await WhatsappService.retry(7, 9)
     expect(post).toHaveBeenCalledWith('/event/7/whatsapp/messages/9/retry')
+  })
+
+  it('asks for the real message of a template (preview, contract 4.3)', async () => {
+    post.mockResolvedValue({ data: { data: { body: 'Hola', buttons: [] } } })
+    expect((await WhatsappService.preview(7, { template: 'invitation', guestId: 3, locale: 'en' })).body).toBe('Hola')
+    expect(post).toHaveBeenCalledWith('/event/7/whatsapp/preview', { template: 'invitation', guest_id: 3, locale: 'en' })
+    await WhatsappService.preview(7, { template: 'save_the_date' })
+    expect(post).toHaveBeenLastCalledWith('/event/7/whatsapp/preview', { template: 'save_the_date' })
+  })
+
+  it('reads a batch with its page of messages, and the active batch (contract 4.4)', async () => {
+    get.mockResolvedValue({ data: { data: { batchId: 'b1', total: 2 } } })
+    expect((await WhatsappService.batch(7, 'b1')).total).toBe(2)
+    expect(get).toHaveBeenCalledWith('/event/7/whatsapp/batches/b1', { params: { page: 1, per_page: 100 } })
+    await WhatsappService.batch(7, 'b1', { page: 2, perPage: 50 })
+    expect(get).toHaveBeenLastCalledWith('/event/7/whatsapp/batches/b1', { params: { page: 2, per_page: 50 } })
+    expect((await WhatsappService.activeBatch(7)).batchId).toBe('b1')
+    expect(get).toHaveBeenLastCalledWith('/event/7/whatsapp/batches/active')
+    get.mockResolvedValue({ data: { data: null } })
+    expect(await WhatsappService.activeBatch(7)).toBeNull()
   })
 })

@@ -1,13 +1,7 @@
 import { CircleAlert, Clock, Check, CheckCheck, PhoneOff, BellOff, Eye } from 'lucide-vue-next'
-import { whatsappUrl } from './roster'
 
-/** Templates an organizer can send, in the order of the selector (keys of the contract). */
-export const TEMPLATES = ['invitation', 'reminder_pending', 'save_the_date']
-export const AUDIENCES = ['all', 'pending', 'selected']
-/** Most guests the API takes in one request. */
-export const MAX_BATCH = 500
 /** Reasons a guest was left out (`skipped[].reason`). */
-export const SKIP_REASONS = ['no_phone', 'invalid_phone', 'opted_out', 'recently_sent', 'already_responded', 'daily_limit']
+export const SKIP_REASONS = ['no_phone', 'invalid_phone', 'opted_out', 'recently_sent', 'already_responded', 'reminder_limit', 'daily_limit']
 
 /**
  * How each message status is drawn: icon + text (never colour alone). `offline` states are not API statuses:
@@ -78,9 +72,4 @@ export function guestWhatsappState(family, message) {
   if (message) return { key: message.status, message }
   if (!family.phone) return { key: 'no_phone', message: null }
   return null
-}
-
-/** The manual wa.me link of a family (free plan, or a number the automatic send cannot use). */
-export function manualShareUrl(family, text) {
-  return whatsappUrl(family.phone, text)
 }

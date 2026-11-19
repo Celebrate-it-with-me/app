@@ -11,17 +11,17 @@ export const CATEGORIES = ['unsent', 'pending', 'all', 'selected']
 /** Decision P7: an automatic batch of more families than this asks for an explicit "I understand" (not in manual mode). */
 export const BIG_BATCH = 100
 
-/**
- * F4 flips this when the wizard also drives the automatic (Meta) send. While it is false the wizard only handles the
- * manual mode, and RosterView keeps the previous dialog for events whose WhatsApp module is on.
- */
-export const WIZARD_HANDLES_AUTOMATIC = false
+/** The wizard drives both modes (F4): RosterView passes `automatic` when the WhatsApp module is on and unlocked. */
+export const WIZARD_HANDLES_AUTOMATIC = true
 
-/**
- * Number of steps the wizard shows. Step 2 (preview with the real cover and message) is F4: when it lands, the steps
- * become ['who', 'preview', 'confirm'] and this list is the only place to change.
- */
-export const STEPS = ['who', 'confirm']
+/** The three steps: who gets it, how it looks (real cover + message), and confirm/send. */
+export const STEPS = ['who', 'preview', 'confirm']
+
+/** Templates the preview step offers, in order. */
+export const TEMPLATES = ['invitation', 'reminder_pending', 'save_the_date']
+
+/** Most families the API takes in one request; a bigger send is cut into chunks of this size. */
+export const BATCH_MAX = 500
 
 /** Send modes: `manual` (wa.me, the organizer opens each chat) and `automatic` (Meta API, F4). */
 export const MODES = ['manual', 'automatic']
@@ -52,6 +52,7 @@ export function mergeFamilies(recipients, roster) {
       phone: r.phone || row?.phone || '',
       status: r.status ?? row?.status ?? 'pending',
       reason: r.reason ?? null,
+      locale: r.locale ?? row?.effectiveLocale ?? 'es',
       state: r.delivery?.state ?? 'none',
       sharedAt: r.delivery?.sharedAt ?? row?.delivery?.sharedAt ?? null,
       link: r.link ?? row?.link ?? null,
@@ -61,14 +62,17 @@ export function mergeFamilies(recipients, roster) {
 }
 
 /**
- * Why a family cannot be shared by hand, or null. A family without phone is NOT blocked in manual mode: wa.me opens
- * the contact picker for it. A malformed number is blocked. An opt-out is blocked only in automatic mode: in manual
- * mode the organizer can still share by hand (owner decision 2026-11-19), and the UI says the guest asked not to get messages.
+ * Why a family cannot be sent to, or null. A family without phone is NOT blocked in manual mode: wa.me opens the
+ * contact picker for it; in automatic mode it is (there is nobody to write to). A malformed number is blocked. An opt-out
+ * is blocked only in automatic mode: in manual mode the organizer can still share by hand (owner decision 2026-11-19),
+ * and the UI says the guest asked not to get messages. The automatic send builds the link in the API, so it needs none.
  */
 export function blockReason(family, template, mode = 'manual') {
-  if (family.optedOut && mode === 'automatic') return 'opted_out'
+  const automatic = mode === 'automatic'
+  if (family.optedOut && automatic) return 'opted_out'
+  if (automatic && family.phone.trim() === '') return 'no_phone'
   if (family.reason === 'invalid_phone') return 'invalid_phone'
-  if (!family.link) return 'no_link'
+  if (!automatic && !family.link) return 'no_link'
   if (template === 'reminder_pending' && family.status !== 'pending') return 'already_responded'
   return null
 }
@@ -106,9 +110,9 @@ export function categoryCounts(families, options = {}) {
   }
 }
 
-/** Families that cannot be shared, grouped by reason (`invalid_phone`, `opted_out`), in the order step 1 lists them. */
+/** Families that cannot be sent to, grouped by reason (`no_phone` in automatic mode only, `invalid_phone`, `opted_out`), in the order step 1 lists them. */
 export function blockedGroups(families, template = 'invitation', mode = 'manual') {
-  const groups = { invalid_phone: [], opted_out: [] }
+  const groups = { no_phone: [], invalid_phone: [], opted_out: [] }
   for (const family of families) {
     const reason = blockReason(family, template, mode)
     if (reason && groups[reason]) groups[reason].push(family)
@@ -165,4 +169,85 @@ export function loadErrorKey(error) {
   if (status === 403) return 'forbidden'
   if (status === 409 && code === 'event_archived') return 'archived'
   return 'generic'
+}
+
+/** Templates a family set may use: with the RSVP window closed only `save_the_date` (P9). */
+export const allowedTemplates = ({ rsvpOpen = true } = {}) => (rsvpOpen ? TEMPLATES : ['save_the_date'])
+
+/** `[{ locale, n }]` of a set of families, biggest first (ties by locale). */
+export function localeCounts(families) {
+  const counts = new Map()
+  for (const f of families) counts.set(f.locale ?? 'es', (counts.get(f.locale ?? 'es') ?? 0) + 1)
+  return [...counts].map(([locale, n]) => ({ locale, n })).sort((a, b) => b.n - a.n || a.locale.localeCompare(b.locale))
+}
+
+/** Families whose language has no sendable template (`audience.templates[locale].sendable === false`): the send would fail whole. */
+export const withoutTemplate = (families, templates) => families.filter(f => templates?.[f.locale ?? 'es']?.sendable === false)
+
+/** Cuts a list in chunks of `size` (the API takes 500 at a time). */
+export function chunk(list, size = BATCH_MAX) {
+  const out = []
+  for (let i = 0; i < list.length; i += size) out.push(list.slice(i, i + size))
+  return out
+}
+
+/** Statuses a batch message ends in or passes through, in the order the progress lists their counters. */
+export const BATCH_COUNTERS = ['queued', 'sent', 'failed', 'delivered', 'read']
+
+/**
+ * Sums several batch answers (a send above 500 families is chained) into one: counts add up, `done` needs all of them,
+ * `messages` are joined. A `null` or empty list gives `null`.
+ */
+export function mergeBatches(batches) {
+  const list = (batches ?? []).filter(Boolean)
+  if (!list.length) return null
+  const sum = key => list.reduce((n, b) => n + (b[key] ?? 0), 0)
+  return {
+    batchId: list[0].batchId,
+    batchIds: list.map(b => b.batchId),
+    startedAt: list[0].startedAt ?? null,
+    total: sum('total'),
+    queued: sum('queued'),
+    sent: sum('sent'),
+    delivered: sum('delivered'),
+    read: sum('read'),
+    failed: sum('failed'),
+    cancelled: sum('cancelled'),
+    processed: list.reduce((n, b) => n + (b.processed ?? (b.total ?? 0) - (b.queued ?? 0)), 0),
+    done: list.every(b => b.done === true),
+    messages: list.flatMap(b => b.messages ?? [])
+  }
+}
+
+/** `{ processed, total, percent }`: processed = everything that left the queue (`total - queued`); delivered/read do not hold it. */
+export function batchProgress(batch) {
+  const total = batch?.total ?? 0
+  const processed = Math.max(0, batch?.processed ?? total - (batch?.queued ?? 0))
+  return { processed, total, percent: total ? Math.round((processed / total) * 100) : 0 }
+}
+
+/** Failed messages of a batch that can be retried, and how many of them have an unknown outcome (they need a confirmation). */
+export function retryable(batch) {
+  const failed = (batch?.messages ?? []).filter(m => m.status === 'failed')
+  return { messages: failed, unknown: failed.filter(m => m.errorCode === 'unknown_delivery').length }
+}
+
+/**
+ * Polling cadence (contract 3.5): every 2 s while something is queued, then every 5 s for a minute to catch
+ * delivered/read, then stop. Returns the next delay in ms, or `null` to stop. `quietFor` = ms since the queue emptied.
+ */
+export function pollDelay(batch, quietFor = 0, { fast = 2000, slow = 5000, tail = 60000 } = {}) {
+  if ((batch?.queued ?? 0) > 0) return fast
+  return quietFor < tail ? slow : null
+}
+
+/** Maps a failed `send`/`preview` to the key under `app.whatsapp.errors`; adds the wizard's 409 codes to `sendErrorKey`. */
+export function wizardSendErrorKey(error, fallback) {
+  const status = error?.response?.status
+  const code = error?.response?.data?.code
+  if (status === 409 && code === 'event_not_published') return 'notPublished'
+  if (status === 409 && code === 'rsvp_closed') return 'rsvpClosed'
+  if (status === 409 && code === 'event_archived') return 'archived'
+  if (status === 409 && code === 'confirmation_required') return 'confirmationRequired'
+  return fallback(error)
 }
