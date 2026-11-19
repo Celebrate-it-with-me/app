@@ -1,5 +1,8 @@
 import { CWM_API } from '@/services/axios'
 
+/** Development switch: `localStorage['cwm.mockPadrinoCommitments']` (JSON scenario or `1`) fakes the commitments endpoint. Never in production. */
+const mockEnabled = () => import.meta.env.DEV && typeof localStorage !== 'undefined' && !!localStorage.getItem('cwm.mockPadrinoCommitments')
+
 const base = eventId => `/event/${eventId}/padrinos`
 
 class PadrinosService {
@@ -20,9 +23,14 @@ class PadrinosService {
     await CWM_API.delete(`${base(eventId)}/${id}`)
   }
 
-  /** The full set of budget items the padrino covers, each with an amount. */
+  /**
+   * The full set of budget items the padrino covers, each with an amount (and, once the API asked, a `resolution`).
+   * Resolves `{ data, warnings }`; rejects with the axios error (409 `commitment_item_paid`, 422 `commitment_exceeds_remaining`).
+   */
   async setCommitments(eventId, id, commitments) {
-    return (await CWM_API.put(`${base(eventId)}/${id}/commitments`, { commitments })).data.data
+    if (mockEnabled()) return (await import('./commitmentsMock')).mockSetCommitments(commitments)
+    const { data, warnings } = (await CWM_API.put(`${base(eventId)}/${id}/commitments`, { commitments })).data
+    return { data, warnings: warnings ?? [] }
   }
 }
 

@@ -8,12 +8,25 @@ function fileOf(response, fallback) {
   return { blob: response.data, filename: match ? match[1] : fallback }
 }
 
+/** Dev only: `VITE_WHATSAPP_MOCK` adds the `delivery` of each family to the roster (see whatsappMock.js). */
+const getMock = async () => (import.meta.env.DEV && import.meta.env.VITE_WHATSAPP_MOCK ? (await import('./whatsappMock')).mockWhatsapp : null)
+
 class RosterService {
-  /** `{ data, meta, counts }`: families of the page, and the people counters of the whole event. */
-  async list(eventId, { status, search, page = 1, perPage = 15 } = {}) {
+  /**
+   * `{ data, meta, counts }`: families of the page, and the counters of the whole event. Each family carries its
+   * `delivery` and `counts.delivery` the chips' counters; `delivery` ('unsent' | 'sent' | 'problem') filters by it.
+   */
+  async list(eventId, { status, search, delivery, page = 1, perPage = 15 } = {}) {
     const params = { page, perPage }
     if (status && status !== 'all') params.status = status
     if (search) params.search = search
+    if (delivery) params.delivery = delivery
+    const mock = await getMock()
+    if (mock) return mock.roster(eventId, params, (id, p) => this.listRaw(id, p))
+    return this.listRaw(eventId, params)
+  }
+
+  async listRaw(eventId, params) {
     return (await CWM_API.get(`${base(eventId)}/roster`, { params })).data
   }
 

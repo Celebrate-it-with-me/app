@@ -537,6 +537,13 @@ export default {
       noteCount: '{n}/{max}',
       nameLabel: 'Nombre de la persona',
       yourNote: 'Tu mensaje',
+      menu: {
+        title: '¿Qué quieres comer?',
+        help: 'Elige un plato de cada tipo para cada persona. Es opcional y puedes cambiarlo después.',
+        types: { starter: 'Entrada', main: 'Plato fuerte', dessert: 'Postre' },
+        diets: { vegan: 'Vegano', vegetarian: 'Vegetariano', gluten_free: 'Sin gluten' },
+        errors: { invalid: 'No pudimos guardar el menú. Recarga la invitación e inténtalo de nuevo.' }
+      },
       errors: {
         too_long: 'Es demasiado largo.',
         too_short: 'Escribe al menos 2 letras.',
@@ -743,17 +750,34 @@ export default {
       subtitle: 'Arma tus mesas y siente a cada invitado en su lugar.',
       newTable: 'Nueva mesa',
       cancel: 'Cancelar',
+      retry: 'Intentar de nuevo',
       tabs: { tables: 'Mesas', unassigned: 'Sin sentar' },
-      stats: { tables: 'Mesas', seated: 'Sentados', pending: 'Sin sentar' },
+      stats: {
+        tables: 'Mesas',
+        seated: 'Sentados',
+        seatedHint: '{count} libre | {count} libres',
+        pending: 'Sin sentar',
+        pendingHint: '{n} no asisten'
+      },
       type: { vip: 'VIP', family: 'Familia', friends: 'Amigos', general: 'General' },
       location: { front: 'Al frente', center: 'Al centro', back: 'Al fondo', side: 'A un lado', entrance: 'Cerca de la entrada' },
       rsvp: { all: 'Todos', attending: 'Confirmados', pending: 'Pendientes', 'not-attending': 'No asisten' },
+      guest: { companionOf: 'Acompañante de {name}' },
+      legend: {
+        label: 'Cómo leer las barras',
+        room: 'Con lugar',
+        almost: 'Casi llena (75 % o más)',
+        full: 'Llena'
+      },
       tables: {
         title: 'Tus mesas',
         emptyTitle: 'Aún no tienes mesas',
         emptyText: 'Crea tu primera mesa para empezar a sentar a tus invitados.',
+        errorTitle: 'No pudimos cargar tus mesas',
+        errorText: 'Revisa tu conexión e intenta de nuevo.',
         full: 'Llena',
         occupancy: 'Ocupación de la mesa',
+        seatedOf: '{taken} de {capacity}',
         edit: 'Editar {name}',
         delete: 'Eliminar {name}'
       },
@@ -761,27 +785,33 @@ export default {
         createTitle: 'Nueva mesa',
         editTitle: 'Editar mesa',
         name: 'Nombre de la mesa',
-        nameHint: 'Un nombre fácil de reconocer, como "Familia de la quinceañera".',
+        nameHint: 'Un nombre fácil de reconocer, como "Familia de la quinceañera" (máximo 50 letras).',
         namePlaceholder: 'Ej. Mesa de honor',
         capacity: 'Capacidad',
+        capacityHint: 'Cuántas personas caben (de 1 a {max}).',
         capacityPlaceholder: 'Ej. 8',
         type: 'Tipo',
+        typeHint: 'Solo para organizarte: VIP, familia, amigos o general. No cambia a quién puedes sentar.',
         priority: 'Prioridad',
         priorityLow: '1 (baja)',
         priorityHigh: '10 (alta)',
-        priorityHint: 'Las mesas con más prioridad aparecen primero.',
+        priorityHint: 'Ordena tu lista: las mesas con más prioridad aparecen primero (la de honor, por ejemplo, 10).',
         reservedFor: 'Reservada para',
-        reservedHint: 'Opcional. Un grupo específico de invitados.',
+        reservedHint: 'Opcional. Una nota para ti, como "familia paterna". No sienta a nadie sola.',
         reservedPlaceholder: 'Ej. familia paterna',
         location: 'Ubicación',
-        locationHint: 'Opcional. Dónde queda en el salón.',
+        locationHint: 'Opcional. Dónde queda la mesa en el salón; solo es una referencia.',
         locationNone: 'Sin ubicación',
         create: 'Crear mesa',
         save: 'Guardar cambios',
         errors: {
           name: 'Ponle un nombre a la mesa.',
-          capacity: 'Escribe cuántas personas caben (mínimo 1).',
-          type: 'Elige un tipo de mesa.'
+          nameTooLong: 'El nombre puede tener hasta 50 letras.',
+          capacity: 'Escribe cuántas personas caben (un número entero, mínimo 1).',
+          capacityTooBig: 'Una mesa puede tener hasta 50 plazas.',
+          type: 'Elige un tipo de mesa.',
+          priority: 'La prioridad va de 1 a 10.',
+          reserved_forTooLong: 'Este texto puede tener hasta 100 letras.'
         }
       },
       details: {
@@ -789,28 +819,90 @@ export default {
         noneTitle: 'Elige una mesa',
         noneText: 'Toca una mesa de la lista para ver quién está sentado ahí.',
         seated: '{taken} de {capacity} lugares ocupados',
+        left: 'queda {count} libre | quedan {count} libres',
+        reservedFor: 'Reservada para: {who}',
         emptyTitle: 'Nadie sentado todavía',
         emptyText: 'Sienta invitados desde la lista de "Sin sentar".',
         remove: 'Quitar a {name} de la mesa',
+        removeShort: 'Quitar de la mesa',
+        move: 'Mover a {name} a otra mesa',
+        moveShort: 'Mover a otra mesa',
         assignGuests: 'Sentar invitados'
       },
       unassigned: {
         title: 'Sin sentar',
+        help: 'Toca un invitado para elegir su mesa, o marca varios para sentarlos juntos.',
         search: 'Buscar invitado...',
         searchLabel: 'Buscar invitado por nombre',
         statusLabel: 'Filtrar por confirmación',
-        seatingAt: 'Sentando en: {name}',
-        pickTable: 'Elige una mesa para poder sentar invitados.',
-        goTables: 'Ir a las mesas',
+        declinedNote: 'Los que no asisten no necesitan mesa; puedes sentarlos igual si cambian de idea.',
         assign: 'Sentar',
+        pick: 'Marcar a {name}',
+        pickGroup: 'Marcar a su grupo ({count} persona) | Marcar a su grupo ({count} personas)',
+        selectAll: 'Marcar todos los que se ven',
+        selected: '{count} marcado | {count} marcados',
+        selectionLabel: 'Invitados marcados',
+        seatSelected: 'Sentar en...',
+        clear: 'Quitar marcas',
+        showMore: 'Ver {count} más | Ver {count} más',
         emptyTitle: 'No hay invitados para mostrar',
         emptyAll: 'Todos tus invitados ya tienen mesa.',
         emptyFiltered: 'Prueba con otra búsqueda o con otro filtro.'
       },
+      sheet: {
+        oneTitle: 'Sentar a {name} en...',
+        oneText: 'Elige una mesa con lugar libre.',
+        manyTitle: 'Sentar {count} invitados en...',
+        moveTitle: 'Mover a {name} a...',
+        moveText: 'Ahora está en {table}.',
+        listLabel: 'Mesas',
+        free: '{count} lugar libre | {count} lugares libres',
+        noRoom: 'Solo queda {left} lugar (necesitas {need}) | Solo quedan {left} lugares (necesitas {need})',
+        open: 'Mesa abierta',
+        more: '+{n} más',
+        declinedWarning: '{names} dijo que no asiste. Puedes sentarle igual. | {names} dijeron que no asisten. Puedes sentarlos igual.',
+        noTablesTitle: 'No hay otra mesa disponible',
+        noTablesText: 'Crea una mesa nueva o aumenta la capacidad de una existente.'
+      },
+      export: {
+        button: 'Exportar para catering y salón',
+        title: 'Exportar para catering y salón',
+        subtitle: 'Un archivo para el catering y el salón: cuántas personas por mesa y qué plato come cada una.',
+        format: 'Formato',
+        xlsx: 'Excel (.xlsx)',
+        xlsxText: 'Hojas: Resumen por plato, Por mesa, Lista por mesa y Sin mesa. Para filtrar y reenviar.',
+        pdf: 'PDF para imprimir (.pdf)',
+        pdfText: 'Hojas A4 listas para imprimir, con el mismo resumen por plato y por mesa.',
+        pending: 'Incluir invitados pendientes',
+        pendingText: 'Apagado: solo confirmados. Los que declinaron nunca entran.',
+        language: 'Idioma del archivo',
+        langEs: 'Español',
+        langEn: 'English',
+        contents: 'Incluye dietas y restricciones y el plato que cada invitado eligió en su menú. No lleva teléfonos ni correos.',
+        noMenu: 'Solo verás el recuento por mesa; el resumen por plato se llena cuando tus invitados elijan su menú en la invitación.',
+        download: 'Descargar',
+        downloading: 'Descargando...',
+        done: 'Archivo descargado.',
+        errors: {
+          tooMany: 'Demasiadas descargas, espera un minuto e intenta de nuevo.',
+          forbidden: 'No tienes permiso para descargar este archivo.',
+          missing: 'No encontramos este evento. Recarga la página.',
+          invalid: 'Esas opciones no son válidas. Cambia el formato o el idioma e intenta de nuevo.',
+          generic: 'No pudimos generar el archivo. Intenta de nuevo en un momento.'
+        }
+      },
+      clearAll: {
+        open: 'Vaciar todas las mesas',
+        title: 'Vaciar todas las mesas',
+        text: 'Vas a quitar de su mesa a {count} persona. | Vas a quitar de su mesa a {count} personas.',
+        note: 'Las mesas se quedan; todos vuelven a la lista de "Sin sentar". No se puede deshacer.',
+        confirm: 'Sí, vaciar ({count} persona) | Sí, vaciar ({count} personas)'
+      },
       delete: {
         title: 'Eliminar mesa',
         text: '¿Seguro que quieres eliminar "{name}"?',
-        withGuests: 'Esta mesa tiene {count} invitado(s) sentado(s). Volverán a la lista de "Sin sentar".',
+        withGuests: 'Esta mesa tiene {count} invitado sentado y quedará sin mesa. | Esta mesa tiene {count} invitados sentados y quedarán sin mesa.',
+        empty: 'La mesa está vacía: no se mueve a nadie.',
         confirm: 'Eliminar mesa'
       },
       removeGuest: {
@@ -822,9 +914,18 @@ export default {
         created: 'Mesa "{name}" creada.',
         updated: 'Mesa "{name}" actualizada.',
         deleted: 'Mesa "{name}" eliminada.',
+        deletedWithGuests: 'Mesa "{name}" eliminada. {count} invitado volvió a "Sin sentar". | Mesa "{name}" eliminada. {count} invitados volvieron a "Sin sentar".',
         assigned: '{guest} ahora está en {table}.',
+        moved: '{guest} se movió a {table}.',
+        bulk: '{count} invitado sentado en {table}. | {count} invitados sentados en {table}.',
+        bulkPartial: 'Sentamos a {seated} en {table}; {failed} no se pudieron sentar (mesa llena o ya sentados).',
+        cleared: 'Mesas vaciadas: {count} persona volvió a "Sin sentar". | Mesas vaciadas: {count} personas volvieron a "Sin sentar".',
         removed: '{guest} salió de {table}.',
         full: 'Esa mesa ya está llena. Elige otra o aumenta su capacidad.',
+        same: 'Ese invitado ya está en esa mesa.',
+        already: 'Ese invitado ya tiene mesa. Actualizamos la lista.',
+        missing: 'Ese invitado o esa mesa ya no existe. Actualizamos la lista.',
+        invalid: 'Revisa los datos e intenta de nuevo.',
         loadError: 'No pudimos cargar las mesas. Intenta de nuevo.',
         error: 'Algo salió mal. Intenta de nuevo en un momento.'
       }
@@ -1168,6 +1269,7 @@ export default {
         editTitle: 'Editar padrino',
         name: 'Nombre',
         relationship: 'Quién es para ti',
+        nameHint: 'Si son pareja, regístralos como un solo padrino: “Raúl y Marta”.',
         phone: 'Teléfono',
         phoneHint: 'Con código de país si es posible.',
         status: 'Estado',
@@ -1183,6 +1285,23 @@ export default {
         empty: 'Primero añade gastos en el Presupuesto para poder asignárselos.',
         costs: 'Cuesta {amount}',
         amount: 'Monto para {name}'
+      },
+      conflict: {
+        title: 'Ya hay pagos en este gasto',
+        text: 'Antes de guardar, dinos qué hacemos con los pagos que la familia ya registró. | Antes de guardar, dinos qué hacemos con los pagos que la familia ya registró en cada gasto.',
+        figures: 'Cuesta {cost} · Falta por pagar {remaining}',
+        question: 'Este gasto ya tiene {paid} pagados por la familia. ¿Lo cubrieron los padrinos?',
+        noNote: 'Sin nota',
+        attribute: 'Sí, atribuirles esos pagos',
+        attributeHelp: 'Los pagos pasan a {name} y conservan su fecha y su monto. Lo pagado no cambia.',
+        additional: 'No, es un compromiso adicional',
+        additionalHelp: 'Se suma a lo ya pagado. Puede cubrir hasta {remaining}, lo que falta por pagar.',
+        additionalNone: 'No disponible: este gasto ya está pagado por completo, no queda nada adicional que cubrir.',
+        additionalOver: 'No disponible: aportaría {amount} más y solo faltan {remaining} por pagar. Baja el monto o atribúyele los pagos.',
+        exceeded: 'Solo faltan {remaining} por pagar en este gasto. Elige otra opción o baja el monto.',
+        exceededNamed: 'En “{item}” solo faltan {remaining} por pagar. Baja el monto o atribúyele los pagos ya hechos.',
+        confirm: 'Guardar',
+        warning: 'Con lo que apadrinan los padrinos, “{items}” supera su costo. | Con lo que apadrinan los padrinos, estos gastos superan su costo: {items}.'
       },
       errors: {
         name: 'Escribe el nombre.',
@@ -1404,11 +1523,6 @@ export default {
     },
     whatsapp: {
       title: 'Enviar por WhatsApp',
-      button: 'Enviar por WhatsApp',
-      shareButton: 'Compartir por WhatsApp',
-      select: 'Elegir invitados',
-      selecting: 'Elegidos: {n} | Elegidos: {n}',
-      selectGuest: 'Elegir a {name}',
       templateLabel: 'Qué quieres enviar',
       audienceLabel: 'A quién',
       templates: {
@@ -1420,7 +1534,7 @@ export default {
         all: 'Toda tu lista',
         pending: 'Solo los pendientes',
         selected: 'Los que elegí ({n}) | Los que elegí ({n})',
-        selectedHelp: 'Pulsa «Elegir invitados» en la lista para marcarlos.'
+        selectedHelp: 'Disponible al enviar a una familia desde su menú.'
       },
       previewLoading: 'Calculando a quién le llegará…',
       preview: 'Le llegará a {n} invitado. | Le llegará a {n} invitados.',
@@ -1456,6 +1570,8 @@ export default {
       },
       stateLabel: 'WhatsApp',
       state: {
+        none: 'Sin enviar',
+        manual: 'Abierto',
         queued: 'En cola',
         sent: 'Enviado',
         delivered: 'Entregado',
@@ -1473,10 +1589,6 @@ export default {
       },
       retry: 'Reintentar',
       retried: 'Volvimos a intentarlo.',
-      summary: {
-        label: 'Resumen de envíos por WhatsApp',
-        title: '{n} mensaje enviado por WhatsApp | {n} mensajes enviados por WhatsApp'
-      },
       manual: {
         title: 'Compartir por WhatsApp',
         lockedTitle: 'El envío automático es parte del evento completo',
@@ -1509,6 +1621,22 @@ export default {
         detail: '{yes} asisten · {no} no asisten · {pending} pendientes'
       },
       title: 'Invitados',
+      addPhone: 'Añadir teléfono',
+      sendInvitations: 'Enviar invitaciones',
+      sendInvitationsCount: 'Enviar invitaciones · {n} sin enviar',
+      filters: {
+        answers: 'Respuestas',
+        delivery: 'Envío',
+        deliveryAll: 'Todos los envíos'
+      },
+      delivery: {
+        unsent: 'Sin enviar',
+        sent: 'Enviadas',
+        opened: 'Abiertas',
+        problem: 'Con problema'
+      },
+      listLoadError: 'No pudimos cargar tu lista.',
+      retryLoad: 'Reintentar',
       counter: '{n} persona | {n} personas',
       counterLimit: '{n} de {limit} personas en tu plan',
       search: 'Buscar por nombre, teléfono o correo',
@@ -1542,7 +1670,7 @@ export default {
       },
       menu: {
         label: 'Acciones para {name}',
-        whatsapp: 'Enviar por WhatsApp',
+        send: 'Enviar invitación',
         copy: 'Copiar enlace',
         edit: 'Editar',
         confirm: 'Confirmar por teléfono',

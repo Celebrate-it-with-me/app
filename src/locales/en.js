@@ -537,6 +537,13 @@ export default {
       noteCount: '{n}/{max}',
       nameLabel: 'Name of the person',
       yourNote: 'Your message',
+      menu: {
+        title: 'What would you like to eat?',
+        help: 'Pick one dish of each kind for each person. It is optional and you can change it later.',
+        types: { starter: 'Starter', main: 'Main course', dessert: 'Dessert' },
+        diets: { vegan: 'Vegan', vegetarian: 'Vegetarian', gluten_free: 'Gluten-free' },
+        errors: { invalid: 'We could not save the menu. Reload the invitation and try again.' }
+      },
       errors: {
         too_long: 'This is too long.',
         too_short: 'Enter at least 2 characters.',
@@ -743,17 +750,34 @@ export default {
       subtitle: 'Build your tables and seat each guest in their spot.',
       newTable: 'New table',
       cancel: 'Cancel',
+      retry: 'Try again',
       tabs: { tables: 'Tables', unassigned: 'Unseated' },
-      stats: { tables: 'Tables', seated: 'Seated', pending: 'Unseated' },
+      stats: {
+        tables: 'Tables',
+        seated: 'Seated',
+        seatedHint: '{count} free | {count} free',
+        pending: 'Unseated',
+        pendingHint: '{n} not attending'
+      },
       type: { vip: 'VIP', family: 'Family', friends: 'Friends', general: 'General' },
       location: { front: 'Front', center: 'Center', back: 'Back', side: 'Side', entrance: 'Near the entrance' },
       rsvp: { all: 'All', attending: 'Attending', pending: 'Pending', 'not-attending': 'Not attending' },
+      guest: { companionOf: 'Companion of {name}' },
+      legend: {
+        label: 'How to read the bars',
+        room: 'Room left',
+        almost: 'Almost full (75% or more)',
+        full: 'Full'
+      },
       tables: {
         title: 'Your tables',
         emptyTitle: 'No tables yet',
         emptyText: 'Create your first table to start seating your guests.',
+        errorTitle: 'We could not load your tables',
+        errorText: 'Check your connection and try again.',
         full: 'Full',
         occupancy: 'Table occupancy',
+        seatedOf: '{taken} of {capacity}',
         edit: 'Edit {name}',
         delete: 'Delete {name}'
       },
@@ -761,27 +785,33 @@ export default {
         createTitle: 'New table',
         editTitle: 'Edit table',
         name: 'Table name',
-        nameHint: 'An easy name to recognize, like "Honoree\'s family".',
+        nameHint: 'Something easy to recognise, like "Quinceañera\'s family" (up to 50 characters).',
         namePlaceholder: 'E.g. Head table',
         capacity: 'Capacity',
+        capacityHint: 'How many people fit (1 to {max}).',
         capacityPlaceholder: 'E.g. 8',
         type: 'Type',
+        typeHint: 'Only to keep you organised: VIP, family, friends or general. It does not limit who you can seat.',
         priority: 'Priority',
         priorityLow: '1 (low)',
         priorityHigh: '10 (high)',
-        priorityHint: 'Higher priority tables show up first.',
+        priorityHint: 'Sorts your list: higher priority tables appear first (the head table, say, 10).',
         reservedFor: 'Reserved for',
-        reservedHint: 'Optional. A specific group of guests.',
-        reservedPlaceholder: 'E.g. dad\'s side of the family',
+        reservedHint: 'Optional. A note for you, like "father\'s side". It does not seat anyone by itself.',
+        reservedPlaceholder: 'E.g. father\'s side',
         location: 'Location',
-        locationHint: 'Optional. Where it sits in the venue.',
+        locationHint: 'Optional. Where the table is in the venue; just a reference.',
         locationNone: 'No location',
         create: 'Create table',
         save: 'Save changes',
         errors: {
           name: 'Give the table a name.',
-          capacity: 'Enter how many people fit (at least 1).',
-          type: 'Choose a table type.'
+          nameTooLong: 'The name can be up to 50 characters.',
+          capacity: 'Enter how many people fit (a whole number, at least 1).',
+          capacityTooBig: 'A table can have up to 50 seats.',
+          type: 'Choose a table type.',
+          priority: 'Priority goes from 1 to 10.',
+          reserved_forTooLong: 'This text can be up to 100 characters.'
         }
       },
       details: {
@@ -789,28 +819,90 @@ export default {
         noneTitle: 'Pick a table',
         noneText: 'Tap a table in the list to see who is seated there.',
         seated: '{taken} of {capacity} seats taken',
+        left: '{count} seat left | {count} seats left',
+        reservedFor: 'Reserved for: {who}',
         emptyTitle: 'Nobody seated yet',
         emptyText: 'Seat guests from the "Unseated" list.',
         remove: 'Remove {name} from the table',
+        removeShort: 'Remove from table',
+        move: 'Move {name} to another table',
+        moveShort: 'Move to another table',
         assignGuests: 'Seat guests'
       },
       unassigned: {
         title: 'Unseated',
-        search: 'Search guests...',
-        searchLabel: 'Search guests by name',
+        help: 'Tap a guest to pick their table, or tick several to seat them together.',
+        search: 'Search guest...',
+        searchLabel: 'Search guest by name',
         statusLabel: 'Filter by RSVP',
-        seatingAt: 'Seating at: {name}',
-        pickTable: 'Pick a table to start seating guests.',
-        goTables: 'Go to tables',
+        declinedNote: 'Guests who are not attending do not need a seat; you can still seat them if they change their mind.',
         assign: 'Seat',
+        pick: 'Tick {name}',
+        pickGroup: 'Tick their group ({count} person) | Tick their group ({count} people)',
+        selectAll: 'Tick everyone shown',
+        selected: '{count} ticked | {count} ticked',
+        selectionLabel: 'Ticked guests',
+        seatSelected: 'Seat at...',
+        clear: 'Clear ticks',
+        showMore: 'Show {count} more | Show {count} more',
         emptyTitle: 'No guests to show',
         emptyAll: 'All your guests already have a table.',
-        emptyFiltered: 'Try a different search or filter.'
+        emptyFiltered: 'Try another search or filter.'
+      },
+      sheet: {
+        oneTitle: 'Seat {name} at...',
+        oneText: 'Pick a table with a free seat.',
+        manyTitle: 'Seat {count} guests at...',
+        moveTitle: 'Move {name} to...',
+        moveText: 'Currently at {table}.',
+        listLabel: 'Tables',
+        free: '{count} seat free | {count} seats free',
+        noRoom: 'Only {left} seat left (you need {need}) | Only {left} seats left (you need {need})',
+        open: 'Open table',
+        more: '+{n} more',
+        declinedWarning: '{names} said they are not attending. You can still seat them. | {names} said they are not attending. You can still seat them.',
+        noTablesTitle: 'No other table available',
+        noTablesText: 'Create a new table or raise the capacity of an existing one.'
+      },
+      export: {
+        button: 'Export for catering and venue',
+        title: 'Export for catering and venue',
+        subtitle: 'One file for the caterer and the venue: how many people per table and which dish each one eats.',
+        format: 'Format',
+        xlsx: 'Excel (.xlsx)',
+        xlsxText: 'Sheets: Dish summary, By table, List by table and No table. To filter and forward.',
+        pdf: 'Printable PDF (.pdf)',
+        pdfText: 'A4 pages ready to print, with the same dish and table summary.',
+        pending: 'Include pending guests',
+        pendingText: 'Off: confirmed guests only. Guests who declined never go in.',
+        language: 'File language',
+        langEs: 'Español',
+        langEn: 'English',
+        contents: 'Includes diets and restrictions and the dish each guest chose in their menu. No phone numbers or emails.',
+        noMenu: 'You will only see the count per table; the dish summary fills in once your guests choose their menu in the invitation.',
+        download: 'Download',
+        downloading: 'Downloading...',
+        done: 'File downloaded.',
+        errors: {
+          tooMany: 'Too many downloads, wait a minute and try again.',
+          forbidden: 'You do not have permission to download this file.',
+          missing: 'We could not find this event. Reload the page.',
+          invalid: 'Those options are not valid. Change the format or language and try again.',
+          generic: 'We could not generate the file. Try again in a moment.'
+        }
+      },
+      clearAll: {
+        open: 'Clear all tables',
+        title: 'Clear all tables',
+        text: 'You are about to take {count} person off their table. | You are about to take {count} people off their tables.',
+        note: 'The tables stay; everyone goes back to the "Unseated" list. This cannot be undone.',
+        confirm: 'Yes, clear ({count} person) | Yes, clear ({count} people)'
       },
       delete: {
         title: 'Delete table',
         text: 'Are you sure you want to delete "{name}"?',
-        withGuests: 'This table has {count} guest(s) seated. They will go back to the "Unseated" list.',
+        withGuests: 'This table has {count} guest seated, who will become unseated. | This table has {count} guests seated, who will become unseated.',
+        empty: 'The table is empty: nobody is moved.',
         confirm: 'Delete table'
       },
       removeGuest: {
@@ -822,11 +914,20 @@ export default {
         created: 'Table "{name}" created.',
         updated: 'Table "{name}" updated.',
         deleted: 'Table "{name}" deleted.',
+        deletedWithGuests: 'Table "{name}" deleted. {count} guest is unseated again. | Table "{name}" deleted. {count} guests are unseated again.',
         assigned: '{guest} is now at {table}.',
+        moved: '{guest} moved to {table}.',
+        bulk: '{count} guest seated at {table}. | {count} guests seated at {table}.',
+        bulkPartial: 'Seated {seated} at {table}; {failed} could not be seated (table full or already seated).',
+        cleared: 'Tables cleared: {count} person is unseated again. | Tables cleared: {count} people are unseated again.',
         removed: '{guest} left {table}.',
-        full: 'That table is already full. Pick another one or raise its capacity.',
-        loadError: 'We could not load the tables. Please try again.',
-        error: 'Something went wrong. Please try again in a moment.'
+        full: 'That table is full. Pick another or raise its capacity.',
+        same: 'That guest is already at that table.',
+        already: 'That guest already has a table. We refreshed the list.',
+        missing: 'That guest or table no longer exists. We refreshed the list.',
+        invalid: 'Check the data and try again.',
+        loadError: 'We could not load the tables. Try again.',
+        error: 'Something went wrong. Try again in a moment.'
       }
     },
     music: {
@@ -1168,6 +1269,7 @@ export default {
         editTitle: 'Edit godparent',
         name: 'Name',
         relationship: 'Who they are to you',
+        nameHint: 'If they are a couple, add them as a single padrino: “Raul and Marta”.',
         phone: 'Phone',
         phoneHint: 'With country code if possible.',
         status: 'Status',
@@ -1183,6 +1285,23 @@ export default {
         empty: 'First add expenses in the Budget so you can assign them.',
         costs: 'Costs {amount}',
         amount: 'Amount for {name}'
+      },
+      conflict: {
+        title: 'This expense already has payments',
+        text: 'Before saving, tell us what to do with the payments the family already recorded. | Before saving, tell us what to do with the payments the family already recorded on each expense.',
+        figures: 'Costs {cost} · Left to pay {remaining}',
+        question: 'This expense already has {paid} paid by the family. Did the padrinos cover it?',
+        noNote: 'No note',
+        attribute: 'Yes, credit those payments to them',
+        attributeHelp: 'The payments move to {name} and keep their date and amount. The total paid does not change.',
+        additional: 'No, it is an additional commitment',
+        additionalHelp: 'It adds to what is already paid. It can cover up to {remaining}, what is left to pay.',
+        additionalNone: 'Not available: this expense is already fully paid, so there is nothing additional left to cover.',
+        additionalOver: 'Not available: it would add {amount} and only {remaining} is left to pay. Lower the amount or credit the payments to them.',
+        exceeded: 'Only {remaining} is left to pay on this expense. Pick another option or lower the amount.',
+        exceededNamed: 'On “{item}” only {remaining} is left to pay. Lower the amount or credit the payments already made.',
+        confirm: 'Save',
+        warning: 'With what the padrinos cover, “{items}” goes over its cost. | With what the padrinos cover, these expenses go over their cost: {items}.'
       },
       errors: {
         name: 'Enter the name.',
@@ -1404,11 +1523,6 @@ export default {
     },
     whatsapp: {
       title: 'Send by WhatsApp',
-      button: 'Send by WhatsApp',
-      shareButton: 'Share by WhatsApp',
-      select: 'Pick guests',
-      selecting: 'Picked: {n} | Picked: {n}',
-      selectGuest: 'Pick {name}',
       templateLabel: 'What to send',
       audienceLabel: 'To whom',
       templates: {
@@ -1420,7 +1534,7 @@ export default {
         all: 'Your whole list',
         pending: 'Pending guests only',
         selected: 'The ones I picked ({n}) | The ones I picked ({n})',
-        selectedHelp: 'Tap "Pick guests" in the list to mark them.'
+        selectedHelp: 'Available when sending to one family from its menu.'
       },
       previewLoading: 'Working out who will get it…',
       preview: 'It will reach {n} guest. | It will reach {n} guests.',
@@ -1456,6 +1570,8 @@ export default {
       },
       stateLabel: 'WhatsApp',
       state: {
+        none: 'Not sent',
+        manual: 'Opened',
         queued: 'Queued',
         sent: 'Sent',
         delivered: 'Delivered',
@@ -1473,10 +1589,6 @@ export default {
       },
       retry: 'Try again',
       retried: 'We tried again.',
-      summary: {
-        label: 'WhatsApp delivery summary',
-        title: '{n} message sent by WhatsApp | {n} messages sent by WhatsApp'
-      },
       manual: {
         title: 'Share by WhatsApp',
         lockedTitle: 'Automatic sending is part of the full event',
@@ -1509,6 +1621,22 @@ export default {
         detail: '{yes} attending · {no} declined · {pending} pending'
       },
       title: 'Guests',
+      addPhone: 'Add phone',
+      sendInvitations: 'Send invitations',
+      sendInvitationsCount: 'Send invitations · {n} not sent',
+      filters: {
+        answers: 'Responses',
+        delivery: 'Delivery',
+        deliveryAll: 'All deliveries'
+      },
+      delivery: {
+        unsent: 'Not sent',
+        sent: 'Sent',
+        opened: 'Opened',
+        problem: 'Has a problem'
+      },
+      listLoadError: 'We could not load your list.',
+      retryLoad: 'Try again',
       counter: '{n} person | {n} people',
       counterLimit: '{n} of {limit} people on your plan',
       search: 'Search by name, phone or email',
@@ -1542,7 +1670,7 @@ export default {
       },
       menu: {
         label: 'Actions for {name}',
-        whatsapp: 'Send on WhatsApp',
+        send: 'Send invitation',
         copy: 'Copy link',
         edit: 'Edit',
         confirm: 'Confirm by phone',

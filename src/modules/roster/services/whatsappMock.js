@@ -14,6 +14,9 @@ import RosterService from './RosterService'
  *   unknown      failed messages carry errorCode unknown_delivery (the outcome is not known)
  *   modlocked    the module shows as locked in the event's modules (no call is made)
  *   modoff       the module is missing from the event's modules
+ *   demo         like 1, and families without a message show invented delivery states (screenshots)
+ * The roster answers with `delivery` per family and `counts.delivery` (contract §4.8); in modlocked/modoff (manual
+ * mode) every third family with a phone shows as `manual` (opened by hand).
  * A message moves queued -> sent -> delivered -> read with the clock (2 s, 6 s, 12 s); guests whose id ends in 5
  * fail with 131026. Guest id multiple of 7: opted out. Phones that are not E.164 are `invalid_phone`.
  */
@@ -73,7 +76,7 @@ function view(message) {
 async function allFamilies(eventId, status) {
   const families = []
   for (let page = 1; page <= 20; page++) {
-    const result = await RosterService.list(eventId, { status, page, perPage: 100 })
+    const result = await RosterService.listRaw(eventId, { ...(status && status !== 'all' ? { status } : {}), page, perPage: 100 })
     families.push(...result.data)
     if (page >= (result.meta?.lastPage ?? 1)) break
   }
@@ -156,6 +159,68 @@ export const mockWhatsapp = {
     message.queuedAt = new Date().toISOString()
     message.retried = true
     return view(message)
+  }
+}
+
+/** Invented but stable states for the families that have no message (mode `demo`). */
+function demoState(family) {
+  const states = ['read', 'delivered', 'sent', null, 'failed', null, 'delivered']
+  const state = states[family.id % states.length]
+  return state === 'failed' && !family.phone ? null : state
+}
+
+/** The `delivery` object of a family (contract §4.8) from its last mock message. */
+function deliveryOf(family, manual, latest) {
+  const base = { state: 'none', lastMessageId: null, lastAt: null, errorCode: null, errorMessage: null, retryCount: 0, sharedAt: null }
+  if (family.whatsappOptedOut) return { ...base, state: 'opted_out' }
+  if (!family.phone) return { ...base, state: 'no_phone' }
+  if (manual) return family.id % 3 === 0 ? { ...base, state: 'manual', sharedAt: new Date(Date.now() - DAY).toISOString() } : base
+  const message = latest.get(family.id)
+  if (message) {
+    return { ...base, state: message.status, lastMessageId: message.id, lastAt: message.sentAt ?? message.queuedAt, errorCode: message.errorCode, errorMessage: message.errorMessage }
+  }
+  const state = mode() === 'demo' ? demoState(family) : null
+  if (!state) return base
+  const at = new Date(Date.now() - 3600 * 1000).toISOString()
+  return state === 'failed' ? { ...base, state, lastMessageId: 900 + family.id, lastAt: at, errorCode: '131026', errorMessage: 'Message undeliverable' } : { ...base, state, lastAt: at }
+}
+
+function deliveryMatches(family, filter) {
+  const state = family.delivery.state
+  if (filter === 'unsent') return state === 'none'
+  if (filter === 'problem') return ['failed', 'opted_out', 'no_phone'].includes(state)
+  return ['manual', 'queued', 'sent', 'delivered', 'read'].includes(state)
+}
+
+mockWhatsapp.roster = async function roster(eventId, params, raw) {
+  const manual = mockModuleState() !== 'active'
+  const latest = new Map()
+  for (const m of messages.filter(x => x.eventId === eventId).map(view)) if (!latest.has(m.guestId) || m.id > latest.get(m.guestId).id) latest.set(m.guestId, m)
+  const decorate = family => {
+    const row = { ...family, whatsappOptedOut: family.id % 7 === 0 }
+    return { ...row, delivery: deliveryOf(row, manual, latest) }
+  }
+  const everyone = (await allFamilies(eventId)).map(decorate)
+  const counts = { unsent: 0, queued: 0, sent: 0, delivered: 0, read: 0, failed: 0, noPhone: 0, optedOut: 0, shared: 0 }
+  for (const f of everyone) {
+    const s = f.delivery.state
+    if (s === 'none') counts.unsent++
+    else if (s === 'no_phone') counts.noPhone++
+    else if (s === 'opted_out') counts.optedOut++
+    else if (s === 'manual') counts.shared++
+    else counts[s]++
+  }
+  const base = await raw(eventId, { page: 1, perPage: 1, ...(params.status ? { status: params.status } : {}) })
+  let list = (await allFamilies(eventId, params.status)).map(decorate)
+  if (params.search) list = list.filter(f => `${f.name} ${f.phone ?? ''} ${f.email ?? ''}`.toLowerCase().includes(String(params.search).toLowerCase()))
+  if (params.delivery) list = list.filter(f => deliveryMatches(f, params.delivery))
+  const perPage = Number(params.perPage) || 15
+  const page = Number(params.page) || 1
+  return {
+    ...base,
+    data: list.slice((page - 1) * perPage, page * perPage),
+    meta: { ...base.meta, currentPage: page, lastPage: Math.max(1, Math.ceil(list.length / perPage)), total: list.length },
+    counts: { ...base.counts, delivery: counts }
   }
 }
 
