@@ -1269,6 +1269,7 @@ export default {
         editTitle: 'Editar padrino',
         name: 'Nombre',
         relationship: 'Quién es para ti',
+        nameHint: 'Si son pareja, regístralos como un solo padrino: “Raúl y Marta”.',
         phone: 'Teléfono',
         phoneHint: 'Con código de país si es posible.',
         status: 'Estado',
@@ -1284,6 +1285,23 @@ export default {
         empty: 'Primero añade gastos en el Presupuesto para poder asignárselos.',
         costs: 'Cuesta {amount}',
         amount: 'Monto para {name}'
+      },
+      conflict: {
+        title: 'Ya hay pagos en este gasto',
+        text: 'Antes de guardar, dinos qué hacemos con los pagos que la familia ya registró. | Antes de guardar, dinos qué hacemos con los pagos que la familia ya registró en cada gasto.',
+        figures: 'Cuesta {cost} · Falta por pagar {remaining}',
+        question: 'Este gasto ya tiene {paid} pagados por la familia. ¿Lo cubrieron los padrinos?',
+        noNote: 'Sin nota',
+        attribute: 'Sí, atribuirles esos pagos',
+        attributeHelp: 'Los pagos pasan a {name} y conservan su fecha y su monto. Lo pagado no cambia.',
+        additional: 'No, es un compromiso adicional',
+        additionalHelp: 'Se suma a lo ya pagado. Puede cubrir hasta {remaining}, lo que falta por pagar.',
+        additionalNone: 'No disponible: este gasto ya está pagado por completo, no queda nada adicional que cubrir.',
+        additionalOver: 'No disponible: aportaría {amount} más y solo faltan {remaining} por pagar. Baja el monto o atribúyele los pagos.',
+        exceeded: 'Solo faltan {remaining} por pagar en este gasto. Elige otra opción o baja el monto.',
+        exceededNamed: 'En “{item}” solo faltan {remaining} por pagar. Baja el monto o atribúyele los pagos ya hechos.',
+        confirm: 'Guardar',
+        warning: 'Con lo que apadrinan los padrinos, “{items}” supera su costo. | Con lo que apadrinan los padrinos, estos gastos superan su costo: {items}.'
       },
       errors: {
         name: 'Escribe el nombre.',

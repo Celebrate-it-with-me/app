@@ -36,7 +36,7 @@ function submit() {
 <template>
   <UiModal :open="open" :title="t(padrino ? 'app.padrinos.form.editTitle' : 'app.padrinos.form.addTitle')" size="md" @update:open="emit('update:open', $event)">
     <form id="padrino-form" class="space-y-4" novalidate @submit.prevent="submit">
-      <UiField :label="t('app.padrinos.form.name')" :error="err('name')" required>
+      <UiField :label="t('app.padrinos.form.name')" :hint="t('app.padrinos.form.nameHint')" :error="err('name')" required>
         <UiInput v-model="form.name" :invalid="!!errors.name" maxlength="120" autocomplete="off" />
       </UiField>
       <div class="grid gap-3 sm:grid-cols-2">

@@ -10,10 +10,12 @@ import PadrinosService from '../services/PadrinosService'
 import PadrinoCard from '../components/PadrinoCard.vue'
 import PadrinoFormModal from '../components/PadrinoFormModal.vue'
 import CommitmentsModal from '../components/CommitmentsModal.vue'
-import { padrinoPayload, whatsappUrl } from '../utils/padrinos'
+import CommitmentConflictDialog from '../components/CommitmentConflictDialog.vue'
+import { useCommitmentSave } from '../composables/useCommitmentSave'
+import { padrinoPayload, warningTitles, whatsappUrl } from '../utils/padrinos'
 
 const { t, locale } = useI18n()
-const { success, error: showError } = useToast()
+const { success, error: showError, toast } = useToast()
 const eventsStore = useEventsStore()
 
 const event = computed(() => eventsStore.activeEvent)
@@ -83,9 +85,29 @@ function openCommitments(padrino) {
   target.value = padrino
   commitmentsOpen.value = true
 }
+const commitmentFlow = useCommitmentSave({ save: commitments => PadrinosService.setCommitments(event.value.id, target.value.id, commitments) })
+
+/** Reacts to the outcome of a save: close and refresh, ask about the paid items, or say what went wrong. */
+async function afterCommitments(outcome) {
+  if (outcome === 'saved') {
+    commitmentsOpen.value = false
+    await load()
+    success(t('app.padrinos.saved'))
+    const titles = warningTitles(commitmentFlow.warnings.value, items.value)
+    if (titles.length) toast({ title: t('app.padrinos.conflict.warning', { items: titles.join(', ') }, titles.length), tone: 'warning', duration: 8000 })
+  } else if (outcome === 'exceeds' && !commitmentFlow.asking.value) {
+    const { budgetItemId, remaining } = commitmentFlow.exceeded.value
+    const title = items.value.find(i => i.id === budgetItemId)?.title ?? ''
+    showError(t('app.padrinos.conflict.exceededNamed', { item: title, remaining: money(remaining) }))
+  } else if (outcome === 'failed') {
+    showError(t('app.padrinos.saveError'))
+  }
+}
 async function saveCommitments(commitments) {
-  const ok = await run(() => PadrinosService.setCommitments(event.value.id, target.value.id, commitments))
-  if (ok) commitmentsOpen.value = false
+  await afterCommitments(await commitmentFlow.submit(commitments))
+}
+async function resolveConflicts(choices) {
+  await afterCommitments(await commitmentFlow.resolve(choices))
 }
 
 async function confirmRemove() {
@@ -148,7 +170,20 @@ const openWhatsapp = padrino =>
     </template>
 
     <PadrinoFormModal v-model:open="formOpen" :padrino="editing" :saving="saving" @save="save" />
-    <CommitmentsModal v-model:open="commitmentsOpen" :padrino="target" :items="items" :currency="currency" :saving="saving" @save="saveCommitments" />
+    <CommitmentsModal v-model:open="commitmentsOpen" :padrino="target" :items="items" :currency="currency" :saving="commitmentFlow.busy.value" @save="saveCommitments" />
+
+    <CommitmentConflictDialog
+      :open="commitmentFlow.asking.value"
+      :padrino-name="target?.name ?? ''"
+      :conflicts="commitmentFlow.conflicts.value"
+      :commitments="commitmentFlow.pending.value"
+      :previous="target?.commitments ?? []"
+      :exceeded="commitmentFlow.exceeded.value"
+      :currency="currency"
+      :busy="commitmentFlow.busy.value"
+      @confirm="resolveConflicts"
+      @cancel="commitmentFlow.cancel"
+    />
 
     <UiModal :open="!!removing" :title="t('app.padrinos.removeTitle')" size="sm" @update:open="removing = null">
       <p class="text-ink-700">{{ t('app.padrinos.removeBody', { name: removing?.name ?? '' }) }}</p>

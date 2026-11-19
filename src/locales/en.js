@@ -1269,6 +1269,7 @@ export default {
         editTitle: 'Edit godparent',
         name: 'Name',
         relationship: 'Who they are to you',
+        nameHint: 'If they are a couple, add them as a single padrino: “Raul and Marta”.',
         phone: 'Phone',
         phoneHint: 'With country code if possible.',
         status: 'Status',
@@ -1284,6 +1285,23 @@ export default {
         empty: 'First add expenses in the Budget so you can assign them.',
         costs: 'Costs {amount}',
         amount: 'Amount for {name}'
+      },
+      conflict: {
+        title: 'This expense already has payments',
+        text: 'Before saving, tell us what to do with the payments the family already recorded. | Before saving, tell us what to do with the payments the family already recorded on each expense.',
+        figures: 'Costs {cost} · Left to pay {remaining}',
+        question: 'This expense already has {paid} paid by the family. Did the padrinos cover it?',
+        noNote: 'No note',
+        attribute: 'Yes, credit those payments to them',
+        attributeHelp: 'The payments move to {name} and keep their date and amount. The total paid does not change.',
+        additional: 'No, it is an additional commitment',
+        additionalHelp: 'It adds to what is already paid. It can cover up to {remaining}, what is left to pay.',
+        additionalNone: 'Not available: this expense is already fully paid, so there is nothing additional left to cover.',
+        additionalOver: 'Not available: it would add {amount} and only {remaining} is left to pay. Lower the amount or credit the payments to them.',
+        exceeded: 'Only {remaining} is left to pay on this expense. Pick another option or lower the amount.',
+        exceededNamed: 'On “{item}” only {remaining} is left to pay. Lower the amount or credit the payments already made.',
+        confirm: 'Save',
+        warning: 'With what the padrinos cover, “{items}” goes over its cost. | With what the padrinos cover, these expenses go over their cost: {items}.'
       },
       errors: {
         name: 'Enter the name.',
