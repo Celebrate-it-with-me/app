@@ -16,8 +16,10 @@ import ConfirmModal from '../components/ConfirmModal.vue'
 import GuestImportModal from '../components/GuestImportModal.vue'
 import RosterDownloadMenu from '../components/RosterDownloadMenu.vue'
 import WhatsappSendModal from '../components/WhatsappSendModal.vue'
-import { TABS, noCounts, personPayload, whatsappUrl } from '../utils/roster'
+import SendWizard from '../components/send/SendWizard.vue'
+import { TABS, noCounts, personPayload } from '../utils/roster'
 import { whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/whatsapp'
+import { WIZARD_HANDLES_AUTOMATIC } from '../utils/sendWizard'
 import { DELIVERY_FILTERS, deliveryChips, deliveryOf } from '../utils/delivery'
 
 const { t } = useI18n()
@@ -58,22 +60,51 @@ if (import.meta.env.DEV && import.meta.env.VITE_WHATSAPP_MOCK) {
 const moduleState = computed(() => mockState.value ?? whatsappModuleState(event.value))
 const waLocked = computed(() => moduleState.value === 'locked')
 const waAutomatic = computed(() => !waLocked.value && moduleState.value !== 'off')
+// Manual mode (and, until F4, nothing else) goes through the send wizard; events with the module on keep the old dialog.
+const useWizard = computed(() => !waAutomatic.value || WIZARD_HANDLES_AUTOMATIC)
+const wizardOpen = ref(false)
+const reloadToken = ref(0)
 const sendOpen = ref(false)
 const sendIds = ref([])
 let pollTimer
 
 const deliveryOfRow = family => deliveryOf(family)
 
-/** One family from its menu: the manual mode opens its wa.me link, the automatic one the dialog with her preselected. */
+/** One family from its menu: the wizard (or the old dialog) opens with her preselected. */
 function sendTo(family) {
-  if (!waAutomatic.value) return openWhatsapp(family)
   sendIds.value = [family.id]
-  sendOpen.value = true
+  if (useWizard.value) wizardOpen.value = true
+  else sendOpen.value = true
 }
 
 function openSend() {
   sendIds.value = []
-  sendOpen.value = true
+  if (useWizard.value) wizardOpen.value = true
+  else sendOpen.value = true
+}
+
+/** The wizard asks to fix a guest's phone: the same form as the list, over the wizard. */
+async function editFromWizard(guest) {
+  let family = families.value.find(f => f.id === guest.id)
+  if (!family) {
+    try {
+      family = (await RosterService.list(event.value.id, { search: guest.name, perPage: 100 })).data.find(f => f.id === guest.id)
+    } catch {
+      family = null
+    }
+  }
+  if (family) openForm(family)
+  else showError(t('app.roster.listLoadError'))
+}
+
+function wizardClosed() {
+  sendIds.value = []
+  load({ silent: true })
+}
+
+function publishFromWizard() {
+  wizardOpen.value = false
+  router.push({ name: 'edit-event', params: { id: event.value.id } })
 }
 
 function afterSend() {
@@ -82,6 +113,7 @@ function afterSend() {
 
 function goUnlock() {
   sendOpen.value = false
+  wizardOpen.value = false
   router.push(unlockPath('whatsapp'))
 }
 
@@ -195,6 +227,7 @@ async function save({ person, companions, removed }) {
     }
     formOpen.value = false
     success(t('app.roster.saved'))
+    reloadToken.value += 1
     await refresh()
   } catch (e) {
     const limit = planLimitFrom(e)
@@ -260,8 +293,6 @@ async function confirmRemove() {
   }
 }
 
-const shareText = family => t('app.roster.shareText', { name: family.name, event: event.value?.eventName ?? '', link: family.link })
-const openWhatsapp = family => window.open(whatsappUrl(family.phone, shareText(family)), '_blank', 'noopener')
 async function copyLink(family) {
   try {
     await navigator.clipboard.writeText(family.link)
@@ -273,7 +304,7 @@ async function copyLink(family) {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl" :class="canSend && 'pb-36 sm:pb-0'">
+  <div class="mx-auto max-w-3xl" :class="canSend && 'pb-[calc(12.5rem+env(safe-area-inset-bottom))] sm:pb-0'">
     <UiPageHeader :title="t('app.roster.title')" :subtitle="counter">
       <template v-if="canEdit" #actions>
         <div v-if="canSend" class="hidden sm:block">
@@ -420,8 +451,23 @@ async function copyLink(family) {
     </div>
 
     <GuestImportModal v-if="event" v-model:open="importOpen" :event-id="event.id" @imported="refresh" />
+    <SendWizard
+      v-if="event && useWizard"
+      v-model:open="wizardOpen"
+      :event-id="event.id"
+      :event-name="event.eventName ?? ''"
+      :locked="waLocked"
+      :can-edit="canEdit"
+      :preselected-ids="sendIds"
+      :reload-token="reloadToken"
+      @closed="wizardClosed"
+      @unlock="goUnlock"
+      @publish="publishFromWizard"
+      @edit-guest="editFromWizard"
+      @add-guest="wizardOpen = false; openForm()"
+    />
     <WhatsappSendModal
-      v-if="event"
+      v-if="event && !useWizard"
       v-model:open="sendOpen"
       :event-id="event.id"
       :event-name="event.eventName ?? ''"
