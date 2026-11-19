@@ -6,7 +6,9 @@ import {
   NO_LOCATION,
   TABLE_LOCATIONS,
   TABLE_TYPES,
+  LIMITS,
   emptyTableForm,
+  errorMessageKey,
   tableToForm,
   validateTableForm
 } from '@/modules/seating/utils/seating'
@@ -44,7 +46,8 @@ const locationOptions = computed(() => [
   ...TABLE_LOCATIONS.map(value => ({ value, label: t(`app.seating.location.${value}`) }))
 ])
 
-const err = field => (errors.value[field] ? t(`app.seating.form.errors.${field}`) : '')
+const err = field =>
+  errors.value[field] ? t(`app.seating.form.errors.${errorMessageKey(field, errors.value[field])}`) : ''
 
 function submit() {
   submitted.value = true
@@ -68,23 +71,24 @@ function submit() {
           v-model="form.name"
           :invalid="!!errors.name"
           :placeholder="t('app.seating.form.namePlaceholder')"
-          maxlength="80"
+          :maxlength="LIMITS.nameMax"
           autocomplete="off"
         />
       </UiField>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UiField :label="t('app.seating.form.capacity')" :error="err('capacity')" required>
+        <UiField :label="t('app.seating.form.capacity')" :hint="t('app.seating.form.capacityHint', { max: LIMITS.capacityMax })" :error="err('capacity')" required>
           <UiInput
             v-model="form.capacity"
             type="number"
             inputmode="numeric"
-            min="1"
+            :min="LIMITS.capacityMin"
+            :max="LIMITS.capacityMax"
             :invalid="!!errors.capacity"
             :placeholder="t('app.seating.form.capacityPlaceholder')"
           />
         </UiField>
-        <UiField :label="t('app.seating.form.type')" required>
+        <UiField :label="t('app.seating.form.type')" :hint="t('app.seating.form.typeHint')" required>
           <UiSelect v-model="form.type" :options="typeOptions" />
         </UiField>
       </div>
@@ -98,8 +102,8 @@ function submit() {
           id="seating-priority"
           v-model.number="form.priority"
           type="range"
-          min="1"
-          max="10"
+          :min="LIMITS.priorityMin"
+          :max="LIMITS.priorityMax"
           step="1"
           class="mt-2 h-11 w-full cursor-pointer accent-rose-600"
         />
@@ -111,11 +115,12 @@ function submit() {
       </div>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <UiField :label="t('app.seating.form.reservedFor')" :hint="t('app.seating.form.reservedHint')">
+        <UiField :label="t('app.seating.form.reservedFor')" :hint="t('app.seating.form.reservedHint')" :error="err('reserved_for')">
           <UiInput
             v-model="form.reserved_for"
+            :invalid="!!errors.reserved_for"
             :placeholder="t('app.seating.form.reservedPlaceholder')"
-            maxlength="120"
+            :maxlength="LIMITS.reservedMax"
             autocomplete="off"
           />
         </UiField>

@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Plus } from 'lucide-vue-next'
+import { Plus, Trash2 } from 'lucide-vue-next'
 import { UiButton, UiCard, UiModal, UiPageHeader, UiStat, UiTabs } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useSeatingController } from '@/modules/seating/composables/useSeatingController'
@@ -13,6 +13,8 @@ import SeatingUnassignedGuests from '@/modules/seating/components/SeatingUnassig
 import SeatingTableFormModal from '@/modules/seating/components/SeatingTableFormModal.vue'
 import SeatingDeleteTableModal from '@/modules/seating/components/SeatingDeleteTableModal.vue'
 import SeatingRemoveGuestModal from '@/modules/seating/components/SeatingRemoveGuestModal.vue'
+import SeatingSeatSheet from '@/modules/seating/components/SeatingSeatSheet.vue'
+import SeatingClearAllModal from '@/modules/seating/components/SeatingClearAllModal.vue'
 
 const { t } = useI18n()
 const c = useSeatingController()
@@ -39,8 +41,18 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
 
     <div class="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
       <UiStat :label="t('app.seating.stats.tables')" :value="c.tables.value.length" tone="rose" />
-      <UiStat :label="t('app.seating.stats.seated')" :value="`${c.seatedCount.value}/${c.totalSeats.value}`" tone="success" />
-      <UiStat :label="t('app.seating.stats.pending')" :value="c.unassigned.value.length" tone="gold" />
+      <UiStat
+        :label="t('app.seating.stats.seated')"
+        :value="`${c.seatedCount.value}/${c.totalSeats.value}`"
+        :hint="t('app.seating.stats.seatedHint', { count: c.freeSeats.value }, c.freeSeats.value)"
+        tone="success"
+      />
+      <UiStat
+        :label="t('app.seating.stats.pending')"
+        :value="c.unassigned.value.length"
+        :hint="t('app.seating.stats.pendingHint', { n: c.statusCounts.value['not-attending'] })"
+        tone="gold"
+      />
     </div>
 
     <UiTabs
@@ -51,7 +63,7 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
       @update:model-value="val => (c.tab.value = val)"
     />
 
-    <div class="mt-4 grid grid-cols-1 gap-6 lg:mt-6 lg:grid-cols-3 lg:items-start">
+    <div class="mt-4 grid grid-cols-1 gap-6 pb-24 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.15fr)] lg:items-start lg:pb-8">
       <section :class="panel('tables')" aria-labelledby="seating-tables-title">
         <h2 id="seating-tables-title" class="mb-3 hidden font-heading text-xl text-ink-900 lg:block">
           {{ t('app.seating.tables.title') }}
@@ -60,40 +72,70 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
           :tables="c.tables.value"
           :selected-id="c.selectedTable.value?.id ?? null"
           :loading="c.loading.value"
+          :failed="c.loadFailed.value"
           @select="c.selectTable"
           @edit="c.openEdit"
           @delete="table => (c.tableToDelete.value = table)"
           @create="c.openCreate()"
+          @retry="c.load()"
         />
+        <UiButton
+          v-if="c.seatedCount.value > 0"
+          class="mt-4"
+          block
+          variant="ghost"
+          @click="c.showClearAll.value = true"
+        >
+          <Trash2 class="h-4 w-4 text-danger-700" aria-hidden="true" />
+          {{ t('app.seating.clearAll.open') }}
+        </UiButton>
       </section>
 
-      <section v-if="c.isDesktop.value" >
+      <section v-if="c.isDesktop.value" class="lg:sticky lg:top-4">
         <UiCard
           :title="c.selectedTable.value ? c.selectedTable.value.name : t('app.seating.details.title')"
           heading-level="h2"
           :subtitle="c.selectedTable.value ? t('app.seating.details.title') : ''"
         >
-          <SeatingTableDetails :table="c.selectedTable.value" @remove-guest="g => (c.guestToRemove.value = g)" />
+          <SeatingTableDetails
+            :table="c.selectedTable.value"
+            :companion-name="c.companionName"
+            @remove-guest="g => (c.guestToRemove.value = g)"
+            @move-guest="c.openMove"
+          />
         </UiCard>
       </section>
 
       <section :class="panel('unassigned')" aria-labelledby="seating-unassigned-title">
         <h2 id="seating-unassigned-title" class="mb-3 font-heading text-xl text-ink-900">
           {{ t('app.seating.unassigned.title') }}
-          <span class="text-sm font-body text-ink-500">({{ c.filteredUnassigned.value.length }})</span>
+          <span class="text-sm font-body text-ink-500">({{ c.unassigned.value.length }})</span>
         </h2>
-        <SeatingUnassignedGuests
-          :guests="c.filteredUnassigned.value"
-          :total="c.unassigned.value.length"
-          :search="c.search.value"
-          :status="c.status.value"
-          :table="c.selectedTable.value"
-          :busy="c.saving.value"
-          @update:search="val => (c.search.value = val)"
-          @update:status="val => (c.status.value = val)"
-          @assign="c.assignGuest"
-          @go-tables="c.tab.value = 'tables'"
-        />
+        <div class="lg:max-h-[75vh] lg:overflow-y-auto lg:pr-1">
+          <SeatingUnassignedGuests
+            :guests="c.visibleUnassigned.value"
+            :total="c.unassigned.value.length"
+            :hidden-count="c.hiddenCount.value"
+            :counts="c.statusCounts.value"
+            :search="c.search.value"
+            :status="c.status.value"
+            :selected-ids="c.selectedIds.value"
+            :all-selected="c.allVisibleSelected.value"
+            :has-tables="c.tables.value.length > 0"
+            :companion-name="c.companionName"
+            :group-size="c.groupSize"
+            :busy="c.saving.value"
+            @update:search="val => (c.search.value = val)"
+            @update:status="val => (c.status.value = val)"
+            @seat="c.openSeat"
+            @toggle="c.toggleSelect"
+            @toggle-group="c.toggleGroup"
+            @toggle-all="c.toggleAllVisible()"
+            @seat-selected="c.openSeatSelected()"
+            @clear-selection="c.clearSelection()"
+            @show-more="c.showMore()"
+          />
+        </div>
       </section>
     </div>
 
@@ -107,10 +149,29 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
       <SeatingTableDetails
         :table="c.selectedTable.value"
         show-assign
+        :companion-name="c.companionName"
         @remove-guest="g => (c.guestToRemove.value = g)"
+        @move-guest="c.openMove"
         @assign="c.goAssign()"
       />
     </UiModal>
+
+    <SeatingSeatSheet
+      :guests="c.seatSheet.value?.guests ?? []"
+      :from-table="c.seatSheet.value?.fromTable ?? null"
+      :tables="c.tables.value"
+      :preferred-id="c.selectedTable.value?.id ?? null"
+      :saving="c.saving.value"
+      @close="c.closeSeat()"
+      @pick="c.seatAt"
+    />
+    <SeatingClearAllModal
+      :open="c.showClearAll.value"
+      :count="c.seatedCount.value"
+      :saving="c.saving.value"
+      @close="c.showClearAll.value = false"
+      @confirm="c.confirmClearAll()"
+    />
 
     <SeatingTableFormModal
       :open="c.showFormModal.value"
