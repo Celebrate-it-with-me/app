@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
-  BIG_BATCH, STEPS, blockReason, blockedGroups, categoryAllowed, categoryCounts, keepsLink, loadErrorKey, manualLink, manualProgress,
-  membersOf, mergeFamilies, needsBigBatchConfirm, renderMessage, templateFor, withoutPhone
+  BIG_BATCH, MODE_DEFAULT, STEPS, blockReason, blockedGroups, categoryAllowed, categoryCounts, keepsLink, loadErrorKey, manualLink, manualProgress,
+  membersOf, mergeFamilies, needsBigBatchConfirm, optedOutIn, renderMessage, templateFor, withoutPhone
 } from '../utils/sendWizard'
 
 const rec = (id, extra = {}) => ({ id, name: `G${id}`, people: 2, phone: '+13055550101', status: 'pending', reason: null, delivery: { state: 'none' }, ...extra })
@@ -29,17 +29,25 @@ describe('mergeFamilies', () => {
     expect(list[6].link).toBeNull()
     expect(list[7]).toMatchObject({ people: 1, phone: '', status: 'pending', state: 'none', optedOut: true })
     expect(mergeFamilies(null, null)).toEqual([])
+    // the recipient's own link wins; the roster row is only the fallback
+    const both = mergeFamilies([rec(1, { link: 'https://q.test/api/1' }), rec(2)], [roster(1), roster(2)])
+    expect(both.map(f => f.link)).toEqual(['https://q.test/api/1', 'https://q.test/i/xv/2'])
+    expect(mergeFamilies([rec(1, { link: 'https://q.test/api/1' })], [])[0].link).toBe('https://q.test/api/1')
     expect(mergeFamilies([rec(1, { phone: '' })], [roster(1, { delivery: { sharedAt: 'x' } })])[0]).toMatchObject({ phone: '+13055550101', sharedAt: 'x' })
   })
 })
 
 describe('blockReason', () => {
-  it('blocks opt-outs, bad numbers, missing links and answered reminders, but not a missing phone', () => {
+  it('blocks bad numbers, missing links and answered reminders, but not a missing phone', () => {
     const [a, , noPhone, invalid, optedOut, answered, noLink] = families()
     expect(blockReason(a, 'invitation')).toBeNull()
     expect(blockReason(noPhone, 'invitation')).toBeNull()
     expect(blockReason(invalid, 'invitation')).toBe('invalid_phone')
-    expect(blockReason(optedOut, 'invitation')).toBe('opted_out')
+    expect(blockReason(optedOut, 'invitation', 'automatic')).toBe('opted_out')
+    // manual mode: an opt-out can still be shared by hand (owner decision 2026-11-19)
+    expect(blockReason(optedOut, 'invitation')).toBeNull()
+    expect(blockReason(optedOut, 'invitation', 'manual')).toBeNull()
+    expect(MODE_DEFAULT).toBe('manual')
     expect(blockReason(noLink, 'invitation')).toBe('no_link')
     expect(blockReason(answered, 'reminder_pending')).toBe('already_responded')
     expect(blockReason(answered, 'invitation')).toBeNull()
@@ -49,18 +57,23 @@ describe('blockReason', () => {
 describe('categories', () => {
   it('splits the families into the cards (P5, P6)', () => {
     const list = families()
-    expect(membersOf(list, 'unsent').map(f => f.id)).toEqual([1, 3])
+    expect(membersOf(list, 'unsent').map(f => f.id)).toEqual([1, 3, 5, 8])
+    expect(membersOf(list, 'unsent', { mode: 'automatic' }).map(f => f.id)).toEqual([1, 3])
     expect(membersOf(list, 'pending', { template: 'reminder_pending' }).map(f => f.id)).toEqual([2])
-    expect(membersOf(list, 'all').map(f => f.id)).toEqual([1, 2, 3, 6])
-    expect(membersOf(list, 'selected', { selectedIds: [1, 5, 99] }).map(f => f.id)).toEqual([1])
-    expect(categoryCounts(list)).toEqual({ unsent: 2, pending: 1, all: 4 })
+    expect(membersOf(list, 'all').map(f => f.id)).toEqual([1, 2, 3, 5, 6, 8])
+    expect(membersOf(list, 'selected', { selectedIds: [1, 5, 99] }).map(f => f.id)).toEqual([1, 5])
+    expect(membersOf(list, 'selected', { selectedIds: [1, 5, 99], mode: 'automatic' }).map(f => f.id)).toEqual([1])
+    expect(categoryCounts(list)).toEqual({ unsent: 4, pending: 1, all: 6 })
+    expect(categoryCounts(list, { mode: 'automatic' })).toEqual({ unsent: 2, pending: 1, all: 4 })
   })
 
   it('lists what cannot be shared and who has no phone', () => {
     const list = families()
-    expect(blockedGroups(list).map(g => [g.reason, g.families.map(f => f.id)])).toEqual([['invalid_phone', [4]], ['opted_out', [5, 8]]])
+    expect(blockedGroups(list).map(g => [g.reason, g.families.map(f => f.id)])).toEqual([['invalid_phone', [4]]])
+    expect(blockedGroups(list, 'invitation', 'automatic').map(g => [g.reason, g.families.map(f => f.id)])).toEqual([['invalid_phone', [4]], ['opted_out', [5, 8]]])
+    expect(optedOutIn(list).map(f => f.id)).toEqual([5, 8])
     expect(blockedGroups([])).toEqual([])
-    expect(withoutPhone(membersOf(list, 'all')).map(f => f.id)).toEqual([3])
+    expect(withoutPhone(membersOf(list, 'all')).map(f => f.id)).toEqual([3, 8])
   })
 
   it('closes invitation and reminder when RSVP is closed (P9)', () => {
@@ -72,9 +85,11 @@ describe('categories', () => {
     expect(categoryAllowed('pending')).toBe(true)
   })
 
-  it('asks for confirmation above 100 families (P7)', () => {
-    expect(needsBigBatchConfirm(BIG_BATCH)).toBe(false)
-    expect(needsBigBatchConfirm(BIG_BATCH + 1)).toBe(true)
+  it('asks for confirmation above 100 families only in automatic mode (P7)', () => {
+    expect(needsBigBatchConfirm(BIG_BATCH, 'automatic')).toBe(false)
+    expect(needsBigBatchConfirm(BIG_BATCH + 1, 'automatic')).toBe(true)
+    expect(needsBigBatchConfirm(BIG_BATCH + 1)).toBe(false)
+    expect(needsBigBatchConfirm(BIG_BATCH + 1, 'manual')).toBe(false)
     expect(STEPS).toEqual(['who', 'confirm'])
   })
 })

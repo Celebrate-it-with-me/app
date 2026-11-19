@@ -3,13 +3,14 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Search } from 'lucide-vue-next'
 import { UiCheckbox, UiBadge, UiButton } from '@/ui'
-import { blockReason, membersOf } from '../../utils/sendWizard'
+import { MODE_DEFAULT, blockReason, membersOf } from '../../utils/sendWizard'
 
 const PAGE = 50
 const props = defineProps({
   families: { type: Array, required: true },
   template: { type: String, default: 'invitation' },
-  selectedIds: { type: Array, default: () => [] }
+  selectedIds: { type: Array, default: () => [] },
+  mode: { type: String, default: MODE_DEFAULT }
 })
 const emit = defineEmits(['update:selectedIds', 'edit-guest'])
 const { t } = useI18n()
@@ -22,16 +23,16 @@ const FILTERS = ['all', 'unsent', 'pending', 'problem']
 const visible = computed(() => {
   const term = search.value.trim().toLowerCase()
   const inFilter = filter.value === 'problem'
-    ? new Set(props.families.filter(f => blockReason(f, props.template) !== null || f.state === 'failed').map(f => f.id))
+    ? new Set(props.families.filter(f => blockReason(f, props.template, props.mode) !== null || f.state === 'failed').map(f => f.id))
     : filter.value === 'all'
       ? null
-      : new Set(membersOf(props.families, filter.value, { template: props.template }).map(f => f.id))
+      : new Set(membersOf(props.families, filter.value, { template: props.template, mode: props.mode }).map(f => f.id))
   return props.families.filter(f => (!inFilter || inFilter.has(f.id)) && (!term || f.name.toLowerCase().includes(term) || f.phone.toLowerCase().includes(term)))
 })
 watch([search, filter], () => (shown.value = PAGE))
 
 const page = computed(() => visible.value.slice(0, shown.value))
-const reasonOf = family => blockReason(family, props.template)
+const reasonOf = family => blockReason(family, props.template, props.mode)
 const chosen = computed(() => new Set(props.selectedIds))
 const blockedCount = computed(() => props.families.filter(f => reasonOf(f)).length)
 
@@ -102,6 +103,7 @@ function chooseVisible() {
           <UiBadge tone="warning" size="sm">{{ reasonOf(family) === 'opted_out' ? t('app.whatsapp.wizard.who.optedOut') : t('app.whatsapp.wizard.who.invalidPhone') }}</UiBadge>
           <UiButton v-if="reasonOf(family) === 'invalid_phone'" size="sm" variant="link" class="h-auto" @click="emit('edit-guest', family)">{{ t('app.whatsapp.wizard.who.fixPhone') }}</UiButton>
         </template>
+        <UiBadge v-else-if="family.optedOut" tone="neutral" size="sm" data-testid="pick-optedout">{{ t('app.whatsapp.wizard.who.optedOut') }}</UiBadge>
         <UiBadge v-else-if="family.state !== 'none' && family.state !== 'no_phone'" tone="info" size="sm">{{ t(`app.whatsapp.state.${family.state}`) }}</UiBadge>
       </li>
     </ul>
