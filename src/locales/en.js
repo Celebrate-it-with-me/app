@@ -857,6 +857,33 @@ export default {
         noTablesTitle: 'No other table available',
         noTablesText: 'Create a new table or raise the capacity of an existing one.'
       },
+      export: {
+        button: 'Export for catering and venue',
+        title: 'Export for catering and venue',
+        subtitle: 'One file for the caterer and the venue: how many people per table and which dish each one eats.',
+        format: 'Format',
+        xlsx: 'Excel (.xlsx)',
+        xlsxText: 'Sheets: Dish summary, By table, List by table and No table. To filter and forward.',
+        pdf: 'Printable PDF (.pdf)',
+        pdfText: 'A4 pages ready to print, with the same dish and table summary.',
+        pending: 'Include pending guests',
+        pendingText: 'Off: confirmed guests only. Guests who declined never go in.',
+        language: 'File language',
+        langEs: 'Español',
+        langEn: 'English',
+        contents: 'Includes diets and restrictions and the dish each guest chose in their menu. No phone numbers or emails.',
+        noMenu: 'You will only see the count per table; the dish summary fills in once your guests choose their menu in the invitation.',
+        download: 'Download',
+        downloading: 'Downloading...',
+        done: 'File downloaded.',
+        errors: {
+          tooMany: 'Too many downloads, wait a minute and try again.',
+          forbidden: 'You do not have permission to download this file.',
+          missing: 'We could not find this event. Reload the page.',
+          invalid: 'Those options are not valid. Change the format or language and try again.',
+          generic: 'We could not generate the file. Try again in a moment.'
+        }
+      },
       clearAll: {
         open: 'Clear all tables',
         title: 'Clear all tables',

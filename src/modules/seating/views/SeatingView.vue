@@ -1,7 +1,7 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Plus, Trash2 } from 'lucide-vue-next'
+import { Download, Plus, Trash2 } from 'lucide-vue-next'
 import { UiButton, UiCard, UiModal, UiPageHeader, UiStat, UiTabs } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useSeatingController } from '@/modules/seating/composables/useSeatingController'
@@ -14,12 +14,15 @@ import SeatingTableFormModal from '@/modules/seating/components/SeatingTableForm
 import SeatingDeleteTableModal from '@/modules/seating/components/SeatingDeleteTableModal.vue'
 import SeatingRemoveGuestModal from '@/modules/seating/components/SeatingRemoveGuestModal.vue'
 import SeatingSeatSheet from '@/modules/seating/components/SeatingSeatSheet.vue'
+import SeatingExportModal from '@/modules/seating/components/SeatingExportModal.vue'
 import SeatingClearAllModal from '@/modules/seating/components/SeatingClearAllModal.vue'
 
 const { t } = useI18n()
 const c = useSeatingController()
 const eventsStore = useEventsStore()
 
+const showExport = ref(false)
+const eventLocale = computed(() => (eventsStore.activeEvent?.locale === 'en' ? 'en' : 'es'))
 const tabs = computed(() => [
   { value: 'tables', label: t('app.seating.tabs.tables'), count: c.tables.value.length },
   { value: 'unassigned', label: t('app.seating.tabs.unassigned'), count: c.unassigned.value.length }
@@ -31,10 +34,16 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
   <div class="mx-auto max-w-6xl">
     <UiPageHeader :title="t('app.seating.title')" :subtitle="t('app.seating.subtitle')">
       <template #actions>
+        <div class="flex flex-wrap gap-2">
+        <UiButton variant="secondary" @click="showExport = true">
+          <Download class="h-4 w-4" aria-hidden="true" />
+          {{ t('app.seating.export.button') }}
+        </UiButton>
         <UiButton @click="c.openCreate()">
           <Plus class="h-4 w-4" aria-hidden="true" />
           {{ t('app.seating.newTable') }}
         </UiButton>
+        </div>
       </template>
     </UiPageHeader>
     <ModuleTemplateGate module="seating" />
@@ -164,6 +173,12 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
       :saving="c.saving.value"
       @close="c.closeSeat()"
       @pick="c.seatAt"
+    />
+    <SeatingExportModal
+      v-model:open="showExport"
+      :event-id="eventsStore.activeEvent?.id ?? 0"
+      :event-locale="eventLocale"
+      :has-menu="!!eventsStore.activeEventHasMenu"
     />
     <SeatingClearAllModal
       :open="c.showClearAll.value"

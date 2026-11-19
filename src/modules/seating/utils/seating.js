@@ -220,3 +220,13 @@ export function namesPreview(names, max = 3, more = (n) => `+${n}`) {
   if (list.length <= max) return list.join(', ')
   return `${list.slice(0, max).join(', ')} ${more(list.length - max)}`
 }
+
+/** i18n key suffix for a failed export: 'tooMany' | 'forbidden' | 'missing' | 'invalid' | 'generic'. */
+export function exportErrorKey(error) {
+  const status = error?.response?.status
+  if (status === 429) return 'tooMany'
+  if (status === 403 || status === 401) return 'forbidden'
+  if (status === 404) return 'missing'
+  if (status === 422) return 'invalid'
+  return 'generic'
+}

@@ -857,6 +857,33 @@ export default {
         noTablesTitle: 'No hay otra mesa disponible',
         noTablesText: 'Crea una mesa nueva o aumenta la capacidad de una existente.'
       },
+      export: {
+        button: 'Exportar para catering y salón',
+        title: 'Exportar para catering y salón',
+        subtitle: 'Un archivo para el catering y el salón: cuántas personas por mesa y qué plato come cada una.',
+        format: 'Formato',
+        xlsx: 'Excel (.xlsx)',
+        xlsxText: 'Hojas: Resumen por plato, Por mesa, Lista por mesa y Sin mesa. Para filtrar y reenviar.',
+        pdf: 'PDF para imprimir (.pdf)',
+        pdfText: 'Hojas A4 listas para imprimir, con el mismo resumen por plato y por mesa.',
+        pending: 'Incluir invitados pendientes',
+        pendingText: 'Apagado: solo confirmados. Los que declinaron nunca entran.',
+        language: 'Idioma del archivo',
+        langEs: 'Español',
+        langEn: 'English',
+        contents: 'Incluye dietas y restricciones y el plato que cada invitado eligió en su menú. No lleva teléfonos ni correos.',
+        noMenu: 'Solo verás el recuento por mesa; el resumen por plato se llena cuando tus invitados elijan su menú en la invitación.',
+        download: 'Descargar',
+        downloading: 'Descargando...',
+        done: 'Archivo descargado.',
+        errors: {
+          tooMany: 'Demasiadas descargas, espera un minuto e intenta de nuevo.',
+          forbidden: 'No tienes permiso para descargar este archivo.',
+          missing: 'No encontramos este evento. Recarga la página.',
+          invalid: 'Esas opciones no son válidas. Cambia el formato o el idioma e intenta de nuevo.',
+          generic: 'No pudimos generar el archivo. Intenta de nuevo en un momento.'
+        }
+      },
       clearAll: {
         open: 'Vaciar todas las mesas',
         title: 'Vaciar todas las mesas',

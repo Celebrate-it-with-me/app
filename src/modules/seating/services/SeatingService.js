@@ -1,5 +1,11 @@
 import { CWM_API } from '@/services/axios'
 
+/** The name the server gave the file (Content-Disposition), or a fallback. */
+export function filenameOf(response, fallback) {
+  const match = /filename="?([^";]+)"?/i.exec(response?.headers?.['content-disposition'] ?? '')
+  return match ? match[1] : fallback
+}
+
 class SeatingService {
   async createTable({
     eventId,
@@ -61,6 +67,18 @@ class SeatingService {
   /** Atomic move: if it fails the guest stays at the old table. Answer: `data: { from, to }`. */
   async moveGuest({ eventId, guestId, toTableId }) {
     return CWM_API.post(`event/${eventId}/seating/move`, { guest_id: guestId, to_table_id: toTableId })
+  }
+
+  /**
+   * Catering and venue file: `{ blob, filename }`. `format` is 'xlsx' or 'pdf'; `locale` 'es' or 'en'.
+   * Declined guests never go in; `includePending` adds the ones who have not answered yet.
+   */
+  async downloadCatering(eventId, { format = 'xlsx', locale, includePending = false } = {}) {
+    const response = await CWM_API.get(`event/${eventId}/seating/export/catering`, {
+      params: { format, locale, include_pending: includePending ? 1 : 0 },
+      responseType: 'blob'
+    })
+    return { blob: response.data, filename: filenameOf(response, `catering.${format}`) }
   }
 
   async updateTable({ eventId, tableId, name, capacity, type, priority, reserved_for, location }) {
