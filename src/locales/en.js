@@ -2262,6 +2262,9 @@ export default {
     undone: 'Back to {name}.',
     backToTemplates: 'Back to templates',
     useAfterPayment: 'Choose my template',
+    miniature: {
+      alt: 'Miniature of the invitation for {name}'
+    },
     entry: {
       title: 'Template',
       change: 'Change template',

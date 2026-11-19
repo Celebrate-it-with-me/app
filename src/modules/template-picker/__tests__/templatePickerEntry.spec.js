@@ -55,6 +55,20 @@ afterEach(() => {
 })
 
 describe('TemplatePickerEntry', () => {
+  it('draws the real miniature (not an empty icon) and waits for the current template before mounting it', async () => {
+    await mountEntry()
+    const mini = wrapper.get('[data-testid=invitation-miniature]')
+    expect(mini.attributes('style')).toContain('width: 56px')
+    expect(wrapper.find('svg.lucide-image-off').exists()).toBe(false)
+  })
+
+  it('uses the template image as fallback and skips the live view when she cannot edit', async () => {
+    mocks.templates.mockResolvedValue([{ ...LIST[0], previewImage: 'https://cdn.test/a.webp' }])
+    await mountEntry({ disabled: true })
+    expect(wrapper.get('[data-testid=miniature-image]').attributes('src')).toBe('https://cdn.test/a.webp')
+    expect(mocks.preview).not.toHaveBeenCalled()
+  })
+
   it('shows the template in use read from the list when the editor does not pass it', async () => {
     await mountEntry()
     expect(text()).toContain('Clásica')

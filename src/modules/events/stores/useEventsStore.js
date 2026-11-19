@@ -110,7 +110,10 @@ export const useEventsStore = defineStore('eventsStore', {
      * @param {Object} event - The event to set as active
      */
     initActiveEvent(event) {
-      this.activeEvent = event
+      this.activeEvent = event ?? null
+      // The user store keeps the active event's id (the rsvp, activity and other stores read it): keep both in step,
+      // otherwise a deep link right after login leaves the id empty while the event object is filled.
+      useUserStore().activeEvent = event?.id ?? null
     },
 
     /**
