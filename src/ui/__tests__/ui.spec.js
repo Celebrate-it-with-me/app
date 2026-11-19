@@ -131,3 +131,22 @@ describe('UiSelect lazy', () => {
     wrapper.unmount()
   })
 })
+
+describe('UiModal fullscreenMobile', () => {
+  it('covers the phone screen and keeps the centered card on larger ones', async () => {
+    const { mount } = await import('@vue/test-utils')
+    const { nextTick } = await import('vue')
+    const { UiModal } = await import('../index.js')
+    const wrapper = mount(UiModal, { props: { open: true, title: 'x', fullscreenMobile: true }, attachTo: document.body })
+    await nextTick()
+    const content = document.body.querySelector('[role="dialog"]')
+    expect(content.className).toContain('h-dvh')
+    expect(content.className).toContain('rounded-none')
+    expect(content.className).not.toContain('rounded-t-2xl')
+    wrapper.unmount()
+    const plain = mount(UiModal, { props: { open: true, title: 'x' }, attachTo: document.body })
+    await nextTick()
+    expect(document.body.querySelector('[role="dialog"]').className).toContain('rounded-t-2xl')
+    plain.unmount()
+  })
+})
