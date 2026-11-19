@@ -111,8 +111,8 @@ async function unmark(family) {
     </div>
 
     <ul class="mt-4 divide-y divide-line rounded-xl border border-line">
-      <li v-for="family in families" :key="family.id" class="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-3 py-3" data-testid="manual-row">
-        <div class="min-w-0 flex-1">
+      <li v-for="family in families" :key="family.id" class="flex flex-col gap-2 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3" data-testid="manual-row">
+        <div class="min-w-0 sm:flex-1">
           <p class="truncate font-medium text-ink-900">{{ family.name }}</p>
           <p class="truncate text-sm text-ink-500">{{ family.phone || t('app.whatsapp.wizard.manual.noNumber') }} · {{ t('app.roster.people', { n: family.people }, family.people) }}</p>
           <p v-if="shared[family.id]" class="mt-0.5 inline-flex items-center gap-1 text-sm font-medium text-success-700">

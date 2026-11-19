@@ -166,6 +166,21 @@ function schedulePoll() {
 }
 onBeforeUnmount(() => clearTimeout(pollTimer))
 
+// Phones: the send button sits in the flow under the title; the fixed bar only appears once it has scrolled away, so it
+// never covers the first card of the list. Without IntersectionObserver the bar is simply always there.
+const inlineSend = ref(null)
+const inlineSendVisible = ref(false)
+let sendObserver
+// The button exists only once the list has people: observe it when it appears.
+watch(inlineSend, el => {
+  sendObserver?.disconnect()
+  inlineSendVisible.value = false
+  if (!el || typeof IntersectionObserver === 'undefined') return
+  sendObserver = new IntersectionObserver(([entry]) => (inlineSendVisible.value = entry.isIntersecting))
+  sendObserver.observe(el)
+})
+onBeforeUnmount(() => sendObserver?.disconnect())
+
 let timer
 watch(search, () => {
   clearTimeout(timer)
@@ -304,7 +319,7 @@ async function copyLink(family) {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl" :class="canSend && 'pb-[calc(12.5rem+env(safe-area-inset-bottom))] sm:pb-0'">
+  <div class="mx-auto max-w-3xl" :class="canSend && !inlineSendVisible && 'pb-[calc(12.5rem+env(safe-area-inset-bottom))] sm:pb-0'">
     <UiPageHeader :title="t('app.roster.title')" :subtitle="counter">
       <template v-if="canEdit" #actions>
         <div v-if="canSend" class="hidden sm:block">
@@ -316,6 +331,12 @@ async function copyLink(family) {
         </div>
       </template>
     </UiPageHeader>
+    <div v-if="canSend" ref="inlineSend" class="mb-4 sm:hidden" data-testid="send-inline">
+      <UiButton block @click="openSend">
+        <Send class="h-4 w-4" aria-hidden="true" />
+        {{ unsent ? t('app.roster.sendInvitationsCount', { n: unsent }) : t('app.roster.sendInvitations') }}
+      </UiButton>
+    </div>
     <GuestLimitBanner />
 
     <!-- The progress card appears with the first answer; when the event is known to have guests its place is held meanwhile
@@ -437,10 +458,10 @@ async function copyLink(family) {
 
     <UiPagination v-if="meta.lastPage > 1" :page="page" :pages="meta.lastPage" class="mt-6" @update:page="page = $event" />
 
-    <!-- Phones: the main action stays in reach. It floats above the assistant's "next step" pill (fixed at 5rem, z-40),
+    <!-- Phones: once the inline button has scrolled away, the main action stays in reach. It floats above the assistant's "next step" pill (fixed at 5rem, z-40),
          which sits over the bottom navigation, so the two never overlap. -->
     <div
-      v-if="canSend"
+      v-if="canSend && !inlineSendVisible"
       class="pointer-events-none fixed inset-x-0 bottom-[calc(8.25rem+env(safe-area-inset-bottom))] z-20 px-4 sm:hidden"
       data-testid="send-bar"
     >

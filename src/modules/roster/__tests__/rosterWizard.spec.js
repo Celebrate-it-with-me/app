@@ -50,6 +50,37 @@ afterEach(() => {
   document.body.innerHTML = ''
 })
 
+describe('RosterView mobile send bar', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('shows the fixed bar only once the inline button has scrolled away', async () => {
+    let notify
+    const disconnect = vi.fn()
+    vi.stubGlobal('IntersectionObserver', class { constructor(cb) { notify = cb } observe() {} disconnect() { disconnect() } })
+    await setup()
+    const bar = () => document.querySelector('[data-testid="send-bar"]')
+    expect(bar()).not.toBeNull()
+    notify([{ isIntersecting: true }])
+    await flushPromises()
+    expect(bar()).toBeNull()
+    expect(wrapper.find('div').classes().join(' ')).not.toContain('pb-[calc')
+    expect(document.querySelector('[data-testid="send-inline"]')).not.toBeNull()
+    notify([{ isIntersecting: false }])
+    await flushPromises()
+    expect(bar()).not.toBeNull()
+    wrapper.unmount()
+    expect(disconnect).toHaveBeenCalled()
+    wrapper = null
+  })
+
+  it('opens the wizard from the inline button', async () => {
+    await setup()
+    document.querySelector('[data-testid="send-inline"] button').click()
+    await flushPromises()
+    expect(body()).toContain('¿A quién se lo enviamos?')
+  })
+})
+
 describe('RosterView send wizard (manual)', () => {
   it('opens from the header and mobile bar buttons, and shows the bar clear of the list', async () => {
     await setup()
