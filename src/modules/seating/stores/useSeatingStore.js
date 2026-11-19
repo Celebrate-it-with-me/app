@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import SeatingService from '@/modules/seating/services/SeatingService'
+import { indexGuests } from '@/modules/seating/utils/seating'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 const currentEventId = () => useEventsStore().activeEvent?.id || 0
@@ -16,6 +17,8 @@ export const useSeatingStore = defineStore('seatingStore', {
   }),
 
   getters: {
+    /** Every guest the screen knows (seated and not), by id: lets rows say whose companion someone is. */
+    guestIndex: state => indexGuests(state.unassigned, ...state.tables.map(t => t.assigned_guests)),
     selectedTable: state => state.tables.find(t => t.id === state.selectedTableId) || null
   },
 
@@ -57,9 +60,10 @@ export const useSeatingStore = defineStore('seatingStore', {
     },
 
     async deleteTable(tableId) {
-      await SeatingService.deleteTable({ eventId: currentEventId(), tableId })
+      const response = await SeatingService.deleteTable({ eventId: currentEventId(), tableId })
       if (this.selectedTableId === tableId) this.selectedTableId = null
       await this.refresh()
+      return Number(response?.data?.meta?.guests_unassigned) || 0
     },
 
     async assignGuestToTable(guestId, tableId = this.selectedTableId) {
@@ -72,6 +76,39 @@ export const useSeatingStore = defineStore('seatingStore', {
       if (!tableId) return
       await SeatingService.removeGuestFromTable({ eventId: currentEventId(), tableId, guestId })
       await this.refresh()
+    },
+
+    async moveGuest(guestId, toTableId) {
+      try {
+        await SeatingService.moveGuest({ eventId: currentEventId(), guestId, toTableId })
+      } finally {
+        // Success or not, show what the server has.
+        await this.refresh().catch(() => {})
+      }
+    },
+
+    /** Seats `guestIds` at one table. Returns `{ seated, failed }` counts read from the API answer. */
+    async bulkAssign(tableId, guestIds) {
+      let response
+      try {
+        response = await SeatingService.bulkAssign({
+          eventId: currentEventId(),
+          assignments: [{ table_id: tableId, guest_ids: guestIds }]
+        })
+      } finally {
+        await this.refresh().catch(() => {})
+      }
+      const meta = response?.data?.meta || {}
+      const seated = Number(meta.total_assigned ?? meta.assigned ?? 0)
+      const failed = Number(meta.total_skipped ?? (Array.isArray(meta.errors) ? meta.errors.length : meta.failed) ?? 0)
+      return { seated, failed }
+    },
+
+    /** Unseats everybody. Returns how many guests lost their seat. */
+    async clearAll() {
+      const response = await SeatingService.clearAll({ eventId: currentEventId() })
+      await this.refresh()
+      return Number(response?.data?.meta?.guests_unassigned) || 0
     }
   }
 })

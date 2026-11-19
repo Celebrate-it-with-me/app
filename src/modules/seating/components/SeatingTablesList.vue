@@ -1,20 +1,21 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { LayoutGrid, MapPin, Pencil, Plus, Trash2 } from 'lucide-vue-next'
+import { LayoutGrid, MapPin, Pencil, Plus, Trash2, TriangleAlert } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiEmptyState, UiSkeleton } from '@/ui'
 import { assignedCount, isTableFull, occupancyPercent, occupancyTone } from '@/modules/seating/utils/seating'
 
 defineProps({
   tables: { type: Array, default: () => [] },
   selectedId: { type: [Number, String], default: null },
-  loading: { type: Boolean, default: false }
+  loading: { type: Boolean, default: false },
+  failed: { type: Boolean, default: false }
 })
-const emit = defineEmits(['select', 'edit', 'delete', 'create'])
+const emit = defineEmits(['select', 'edit', 'delete', 'create', 'retry'])
 const { t } = useI18n()
 
 const barClass = table => {
   const tone = occupancyTone(table)
-  return tone === 'success' ? 'bg-success-600' : tone === 'warning' ? 'bg-gold-500' : 'bg-rose-600'
+  return tone === 'success' ? 'bg-success-500' : tone === 'warning' ? 'bg-gold-500' : 'bg-rose-600'
 }
 </script>
 
@@ -22,6 +23,11 @@ const barClass = table => {
   <div v-if="loading" class="space-y-3" aria-busy="true">
     <UiSkeleton v-for="n in 3" :key="n" height="6rem" />
   </div>
+
+  <UiEmptyState v-else-if="failed" :title="t('app.seating.tables.errorTitle')" :description="t('app.seating.tables.errorText')">
+    <template #icon><TriangleAlert class="h-6 w-6" aria-hidden="true" /></template>
+    <UiButton variant="secondary" @click="emit('retry')">{{ t('app.seating.retry') }}</UiButton>
+  </UiEmptyState>
 
   <UiEmptyState
     v-else-if="tables.length === 0"
@@ -35,7 +41,13 @@ const barClass = table => {
     </UiButton>
   </UiEmptyState>
 
-  <ul v-else class="space-y-3">
+  <div v-else>
+  <ul class="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-500" :aria-label="t('app.seating.legend.label')">
+    <li class="flex items-center gap-1.5"><span class="h-2 w-4 rounded-full bg-rose-600" aria-hidden="true"></span>{{ t('app.seating.legend.room') }}</li>
+    <li class="flex items-center gap-1.5"><span class="h-2 w-4 rounded-full bg-gold-500" aria-hidden="true"></span>{{ t('app.seating.legend.almost') }}</li>
+    <li class="flex items-center gap-1.5"><span class="h-2 w-4 rounded-full bg-success-500" aria-hidden="true"></span>{{ t('app.seating.legend.full') }}</li>
+  </ul>
+  <ul class="space-y-3">
     <li
       v-for="table in tables"
       :key="table.id"
@@ -50,7 +62,7 @@ const barClass = table => {
           @click="emit('select', table)"
         >
           <span class="flex flex-wrap items-center gap-2">
-            <span class="truncate text-base font-medium text-ink-900">{{ table.name }}</span>
+            <span class="line-clamp-2 break-words text-base font-medium text-ink-900" :title="table.name">{{ table.name }}</span>
             <UiBadge size="sm" :tone="table.type === 'vip' ? 'gold' : 'neutral'">
               {{ t(`app.seating.type.${table.type || 'general'}`) }}
             </UiBadge>
@@ -58,7 +70,7 @@ const barClass = table => {
           </span>
           <span v-if="table.location || table.reserved_for" class="mt-1 flex items-center gap-1 text-sm text-ink-500">
             <MapPin v-if="table.location" class="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-            <span class="truncate">
+            <span class="truncate" :title="table.reserved_for || ''">
               {{ [table.location ? t(`app.seating.location.${table.location}`) : '', table.reserved_for].filter(Boolean).join(' · ') }}
             </span>
           </span>
@@ -73,8 +85,8 @@ const barClass = table => {
             >
               <span class="block h-full rounded-full" :class="barClass(table)" :style="{ width: occupancyPercent(table) + '%' }"></span>
             </span>
-            <span class="text-sm font-medium text-ink-700 tabular-nums">
-              {{ assignedCount(table) }}/{{ table.capacity }}
+            <span class="whitespace-nowrap text-sm font-medium text-ink-700 tabular-nums">
+              {{ t('app.seating.tables.seatedOf', { taken: assignedCount(table), capacity: table.capacity }) }}
             </span>
           </span>
         </button>
@@ -89,4 +101,5 @@ const barClass = table => {
       </div>
     </li>
   </ul>
+  </div>
 </template>
