@@ -298,6 +298,7 @@ export default {
       emailRequired: { title: 'Necesitamos tu correo', text: '{provider} no nos compartió tu correo electrónico, y lo necesitamos para crear tu cuenta. Revisa los permisos de tu cuenta en {provider} o regístrate con tu correo.' },
       accountExists: { title: 'Ya tienes una cuenta', text: 'Ya existe una cuenta con el correo de tu cuenta de {provider}. Por seguridad, inicia sesión con tu contraseña.' },
       oauthFailed: { title: 'No pudimos entrar', text: 'No pudimos entrar con {provider}. Inténtalo de nuevo en un momento o usa tu correo y contraseña.' },
+      rateLimited: { title: 'Demasiados intentos', text: 'Hiciste varios intentos seguidos y, por seguridad, pausamos el inicio de sesión con {provider}. Espera un momento (un par de minutos) y vuelve a intentarlo.' },
       sessionFailed: { title: 'No pudimos iniciar la sesión', text: 'Entraste con {provider}, pero no pudimos abrir tu sesión. Inténtalo de nuevo.' }
     },
     socialSigning: 'Entrando con {provider}…',

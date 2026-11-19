@@ -298,6 +298,7 @@ export default {
       emailRequired: { title: 'We need your email', text: '{provider} did not share your email address, and we need it to create your account. Check the permissions of your {provider} account or sign up with your email.' },
       accountExists: { title: 'You already have an account', text: 'An account with the email of your {provider} account already exists. For your security, sign in with your password.' },
       oauthFailed: { title: 'We could not sign you in', text: 'We could not sign you in with {provider}. Try again in a moment or use your email and password.' },
+      rateLimited: { title: 'Too many attempts', text: 'You made several attempts in a row, so for security we paused signing in with {provider}. Wait a moment (a couple of minutes) and try again.' },
       sessionFailed: { title: 'We could not start your session', text: 'You signed in with {provider}, but we could not open your session. Please try again.' }
     },
     socialSigning: 'Signing in with {provider}…',
