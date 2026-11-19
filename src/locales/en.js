@@ -888,6 +888,7 @@ export default {
         cleared: 'Tables cleared: {count} person is unseated again. | Tables cleared: {count} people are unseated again.',
         removed: '{guest} left {table}.',
         full: 'That table is full. Pick another or raise its capacity.',
+        same: 'That guest is already at that table.',
         already: 'That guest already has a table. We refreshed the list.',
         missing: 'That guest or table no longer exists. We refreshed the list.',
         invalid: 'Check the data and try again.',

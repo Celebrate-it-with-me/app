@@ -37,34 +37,9 @@ describe('SeatingService', () => {
     expect(api.delete).toHaveBeenCalledWith('event/1/seating/clear-all')
   })
 
-  it('moves by removing then assigning (the atomic endpoint is not live yet)', async () => {
-    expect(SeatingService.nativeMove).toBe(false)
-    await SeatingService.moveGuest({ eventId: 1, guestId: 9, fromTableId: 3, toTableId: 4 })
-    expect(api.delete).toHaveBeenCalledWith('event/1/tables/3/guest/9')
-    expect(api.post).toHaveBeenCalledWith('event/1/tables/4/assign', { guest_id: 9 })
-  })
-
-  it('uses the atomic endpoint once it is switched on', async () => {
-    SeatingService.nativeMove = true
-    try {
-      await SeatingService.moveGuest({ eventId: 1, guestId: 9, fromTableId: 3, toTableId: 4 })
-    } finally {
-      SeatingService.nativeMove = false
-    }
-    expect(api.post).toHaveBeenCalledWith('event/1/seating/move', { guest_id: 9, from_table_id: 3, to_table_id: 4 })
+  it('moves with the atomic endpoint', async () => {
+    await SeatingService.moveGuest({ eventId: 1, guestId: 9, toTableId: 4 })
+    expect(api.post).toHaveBeenCalledWith('event/1/seating/move', { guest_id: 9, to_table_id: 4 })
     expect(api.delete).not.toHaveBeenCalled()
-  })
-
-  it('puts the guest back when the new table refuses', async () => {
-    const boom = new Error('full')
-    api.post.mockRejectedValueOnce(boom)
-    await expect(SeatingService.moveGuest({ eventId: 1, guestId: 9, fromTableId: 3, toTableId: 4 })).rejects.toBe(boom)
-    expect(api.post).toHaveBeenLastCalledWith('event/1/tables/3/assign', { guest_id: 9 })
-  })
-
-  it('still reports the original error when the rollback fails too', async () => {
-    const boom = new Error('full')
-    api.post.mockRejectedValueOnce(boom).mockRejectedValueOnce(new Error('rollback'))
-    await expect(SeatingService.moveGuest({ eventId: 1, guestId: 9, fromTableId: 3, toTableId: 4 })).rejects.toBe(boom)
   })
 })

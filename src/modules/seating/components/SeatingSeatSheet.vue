@@ -22,7 +22,7 @@ const need = computed(() => props.guests.length)
 const rows = computed(() =>
   tablesForSheet(props.tables, { need: need.value, preferredId: props.preferredId, excludeId: props.fromTable?.id ?? null })
 )
-const declined = computed(() => props.guests.filter(g => g.rsvpStatus === 'not-attending'))
+const declined = computed(() => props.guests.filter(g => g.declined || g.rsvpStatus === 'not-attending'))
 const names = computed(() => namesPreview(props.guests.map(g => g.name), 3, n => t('app.seating.sheet.more', { n })))
 
 const title = computed(() => {

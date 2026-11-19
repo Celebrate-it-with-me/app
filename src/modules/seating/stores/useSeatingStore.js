@@ -78,9 +78,9 @@ export const useSeatingStore = defineStore('seatingStore', {
       await this.refresh()
     },
 
-    async moveGuest(guestId, fromTableId, toTableId) {
+    async moveGuest(guestId, toTableId) {
       try {
-        await SeatingService.moveGuest({ eventId: currentEventId(), guestId, fromTableId, toTableId })
+        await SeatingService.moveGuest({ eventId: currentEventId(), guestId, toTableId })
       } finally {
         // Success or not, show what the server has.
         await this.refresh().catch(() => {})
@@ -100,7 +100,7 @@ export const useSeatingStore = defineStore('seatingStore', {
       }
       const meta = response?.data?.meta || {}
       const seated = Number(meta.total_assigned ?? meta.assigned ?? 0)
-      const failed = Array.isArray(meta.errors) ? meta.errors.length : Number(meta.failed ?? 0)
+      const failed = Number(meta.total_skipped ?? (Array.isArray(meta.errors) ? meta.errors.length : meta.failed) ?? 0)
       return { seated, failed }
     },
 

@@ -888,6 +888,7 @@ export default {
         cleared: 'Mesas vaciadas: {count} persona volvió a "Sin sentar". | Mesas vaciadas: {count} personas volvieron a "Sin sentar".',
         removed: '{guest} salió de {table}.',
         full: 'Esa mesa ya está llena. Elige otra o aumenta su capacidad.',
+        same: 'Ese invitado ya está en esa mesa.',
         already: 'Ese invitado ya tiene mesa. Actualizamos la lista.',
         missing: 'Ese invitado o esa mesa ya no existe. Actualizamos la lista.',
         invalid: 'Revisa los datos e intenta de nuevo.',

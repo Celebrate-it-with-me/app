@@ -1,9 +1,6 @@
 import { CWM_API } from '@/services/axios'
 
 class SeatingService {
-  /** Flip to true when the API exposes the atomic move (seating/move). */
-  nativeMove = false
-
   async createTable({
     eventId,
     name,
@@ -61,30 +58,9 @@ class SeatingService {
     return CWM_API.delete(`event/${eventId}/seating/clear-all`)
   }
 
-  /**
-   * Moves a seated guest to another table.
-   * Until the API ships its atomic move (this.nativeMove), it is "remove + assign" with a rollback to the old table
-   * when the new one refuses, so the guest is never left unseated by a failed move.
-   */
-  async moveGuest({ eventId, guestId, fromTableId, toTableId }) {
-    if (this.nativeMove) {
-      return CWM_API.post(`event/${eventId}/seating/move`, {
-        guest_id: guestId,
-        from_table_id: fromTableId,
-        to_table_id: toTableId
-      })
-    }
-    await this.removeGuestFromTable({ eventId, tableId: fromTableId, guestId })
-    try {
-      return await this.assignGuestToTable({ eventId, guestId, tableId: toTableId })
-    } catch (error) {
-      try {
-        await this.assignGuestToTable({ eventId, guestId, tableId: fromTableId })
-      } catch {
-        /* the guest stays unseated: the caller refreshes and the screen shows the truth */
-      }
-      throw error
-    }
+  /** Atomic move: if it fails the guest stays at the old table. Answer: `data: { from, to }`. */
+  async moveGuest({ eventId, guestId, toTableId }) {
+    return CWM_API.post(`event/${eventId}/seating/move`, { guest_id: guestId, to_table_id: toTableId })
   }
 
   async updateTable({ eventId, tableId, name, capacity, type, priority, reserved_for, location }) {

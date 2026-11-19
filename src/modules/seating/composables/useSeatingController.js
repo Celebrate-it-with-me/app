@@ -71,6 +71,7 @@ export function useSeatingController() {
     const kind = errorKind(error)
     if (kind === 'full') toast({ title: t('app.seating.toast.full'), tone: 'warning' })
     else if (kind === 'already') toast({ title: t('app.seating.toast.already'), tone: 'warning' })
+    else if (kind === 'same') toast({ title: t('app.seating.toast.same'), tone: 'warning' })
     else if (kind === 'missing') toast({ title: t('app.seating.toast.missing'), tone: 'warning' })
     else if (kind === 'validation') toast({ title: t('app.seating.toast.invalid'), tone: 'danger' })
     else toast({ title: t(fallbackKey), tone: 'danger' })
@@ -217,7 +218,7 @@ export function useSeatingController() {
     saving.value = true
     try {
       if (fromTable) {
-        await store.moveGuest(guests[0].id, fromTable.id, table.id)
+        await store.moveGuest(guests[0].id, table.id)
         toast({
           title: t('app.seating.toast.moved', { guest: guests[0].name, table: table.name }),
           tone: 'success'

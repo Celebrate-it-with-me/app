@@ -108,6 +108,8 @@ describe('useSeatingStore edges', () => {
     const store = useSeatingStore()
     api.post.mockResolvedValueOnce({ data: { meta: { total_assigned: 2, errors: ['x'] } } })
     expect(await store.bulkAssign(1, [1, 2, 3])).toEqual({ seated: 2, failed: 1 })
+    api.post.mockResolvedValueOnce({ data: { meta: { total_assigned: 3, total_skipped: 2, errors: [] } } })
+    expect(await store.bulkAssign(1, [1])).toEqual({ seated: 3, failed: 2 })
     api.post.mockResolvedValueOnce({ data: { meta: { assigned: 3, failed: 2 } } })
     expect(await store.bulkAssign(1, [1])).toEqual({ seated: 3, failed: 2 })
     api.post.mockResolvedValueOnce({})
@@ -121,8 +123,7 @@ describe('useSeatingStore edges', () => {
     const store = useSeatingStore()
     api.post.mockRejectedValue(apiError(500))
     await expect(store.bulkAssign(1, [1])).rejects.toBeTruthy()
-    api.delete.mockResolvedValue({})
-    await expect(store.moveGuest(1, 2, 3)).rejects.toBeTruthy()
+    await expect(store.moveGuest(1, 3)).rejects.toBeTruthy()
     expect(api.get).toHaveBeenCalled()
   })
 

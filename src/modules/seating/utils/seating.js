@@ -156,8 +156,10 @@ export function countByStatus(guests) {
   return counts
 }
 
+const MISSING_CODES = ['guest_not_seated', 'guest_not_at_table', 'table_not_in_event', 'guest_not_in_event', 'guest_not_found']
+
 /**
- * Classifies an API error: 'full' | 'already' | 'missing' | 'validation' | 'generic'.
+ * Classifies an API error: 'full' | 'already' | 'same' | 'missing' | 'validation' | 'generic'.
  * Accepts the stable `table_full` code (data.code or errors.table) and the legacy `full` marker.
  */
 export function errorKind(error) {
@@ -169,9 +171,11 @@ export function errorKind(error) {
       return 'full'
     }
     if (data?.code === 'guest_already_seated' || /already/i.test(String(data?.message ?? ''))) return 'already'
+    if (data?.code === 'same_table') return 'same'
+    if (MISSING_CODES.includes(data?.code)) return 'missing'
     return 'validation'
   }
-  if (status === 404) return 'missing'
+  if (status === 404 || MISSING_CODES.includes(data?.code)) return 'missing'
   return 'generic'
 }
 

@@ -59,6 +59,14 @@ const wire = () => {
       }
       return Promise.resolve({ data: { meta: { total_assigned: n, errors } } })
     }
+    if (url.endsWith('/seating/move')) {
+      if (failNext?.move) return Promise.reject(failNext.move)
+      const from = state.tables.find(x => x.seats.some(q => q.id === body.guest_id))
+      const guest = from.seats.find(q => q.id === body.guest_id)
+      from.seats = from.seats.filter(q => q.id !== body.guest_id)
+      state.tables.find(x => x.id === body.to_table_id).seats.push(guest)
+      return Promise.resolve({ data: { data: {}, meta: { declined: false } } })
+    }
     if ((m = url.match(/tables\/(\d+)\/assign$/))) {
       const everyone = [...state.guests, ...state.tables.flatMap(t => t.seats), ...moved]
       state.tables.find(x => x.id === +m[1]).seats.push(everyone.find(x => x.id === body.guest_id))
@@ -240,8 +248,7 @@ describe('SeatingView (phone)', () => {
     expect(sheet().text()).toContain('Ahora está en Honor.')
     expect(btn('Honor', sheet())).toBeUndefined()
     await click('Familia', sheet())
-    expect(api.delete).toHaveBeenCalledWith('event/1/tables/1/guest/101')
-    expect(api.post).toHaveBeenCalledWith('event/1/tables/2/assign', { guest_id: 101 })
+    expect(api.post).toHaveBeenCalledWith('event/1/seating/move', { guest_id: 101, to_table_id: 2 })
     expect(lastToast().title).toBe('Valentina se movió a Familia.')
   })
 
@@ -250,11 +257,20 @@ describe('SeatingView (phone)', () => {
     await click('Honor')
     await wrapper.find('button[aria-label="Mover a Valentina a otra mesa"]').trigger('click')
     await flushPromises()
-    failNext = { post: fail(422, { code: 'table_full' }) }
+    failNext = { move: fail(422, { code: 'table_full' }) }
     await click('Familia', sheet())
     expect(lastToast().title).toContain('ya está llena')
-    // rollback assign also failed? it re-posts: the mock rejects both, the view still resyncs
     expect(api.get).toHaveBeenCalled()
+  })
+
+  it('says so when the guest is already at that table', async () => {
+    await mountView()
+    await click('Honor')
+    await wrapper.find('button[aria-label="Mover a Valentina a otra mesa"]').trigger('click')
+    await flushPromises()
+    failNext = { move: fail(422, { code: 'same_table' }) }
+    await click('Familia', sheet())
+    expect(lastToast().title).toContain('ya está en esa mesa')
   })
 
   it('removes a guest from the table after confirming', async () => {
