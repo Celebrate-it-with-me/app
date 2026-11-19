@@ -56,8 +56,8 @@ const label = computed(() =>
     </span>
     <span class="flex flex-1 flex-col gap-1.5 p-3">
       <span class="flex items-start justify-between gap-2">
-        <span class="font-heading text-lg leading-tight text-ink-900">{{ template.name }}</span>
-        <UiBadge :tone="template.tier === 'premium' ? 'gold' : 'neutral'" size="sm">
+        <span class="min-w-0 font-heading text-lg leading-tight text-ink-900">{{ template.name }}</span>
+        <UiBadge class="shrink-0" :tone="template.tier === 'premium' ? 'gold' : 'neutral'" size="sm">
           {{ template.tier === 'premium' ? t('templatePicker.premium') : t('templatePicker.free') }}
         </UiBadge>
       </span>
