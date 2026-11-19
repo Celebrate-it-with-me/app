@@ -9,6 +9,8 @@ import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
 const roster = vi.hoisted(() => ({ list: vi.fn() }))
 vi.mock('../services/RosterService', () => ({ default: roster }))
+const wizardService = vi.hoisted(() => ({ audience: vi.fn(), allRecipients: vi.fn(), allRoster: vi.fn(), markShared: vi.fn(), unmarkShared: vi.fn() }))
+vi.mock('../services/SendWizardService', () => ({ default: wizardService }))
 vi.mock('../services/WhatsappService', () => ({ default: { send: vi.fn(), retry: vi.fn() } }))
 import RosterView from '../views/RosterView.vue'
 import GuestCard from '../components/GuestCard.vue'
@@ -37,6 +39,9 @@ async function setup({ role = 'owner', modules = [{ key: 'whatsapp', state: 'act
 beforeEach(() => {
   setLocale('es')
   roster.list.mockReset()
+  wizardService.audience.mockResolvedValue({ event: { published: true }, rsvp: { isOpen: true }, mode: { automatic: false } })
+  wizardService.allRecipients.mockResolvedValue([])
+  wizardService.allRoster.mockResolvedValue([])
   roster.list.mockResolvedValue(page([family(1, 'Ana Perez'), family(2, 'Beto Ruiz', { phone: null }), family(3, 'Lucia Mora', { delivery: { state: 'read' } })]))
   useToast().toasts.map(x => x.id).forEach(id => useToast().dismiss(id))
 })
@@ -120,13 +125,12 @@ describe('RosterView list', () => {
     expect(body()).toContain('Los que elegí (1)')
   })
 
-  it('opens wa.me directly for one family in manual mode', async () => {
-    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+  it('opens the wizard with one family preselected in manual mode', async () => {
     await setup({ modules: [{ key: 'whatsapp', state: 'locked' }] })
     wrapper.findAllComponents(GuestCard)[0].vm.$emit('send', family(1, 'Ana Perez'))
     await flushPromises()
-    expect(open).toHaveBeenCalledWith(expect.stringContaining('https://wa.me/13055550123?text='), '_blank', 'noopener')
-    open.mockRestore()
+    expect(body()).toContain('Enviar invitaciones')
+    expect(wizardService.audience).toHaveBeenCalledWith(7, 'invitation')
   })
 
   it('filters by answer from the tabs and keeps it in the address', async () => {
