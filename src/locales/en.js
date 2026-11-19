@@ -369,6 +369,25 @@ export default {
       }
     ]
   },
+  invitationAccess: {
+    pageTitle: 'Invitation access',
+    title: 'Open your invitation',
+    text: 'To open this invitation you need your guest code.',
+    label: 'Enter your code',
+    placeholder: 'For example, ABC123',
+    submit: 'Continue',
+    loadingContact: 'Loading…',
+    contact: 'Don\'t have your code? Contact {name}.',
+    contactGeneric: 'Don\'t have your code? Contact whoever invited you.',
+    contactFailed: 'We couldn\'t load the contact details. Check your connection.',
+    retry: 'Try again',
+    errorEmpty: 'Enter your code to continue.',
+    errorInvalid: 'That code is not valid. Check it or contact {name}.',
+    errorInvalidGeneric: 'That code is not valid. Check it or contact whoever invited you.',
+    errorLimited: 'Too many attempts, wait a moment and try again.',
+    errorFailed: 'We couldn\'t check the code. Check your connection and try again.',
+    signIn: 'Back to sign in'
+  },
   invitation: {
     pageTitle: 'Invitation',
     loading: 'Preparing your invitation…',
