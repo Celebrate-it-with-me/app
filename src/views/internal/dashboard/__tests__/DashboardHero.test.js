@@ -8,6 +8,13 @@ vi.mock('@/modules/template-picker/components/InvitationPreviewSheet.vue', () =>
   default: { props: ['open', 'eventId'], template: '<div data-testid="preview-sheet" :data-open="open"></div>' }
 }))
 
+vi.mock('@/modules/template-picker/components/InvitationMiniature.vue', () => ({
+  default: {
+    props: ['eventId', 'live', 'fallbackImage', 'name', 'dateLabel'],
+    template: '<div data-testid="mini" :data-event="eventId" :data-live="String(live)" :data-fallback="fallbackImage" :data-name="name"></div>'
+  }
+}))
+
 import DashboardHero from '../DashboardHero.vue'
 
 const stubs = { RouterLink: { props: ['to'], template: '<a :data-to="JSON.stringify(to)"><slot /></a>' } }
@@ -105,17 +112,17 @@ describe('DashboardHero roles', () => {
 })
 
 describe('DashboardHero phone', () => {
-  it('draws the template image when there is one', () => {
+  it('puts the real miniature of the event inside the phone frame', () => {
     const w = mountHero({ image: 'https://cdn.test/classic.webp' })
-    expect(w.find('[data-testid=hero-phone-image]').attributes('src')).toBe('https://cdn.test/classic.webp')
-    expect(w.find('[data-testid=hero-phone-fallback]').exists()).toBe(false)
+    const mini = w.find('[data-testid=hero-phone] [data-testid=mini]')
+    expect(mini.exists()).toBe(true)
+    expect(mini.attributes('data-event')).toBe('7')
+    expect(mini.attributes('data-live')).toBe('true')
+    expect(mini.attributes('data-fallback')).toBe('https://cdn.test/classic.webp')
+    expect(mini.attributes('data-name')).toBe('Los XV de Valentina')
   })
-  it('draws an elegant fallback card without image, and after a broken image', async () => {
-    const w = mountHero({ image: '' })
-    expect(w.find('[data-testid=hero-phone-fallback]').text()).toContain('Los XV de Valentina')
-    const w2 = mountHero({ image: 'https://cdn.test/broken.webp' })
-    await w2.get('[data-testid=hero-phone-image]').trigger('error')
-    expect(w2.find('[data-testid=hero-phone-fallback]').exists()).toBe(true)
+  it('skips the live view for people who cannot edit', () => {
+    expect(mountHero({ canEdit: false }).find('[data-testid=mini]').attributes('data-live')).toBe('false')
   })
 })
 

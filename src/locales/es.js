@@ -2262,6 +2262,9 @@ export default {
     undone: 'Volvimos a {name}.',
     backToTemplates: 'Volver a las plantillas',
     useAfterPayment: 'Elegir mi plantilla',
+    miniature: {
+      alt: 'Vista en miniatura de la invitación de {name}'
+    },
     entry: {
       title: 'Plantilla',
       change: 'Cambiar plantilla',

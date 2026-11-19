@@ -11,13 +11,14 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { ImageOff, LayoutTemplate, Undo2 } from 'lucide-vue-next'
+import { LayoutTemplate, Undo2 } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiCard, UiSkeleton, useToast } from '@/ui'
 import { SUPPORT_EMAIL, mailtoLink } from '@/config/brand'
 import TemplatePickerService from '../services/TemplatePickerService'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { activeModuleKeys, unlockLocation } from '../utils/templatePicker'
 import TemplatePickerSheet from './TemplatePickerSheet.vue'
+import InvitationMiniature from './InvitationMiniature.vue'
 
 const props = defineProps({
   eventId: { type: [Number, String], required: true },
@@ -118,10 +119,18 @@ watch(() => props.eventId, loadCurrent)
     <p v-if="unavailable" class="mb-3 rounded-xl bg-warning-50 p-3 text-sm text-warning-700" role="status">{{ t('templatePicker.entry.unavailable') }}</p>
 
     <div class="flex items-center gap-4">
-      <div class="flex h-24 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-cream-200 text-ink-500">
-        <img v-if="shown?.previewImage" :src="shown.previewImage" alt="" class="h-full w-full object-cover" />
-        <ImageOff v-else class="h-5 w-5" aria-hidden="true" />
-      </div>
+      <div v-if="loadingCurrent" class="h-[121px] w-14 shrink-0 rounded-lg bg-cream-200" aria-hidden="true"></div>
+      <InvitationMiniature
+        v-else
+        :key="shown?.id ?? 'active'"
+        :event-id="eventId"
+        :width="56"
+        :live="!disabled"
+       
+        :fallback-image="shown?.previewImage ?? ''"
+        :name="shown?.name ?? ''"
+        class="shrink-0 rounded-lg ring-1 ring-line"
+      />
       <div class="min-w-0 flex-1">
         <UiSkeleton v-if="loadingCurrent" width="9rem" height="1.5rem" />
         <template v-else>
