@@ -115,6 +115,7 @@ async function unmark(family) {
         <div class="min-w-0 sm:flex-1">
           <p class="truncate font-medium text-ink-900">{{ family.name }}</p>
           <p class="truncate text-sm text-ink-500">{{ family.phone || t('app.whatsapp.wizard.manual.noNumber') }} · {{ t('app.roster.people', { n: family.people }, family.people) }}</p>
+          <p v-if="family.optedOut" class="mt-0.5 text-xs text-ink-500" data-testid="manual-optedout">{{ t('app.whatsapp.wizard.manual.optedOutNote') }}</p>
           <p v-if="shared[family.id]" class="mt-0.5 inline-flex items-center gap-1 text-sm font-medium text-success-700">
             <Check class="h-4 w-4" aria-hidden="true" />
             {{ t('app.whatsapp.wizard.manual.opened', { time: timeOf(shared[family.id]) }) }}

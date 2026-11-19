@@ -54,14 +54,14 @@ describe('SendWizard step 1', () => {
     await open()
     expect(body()).toContain('¿A quién se lo enviamos?')
     expect(body()).toContain('Paso 1 de 2')
-    expect(body()).toContain('Aún sin invitación · 3 familias')
+    expect(body()).toContain('Aún sin invitación · 4 familias')
     expect(body()).toContain('Pendientes de responder · 0 familias')
-    expect(body()).toContain('Todos · 3 familias')
+    expect(body()).toContain('Todos · 4 familias')
     expect(body()).not.toContain('Meta')
-    expect(document.querySelector('[data-testid="who-summary"]').textContent).toContain('3 familias')
+    expect(document.querySelector('[data-testid="who-summary"]').textContent).toContain('4 familias')
     expect(document.querySelector('[data-testid="who-nophone"]').textContent).toContain('1 sin número')
-    expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('No se pueden compartir (2)')
-    expect(button('Siguiente · 3 familias').disabled).toBe(false)
+    expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('No se pueden compartir (1)')
+    expect(button('Siguiente · 4 familias').disabled).toBe(false)
   })
 
   it('goes to the assisted list with the chosen families and Back returns to step 1', async () => {
@@ -69,8 +69,8 @@ describe('SendWizard step 1', () => {
     await open()
     await click('Siguiente')
     expect(body()).toContain('Paso 2 de 2')
-    expect(body()).toContain('Enviar a mano · 3 familias')
-    expect(document.querySelectorAll('[data-testid="manual-row"]')).toHaveLength(3)
+    expect(body()).toContain('Enviar a mano · 4 familias')
+    expect(document.querySelectorAll('[data-testid="manual-row"]')).toHaveLength(4)
     await click('Atrás')
     expect(body()).toContain('¿A quién se lo enviamos?')
   })
@@ -95,13 +95,52 @@ describe('SendWizard step 1', () => {
     expect(w.emitted('add-guest')).toHaveLength(1)
   })
 
-  it('asks to confirm a batch above 100 families before going on (P7)', async () => {
+  it('does not ask to confirm a batch above 100 families in manual mode', async () => {
     serve({ recipients: Array.from({ length: 101 }, (_, i) => rec(i + 1)) })
     await open()
+    expect(document.querySelector('[data-testid="who-big"]')).toBeNull()
+    expect(button('Siguiente').disabled).toBe(false)
+  })
+
+  it('asks to confirm a batch above 100 families in automatic mode (rule ready for F4)', async () => {
+    serve({ recipients: Array.from({ length: 101 }, (_, i) => rec(i + 1)) })
+    await open({ mode: 'automatic' })
     expect(button('Siguiente').disabled).toBe(true)
     document.querySelector('[data-testid="who-big"] button').click()
     await flushPromises()
     expect(button('Siguiente').disabled).toBe(false)
+  })
+
+  it('keeps blocking an opt-out in automatic mode and lists it', async () => {
+    serve()
+    await open({ mode: 'automatic' })
+    expect(body()).toContain('Aún sin invitación · 3 familias')
+    expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('Pidió no recibir mensajes')
+    expect(document.querySelector('[data-testid="who-optedout"]')).toBeNull()
+  })
+
+  it('lets an opted-out family be shared by hand and says so discreetly', async () => {
+    serve()
+    await open()
+    expect(document.querySelector('[data-testid="who-optedout"]').textContent).toContain('1 pidió no recibir mensajes')
+    expect(document.querySelector('[data-testid="who-blocked"]').textContent).not.toContain('Pidió no recibir')
+    await pickCard('Elegir invitados')
+    const badge = document.querySelector('[data-testid="pick-optedout"]')
+    expect(badge.textContent).toContain('Pidió no recibir mensajes')
+    await click('Elegir las visibles')
+    await click('Siguiente')
+    const note = document.querySelector('[data-testid="manual-optedout"]')
+    expect(note.textContent).toContain('Pidió no recibir mensajes')
+    expect(document.querySelectorAll('[data-testid="manual-optedout"]')).toHaveLength(1)
+  })
+
+  it('uses the link of each recipient when the API sends it and the roster link as a fallback', async () => {
+    const recipients = [rec(1, { link: 'https://q.test/api/1' }), rec(2)]
+    serve({ recipients })
+    await open({ preselectedIds: [1, 2] })
+    const links = [...document.querySelectorAll('[data-testid="manual-row"] a')].map(a => decodeURIComponent(a.getAttribute('href')))
+    expect(links[0]).toContain('https://q.test/api/1')
+    expect(links[1]).toContain('https://q.test/i/xv/2')
   })
 
   it('lets the organizer choose families one by one, search and filter', async () => {
@@ -109,7 +148,7 @@ describe('SendWizard step 1', () => {
     const w = await open()
     await pickCard('Elegir invitados')
     expect(document.querySelector('[data-testid="pick-counter"]').textContent).toContain('0 elegidas')
-    expect(document.querySelector('[data-testid="pick-counter"]').textContent).toContain('2 no se pueden compartir')
+    expect(document.querySelector('[data-testid="pick-counter"]').textContent).toContain('1 no se puede compartir')
     expect(button('Siguiente').disabled).toBe(true)
     const boxes = document.querySelectorAll('[data-testid="pick-list"] [role="checkbox"]')
     boxes[0].click()
@@ -119,7 +158,7 @@ describe('SendWizard step 1', () => {
     await flushPromises()
     expect(document.querySelector('[data-testid="pick-counter"]').textContent).toContain('0 elegidas')
     await click('Elegir las visibles')
-    expect(document.querySelector('[data-testid="pick-counter"]').textContent).toContain('2 elegidas')
+    expect(document.querySelector('[data-testid="pick-counter"]').textContent).toContain('3 elegidas')
     await click('Quitar todas')
     expect(document.querySelector('[data-testid="pick-counter"]').textContent).toContain('0 elegidas')
 
@@ -268,7 +307,7 @@ describe('SendWizard preselected family', () => {
 
   it('stays on step 1 when the family cannot be shared', async () => {
     serve()
-    await open({ preselectedIds: [5] })
+    await open({ preselectedIds: [4] })
     expect(body()).toContain('¿A quién se lo enviamos?')
     expect(button('Siguiente').disabled).toBe(true)
   })

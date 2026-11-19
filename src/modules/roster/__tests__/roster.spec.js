@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { TABS, noCounts, peopleIn, personErrors, personPayload, whatsappNumber, whatsappUrl } from '../utils/roster'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { TABS, noCounts, peopleIn, personErrors, personPayload, whatsappNumber, whatsappUrl, saveBlob } from '../utils/roster'
 
 describe('roster helpers', () => {
   it('has the four tabs and a counter key for each', () => {
@@ -29,5 +29,30 @@ describe('roster helpers', () => {
     expect(whatsappNumber('123')).toBeNull()
     expect(whatsappUrl('+1 305 555 0101', 'Hola ¿qué tal?')).toBe('https://wa.me/13055550101?text=Hola%20%C2%BFqu%C3%A9%20tal%3F')
     expect(whatsappUrl(null, 'x')).toBe('https://wa.me/?text=x')
+  })
+})
+
+describe('saveBlob', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.restoreAllMocks()
+  })
+
+  it('downloads through a temporary link with the given name, then cleans up', () => {
+    vi.useFakeTimers()
+    URL.createObjectURL = vi.fn(() => 'blob:abc')
+    URL.revokeObjectURL = vi.fn()
+    let seen
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function () {
+      seen = { href: this.href, download: this.download, attached: document.body.contains(this) }
+    })
+    const blob = new Blob(['x'])
+    saveBlob(blob, 'lista.xlsx')
+    expect(URL.createObjectURL).toHaveBeenCalledWith(blob)
+    expect(seen).toEqual({ href: 'blob:abc', download: 'lista.xlsx', attached: true })
+    expect(document.body.querySelector('a[download]')).toBeNull()
+    expect(URL.revokeObjectURL).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(1000)
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:abc')
   })
 })

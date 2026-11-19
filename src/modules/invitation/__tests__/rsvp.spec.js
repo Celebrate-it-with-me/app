@@ -185,6 +185,57 @@ describe('InvitationRsvp', () => {
     expect(wrapper.get('[role="status"]').text()).toBe(tt('rsvp.closedError'))
   })
 
+  it('asks the guest to wait when the server throttles the answers (429)', async () => {
+    failure.error = Object.assign(new Error('429'), { response: { status: 429 } })
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[1].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.get('[role="status"]').text()).toBe(tt('rsvp.errors.too_many_attempts'))
+    expect(wrapper.find('form').exists()).toBe(true)
+  })
+
+  it('tells to reload when the server rejects the companions as a whole', async () => {
+    failure.error = Object.assign(new Error('422'), { response: { status: 422, data: { errors: { companions: ['invalid'] } } } })
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[1].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.get('[role="status"]').text()).toBe(tt('rsvp.errors.invalid'))
+  })
+
+  it('falls back to the closed message for a 422 it cannot explain', async () => {
+    failure.error = Object.assign(new Error('422'), { response: { status: 422, data: { errors: { other: ['x'] } } } })
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[1].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.get('[role="status"]').text()).toBe(tt('rsvp.closedError'))
+  })
+
+  it('throws petals only for a yes, and removes them when they finish', async () => {
+    const saved = rsvpData({ guest: { id: 1, name: 'Rosa', status: 'attending' }, companions: [] })
+    saveRsvp.mockResolvedValue({ data: { data: saved } })
+    const { wrapper } = mountRsvp(rsvpData({ companions: [] }))
+    await radios(wrapper, 1)[0].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    const petals = wrapper.findComponent({ name: 'InvitationPetals' })
+    expect(petals.exists()).toBe(true)
+    petals.vm.$emit('done')
+    await flushPromises()
+    expect(wrapper.findComponent({ name: 'InvitationPetals' }).exists()).toBe(false)
+  })
+
+  it('a decline gets no petals', async () => {
+    saveRsvp.mockResolvedValue({ data: { data: rsvpData({ guest: { id: 1, name: 'Rosa', status: 'not-attending' }, companions: [] }) } })
+    const { wrapper } = mountRsvp(rsvpData({ companions: [] }))
+    await radios(wrapper, 1)[1].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.findComponent({ name: 'InvitationPetals' }).exists()).toBe(false)
+  })
+
   it('renders the saved message as plain text', () => {
     const { wrapper } = mountRsvp(
       rsvpData({ guest: { id: 1, name: 'Rosa', status: 'attending' }, companions: [], note: '<i>hola</i>' })
