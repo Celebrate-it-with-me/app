@@ -2241,7 +2241,6 @@ export default {
     free: 'Free',
     premium: 'Premium',
     inUse: 'In use',
-    noPreview: 'No image',
     lockedShort: 'locked',
     missing: {
       label: 'Does not include: {names}',
