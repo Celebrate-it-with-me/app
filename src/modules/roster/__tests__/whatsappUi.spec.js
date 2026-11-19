@@ -6,6 +6,8 @@ const { send } = vi.hoisted(() => ({ send: vi.fn() }))
 vi.mock('../services/WhatsappService', () => ({ default: { send } }))
 import WhatsappSendModal from '../components/WhatsappSendModal.vue'
 import GuestCard from '../components/GuestCard.vue'
+import { deliveryOf } from '../utils/delivery'
+import { UiDropdown } from '@/ui'
 
 const stubs = { RouterLink: { props: ['to'], template: '<a><slot /></a>' } }
 const family = { id: 1, name: 'Ana Perez', phone: '+13055550123', email: null, status: 'pending', link: 'https://quinvite.test/i/xv/ABC', companions: [], notes: null, locale: null }
@@ -108,7 +110,7 @@ describe('WhatsappSendModal', () => {
     expect(emitted.emitted('unlock')).toHaveLength(1)
   })
 
-  it('reports the selected guests when there are some', async () => {
+  it('reports the preselected guests when there are some', async () => {
     send.mockResolvedValue({ queued: 2, skipped: [] })
     mountModal({ selectedIds: [1, 2] })
     await flushPromises()
@@ -118,38 +120,56 @@ describe('WhatsappSendModal', () => {
   })
 })
 
-describe('GuestCard WhatsApp state', () => {
+describe('GuestCard delivery state', () => {
   const card = props => mount(GuestCard, { props: { family, canEdit: true, ...props }, global: { plugins: [i18n], stubs } })
+  const view = (delivery, phone = family.phone, whatsappOptedOut = false) => deliveryOf({ ...family, phone, whatsappOptedOut, delivery: { state: 'none', ...delivery } })
 
-  it('shows the opt-out of the roster even when there are messages', () => {
-    expect(card({ whatsapp: { key: 'opted_out', message: null } }).text()).toContain('No quiere mensajes')
+  it('says nothing when the roster did not report delivery', () => {
+    expect(card({ delivery: null }).find('[data-testid="delivery"]').exists()).toBe(false)
   })
 
   it('writes the state as text, not only colour', () => {
-    expect(card({ whatsapp: { key: 'delivered', message: { status: 'delivered' } } }).text()).toContain('Entregado')
-    expect(card({ whatsapp: { key: 'no_phone', message: null } }).text()).toContain('Sin teléfono')
+    expect(card({ delivery: view({ state: 'none' }) }).text()).toContain('Sin enviar')
+    expect(card({ delivery: view({ state: 'manual' }) }).text()).toContain('Abierto')
+    expect(card({ delivery: view({ state: 'delivered' }) }).text()).toContain('Entregado')
+    expect(card({ delivery: view({ state: 'none' }, null) }).text()).toContain('Sin teléfono')
+    expect(card({ delivery: view({ state: 'sent' }, family.phone, true) }).text()).toContain('No quiere mensajes')
+  })
+
+  it('offers to add the missing phone', async () => {
+    const wrapper = card({ delivery: view({ state: 'none' }, null) })
+    await wrapper.findAll('button').find(b => b.text() === 'Añadir teléfono').trigger('click')
+    expect(wrapper.emitted('edit')[0][0]).toEqual(family)
+    expect(card({ canEdit: false, delivery: view({ state: 'none' }, null) }).text()).not.toContain('Añadir teléfono')
   })
 
   it('offers a retry for failed messages', async () => {
-    const message = { id: 9, status: 'failed', errorMessage: 'Número no registrado en WhatsApp' }
-    const wrapper = card({ whatsapp: { key: 'failed', message } })
+    const wrapper = card({ delivery: view({ state: 'failed', lastMessageId: 9, errorMessage: 'Número no registrado en WhatsApp' }) })
     expect(wrapper.text()).toContain('Número no registrado en WhatsApp')
     await wrapper.findAll('button').find(b => b.text() === 'Reintentar').trigger('click')
-    expect(wrapper.emitted('retry')[0][0]).toEqual(message)
+    expect(wrapper.emitted('retry')[0][0]).toEqual({ id: 9, status: 'failed', errorCode: null, errorMessage: 'Número no registrado en WhatsApp' })
   })
 
   it('explains an unknown delivery and still lets the organizer retry', async () => {
-    const message = { id: 9, status: 'failed', errorCode: 'unknown_delivery', errorMessage: 'Timeout' }
-    const wrapper = card({ whatsapp: { key: 'failed', message } })
+    const wrapper = card({ delivery: view({ state: 'failed', lastMessageId: 9, errorCode: 'unknown_delivery', errorMessage: 'Timeout' }) })
     expect(wrapper.text()).toContain('No sabemos si este mensaje llegó; revisa con tu invitado antes de reintentar.')
     expect(wrapper.text()).not.toContain('Timeout')
     await wrapper.findAll('button').find(b => b.text() === 'Reintentar').trigger('click')
-    expect(wrapper.emitted('retry')[0][0]).toEqual(message)
+    expect(wrapper.emitted('retry')[0][0].errorCode).toBe('unknown_delivery')
   })
 
-  it('shows a labelled checkbox when selecting', () => {
-    const wrapper = card({ selectable: true })
-    expect(wrapper.find('[role="checkbox"]').exists()).toBe(true)
-    expect(wrapper.text()).toContain('Elegir a Ana Perez')
+  it('shows the generic help for a failure without a reason, and no retry for viewers', () => {
+    const wrapper = card({ canEdit: false, delivery: view({ state: 'failed', lastMessageId: 9 }) })
+    expect(wrapper.text()).toContain('El mensaje no llegó.')
+    expect(wrapper.findAll('button').some(b => b.text() === 'Reintentar')).toBe(false)
+  })
+
+  it('has no selection checkbox any more, and its menu sends the invitation to the family', () => {
+    const wrapper = card({})
+    expect(wrapper.find('[role="checkbox"]').exists()).toBe(false)
+    const items = wrapper.findComponent(UiDropdown).props('items')
+    expect(items[0].label).toBe('Enviar invitación')
+    items[0].onSelect()
+    expect(wrapper.emitted('send')[0][0]).toEqual(family)
   })
 })

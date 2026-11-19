@@ -1404,11 +1404,6 @@ export default {
     },
     whatsapp: {
       title: 'Enviar por WhatsApp',
-      button: 'Enviar por WhatsApp',
-      shareButton: 'Compartir por WhatsApp',
-      select: 'Elegir invitados',
-      selecting: 'Elegidos: {n} | Elegidos: {n}',
-      selectGuest: 'Elegir a {name}',
       templateLabel: 'Qué quieres enviar',
       audienceLabel: 'A quién',
       templates: {
@@ -1420,7 +1415,7 @@ export default {
         all: 'Toda tu lista',
         pending: 'Solo los pendientes',
         selected: 'Los que elegí ({n}) | Los que elegí ({n})',
-        selectedHelp: 'Pulsa «Elegir invitados» en la lista para marcarlos.'
+        selectedHelp: 'Disponible al enviar a una familia desde su menú.'
       },
       previewLoading: 'Calculando a quién le llegará…',
       preview: 'Le llegará a {n} invitado. | Le llegará a {n} invitados.',
@@ -1456,6 +1451,8 @@ export default {
       },
       stateLabel: 'WhatsApp',
       state: {
+        none: 'Sin enviar',
+        manual: 'Abierto',
         queued: 'En cola',
         sent: 'Enviado',
         delivered: 'Entregado',
@@ -1473,10 +1470,6 @@ export default {
       },
       retry: 'Reintentar',
       retried: 'Volvimos a intentarlo.',
-      summary: {
-        label: 'Resumen de envíos por WhatsApp',
-        title: '{n} mensaje enviado por WhatsApp | {n} mensajes enviados por WhatsApp'
-      },
       manual: {
         title: 'Compartir por WhatsApp',
         lockedTitle: 'El envío automático es parte del evento completo',
@@ -1509,6 +1502,22 @@ export default {
         detail: '{yes} asisten · {no} no asisten · {pending} pendientes'
       },
       title: 'Invitados',
+      addPhone: 'Añadir teléfono',
+      sendInvitations: 'Enviar invitaciones',
+      sendInvitationsCount: 'Enviar invitaciones · {n} sin enviar',
+      filters: {
+        answers: 'Respuestas',
+        delivery: 'Envío',
+        deliveryAll: 'Todos los envíos'
+      },
+      delivery: {
+        unsent: 'Sin enviar',
+        sent: 'Enviadas',
+        opened: 'Abiertas',
+        problem: 'Con problema'
+      },
+      listLoadError: 'No pudimos cargar tu lista.',
+      retryLoad: 'Reintentar',
       counter: '{n} persona | {n} personas',
       counterLimit: '{n} de {limit} personas en tu plan',
       search: 'Buscar por nombre, teléfono o correo',
@@ -1542,7 +1551,7 @@ export default {
       },
       menu: {
         label: 'Acciones para {name}',
-        whatsapp: 'Enviar por WhatsApp',
+        send: 'Enviar invitación',
         copy: 'Copiar enlace',
         edit: 'Editar',
         confirm: 'Confirmar por teléfono',
