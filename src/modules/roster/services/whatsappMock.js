@@ -109,6 +109,7 @@ export const mockWhatsapp = {
     const now = Date.now()
     let room = mode() === 'partial' ? QUOTA : Infinity
     if (mode() === 'dailylimit' && !body.dry_run) throw dailyLimit()
+    if (!body.dry_run && pool.length > 100 && !body.confirm_large) throw fail(409, { code: 'confirmation_required', count: pool.length, threshold: 100, message: 'Confirmation required.' })
     const batchId = `mock-${nextBatch++}`
     const gap = mode() === 'slow' ? 1000 : 120
     for (const family of pool) {
@@ -179,7 +180,10 @@ export const mockWhatsapp = {
       }
     }
     const buttons = body.template === 'save_the_date' ? [] : locale === 'en' ? [{ id: 'yes', text: "Yes, I'll be there" }, { id: 'no', text: "Can't make it" }] : [{ id: 'yes', text: 'Sí, asistiré' }, { id: 'no', text: 'No podré asistir' }]
-    return { template: body.template, locale, category: 'marketing', guest: { id: family.id, name }, body: bodies[locale][body.template], buttons, link, sendable: true }
+    return {
+      template: body.template, locale, category: 'marketing', guest: { id: family.id, name }, sample: false, body: bodies[locale][body.template], buttons, link, sendable: true,
+      event: { id: eventId, name: 'Los XV de Valentina', startDate: '2027-03-14T22:00:00Z', timezone: 'America/New_York', published: mode() !== 'unpublished' }, linkPreview: null
+    }
   },
 
   async batch(eventId, batchId, params = {}) {
@@ -233,11 +237,11 @@ function batchView(batchId, list, params) {
   const page = Number(params.page) || 1
   const started = Math.min(...list.map(m => new Date(m.queuedAt).getTime()))
   const messagesPage = list.slice((page - 1) * perPage, page * perPage).map(m => ({
-    guestId: m.guestId, guestName: m.guestName, status: m.status, errorCode: m.errorCode, errorMessage: m.errorMessage, messageId: m.id
+    guestId: m.guestId, guestName: m.guestName, status: m.status, errorCode: m.errorCode, errorMessage: m.errorMessage, messageId: m.id, retryCount: m.retried ? 1 : 0
   }))
   return {
     batchId, template: list[0].templateKey, startedAt: new Date(started).toISOString(), total: list.length,
-    queued: count('queued'), sent: count('sent'), delivered: count('delivered'), read: count('read'), failed: count('failed'), cancelled: 0,
+    processed: list.length - count('queued'), queued: count('queued'), sent: count('sent'), delivered: count('delivered'), read: count('read'), failed: count('failed'), cancelled: 0,
     done: count('queued') === 0, messages: messagesPage
   }
 }

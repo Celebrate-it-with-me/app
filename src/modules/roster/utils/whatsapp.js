@@ -1,7 +1,7 @@
 import { CircleAlert, Clock, Check, CheckCheck, PhoneOff, BellOff, Eye } from 'lucide-vue-next'
 
 /** Reasons a guest was left out (`skipped[].reason`). */
-export const SKIP_REASONS = ['no_phone', 'invalid_phone', 'opted_out', 'recently_sent', 'already_responded', 'daily_limit']
+export const SKIP_REASONS = ['no_phone', 'invalid_phone', 'opted_out', 'recently_sent', 'already_responded', 'reminder_limit', 'daily_limit']
 
 /**
  * How each message status is drawn: icon + text (never colour alone). `offline` states are not API statuses:

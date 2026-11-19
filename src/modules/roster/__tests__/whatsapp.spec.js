@@ -56,7 +56,7 @@ describe('whatsapp helpers', () => {
 
   it('draws every status with an icon', () => {
     for (const key of ['queued', 'sent', 'delivered', 'read', 'failed', 'no_phone', 'opted_out']) expect(MESSAGE_VIEW[key].icon).toBeTruthy()
-    expect(SKIP_REASONS).toHaveLength(6)
+    expect(SKIP_REASONS).toHaveLength(7)
   })
 
   it('shows the last message, or why a guest cannot get one', () => {
@@ -79,6 +79,12 @@ describe('WhatsappService', () => {
     const result = await WhatsappService.send(7, { template: 'invitation', audience: 'selected', guestIds: [1, 2] })
     expect(post).toHaveBeenCalledWith('/event/7/whatsapp/send', { template: 'invitation', audience: 'selected', force: false, guest_ids: [1, 2] })
     expect(result.queued).toBe(2)
+  })
+
+  it('sends confirm_large only when asked', async () => {
+    post.mockResolvedValue({ data: { data: { batchId: 'b', queued: 1, skipped: [] } } })
+    await WhatsappService.send(7, { template: 'invitation', audience: 'selected', guestIds: [1], confirmLarge: true })
+    expect(post.mock.calls.at(-1)[1].confirm_large).toBe(true)
   })
 
   it('asks for a dry run to preview the recipients', async () => {

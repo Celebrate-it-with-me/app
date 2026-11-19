@@ -1558,6 +1558,7 @@ export default {
         opted_out: '{n} asked not to get messages | {n} asked not to get messages',
         recently_sent: '{n} already got it today | {n} already got it today',
         already_responded: '{n} already answered | {n} already answered',
+        reminder_limit: '{n} already got 3 reminders | {n} already got 3 reminders',
         daily_limit: '{n} would wait until tomorrow because of the daily limit | {n} would wait until tomorrow because of the daily limit'
       },
       next: 'Continue',
@@ -1580,6 +1581,7 @@ export default {
         opted_out: 'They asked not to get more messages. We respect that.',
         recently_sent: 'They already got this message in the last 24 hours.',
         already_responded: 'They already answered your invitation, so no reminder is needed.',
+        reminder_limit: 'They already got the 3 reminders allowed.',
         daily_limit: 'You reached the daily message limit for this event. These were not sent; you can message them tomorrow.'
       },
       stateLabel: 'WhatsApp',
@@ -1634,7 +1636,7 @@ export default {
           off: 'Automatic sending is not available yet. Share them yourself on WhatsApp; we keep count.',
           unpublished: 'Your event is not published yet: the links will not open until you publish it.',
           publish: 'Go publish',
-          rsvpClosed: 'The RSVP deadline has passed. You can only share "Save the date".'
+          rsvpClosed: 'The RSVP deadline has passed. You can only use "Save the date".'
         },
         who: {
           title: 'Who do we send it to?',
@@ -1772,6 +1774,7 @@ export default {
         dailyLimit: 'You reached the daily message limit for this event; you can keep going tomorrow.',
         retryLimit: 'This message was already retried the maximum number of times.',
         tooManyRequests: 'Too many attempts in a row. Wait a moment and try again.',
+        confirmationRequired: 'That is a lot of families: confirm you understand a message will go to each of them.',
         notPublished: 'Publish your event before sending: the links would not open.',
         rsvpClosed: 'The RSVP deadline has passed: you can only send "Save the date".',
         archived: 'This event is archived: you can only view it.'

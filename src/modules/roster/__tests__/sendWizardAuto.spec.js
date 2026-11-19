@@ -176,10 +176,11 @@ describe('Step 3 · Confirm and send (automatic)', () => {
     await click('Ocultar')
     expect(button('Enviar a 2 familias').disabled).toBe(false)
     await click('Enviar a 2 familias')
-    expect(wa.send).toHaveBeenLastCalledWith(7, { template: 'invitation', audience: 'selected', guestIds: [1, 2, 3] })
+    expect(wa.send).toHaveBeenLastCalledWith(7, { template: 'invitation', audience: 'selected', guestIds: [1, 2, 3], confirmLarge: false })
     expect(wrapper.emitted('sent').length).toBeGreaterThanOrEqual(1)
     expect(q('[data-testid="auto-progress"]').textContent).toContain('3 de 3')
     expect(wa.batch).toHaveBeenCalledWith(7, 'b1')
+    expect(document.activeElement.hasAttribute('data-step-title')).toBe(true)
   })
 
   it('shows the progress while the batch is in flight, with the counters and the rows, and no quota', async () => {

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Send, TriangleAlert } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiCheckbox, UiModal, UiSkeleton, useToast } from '@/ui'
@@ -36,6 +36,7 @@ const sendError = ref(null)
 const batchIds = ref([])
 const skipped = ref([]) // skipped[] answered by the sends
 const paused = ref(null) // { key, left } a later chunk stopped by a limit
+const root = ref(null)
 const showWho = ref(false)
 const retrying = ref(false)
 const confirmUnknown = ref(null) // messages waiting for the "may have arrived" confirmation
@@ -109,7 +110,7 @@ async function send() {
   const parts = chunk(props.families.map(f => f.id))
   for (const [index, part] of parts.entries()) {
     try {
-      const answer = await WhatsappService.send(props.eventId, { template: props.template, audience: 'selected', guestIds: part })
+      const answer = await WhatsappService.send(props.eventId, { template: props.template, audience: 'selected', guestIds: part, confirmLarge: big.value })
       ids.push(answer.batchId)
       answered.push(...answer.skipped)
     } catch (e) {
@@ -129,6 +130,8 @@ async function send() {
   batchIds.value = ids
   sending.value = false
   emit('sent', ids)
+  await nextTick()
+  root.value?.querySelector('[data-step-title]')?.focus() // the send button is gone: the title takes the focus
   await startPolling()
 }
 
@@ -188,7 +191,7 @@ const errorLabel = message => (message.errorCode === 'unknown_delivery' ? t('app
 </script>
 
 <template>
-  <div>
+  <div ref="root">
     <!-- 1 · Summary and last checks -->
     <template v-if="!started && !resume">
       <h3 class="font-heading text-xl text-ink-900" data-step-title tabindex="-1">{{ t('app.whatsapp.wizard.auto.title') }}</h3>
@@ -308,18 +311,18 @@ const errorLabel = message => (message.errorCode === 'unknown_delivery' ? t('app
         </details>
 
         <ul v-if="rows.length" class="mt-4 max-h-72 divide-y divide-line overflow-y-auto rounded-xl border border-line" data-testid="auto-rows">
-          <li v-for="message in rows" :key="message.messageId ?? message.guestId" class="flex items-center justify-between gap-3 px-3 py-2.5">
-            <div class="min-w-0">
-              <p class="truncate font-medium text-ink-900">{{ message.guestName }}</p>
-              <p v-if="message.status === 'failed'" class="text-xs text-danger-700">{{ errorLabel(message) }}</p>
-            </div>
-            <div class="flex shrink-0 items-center gap-2">
-              <UiBadge :tone="view(message.status).tone" size="sm">
+          <li v-for="message in rows" :key="message.messageId ?? message.guestId" class="px-3 py-2.5">
+            <div class="flex items-center justify-between gap-3">
+              <p class="min-w-0 truncate font-medium text-ink-900">{{ message.guestName }}</p>
+              <UiBadge class="shrink-0" :tone="view(message.status).tone" size="sm">
                 <component :is="view(message.status).icon" class="h-3.5 w-3.5" aria-hidden="true" />
                 <span class="sr-only">{{ t('app.whatsapp.wizard.auto.statusOf') }}</span>
                 {{ t(`app.whatsapp.state.${statusKey(message.status)}`) }}
               </UiBadge>
-              <UiButton v-if="message.status === 'failed'" size="sm" variant="secondary" :disabled="retrying" :aria-label="t('app.whatsapp.wizard.auto.retryOne', { name: message.guestName })" @click="retryFailed([message])">
+            </div>
+            <div v-if="message.status === 'failed'" class="mt-1 flex items-center justify-between gap-3">
+              <p class="min-w-0 text-xs text-danger-700">{{ errorLabel(message) }}</p>
+              <UiButton size="sm" variant="secondary" class="shrink-0" :disabled="retrying" :aria-label="t('app.whatsapp.wizard.auto.retryOne', { name: message.guestName })" @click="retryFailed([message])">
                 {{ t('app.whatsapp.retry') }}
               </UiButton>
             </div>

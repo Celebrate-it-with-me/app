@@ -1558,6 +1558,7 @@ export default {
         opted_out: '{n} pidió no recibir mensajes | {n} pidieron no recibir mensajes',
         recently_sent: '{n} ya lo recibió hoy | {n} ya lo recibieron hoy',
         already_responded: '{n} ya respondió | {n} ya respondieron',
+        reminder_limit: '{n} ya recibió 3 recordatorios | {n} ya recibieron 3 recordatorios',
         daily_limit: '{n} quedaría para mañana por el límite diario | {n} quedarían para mañana por el límite diario'
       },
       next: 'Continuar',
@@ -1580,6 +1581,7 @@ export default {
         opted_out: 'Pidieron no recibir más mensajes. Respetamos su decisión.',
         recently_sent: 'Ya recibieron este mensaje en las últimas 24 horas.',
         already_responded: 'Ya respondieron a tu invitación, no hace falta recordarles.',
+        reminder_limit: 'Ya recibieron los 3 recordatorios permitidos.',
         daily_limit: 'Llegaste al límite diario de mensajes para este evento. Estos quedaron sin enviar; podrás escribirles mañana.'
       },
       stateLabel: 'WhatsApp',
@@ -1634,7 +1636,7 @@ export default {
           off: 'El envío automático aún no está disponible. Compártelas tú con WhatsApp; te llevamos la cuenta.',
           unpublished: 'Tu evento aún no está publicado: los enlaces no abrirán hasta que lo publiques.',
           publish: 'Ir a publicar',
-          rsvpClosed: 'El plazo para responder ya cerró. Solo puedes compartir «Guarda la fecha».'
+          rsvpClosed: 'El plazo para responder ya cerró. Solo puedes usar «Guarda la fecha».'
         },
         who: {
           title: '¿A quién se lo enviamos?',
@@ -1772,6 +1774,7 @@ export default {
         dailyLimit: 'Llegaste al límite diario de mensajes para este evento; podrás seguir mañana.',
         retryLimit: 'Este mensaje ya se reintentó el máximo de veces.',
         tooManyRequests: 'Demasiados intentos seguidos. Espera un momento e inténtalo de nuevo.',
+        confirmationRequired: 'Son muchas familias: confirma que entiendes que se enviará un mensaje a cada una.',
         notPublished: 'Publica tu evento antes de enviar: los enlaces no abrirían.',
         rsvpClosed: 'El plazo para responder ya cerró: solo puedes enviar «Guarda la fecha».',
         archived: 'Este evento está archivado: solo puedes verlo.'

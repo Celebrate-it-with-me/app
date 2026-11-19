@@ -11,8 +11,9 @@ class WhatsappService {
    * Queues a batch: `{ batchId, queued, skipped: [{ guestId, guestName, reason }] }`. With `dryRun` nothing is queued
    * and the answer is the real calculation `{ queued, skipped }` (for the recipients preview).
    */
-  async send(eventId, { template, audience, guestIds = [], force = false, dryRun = false }) {
+  async send(eventId, { template, audience, guestIds = [], force = false, dryRun = false, confirmLarge = false }) {
     const body = { template, audience, force }
+    if (confirmLarge) body.confirm_large = true
     if (dryRun) body.dry_run = true
     if (audience === 'selected') body.guest_ids = guestIds
     const mock = await getMock()
@@ -50,8 +51,8 @@ class WhatsappService {
   }
 
   /**
-   * ASSUMED FORMAT (contract 4.3, endpoint of atlas-f4, not in develop yet): the message exactly as it will go out.
-   * `{ template, locale, category, guest: { id, name }, body, buttons: [{ id, text }], link, sendable }`. It queues
+   * Real format (atlas-f4, guests module, owner/editor only): the message exactly as it will go out.
+   * `{ template, locale, category, guest: { id, name } | null, sample, body, buttons: [{ id, text }], link, sendable, event, linkPreview }`. It queues
    * nothing and counts no quota. Adjust here (and in whatsappMock.preview) when Atlas reports the real shape.
    */
   async preview(eventId, { template, guestId = null, locale = null }) {
@@ -64,10 +65,10 @@ class WhatsappService {
   }
 
   /**
-   * ASSUMED FORMAT (contract 4.4): progress of one batch.
-   * `{ batchId, template, startedAt, total, queued, sent, delivered, read, failed, cancelled, done, messages: [{ guestId,
-   * guestName, status, errorCode, errorMessage, messageId }] }`, `messages` paged (`page`, `per_page` <= 100).
-   * The counts are read as exclusive per status; "processed" is `total - queued`.
+   * Real format (atlas-f4): progress of one batch.
+   * `{ batchId, template, startedAt, total, queued, sent, delivered, read, failed, cancelled, processed, done,
+   * messages: [{ messageId, guestId, guestName, status, errorCode, errorMessage, retryCount }], meta }`, `messages` paged
+   * (`page`, `per_page` <= 100). Counts are exclusive per status; the bar uses `processed` (= total - queued).
    */
   async batch(eventId, batchId, { page = 1, perPage = 100 } = {}) {
     const mock = await getMock()
@@ -75,7 +76,7 @@ class WhatsappService {
     return (await CWM_API.get(`${base(eventId)}/batches/${batchId}`, { params: { page, per_page: perPage } })).data.data
   }
 
-  /** ASSUMED (contract 4.4): the latest batch of the event with `queued > 0` (same shape as `batch`), or `null`. */
+  /** The latest batch of the event with `queued > 0` (same shape as `batch`), or `null`. */
   async activeBatch(eventId) {
     const mock = await getMock()
     if (mock) return mock.activeBatch(eventId)

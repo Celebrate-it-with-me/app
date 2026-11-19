@@ -213,6 +213,7 @@ export function mergeBatches(batches) {
     read: sum('read'),
     failed: sum('failed'),
     cancelled: sum('cancelled'),
+    processed: list.reduce((n, b) => n + (b.processed ?? (b.total ?? 0) - (b.queued ?? 0)), 0),
     done: list.every(b => b.done === true),
     messages: list.flatMap(b => b.messages ?? [])
   }
@@ -221,7 +222,7 @@ export function mergeBatches(batches) {
 /** `{ processed, total, percent }`: processed = everything that left the queue (`total - queued`); delivered/read do not hold it. */
 export function batchProgress(batch) {
   const total = batch?.total ?? 0
-  const processed = Math.max(0, total - (batch?.queued ?? 0))
+  const processed = Math.max(0, batch?.processed ?? total - (batch?.queued ?? 0))
   return { processed, total, percent: total ? Math.round((processed / total) * 100) : 0 }
 }
 
@@ -247,5 +248,6 @@ export function wizardSendErrorKey(error, fallback) {
   if (status === 409 && code === 'event_not_published') return 'notPublished'
   if (status === 409 && code === 'rsvp_closed') return 'rsvpClosed'
   if (status === 409 && code === 'event_archived') return 'archived'
+  if (status === 409 && code === 'confirmation_required') return 'confirmationRequired'
   return fallback(error)
 }
