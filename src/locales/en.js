@@ -537,6 +537,13 @@ export default {
       noteCount: '{n}/{max}',
       nameLabel: 'Name of the person',
       yourNote: 'Your message',
+      menu: {
+        title: 'What would you like to eat?',
+        help: 'Pick one dish of each kind for each person. It is optional and you can change it later.',
+        types: { starter: 'Starter', main: 'Main course', dessert: 'Dessert' },
+        diets: { vegan: 'Vegan', vegetarian: 'Vegetarian', gluten_free: 'Gluten-free' },
+        errors: { invalid: 'We could not save the menu. Reload the invitation and try again.' }
+      },
       errors: {
         too_long: 'This is too long.',
         too_short: 'Enter at least 2 characters.',

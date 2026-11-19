@@ -48,16 +48,18 @@ class InvitationService {
    *   guest: 'attending' | 'not-attending'; companions: { [id]: status }; names: { [id]: name }
    *   (only the ones that changed); note: the guest's message ('' clears it, undefined leaves it).
    */
-  async saveRsvp({ slug, code, guest, companions, names = {}, note }) {
+  async saveRsvp({ slug, code, guest, companions, names = {}, note, menu }) {
     const body = {
       guest: { rsvpStatus: guest },
       companions: Object.entries(companions).map(([id, rsvpStatus]) => ({
         id: Number(id),
         rsvpStatus,
-        ...(id in names ? { name: names[id] } : {})
+        ...(id in names ? { name: names[id] } : {}),
+        ...(menu?.companions && id in menu.companions ? { menuItemIds: menu.companions[id] } : {})
       }))
     }
     if (note !== undefined) body.note = note
+    if (menu?.guest) body.guest.menuItemIds = menu.guest
     return PUBLIC_API.post(`${path(slug, code)}/rsvp`, body)
   }
   /**
