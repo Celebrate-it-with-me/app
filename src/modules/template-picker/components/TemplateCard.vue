@@ -1,12 +1,19 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Check, ImageOff, Lock, Puzzle } from 'lucide-vue-next'
+import { Check, Lock, Puzzle } from 'lucide-vue-next'
 import { UiBadge } from '@/ui'
+import InvitationMiniature from './InvitationMiniature.vue'
 import { missingModulesOf, moduleNames, pickText } from '../utils/templatePicker'
 
 const props = defineProps({
-  template: { type: Object, required: true }
+  template: { type: Object, required: true },
+  /** Event whose real cover is drawn with this template; without it the miniature falls back to the image or the stationery card. */
+  eventId: { type: [Number, String], default: null },
+  /** Skip the live cover (roles that cannot call the preview). */
+  live: { type: Boolean, default: true },
+  /** ms before the miniature's single quiet retry after a failure. */
+  retryDelay: { type: Number, default: 8000 }
 })
 defineEmits(['select'])
 
@@ -29,11 +36,16 @@ const label = computed(() =>
     @click="$emit('select', template)"
   >
     <span class="relative block aspect-[390/844] w-full overflow-hidden bg-cream-200">
-      <img v-if="template.previewImage" :src="template.previewImage" alt="" loading="lazy" class="h-full w-full object-cover" />
-      <span v-else class="flex h-full w-full flex-col items-center justify-center gap-2 px-3 text-center text-sm text-ink-500">
-        <ImageOff class="h-6 w-6" aria-hidden="true" />
-        {{ t('templatePicker.noPreview') }}
-      </span>
+      <InvitationMiniature
+        :event-id="eventId"
+        :template-id="template.id"
+        :fallback-image="template.previewImage || ''"
+        :name="template.name"
+        :live="live"
+        :timeout="20000"
+        :retry-delay="retryDelay"
+        pooled
+      />
       <span v-if="template.locked" class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-gold-700 shadow-card" aria-hidden="true">
         <Lock class="h-4 w-4" />
       </span>
@@ -44,8 +56,8 @@ const label = computed(() =>
     </span>
     <span class="flex flex-1 flex-col gap-1.5 p-3">
       <span class="flex items-start justify-between gap-2">
-        <span class="font-heading text-lg leading-tight text-ink-900">{{ template.name }}</span>
-        <UiBadge :tone="template.tier === 'premium' ? 'gold' : 'neutral'" size="sm">
+        <span class="min-w-0 font-heading text-lg leading-tight text-ink-900">{{ template.name }}</span>
+        <UiBadge class="shrink-0" :tone="template.tier === 'premium' ? 'gold' : 'neutral'" size="sm">
           {{ template.tier === 'premium' ? t('templatePicker.premium') : t('templatePicker.free') }}
         </UiBadge>
       </span>

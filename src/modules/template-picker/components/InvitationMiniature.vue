@@ -7,13 +7,17 @@
  *
  * Loads lazily (when it scrolls into view) and takes a slot from `iframeSlots` so only a few iframes live at once. If the
  * payload fails, takes too long or the API answers 429, it falls back to `fallbackImage` or a stationery card.
+ * Inside a selector session (`provide(MINIATURE_SESSION, session)`) it shares that session's payload cache, request queue
+ * and slot pool. With `pooled` it also gives its slot back once drawn and unloads the iframe when it scrolls out of view,
+ * so a long grid never starves the cards that are on screen; a failure is retried once after `retryDelay` ms.
  * `width` fixes the size; without it the miniature fills its parent's width (the height follows the phone ratio).
  */
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Sparkles } from 'lucide-vue-next'
 import { iframeSlots } from '../composables/useIframeSlots'
 import { useInvitationMiniature } from '../composables/useInvitationMiniature'
+import { MINIATURE_SESSION } from '../composables/useMiniatureSession'
 
 const BASE_W = 390
 const BASE_H = 844
@@ -32,7 +36,11 @@ const props = defineProps({
   /** false: skip the live view and draw the fallback straight away (roles that cannot call the preview). */
   live: { type: Boolean, default: true },
   /** ms before giving up on the live view. */
-  timeout: { type: Number, default: 10000 }
+  timeout: { type: Number, default: 10000 },
+  /** Grid mode (see above). */
+  pooled: { type: Boolean, default: false },
+  /** ms before the single automatic retry of a failed live view (pooled only). */
+  retryDelay: { type: Number, default: 8000 }
 })
 
 const { t, locale } = useI18n()
@@ -44,11 +52,14 @@ const frameReady = ref(false)
 const slotGranted = ref(false)
 const imageFailed = ref(false)
 const origin = window.location.origin
+const session = inject(MINIATURE_SESSION, null)
+const slotPool = session?.slots ?? iframeSlots
 
 const mini = useInvitationMiniature(() => props.eventId, {
   templateId: () => props.templateId,
   locale: () => locale.value,
-  timeout: props.timeout
+  timeout: props.timeout,
+  session
 })
 
 let slot = null
@@ -72,13 +83,19 @@ function free() {
 }
 
 async function start() {
-  if (slot || failed.value) return
-  slot = iframeSlots.acquire()
+  if (slot || slotGranted.value || failed.value) return
+  slot = slotPool.acquire()
   const mine = slot
   await mine.promise
   if (slot !== mine) return
   slotGranted.value = true
-  await mini.load()
+  if (mini.status.value !== 'ready') await mini.load()
+}
+
+/** Pooled: once drawn, the iframe stays but stops counting against the pool, so the next cards can boot. */
+function giveSlotBack() {
+  slot?.cancel()
+  slot = null
 }
 
 function send() {
@@ -107,7 +124,10 @@ onMounted(() => {
     visible.value = true
   } else {
     io = new IntersectionObserver(entries => {
-      if (entries.some(entry => entry.isIntersecting)) {
+      const inside = entries.some(entry => entry.isIntersecting)
+      if (props.pooled) {
+        visible.value = inside
+      } else if (inside) {
         visible.value = true
         io?.disconnect()
       }
@@ -119,6 +139,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('message', onMessage)
   io?.disconnect()
   ro?.disconnect()
+  clearTimeout(retryTimer)
   free()
 })
 
@@ -128,6 +149,21 @@ watch(
   { immediate: true }
 )
 watch(failed, value => value && free())
+watch(shown, value => value && props.pooled && giveSlotBack())
+// Pooled: leaving the viewport unloads the iframe (the payload stays cached); coming back draws it again.
+watch(visible, value => {
+  if (!value && props.pooled) free()
+})
+let retryTimer = null
+let retries = 1
+watch(failed, value => {
+  if (!value || !props.pooled || !props.live || !props.eventId || mini.error.value === 'forbidden' || retries <= 0) return
+  retries--
+  retryTimer = setTimeout(() => {
+    mini.reset()
+    if (visible.value) start()
+  }, props.retryDelay)
+})
 watch(() => mini.payload.value, send)
 watch(() => props.fallbackImage, () => (imageFailed.value = false))
 </script>

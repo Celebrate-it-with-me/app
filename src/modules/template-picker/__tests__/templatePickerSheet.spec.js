@@ -47,7 +47,25 @@ describe('TemplatePickerSheet', () => {
     const cards = [...document.body.querySelectorAll('ul li button')]
     expect(cards.map(c => c.getAttribute('aria-label'))).toEqual(['Clásica, Gratis, En uso', 'Rosas, Gratis', 'Botánica, Premium, bloqueada'])
     expect(text()).toContain('Se desbloquea con el evento completo')
-    expect(text()).toContain('Sin imagen')
+    expect(document.body.querySelectorAll('[data-testid=invitation-miniature]').length).toBe(3)
+    expect(text()).not.toContain('Sin imagen')
+  })
+
+  it('draws each card with its own template and does not repeat the calls when coming back from a detail or reopening', async () => {
+    await mountSheet()
+    const cover = () => mocks.preview.mock.calls.filter(([, body]) => body.state === undefined).map(([, body]) => body.templateId)
+    expect(cover()).toEqual([1])
+    await click('Clásica')
+    await click('Volver')
+    await click('Clásica')
+    await click('Volver')
+    expect(cover()).toEqual([1])
+    await wrapper.setProps({ open: false })
+    await flushPromises()
+    await wrapper.setProps({ open: true })
+    await flushPromises()
+    expect(cover()).toEqual([1])
+    expect(document.body.querySelectorAll('[data-testid=invitation-miniature]').length).toBe(3)
   })
 
   it('shows an error with a retry when the list fails, and recovers', async () => {

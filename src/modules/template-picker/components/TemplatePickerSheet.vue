@@ -4,7 +4,7 @@
  * confirmation of the change (what is kept and reset) and the "already published" notice. The API decides what is
  * locked or allowed; this screen only dresses its answers (contract: docs/plans/template-stage5-contract-draft.md, 3.2, 3.3, 3.5, 8).
  */
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, provide, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ArrowLeft, Check, Lock, RotateCcw } from 'lucide-vue-next'
 import { UiButton, UiEmptyState, UiModal, UiSkeleton, useToast } from '@/ui'
@@ -12,6 +12,7 @@ import { SUPPORT_EMAIL, mailtoLink } from '@/config/brand'
 import PaymentsService from '@/modules/payments/services/PaymentsService'
 import { formatMoney } from '@/modules/payments/utils/money'
 import { useTemplatePicker } from '../composables/useTemplatePicker'
+import { MINIATURE_SESSION, createMiniatureSession } from '../composables/useMiniatureSession'
 import { conflictingModules, moduleNames, pickText } from '../utils/templatePicker'
 import TemplateCard from './TemplateCard.vue'
 import TemplatePreviewFrame from './TemplatePreviewFrame.vue'
@@ -32,6 +33,10 @@ const emit = defineEmits(['update:open', 'changed', 'unlock', 'undone'])
 const { t, te, tm, rt, locale } = useI18n()
 const toast = useToast()
 const picker = useTemplatePicker(() => props.eventId)
+// Shared by the grid's miniatures: payload cache (kept while the sheet lives), spaced request queue and a pool of 2 iframes.
+const miniatures = createMiniatureSession()
+provide(MINIATURE_SESSION, miniatures)
+onBeforeUnmount(() => miniatures.dispose())
 
 const view = ref('list') // list | preview | confirm | published
 const body = ref(null)
@@ -178,6 +183,7 @@ watch(
   () => props.open,
   open => {
     if (open) begin()
+    else miniatures.dispose()
   },
   { immediate: true }
 )
@@ -210,7 +216,7 @@ defineExpose({ undo, picker })
       <UiEmptyState v-else-if="!picker.templates.value.length" :title="t('templatePicker.empty')" />
       <ul v-else class="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <li v-for="template in picker.templates.value" :key="template.id" class="flex">
-          <TemplateCard :template="template" @select="openPreview" />
+          <TemplateCard :template="template" :event-id="eventId" @select="openPreview" />
         </li>
       </ul>
     </div>
