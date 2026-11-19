@@ -172,7 +172,9 @@ function demoState(family) {
 /** The `delivery` object of a family (contract §4.8) from its last mock message. */
 function deliveryOf(family, manual, latest) {
   const base = { state: 'none', lastMessageId: null, lastAt: null, errorCode: null, errorMessage: null, retryCount: 0, sharedAt: null }
-  if (manual) return family.phone && family.id % 3 === 0 ? { ...base, state: 'manual', sharedAt: new Date(Date.now() - DAY).toISOString() } : base
+  if (family.whatsappOptedOut) return { ...base, state: 'opted_out' }
+  if (!family.phone) return { ...base, state: 'no_phone' }
+  if (manual) return family.id % 3 === 0 ? { ...base, state: 'manual', sharedAt: new Date(Date.now() - DAY).toISOString() } : base
   const message = latest.get(family.id)
   if (message) {
     return { ...base, state: message.status, lastMessageId: message.id, lastAt: message.sentAt ?? message.queuedAt, errorCode: message.errorCode, errorMessage: message.errorMessage }
@@ -186,23 +188,25 @@ function deliveryOf(family, manual, latest) {
 function deliveryMatches(family, filter) {
   const state = family.delivery.state
   if (filter === 'unsent') return state === 'none'
-  if (filter === 'problem') return state === 'failed'
-  return !['none', 'failed', 'opted_out', 'no_phone'].includes(state)
+  if (filter === 'problem') return ['failed', 'opted_out', 'no_phone'].includes(state)
+  return ['manual', 'queued', 'sent', 'delivered', 'read'].includes(state)
 }
 
 mockWhatsapp.roster = async function roster(eventId, params, raw) {
   const manual = mockModuleState() !== 'active'
   const latest = new Map()
   for (const m of messages.filter(x => x.eventId === eventId).map(view)) if (!latest.has(m.guestId) || m.id > latest.get(m.guestId).id) latest.set(m.guestId, m)
-  const decorate = family => ({ ...family, whatsappOptedOut: family.id % 7 === 0, delivery: deliveryOf(family, manual, latest) })
+  const decorate = family => {
+    const row = { ...family, whatsappOptedOut: family.id % 7 === 0 }
+    return { ...row, delivery: deliveryOf(row, manual, latest) }
+  }
   const everyone = (await allFamilies(eventId)).map(decorate)
-  const counts = { unsent: 0, queued: 0, sent: 0, delivered: 0, read: 0, failed: 0, noPhone: 0, shared: 0 }
+  const counts = { unsent: 0, queued: 0, sent: 0, delivered: 0, read: 0, failed: 0, noPhone: 0, optedOut: 0, shared: 0 }
   for (const f of everyone) {
     const s = f.delivery.state
-    if (s === 'none') {
-      counts.unsent++
-      if (!f.phone) counts.noPhone++
-    }
+    if (s === 'none') counts.unsent++
+    else if (s === 'no_phone') counts.noPhone++
+    else if (s === 'opted_out') counts.optedOut++
     else if (s === 'manual') counts.shared++
     else counts[s]++
   }

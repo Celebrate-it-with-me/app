@@ -273,7 +273,7 @@ async function copyLink(family) {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl" :class="canSend && 'pb-24 sm:pb-0'">
+  <div class="mx-auto max-w-3xl" :class="canSend && 'pb-36 sm:pb-0'">
     <UiPageHeader :title="t('app.roster.title')" :subtitle="counter">
       <template v-if="canEdit" #actions>
         <div v-if="canSend" class="hidden sm:block">
@@ -295,7 +295,7 @@ async function copyLink(family) {
       aria-hidden="true"
       data-testid="progress-placeholder"
     />
-    <section v-if="counts.all" class="rounded-2xl border border-line bg-white p-4" :aria-label="t('app.roster.progress.label')">
+    <section v-if="counts.all" class="rounded-2xl border border-line bg-white p-3.5 sm:p-4" :aria-label="t('app.roster.progress.label')">
       <div class="flex items-baseline justify-between gap-3">
         <p class="font-heading text-lg text-ink-900">{{ t('app.roster.progress.answered', { n: answered, total: counts.all }) }}</p>
         <p class="text-sm font-medium text-ink-700">{{ percent }}%</p>
@@ -406,13 +406,14 @@ async function copyLink(family) {
 
     <UiPagination v-if="meta.lastPage > 1" :page="page" :pages="meta.lastPage" class="mt-6" @update:page="page = $event" />
 
-    <!-- Phones: the main action stays in reach, above the bottom navigation. -->
+    <!-- Phones: the main action stays in reach. It floats above the assistant's "next step" pill (fixed at 5rem, z-40),
+         which sits over the bottom navigation, so the two never overlap. -->
     <div
       v-if="canSend"
-      class="fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-20 border-t border-line bg-cream-50/95 px-4 py-2.5 backdrop-blur sm:hidden"
+      class="pointer-events-none fixed inset-x-0 bottom-[calc(8.25rem+env(safe-area-inset-bottom))] z-20 px-4 sm:hidden"
       data-testid="send-bar"
     >
-      <UiButton block @click="openSend">
+      <UiButton block class="pointer-events-auto shadow-pop" @click="openSend">
         <Send class="h-4 w-4" aria-hidden="true" />
         {{ unsent ? t('app.roster.sendInvitationsCount', { n: unsent }) : t('app.roster.sendInvitations') }}
       </UiButton>

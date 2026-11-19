@@ -16,7 +16,7 @@ export const DELIVERY_VIEW = {
 /** Values of the `delivery` filter the roster takes, in the order of the chips. */
 export const DELIVERY_FILTERS = ['unsent', 'sent', 'problem']
 
-export const noDeliveryCounts = () => ({ unsent: 0, queued: 0, sent: 0, delivered: 0, read: 0, failed: 0, noPhone: 0, shared: 0 })
+export const noDeliveryCounts = () => ({ unsent: 0, queued: 0, sent: 0, delivered: 0, read: 0, failed: 0, noPhone: 0, optedOut: 0, shared: 0 })
 
 /**
  * What a row shows: `{ key, tone, icon, at, message }`, or null when the roster did not say (older answer).
@@ -42,7 +42,8 @@ export function deliveryOf(family) {
 /**
  * The chips above the list: filters of the delivery axis with the counters of the whole event.
  * "Sent" gathers everything that left the organizer's hands (queued, sent, delivered, read, or opened by hand).
- * In manual mode nothing can fail, so the problem chip hides until a counter says otherwise.
+ * "Problem" = failed, opted out or without a phone (the API's `delivery=problem`). In manual mode it hides until
+ * something is wrong.
  */
 export function deliveryChips(delivery, { automatic }) {
   const counts = { ...noDeliveryCounts(), ...delivery }
@@ -51,6 +52,7 @@ export function deliveryChips(delivery, { automatic }) {
     { value: 'unsent', key: 'unsent', count: counts.unsent },
     { value: 'sent', key: automatic ? 'sent' : 'opened', count: sent }
   ]
-  if (automatic || counts.failed) chips.push({ value: 'problem', key: 'problem', count: counts.failed })
+  const problem = counts.failed + counts.noPhone + counts.optedOut
+  if (automatic || problem) chips.push({ value: 'problem', key: 'problem', count: problem })
   return chips
 }

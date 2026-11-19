@@ -22,7 +22,7 @@ class RosterService {
     if (search) params.search = search
     if (delivery) params.delivery = delivery
     const mock = await getMock()
-    if (mock) return mock.roster(eventId, params, p => this.listRaw(eventId, p))
+    if (mock) return mock.roster(eventId, params, (id, p) => this.listRaw(id, p))
     return this.listRaw(eventId, params)
   }
 

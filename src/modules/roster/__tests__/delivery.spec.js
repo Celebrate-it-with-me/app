@@ -36,7 +36,7 @@ describe('deliveryOf', () => {
 })
 
 describe('deliveryChips', () => {
-  const counts = { ...noDeliveryCounts(), unsent: 4, queued: 1, sent: 2, delivered: 3, read: 1, failed: 1, shared: 2 }
+  const counts = { ...noDeliveryCounts(), unsent: 4, queued: 1, sent: 2, delivered: 3, read: 1, failed: 1, noPhone: 2, optedOut: 1, shared: 2 }
 
   it('has the three filters the API takes', () => {
     expect(DELIVERY_FILTERS).toEqual(['unsent', 'sent', 'problem'])
@@ -46,7 +46,7 @@ describe('deliveryChips', () => {
     expect(deliveryChips(counts, { automatic: true })).toEqual([
       { value: 'unsent', key: 'unsent', count: 4 },
       { value: 'sent', key: 'sent', count: 9 },
-      { value: 'problem', key: 'problem', count: 1 }
+      { value: 'problem', key: 'problem', count: 4 }
     ])
   })
 
@@ -56,5 +56,6 @@ describe('deliveryChips', () => {
       { value: 'sent', key: 'opened', count: 3 }
     ])
     expect(deliveryChips({ failed: 1 }, { automatic: false }).map(c => c.value)).toContain('problem')
+    expect(deliveryChips({ noPhone: 1 }, { automatic: false }).find(c => c.value === 'problem').count).toBe(1)
   })
 })
