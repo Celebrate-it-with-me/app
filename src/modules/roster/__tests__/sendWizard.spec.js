@@ -4,7 +4,10 @@ import i18n, { setLocale } from '@/locales/i18n'
 import { useToast } from '@/ui'
 
 const svc = vi.hoisted(() => ({ audience: vi.fn(), allRecipients: vi.fn(), allRoster: vi.fn(), markShared: vi.fn(), unmarkShared: vi.fn() }))
+const wa = vi.hoisted(() => ({ preview: vi.fn() }))
 vi.mock('../services/SendWizardService', () => ({ default: svc }))
+vi.mock('../services/WhatsappService', () => ({ default: wa }))
+vi.mock('@/modules/template-picker/components/InvitationMiniature.vue', () => ({ default: { props: ['eventId', 'width', 'name', 'dateLabel', 'live'], template: '<div data-testid="miniature" />' } }))
 import SendWizard from '../components/send/SendWizard.vue'
 
 const rec = (id, extra = {}) => ({ id, name: `Familia ${id}`, people: 2, phone: '+13055550101', status: 'pending', reason: null, delivery: { state: 'none' }, ...extra })
@@ -39,6 +42,8 @@ async function open(props = {}) {
 beforeEach(() => {
   setLocale('es')
   Object.values(svc).forEach(fn => fn.mockReset())
+  wa.preview.mockReset()
+  wa.preview.mockResolvedValue({ link: 'https://q.test/i/xv/1', linkPreview: { title: 'Familia 1, estás invitado/a a Los XV', description: 'Sábado 14 de marzo · Miami. Abre tu invitación.', image: 'https://q.test/og/1.jpg', alt: 'Portada', imageWidth: 1200, imageHeight: 630 } })
   svc.markShared.mockImplementation(async (_e, id) => ({ id, delivery: { sharedAt: '2026-11-19T18:02:00Z' } }))
   svc.unmarkShared.mockResolvedValue({})
   useToast().toasts.map(x => x.id).forEach(id => useToast().dismiss(id))
@@ -53,7 +58,7 @@ describe('SendWizard step 1', () => {
     serve()
     await open()
     expect(body()).toContain('¿A quién se lo enviamos?')
-    expect(body()).toContain('Paso 1 de 2')
+    expect(body()).toContain('Paso 1 de 3')
     expect(body()).toContain('Aún sin invitación · 4 familias')
     expect(body()).toContain('Pendientes de responder · 0 familias')
     expect(body()).toContain('Todos · 4 familias')
@@ -68,9 +73,13 @@ describe('SendWizard step 1', () => {
     serve()
     await open()
     await click('Siguiente')
-    expect(body()).toContain('Paso 2 de 2')
+    expect(body()).toContain('Paso 2 de 3')
+    expect(body()).toContain('Así lo recibirán')
+    await click('Siguiente')
+    expect(body()).toContain('Paso 3 de 3')
     expect(body()).toContain('Enviar a mano · 4 familias')
     expect(document.querySelectorAll('[data-testid="manual-row"]')).toHaveLength(4)
+    await click('Atrás')
     await click('Atrás')
     expect(body()).toContain('¿A quién se lo enviamos?')
   })
@@ -95,27 +104,21 @@ describe('SendWizard step 1', () => {
     expect(w.emitted('add-guest')).toHaveLength(1)
   })
 
-  it('does not ask to confirm a batch above 100 families in manual mode', async () => {
+  it('does not ask for the big-batch confirmation in manual mode (P7b)', async () => {
     serve({ recipients: Array.from({ length: 101 }, (_, i) => rec(i + 1)) })
     await open()
-    expect(document.querySelector('[data-testid="who-big"]')).toBeNull()
     expect(button('Siguiente').disabled).toBe(false)
-  })
-
-  it('asks to confirm a batch above 100 families in automatic mode (rule ready for F4)', async () => {
-    serve({ recipients: Array.from({ length: 101 }, (_, i) => rec(i + 1)) })
-    await open({ mode: 'automatic' })
-    expect(button('Siguiente').disabled).toBe(true)
-    document.querySelector('[data-testid="who-big"] button').click()
-    await flushPromises()
-    expect(button('Siguiente').disabled).toBe(false)
+    await click('Siguiente')
+    await click('Siguiente')
+    expect(body()).toContain('Enviar a mano · 101 familias')
   })
 
   it('keeps blocking an opt-out in automatic mode and lists it', async () => {
-    serve()
+    serve({ audience: info({ mode: { automatic: true } }) })
     await open({ mode: 'automatic' })
-    expect(body()).toContain('Aún sin invitación · 3 familias')
+    expect(body()).toContain('Aún sin invitación · 2 familias')
     expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('Pidió no recibir mensajes')
+    expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('Falta el teléfono')
     expect(document.querySelector('[data-testid="who-optedout"]')).toBeNull()
   })
 
@@ -129,6 +132,7 @@ describe('SendWizard step 1', () => {
     expect(badge.textContent).toContain('Pidió no recibir mensajes')
     await click('Elegir las visibles')
     await click('Siguiente')
+    await click('Siguiente')
     const note = document.querySelector('[data-testid="manual-optedout"]')
     expect(note.textContent).toContain('Pidió no recibir mensajes')
     expect(document.querySelectorAll('[data-testid="manual-optedout"]')).toHaveLength(1)
@@ -138,6 +142,7 @@ describe('SendWizard step 1', () => {
     const recipients = [rec(1, { link: 'https://q.test/api/1' }), rec(2)]
     serve({ recipients })
     await open({ preselectedIds: [1, 2] })
+    await click('Siguiente')
     const links = [...document.querySelectorAll('[data-testid="manual-row"] a')].map(a => decodeURIComponent(a.getAttribute('href')))
     expect(links[0]).toContain('https://q.test/api/1')
     expect(links[1]).toContain('https://q.test/i/xv/2')
@@ -278,11 +283,11 @@ describe('SendWizard banners and errors', () => {
     expect(svc.audience).not.toHaveBeenCalled()
     await wrapper.setProps({ open: true })
     await flushPromises()
-    expect(svc.audience).toHaveBeenCalledTimes(1)
+    expect(svc.audience).toHaveBeenCalledTimes(2) // invitation + reminder_pending
     await wrapper.setProps({ reloadToken: 2 })
     await flushPromises()
-    expect(svc.audience).toHaveBeenCalledTimes(2)
-    expect(body()).toContain('Paso 1 de 2')
+    expect(svc.audience).toHaveBeenCalledTimes(4)
+    expect(body()).toContain('Paso 1 de 3')
   })
 
   it('emits closed from Cancel and from the close button', async () => {
@@ -301,8 +306,10 @@ describe('SendWizard preselected family', () => {
   it('jumps straight to the list when the family can be shared', async () => {
     serve()
     await open({ preselectedIds: [2] })
+    expect(body()).toContain('Paso 2 de 3')
+    expect(body()).toContain('Así lo recibirán')
+    await click('Siguiente')
     expect(body()).toContain('Enviar a mano · 1 familia')
-    expect(body()).toContain('Paso 2 de 2')
   })
 
   it('stays on step 1 when the family cannot be shared', async () => {
@@ -317,6 +324,7 @@ describe('SendWizard manual list', () => {
   const goToList = async () => {
     serve({ recipients: [rec(1), rec(2, { delivery: { state: 'manual', sharedAt: '2026-11-19T15:00:00Z' } }), rec(3, { phone: '', reason: 'no_phone' })] })
     await open({ preselectedIds: [1, 2, 3] })
+    await click('Siguiente')
   }
 
   it('shows progress, the sample message and the links with the message ready', async () => {
@@ -324,7 +332,6 @@ describe('SendWizard manual list', () => {
     expect(document.querySelector('[data-testid="manual-progress"]').textContent).toContain('Abiertos 1 de 3')
     expect(body()).toContain('Quedan 2 por enviar')
     expect(document.querySelector('[role="progressbar"]').getAttribute('aria-valuenow')).toBe('1')
-    expect(document.querySelector('[data-testid="message-sample"]').textContent).toContain('Hola Familia 1, te invitamos a Los XV')
     const links = [...document.querySelectorAll('[data-testid="manual-row"] a')].map(a => a.getAttribute('href'))
     expect(links[0]).toContain('https://wa.me/13055550101?text=')
     expect(decodeURIComponent(links[0])).toContain('https://q.test/i/xv/1')
@@ -373,29 +380,46 @@ describe('SendWizard manual list', () => {
   it('says it is done when every family was opened', async () => {
     serve({ recipients: [rec(1, { delivery: { state: 'manual', sharedAt: '2026-11-19T15:00:00Z' } })] })
     await open({ preselectedIds: [1] })
+    await click('Siguiente')
     expect(body()).toContain('Listo: abriste todas las conversaciones.')
   })
 
-  it('edits the message, warns when the link is missing and restores it (P1)', async () => {
-    await goToList()
-    await click('Cambiar mensaje')
+  it('keeps the edited text from step 2 in the links of step 3, and a template change drops it', async () => {
+    serve({ recipients: [rec(1)] })
+    await open({ preselectedIds: [1] })
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('Hola Familia 1, te invitamos a Los XV')
+    await click('Editar el texto')
     const area = document.querySelector('textarea')
     expect(area.value).toBe('Hola {name}, te invitamos a {event}. Aquí está tu invitación: {link}')
-    area.value = 'Hola {name}!'
+    area.value = 'Hola {name}! {link}'
     area.dispatchEvent(new Event('input'))
     await flushPromises()
-    expect(document.querySelector('[data-testid="message-sample"]').textContent).toContain('Hola Familia 1!')
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('Hola Familia 1! https://q.test/i/xv/1')
+    await click('Siguiente')
+    expect(decodeURIComponent(document.querySelector('[data-testid="manual-row"] a').getAttribute('href'))).toContain('Hola Familia 1! https://q.test/i/xv/1')
+    await click('Atrás')
+    await click('Editar el texto')
+    expect(document.querySelector('textarea').value).toBe('Hola {name}! {link}')
+    document.querySelector('textarea').value = 'Hola {name}!'
+    document.querySelector('textarea').dispatchEvent(new Event('input'))
+    await flushPromises()
     expect(body()).toContain('no incluye {link}')
     await click('Restaurar mensaje')
     expect(document.querySelector('textarea').value).toContain('{link}')
-    await click('Ocultar mensaje')
+    await click('Cambiar mensaje')
+    document.querySelectorAll('[data-testid="preview-templates"] [role="radio"]')[1].click()
+    await flushPromises()
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('aún no has respondido')
+    await click('Ocultar el texto')
     expect(document.querySelector('textarea')).toBeNull()
   })
 
   it('uses the save-the-date text when RSVP is closed', async () => {
     serve({ recipients: [rec(1)], audience: info({ rsvp: { isOpen: false } }) })
     await open({ preselectedIds: [1] })
-    expect(document.querySelector('[data-testid="message-sample"]').textContent).toContain('guarda la fecha')
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('guarda la fecha')
+    await click('Cambiar mensaje')
+    expect(document.querySelectorAll('[data-testid="preview-templates"] [role="radio"]')).toHaveLength(1)
   })
 
   it('closes from the footer', async () => {
@@ -410,15 +434,88 @@ describe('SendWizard edge cases', () => {
     await open({ eventId: null })
     expect(svc.audience).not.toHaveBeenCalled()
   })
+})
 
-  it('drops an edited message when the template changes', async () => {
-    const { default: SendStepManual } = await import('../components/send/SendStepManual.vue')
-    const step = mount(SendStepManual, { props: { eventId: 7, eventName: 'XV', families: [{ id: 1, name: 'Ana', people: 1, phone: '1', link: 'l', sharedAt: null }], template: 'invitation' }, global: { plugins: [i18n] }, attachTo: document.body })
-    await step.findAll('button')[0].trigger('click')
-    await step.find('textarea').setValue('custom {link}')
-    expect(step.find('[data-testid="message-sample"]').text()).toContain('custom l')
-    await step.setProps({ template: 'reminder_pending' })
-    expect(step.find('[data-testid="message-sample"]').text()).toContain('aún no has respondido')
-    step.unmount()
+describe('SendWizard step 2 · link card in manual mode', () => {
+  const card = () => document.querySelector('[data-testid="link-card"]')
+
+  it('asks the preview only for the link card, and keeps the message local', async () => {
+    serve({ recipients: [rec(1)] })
+    await open({ preselectedIds: [1] })
+    expect(wa.preview).toHaveBeenCalledWith(7, { template: 'invitation', guestId: 1, locale: 'es' })
+    expect(card().textContent).toContain('Familia 1, estás invitado/a a Los XV')
+    expect(card().textContent).toContain('Abre tu invitación.')
+    expect(card().querySelector('img').getAttribute('alt')).toBe('Portada')
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('Hola Familia 1, te invitamos a Los XV')
+    expect(document.querySelector('[data-testid="preview-error"]')).toBeNull()
+  })
+
+  it.each([403, 404, 500])('leaves the card out when the preview answers %i, without breaking the step', async status => {
+    serve({ recipients: [rec(1)] })
+    wa.preview.mockRejectedValue({ response: { status } })
+    await open({ preselectedIds: [1] })
+    expect(card()).toBeNull()
+    expect(document.querySelector('[data-testid="preview-error"]')).toBeNull()
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('Hola Familia 1')
+    expect(button('Siguiente').disabled).toBe(false)
+  })
+
+  it('leaves the card out when the API has no linkPreview', async () => {
+    serve({ recipients: [rec(1)] })
+    wa.preview.mockResolvedValue({ link: 'x', linkPreview: null })
+    await open({ preselectedIds: [1] })
+    expect(card()).toBeNull()
+  })
+})
+
+describe('SendWizard step 1 · automatic holds', () => {
+  const holds = () => {
+    const recipients = [rec(1), rec(2, { reason: 'recently_sent' }), rec(3), rec(4)]
+    svc.audience.mockImplementation(async (_e, template) => info({ mode: { automatic: true }, blocked: template === 'reminder_pending' ? { reminder_limit: 1, recently_sent: 0 } : { reminder_limit: 0, recently_sent: 1 } }))
+    svc.allRecipients.mockImplementation(async (_e, template) => (template === 'reminder_pending' ? [rec(1), rec(2), rec(3, { reason: 'reminder_limit' }), rec(4)] : recipients))
+    svc.allRoster.mockResolvedValue(recipients.map(r => row(r.id)))
+  }
+
+  it('explains the 24 h wait and the 3-reminder cap in the blocked group and out of the card counts', async () => {
+    holds()
+    await open({ mode: 'automatic' })
+    expect(svc.allRecipients).toHaveBeenCalledWith(7, 'reminder_pending')
+    expect(body()).toContain('Aún sin invitación · 3 familias')
+    const group = document.querySelector('[data-testid="who-blocked"]')
+    expect(group.textContent).toContain('No se pueden compartir (2)')
+    expect(group.querySelector('[data-testid="who-blocked-recently_sent"]').textContent).toContain('Familia 2')
+    expect(group.querySelector('[data-testid="who-blocked-recently_sent"]').textContent).toContain('hace menos de 24 h')
+    expect(group.querySelector('[data-testid="who-blocked-reminder_limit"]').textContent).toContain('Ya recibió los 3 recordatorios permitidos')
+    expect(group.querySelector('[data-testid="who-blocked-reminder_limit"] button')).toBeNull()
+  })
+
+  it('does not block them in manual mode', async () => {
+    holds()
+    await open()
+    expect(svc.allRecipients).not.toHaveBeenCalledWith(7, 'reminder_pending')
+    expect(body()).toContain('Aún sin invitación · 4 familias')
+    expect(document.querySelector('[data-testid="who-blocked"]')).toBeNull()
+  })
+
+  it('does not ask for the reminder read when nothing is held, and survives its failure', async () => {
+    serve({ recipients: [rec(1)], audience: info({ mode: { automatic: true }, blocked: { reminder_limit: 0, recently_sent: 0 } }) })
+    await open({ mode: 'automatic' })
+    expect(svc.allRecipients).toHaveBeenCalledTimes(1)
+    svc.audience.mockImplementation(async (_e, template) => {
+      if (template === 'reminder_pending') throw new Error('x')
+      return info({ mode: { automatic: true } })
+    })
+    await wrapper.setProps({ reloadToken: 5 })
+    await flushPromises()
+    expect(body()).toContain('Paso 1 de 3')
+    expect(body()).toContain('Aún sin invitación · 1 familia')
+  })
+
+  it('labels every reason in the pick list instead of calling it a bad number', async () => {
+    holds()
+    await open({ mode: 'automatic' })
+    await pickCard('Elegir invitados')
+    const list = document.querySelector('[data-testid="pick-list"]').textContent
+    expect(list).toContain('Recibió un mensaje hace menos de 24 h')
   })
 })

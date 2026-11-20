@@ -20,6 +20,7 @@ vi.mock('../utils/money', async importOriginal => {
 })
 
 import UnlockReturnView from '../views/UnlockReturnView.vue'
+import { REVIEW_CODES } from '../utils/money'
 
 const i18n = createI18n({ legacy: false, locale: 'es', fallbackLocale: 'en', messages: { es, en } })
 const stubs = { UiButton: { props: ['to', 'href'], template: '<a :data-to="to" :href="href"><slot /></a>' } }
@@ -82,6 +83,7 @@ describe('UnlockReturnView', () => {
     ['expired', es.payments.failed.codes.expired],
     ['payment_failed', es.payments.failed.codes.payment_failed],
     ['gateway_error', es.payments.failed.codes.gateway_error],
+    ['superseded', es.payments.failed.codes.superseded],
     ['something_new', es.payments.failed.codes.other]
   ])('failed with %s shows its message', async (failureCode, text) => {
     status.mockResolvedValue(res({ status: 'failed', failureCode }))
@@ -96,6 +98,38 @@ describe('UnlockReturnView', () => {
     expect((await mountView()).text()).toContain(es.payments.refunded.title)
     status.mockResolvedValue(res({ status: 'chargeback', unlocked: true }))
     expect((await mountView()).text()).toContain(es.payments.chargeback.title)
+  })
+
+  it.each([
+    ['amount_mismatch', 'pending', false],
+    ['duplicate_payment', 'refunded', false],
+    ['reference_mismatch', 'pending', false]
+  ])('%s is a review, never a failed payment: stops polling and says we will write', async (failureCode, st, unlocked) => {
+    status.mockResolvedValue(res({ status: st, failureCode, unlocked }))
+    const w = await mountView()
+    expect(status).toHaveBeenCalledTimes(1)
+    const review = w.get('[data-testid="payment-review"]').text()
+    expect(review).toContain(es.payments.review.title)
+    expect(review).toContain(es.payments.review.codes[failureCode])
+    expect(review).toContain(es.payments.review.text)
+    expect(w.text()).not.toContain(es.payments.failed.title)
+    expect(w.text()).not.toContain(es.payments.refunded.title)
+    expect(w.text()).not.toContain(es.payments.late.title)
+    expect(w.find('[role="alert"]').exists()).toBe(false)
+  })
+
+  it('without ?purchase it asks about the latest one (the ?paid=1 return)', async () => {
+    delete query.purchase
+    status.mockResolvedValue(res({ unlocked: true, status: 'paid' }))
+    const w = await mountView()
+    expect(status).toHaveBeenCalledWith('5', undefined)
+    expect(w.text()).toContain(es.payments.done.title)
+  })
+
+  it('a failed purchase whose code is cancelled reads as cancelled, not as a failure', async () => {
+    status.mockResolvedValue(res({ status: 'failed', failureCode: 'cancelled' }))
+    const w = await mountView()
+    expect(w.text()).toContain(es.payments.cancelled.title)
   })
 
   it('?cancelled=1 cancels the purchase and says nothing was charged, without polling', async () => {
@@ -126,8 +160,23 @@ describe('UnlockReturnView', () => {
   })
 })
 
+const leaves = (obj, prefix = '') =>
+  Object.entries(obj).flatMap(([k, v]) => (v && typeof v === 'object' && !Array.isArray(v) ? leaves(v, `${prefix}${k}.`) : [`${prefix}${k}`]))
+
 describe('payments i18n', () => {
   it('es and en have the same failed codes', () => {
     expect(Object.keys(en.payments.failed.codes)).toEqual(Object.keys(es.payments.failed.codes))
+  })
+
+  it.each(['payments', 'unlock', 'limits'])('es and en have exactly the same keys in %s', section => {
+    expect(leaves(en[section]).sort()).toEqual(leaves(es[section]).sort())
+  })
+
+  it('every flagged-for-review code has its own text, and no review code is left in failed', () => {
+    for (const code of REVIEW_CODES) {
+      expect(es.payments.review.codes[code]).toBeTruthy()
+      expect(en.payments.review.codes[code]).toBeTruthy()
+    }
+    expect(Object.keys(es.payments.failed.codes)).not.toEqual(expect.arrayContaining(REVIEW_CODES))
   })
 })

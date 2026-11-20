@@ -12,3 +12,8 @@ export function acceptOnce(inviteId, accept) {
 export function resetAcceptOnce() {
   accepting.clear()
 }
+
+/** Lets one invitation be tried again (after verifying the email) without clearing the others. */
+export function forgetAcceptOnce(inviteId) {
+  accepting.delete(inviteId)
+}

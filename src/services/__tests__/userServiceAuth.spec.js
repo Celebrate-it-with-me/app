@@ -21,4 +21,19 @@ describe('UserService reset password', () => {
     await UserService.logOut()
     expect(api.post).toHaveBeenCalledWith('logout')
   })
+  it('checks a trusted reset link with the entire url and the csrf cookie', async () => {
+    vi.stubEnv('VITE_API_URL', 'https://api.quinvite.com/')
+    const link = 'https://api.quinvite.com/api/v1/app/check-password-link?user=1&token=t&signature=s'
+    await UserService.checkResetLink(link)
+    expect(api.get).toHaveBeenCalledTimes(1)
+    expect(api.post).toHaveBeenCalledWith(link)
+  })
+
+  it('does not touch the network for a link pointing at another host', async () => {
+    vi.stubEnv('VITE_API_URL', 'https://api.quinvite.com/')
+    const res = await UserService.checkResetLink('https://evil.com/api/v1/app/check-password-link?token=t')
+    expect(res.status).toBe(400)
+    expect(api.get).not.toHaveBeenCalled()
+    expect(api.post).not.toHaveBeenCalled()
+  })
 })

@@ -1,4 +1,5 @@
 import { CWM_API } from './axios'
+import { isTrustedResetLink } from '@/utils/resetLink'
 
 class UserService {
   async login({ email, password, remember, device, hcaptcha_token }) {
@@ -36,6 +37,7 @@ class UserService {
   }
 
   async checkResetLink(confirmUrl) {
+    if (!isTrustedResetLink(confirmUrl)) return { status: 400, response: { data: { message: '' } } }
     return await CWM_API.get('sanctum/csrf-cookie', {
       baseURL: import.meta.env.VITE_API_URL
     }).then(async () => await CWM_API.post(confirmUrl))

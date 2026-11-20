@@ -5,7 +5,7 @@ import es from '@/locales/es'
 import en from '@/locales/en'
 
 const push = vi.fn()
-const collaborators = { acceptInvitation: vi.fn() }
+const collaborators = { acceptInvitation: vi.fn(), acceptError: null }
 const hydration = { hydrateAll: vi.fn() }
 vi.mock('vue-router', () => ({ useRoute: () => ({ params: { id: '7' } }), useRouter: () => ({ push }) }))
 vi.mock('@/stores/useUserStore', () => ({ useUserStore: () => ({ email: 'a@b.co' }) }))
@@ -25,6 +25,7 @@ describe('InvitationProcessorView', () => {
     push.mockReset()
     resetAcceptOnce()
     collaborators.acceptInvitation.mockReset().mockResolvedValue(true)
+    collaborators.acceptError = null
     hydration.hydrateAll.mockReset().mockResolvedValue()
     localStorage.setItem('pending_invitations', JSON.stringify([invite]))
   })
@@ -67,5 +68,59 @@ describe('InvitationProcessorView', () => {
     await flushPromises()
     expect(w.text()).toContain(es.invite.noneValid)
     expect(collaborators.acceptInvitation).not.toHaveBeenCalled()
+  })
+
+  it('hands the invitation (with its link token) to the store', async () => {
+    mountView()
+    await flushPromises()
+    expect(collaborators.acceptInvitation).toHaveBeenCalledWith(expect.objectContaining({ id: 2, token: 't' }))
+  })
+
+  it('explains the unverified email, not the generic error, and retries after verifying', async () => {
+    collaborators.acceptInvitation.mockImplementation(async () => {
+      collaborators.acceptError = 'email_not_verified'
+      return false
+    })
+    const w = mountView()
+    await flushPromises()
+    expect(w.text()).toContain(es.invite.verifyEmail)
+    expect(w.text()).not.toContain(es.invite.processError)
+    expect(push).not.toHaveBeenCalled()
+
+    collaborators.acceptInvitation.mockImplementation(async () => {
+      collaborators.acceptError = null
+      return true
+    })
+    await w.find('button').trigger('click')
+    await flushPromises()
+    expect(collaborators.acceptInvitation).toHaveBeenCalledTimes(2)
+    expect(w.text()).toContain('Listo: ya formas parte')
+    expect(w.text()).not.toContain(es.invite.verifyEmail)
+  })
+
+  it('shows the verify message in english', async () => {
+    collaborators.acceptInvitation.mockImplementation(async () => {
+      collaborators.acceptError = 'email_not_verified'
+      return false
+    })
+    const w = mountView('en')
+    await flushPromises()
+    expect(w.text()).toContain(en.invite.verifyEmail)
+  })
+
+  it('keeps the generic error for a 404 and when the store throws', async () => {
+    collaborators.acceptInvitation.mockImplementation(async () => {
+      collaborators.acceptError = 'not_found'
+      return false
+    })
+    let w = mountView()
+    await flushPromises()
+    expect(w.text()).toContain(es.invite.processError)
+    expect(w.text()).not.toContain(es.invite.verifyEmail)
+    resetAcceptOnce()
+    collaborators.acceptInvitation.mockRejectedValue(new Error('boom'))
+    w = mountView()
+    await flushPromises()
+    expect(w.text()).toContain(es.invite.processError)
   })
 })

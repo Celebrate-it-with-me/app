@@ -1,3 +1,4 @@
+const MAX_LENGTH = 2048
 const AUTH_PAGES = ['/sign-in', '/sign-up', '/forgot-password', '/confirm-reset', '/password-updated']
 
 /**
@@ -7,6 +8,9 @@ const AUTH_PAGES = ['/sign-in', '/sign-up', '/forgot-password', '/confirm-reset'
  */
 export function safeRedirect(path, depth = 0) {
   if (typeof path !== 'string' || !path.startsWith('/') || path.startsWith('//') || depth > 5) return undefined
+  // A backslash (`/\\evil.com` is read as `//evil.com` by browsers) or a control character (tab/newline are stripped
+  // by URL parsers, which can turn `/\t/evil.com` into `//evil.com`) never belongs to an internal path.
+  if (path.length > MAX_LENGTH || path.includes('\\') || [...path].some(char => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127)) return undefined
   const at = path.indexOf('?')
   const pathname = at === -1 ? path : path.slice(0, at)
   const search = at === -1 ? '' : path.slice(at + 1)

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import i18n, { setLocale } from '@/locales/i18n'
+import { createPinia } from 'pinia'
 import { useToast } from '@/ui'
 
 const service = vi.hoisted(() => ({ importTemplate: vi.fn(), importPreview: vi.fn(), importGuests: vi.fn() }))
@@ -36,7 +37,7 @@ async function toPreview(extra = rows) {
   await pickFile(csv())
 }
 const mountModal = (props = {}) => {
-  wrapper = mount(GuestImportModal, { props: { open: true, eventId: 7, ...props }, global: { plugins: [i18n] }, attachTo: document.body })
+  wrapper = mount(GuestImportModal, { props: { open: true, eventId: 7, ...props }, global: { plugins: [i18n, createPinia()] }, attachTo: document.body })
   return flushPromises()
 }
 beforeEach(() => {

@@ -16,14 +16,15 @@ import GuestFormModal from '../components/GuestFormModal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import GuestImportModal from '../components/GuestImportModal.vue'
 import RosterDownloadMenu from '../components/RosterDownloadMenu.vue'
-import WhatsappSendModal from '../components/WhatsappSendModal.vue'
 import SendWizard from '../components/send/SendWizard.vue'
 import { TABS, noCounts, personPayload } from '../utils/roster'
 import { whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/whatsapp'
-import { WIZARD_HANDLES_AUTOMATIC } from '../utils/sendWizard'
+import { WIZARD_HANDLES_AUTOMATIC, batchProgress } from '../utils/sendWizard'
+import { useBatchPolling } from '../composables/useBatchPolling'
+import { parseEventDate } from '@/views/internal/dashboard/dashboardLogic'
 import { DELIVERY_FILTERS, deliveryChips, deliveryOf } from '../utils/delivery'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { success, error: showError } = useToast()
@@ -61,11 +62,11 @@ if (import.meta.env.DEV && import.meta.env.VITE_WHATSAPP_MOCK) {
 const moduleState = computed(() => mockState.value ?? whatsappModuleState(event.value))
 const waLocked = computed(() => moduleState.value === 'locked')
 const waAutomatic = computed(() => !waLocked.value && moduleState.value !== 'off')
-// Manual mode (and, until F4, nothing else) goes through the send wizard; events with the module on keep the old dialog.
-const useWizard = computed(() => !waAutomatic.value || WIZARD_HANDLES_AUTOMATIC)
+// The wizard drives both modes: automatic when the WhatsApp module is on and unlocked, manual otherwise (module off or locked).
+const wizardMode = computed(() => (waAutomatic.value && WIZARD_HANDLES_AUTOMATIC ? 'automatic' : 'manual'))
 const wizardOpen = ref(false)
+const wizardResume = ref(false)
 const reloadToken = ref(0)
-const sendOpen = ref(false)
 const sendIds = ref([])
 let pollTimer
 
@@ -74,15 +75,52 @@ const deliveryOfRow = family => deliveryOf(family)
 /** One family from its menu: the wizard (or the old dialog) opens with her preselected. */
 function sendTo(family) {
   sendIds.value = [family.id]
-  if (useWizard.value) wizardOpen.value = true
-  else sendOpen.value = true
+  wizardResume.value = false
+  wizardOpen.value = true
 }
 
 function openSend() {
   sendIds.value = []
-  if (useWizard.value) wizardOpen.value = true
-  else sendOpen.value = true
+  wizardResume.value = false
+  wizardOpen.value = true
 }
+
+// A send in flight (automatic mode): the banner follows its batch and reopens the wizard on its progress.
+const activeBatchId = ref(null)
+const tracker = useBatchPolling(() => WhatsappService.batch(event.value.id, activeBatchId.value))
+const banner = computed(() => (activeBatchId.value && tracker.batch.value && tracker.batch.value.queued > 0 ? batchProgress(tracker.batch.value) : null))
+
+async function checkActiveBatch() {
+  if (wizardMode.value !== 'automatic' || !canEdit.value || !event.value?.id) return
+  try {
+    const active = await WhatsappService.activeBatch(event.value.id)
+    activeBatchId.value = active?.batchId ?? null
+    if (active) tracker.start()
+    else tracker.stop()
+  } catch {
+    activeBatchId.value = null
+  }
+}
+
+watch(wizardMode, checkActiveBatch)
+watch(() => tracker.batch.value?.queued, queued => {
+  if (queued === 0 && activeBatchId.value) {
+    activeBatchId.value = null
+    tracker.stop()
+    load({ silent: true })
+  }
+})
+
+function resumeSend() {
+  sendIds.value = []
+  wizardResume.value = true
+  wizardOpen.value = true
+}
+
+const eventDateLabel = computed(() => {
+  const date = parseEventDate(event.value?.startDate)
+  return date ? new Intl.DateTimeFormat(locale.value, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date) : ''
+})
 
 /** The wizard asks to fix a guest's phone: the same form as the list, over the wizard. */
 async function editFromWizard(guest) {
@@ -100,7 +138,9 @@ async function editFromWizard(guest) {
 
 function wizardClosed() {
   sendIds.value = []
+  wizardResume.value = false
   load({ silent: true })
+  checkActiveBatch()
 }
 
 function publishFromWizard() {
@@ -108,12 +148,7 @@ function publishFromWizard() {
   router.push({ name: 'edit-event', params: { id: event.value.id } })
 }
 
-function afterSend() {
-  load()
-}
-
 function goUnlock() {
-  sendOpen.value = false
   wizardOpen.value = false
   router.push(unlockPath('whatsapp'))
 }
@@ -206,8 +241,14 @@ watch([status, delivery], () => {
   load()
 })
 watch(page, load)
-watch(() => event.value?.id, () => load())
-onMounted(() => load())
+watch(() => event.value?.id, () => {
+  load()
+  checkActiveBatch()
+})
+onMounted(() => {
+  load()
+  checkActiveBatch()
+})
 
 const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), count: counts.value[tab.count] })))
 const answered = computed(() => counts.value.attending + counts.value.notAttending)
@@ -342,6 +383,17 @@ async function copyLink(family) {
       </UiButton>
     </div>
     <GuestLimitBanner />
+
+    <!-- A send in flight (automatic mode): the batch keeps going in the server; this brings its progress back. -->
+    <section v-if="banner && !wizardOpen" class="mb-4 rounded-2xl border border-rose-200 bg-rose-50 p-3.5" role="status" aria-live="polite" data-testid="send-banner">
+      <div class="flex items-center justify-between gap-3">
+        <p class="text-sm font-medium text-ink-900">{{ t('app.roster.activeBatch', { done: banner.processed, total: banner.total }) }}</p>
+        <UiButton size="sm" variant="secondary" data-testid="send-banner-view" @click="resumeSend">{{ t('app.roster.activeBatchView') }}</UiButton>
+      </div>
+      <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-white" role="progressbar" :aria-valuenow="banner.processed" aria-valuemin="0" :aria-valuemax="banner.total" :aria-label="t('app.roster.activeBatch', { done: banner.processed, total: banner.total })">
+        <div class="h-full origin-left rounded-full bg-rose-600 transition-transform duration-300 ease-out motion-reduce:transition-none" :style="{ transform: `scaleX(${banner.percent / 100})` }" />
+      </div>
+    </section>
 
     <!-- The progress card appears with the first answer; when the event is known to have guests its place is held meanwhile
          (otherwise the filters jump down when the list arrives). -->
@@ -478,31 +530,23 @@ async function copyLink(family) {
 
     <GuestImportModal v-if="event" v-model:open="importOpen" :event-id="event.id" @imported="refresh" />
     <SendWizard
-      v-if="event && useWizard"
+      v-if="event"
       v-model:open="wizardOpen"
       :event-id="event.id"
       :event-name="event.eventName ?? ''"
+      :event-date-label="eventDateLabel"
       :locked="waLocked"
+      :mode="wizardMode"
       :can-edit="canEdit"
       :preselected-ids="sendIds"
       :reload-token="reloadToken"
+      :resume="wizardResume"
       @closed="wizardClosed"
+      @sent="checkActiveBatch"
       @unlock="goUnlock"
       @publish="publishFromWizard"
       @edit-guest="editFromWizard"
       @add-guest="wizardOpen = false; openForm()"
-    />
-    <WhatsappSendModal
-      v-if="event && !useWizard"
-      v-model:open="sendOpen"
-      :event-id="event.id"
-      :event-name="event.eventName ?? ''"
-      :locked="waLocked"
-      :manual="!waAutomatic"
-      :families="families"
-      :selected-ids="sendIds"
-      @sent="afterSend"
-      @unlock="goUnlock"
     />
     <GuestFormModal v-model:open="formOpen" :family="editing" :saving="saving" @save="save" />
     <ConfirmModal :open="!!confirming" :family="confirming" :saving="saving" @update:open="confirming = null" @save="saveConfirm" />
