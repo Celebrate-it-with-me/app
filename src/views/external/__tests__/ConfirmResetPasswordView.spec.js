@@ -6,8 +6,10 @@ import es from '@/locales/es'
 const store = { checkResetLink: vi.fn(), changePassword: vi.fn() }
 const push = vi.fn()
 vi.mock('@/stores/useUserStore', () => ({ useUserStore: () => store }))
+const GOOD = 'http://dev.api.cwm.com/api/v1/app/check-password-link?user=1&token=linktok&signature=s'
+const route = vi.hoisted(() => ({ confirm: '' }))
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ query: { confirm: encodeURIComponent('http://api/check-password-link/1/h?token=linktok&signature=s') } }),
+  useRoute: () => ({ query: route }),
   useRouter: () => ({ push })
 }))
 const { default: View } = await import('../ConfirmResetPasswordView.vue')
@@ -29,6 +31,8 @@ async function fill(w) {
 
 describe('ConfirmResetPasswordView', () => {
   beforeEach(() => {
+    vi.stubEnv('VITE_API_URL', 'http://dev.api.cwm.com/')
+    route.confirm = encodeURIComponent(GOOD)
     push.mockReset()
     store.checkResetLink.mockReset().mockResolvedValue({ status: 200, data: { data: { email: 'a@b.co' }, token: 'bodytok' } })
     store.changePassword.mockReset()
@@ -78,5 +82,35 @@ describe('ConfirmResetPasswordView', () => {
     const fallback = w.findComponent({ name: 'UiButton' })
     expect(fallback.exists()).toBe(true)
     expect(fallback.props('to')).toBe('/forgot-password')
+  })
+  it.each([
+    ['another host', 'https://evil.com/api/v1/app/check-password-link?token=x'],
+    ['deceptive subdomain', 'http://dev.api.cwm.com.evil.com/api/v1/app/check-password-link?token=x'],
+    ['scheme-relative', '//evil.com/api/v1/app/check-password-link?token=x'],
+    ['relative', '/api/v1/app/check-password-link?token=x'],
+    ['credentials in the url', 'http://u:p@dev.api.cwm.com/api/v1/app/check-password-link?token=x'],
+    ['other path', 'http://dev.api.cwm.com/api/v1/app/logout?token=x'],
+    ['javascript scheme', 'javascript:alert(1)'],
+    ['empty', '']
+  ])('never calls the API for a hostile link (%s) and shows the invalid state', async (_n, link) => {
+    route.confirm = encodeURIComponent(link)
+    const w = mountView()
+    await flushPromises()
+    expect(store.checkResetLink).not.toHaveBeenCalled()
+    expect(w.find('form').exists()).toBe(false)
+  })
+
+  it('treats a malformed encoding as invalid', async () => {
+    route.confirm = '%E0%A4%A'
+    const w = mountView()
+    await flushPromises()
+    expect(store.checkResetLink).not.toHaveBeenCalled()
+    expect(w.find('form').exists()).toBe(false)
+  })
+
+  it('passes the trusted link through untouched', async () => {
+    mountView()
+    await flushPromises()
+    expect(store.checkResetLink).toHaveBeenCalledWith(GOOD)
   })
 })
