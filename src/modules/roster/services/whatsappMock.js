@@ -15,6 +15,16 @@ import RosterService from './RosterService'
  *   modlocked    the module shows as locked in the event's modules (no call is made)
  *   modoff       the module is missing from the event's modules
  *   demo         like 1, and families without a message show invented delivery states (screenshots)
+ *   unpublished  the audience says the event is a draft (automatic send blocked, P8)
+ *   rsvpclosed   the audience says the RSVP window is closed (P9)
+ *   noen         the English template is not approved (audience + preview answer 409 template_not_approved for `en`)
+ *   slow         a batch rolls out slowly (about 1 s per message) so the progress can be photographed
+ *   nolink       preview answers linkPreview null (no guests / no card)
+ *   brokenimg    the linkPreview image does not load (brand fallback)
+ *   limits       recipients: some families come back with reason reminder_limit / recently_sent (step 1 blocks)
+ * Batches (contract 4.4, F4): `send` stamps a batchId on each message; `batch(id)` and `activeBatch()` read them.
+ * `preview` (contract 4.3) renders a message with the guest's name. `audience(real)` patches the real audience answer:
+ * with the mock on the automatic mode is on (unless modlocked/modoff), whatever the API says about the module.
  * The roster answers with `delivery` per family and `counts.delivery` (contract §4.8); in modlocked/modoff (manual
  * mode) every third family with a phone shows as `manual` (opened by hand).
  * A message moves queued -> sent -> delivered -> read with the clock (2 s, 6 s, 12 s); guests whose id ends in 5
@@ -25,6 +35,7 @@ const E164 = /^\+[1-9]\d{7,14}$/
 const DAY = 24 * 60 * 60 * 1000
 const messages = []
 let nextId = 1
+let nextBatch = 1
 
 /** `localStorage['cwm.whatsappMock']` overrides the variable at runtime (handy for screenshots). */
 function mode() {
@@ -101,6 +112,9 @@ export const mockWhatsapp = {
     const now = Date.now()
     let room = mode() === 'partial' ? QUOTA : Infinity
     if (mode() === 'dailylimit' && !body.dry_run) throw dailyLimit()
+    if (!body.dry_run && pool.length > 100 && !body.confirm_large) throw fail(409, { code: 'confirmation_required', count: pool.length, threshold: 100, message: 'Confirmation required.' })
+    const batchId = `mock-${nextBatch++}`
+    const gap = mode() === 'slow' ? 1000 : 120
     for (const family of pool) {
       let skip = reasonFor(family, body, now, eventId)
       if (!skip && room <= 0) skip = 'daily_limit'
@@ -116,13 +130,13 @@ export const mockWhatsapp = {
       messages.push({
         id: nextId++, eventId, eventName: 'Mock', guestId: family.id, guestName: family.name, templateKey: body.template,
         locale: family.effectiveLocale ?? 'es', to: family.phone, status: 'queued', errorCode: null, errorMessage: null,
-        waMessageId: null, queuedAt: new Date(now).toISOString(), sentAt: null, deliveredAt: null, readAt: null, failedAt: null
+        waMessageId: null, batchId, queuedAt: new Date(now + queued * gap).toISOString(), sentAt: null, deliveredAt: null, readAt: null, failedAt: null
       })
       queued++
     }
     if (body.dry_run) return { queued: dry, skipped }
     if (!queued) throw fail(422, { message: 'Invalid.', errors: { audience: ['no_recipients'] } })
-    return { batchId: `mock-${Date.now()}`, queued, skipped }
+    return { batchId, queued, skipped }
   },
 
   async messages(eventId, params) {
@@ -148,6 +162,64 @@ export const mockWhatsapp = {
     return { total: list.length, queued: count('queued'), sent: count('sent'), delivered: count('delivered'), read: count('read'), failed: count('failed') }
   },
 
+  async preview(eventId, body) {
+    guard('read')
+    const family = body.guest_id ? (await allFamilies(eventId)).find(f => f.id === body.guest_id) : (await allFamilies(eventId))[0]
+    const locale = body.locale ?? family?.effectiveLocale ?? 'es'
+    if (mode() === 'unapproved' || (mode() === 'noen' && locale === 'en')) throw fail(409, { message: 'Template not approved.', code: 'template_not_approved' })
+    if (!family) throw fail(404, { message: 'Not found.', code: 'not_found' })
+    const name = family.name
+    const link = family.link || `https://quinvite.test/i/xv-de-valentina/${family.id}`
+    const bodies = {
+      es: {
+        invitation: `¡Hola ${name}! Con muchísima ilusión te invitamos a Los XV de Valentina, que celebraremos el sábado 14 de marzo. Abre tu invitación y confirma tu asistencia: ${link}`,
+        reminder_pending: `Hola ${name}, aún no nos has confirmado tu asistencia a Los XV de Valentina. ¿Nos cuentas? ${link}`,
+        save_the_date: `¡Hola ${name}! Guarda la fecha: Los XV de Valentina serán el sábado 14 de marzo. Pronto te llegará la invitación. ${link}`
+      },
+      en: {
+        invitation: `Hi ${name}! We are so excited to invite you to Valentina's quince, on Saturday, March 14. Open your invitation and RSVP: ${link}`,
+        reminder_pending: `Hi ${name}, we have not heard back about Valentina's quince yet. Will you join us? ${link}`,
+        save_the_date: `Hi ${name}! Save the date: Valentina's quince is on Saturday, March 14. The invitation is coming soon. ${link}`
+      }
+    }
+    const buttons = body.template === 'save_the_date' ? [] : locale === 'en' ? [{ id: 'yes', text: "Yes, I'll be there" }, { id: 'no', text: "Can't make it" }] : [{ id: 'yes', text: 'Sí, asistiré' }, { id: 'no', text: 'No podré asistir' }]
+    return {
+      template: body.template, locale, category: 'marketing', guest: { id: family.id, name }, sample: false, body: bodies[locale][body.template], buttons, link, sendable: true,
+      event: { id: eventId, name: 'Los XV de Valentina', startDate: '2027-03-14T22:00:00Z', timezone: 'America/New_York', published: mode() !== 'unpublished' }, linkPreview: linkPreviewOf(name, locale, body.template)
+    }
+  },
+
+  async batch(eventId, batchId, params = {}) {
+    guard('read')
+    const list = messages.filter(m => m.eventId === eventId && m.batchId === batchId).map(view)
+    if (!list.length) throw fail(404, { message: 'Not found.', code: 'not_found' })
+    return batchView(batchId, list, params)
+  },
+
+  async activeBatch(eventId) {
+    guard('read')
+    const ids = [...new Set(messages.filter(m => m.eventId === eventId).map(m => m.batchId))].reverse()
+    for (const id of ids) {
+      const list = messages.filter(m => m.eventId === eventId && m.batchId === id).map(view)
+      if (list.some(m => m.status === 'queued')) return batchView(id, list, {})
+    }
+    return null
+  },
+
+  /** The real audience answer with the automatic mode forced on (and the dev scenarios applied). */
+  audience(real, template = 'invitation') {
+    const state = mockModuleState()
+    const automatic = state === 'active' && mode() !== 'unavailable'
+    return {
+      ...real,
+      mode: { automatic, reason: automatic ? null : state === 'locked' ? 'module_locked' : 'module_off' },
+      event: { ...real.event, published: mode() === 'unpublished' ? false : real.event?.published ?? true },
+      rsvp: mode() === 'rsvpclosed' ? { ...real.rsvp, isOpen: false } : real.rsvp,
+      templates: { es: { sendable: mode() !== 'unapproved' }, en: { sendable: mode() !== 'noen' && mode() !== 'unapproved' } },
+      blocked: mode() === 'limits' ? { ...real.blocked, ...(template === 'reminder_pending' ? { reminder_limit: 3, recently_sent: 1 } : { recently_sent: 2 }) } : real.blocked
+    }
+  },
+
   async retry(eventId, messageId) {
     guard('read')
     const message = messages.find(m => m.id === Number(messageId) && m.eventId === eventId)
@@ -159,6 +231,52 @@ export const mockWhatsapp = {
     message.queuedAt = new Date().toISOString()
     message.retried = true
     return view(message)
+  }
+}
+
+/** The `linkPreview` of contract 4.3 (same texts the API builds from InvitationShare), or null in mode `nolink`. */
+function linkPreviewOf(name, locale, template) {
+  if (mode() === 'nolink') return null
+  const en = locale === 'en'
+  const origin = typeof location === 'undefined' ? 'https://quinvite.test' : location.origin
+  const title = template === 'save_the_date' ? (en ? `Save the date: Valentina's Quince` : 'Guarda la fecha: Los XV de Valentina') : en ? `${name}, you are invited to Valentina's Quince` : `${name}, estás invitado/a a Los XV de Valentina`
+  return {
+    title,
+    description: en ? 'Saturday, March 14, 2027 · Miami. Open your invitation.' : 'Sábado 14 de marzo de 2027 · Miami. Abre tu invitación.',
+    image: mode() === 'brokenimg' ? `${origin}/missing-cover.jpg` : `${origin}/og-default.png`,
+    alt: en ? 'Cover of the invitation' : 'Portada de la invitación',
+    imageWidth: null,
+    imageHeight: null
+  }
+}
+
+/**
+ * Mode `limits`: marks families the way the API does, per template. `invitation`: a few `recently_sent` (24 h wait);
+ * `reminder_pending`: a few `reminder_limit` (3 reminders already) and one `recently_sent`.
+ */
+mockWhatsapp.recipients = function recipients(rows, template = 'invitation') {
+  if (mode() !== 'limits') return rows
+  const mark = (r, i) => {
+    if (r.reason) return r
+    if (template === 'reminder_pending') return i % 11 === 3 ? { ...r, reason: 'reminder_limit' } : i % 11 === 8 ? { ...r, reason: 'recently_sent' } : r
+    return i % 11 === 6 ? { ...r, reason: 'recently_sent' } : r
+  }
+  return rows.map(mark)
+}
+
+/** A batch as contract 4.4 shows it: exclusive counts per status, `done` when nothing is queued, a page of messages. */
+function batchView(batchId, list, params) {
+  const count = status => list.filter(m => m.status === status).length
+  const perPage = Math.min(Number(params.per_page) || 100, 100)
+  const page = Number(params.page) || 1
+  const started = Math.min(...list.map(m => new Date(m.queuedAt).getTime()))
+  const messagesPage = list.slice((page - 1) * perPage, page * perPage).map(m => ({
+    guestId: m.guestId, guestName: m.guestName, status: m.status, errorCode: m.errorCode, errorMessage: m.errorMessage, messageId: m.id, retryCount: m.retried ? 1 : 0
+  }))
+  return {
+    batchId, template: list[0].templateKey, startedAt: new Date(started).toISOString(), total: list.length,
+    processed: list.length - count('queued'), queued: count('queued'), sent: count('sent'), delivered: count('delivered'), read: count('read'), failed: count('failed'), cancelled: 0,
+    done: count('queued') === 0, messages: messagesPage
   }
 }
 

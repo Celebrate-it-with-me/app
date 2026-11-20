@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Search } from 'lucide-vue-next'
 import { UiCheckbox, UiBadge, UiButton } from '@/ui'
-import { MODE_DEFAULT, blockReason, membersOf } from '../../utils/sendWizard'
+import { BLOCK_LABELS, MODE_DEFAULT, blockReason, membersOf } from '../../utils/sendWizard'
 
 const PAGE = 50
 const props = defineProps({
@@ -100,7 +100,7 @@ function chooseVisible() {
           <span class="block truncate text-sm text-ink-500">{{ family.phone || t('app.whatsapp.wizard.who.noPhoneTitle') }} · {{ t('app.roster.people', { n: family.people }, family.people) }}</span>
         </UiCheckbox>
         <template v-if="reasonOf(family)">
-          <UiBadge tone="warning" size="sm">{{ reasonOf(family) === 'opted_out' ? t('app.whatsapp.wizard.who.optedOut') : t('app.whatsapp.wizard.who.invalidPhone') }}</UiBadge>
+          <UiBadge tone="warning" size="sm">{{ t(`app.whatsapp.wizard.who.${BLOCK_LABELS[reasonOf(family)]}`) }}</UiBadge>
           <UiButton v-if="reasonOf(family) === 'invalid_phone'" size="sm" variant="link" class="h-auto" @click="emit('edit-guest', family)">{{ t('app.whatsapp.wizard.who.fixPhone') }}</UiButton>
         </template>
         <UiBadge v-else-if="family.optedOut" tone="neutral" size="sm" data-testid="pick-optedout">{{ t('app.whatsapp.wizard.who.optedOut') }}</UiBadge>

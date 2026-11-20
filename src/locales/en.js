@@ -1536,43 +1536,14 @@ export default {
       units: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec' }
     },
     whatsapp: {
-      title: 'Send by WhatsApp',
-      templateLabel: 'What to send',
-      audienceLabel: 'To whom',
-      templates: {
-        invitation: { name: 'Invitation', help: 'Your invitation with the link and buttons to reply in one tap.' },
-        reminder_pending: { name: 'Reminder to pending guests', help: 'A friendly nudge for whoever has not answered yet.' },
-        save_the_date: { name: 'Save the date', help: 'Share the date before the invitation goes out.' }
-      },
-      audience: {
-        all: 'Your whole list',
-        pending: 'Pending guests only',
-        selected: 'The ones I picked ({n}) | The ones I picked ({n})',
-        selectedHelp: 'Available when sending to one family from its menu.'
-      },
-      previewLoading: 'Working out who will get it…',
-      preview: 'It will reach {n} guest. | It will reach {n} guests.',
       previewSkip: {
         no_phone: '{n} without a phone | {n} without a phone',
         invalid_phone: '{n} with an invalid number | {n} with an invalid number',
         opted_out: '{n} asked not to get messages | {n} asked not to get messages',
         recently_sent: '{n} already got it today | {n} already got it today',
         already_responded: '{n} already answered | {n} already answered',
+        reminder_limit: '{n} already got 3 reminders | {n} already got 3 reminders',
         daily_limit: '{n} would wait until tomorrow because of the daily limit | {n} would wait until tomorrow because of the daily limit'
-      },
-      next: 'Continue',
-      back: 'Back',
-      close: 'Close',
-      confirm: {
-        text: 'You are about to send "{template}" to {n} guest by WhatsApp. | You are about to send "{template}" to {n} guests by WhatsApp.',
-        note: 'Messages go out right away. Anyone who already got this same message today will not get it twice.',
-        send: 'Send now'
-      },
-      result: {
-        queued: '{n} message on its way | {n} messages on their way',
-        queuedHelp: 'You will see them move to sent, delivered and read in the list.',
-        skipped: '{n} guest was left out | {n} guests were left out',
-        resend: 'Send again to {n} guest | Send again to {n} guests'
       },
       skip: {
         no_phone: 'They have no phone number. Add one so you can message them.',
@@ -1580,6 +1551,7 @@ export default {
         opted_out: 'They asked not to get more messages. We respect that.',
         recently_sent: 'They already got this message in the last 24 hours.',
         already_responded: 'They already answered your invitation, so no reminder is needed.',
+        reminder_limit: 'They already got the 3 reminders allowed.',
         daily_limit: 'You reached the daily message limit for this event. These were not sent; you can message them tomorrow.'
       },
       stateLabel: 'WhatsApp',
@@ -1603,16 +1575,6 @@ export default {
       },
       retry: 'Try again',
       retried: 'We tried again.',
-      manual: {
-        title: 'Share by WhatsApp',
-        lockedTitle: 'Automatic sending is part of the full event',
-        lockedText: 'With the full event we message your whole list at once and you see who received and read each message.',
-        upgrade: 'Go premium',
-        help: 'Meanwhile, open WhatsApp with the invitation ready for each guest and send it yourself.',
-        share: 'Share',
-        shareLabel: 'Share {name}\'s invitation by WhatsApp',
-        empty: 'There are no guests in this view yet.'
-      },
       wizard: {
         title: 'Send invitations',
         stepOf: 'Step {n} of {total}',
@@ -1634,7 +1596,7 @@ export default {
           off: 'Automatic sending is not available yet. Share them yourself on WhatsApp; we keep count.',
           unpublished: 'Your event is not published yet: the links will not open until you publish it.',
           publish: 'Go publish',
-          rsvpClosed: 'The RSVP deadline has passed. You can only share "Save the date".'
+          rsvpClosed: 'The RSVP deadline has passed. You can only use "Save the date".'
         },
         who: {
           title: 'Who do we send it to?',
@@ -1651,14 +1613,19 @@ export default {
           families: '{n} family | {n} families',
           sends: 'This will be shared: "{template}".',
           noPhone: '{n} without a number: you pick the contact yourself. | {n} without a number: you pick the contact yourself.',
-          bigBatch: 'That is {n} families, a lot! I understand I will share with each of them, one by one.',
           blocked: 'Cannot be shared ({n})',
           invalidPhone: 'Check the number',
           optedOut: 'Asked not to receive messages',
           fixPhone: 'Fix',
           addPhone: 'Add phone',
           optedOutNote: '{n} asked not to get messages; sharing is your call. | {n} asked not to get messages; sharing is your call.',
-          noPhoneTitle: 'No number'
+          sendsAuto: 'This will be sent: "{template}".',
+          missingPhone: 'Missing phone',
+          noPhoneTitle: 'No number',
+          recentlySent: 'Got a message less than 24 h ago: you can write again tomorrow',
+          reminderLimit: 'Already got the 3 reminders allowed',
+          alreadyResponded: 'Already answered',
+          noLink: 'No link'
         },
         pick: {
           title: 'Choose the families',
@@ -1692,14 +1659,66 @@ export default {
           openLabel: 'Open WhatsApp with {name}',
           unmarkLabel: 'Unmark {name}',
           markError: 'We could not save the mark. Please try again.',
-          noLink: 'No link',
-          message: 'Message',
-          editMessage: 'Change message',
-          hideMessage: 'Hide message',
-          messageHelp: 'Use {name}, {event} and {link}: they are replaced with each family\'s own.',
+          noLink: 'No link'
+        },
+        linkCard: {
+          label: 'How the link will look in WhatsApp',
+          note: 'It can take a while to update, and WhatsApp decides the final look.',
+          fallbackAlt: 'Quinvite image: the cover is not available yet'
+        },
+        preview: {
+          title: 'This is how they will get it',
+          viewAs: 'View as',
+          language: 'Language',
+          lang: { es: 'Spanish', en: 'English' },
+          in: { es: 'in Spanish', en: 'in English' },
+          languages: 'Languages: {list}',
+          bubbleLabel: 'Preview of the WhatsApp message',
+          sample: 'Example with {name}',
+          message: 'Message: {template}',
+          change: 'Change message',
+          hideChange: 'Hide options',
+          help: {
+            invitation: 'Your invitation with the link and buttons to answer with one tap.',
+            reminder_pending: 'A friendly reminder only for those who have not replied.',
+            save_the_date: 'Announces the date before you send the invitation.'
+          },
+          fixed: 'WhatsApp approves the text of each message in advance: here you only choose which one to send.',
+          editorLabel: 'Message text',
+          editor: 'Edit the text',
+          hideEditor: 'Hide the text',
+          editorHelp: 'Use {name}, {event} and {link}: they are replaced with each family\'s own.',
           missingLink: 'Your message does not include {link}: the family will not get the invitation link.',
           restore: 'Restore message',
-          sample: 'This is how {name} will see it'
+          errorContinue: 'You can continue anyway.',
+          missing: 'The {language} message is not approved by WhatsApp yet ({n} family). Without it the whole send fails. | The {language} message is not approved by WhatsApp yet ({n} families). Without it the whole send fails.',
+          exclude: 'Leave that family out and continue | Leave those {n} out and continue'
+        },
+        auto: {
+          title: 'Ready to send',
+          summary: '{n} family · {template} | {n} families · {template}',
+          omitted: '{n} family is left out | {n} families are left out',
+          seeWho: 'See who',
+          hideWho: 'Hide',
+          from: 'They will arrive from the Quinvite number. If they answer "Yes" or "No", it is confirmed on its own.',
+          unpublished: 'Your event is not published yet: the links would not open. Publish it to send.',
+          big: 'That is {n} families. I understand a message will go to each of them and it cannot be undone.',
+          send: 'Send to {n} family | Send to {n} families',
+          sending: 'Sending…',
+          doneTitle: 'Send finished',
+          progress: '{done} of {total}',
+          counter: { queued: 'Queued {n}', sent: 'Sent {n}', failed: 'Failed {n}', delivered: 'Delivered {n}', read: 'Read {n}' },
+          continues: 'You can close this window: the send keeps going and you will see the progress in Guests.',
+          result: '{ok} sent, {failed} with problems.',
+          retryFailed: 'Retry the failed one | Retry the {n} failed ones',
+          retryOne: 'Retry the message to {name}',
+          retried: 'We tried {n} message again. | We tried {n} messages again.',
+          paused: 'Paused: you reached today\'s limit and {n} family was not sent; you can continue tomorrow. | Paused: you reached today\'s limit and {n} families were not sent; you can continue tomorrow.',
+          pollError: 'We could not update the progress. The send keeps going; check your connection.',
+          skippedTitle: '{n} family was not sent | {n} families were not sent',
+          statusOf: 'Send status:',
+          noActive: 'There is no send in progress.',
+          closedWhileSending: 'The send keeps going: you will see the progress in Guests.'
         },
         messages: {
           invitation: 'Hi {name}, you are invited to {event}. Here is your invitation: {link}',
@@ -1723,7 +1742,11 @@ export default {
         notFailed: 'That message is no longer failed.',
         dailyLimit: 'You reached the daily message limit for this event; you can keep going tomorrow.',
         retryLimit: 'This message was already retried the maximum number of times.',
-        tooManyRequests: 'Too many attempts in a row. Wait a moment and try again.'
+        tooManyRequests: 'Too many attempts in a row. Wait a moment and try again.',
+        confirmationRequired: 'That is a lot of families: confirm you understand a message will go to each of them.',
+        notPublished: 'Publish your event before sending: the links would not open.',
+        rsvpClosed: 'The RSVP deadline has passed: you can only send "Save the date".',
+        archived: 'This event is archived: you can only view it.'
       }
     },
     roster: {
@@ -1737,6 +1760,8 @@ export default {
       addPhone: 'Add phone',
       sendInvitations: 'Send invitations',
       sendInvitationsCount: 'Send invitations · {n} not sent',
+      activeBatch: 'Sending invitations: {done} of {total}',
+      activeBatchView: 'View',
       filters: {
         answers: 'Responses',
         delivery: 'Delivery',
