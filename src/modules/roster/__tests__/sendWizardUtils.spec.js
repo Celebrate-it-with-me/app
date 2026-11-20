@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { sendErrorKey } from '../utils/whatsapp'
 import {
   BIG_BATCH, MODE_DEFAULT, STEPS, blockReason, blockedGroups, categoryAllowed, categoryCounts, keepsLink, loadErrorKey, manualLink, manualProgress,
   BATCH_COUNTERS, allowedTemplates, batchProgress, chunk, localeCounts, mergeBatches, pollDelay, retryable, withoutTemplate, wizardSendErrorKey,
@@ -184,6 +185,9 @@ describe('F4 helpers', () => {
     expect(mergeBatches([{ processed: 2 }, { processed: 3 }]).processed).toBe(5)
     expect(wizardSendErrorKey(e(500, 'x'), fallback)).toBe('other')
     expect(wizardSendErrorKey(null, fallback)).toBe('other')
+    const sendErrorKeyLike = (c) => ({ response: { status: 422, data: { errors: c } } })
+    expect(wizardSendErrorKey(sendErrorKeyLike({ audience: ['too_many_recipients'] }), sendErrorKey)).toBe('tooMany')
+    expect(wizardSendErrorKey(sendErrorKeyLike({ guest_ids: ['too_many'] }), sendErrorKey)).toBe('tooMany')
   })
 })
 

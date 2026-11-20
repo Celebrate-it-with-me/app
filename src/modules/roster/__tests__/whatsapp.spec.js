@@ -21,6 +21,8 @@ describe('whatsapp helpers', () => {
     expect(sendErrorKey(err(409, { code: 'template_not_approved' }))).toBe('templateNotApproved')
     expect(sendErrorKey(err(422, { errors: { audience: ['no_recipients'] } }))).toBe('noRecipients')
     expect(sendErrorKey(err(422, { errors: { guest_ids: ['too_many'] } }))).toBe('tooMany')
+    expect(sendErrorKey(err(422, { errors: { audience: ['too_many_recipients'] } }))).toBe('tooMany')
+    expect(sendErrorKey(err(422, { errors: { audience: ['something_new'] } }))).toBe('generic')
     expect(sendErrorKey(err(422, { errors: { guest_ids: ['required'] } }))).toBe('selectSome')
     expect(sendErrorKey(err(500, {}))).toBe('generic')
   })
