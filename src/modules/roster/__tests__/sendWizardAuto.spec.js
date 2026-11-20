@@ -567,3 +567,28 @@ describe('Coverage of the preview and confirm steps', () => {
     expect(w.emitted('publish')).toHaveLength(1)
   })
 })
+
+describe('Family count between step 1 and step 2', () => {
+  // 8 families, 3 of them already answered: all 8 can get the invitation, only the 5 pending ones a reminder.
+  const eight = [1, 2, 3, 4, 5, 6, 7, 8].map(id => rec(id, id > 5 ? { status: 'accepted', delivery: { state: 'sent' } } : {}))
+
+  it('counts the families that can get the template at hand: changing the message in step 2 can lower the number', async () => {
+    serve({ recipients: eight })
+    await open()
+    expect(body()).toContain('Todos · 8 familias')
+    expect(button('Siguiente').textContent).toContain('Siguiente · 5 familias') // "Aún sin invitación" is the first card with people
+    await pickAll()
+    expect(button('Siguiente').textContent).toContain('Siguiente · 8 familias')
+    await click('Siguiente')
+    expect(button('Siguiente').textContent).toContain('Siguiente · 8 familias')
+    await click('Cambiar mensaje')
+    document.querySelectorAll('[data-testid="preview-templates"] [role="radio"]')[1].click() // reminder_pending
+    await flushPromises()
+    expect(button('Siguiente').textContent).toContain('Siguiente · 5 familias')
+    expect(wa.preview).toHaveBeenLastCalledWith(7, expect.objectContaining({ template: 'reminder_pending' }))
+    // The language tabs and the "view as" select only change the sample: they never change who gets it.
+    document.querySelectorAll('[data-testid="preview-templates"] [role="radio"]')[0].click()
+    await flushPromises()
+    expect(button('Siguiente').textContent).toContain('Siguiente · 8 familias')
+  })
+})
