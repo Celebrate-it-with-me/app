@@ -7,6 +7,7 @@ import * as zod from 'zod'
 import { toTypedSchema } from '@/utils/zodTypedSchema'
 import { useUserStore } from '@/stores/useUserStore'
 import { authErrorMessage, tokenFromLink } from '@/utils/authErrors'
+import { isTrustedResetLink } from '@/utils/resetLink'
 import { UiField, UiInput, UiButton, UiSkeleton } from '@/ui'
 import AuthCard from '@/components/external/auth/AuthCard.vue'
 
@@ -47,7 +48,7 @@ const [confirmPassword] = defineField('confirmPassword')
 onMounted(async () => {
   try {
     const confirmUrl = route.query.confirm ? decodeURIComponent(route.query.confirm) : ''
-    if (!confirmUrl) return
+    if (!isTrustedResetLink(confirmUrl)) return
     const response = await userStore.checkResetLink(confirmUrl)
     if (response.status === 200) {
       accountEmail.value = response.data?.data?.email ?? ''
