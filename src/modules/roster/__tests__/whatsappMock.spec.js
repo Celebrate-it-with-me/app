@@ -352,4 +352,25 @@ describe('whatsapp mock: link card and holds', () => {
     await load('brokenimg')
     expect((await mock.mockWhatsapp.preview(1, { template: 'invitation', guest_id: 2 })).linkPreview.image).toMatch(/missing-cover/)
   })
+
+  it('marks recently_sent and reminder_limit in the limits scenario only', async () => {
+    const rows = Array.from({ length: 12 }, (_, i) => ({ id: i + 1, reason: i === 0 ? 'opted_out' : null }))
+    await load('1')
+    expect(mock.mockWhatsapp.recipients(rows)).toBe(rows)
+    await load('limits')
+    expect(mock.mockWhatsapp.recipients(rows).map(r => r.reason).filter(Boolean)).toEqual(['opted_out', 'recently_sent'])
+    expect(mock.mockWhatsapp.recipients(rows, 'reminder_pending').map(r => r.reason).filter(Boolean)).toEqual(['opted_out', 'reminder_limit', 'recently_sent'])
+    expect(mock.mockWhatsapp.audience({ event: {}, rsvp: {}, blocked: { opted_out: 1 } }).blocked).toEqual({ opted_out: 1, recently_sent: 2 })
+    expect(mock.mockWhatsapp.audience({ event: {}, rsvp: {}, blocked: {} }, 'reminder_pending').blocked).toEqual({ reminder_limit: 3, recently_sent: 1 })
+    await load('1')
+    expect(mock.mockWhatsapp.audience({ event: {}, rsvp: {}, blocked: { a: 1 } }).blocked).toEqual({ a: 1 })
+  })
+
+  it('applies the holds through the wizard service', async () => {
+    await load('limits')
+    const { default: wizardService } = await import('../services/SendWizardService')
+    api.get.mockImplementation(() => Promise.resolve({ data: { data: Array.from({ length: 12 }, (_, i) => ({ id: i + 1 })), meta: { perPage: 100, total: 12 } } }))
+    const rows = await wizardService.allRecipients(1, 'reminder_pending')
+    expect(rows.filter(r => r.reason === 'reminder_limit')).toHaveLength(1)
+  })
 })

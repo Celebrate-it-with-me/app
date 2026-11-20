@@ -283,10 +283,10 @@ describe('SendWizard banners and errors', () => {
     expect(svc.audience).not.toHaveBeenCalled()
     await wrapper.setProps({ open: true })
     await flushPromises()
-    expect(svc.audience).toHaveBeenCalledTimes(1)
+    expect(svc.audience).toHaveBeenCalledTimes(2) // invitation + reminder_pending
     await wrapper.setProps({ reloadToken: 2 })
     await flushPromises()
-    expect(svc.audience).toHaveBeenCalledTimes(2)
+    expect(svc.audience).toHaveBeenCalledTimes(4)
     expect(body()).toContain('Paso 1 de 3')
   })
 
@@ -465,5 +465,57 @@ describe('SendWizard step 2 · link card in manual mode', () => {
     wa.preview.mockResolvedValue({ link: 'x', linkPreview: null })
     await open({ preselectedIds: [1] })
     expect(card()).toBeNull()
+  })
+})
+
+describe('SendWizard step 1 · automatic holds', () => {
+  const holds = () => {
+    const recipients = [rec(1), rec(2, { reason: 'recently_sent' }), rec(3), rec(4)]
+    svc.audience.mockImplementation(async (_e, template) => info({ mode: { automatic: true }, blocked: template === 'reminder_pending' ? { reminder_limit: 1, recently_sent: 0 } : { reminder_limit: 0, recently_sent: 1 } }))
+    svc.allRecipients.mockImplementation(async (_e, template) => (template === 'reminder_pending' ? [rec(1), rec(2), rec(3, { reason: 'reminder_limit' }), rec(4)] : recipients))
+    svc.allRoster.mockResolvedValue(recipients.map(r => row(r.id)))
+  }
+
+  it('explains the 24 h wait and the 3-reminder cap in the blocked group and out of the card counts', async () => {
+    holds()
+    await open({ mode: 'automatic' })
+    expect(svc.allRecipients).toHaveBeenCalledWith(7, 'reminder_pending')
+    expect(body()).toContain('Aún sin invitación · 3 familias')
+    const group = document.querySelector('[data-testid="who-blocked"]')
+    expect(group.textContent).toContain('No se pueden compartir (2)')
+    expect(group.querySelector('[data-testid="who-blocked-recently_sent"]').textContent).toContain('Familia 2')
+    expect(group.querySelector('[data-testid="who-blocked-recently_sent"]').textContent).toContain('hace menos de 24 h')
+    expect(group.querySelector('[data-testid="who-blocked-reminder_limit"]').textContent).toContain('Ya recibió los 3 recordatorios permitidos')
+    expect(group.querySelector('[data-testid="who-blocked-reminder_limit"] button')).toBeNull()
+  })
+
+  it('does not block them in manual mode', async () => {
+    holds()
+    await open()
+    expect(svc.allRecipients).not.toHaveBeenCalledWith(7, 'reminder_pending')
+    expect(body()).toContain('Aún sin invitación · 4 familias')
+    expect(document.querySelector('[data-testid="who-blocked"]')).toBeNull()
+  })
+
+  it('does not ask for the reminder read when nothing is held, and survives its failure', async () => {
+    serve({ recipients: [rec(1)], audience: info({ mode: { automatic: true }, blocked: { reminder_limit: 0, recently_sent: 0 } }) })
+    await open({ mode: 'automatic' })
+    expect(svc.allRecipients).toHaveBeenCalledTimes(1)
+    svc.audience.mockImplementation(async (_e, template) => {
+      if (template === 'reminder_pending') throw new Error('x')
+      return info({ mode: { automatic: true } })
+    })
+    await wrapper.setProps({ reloadToken: 5 })
+    await flushPromises()
+    expect(body()).toContain('Paso 1 de 3')
+    expect(body()).toContain('Aún sin invitación · 1 familia')
+  })
+
+  it('labels every reason in the pick list instead of calling it a bad number', async () => {
+    holds()
+    await open({ mode: 'automatic' })
+    await pickCard('Elegir invitados')
+    const list = document.querySelector('[data-testid="pick-list"]').textContent
+    expect(list).toContain('Recibió un mensaje hace menos de 24 h')
   })
 })

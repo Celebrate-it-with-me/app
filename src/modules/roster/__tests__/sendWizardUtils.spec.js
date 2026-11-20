@@ -187,6 +187,38 @@ describe('F4 helpers', () => {
   })
 })
 
+describe('holds of the API (24 h wait, 3 reminders)', () => {
+  const list = mergeFamilies(
+    [rec(1, { reason: 'recently_sent' }), rec(2, { delivery: { state: 'sent' } }), rec(3, { status: 'attending' }), rec(4, { reason: 'recently_sent' }), rec(5, { delivery: { state: 'sent' } })],
+    [roster(1), roster(2), roster(3), roster(4), roster(5)],
+    [rec(1), rec(2, { reason: 'reminder_limit' }), rec(3, { reason: 'already_responded' }), rec(4, { reason: 'recently_sent' }), rec(5)]
+  )
+
+  it('reads the reason of each template', () => {
+    expect(list.map(f => [f.reason, f.reminderReason])).toEqual([['recently_sent', null], [null, 'reminder_limit'], [null, 'already_responded'], ['recently_sent', 'recently_sent'], [null, null]])
+    expect(mergeFamilies([rec(1)], [], null)[0].reminderReason).toBeNull()
+  })
+
+  it('blocks them in automatic mode only, per template', () => {
+    const [a, b, c] = list
+    expect(blockReason(a, 'invitation', 'automatic')).toBe('recently_sent')
+    expect(blockReason(a, 'reminder_pending', 'automatic')).toBeNull()
+    expect(blockReason(b, 'invitation', 'automatic')).toBeNull()
+    expect(blockReason(b, 'reminder_pending', 'automatic')).toBe('reminder_limit')
+    expect(blockReason(c, 'reminder_pending', 'automatic')).toBe('already_responded') // P6 stays
+    expect(blockReason(a, 'invitation')).toBeNull()
+    expect(blockReason(b, 'reminder_pending')).toBeNull()
+  })
+
+  it('counts the cards without them and groups them with their reason', () => {
+    expect(categoryCounts(list, { mode: 'automatic' })).toEqual({ unsent: 1, pending: 1, all: 3 })
+    expect(categoryCounts(list)).toEqual({ unsent: 3, pending: 2, all: 5 })
+    expect(blockedGroups(list, 'invitation', 'automatic').map(g => [g.reason, g.families.map(f => f.id)])).toEqual([['recently_sent', [1, 4]], ['reminder_limit', [2]]])
+    expect(blockedGroups(list, 'reminder_pending', 'automatic').map(g => [g.reason, g.families.map(f => f.id)])).toEqual([['recently_sent', [4]], ['reminder_limit', [2]]])
+    expect(blockedGroups(list)).toEqual([])
+  })
+})
+
 describe('linkHost', () => {
   it('gives the host of an absolute link and nothing otherwise', () => {
     expect(linkHost('https://quinvite.com/i/xv/ABC')).toBe('quinvite.com')

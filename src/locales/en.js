@@ -1661,7 +1661,11 @@ export default {
           optedOutNote: '{n} asked not to get messages; sharing is your call. | {n} asked not to get messages; sharing is your call.',
           sendsAuto: 'This will be sent: "{template}".',
           missingPhone: 'Missing phone',
-          noPhoneTitle: 'No number'
+          noPhoneTitle: 'No number',
+          recentlySent: 'Got a message less than 24 h ago: you can write again tomorrow',
+          reminderLimit: 'Already got the 3 reminders allowed',
+          alreadyResponded: 'Already answered',
+          noLink: 'No link'
         },
         pick: {
           title: 'Choose the families',

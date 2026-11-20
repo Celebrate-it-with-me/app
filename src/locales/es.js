@@ -1661,7 +1661,11 @@ export default {
           optedOutNote: '{n} pidió no recibir mensajes; si la compartes, es decisión tuya. | {n} pidieron no recibir mensajes; si las compartes, es decisión tuya.',
           sendsAuto: 'Se enviará: «{template}».',
           missingPhone: 'Falta el teléfono',
-          noPhoneTitle: 'Sin número'
+          noPhoneTitle: 'Sin número',
+          recentlySent: 'Recibió un mensaje hace menos de 24 h: podrás escribirle mañana',
+          reminderLimit: 'Ya recibió los 3 recordatorios permitidos',
+          alreadyResponded: 'Ya respondió',
+          noLink: 'Sin enlace'
         },
         pick: {
           title: 'Elige a las familias',
