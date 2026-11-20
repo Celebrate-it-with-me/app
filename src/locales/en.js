@@ -1697,6 +1697,11 @@ export default {
           markError: 'We could not save the mark. Please try again.',
           noLink: 'No link'
         },
+        linkCard: {
+          label: 'How the link will look in WhatsApp',
+          note: 'It can take a while to update, and WhatsApp decides the final look.',
+          fallbackAlt: 'Quinvite image: the cover is not available yet'
+        },
         preview: {
           title: 'This is how they will get it',
           viewAs: 'View as',

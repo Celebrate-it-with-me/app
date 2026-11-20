@@ -251,3 +251,12 @@ export function wizardSendErrorKey(error, fallback) {
   if (status === 409 && code === 'confirmation_required') return 'confirmationRequired'
   return fallback(error)
 }
+
+/** Host of a link (what WhatsApp prints under the card), or '' when it is not an absolute URL. */
+export function linkHost(link) {
+  try {
+    return new URL(link).host
+  } catch {
+    return ''
+  }
+}

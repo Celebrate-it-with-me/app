@@ -4,7 +4,10 @@ import i18n, { setLocale } from '@/locales/i18n'
 import { useToast } from '@/ui'
 
 const svc = vi.hoisted(() => ({ audience: vi.fn(), allRecipients: vi.fn(), allRoster: vi.fn(), markShared: vi.fn(), unmarkShared: vi.fn() }))
+const wa = vi.hoisted(() => ({ preview: vi.fn() }))
 vi.mock('../services/SendWizardService', () => ({ default: svc }))
+vi.mock('../services/WhatsappService', () => ({ default: wa }))
+vi.mock('@/modules/template-picker/components/InvitationMiniature.vue', () => ({ default: { props: ['eventId', 'width', 'name', 'dateLabel', 'live'], template: '<div data-testid="miniature" />' } }))
 import SendWizard from '../components/send/SendWizard.vue'
 
 const rec = (id, extra = {}) => ({ id, name: `Familia ${id}`, people: 2, phone: '+13055550101', status: 'pending', reason: null, delivery: { state: 'none' }, ...extra })
@@ -39,6 +42,8 @@ async function open(props = {}) {
 beforeEach(() => {
   setLocale('es')
   Object.values(svc).forEach(fn => fn.mockReset())
+  wa.preview.mockReset()
+  wa.preview.mockResolvedValue({ link: 'https://q.test/i/xv/1', linkPreview: { title: 'Familia 1, estás invitado/a a Los XV', description: 'Sábado 14 de marzo · Miami. Abre tu invitación.', image: 'https://q.test/og/1.jpg', alt: 'Portada', imageWidth: 1200, imageHeight: 630 } })
   svc.markShared.mockImplementation(async (_e, id) => ({ id, delivery: { sharedAt: '2026-11-19T18:02:00Z' } }))
   svc.unmarkShared.mockResolvedValue({})
   useToast().toasts.map(x => x.id).forEach(id => useToast().dismiss(id))
@@ -428,5 +433,37 @@ describe('SendWizard edge cases', () => {
   it('does nothing without an event', async () => {
     await open({ eventId: null })
     expect(svc.audience).not.toHaveBeenCalled()
+  })
+})
+
+describe('SendWizard step 2 · link card in manual mode', () => {
+  const card = () => document.querySelector('[data-testid="link-card"]')
+
+  it('asks the preview only for the link card, and keeps the message local', async () => {
+    serve({ recipients: [rec(1)] })
+    await open({ preselectedIds: [1] })
+    expect(wa.preview).toHaveBeenCalledWith(7, { template: 'invitation', guestId: 1, locale: 'es' })
+    expect(card().textContent).toContain('Familia 1, estás invitado/a a Los XV')
+    expect(card().textContent).toContain('Abre tu invitación.')
+    expect(card().querySelector('img').getAttribute('alt')).toBe('Portada')
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('Hola Familia 1, te invitamos a Los XV')
+    expect(document.querySelector('[data-testid="preview-error"]')).toBeNull()
+  })
+
+  it.each([403, 404, 500])('leaves the card out when the preview answers %i, without breaking the step', async status => {
+    serve({ recipients: [rec(1)] })
+    wa.preview.mockRejectedValue({ response: { status } })
+    await open({ preselectedIds: [1] })
+    expect(card()).toBeNull()
+    expect(document.querySelector('[data-testid="preview-error"]')).toBeNull()
+    expect(document.querySelector('[data-testid="preview-bubble"]').textContent).toContain('Hola Familia 1')
+    expect(button('Siguiente').disabled).toBe(false)
+  })
+
+  it('leaves the card out when the API has no linkPreview', async () => {
+    serve({ recipients: [rec(1)] })
+    wa.preview.mockResolvedValue({ link: 'x', linkPreview: null })
+    await open({ preselectedIds: [1] })
+    expect(card()).toBeNull()
   })
 })

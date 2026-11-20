@@ -1697,6 +1697,11 @@ export default {
           markError: 'No pudimos guardar la marca. Inténtalo de nuevo.',
           noLink: 'Sin enlace'
         },
+        linkCard: {
+          label: 'Así se verá el enlace en WhatsApp',
+          note: 'Puede tardar en actualizarse y WhatsApp decide el aspecto final.',
+          fallbackAlt: 'Imagen de Quinvite: la portada aún no está disponible'
+        },
         preview: {
           title: 'Así lo recibirán',
           viewAs: 'Ver como',

@@ -331,3 +331,25 @@ describe('whatsapp mock: batches, preview and audience (F4)', () => {
     expect((await wizardService.audience(1)).mode.automatic).toBe(true)
   })
 })
+
+describe('whatsapp mock: link card and holds', () => {
+  it('fills linkPreview in both languages and by template', async () => {
+    await load('1')
+    const es = await mock.mockWhatsapp.preview(1, { template: 'invitation', guest_id: 2, locale: 'es' })
+    expect(es.linkPreview).toMatchObject({ title: 'F2, estás invitado/a a Los XV de Valentina', imageWidth: null, imageHeight: null })
+    expect(es.linkPreview.image).toMatch(/\/og-default\.png$/)
+    expect(es.linkPreview.description).toMatch(/Abre tu invitación/)
+    const en = await mock.mockWhatsapp.preview(1, { template: 'invitation', guest_id: 2, locale: 'en' })
+    expect(en.linkPreview.title).toBe("F2, you are invited to Valentina's Quince")
+    const std = await mock.mockWhatsapp.preview(1, { template: 'save_the_date', guest_id: 2, locale: 'es' })
+    expect(std.linkPreview.title).toBe('Guarda la fecha: Los XV de Valentina')
+    expect((await mock.mockWhatsapp.preview(1, { template: 'save_the_date', guest_id: 2, locale: 'en' })).linkPreview.title).toMatch(/Save the date/)
+  })
+
+  it('has the nolink and brokenimg scenarios', async () => {
+    await load('nolink')
+    expect((await mock.mockWhatsapp.preview(1, { template: 'invitation', guest_id: 2 })).linkPreview).toBeNull()
+    await load('brokenimg')
+    expect((await mock.mockWhatsapp.preview(1, { template: 'invitation', guest_id: 2 })).linkPreview.image).toMatch(/missing-cover/)
+  })
+})

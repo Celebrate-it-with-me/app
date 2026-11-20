@@ -19,6 +19,8 @@ import RosterService from './RosterService'
  *   rsvpclosed   the audience says the RSVP window is closed (P9)
  *   noen         the English template is not approved (audience + preview answer 409 template_not_approved for `en`)
  *   slow         a batch rolls out slowly (about 1 s per message) so the progress can be photographed
+ *   nolink       preview answers linkPreview null (no guests / no card)
+ *   brokenimg    the linkPreview image does not load (brand fallback)
  * Batches (contract 4.4, F4): `send` stamps a batchId on each message; `batch(id)` and `activeBatch()` read them.
  * `preview` (contract 4.3) renders a message with the guest's name. `audience(real)` patches the real audience answer:
  * with the mock on the automatic mode is on (unless modlocked/modoff), whatever the API says about the module.
@@ -182,7 +184,7 @@ export const mockWhatsapp = {
     const buttons = body.template === 'save_the_date' ? [] : locale === 'en' ? [{ id: 'yes', text: "Yes, I'll be there" }, { id: 'no', text: "Can't make it" }] : [{ id: 'yes', text: 'Sí, asistiré' }, { id: 'no', text: 'No podré asistir' }]
     return {
       template: body.template, locale, category: 'marketing', guest: { id: family.id, name }, sample: false, body: bodies[locale][body.template], buttons, link, sendable: true,
-      event: { id: eventId, name: 'Los XV de Valentina', startDate: '2027-03-14T22:00:00Z', timezone: 'America/New_York', published: mode() !== 'unpublished' }, linkPreview: null
+      event: { id: eventId, name: 'Los XV de Valentina', startDate: '2027-03-14T22:00:00Z', timezone: 'America/New_York', published: mode() !== 'unpublished' }, linkPreview: linkPreviewOf(name, locale, body.template)
     }
   },
 
@@ -227,6 +229,22 @@ export const mockWhatsapp = {
     message.queuedAt = new Date().toISOString()
     message.retried = true
     return view(message)
+  }
+}
+
+/** The `linkPreview` of contract 4.3 (same texts the API builds from InvitationShare), or null in mode `nolink`. */
+function linkPreviewOf(name, locale, template) {
+  if (mode() === 'nolink') return null
+  const en = locale === 'en'
+  const origin = typeof location === 'undefined' ? 'https://quinvite.test' : location.origin
+  const title = template === 'save_the_date' ? (en ? `Save the date: Valentina's Quince` : 'Guarda la fecha: Los XV de Valentina') : en ? `${name}, you are invited to Valentina's Quince` : `${name}, estás invitado/a a Los XV de Valentina`
+  return {
+    title,
+    description: en ? 'Saturday, March 14, 2027 · Miami. Open your invitation.' : 'Sábado 14 de marzo de 2027 · Miami. Abre tu invitación.',
+    image: mode() === 'brokenimg' ? `${origin}/missing-cover.jpg` : `${origin}/og-default.png`,
+    alt: en ? 'Cover of the invitation' : 'Portada de la invitación',
+    imageWidth: null,
+    imageHeight: null
   }
 }
 

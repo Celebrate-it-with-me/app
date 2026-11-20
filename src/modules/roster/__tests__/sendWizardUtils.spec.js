@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   BIG_BATCH, MODE_DEFAULT, STEPS, blockReason, blockedGroups, categoryAllowed, categoryCounts, keepsLink, loadErrorKey, manualLink, manualProgress,
   BATCH_COUNTERS, allowedTemplates, batchProgress, chunk, localeCounts, mergeBatches, pollDelay, retryable, withoutTemplate, wizardSendErrorKey,
-  membersOf, mergeFamilies, needsBigBatchConfirm, optedOutIn, renderMessage, templateFor, withoutPhone
+  linkHost, membersOf, mergeFamilies, needsBigBatchConfirm, optedOutIn, renderMessage, templateFor, withoutPhone
 } from '../utils/sendWizard'
 
 const rec = (id, extra = {}) => ({ id, name: `G${id}`, people: 2, phone: '+13055550101', status: 'pending', reason: null, delivery: { state: 'none' }, ...extra })
@@ -184,5 +184,14 @@ describe('F4 helpers', () => {
     expect(mergeBatches([{ processed: 2 }, { processed: 3 }]).processed).toBe(5)
     expect(wizardSendErrorKey(e(500, 'x'), fallback)).toBe('other')
     expect(wizardSendErrorKey(null, fallback)).toBe('other')
+  })
+})
+
+describe('linkHost', () => {
+  it('gives the host of an absolute link and nothing otherwise', () => {
+    expect(linkHost('https://quinvite.com/i/xv/ABC')).toBe('quinvite.com')
+    expect(linkHost('/i/xv')).toBe('')
+    expect(linkHost('')).toBe('')
+    expect(linkHost(undefined)).toBe('')
   })
 })
