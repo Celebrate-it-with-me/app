@@ -517,3 +517,78 @@ describe('Step 2 · link card (automatic)', () => {
     expect(q('[data-testid="preview-error"]')).toBeTruthy()
   })
 })
+
+async function pickAll() {
+  ;[...document.querySelectorAll('label')].find(l => l.textContent.includes('Todos')).querySelector('[role="radio"]').click()
+  await flushPromises()
+}
+
+describe('Coverage of the preview and confirm steps', () => {
+  it('previews as the family picked in the "view as" select', async () => {
+    serve({ recipients: [rec(1), rec(2, { locale: 'en' }), rec(3)] })
+    await toPreview()
+    const { default: UiSelect } = await import('@/ui/UiSelect.vue')
+    wa.preview.mockClear()
+    wrapper.findComponent(UiSelect).vm.$emit('update:modelValue', 2)
+    await flushPromises()
+    expect(wa.preview).toHaveBeenLastCalledWith(7, { template: 'invitation', guestId: 2, locale: 'en' })
+    expect(body()).toContain('Familia 2')
+  })
+
+  it('lists the languages of the chosen families on the confirm step', async () => {
+    serve({ recipients: [rec(1), rec(2, { locale: 'en' }), rec(3)] })
+    await toConfirm()
+    expect(q('[data-testid="auto-summary"]').parentElement.textContent).toContain('Español 2 · Inglés 1')
+  })
+
+  it('closes the "retry anyway?" question without retrying when it is dismissed', async () => {
+    serve()
+    wa.batch.mockResolvedValue(batchOf({ messages: [{ guestId: 2, guestName: 'Familia 2', status: 'failed', errorCode: 'unknown_delivery', messageId: 12 }], failed: 1 }))
+    await toConfirm()
+    await click('Enviar a 3 familias')
+    await click('Reintentar el fallido')
+    expect(body()).toContain('¿Reintentar el mensaje?')
+    ;[...document.querySelectorAll('[role="dialog"]')].at(-1).dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await flushPromises()
+    expect(body()).not.toContain('¿Reintentar el mensaje?')
+    expect(wa.retry).not.toHaveBeenCalled()
+  })
+
+  it('passes the publish request of the confirm step up when the event turns into a draft meanwhile', async () => {
+    serve()
+    const w = await open()
+    await click('Siguiente')
+    await click('Siguiente')
+    expect(body()).toContain('Paso 3 de 3')
+    svc.audience.mockResolvedValue(info({ event: { published: false, archived: false } }))
+    await w.setProps({ reloadToken: 1 })
+    await flushPromises()
+    await click('Ir a publicar')
+    expect(w.emitted('publish')).toHaveLength(1)
+  })
+})
+
+describe('Family count between step 1 and step 2', () => {
+  // 8 families, 3 of them already answered: all 8 can get the invitation, only the 5 pending ones a reminder.
+  const eight = [1, 2, 3, 4, 5, 6, 7, 8].map(id => rec(id, id > 5 ? { status: 'accepted', delivery: { state: 'sent' } } : {}))
+
+  it('counts the families that can get the template at hand: changing the message in step 2 can lower the number', async () => {
+    serve({ recipients: eight })
+    await open()
+    expect(body()).toContain('Todos · 8 familias')
+    expect(button('Siguiente').textContent).toContain('Siguiente · 5 familias') // "Aún sin invitación" is the first card with people
+    await pickAll()
+    expect(button('Siguiente').textContent).toContain('Siguiente · 8 familias')
+    await click('Siguiente')
+    expect(button('Siguiente').textContent).toContain('Siguiente · 8 familias')
+    await click('Cambiar mensaje')
+    document.querySelectorAll('[data-testid="preview-templates"] [role="radio"]')[1].click() // reminder_pending
+    await flushPromises()
+    expect(button('Siguiente').textContent).toContain('Siguiente · 5 familias')
+    expect(wa.preview).toHaveBeenLastCalledWith(7, expect.objectContaining({ template: 'reminder_pending' }))
+    // The language tabs and the "view as" select only change the sample: they never change who gets it.
+    document.querySelectorAll('[data-testid="preview-templates"] [role="radio"]')[0].click()
+    await flushPromises()
+    expect(button('Siguiente').textContent).toContain('Siguiente · 8 familias')
+  })
+})
