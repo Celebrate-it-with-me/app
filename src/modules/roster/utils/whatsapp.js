@@ -40,6 +40,7 @@ export function sendErrorKey(error) {
   if (status === 409 && code === 'template_not_approved') return 'templateNotApproved'
   if (status === 422) {
     if (validationCode(error, 'audience') === 'no_recipients') return 'noRecipients'
+    if (validationCode(error, 'audience') === 'too_many_recipients') return 'tooMany'
     if (validationCode(error, 'guest_ids') === 'too_many') return 'tooMany'
     if (validationCode(error, 'guest_ids') === 'required') return 'selectSome'
   }
