@@ -318,6 +318,8 @@ export default {
     noneValid: 'No encontramos una invitación válida para tu cuenta.',
     welcome: 'Listo: ya formas parte de "{event}".',
     processError: 'No pudimos aceptar la invitación. Inténtalo de nuevo más tarde.',
+    verifyEmail: 'Verifica tu correo para aceptar la invitación; después vuelve a abrir el enlace.',
+    retry: 'Ya verifiqué mi correo, reintentar',
     declineFailed: 'No pudimos rechazar la invitación.'
   },
   validation: {
