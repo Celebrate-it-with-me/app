@@ -19,4 +19,24 @@ describe('safeRedirect', () => {
     expect(safeRedirect('https://evil.com')).toBeUndefined()
     expect(safeRedirect(undefined)).toBeUndefined()
   })
+  it.each([
+    ['//evil.com'],
+    ['/\\evil.com'],
+    ['\\\\evil.com'],
+    ['/\\/evil.com'],
+    ['/\t/evil.com'],
+    ['/\n/evil.com'],
+    ['/\r/evil.com'],
+    ['/\u0000x'],
+    ['/\u007fx'],
+    [decodeURIComponent('%2f%2fevil.com')],
+    ['/' + 'a'.repeat(2048)]
+  ])('rejects the unsafe or oversized value %j', value => {
+    expect(safeRedirect(value)).toBeUndefined()
+  })
+  it('keeps an encoded slash that is not decoded and a path at the length limit', () => {
+    expect(safeRedirect('/%2f%2fevil.com')).toBe('/%2f%2fevil.com')
+    const edge = '/' + 'a'.repeat(2047)
+    expect(safeRedirect(edge)).toBe(edge)
+  })
 })

@@ -8,6 +8,7 @@ import PaymentsService from '../services/PaymentsService'
 import { isEmailNotVerified } from '@/modules/email-verification/utils/emailVerification'
 import { formatMoney, isAlreadyUnlocked, isInvalidCode, isPaymentInProgress } from '../utils/money'
 import { readPendingCode, clearPendingCode } from '../utils/pendingCode'
+import { safeCheckoutUrl } from '../utils/checkoutUrl'
 
 const props = defineProps({
   eventId: { type: [Number, String], required: true },
@@ -60,8 +61,15 @@ async function pay() {
   paying.value = true
   try {
     const { url } = await PaymentsService.checkout(props.eventId, quote.value.code ?? undefined)
+    // Never follow a URL that is not Stripe Checkout (or our own success page): same generic error as a failed checkout.
+    const target = safeCheckoutUrl(url)
+    if (!target) {
+      paying.value = false
+      showError(t('payments.checkoutFailed'))
+      return
+    }
     clearPendingCode()
-    window.location.assign(url)
+    window.location.assign(target)
   } catch (e) {
     paying.value = false
     // Unverified email: the global dialog explains it; the code and quote stay as they were.

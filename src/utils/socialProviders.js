@@ -27,6 +27,5 @@ export function oauthRedirectUrl(provider, redirect, base = import.meta.env.VITE
 
 /** `redirect` from the callback, only when it is an internal path (starts with "/", not "//", no scheme or host). */
 export function internalRedirect(value) {
-  if (typeof value !== 'string' || value.includes('\\') || [...value].some(char => char.charCodeAt(0) < 32)) return undefined
   return safeRedirect(value)
 }

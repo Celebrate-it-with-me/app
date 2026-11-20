@@ -68,18 +68,40 @@ describe('PurchasePanel pay()', () => {
 
   it('asks for the checkout with the applied code and sends the buyer to Stripe', async () => {
     quote.mockResolvedValue({ ...full, amountCents: 7900, code: 'FUND79' })
-    checkout.mockResolvedValue({ purchaseId: 3, url: 'https://checkout.example/s/1' })
+    checkout.mockResolvedValue({ purchaseId: 3, url: 'https://checkout.stripe.com/c/pay/s1' })
     localStorage.setItem(PENDING_CODE_KEY, 'FUND79')
     const wrapper = mountPanel()
     await flushPromises()
     await pay(wrapper)
     expect(checkout).toHaveBeenCalledWith(5, 'FUND79')
-    expect(assign).toHaveBeenCalledWith('https://checkout.example/s/1')
+    expect(assign).toHaveBeenCalledWith('https://checkout.stripe.com/c/pay/s1')
     expect(localStorage.getItem(PENDING_CODE_KEY)).toBeNull()
   })
 
+  it.each(['javascript:alert(1)', 'http://checkout.stripe.com/c/pay/x', 'https://evil.example/c/pay/x', 'https://[bad', undefined])(
+    'does not navigate to an unsafe checkout url (%s) and shows the generic payment error',
+    async url => {
+      checkout.mockResolvedValue({ url })
+      localStorage.setItem(PENDING_CODE_KEY, 'FUND79')
+      const wrapper = mountPanel()
+      await flushPromises()
+      await pay(wrapper)
+      expect(assign).not.toHaveBeenCalled()
+      expect(showError).toHaveBeenCalledWith(es.payments.checkoutFailed)
+      expect(localStorage.getItem(PENDING_CODE_KEY)).toBe('FUND79')
+    }
+  )
+
+  it('follows the own success url when the amount is 0', async () => {
+    checkout.mockResolvedValue({ url: `${window.location.origin}/dashboard/events/5/unlock/return` })
+    const wrapper = mountPanel()
+    await flushPromises()
+    await pay(wrapper)
+    expect(assign).toHaveBeenCalledWith(`${window.location.origin}/dashboard/events/5/unlock/return`)
+  })
+
   it('sends no code when there is none', async () => {
-    checkout.mockResolvedValue({ url: 'https://checkout.example/s/2' })
+    checkout.mockResolvedValue({ url: 'https://checkout.stripe.com/c/pay/s2' })
     const wrapper = mountPanel()
     await flushPromises()
     await pay(wrapper)
