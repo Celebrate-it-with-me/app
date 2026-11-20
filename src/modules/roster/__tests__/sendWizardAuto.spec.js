@@ -517,3 +517,53 @@ describe('Step 2 · link card (automatic)', () => {
     expect(q('[data-testid="preview-error"]')).toBeTruthy()
   })
 })
+
+async function pickAll() {
+  ;[...document.querySelectorAll('label')].find(l => l.textContent.includes('Todos')).querySelector('[role="radio"]').click()
+  await flushPromises()
+}
+
+describe('Coverage of the preview and confirm steps', () => {
+  it('previews as the family picked in the "view as" select', async () => {
+    serve({ recipients: [rec(1), rec(2, { locale: 'en' }), rec(3)] })
+    await toPreview()
+    const { default: UiSelect } = await import('@/ui/UiSelect.vue')
+    wa.preview.mockClear()
+    wrapper.findComponent(UiSelect).vm.$emit('update:modelValue', 2)
+    await flushPromises()
+    expect(wa.preview).toHaveBeenLastCalledWith(7, { template: 'invitation', guestId: 2, locale: 'en' })
+    expect(body()).toContain('Familia 2')
+  })
+
+  it('lists the languages of the chosen families on the confirm step', async () => {
+    serve({ recipients: [rec(1), rec(2, { locale: 'en' }), rec(3)] })
+    await toConfirm()
+    expect(q('[data-testid="auto-summary"]').parentElement.textContent).toContain('Español 2 · Inglés 1')
+  })
+
+  it('closes the "retry anyway?" question without retrying when it is dismissed', async () => {
+    serve()
+    wa.batch.mockResolvedValue(batchOf({ messages: [{ guestId: 2, guestName: 'Familia 2', status: 'failed', errorCode: 'unknown_delivery', messageId: 12 }], failed: 1 }))
+    await toConfirm()
+    await click('Enviar a 3 familias')
+    await click('Reintentar el fallido')
+    expect(body()).toContain('¿Reintentar el mensaje?')
+    ;[...document.querySelectorAll('[role="dialog"]')].at(-1).dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await flushPromises()
+    expect(body()).not.toContain('¿Reintentar el mensaje?')
+    expect(wa.retry).not.toHaveBeenCalled()
+  })
+
+  it('passes the publish request of the confirm step up when the event turns into a draft meanwhile', async () => {
+    serve()
+    const w = await open()
+    await click('Siguiente')
+    await click('Siguiente')
+    expect(body()).toContain('Paso 3 de 3')
+    svc.audience.mockResolvedValue(info({ event: { published: false, archived: false } }))
+    await w.setProps({ reloadToken: 1 })
+    await flushPromises()
+    await click('Ir a publicar')
+    expect(w.emitted('publish')).toHaveLength(1)
+  })
+})
