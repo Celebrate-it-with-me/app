@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/useUserStore'
 import CollaboratorsService from '@/services/CollaboratorsService'
+import { isEmailNotVerified } from '@/modules/email-verification/utils/emailVerification'
 
 export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
   const collaborators = ref([])
@@ -173,12 +174,17 @@ export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
     }
   }
 
+  // Why the last accept failed: 'email_not_verified' (403), 'not_found' (404) or 'unknown'; null after a success.
+  const acceptError = ref(null)
+
   const acceptInvitation = async invite => {
     isLoading.value = true
+    acceptError.value = null
     try {
       const { data, status } = await CollaboratorsService.acceptInvitation({
         id: invite.id,
-        eventId: invite.event.id
+        eventId: invite.event.id,
+        token: invite.token
       })
       if (status === 200) {
         const currentInvitations = JSON.parse(localStorage.getItem('pending_invitations') || '[]')
@@ -188,10 +194,16 @@ export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
         return true
       } else {
         console.error('Error accepting invitation:', data)
+        acceptError.value = 'unknown'
         return false
       }
     } catch (error) {
       console.error('Error accepting invitation:', error)
+      acceptError.value = isEmailNotVerified(error)
+        ? 'email_not_verified'
+        : error?.response?.status === 404
+          ? 'not_found'
+          : 'unknown'
       return false
     } finally {
       isLoading.value = false
@@ -219,6 +231,7 @@ export const useCollaboratorsStore = defineStore('collaboratorsStore', () => {
     checkToken,
     loadInvitations,
     declineInvitation,
+    acceptError,
     acceptInvitation
   }
 })

@@ -46,8 +46,10 @@ class CollaboratorsService {
     })
   }
 
-  async acceptInvitation({ id, eventId }) {
-    return CWM_API.post(`event/${eventId}/collaborators/invite/${id}/accept`)
+  async acceptInvitation({ id, eventId, token }) {
+    // The API checks the link token only when the client sends it; without a token the body stays empty as before.
+    const body = token ? { token } : undefined
+    return CWM_API.post(`event/${eventId}/collaborators/invite/${id}/accept`, body)
   }
 }
 
