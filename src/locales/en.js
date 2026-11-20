@@ -318,6 +318,8 @@ export default {
     noneValid: 'We could not find a valid invitation for your account.',
     welcome: 'Welcome! You are now part of "{event}".',
     processError: 'We could not accept the invitation. Please try again later.',
+    verifyEmail: 'Verify your email to accept the invitation; then open the link again.',
+    retry: 'I verified my email, try again',
     declineFailed: 'We could not decline the invitation.'
   },
   validation: {
