@@ -2,8 +2,9 @@
 import { computed, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { Lock, Check } from 'lucide-vue-next'
+import { Lock, Check, ShieldAlert } from 'lucide-vue-next'
 import { UiButton, UiCard } from '@/ui'
+import { useCanUnlock } from '@/composables/useCanUnlock'
 import PurchasePanel from '@/modules/payments/components/PurchasePanel.vue'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { MODULE_VIEWS } from '@/components/internal/shell/navModules'
@@ -13,6 +14,8 @@ const { t, te, tm, rt } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const eventsStore = useEventsStore()
+// Only the owner can pay; everyone else is told to ask them instead of hitting a 403.
+const { canUnlock } = useCanUnlock()
 
 const key = computed(() => String(route.params.module ?? ''))
 // Besides locked modules, this screen also explains going over the plan's guest limit.
@@ -75,7 +78,11 @@ const included = computed(() => tm('pricing.full.items').map(item => rt(item)))
       </div>
 
       <div class="mt-6 rounded-lg bg-cream-100 p-4">
-        <PurchasePanel v-if="eventId" :event-id="eventId" />
+        <p v-if="!canUnlock" class="flex items-start gap-2.5 text-base text-ink-700" role="status" data-testid="owner-only">
+          <ShieldAlert class="mt-0.5 h-5 w-5 shrink-0 text-gold-700" aria-hidden="true" />
+          <span>{{ t('unlock.ownerOnly') }}</span>
+        </p>
+        <PurchasePanel v-else-if="eventId" :event-id="eventId" />
         <UiButton class="mt-3" variant="ghost" :to="backTo">{{ fromTemplate ? t('templatePicker.backToTemplates') : t('unlock.back') }}</UiButton>
       </div>
     </UiCard>

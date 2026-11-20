@@ -57,3 +57,19 @@ describe('GuestLimitBanner', () => {
     expect(mount(GuestLimitBanner, setup(null)).text()).toBe('')
   })
 })
+
+describe('GuestLimitNotice for someone who is not the owner', () => {
+  const info = { limit: 30, total: 47, excess: 17 }
+
+  it.each(['editor', 'viewer'])('replaces the unlock button with the ask-the-owner message for a %s', role => {
+    const wrapper = mount(GuestLimitNotice, { props: { info, withListLink: true }, ...setup({ id: 1, userRole: role }) })
+    expect(wrapper.get('[data-testid="owner-only"]').text()).toBe('Pídele a quien creó el evento que lo desbloquee.')
+    expect(wrapper.findAll('a').map(a => a.attributes('href'))).toEqual(['/dashboard/guests'])
+  })
+
+  it('keeps the unlock button for the owner', () => {
+    const wrapper = mount(GuestLimitNotice, { props: { info }, ...setup({ id: 1, userRole: 'owner' }) })
+    expect(wrapper.find('[data-testid="owner-only"]').exists()).toBe(false)
+    expect(wrapper.get('a').attributes('href')).toBe('/dashboard/unlock/guests-limit')
+  })
+})
