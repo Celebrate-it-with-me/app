@@ -1,11 +1,12 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { Lock } from 'lucide-vue-next'
 import { UiButton, UiField, UiInput, useToast } from '@/ui'
 import PaymentsService from '../services/PaymentsService'
 import { isEmailNotVerified } from '@/modules/email-verification/utils/emailVerification'
-import { formatMoney, isInvalidCode } from '../utils/money'
+import { formatMoney, isAlreadyUnlocked, isInvalidCode, isPaymentInProgress } from '../utils/money'
 import { readPendingCode, clearPendingCode } from '../utils/pendingCode'
 
 const props = defineProps({
@@ -17,7 +18,8 @@ const props = defineProps({
 const emit = defineEmits(['already-unlocked'])
 
 const { t, locale } = useI18n()
-const { error: showError } = useToast()
+const router = useRouter()
+const { error: showError, toast } = useToast()
 
 const quote = ref(null)
 // A code typed earlier wins; else the one that came with the landing link. Stays visible and editable.
@@ -65,6 +67,13 @@ async function pay() {
     // Unverified email: the global dialog explains it; the code and quote stay as they were.
     if (isEmailNotVerified(e)) return
     if (isInvalidCode(e)) codeError.value = t('payments.invalidCode')
+    else if (isAlreadyUnlocked(e)) emit('already-unlocked')
+    else if (isPaymentInProgress(e)) {
+      // A payment of this event is still going: the return screen asks the API how the latest one stands.
+      toast({ title: t('payments.processing'), tone: 'warning' })
+      router.push(`/dashboard/events/${props.eventId}/unlock`)
+    } else if (e?.response?.status === 429) showError(t('payments.tooManyAttempts'))
+    else if (e?.response?.status === 502 || e?.response?.data?.code === 'gateway_error') showError(t('payments.gatewayError'))
     else showError(t('payments.checkoutFailed'))
   }
 }

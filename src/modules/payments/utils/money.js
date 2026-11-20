@@ -33,6 +33,16 @@ export async function waitForOutcome(check, { tries = 15, delay = 2000, sleep = 
   return null
 }
 
+/** 422 `errors.event: ['already_unlocked']`: the event was paid for in the meantime. */
+export function isAlreadyUnlocked(error) {
+  return error?.response?.status === 422 && Boolean(error.response.data?.errors?.event?.includes('already_unlocked'))
+}
+
+/** 409 `checkout_in_progress` / `payment_in_progress`: another checkout or payment of this event is still running. */
+export function isPaymentInProgress(error) {
+  return error?.response?.status === 409 && ['checkout_in_progress', 'payment_in_progress'].includes(error.response.data?.code)
+}
+
 /** The API answers 422 with `errors.code` when a code is unknown, expired or used up. */
 export function isInvalidCode(error) {
   return error?.response?.status === 422 && Boolean(error.response.data?.errors?.code)

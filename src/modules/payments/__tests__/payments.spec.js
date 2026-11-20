@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { formatMoney, waitForUnlock, waitForOutcome, isInvalidCode } from '../utils/money'
+import { formatMoney, waitForUnlock, waitForOutcome, isInvalidCode, isAlreadyUnlocked, isPaymentInProgress } from '../utils/money'
 
 describe('formatMoney', () => {
   it('shows whole dollars without decimals', () => expect(formatMoney(9900, 'USD', 'en')).toBe('$99'))
@@ -48,5 +48,25 @@ describe('waitForOutcome', () => {
   it('gives null when still pending', async () => {
     const check = vi.fn().mockResolvedValue({ unlocked: false, status: 'pending' })
     expect(await waitForOutcome(check, { tries: 2, sleep })).toBeNull()
+  })
+})
+
+describe('isAlreadyUnlocked', () => {
+  it('only for the 422 that blames the event', () => {
+    expect(isAlreadyUnlocked({ response: { status: 422, data: { errors: { event: ['already_unlocked'] } } } })).toBe(true)
+    expect(isAlreadyUnlocked({ response: { status: 422, data: { errors: { event: ['other'] } } } })).toBe(false)
+    expect(isAlreadyUnlocked({ response: { status: 422, data: { errors: { code: ['x'] } } } })).toBe(false)
+    expect(isAlreadyUnlocked({ response: { status: 500 } })).toBe(false)
+    expect(isAlreadyUnlocked(undefined)).toBe(false)
+  })
+})
+
+describe('isPaymentInProgress', () => {
+  it('only for the two 409 codes', () => {
+    expect(isPaymentInProgress({ response: { status: 409, data: { code: 'checkout_in_progress' } } })).toBe(true)
+    expect(isPaymentInProgress({ response: { status: 409, data: { code: 'payment_in_progress' } } })).toBe(true)
+    expect(isPaymentInProgress({ response: { status: 409, data: { code: 'not_pending' } } })).toBe(false)
+    expect(isPaymentInProgress({ response: { status: 500, data: { code: 'payment_in_progress' } } })).toBe(false)
+    expect(isPaymentInProgress(undefined)).toBe(false)
   })
 })
