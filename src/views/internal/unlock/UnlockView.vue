@@ -1,8 +1,8 @@
 <script setup>
-import { computed, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { Lock, Check, ShieldAlert } from 'lucide-vue-next'
+import { Lock, Check, CircleCheck, ShieldAlert } from 'lucide-vue-next'
 import { UiButton, UiCard } from '@/ui'
 import { useCanUnlock } from '@/composables/useCanUnlock'
 import PurchasePanel from '@/modules/payments/components/PurchasePanel.vue'
@@ -34,9 +34,17 @@ const state = computed(() =>
   isGuestsLimit.value ? 'locked' : (eventsStore.activeEvent?.modules?.find(m => m.key === key.value)?.state ?? null)
 )
 
+// The API says the event is paid for already (stale screen, another tab, a late webhook): say so instead of offering to pay.
+const alreadyUnlocked = ref(false)
+function onAlreadyUnlocked() {
+  alreadyUnlocked.value = true
+  // The rest of the app still thinks it is locked until the event is read again.
+  if (eventId.value) eventsStore.fetchEvent(eventId.value).catch(() => {})
+}
+
 // Nothing to unlock here: send the person where they were going, or home if the module is not available.
 watchEffect(() => {
-  if (isGuestsLimit.value) return
+  if (isGuestsLimit.value || alreadyUnlocked.value) return
   if (!view.value || !state.value) router.replace('/dashboard')
   else if (state.value === 'active' && view.value.to) router.replace(view.value.to)
 })
@@ -58,7 +66,19 @@ const included = computed(() => tm('pricing.full.items').map(item => rt(item)))
 </script>
 
 <template>
-  <div v-if="state === 'locked'" class="mx-auto w-full max-w-xl">
+  <div v-if="alreadyUnlocked" class="mx-auto w-full max-w-xl">
+    <UiCard padding="lg" class="text-center" role="status" data-testid="already-unlocked">
+      <CircleCheck class="mx-auto h-8 w-8 text-success-600" aria-hidden="true" />
+      <h1 class="mt-4 font-heading text-3xl text-ink-900 text-balance">{{ t('unlock.alreadyUnlocked.title') }}</h1>
+      <p class="mt-2 text-base text-ink-600">{{ t('unlock.alreadyUnlocked.text') }}</p>
+      <div class="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
+        <UiButton :to="backTo">{{ fromTemplate ? t('templatePicker.backToTemplates') : t('unlock.back') }}</UiButton>
+        <UiButton variant="secondary" to="/settings/purchases">{{ t('unlock.alreadyUnlocked.invoices') }}</UiButton>
+      </div>
+    </UiCard>
+  </div>
+
+  <div v-else-if="state === 'locked'" class="mx-auto w-full max-w-xl">
     <UiCard padding="lg">
       <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gold-100 text-gold-700">
         <Lock class="h-5 w-5" aria-hidden="true" />
@@ -82,7 +102,7 @@ const included = computed(() => tm('pricing.full.items').map(item => rt(item)))
           <ShieldAlert class="mt-0.5 h-5 w-5 shrink-0 text-gold-700" aria-hidden="true" />
           <span>{{ t('unlock.ownerOnly') }}</span>
         </p>
-        <PurchasePanel v-else-if="eventId" :event-id="eventId" />
+        <PurchasePanel v-else-if="eventId" :event-id="eventId" @already-unlocked="onAlreadyUnlocked" />
         <UiButton class="mt-3" variant="ghost" :to="backTo">{{ fromTemplate ? t('templatePicker.backToTemplates') : t('unlock.back') }}</UiButton>
       </div>
     </UiCard>

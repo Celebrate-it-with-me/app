@@ -13,6 +13,8 @@ const props = defineProps({
   /** A code typed earlier (for instance on the create-event form). */
   initialCode: { type: String, default: '' }
 })
+// The event turned out to be unlocked already (the quote says so): the parent shows that instead of a payment.
+const emit = defineEmits(['already-unlocked'])
 
 const { t, locale } = useI18n()
 const { error: showError } = useToast()
@@ -35,11 +37,13 @@ async function load(withCode) {
   codeError.value = ''
   try {
     quote.value = await PaymentsService.quote(props.eventId, withCode)
+    if (quote.value?.unlocked) emit('already-unlocked')
   } catch (e) {
     if (isInvalidCode(e)) {
       codeError.value = t('payments.invalidCode')
       clearPendingCode()
       quote.value = await PaymentsService.quote(props.eventId)
+      if (quote.value?.unlocked) emit('already-unlocked')
     } else showError(t('common.genericError'))
   } finally {
     loading.value = false
@@ -92,7 +96,7 @@ async function pay() {
     </form>
     <p v-if="quote?.code && !codeError" class="-mt-3 text-sm text-success-700">{{ t('payments.codeApplied', { code: quote.code }) }}</p>
 
-    <UiButton :loading="paying" :disabled="!quote" @click="pay">
+    <UiButton :loading="paying" :disabled="!quote || quote.unlocked" @click="pay">
       {{ isFree ? t('payments.unlockFree') : t('payments.pay', { price }) }}
     </UiButton>
     <div class="flex flex-col gap-2 text-sm text-ink-600">

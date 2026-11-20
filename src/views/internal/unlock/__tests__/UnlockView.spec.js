@@ -59,3 +59,37 @@ describe('UnlockView by role', () => {
     expect(wrapper.get('[data-testid="owner-only"]').text()).toContain(en.unlock.ownerOnly)
   })
 })
+
+describe('UnlockView when the event is already unlocked', () => {
+  it('replaces the payment with a clear state and links back and to the invoices', async () => {
+    const { wrapper, store } = mountView({ id: 7, userRole: 'owner' })
+    await wrapper.getComponent(PurchasePanel).vm.$emit('already-unlocked')
+    await flushPromises()
+    const done = wrapper.get('[data-testid="already-unlocked"]')
+    expect(done.text()).toContain(es.unlock.alreadyUnlocked.title)
+    expect(wrapper.find('[data-testid="panel"]').exists()).toBe(false)
+    expect(wrapper.findAll('a').map(a => a.attributes('data-to'))).toEqual(['/dashboard', '/settings/purchases'])
+    expect(store.fetchEvent).toHaveBeenCalledWith(7)
+  })
+
+  it('still shows it when refreshing the event fails, and goes back to the template picker when it came from one', async () => {
+    route.query = { from: 'template', template: '12' }
+    const { wrapper, store } = mountView({ id: 7, userRole: 'owner' })
+    store.fetchEvent = vi.fn().mockRejectedValue(new Error('offline'))
+    await wrapper.getComponent(PurchasePanel).vm.$emit('already-unlocked')
+    await flushPromises()
+    expect(wrapper.find('[data-testid="already-unlocked"]').exists()).toBe(true)
+    expect(wrapper.findAll('a')[0].attributes('data-to')).not.toBe('/dashboard')
+  })
+
+  it('does not bounce a module screen away once the store says it is active', async () => {
+    route.params = { module: 'collaborators' }
+    const { wrapper, store } = mountView({ id: 7, userRole: 'owner', modules: [{ key: 'collaborators', state: 'locked' }] })
+    await flushPromises()
+    await wrapper.getComponent(PurchasePanel).vm.$emit('already-unlocked')
+    store.activeEvent = { id: 7, userRole: 'owner', modules: [{ key: 'collaborators', state: 'active' }] }
+    await flushPromises()
+    expect(replace).not.toHaveBeenCalled()
+    expect(wrapper.find('[data-testid="already-unlocked"]').exists()).toBe(true)
+  })
+})
