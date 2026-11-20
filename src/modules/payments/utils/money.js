@@ -21,13 +21,20 @@ export async function waitForUnlock(check, { tries = 15, delay = 2000, sleep = m
 const FINAL = ['failed', 'refunded', 'chargeback']
 
 /**
+ * Failure codes the API sets when the money side looks wrong (amount or reference mismatch, a second payment of an
+ * unlocked event). The purchase is flagged for a manual review: it is not a failed payment from the buyer's side.
+ */
+export const REVIEW_CODES = ['amount_mismatch', 'duplicate_payment', 'reference_mismatch']
+
+/**
  * Wait for the outcome of a purchase: resolves with the last answer as soon as it is unlocked or ended badly
- * (failed, refunded, chargeback); with `null` after `tries` when it is still pending.
+ * (failed, refunded, chargeback, or flagged for review); with `null` after `tries` when it is still pending.
  */
 export async function waitForOutcome(check, { tries = 15, delay = 2000, sleep = ms => new Promise(r => setTimeout(r, ms)) } = {}) {
   for (let i = 0; i < tries; i++) {
     const res = await check()
-    if (res && (res.unlocked || FINAL.includes(res.status))) return res
+    // A flagged purchase can still say `pending` (amount mismatch): waiting longer will not change it.
+    if (res && (res.unlocked || FINAL.includes(res.status) || REVIEW_CODES.includes(res.failureCode))) return res
     if (i < tries - 1) await sleep(delay)
   }
   return null

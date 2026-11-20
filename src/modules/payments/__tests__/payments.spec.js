@@ -45,6 +45,11 @@ describe('waitForOutcome', () => {
     expect((await waitForOutcome(check, { sleep })).status).toBe(status)
     expect(check).toHaveBeenCalledTimes(1)
   })
+  it.each(['amount_mismatch', 'duplicate_payment', 'reference_mismatch'])('stops on %s even while the purchase still says pending', async failureCode => {
+    const check = vi.fn().mockResolvedValue({ unlocked: false, status: 'pending', failureCode })
+    expect((await waitForOutcome(check, { sleep })).failureCode).toBe(failureCode)
+    expect(check).toHaveBeenCalledTimes(1)
+  })
   it('gives null when still pending', async () => {
     const check = vi.fn().mockResolvedValue({ unlocked: false, status: 'pending' })
     expect(await waitForOutcome(check, { tries: 2, sleep })).toBeNull()

@@ -2,12 +2,12 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { CircleCheck, CircleX, Hourglass, Mail, RotateCcw, Undo2 } from 'lucide-vue-next'
+import { CircleCheck, CircleX, FileSearch, Hourglass, Mail, RotateCcw, Undo2 } from 'lucide-vue-next'
 import { UiButton, UiCard } from '@/ui'
 import { SUPPORT_EMAIL, mailtoLink } from '@/config/brand'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import PaymentsService from '../services/PaymentsService'
-import { waitForOutcome } from '../utils/money'
+import { REVIEW_CODES, waitForOutcome } from '../utils/money'
 import { clearTemplateReturn, pickerReturnPath, readTemplateReturn } from '@/modules/template-picker/utils/templatePicker'
 
 const { t, te } = useI18n()
@@ -19,7 +19,7 @@ const eventId = route.params.id
 const purchase = route.query.purchase ? String(route.query.purchase) : undefined
 
 // waiting: confirming. done: unlocked. late: not confirmed yet. cancelled: left the Stripe page. failed: the payment did not go through.
-// refunded / chargeback: money went back. A late webhook can still turn any of the first states into done.
+// review: we are checking it by hand (amount mismatch, duplicate payment); never shown as a failure. refunded / chargeback: money went back. A late webhook can still turn any of the first states into done.
 const state = ref(route.query.cancelled ? 'cancelled' : 'waiting')
 const failureCode = ref(null)
 const invoiceId = ref(null)
@@ -44,6 +44,7 @@ async function settle() {
   failureCode.value = res?.failureCode ?? null
   invoiceId.value = res?.invoiceId ?? null
   if (!res) state.value = 'late'
+  else if (REVIEW_CODES.includes(res.failureCode)) state.value = 'review'
   else if (res.status === 'chargeback') state.value = 'chargeback'
   else if (res.status === 'refunded') state.value = 'refunded'
   else if (res.status === 'failed') state.value = res.failureCode === 'cancelled' ? 'cancelled' : 'failed'
@@ -138,6 +139,20 @@ onMounted(async () => {
         <p class="mt-2 text-ink-600">{{ t(`payments.failed.codes.${failedKey}`) }}</p>
         <div class="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
           <UiButton to="/dashboard/unlock/guests-limit">{{ t('payments.failed.cta') }}</UiButton>
+          <UiButton variant="ghost" to="/dashboard">{{ t('unlock.back') }}</UiButton>
+        </div>
+      </div>
+
+      <div v-else-if="state === 'review'" role="status" data-testid="payment-review">
+        <FileSearch class="mx-auto h-8 w-8 text-gold-700" aria-hidden="true" />
+        <h1 class="mt-4 font-heading text-3xl text-ink-900">{{ t('payments.review.title') }}</h1>
+        <p class="mt-2 text-ink-600">{{ t(`payments.review.codes.${failureCode}`) }}</p>
+        <p class="mt-2 text-ink-600">{{ t('payments.review.text') }}</p>
+        <div class="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
+          <UiButton variant="secondary" :href="mailHref">
+            <Mail class="h-4 w-4" aria-hidden="true" />
+            {{ SUPPORT_EMAIL }}
+          </UiButton>
           <UiButton variant="ghost" to="/dashboard">{{ t('unlock.back') }}</UiButton>
         </div>
       </div>
