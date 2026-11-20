@@ -15,7 +15,7 @@ export default mergeConfig(
       root: fileURLToPath(new URL('./', import.meta.url)),
       coverage: {
         provider: 'v8',
-        reporter: ['text-summary', 'html', 'json-summary'],
+        reporter: ['text-summary', 'json-summary', 'json', 'lcov'],
         // Git-ignored (see `coverage` in .gitignore).
         reportsDirectory: './coverage',
         // Still write the report when some test fails, so the baseline is never lost.
