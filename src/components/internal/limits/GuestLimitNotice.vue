@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { TriangleAlert } from 'lucide-vue-next'
 import { UiButton } from '@/ui'
 import { planLimitMessage } from '@/utils/planLimit'
+import { useCanUnlock } from '@/composables/useCanUnlock'
 
 const props = defineProps({
   /** `{ limit, total, excess }`: how far over the plan's guest limit the list is. */
@@ -15,6 +16,7 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
+const { canUnlock } = useCanUnlock()
 
 const text = computed(() =>
   props.variant === 'banner'
@@ -33,8 +35,9 @@ const text = computed(() =>
       <div class="min-w-0">
         <h2 v-if="variant === 'banner'" class="font-heading text-lg text-ink-900">{{ t('limits.guests.bannerTitle') }}</h2>
         <p class="text-base text-ink-700" :class="variant === 'banner' && 'mt-1'">{{ text }}</p>
+        <p v-if="!canUnlock" class="mt-2 text-sm font-semibold text-ink-700" data-testid="owner-only">{{ t('unlock.ownerOnly') }}</p>
         <div class="mt-3 flex flex-col gap-2 sm:flex-row">
-          <UiButton size="sm" to="/dashboard/unlock/guests-limit">{{ t('limits.guests.unlock') }}</UiButton>
+          <UiButton v-if="canUnlock" size="sm" to="/dashboard/unlock/guests-limit">{{ t('limits.guests.unlock') }}</UiButton>
           <UiButton v-if="withListLink" size="sm" variant="secondary" to="/dashboard/guests">{{ t('limits.guests.seeGuests') }}</UiButton>
         </div>
       </div>

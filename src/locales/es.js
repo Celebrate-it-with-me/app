@@ -2324,6 +2324,9 @@ export default {
     refundLink: 'política de reembolso',
     summary: { item: 'Evento completo', code: 'Código {code}', total: 'Total' },
     checkoutFailed: 'No pudimos iniciar el pago. Inténtalo de nuevo.',
+    processing: 'Tu pago ya se está procesando. Te llevamos a ver cómo va.',
+    tooManyAttempts: 'Demasiados intentos, espera un momento y vuelve a probar.',
+    gatewayError: 'No pudimos conectar con el servicio de pagos y no se hizo ningún cargo. Inténtalo de nuevo en unos minutos.',
     createWith: 'Crear con todo incluido',
     createFree: 'Empezar gratis',
     planLabel: 'Plan',
@@ -2339,7 +2342,17 @@ export default {
         expired: 'La sesión de pago venció y no se hizo ningún cargo. Puedes empezar de nuevo.',
         payment_failed: 'Tu banco o tarjeta rechazó el pago y no se hizo ningún cargo. Prueba con otra tarjeta.',
         gateway_error: 'No pudimos conectar con el servicio de pagos y no se hizo ningún cargo. Inténtalo de nuevo en unos minutos.',
+        superseded: 'Empezaste otro pago más reciente y este quedó sin efecto. No se hizo ningún cargo por este intento.',
         other: 'El pago no se completó y no se hizo ningún cargo. Inténtalo de nuevo.'
+      }
+    },
+    review: {
+      title: 'Estamos revisando tu pago',
+      text: 'Detectamos algo que debemos revisar a mano. No necesitas pagar de nuevo: te escribiremos por correo en cuanto lo resolvamos.',
+      codes: {
+        amount_mismatch: 'El monto cobrado no coincide con el precio de tu evento.',
+        duplicate_payment: 'Ese pago llegó cuando tu evento ya estaba desbloqueado, así que lo devolvemos.',
+        reference_mismatch: 'No pudimos asociar el pago con tu compra.'
       }
     },
     refunded: { title: 'Este pago fue reembolsado', text: 'Te devolvimos el pago. El reembolso puede tardar unos días hábiles en verse en tu banco. Tu evento volvió al plan gratis.' },
@@ -2495,6 +2508,8 @@ export default {
     },
     includes: 'Con el evento completo tienes:',
     back: 'Volver al inicio',
+    ownerOnly: 'Pídele a quien creó el evento que lo desbloquee.',
+    alreadyUnlocked: { title: 'Este evento ya está desbloqueado', text: 'No hace falta pagar de nuevo: ya tienes todos los módulos y el límite completo de invitados.', invoices: 'Ver mis facturas' },
   },
   templatePicker: {
     title: 'Elige tu plantilla',

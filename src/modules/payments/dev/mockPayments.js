@@ -11,6 +11,9 @@ export const SCENARIOS = {
   expired: { ...base, unlocked: false, status: 'failed', failureCode: 'expired' },
   declined: { ...base, unlocked: false, status: 'failed', failureCode: 'payment_failed' },
   gateway: { ...base, unlocked: false, status: 'failed', failureCode: 'gateway_error' },
+  superseded: { ...base, unlocked: false, status: 'failed', failureCode: 'superseded' },
+  amountMismatch: { ...base, unlocked: false, status: 'pending', failureCode: 'amount_mismatch' },
+  duplicate: { ...base, unlocked: false, status: 'refunded', failureCode: 'duplicate_payment' },
   refunded: { ...base, unlocked: false, status: 'refunded' },
   chargeback: { ...base, unlocked: false, status: 'chargeback' }
 }

@@ -2324,6 +2324,9 @@ export default {
     refundLink: 'refund policy',
     summary: { item: 'Full event', code: 'Code {code}', total: 'Total' },
     checkoutFailed: 'We could not start the payment. Please try again.',
+    processing: 'Your payment is already being processed. We will take you to see how it is going.',
+    tooManyAttempts: 'Too many attempts, wait a moment and try again.',
+    gatewayError: 'We could not reach the payment service and you were not charged. Please try again in a few minutes.',
     createWith: 'Create with everything included',
     createFree: 'Start free',
     planLabel: 'Plan',
@@ -2339,7 +2342,17 @@ export default {
         expired: 'The payment session expired and you were not charged. You can start again.',
         payment_failed: 'Your bank or card declined the payment and you were not charged. Try another card.',
         gateway_error: 'We could not reach the payment service and you were not charged. Please try again in a few minutes.',
+        superseded: 'You started a newer payment and this one no longer applies. You were not charged for this attempt.',
         other: 'The payment was not completed and you were not charged. Please try again.'
+      }
+    },
+    review: {
+      title: 'We are reviewing your payment',
+      text: 'We found something we need to check by hand. You do not need to pay again: we will email you as soon as it is sorted.',
+      codes: {
+        amount_mismatch: 'The amount charged does not match your event\'s price.',
+        duplicate_payment: 'That payment arrived when your event was already unlocked, so we are returning it.',
+        reference_mismatch: 'We could not match the payment to your purchase.'
       }
     },
     refunded: { title: 'This payment was refunded', text: 'We returned your payment. It can take a few business days to show in your bank. Your event went back to the free plan.' },
@@ -2495,6 +2508,8 @@ export default {
     },
     includes: 'With the full event you get:',
     back: 'Back to home',
+    ownerOnly: 'Ask whoever created the event to unlock it.',
+    alreadyUnlocked: { title: 'This event is already unlocked', text: 'There is no need to pay again: you already have every module and the full guest limit.', invoices: 'See my invoices' },
   },
   templatePicker: {
     title: 'Choose your template',
