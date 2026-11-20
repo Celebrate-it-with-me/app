@@ -19,6 +19,9 @@ import RosterService from './RosterService'
  *   rsvpclosed   the audience says the RSVP window is closed (P9)
  *   noen         the English template is not approved (audience + preview answer 409 template_not_approved for `en`)
  *   slow         a batch rolls out slowly (about 1 s per message) so the progress can be photographed
+ *   nolink       preview answers linkPreview null (no guests / no card)
+ *   brokenimg    the linkPreview image does not load (brand fallback)
+ *   limits       recipients: some families come back with reason reminder_limit / recently_sent (step 1 blocks)
  * Batches (contract 4.4, F4): `send` stamps a batchId on each message; `batch(id)` and `activeBatch()` read them.
  * `preview` (contract 4.3) renders a message with the guest's name. `audience(real)` patches the real audience answer:
  * with the mock on the automatic mode is on (unless modlocked/modoff), whatever the API says about the module.
@@ -182,7 +185,7 @@ export const mockWhatsapp = {
     const buttons = body.template === 'save_the_date' ? [] : locale === 'en' ? [{ id: 'yes', text: "Yes, I'll be there" }, { id: 'no', text: "Can't make it" }] : [{ id: 'yes', text: 'Sí, asistiré' }, { id: 'no', text: 'No podré asistir' }]
     return {
       template: body.template, locale, category: 'marketing', guest: { id: family.id, name }, sample: false, body: bodies[locale][body.template], buttons, link, sendable: true,
-      event: { id: eventId, name: 'Los XV de Valentina', startDate: '2027-03-14T22:00:00Z', timezone: 'America/New_York', published: mode() !== 'unpublished' }, linkPreview: null
+      event: { id: eventId, name: 'Los XV de Valentina', startDate: '2027-03-14T22:00:00Z', timezone: 'America/New_York', published: mode() !== 'unpublished' }, linkPreview: linkPreviewOf(name, locale, body.template)
     }
   },
 
@@ -204,7 +207,7 @@ export const mockWhatsapp = {
   },
 
   /** The real audience answer with the automatic mode forced on (and the dev scenarios applied). */
-  audience(real) {
+  audience(real, template = 'invitation') {
     const state = mockModuleState()
     const automatic = state === 'active' && mode() !== 'unavailable'
     return {
@@ -212,7 +215,8 @@ export const mockWhatsapp = {
       mode: { automatic, reason: automatic ? null : state === 'locked' ? 'module_locked' : 'module_off' },
       event: { ...real.event, published: mode() === 'unpublished' ? false : real.event?.published ?? true },
       rsvp: mode() === 'rsvpclosed' ? { ...real.rsvp, isOpen: false } : real.rsvp,
-      templates: { es: { sendable: mode() !== 'unapproved' }, en: { sendable: mode() !== 'noen' && mode() !== 'unapproved' } }
+      templates: { es: { sendable: mode() !== 'unapproved' }, en: { sendable: mode() !== 'noen' && mode() !== 'unapproved' } },
+      blocked: mode() === 'limits' ? { ...real.blocked, ...(template === 'reminder_pending' ? { reminder_limit: 3, recently_sent: 1 } : { recently_sent: 2 }) } : real.blocked
     }
   },
 
@@ -228,6 +232,36 @@ export const mockWhatsapp = {
     message.retried = true
     return view(message)
   }
+}
+
+/** The `linkPreview` of contract 4.3 (same texts the API builds from InvitationShare), or null in mode `nolink`. */
+function linkPreviewOf(name, locale, template) {
+  if (mode() === 'nolink') return null
+  const en = locale === 'en'
+  const origin = typeof location === 'undefined' ? 'https://quinvite.test' : location.origin
+  const title = template === 'save_the_date' ? (en ? `Save the date: Valentina's Quince` : 'Guarda la fecha: Los XV de Valentina') : en ? `${name}, you are invited to Valentina's Quince` : `${name}, estás invitado/a a Los XV de Valentina`
+  return {
+    title,
+    description: en ? 'Saturday, March 14, 2027 · Miami. Open your invitation.' : 'Sábado 14 de marzo de 2027 · Miami. Abre tu invitación.',
+    image: mode() === 'brokenimg' ? `${origin}/missing-cover.jpg` : `${origin}/og-default.png`,
+    alt: en ? 'Cover of the invitation' : 'Portada de la invitación',
+    imageWidth: null,
+    imageHeight: null
+  }
+}
+
+/**
+ * Mode `limits`: marks families the way the API does, per template. `invitation`: a few `recently_sent` (24 h wait);
+ * `reminder_pending`: a few `reminder_limit` (3 reminders already) and one `recently_sent`.
+ */
+mockWhatsapp.recipients = function recipients(rows, template = 'invitation') {
+  if (mode() !== 'limits') return rows
+  const mark = (r, i) => {
+    if (r.reason) return r
+    if (template === 'reminder_pending') return i % 11 === 3 ? { ...r, reason: 'reminder_limit' } : i % 11 === 8 ? { ...r, reason: 'recently_sent' } : r
+    return i % 11 === 6 ? { ...r, reason: 'recently_sent' } : r
+  }
+  return rows.map(mark)
 }
 
 /** A batch as contract 4.4 shows it: exclusive counts per status, `done` when nothing is queued, a page of messages. */

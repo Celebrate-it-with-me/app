@@ -1536,22 +1536,6 @@ export default {
       units: { days: 'días', hours: 'horas', minutes: 'min', seconds: 'seg' }
     },
     whatsapp: {
-      title: 'Enviar por WhatsApp',
-      templateLabel: 'Qué quieres enviar',
-      audienceLabel: 'A quién',
-      templates: {
-        invitation: { name: 'Invitación', help: 'Tu invitación con el enlace y botones para confirmar con un toque.' },
-        reminder_pending: { name: 'Recordatorio a pendientes', help: 'Un recordatorio amable para quien aún no responde.' },
-        save_the_date: { name: 'Save the date', help: 'Avisa la fecha antes de enviar la invitación.' }
-      },
-      audience: {
-        all: 'Toda tu lista',
-        pending: 'Solo los pendientes',
-        selected: 'Los que elegí ({n}) | Los que elegí ({n})',
-        selectedHelp: 'Disponible al enviar a una familia desde su menú.'
-      },
-      previewLoading: 'Calculando a quién le llegará…',
-      preview: 'Le llegará a {n} invitado. | Le llegará a {n} invitados.',
       previewSkip: {
         no_phone: '{n} sin teléfono | {n} sin teléfono',
         invalid_phone: '{n} con número no válido | {n} con número no válido',
@@ -1560,20 +1544,6 @@ export default {
         already_responded: '{n} ya respondió | {n} ya respondieron',
         reminder_limit: '{n} ya recibió 3 recordatorios | {n} ya recibieron 3 recordatorios',
         daily_limit: '{n} quedaría para mañana por el límite diario | {n} quedarían para mañana por el límite diario'
-      },
-      next: 'Continuar',
-      back: 'Volver',
-      close: 'Cerrar',
-      confirm: {
-        text: 'Vas a enviar «{template}» a {n} invitado por WhatsApp. | Vas a enviar «{template}» a {n} invitados por WhatsApp.',
-        note: 'Los mensajes salen de inmediato. A quien ya recibió esta misma plantilla hoy no se le repite.',
-        send: 'Enviar ahora'
-      },
-      result: {
-        queued: '{n} mensaje en camino | {n} mensajes en camino',
-        queuedHelp: 'Verás cómo pasan a enviado, entregado y leído en la lista.',
-        skipped: 'No se envió a {n} invitado | No se envió a {n} invitados',
-        resend: 'Enviar de nuevo a {n} invitado | Enviar de nuevo a {n} invitados'
       },
       skip: {
         no_phone: 'No tienen teléfono. Añade su número para poder escribirles.',
@@ -1605,16 +1575,6 @@ export default {
       },
       retry: 'Reintentar',
       retried: 'Volvimos a intentarlo.',
-      manual: {
-        title: 'Compartir por WhatsApp',
-        lockedTitle: 'El envío automático es parte del evento completo',
-        lockedText: 'Con el evento completo escribimos a toda tu lista de una vez y ves quién recibió y leyó cada mensaje.',
-        upgrade: 'Pasa a premium',
-        help: 'Mientras tanto, abre WhatsApp con la invitación lista para cada invitado y envíala tú.',
-        share: 'Compartir',
-        shareLabel: 'Compartir la invitación de {name} por WhatsApp',
-        empty: 'Aún no hay invitados en esta vista.'
-      },
       wizard: {
         title: 'Enviar invitaciones',
         stepOf: 'Paso {n} de {total}',
@@ -1661,7 +1621,11 @@ export default {
           optedOutNote: '{n} pidió no recibir mensajes; si la compartes, es decisión tuya. | {n} pidieron no recibir mensajes; si las compartes, es decisión tuya.',
           sendsAuto: 'Se enviará: «{template}».',
           missingPhone: 'Falta el teléfono',
-          noPhoneTitle: 'Sin número'
+          noPhoneTitle: 'Sin número',
+          recentlySent: 'Recibió un mensaje hace menos de 24 h: podrás escribirle mañana',
+          reminderLimit: 'Ya recibió los 3 recordatorios permitidos',
+          alreadyResponded: 'Ya respondió',
+          noLink: 'Sin enlace'
         },
         pick: {
           title: 'Elige a las familias',
@@ -1696,6 +1660,11 @@ export default {
           unmarkLabel: 'Desmarcar a {name}',
           markError: 'No pudimos guardar la marca. Inténtalo de nuevo.',
           noLink: 'Sin enlace'
+        },
+        linkCard: {
+          label: 'Así se verá el enlace en WhatsApp',
+          note: 'Puede tardar en actualizarse y WhatsApp decide el aspecto final.',
+          fallbackAlt: 'Imagen de Quinvite: la portada aún no está disponible'
         },
         preview: {
           title: 'Así lo recibirán',

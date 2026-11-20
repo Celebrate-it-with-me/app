@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RotateCcw, TriangleAlert } from 'lucide-vue-next'
 import { UiButton, UiRadioGroup, UiSelect, UiSkeleton, UiTabs, UiTextarea } from '@/ui'
+import SendLinkCard from './SendLinkCard.vue'
 import InvitationMiniature from '@/modules/template-picker/components/InvitationMiniature.vue'
 import WhatsappService from '../../services/WhatsappService'
 import { allowedTemplates, keepsLink, localeCounts, renderMessage, wizardSendErrorKey } from '../../utils/sendWizard'
@@ -58,13 +59,14 @@ function pickLanguage(locale) {
   if (first) exampleId.value = first.id
 }
 
-// Automatic: the real message from the API.
+// The preview endpoint answers in both modes: automatic takes the message from it, manual only its `linkPreview` (the
+// text there is the organizer's own, rendered locally). A failed call in manual mode just leaves the card out.
 const loading = ref(false)
 const result = ref(null)
 const errorKey = ref(null)
 let runId = 0
 async function loadPreview() {
-  if (!automatic.value || !sample.value) return
+  if (!sample.value) return
   const id = ++runId
   loading.value = true
   errorKey.value = null
@@ -75,8 +77,10 @@ async function loadPreview() {
   } catch (e) {
     if (id !== runId) return
     result.value = null
-    errorKey.value = wizardSendErrorKey(e, sendErrorKey)
-    if (errorKey.value === 'templateNotApproved') emit('unapproved', sample.value.locale)
+    if (automatic.value) {
+      errorKey.value = wizardSendErrorKey(e, sendErrorKey)
+      if (errorKey.value === 'templateNotApproved') emit('unapproved', sample.value.locale)
+    }
   } finally {
     if (id === runId) loading.value = false
   }
@@ -88,6 +92,7 @@ const bubbleText = computed(() => {
   if (automatic.value) return result.value?.body ?? ''
   return renderMessage(props.text, { name: sample.value.name, event: props.eventName, link: sample.value.link ?? '' })
 })
+const linkPreview = computed(() => result.value?.linkPreview ?? null)
 const buttons = computed(() => (automatic.value ? result.value?.buttons ?? [] : []))
 const time = computed(() => new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(new Date()))
 const missingLocales = computed(() => [...new Set(props.missing.map(f => f.locale))])
@@ -133,13 +138,13 @@ const missingLocales = computed(() => [...new Set(props.missing.map(f => f.local
     </div>
 
     <!-- The message as a WhatsApp bubble. -->
-    <section class="mt-4 rounded-2xl bg-cream-100 p-3" :aria-label="t('app.whatsapp.wizard.preview.bubbleLabel')" aria-live="polite" :aria-busy="loading">
-      <div v-if="loading" class="space-y-2" data-testid="preview-loading" aria-hidden="true">
+    <section class="mt-4 rounded-2xl bg-cream-100 p-3" :aria-label="t('app.whatsapp.wizard.preview.bubbleLabel')" aria-live="polite" :aria-busy="automatic && loading">
+      <div v-if="automatic && loading" class="space-y-2" data-testid="preview-loading" aria-hidden="true">
         <UiSkeleton height="1rem" width="90%" />
         <UiSkeleton height="1rem" width="75%" />
         <UiSkeleton height="1rem" width="60%" />
       </div>
-      <div v-else-if="errorKey" class="text-sm text-ink-700" data-testid="preview-error">
+      <div v-else-if="automatic && errorKey" class="text-sm text-ink-700" data-testid="preview-error">
         <p>{{ t(`app.whatsapp.errors.${errorKey}`) }} {{ t('app.whatsapp.wizard.preview.errorContinue') }}</p>
         <UiButton class="mt-2" size="sm" variant="secondary" @click="loadPreview">{{ t('app.whatsapp.wizard.retry') }}</UiButton>
       </div>
@@ -154,6 +159,8 @@ const missingLocales = computed(() => [...new Set(props.missing.map(f => f.local
         <p class="mt-2 text-right text-xs text-ink-500">{{ t('app.whatsapp.wizard.preview.sample', { name: sample.name }) }}</p>
       </template>
     </section>
+
+    <SendLinkCard :link-preview="linkPreview" :link="result?.link ?? sample?.link ?? ''" :loading="loading && !!sample" />
 
     <div class="mt-3 flex items-center justify-between gap-2">
       <p class="min-w-0 text-sm font-medium text-ink-900">{{ t('app.whatsapp.wizard.preview.message', { template: t(`app.whatsapp.wizard.templates.${template}`) }) }}</p>

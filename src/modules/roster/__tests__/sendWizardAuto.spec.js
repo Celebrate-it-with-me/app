@@ -454,6 +454,66 @@ describe('Mode fallback', () => {
     expect(q('[data-testid="preview-fixed"]')).toBeNull() // manual: the text is editable
     await click('Siguiente')
     expect(body()).toContain('Enviar a mano')
-    expect(wa.preview).not.toHaveBeenCalled()
+  })
+})
+
+describe('Step 2 · link card (automatic)', () => {
+  const link = { title: 'Ana López, estás invitado/a a Los XV de Valentina', description: 'Viernes 25 de diciembre de 2026 · Miami. Abre tu invitación.', image: 'https://q.test/og/ana.jpg', alt: 'Portada de Valentina', imageWidth: 1200, imageHeight: 630 }
+  const card = () => q('[data-testid="link-card"]')
+
+  it('shows the image, title and description the guest will see, and follows "Ver como"', async () => {
+    serve({ recipients: [rec(1), rec(2, { locale: 'en' })] })
+    wa.preview.mockImplementation(async (_e, { guestId, locale }) => previewOf(`Familia ${guestId}`, { link: `https://q.test/i/xv/${guestId}`, linkPreview: { ...link, title: locale === 'en' ? 'Guest, you are invited' : link.title } }))
+    await toPreview()
+    expect(card().textContent).toContain('Así se verá el enlace en WhatsApp')
+    expect(q('[data-testid="link-card-title"]').textContent).toContain('Ana López, estás invitado/a')
+    expect(q('[data-testid="link-card-description"]').textContent).toContain('Abre tu invitación.')
+    expect(q('[data-testid="link-card-host"]').textContent).toBe('q.test')
+    expect(q('[data-testid="link-card-image"]').getAttribute('src')).toBe('https://q.test/og/ana.jpg')
+    expect(q('[data-testid="link-card-image"]').getAttribute('alt')).toBe('Portada de Valentina')
+    const tab = [...document.querySelectorAll('[role="tab"]')].find(t => t.textContent.includes('Inglés'))
+    tab.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, button: 0 }))
+    await flushPromises()
+    expect(q('[data-testid="link-card-title"]').textContent).toBe('Guest, you are invited')
+  })
+
+  it('draws a skeleton while the preview loads', async () => {
+    serve()
+    let release
+    wa.preview.mockImplementation(() => new Promise(resolve => (release = () => resolve(previewOf('Familia 1', { linkPreview: link })))))
+    await toPreview()
+    expect(q('[data-testid="link-card-loading"]')).toBeTruthy()
+    expect(q('[data-testid="link-card-ready"]')).toBeNull()
+    release()
+    await flushPromises()
+    expect(q('[data-testid="link-card-loading"]')).toBeNull()
+    expect(q('[data-testid="link-card-ready"]')).toBeTruthy()
+  })
+
+  it('falls back to the brand mark when the image breaks', async () => {
+    serve()
+    wa.preview.mockResolvedValue(previewOf('Familia 1', { linkPreview: link }))
+    await toPreview()
+    q('[data-testid="link-card-image"]').dispatchEvent(new Event('error'))
+    await flushPromises()
+    expect(q('[data-testid="link-card-image"]')).toBeNull()
+    expect(q('[data-testid="link-card-fallback"]').textContent).toContain('Quinvite')
+    expect(q('[data-testid="link-card-title"]').textContent).toContain('Ana López')
+  })
+
+  it('is left out when the sample guest has no linkPreview, and when the preview fails', async () => {
+    serve()
+    wa.preview.mockResolvedValue(previewOf('Familia 1', { linkPreview: null }))
+    await toPreview()
+    expect(card()).toBeNull()
+    expect(q('[data-testid="preview-bubble"]')).toBeTruthy()
+  })
+
+  it('is left out when the preview fails', async () => {
+    serve()
+    wa.preview.mockRejectedValue({ response: { status: 500 } })
+    await toPreview()
+    expect(card()).toBeNull()
+    expect(q('[data-testid="preview-error"]')).toBeTruthy()
   })
 })

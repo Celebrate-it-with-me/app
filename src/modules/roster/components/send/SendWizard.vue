@@ -91,14 +91,18 @@ async function load({ keepStep = false } = {}) {
   loading.value = true
   errorKey.value = null
   try {
-    const [info, recipients, roster] = await Promise.all([
+    const [info, recipients, roster, reminderInfo] = await Promise.all([
       SendWizardService.audience(props.eventId, 'invitation'),
       SendWizardService.allRecipients(props.eventId, 'invitation'),
-      SendWizardService.allRoster(props.eventId)
+      SendWizardService.allRoster(props.eventId),
+      // Who is held back depends on the template: the 3-reminders cap only shows up when asking for reminders.
+      SendWizardService.audience(props.eventId, 'reminder_pending').catch(() => null)
     ])
+    const holds = reminderInfo?.blocked?.reminder_limit > 0 || reminderInfo?.blocked?.recently_sent > 0
+    const reminders = props.mode === 'automatic' && info?.mode?.automatic !== false && holds ? await SendWizardService.allRecipients(props.eventId, 'reminder_pending').catch(() => []) : []
     if (id !== loadId) return
     audience.value = info
-    families.value = mergeFamilies(recipients, roster)
+    families.value = mergeFamilies(recipients, roster, reminders)
     if (!keepStep) start()
     if (props.resume) resumeBatch()
   } catch (e) {

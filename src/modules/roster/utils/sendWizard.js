@@ -39,10 +39,13 @@ export const MAX_PAGES = 20
  * Joins the wizard's two reads of the same families: `recipients` (reason and delivery, from the audience endpoints)
  * and the `roster` rows (the raw phone, and the link when the API does not send `recipient.link` yet: the recipient's
  * own link wins, the roster is the fallback).
- * Returns `[{ id, name, people, phone, status, reason, state, sharedAt, link, optedOut }]`.
+ * `reminders` is the same read made for `reminder_pending`: the reason depends on the template, and `reminder_limit`
+ * (3 reminders already) only shows up there. Returns `[{ id, name, people, phone, status, reason, reminderReason, state,
+ * sharedAt, link, optedOut }]`.
  */
-export function mergeFamilies(recipients, roster) {
+export function mergeFamilies(recipients, roster, reminders = []) {
   const byId = new Map((roster ?? []).map(row => [row.id, row]))
+  const reminderById = new Map((reminders ?? []).map(row => [row.id, row.reason ?? null]))
   return (recipients ?? []).map(r => {
     const row = byId.get(r.id)
     return {
@@ -52,6 +55,7 @@ export function mergeFamilies(recipients, roster) {
       phone: r.phone || row?.phone || '',
       status: r.status ?? row?.status ?? 'pending',
       reason: r.reason ?? null,
+      reminderReason: reminderById.get(r.id) ?? null,
       locale: r.locale ?? row?.effectiveLocale ?? 'es',
       state: r.delivery?.state ?? 'none',
       sharedAt: r.delivery?.sharedAt ?? row?.delivery?.sharedAt ?? null,
@@ -59,6 +63,15 @@ export function mergeFamilies(recipients, roster) {
       optedOut: !!row?.whatsappOptedOut || r.reason === 'opted_out'
     }
   })
+}
+
+/** Reasons that only hold the automatic send: a pause (`recently_sent`) or a cap (`reminder_limit`). */
+export const WAIT_REASONS = ['recently_sent', 'reminder_limit']
+
+/** The API's reason for the template at hand, when it is a wait/cap one. */
+function waitReason(family, template) {
+  const reason = template === 'reminder_pending' ? family.reminderReason : family.reason
+  return WAIT_REASONS.includes(reason) ? reason : null
 }
 
 /**
@@ -72,6 +85,9 @@ export function blockReason(family, template, mode = 'manual') {
   if (family.optedOut && automatic) return 'opted_out'
   if (automatic && family.phone.trim() === '') return 'no_phone'
   if (family.reason === 'invalid_phone') return 'invalid_phone'
+  // The API waits 24 h between messages of a template and stops after 3 reminders; manual shares go around the API.
+  const wait = automatic ? waitReason(family, template) : null
+  if (wait) return wait
   if (!automatic && !family.link) return 'no_link'
   if (template === 'reminder_pending' && family.status !== 'pending') return 'already_responded'
   return null
@@ -110,11 +126,31 @@ export function categoryCounts(families, options = {}) {
   }
 }
 
-/** Families that cannot be sent to, grouped by reason (`no_phone` in automatic mode only, `invalid_phone`, `opted_out`), in the order step 1 lists them. */
+/** Order step 1 lists the reasons in, and the key of each label under `app.whatsapp.wizard.who`. */
+export const BLOCK_LABELS = {
+  no_phone: 'missingPhone',
+  invalid_phone: 'invalidPhone',
+  opted_out: 'optedOut',
+  recently_sent: 'recentlySent',
+  reminder_limit: 'reminderLimit',
+  already_responded: 'alreadyResponded',
+  no_link: 'noLink'
+}
+const GROUP_ORDER = ['no_phone', 'invalid_phone', 'opted_out', 'recently_sent', 'reminder_limit']
+
+/**
+ * Families that cannot be sent to, grouped by reason, in the order step 1 lists them. `no_phone` only in automatic
+ * mode; `recently_sent` and `reminder_limit` too (they are the API's pauses). A family is listed once: for the
+ * template given, or for a reminder when only the reminder is held (so the "pending" card is explained too).
+ */
 export function blockedGroups(families, template = 'invitation', mode = 'manual') {
-  const groups = { no_phone: [], invalid_phone: [], opted_out: [] }
+  const groups = Object.fromEntries(GROUP_ORDER.map(reason => [reason, []]))
   for (const family of families) {
-    const reason = blockReason(family, template, mode)
+    let reason = blockReason(family, template, mode)
+    if (!reason && template !== 'reminder_pending') {
+      const reminder = blockReason(family, 'reminder_pending', mode)
+      if (reminder === 'reminder_limit') reason = reminder
+    }
     if (reason && groups[reason]) groups[reason].push(family)
   }
   return Object.entries(groups)
@@ -250,4 +286,13 @@ export function wizardSendErrorKey(error, fallback) {
   if (status === 409 && code === 'event_archived') return 'archived'
   if (status === 409 && code === 'confirmation_required') return 'confirmationRequired'
   return fallback(error)
+}
+
+/** Host of a link (what WhatsApp prints under the card), or '' when it is not an absolute URL. */
+export function linkHost(link) {
+  try {
+    return new URL(link).host
+  } catch {
+    return ''
+  }
 }

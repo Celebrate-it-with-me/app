@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiRadioGroup, UiButton, UiEmptyState } from '@/ui'
-import { CATEGORIES, blockedGroups, categoryAllowed, categoryCounts, membersOf, MODE_DEFAULT, optedOutIn, templateFor, withoutPhone } from '../../utils/sendWizard'
+import { BLOCK_LABELS, CATEGORIES, blockedGroups, categoryAllowed, categoryCounts, membersOf, MODE_DEFAULT, optedOutIn, templateFor, withoutPhone } from '../../utils/sendWizard'
 import SendPickList from './SendPickList.vue'
 
 const props = defineProps({
@@ -48,7 +48,7 @@ const options = computed(() =>
       <UiRadioGroup class="mt-3" :model-value="category" :options="options" cards @update:model-value="emit('update:category', $event)" />
 
       <div v-if="category === 'selected'" class="mt-4">
-        <SendPickList :families="families" :template="template" :selected-ids="selectedIds" @update:selected-ids="emit('update:selectedIds', $event)" @edit-guest="emit('edit-guest', $event)" />
+        <SendPickList :families="families" :template="template" :mode="mode" :selected-ids="selectedIds" @update:selected-ids="emit('update:selectedIds', $event)" @edit-guest="emit('edit-guest', $event)" />
       </div>
 
       <p class="mt-4 rounded-lg bg-cream-100 px-3 py-2 text-sm text-ink-700" aria-live="polite" data-testid="who-summary">
@@ -65,12 +65,12 @@ const options = computed(() =>
 
       <details v-if="blockedTotal" class="mt-4 rounded-xl border border-line px-3 py-2" data-testid="who-blocked">
         <summary class="cursor-pointer text-sm font-medium text-ink-900">{{ t('app.whatsapp.wizard.who.blocked', { n: blockedTotal }) }}</summary>
-        <div v-for="group in blocked" :key="group.reason" class="mt-3">
-          <p class="text-sm font-medium text-ink-700">{{ t(`app.whatsapp.wizard.who.${{ opted_out: 'optedOut', no_phone: 'missingPhone', invalid_phone: 'invalidPhone' }[group.reason]}`) }}</p>
+        <div v-for="group in blocked" :key="group.reason" class="mt-3" :data-testid="`who-blocked-${group.reason}`">
+          <p class="text-sm font-medium text-ink-700">{{ t(`app.whatsapp.wizard.who.${BLOCK_LABELS[group.reason]}`) }}</p>
           <ul class="mt-1 space-y-1">
             <li v-for="family in group.families" :key="family.id" class="flex items-center justify-between gap-2 text-sm text-ink-700">
               <span class="min-w-0 truncate">{{ family.name }}<span v-if="family.phone" class="text-ink-500"> · {{ family.phone }}</span></span>
-              <UiButton v-if="group.reason !== 'opted_out' && canEdit" size="sm" variant="link" class="h-auto shrink-0" @click="emit('edit-guest', family)">
+              <UiButton v-if="['no_phone', 'invalid_phone'].includes(group.reason) && canEdit" size="sm" variant="link" class="h-auto shrink-0" @click="emit('edit-guest', family)">
                 {{ group.reason === 'no_phone' ? t('app.whatsapp.wizard.who.addPhone') : t('app.whatsapp.wizard.who.fixPhone') }}
               </UiButton>
             </li>

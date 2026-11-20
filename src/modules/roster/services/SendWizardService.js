@@ -13,7 +13,7 @@ class SendWizardService {
   async audience(eventId, template = 'invitation') {
     const data = (await CWM_API.get(`${base(eventId)}/whatsapp/audience`, { params: { template } })).data.data
     const mock = await getMock()
-    return mock ? mock.audience(data) : data
+    return mock ? mock.audience(data, template) : data
   }
 
   /** Every family with its reason and delivery, walked page by page: `[{ id, name, people, phone, status, reason, delivery }]`. */
@@ -24,7 +24,8 @@ class SendWizardService {
       rows.push(...data)
       if (page * (meta?.perPage ?? 100) >= (meta?.total ?? 0)) break
     }
-    return rows
+    const mock = await getMock()
+    return mock ? mock.recipients(rows, template) : rows
   }
 
   /** The roster rows, walked page by page: the wa.me link of each family lives only there. */

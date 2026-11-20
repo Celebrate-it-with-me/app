@@ -1536,22 +1536,6 @@ export default {
       units: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec' }
     },
     whatsapp: {
-      title: 'Send by WhatsApp',
-      templateLabel: 'What to send',
-      audienceLabel: 'To whom',
-      templates: {
-        invitation: { name: 'Invitation', help: 'Your invitation with the link and buttons to reply in one tap.' },
-        reminder_pending: { name: 'Reminder to pending guests', help: 'A friendly nudge for whoever has not answered yet.' },
-        save_the_date: { name: 'Save the date', help: 'Share the date before the invitation goes out.' }
-      },
-      audience: {
-        all: 'Your whole list',
-        pending: 'Pending guests only',
-        selected: 'The ones I picked ({n}) | The ones I picked ({n})',
-        selectedHelp: 'Available when sending to one family from its menu.'
-      },
-      previewLoading: 'Working out who will get it…',
-      preview: 'It will reach {n} guest. | It will reach {n} guests.',
       previewSkip: {
         no_phone: '{n} without a phone | {n} without a phone',
         invalid_phone: '{n} with an invalid number | {n} with an invalid number',
@@ -1560,20 +1544,6 @@ export default {
         already_responded: '{n} already answered | {n} already answered',
         reminder_limit: '{n} already got 3 reminders | {n} already got 3 reminders',
         daily_limit: '{n} would wait until tomorrow because of the daily limit | {n} would wait until tomorrow because of the daily limit'
-      },
-      next: 'Continue',
-      back: 'Back',
-      close: 'Close',
-      confirm: {
-        text: 'You are about to send "{template}" to {n} guest by WhatsApp. | You are about to send "{template}" to {n} guests by WhatsApp.',
-        note: 'Messages go out right away. Anyone who already got this same message today will not get it twice.',
-        send: 'Send now'
-      },
-      result: {
-        queued: '{n} message on its way | {n} messages on their way',
-        queuedHelp: 'You will see them move to sent, delivered and read in the list.',
-        skipped: '{n} guest was left out | {n} guests were left out',
-        resend: 'Send again to {n} guest | Send again to {n} guests'
       },
       skip: {
         no_phone: 'They have no phone number. Add one so you can message them.',
@@ -1605,16 +1575,6 @@ export default {
       },
       retry: 'Try again',
       retried: 'We tried again.',
-      manual: {
-        title: 'Share by WhatsApp',
-        lockedTitle: 'Automatic sending is part of the full event',
-        lockedText: 'With the full event we message your whole list at once and you see who received and read each message.',
-        upgrade: 'Go premium',
-        help: 'Meanwhile, open WhatsApp with the invitation ready for each guest and send it yourself.',
-        share: 'Share',
-        shareLabel: 'Share {name}\'s invitation by WhatsApp',
-        empty: 'There are no guests in this view yet.'
-      },
       wizard: {
         title: 'Send invitations',
         stepOf: 'Step {n} of {total}',
@@ -1661,7 +1621,11 @@ export default {
           optedOutNote: '{n} asked not to get messages; sharing is your call. | {n} asked not to get messages; sharing is your call.',
           sendsAuto: 'This will be sent: "{template}".',
           missingPhone: 'Missing phone',
-          noPhoneTitle: 'No number'
+          noPhoneTitle: 'No number',
+          recentlySent: 'Got a message less than 24 h ago: you can write again tomorrow',
+          reminderLimit: 'Already got the 3 reminders allowed',
+          alreadyResponded: 'Already answered',
+          noLink: 'No link'
         },
         pick: {
           title: 'Choose the families',
@@ -1696,6 +1660,11 @@ export default {
           unmarkLabel: 'Unmark {name}',
           markError: 'We could not save the mark. Please try again.',
           noLink: 'No link'
+        },
+        linkCard: {
+          label: 'How the link will look in WhatsApp',
+          note: 'It can take a while to update, and WhatsApp decides the final look.',
+          fallbackAlt: 'Quinvite image: the cover is not available yet'
         },
         preview: {
           title: 'This is how they will get it',
