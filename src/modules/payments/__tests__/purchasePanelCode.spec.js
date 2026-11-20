@@ -5,6 +5,7 @@ import es from '@/locales/es'
 
 const { quote } = vi.hoisted(() => ({ quote: vi.fn() }))
 vi.mock('../services/PaymentsService', () => ({ default: { quote, checkout: vi.fn() } }))
+vi.mock('vue-router', () => ({ useRouter: () => ({ push: vi.fn() }) }))
 
 import PurchasePanel from '../components/PurchasePanel.vue'
 import { PENDING_CODE_KEY, LAUNCH_CODE } from '../utils/pendingCode'
