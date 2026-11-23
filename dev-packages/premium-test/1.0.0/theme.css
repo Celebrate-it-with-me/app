@@ -21,9 +21,9 @@
 
 /* Light framing around the system blocks */
 .pkg-rsvp { background: var(--inv-surface-alt); }
-.pkg-closing, .pkg-music { background: var(--inv-surface); }
-.pkg-music { padding-top: 1.5rem; padding-bottom: 1.5rem; }
-.pkg-music-slot { margin: 0 auto; max-width: 24rem; padding: 0.5rem 0; }
+.pkg-closing { background: var(--inv-surface); }
+/* The music bar is fixed; its only in-flow part is the engine spacer, so the section adds no padding of its own. */
+.pkg-music { padding: 0; margin: 0; }
 
 /* Soft ink on the block text: system blocks keep their own panel, only the type tone is ours */
 .pkg-comments .inv-q--comments, .pkg-tables .inv-q--tables { text-align: left; }
