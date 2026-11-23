@@ -53,4 +53,29 @@ describe('InvitationTables', () => {
     expect(wrapper.find('i').exists()).toBe(false)
     expect(wrapper.find('[data-variant="inline"]').exists()).toBe(true)
   })
+
+  it('does not repeat the prefix when the table name already starts with it', () => {
+    const same = mountTables({ tables: [{ personId: 1, name: 'Valentina', table: 'Mesa de Honor', seat: null }], sameTable: true })
+    expect(same.text()).toContain('Mesa de Honor')
+    expect(same.text()).not.toContain('Mesa Mesa')
+    const list = mountTables({
+      tables: [
+        { personId: 1, name: 'Héctor', table: 'mesa 3', seat: null },
+        { personId: 2, name: 'María', table: 'Table 4', seat: null },
+        { personId: 3, name: 'Luz', table: 'Mesaje', seat: null }
+      ],
+      sameTable: false
+    })
+    const rows = list.findAll('li').map(row => row.text())
+    expect(rows[0]).toContain('mesa 3')
+    expect(rows[0]).not.toMatch(/Mesa mesa/i)
+    expect(rows[1]).toContain('Table 4')
+    expect(rows[1]).not.toContain('Mesa Table')
+    expect(rows[2]).toContain('Mesa Mesaje')
+  })
+
+  it('lets long names wrap instead of truncating them', () => {
+    const wrapper = mountTables({ tables: [{ personId: 1, name: 'Héctor Fernández', table: '1', seat: null }, { personId: 2, name: 'María', table: '1', seat: null }], sameTable: false })
+    expect(wrapper.find('li span').classes()).not.toContain('truncate')
+  })
 })

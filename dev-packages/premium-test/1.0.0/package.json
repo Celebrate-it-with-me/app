@@ -1,0 +1,9 @@
+{
+  "slug": "premium-test", "version": "1.0.0", "engineMin": 1,
+  "preload": [],
+  "devTheme": {
+    "name": "premium-test", "preset": "rosa",
+    "colors": { "surface": "#fff8f3", "surfaceAlt": "#f7e9e1", "ink": "#2f2229", "inkSoft": "#5e4a55", "accent": "#b08040", "primary": "#8a2f4f" },
+    "fonts": { "heading": "Fraunces", "body": "Figtree", "script": "Fraunces" }
+  }
+}

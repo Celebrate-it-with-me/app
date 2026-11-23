@@ -1,0 +1,45 @@
+.pkg-page { background: var(--inv-surface); color: var(--inv-ink); font-family: var(--inv-font-body); --pkg-gap: 1.25rem; }
+
+.pkg-sec { padding: 3.5rem 1.25rem; text-align: center; background: var(--inv-surface); }
+[data-inv-parity="even"] .pkg-sec { background: var(--inv-surface-alt); }
+.pkg-body { max-width: 40rem; margin: 0 auto; padding: 0.5rem 0; }
+
+.pkg-orn { display: block; margin: 0 auto 0.75rem; width: 10rem; height: auto; }
+.pkg-title { margin: 0 0 0.75rem; font-family: var(--inv-font-heading); font-size: 2rem; line-height: 1.15; font-weight: 600; color: var(--inv-ink); }
+.pkg-lead { margin: 0 auto 1.5rem; max-width: 30rem; font-size: 1.0625rem; line-height: 1.6; color: var(--inv-ink-soft); }
+.pkg-kicker { margin: 0 0 1rem; font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--inv-ink-soft); }
+
+/* Cover */
+.pkg-cover { padding-top: 2rem; background: var(--inv-surface); }
+.pkg-cover__corner { display: block; width: 4rem; height: auto; margin: 0 auto 0.5rem; }
+.pkg-cover__photo { width: 100%; max-width: 24rem; margin: 0 auto 1.5rem; }
+.pkg-cover__names { margin: 0 0 0.75rem; font-family: var(--inv-font-script); font-size: 2.5rem; line-height: 1.1; color: var(--inv-primary); overflow-wrap: anywhere; }
+.pkg-cover__divider { display: block; width: 12rem; height: auto; margin: 0.5rem auto 1rem; }
+.pkg-cover__date { max-width: 17rem; margin: 0 auto 1.25rem; font-family: var(--inv-font-heading); font-size: 1.125rem; color: var(--inv-ink); }
+/* The engine spreads weekday / day / month over the full width: keep the row narrow and let the day number lead. */
+.pkg-cover__date .inv-q--date span span:nth-child(2) { font-size: 3rem; line-height: 1; color: var(--inv-primary); }
+.pkg-cover__guest { margin: 0 0 1.5rem; color: var(--inv-ink-soft); }
+.pkg-cover__cta { display: flex; justify-content: center; margin: 0 0 0.75rem; }
+
+/* Light framing around the system blocks */
+.pkg-rsvp { background: var(--inv-surface-alt); }
+.pkg-closing { background: var(--inv-surface); }
+/* The music bar is fixed; its only in-flow part is the engine spacer, so the section adds no padding of its own. */
+.pkg-music { padding: 0; margin: 0; }
+
+/* Soft ink on the block text: system blocks keep their own panel, only the type tone is ours */
+.pkg-comments .inv-q--comments, .pkg-tables .inv-q--tables { text-align: left; }
+.pkg-itinerary .inv-q--itinerary, .pkg-locations .inv-q--locations { text-align: left; }
+
+.pkg-foot { padding: 2.5rem 1.25rem 3rem; text-align: center; background: var(--inv-surface); color: var(--inv-ink-soft); font-size: 0.9375rem; }
+.pkg-foot p { margin: 0.25rem 0; }
+
+@media (min-width: 768px) {
+  .pkg-sec { padding: 5rem 2rem; }
+  .pkg-title { font-size: 2.75rem; }
+  .pkg-cover__names { font-size: 3.75rem; }
+  .pkg-cover__photo { max-width: 28rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pkg-title { transition: none; }
+}

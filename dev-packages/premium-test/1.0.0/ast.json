@@ -1,0 +1,1403 @@
+{
+    "templates": {
+        "closing": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-closing"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "closing",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "band"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "comments": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-comments"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "comments",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "cards",
+                                        "max": 8
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "countdown": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-countdown"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "countdown",
+                                    "props": {
+                                        "frame": "bare",
+                                        "format": "full"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "cover": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-cover"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-cover__corner",
+                                "src": {
+                                    "asset": "assets/img/corner.svg"
+                                },
+                                "alt": "",
+                                "width": 80,
+                                "height": 80,
+                                "loading": "eager"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "el",
+                            "tag": "p",
+                            "attrs": {
+                                "class": "pkg-kicker",
+                                "data-reveal": "fade"
+                            },
+                            "children": [
+                                {
+                                    "t": "var",
+                                    "path": "t.kicker",
+                                    "filter": null
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cover__photo",
+                                "data-reveal": "zoom"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "cover-photo",
+                                    "props": {
+                                        "aspect": "4:5",
+                                        "priority": true
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cover__names",
+                                "data-reveal": "rise",
+                                "data-reveal-delay": "200"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "names",
+                                    "props": {
+                                        "tag": "h1",
+                                        "script": true
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-cover__divider",
+                                "src": {
+                                    "asset": "assets/img/divider.svg"
+                                },
+                                "alt": "",
+                                "width": 240,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cover__date"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "date",
+                                    "props": {
+                                        "format": "columns",
+                                        "weekday": "long",
+                                        "month": "long",
+                                        "time": true
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "p",
+                            "attrs": {
+                                "class": "pkg-cover__guest"
+                            },
+                            "children": [
+                                {
+                                    "t": "var",
+                                    "path": "t.invitedFor",
+                                    "filter": null
+                                },
+                                {
+                                    "t": "text",
+                                    "v": " "
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "strong",
+                                    "attrs": {},
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "guest.name",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cover__cta"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "cta",
+                                    "props": {
+                                        "action": "confirm",
+                                        "variant": "fill"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cover__cta"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "cta",
+                                    "props": {
+                                        "action": "calendar",
+                                        "variant": "outline"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "dress_code": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-dress-code"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "dress-code",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "swatches"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "gallery": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-gallery"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "gallery",
+                                    "props": {
+                                        "frame": "bare",
+                                        "layout": "grid",
+                                        "columns": 2,
+                                        "max": 12,
+                                        "captions": true
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "itinerary": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-itinerary"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "itinerary",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "timeline"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "locations": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-locations"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "locations",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "cards",
+                                        "maps": true
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "music": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-music"
+                    },
+                    "children": [
+                        {
+                            "t": "q",
+                            "name": "music",
+                            "props": {
+                                "variant": "bar"
+                            },
+                            "attrs": {},
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        "padrinos": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-padrinos"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "padrinos",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "grid"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "rsvp": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-rsvp"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "rsvp",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "card"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "save_the_date": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-save-the-date"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "save-the-date",
+                                    "props": {
+                                        "frame": "bare",
+                                        "calendar": true
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "suggested_music": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-suggested-music"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "suggested-music",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "cards"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "tables": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-tables"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-orn",
+                                "src": {
+                                    "asset": "assets/img/flourish.svg"
+                                },
+                                "alt": "",
+                                "width": 160,
+                                "height": 24,
+                                "loading": "lazy"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-title",
+                                        "data-reveal": "rise"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-lead"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "tables",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "card"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "layout": {
+        "v": 1,
+        "kind": "layout",
+        "nodes": [
+            {
+                "t": "el",
+                "tag": "div",
+                "attrs": {
+                    "class": "pkg-page"
+                },
+                "children": [
+                    {
+                        "t": "q",
+                        "name": "sections",
+                        "props": {},
+                        "attrs": {},
+                        "children": []
+                    },
+                    {
+                        "t": "el",
+                        "tag": "footer",
+                        "attrs": {
+                            "class": "pkg-foot"
+                        },
+                        "children": [
+                            {
+                                "t": "el",
+                                "tag": "img",
+                                "attrs": {
+                                    "class": "pkg-orn",
+                                    "src": {
+                                        "asset": "assets/img/petal.svg"
+                                    },
+                                    "alt": "",
+                                    "width": 40,
+                                    "height": 40,
+                                    "loading": "lazy"
+                                },
+                                "children": []
+                            },
+                            {
+                                "t": "el",
+                                "tag": "p",
+                                "attrs": {},
+                                "children": [
+                                    {
+                                        "t": "var",
+                                        "path": "t.withLove",
+                                        "filter": null
+                                    }
+                                ]
+                            },
+                            {
+                                "t": "el",
+                                "tag": "p",
+                                "attrs": {},
+                                "children": [
+                                    {
+                                        "t": "var",
+                                        "path": "event.name",
+                                        "filter": null
+                                    },
+                                    {
+                                        "t": "text",
+                                        "v": " · "
+                                    },
+                                    {
+                                        "t": "var",
+                                        "path": "event.date",
+                                        "filter": "long"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "slug": "premium-test",
+  "name": {
+    "es": "Premium de prueba",
+    "en": "Premium test"
+  },
+  "description": {
+    "es": "Plantilla premium de prueba con todos los bloques de módulo.",
+    "en": "Premium test template with every module block."
+  },
+  "version": "1.0.0",
+  "level": 1,
+  "eventTypes": [
+    "quinceanera",
+    "wedding"
+  ],
+  "tier": "premium",
+  "visibility": "public",
+  "engineMin": 1,
+  "author": {
+    "name": "Equipo Quinvite",
+    "url": "https://quinvite.com"
+  },
+  "license": {
+    "id": "original-work",
+    "summary": "Obra original del equipo Quinvite; fuentes Fraunces y Figtree incluidas en la aplicación (SIL OFL 1.1).",
+    "document": "LICENSES.md"
+  },
+  "assetsCredits": [
+    {
+      "path": "assets/img/divider.svg",
+      "title": "Separador dorado",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/img/flourish.svg",
+      "title": "Adorno floral",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/img/petal.svg",
+      "title": "Pétalo decorativo",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    },
+    {
+      "path": "assets/img/corner.svg",
+      "title": "Esquina ornamental",
+      "author": "Equipo Quinvite",
+      "source": "original",
+      "license": "original-work"
+    }
+  ],
+  "thirdPartyMarks": []
+}
