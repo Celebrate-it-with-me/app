@@ -14,7 +14,7 @@ const props = defineProps({
   variant: { type: String, default: 'card' }
 })
 
-const { tt, formatDate, slug, code, updateSection, preview } = useInvitationContext()
+const { tt, formatDate, slug, code, updateSection, preview, invitation } = useInvitationContext()
 
 const ATTENDING = 'attending'
 const NOT_ATTENDING = 'not-attending'
@@ -33,6 +33,13 @@ const NOTE_MAX = 500
 const NAME_MIN = 2
 const NAME_MAX = 120
 const noteId = useId()
+
+/**
+ * The private note is the guest's only channel to the hosts until the wall of comments is on screen: the payload only
+ * carries `comments` when the module is active AND the organizer left the section on, so its presence means the guest
+ * can write there and the note is hidden. Hidden means not sent: an absent `note` key leaves the saved one untouched.
+ */
+const showNote = computed(() => !invitation?.value?.sections?.some(item => item.type === 'comments'))
 
 /** Drafts the guest edits: their message and the name of each assigned companion. */
 const note = ref(rsvp.value.note ?? '')
@@ -133,7 +140,7 @@ function validate() {
       if (problem) fieldErrors[`name-${item.id}`] = problem
     }
   }
-  if ([...note.value.trim()].length > NOTE_MAX) fieldErrors.note = 'too_long'
+  if (showNote.value && [...note.value.trim()].length > NOTE_MAX) fieldErrors.note = 'too_long'
   return Object.keys(fieldErrors).length === 0
 }
 
@@ -182,7 +189,7 @@ async function submit() {
     const changed = rsvp.value.companions.filter(item => names[item.id].trim() !== item.name)
     if (changed.length) payload.names = Object.fromEntries(changed.map(item => [item.id, names[item.id].trim()]))
   }
-  if (note.value.trim() !== (rsvp.value.note ?? '')) payload.note = note.value.trim()
+  if (showNote.value && note.value.trim() !== (rsvp.value.note ?? '')) payload.note = note.value.trim()
   // Dishes travel only when the event has a menu; an empty list clears a person who no longer attends.
   if (menuEditable.value) {
     payload.menu = {
@@ -247,7 +254,7 @@ async function submit() {
               </p>
             </li>
           </ul>
-          <div v-if="rsvp.note" class="mt-6 border-t border-inv-ink/10 pt-5">
+          <div v-if="showNote && rsvp.note" class="mt-6 border-t border-inv-ink/10 pt-5">
             <p class="text-sm font-medium text-inv-ink-soft">{{ tt('rsvp.yourNote') }}</p>
             <p class="mt-1 whitespace-pre-line break-words text-inv-ink">{{ rsvp.note }}</p>
           </div>
@@ -339,7 +346,7 @@ async function submit() {
             </fieldset>
           </div>
 
-          <div>
+          <div v-if="showNote" data-rsvp-note>
             <label :for="`${noteId}-note`" class="block text-sm font-medium text-inv-ink-soft">{{ tt('rsvp.noteLabel') }}</label>
             <textarea
               :id="`${noteId}-note`"
