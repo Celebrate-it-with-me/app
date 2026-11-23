@@ -1,0 +1,18 @@
+<div class="pkg-cover">
+  <div class="pkg-cover__palms" aria-hidden="true"></div>
+  <div class="pkg-cover__palms pkg-cover__palms--right" aria-hidden="true"></div>
+  <p class="pkg-eyebrow" data-if="section.title">{{section.title}}</p>
+  <div class="pkg-photo"><q-cover-photo aspect="4:5" fit="cover" priority="true"></q-cover-photo></div>
+  <div class="pkg-cover-body">
+    <q-names tag="h1" script="true" class="pkg-names"></q-names>
+    <p class="pkg-theme-name">{{t.themeName}}</p>
+    <p class="pkg-intro" data-if="section.text">{{section.text}}</p>
+    <div class="pkg-datebox"><q-date format="columns" weekday="none" month="short" time="true" class="pkg-date"></q-date></div>
+    <img class="pkg-divider" src="assets/img/deco-divider.svg" alt="" width="240" height="40" decoding="async">
+    <p class="pkg-description" data-if="event.description">{{event.description}}</p>
+    <p class="pkg-guest-label" data-if="guest.name">{{t.invitedFor}}</p>
+    <q-guest greeting="false" class="pkg-guest-name"></q-guest>
+    <q-seats class="pkg-seats"></q-seats>
+    <div class="pkg-cta-wrap"><q-cta action="confirm" variant="fill"></q-cta></div>
+  </div>
+</div>

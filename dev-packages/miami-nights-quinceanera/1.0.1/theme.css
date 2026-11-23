@@ -1,0 +1,88 @@
+/* Miami Nights 1.0.1: night palette, neon cyan/pink and Art Deco gold. The native blocks own all functionality. */
+.pkg-page { background-color: var(--inv-surface); color: var(--inv-ink); font-family: var(--inv-font-body); line-height: 1.65; }
+
+/* Cover: skyline behind the arch, palms at the corners, neon rings around the photo (the uploaded image may already be composed) */
+.pkg-cover { position: relative; max-width: 76rem; margin: 0 auto; text-align: center; padding: 3.5rem 1.25rem 3rem; background-color: var(--inv-surface); background-image: linear-gradient(180deg, rgba(8, 12, 36, 0.15) 0, var(--inv-surface) 27rem), url(assets/img/skyline.webp); background-size: 100% 100%, 260% auto; background-position: 0 0, 50% 1.5rem; background-repeat: no-repeat, no-repeat; }
+.pkg-cover__palms { position: absolute; top: 0; left: 0; width: 46%; height: 17rem; background-image: url(assets/img/palms.svg); background-size: contain; background-position: left bottom; background-repeat: no-repeat; pointer-events: none; }
+.pkg-cover__palms--right { left: auto; right: 0; transform: scaleX(-1); }
+.pkg-eyebrow { display: flex; align-items: center; justify-content: center; gap: 0.9rem; color: var(--inv-accent); font-size: 0.85rem; letter-spacing: 0.32em; text-transform: uppercase; margin: 0.5rem 0 1.25rem; }
+.pkg-eyebrow::before, .pkg-eyebrow::after { content: ""; flex: 0 0 1.75rem; height: 1px; background-color: var(--inv-accent); }
+.pkg-photo { width: 78%; max-width: 30rem; margin: 0 auto; border: 2px solid #39ecff; border-radius: 14rem 14rem 1rem 1rem; overflow: hidden; background-color: #0a0f2e; box-shadow: 0 0 0 0.4rem var(--inv-surface), 0 0 0 0.55rem #ff3cc0, 0 0 22px 0.55rem rgba(255, 60, 192, 0.55), 0 0 46px rgba(57, 236, 255, 0.45); }
+.pkg-cover-body { padding: 2rem 0 0; max-width: 38rem; margin: 0 auto; }
+.pkg-names { font-family: var(--inv-font-script); font-size: 5rem; font-weight: 400; line-height: 1.1; color: var(--inv-accent); overflow-wrap: anywhere; text-shadow: 0 0 18px rgba(244, 213, 139, 0.45), 0 2px 4px rgba(0, 0, 0, 0.5); }
+.pkg-theme-name { color: #64efff; font-size: 1rem; letter-spacing: 0.3em; text-transform: uppercase; font-style: italic; text-shadow: 0 0 10px #00dfff, 0 0 22px rgba(0, 223, 255, 0.6); margin: 0.5rem 0 0.75rem; }
+.pkg-intro { font-family: Fraunces, serif; font-style: italic; font-size: 1.3rem; margin: 0.75rem auto 1.25rem; max-width: 28rem; }
+.pkg-datebox { max-width: 19rem; margin: 1.25rem auto 0.75rem; padding: 0.75rem 0; border-top: 1px solid var(--inv-accent); border-bottom: 1px solid var(--inv-accent); }
+.pkg-date { color: var(--inv-ink); font-family: var(--inv-font-heading); }
+.pkg-date > span:first-child { display: flex; flex-direction: row-reverse; align-items: baseline; justify-content: center; gap: 0.9rem; }
+.pkg-date > span:first-child > span:first-child { font-size: 4.2rem; line-height: 1; color: var(--inv-accent); text-shadow: 0 0 16px rgba(244, 213, 139, 0.55); }
+.pkg-date > span:first-child > span:last-child { font-size: 1.5rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--inv-ink); }
+.pkg-date > span:last-child { display: block; font-family: var(--inv-font-body); font-size: 0.85rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--inv-ink-soft); }
+.pkg-divider { display: block; width: 15rem; max-width: 100%; height: auto; margin: 1rem auto; }
+.pkg-description { color: var(--inv-ink-soft); margin: 1rem auto; max-width: 28rem; }
+.pkg-guest-label { color: var(--inv-ink-soft); font-family: Fraunces, serif; font-style: italic; margin: 1rem 0 0.25rem; }
+.pkg-guest-name { color: var(--inv-accent); font-family: Fraunces, serif; font-size: 1.6rem; overflow-wrap: anywhere; }
+.pkg-seats { padding: 0.5rem 0; color: var(--inv-ink-soft); }
+.pkg-cta-wrap { margin: 1rem auto 0; }
+.pkg-cta-wrap button { background-color: var(--inv-primary); color: #22062c; font-weight: 600; border: 2px solid #3eeeff; border-radius: 0.85rem; box-shadow: 0 0 14px rgba(62, 238, 255, 0.55), 0 0 28px rgba(255, 60, 192, 0.35); }
+.pkg-cta-wrap button:hover { box-shadow: 0 0 20px rgba(62, 238, 255, 0.8), 0 0 36px rgba(255, 60, 192, 0.55); }
+
+/* Sections */
+.pkg-section { padding: 2.5rem 1.5rem 3rem; text-align: center; background-color: var(--inv-surface); color: var(--inv-ink); }
+.pkg-heading { display: flex; align-items: center; justify-content: center; gap: 0.9rem; font-family: var(--inv-font-heading); font-size: 2.1rem; font-weight: 400; letter-spacing: 0.12em; line-height: 1.25; color: var(--inv-accent); margin: 0 auto 1.5rem; max-width: 40rem; text-wrap: balance; }
+.pkg-heading::before, .pkg-heading::after { content: ""; flex: 0 0 1.5rem; height: 1px; background-color: var(--inv-accent); }
+.pkg-heading--script { font-family: var(--inv-font-script); font-size: 2.6rem; letter-spacing: 0.02em; }
+.pkg-section-text { color: var(--inv-ink-soft); max-width: 34rem; margin: 0 auto 1.5rem; }
+.pkg-script-line { font-family: var(--inv-font-script); font-size: 2.6rem; line-height: 1.2; color: var(--inv-accent); margin: 0 auto 0.5rem; text-shadow: 0 0 14px rgba(244, 213, 139, 0.35); }
+.pkg-content { max-width: 42rem; margin: 0 auto; }
+.pkg-itinerary { background-image: radial-gradient(ellipse at bottom left, rgba(18, 41, 83, 0.55), transparent 65%); }
+.pkg-padrinos { background-image: radial-gradient(ellipse at right, rgba(82, 17, 94, 0.25), transparent 65%); }
+
+/* Itinerary: vertical neon line with cyan dots (the engine draws the icons) */
+.pkg-itinerary ol { background-image: linear-gradient(180deg, transparent 0, #3deeff 5%, #3deeff 95%, transparent 100%); background-size: 2px 100%; background-position: 3.5rem 0; background-repeat: no-repeat; }
+.pkg-itinerary li { background-image: radial-gradient(circle at 3.5rem 1.2rem, #ffffff 0, #ffffff 0.12rem, #3deeff 0.16rem, #3deeff 0.3rem, rgba(61, 238, 255, 0.4) 0.36rem, transparent 0.8rem); background-repeat: no-repeat; }
+.pkg-itinerary li { gap: 1.5rem; }
+.pkg-itinerary li > span:first-child { color: var(--inv-primary); background-color: transparent; }
+.pkg-itinerary li p:first-child { color: var(--inv-accent); font-family: var(--inv-font-heading); font-size: 1.35rem; letter-spacing: 0.08em; }
+.pkg-itinerary li h3 { color: var(--inv-ink); font-family: var(--inv-font-body); font-size: 1.05rem; font-weight: 500; letter-spacing: 0; }
+
+/* Locations, comments, RSVP, tables, suggested music: the engine panel is the only frame */
+.pkg-locations h3 { font-family: Fraunces, serif; font-style: italic; font-size: 1.9rem; letter-spacing: 0; text-transform: none; color: var(--inv-accent); }
+
+/* Dress code */
+.pkg-attire { display: flex; align-items: flex-end; justify-content: center; gap: 1.5rem; margin: 1rem auto 1.25rem; }
+.pkg-attire__img { display: block; width: auto; height: 13rem; }
+.pkg-dress-code .inv-q--dress-code p { color: var(--inv-ink-soft); font-style: normal; }
+.pkg-dress-code .inv-q--dress-code span + p { font-family: Fraunces, serif; font-style: italic; font-size: 1.9rem; letter-spacing: 0.04em; color: var(--inv-accent); }
+
+/* Padrinos */
+.pkg-padrinos li > p:last-child { font-size: 1.6rem; color: var(--inv-accent); }
+.pkg-padrinos h3 { font-family: Fraunces, serif; font-size: 1.5rem; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--inv-ink); }
+
+/* Gallery */
+.pkg-gallery img { border: 1px solid var(--inv-accent); border-radius: 0.35rem; box-shadow: 0 0 14px rgba(57, 236, 255, 0.25); }
+
+/* Music: the player is fixed, the section draws nothing */
+.pkg-music { padding: 0; }
+
+/* Closing */
+.pkg-closing { padding: 2.5rem 0 0; text-align: center; background-color: var(--inv-surface); color: var(--inv-ink); }
+.pkg-thanks { font-family: var(--inv-font-script); font-size: clamp(3.5rem, 11vw, 6rem); font-weight: 400; line-height: 1.2; color: var(--inv-accent); max-width: 45rem; padding: 0 1.25rem; margin: 1rem auto; text-shadow: 0 0 18px rgba(244, 213, 139, 0.4); }
+.pkg-closing-text { padding: 0 1.5rem; color: var(--inv-ink-soft); }
+.pkg-signature { font-size: 0.85rem; letter-spacing: 0.25em; text-transform: uppercase; margin: 1.5rem; overflow-wrap: anywhere; color: var(--inv-ink-soft); }
+.pkg-skyline { display: block; width: 100%; max-width: 90rem; height: auto; margin: 0 auto; }
+
+@media (min-width: 768px) {
+  .pkg-cover { max-width: none; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 2rem 3rem; padding: 3rem 14%; background-image: linear-gradient(180deg, var(--inv-surface) 0, rgba(8, 12, 36, 0.2) 100%), url(assets/img/skyline.webp); background-size: 100% 100%, 100% auto; background-position: 0 0, 50% 100%; }
+  .pkg-eyebrow { grid-column: 1 / -1; }
+  .pkg-photo { width: 100%; }
+  .pkg-cover-body { padding: 1rem; }
+  .pkg-cover__palms { width: 22%; height: 22rem; }
+  .pkg-section { padding: 3.5rem 3rem; }
+  .pkg-heading { font-size: 2.6rem; }
+  .pkg-heading--script { font-size: 3.2rem; }
+  .pkg-names { font-size: 6rem; }
+  .pkg-attire__img { height: 17rem; }
+}
+.pkg-locations a { border-color: #3eeeff; color: #d4fbff; }
+.pkg-locations a:hover { border-color: #3eeeff; box-shadow: 0 0 14px rgba(62, 238, 255, 0.45); }

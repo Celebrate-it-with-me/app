@@ -1,0 +1,429 @@
+{
+  "schema": 1,
+  "groups": [
+    {
+      "id": "cover",
+      "label": {
+        "es": "Portada",
+        "en": "Cover"
+      }
+    },
+    {
+      "id": "texts",
+      "label": {
+        "es": "Textos de las secciones",
+        "en": "Section texts"
+      }
+    },
+    {
+      "id": "closing",
+      "label": {
+        "es": "Cierre",
+        "en": "Closing"
+      }
+    },
+    {
+      "id": "look",
+      "label": {
+        "es": "Estilo",
+        "en": "Appearance"
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "cover_photo",
+      "type": "image",
+      "group": "cover",
+      "label": {
+        "es": "Foto de portada",
+        "en": "Cover photograph"
+      },
+      "help": {
+        "es": "Sube tu foto (también sirve una imagen ya compuesta con fondo). Mejor vertical 4:5, mínimo 960 px de ancho.",
+        "en": "Upload your photo (an already composed image with background works too). Best as portrait 4:5, at least 960 px wide."
+      },
+      "bind": {
+        "section": "cover",
+        "setting": "image",
+        "focus": "focus"
+      },
+      "minWidth": 960,
+      "required": false,
+      "plan": "free"
+    },
+    {
+      "id": "cover_title",
+      "type": "text",
+      "group": "cover",
+      "label": {
+        "es": "Frase sobre la foto",
+        "en": "Line above the photo"
+      },
+      "bind": {
+        "section": "cover",
+        "field": "title"
+      },
+      "max": {
+        "es": 60,
+        "en": 60
+      },
+      "plan": "free"
+    },
+    {
+      "id": "cover_phrase",
+      "type": "text",
+      "group": "cover",
+      "label": {
+        "es": "Frase de portada",
+        "en": "Cover phrase"
+      },
+      "bind": {
+        "section": "cover",
+        "field": "text"
+      },
+      "max": {
+        "es": 160,
+        "en": 160
+      },
+      "plan": "free",
+      "multiline": true
+    },
+    {
+      "id": "itinerary_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título del itinerario",
+        "en": "Itinerary title"
+      },
+      "bind": {
+        "section": "itinerary",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "locations_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título de ubicaciones",
+        "en": "Locations title"
+      },
+      "bind": {
+        "section": "locations",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "dress_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título del dress code",
+        "en": "Dress code title"
+      },
+      "bind": {
+        "section": "dress_code",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "dress_text",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Frase del dress code",
+        "en": "Dress code line"
+      },
+      "bind": {
+        "section": "dress_code",
+        "field": "text"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "padrinos_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título de padrinos",
+        "en": "Godparents title"
+      },
+      "bind": {
+        "section": "padrinos",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "gallery_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título de la galería",
+        "en": "Gallery title"
+      },
+      "bind": {
+        "section": "gallery",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "rsvp_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título de confirmación",
+        "en": "RSVP title"
+      },
+      "bind": {
+        "section": "rsvp",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "rsvp_text",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Texto de confirmación",
+        "en": "RSVP text"
+      },
+      "bind": {
+        "section": "rsvp",
+        "field": "text"
+      },
+      "max": {
+        "es": 200,
+        "en": 200
+      },
+      "plan": "free",
+      "multiline": true
+    },
+    {
+      "id": "comments_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título de mensajes",
+        "en": "Messages title"
+      },
+      "bind": {
+        "section": "comments",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "comments_text",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Texto de mensajes",
+        "en": "Messages text"
+      },
+      "bind": {
+        "section": "comments",
+        "field": "text"
+      },
+      "max": {
+        "es": 200,
+        "en": 200
+      },
+      "plan": "free",
+      "multiline": true
+    },
+    {
+      "id": "tables_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título de tu mesa",
+        "en": "Your table title"
+      },
+      "bind": {
+        "section": "tables",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "suggested_title",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Título de música sugerida",
+        "en": "Suggested music title"
+      },
+      "bind": {
+        "section": "suggested_music",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "suggested_text",
+      "type": "text",
+      "group": "texts",
+      "label": {
+        "es": "Texto de música sugerida",
+        "en": "Suggested music text"
+      },
+      "bind": {
+        "section": "suggested_music",
+        "field": "text"
+      },
+      "max": {
+        "es": 200,
+        "en": 200
+      },
+      "plan": "free",
+      "multiline": true
+    },
+    {
+      "id": "closing_title",
+      "type": "text",
+      "group": "closing",
+      "label": {
+        "es": "Frase de cierre",
+        "en": "Closing line"
+      },
+      "bind": {
+        "section": "closing",
+        "field": "title"
+      },
+      "max": {
+        "es": 80,
+        "en": 80
+      },
+      "plan": "free"
+    },
+    {
+      "id": "closing_text",
+      "type": "text",
+      "group": "closing",
+      "label": {
+        "es": "Texto de cierre",
+        "en": "Closing text"
+      },
+      "bind": {
+        "section": "closing",
+        "field": "text"
+      },
+      "max": {
+        "es": 200,
+        "en": 200
+      },
+      "plan": "free",
+      "multiline": true
+    },
+    {
+      "id": "palette",
+      "type": "choice",
+      "group": "look",
+      "label": {
+        "es": "Paleta",
+        "en": "Palette"
+      },
+      "bind": {
+        "theme": "preset"
+      },
+      "choices": [
+        {
+          "value": "neon",
+          "label": {
+            "es": "Neón Miami",
+            "en": "Miami neon"
+          }
+        },
+        {
+          "value": "electric",
+          "label": {
+            "es": "Azul eléctrico",
+            "en": "Electric blue"
+          }
+        },
+        {
+          "value": "sunset",
+          "label": {
+            "es": "Atardecer dorado",
+            "en": "Golden sunset"
+          }
+        }
+      ],
+      "plan": "free"
+    },
+    {
+      "id": "accent_color",
+      "type": "color",
+      "group": "look",
+      "label": {
+        "es": "Color dorado",
+        "en": "Gold color"
+      },
+      "bind": {
+        "theme": "colors.accent"
+      },
+      "plan": "full"
+    },
+    {
+      "id": "primary_color",
+      "type": "color",
+      "group": "look",
+      "label": {
+        "es": "Color neón",
+        "en": "Neon color"
+      },
+      "bind": {
+        "theme": "colors.primary"
+      },
+      "plan": "full"
+    }
+  ]
+}

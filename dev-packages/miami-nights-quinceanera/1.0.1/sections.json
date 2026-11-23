@@ -1,0 +1,184 @@
+{
+  "quinceanera": [
+    {
+      "type": "cover",
+      "enabled": true,
+      "order": 1,
+      "title": {
+        "es": "Mis quince años",
+        "en": "My fifteenth birthday"
+      },
+      "text": {
+        "es": "Una noche para brillar.",
+        "en": "A night to shine."
+      },
+      "settings": {
+        "image": null,
+        "focus": "50% 30%"
+      }
+    },
+    {
+      "type": "itinerary",
+      "enabled": true,
+      "order": 2,
+      "title": {
+        "es": "El ritmo de la noche",
+        "en": "The rhythm of the night"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "locations",
+      "enabled": true,
+      "order": 3,
+      "title": {
+        "es": "Nos vemos aquí",
+        "en": "Meet me here"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "dress_code",
+      "enabled": true,
+      "order": 4,
+      "title": {
+        "es": "Dress code",
+        "en": "Dress code"
+      },
+      "text": {
+        "es": "Glam de noche.",
+        "en": "Evening glam."
+      },
+      "settings": {}
+    },
+    {
+      "type": "padrinos",
+      "enabled": true,
+      "order": 5,
+      "title": {
+        "es": "Con el cariño de",
+        "en": "With love from"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "gallery",
+      "enabled": true,
+      "order": 6,
+      "title": {
+        "es": "Mi historia en fotos",
+        "en": "My story in pictures"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {
+        "layout": "grid",
+        "maxPhotos": 12,
+        "showCaptions": false
+      }
+    },
+    {
+      "type": "rsvp",
+      "enabled": true,
+      "order": 7,
+      "title": {
+        "es": "¿Te sumas a mi noche?",
+        "en": "Will you join my night?"
+      },
+      "text": {
+        "es": "Confirma tu asistencia y prepárate para celebrar.",
+        "en": "Confirm your attendance and get ready to celebrate."
+      },
+      "settings": {}
+    },
+    {
+      "type": "comments",
+      "enabled": true,
+      "order": 8,
+      "title": {
+        "es": "Deja tu huella",
+        "en": "Leave your mark"
+      },
+      "text": {
+        "es": "Un mensaje que guardaré para siempre.",
+        "en": "A message I will treasure forever."
+      },
+      "settings": {}
+    },
+    {
+      "type": "tables",
+      "enabled": true,
+      "order": 9,
+      "title": {
+        "es": "Tu lugar esta noche",
+        "en": "Your seat tonight"
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "suggested_music",
+      "enabled": true,
+      "order": 10,
+      "title": {
+        "es": "Ponle ritmo a la noche",
+        "en": "Set the rhythm tonight"
+      },
+      "text": {
+        "es": "Busca, sugiere y vota tus canciones favoritas.",
+        "en": "Find, suggest and vote for your favorite songs."
+      },
+      "settings": {}
+    },
+    {
+      "type": "music",
+      "enabled": true,
+      "order": 11,
+      "title": {
+        "es": null,
+        "en": null
+      },
+      "text": {
+        "es": null,
+        "en": null
+      },
+      "settings": {
+        "title": {
+          "es": "Mi canción favorita",
+          "en": "My favorite song"
+        }
+      }
+    },
+    {
+      "type": "closing",
+      "enabled": true,
+      "order": 12,
+      "title": {
+        "es": "Nos vemos bajo las luces",
+        "en": "See you under the lights"
+      },
+      "text": {
+        "es": "La noche será más especial contigo.",
+        "en": "The night will be brighter with you."
+      },
+      "settings": {}
+    }
+  ]
+}
