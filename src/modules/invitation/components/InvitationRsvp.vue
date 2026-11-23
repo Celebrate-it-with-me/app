@@ -57,7 +57,9 @@ const celebrate = ref(false)
 
 const mainId = computed(() => rsvp.value.guest.id)
 const mainDeclined = computed(() => answers[mainId.value] === NOT_ATTENDING)
-const hasAnswered = computed(() => rsvp.value.guest.status !== 'pending')
+// An unsaved sample guest (the editor preview) has no status at all: that is "pending", not an answer.
+const isPending = status => !status || status === 'pending'
+const hasAnswered = computed(() => !isPending(rsvp.value.guest.status))
 const showSummary = computed(() => !rsvp.value.isOpen || (hasAnswered.value && !editing.value))
 
 /** Nobody attends under an invitation the main guest declined: mirror the server rule. */
@@ -120,7 +122,7 @@ const canSubmit = computed(
 )
 
 const deadline = computed(() => (rsvp.value.deadline ? formatDate(rsvp.value.deadline) : ''))
-const statusLabel = status => tt(`rsvp.status.${status}`)
+const statusLabel = status => tt(`rsvp.status.${isPending(status) ? 'pending' : status}`)
 const errorText = code => tt(`rsvp.errors.${code}`)
 
 /** Same codes the API answers with, so a client-side stop reads like a server one. */

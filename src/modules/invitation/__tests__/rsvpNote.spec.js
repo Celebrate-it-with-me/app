@@ -106,3 +106,20 @@ describe.each([
     expect(wrapper.text()).toContain('Guardada')
   })
 })
+
+describe('RSVP of an unsaved sample guest (editor preview)', () => {
+  const sample = () => rsvpData({ guest: { id: 1, name: 'Invitada/o', status: null }, companions: [{ id: 2, name: 'Luis', status: null }] })
+
+  it('is a pending form, never a summary with a raw status key', () => {
+    const wrapper = mountNative([rsvpSection(sample())], sample())
+    expect(wrapper.find('form').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('rsvp.status')
+  })
+
+  it('labels a missing status as pending when the summary is shown (closed RSVP)', () => {
+    const closed = { ...sample(), isOpen: false }
+    const wrapper = mountNative([rsvpSection(closed)], closed)
+    expect(wrapper.text()).not.toContain('rsvp.status')
+    expect(wrapper.text()).toContain(tt('rsvp.status.pending'))
+  })
+})
