@@ -64,7 +64,7 @@ if (import.meta.env.DEV) {
     const name = route.query.pkg
     if (!inv || inv.__dev || typeof name !== 'string') return
     const { applyDevPackage } = await import('../package/devPackage')
-    invitation.value = { ...(await applyDevPackage(inv, name, { wedding: route.query.wedding === '1' })), __dev: true }
+    invitation.value = { ...(await applyDevPackage(inv, name, { wedding: route.query.wedding === '1', version: typeof route.query.pkgv === 'string' ? route.query.pkgv : undefined })), __dev: true }
   })
 }
 

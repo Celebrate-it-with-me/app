@@ -1,11 +1,11 @@
 /**
- * Development only (loaded with a dynamic import behind import.meta.env.DEV): `?pkg=classic|botanical[&wedding=1]`
+ * Development only (loaded with a dynamic import behind import.meta.env.DEV): `?pkg=classic|botanical[&pkgv=1.0.0][&wedding=1]`
  * dresses the loaded invitation with an example package served by the dev server from dev-packages/.
  * Never part of a production build.
  */
-export async function applyDevPackage(invitation, name, { wedding = false } = {}) {
+export async function applyDevPackage(invitation, name, { wedding = false, version = '1.0.0' } = {}) {
   if (!/^[a-z][a-z0-9-]{1,31}$/.test(name)) return invitation
-  const version = '1.0.0'
+  if (!/^\d+\.\d+\.\d+$/.test(version)) return invitation
   const response = await fetch(`/template-packages/${name}/${version}/payload.json`)
   if (!response.ok) return invitation
   const { devTheme, ...pkg } = await response.json()
