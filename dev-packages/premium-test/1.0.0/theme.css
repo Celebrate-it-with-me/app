@@ -15,7 +15,9 @@
 .pkg-cover__photo { width: 100%; max-width: 24rem; margin: 0 auto 1.5rem; }
 .pkg-cover__names { margin: 0 0 0.75rem; font-family: var(--inv-font-script); font-size: 2.5rem; line-height: 1.1; color: var(--inv-primary); overflow-wrap: anywhere; }
 .pkg-cover__divider { display: block; width: 12rem; height: auto; margin: 0.5rem auto 1rem; }
-.pkg-cover__date { margin: 0 0 1.25rem; font-family: var(--inv-font-heading); color: var(--inv-ink); }
+.pkg-cover__date { max-width: 17rem; margin: 0 auto 1.25rem; font-family: var(--inv-font-heading); font-size: 1.125rem; color: var(--inv-ink); }
+/* The engine spreads weekday / day / month over the full width: keep the row narrow and let the day number lead. */
+.pkg-cover__date .inv-q--date span span:nth-child(2) { font-size: 3rem; line-height: 1; color: var(--inv-primary); }
 .pkg-cover__guest { margin: 0 0 1.5rem; color: var(--inv-ink-soft); }
 .pkg-cover__cta { display: flex; justify-content: center; margin: 0 0 0.75rem; }
 
