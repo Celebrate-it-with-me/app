@@ -16,7 +16,9 @@ const { tt } = useInvitationContext()
 const rows = computed(() => (Array.isArray(props.section.data?.tables) ? props.section.data.tables : []))
 /** One line when everyone shares the table, one per person otherwise. */
 const same = computed(() => props.section.data?.sameTable !== false && rows.value.length > 0)
-const tableLabel = row => tt('tables.table', { name: row.table })
+/** "Mesa 4" for a bare name; a name that already says it ("Mesa de Honor", "Table 4") is shown as it is. */
+const HAS_PREFIX = /^\s*(mesa|table)\b/i
+const tableLabel = row => (HAS_PREFIX.test(String(row.table ?? '')) ? String(row.table).trim() : tt('tables.table', { name: row.table }))
 const seatLabel = row => (row.seat ? tt('tables.seat', { seat: row.seat }) : '')
 </script>
 
@@ -33,8 +35,8 @@ const seatLabel = row => (row.seat ? tt('tables.seat', { seat: row.seat }) : '')
       </div>
       <ul v-else class="divide-y divide-inv-ink/10">
         <li v-for="row in rows" :key="row.personId" class="flex items-center justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
-          <span class="min-w-0 truncate font-inv-heading text-lg">{{ row.name }}</span>
-          <span class="shrink-0 text-right text-inv-ink-soft">
+          <span class="min-w-0 flex-1 break-words font-inv-heading text-lg">{{ row.name }}</span>
+          <span class="max-w-[55%] text-right text-inv-ink-soft break-words">
             {{ tableLabel(row) }}<template v-if="seatLabel(row)"> · {{ seatLabel(row) }}</template>
           </span>
         </li>
