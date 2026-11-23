@@ -1,0 +1,13 @@
+<div class="pkg-sec pkg-cover">
+  <div class="pkg-cover__lang"><q-language-switch variant="buttons"></q-language-switch></div>
+  <img class="pkg-cover__corner" src="assets/img/corner.svg" alt="" width="80" height="80" loading="eager">
+  <p class="pkg-kicker" data-reveal="fade">{{t.kicker}}</p>
+  <div class="pkg-cover__photo" data-reveal="zoom"><q-cover-photo aspect="4:5" priority="true"></q-cover-photo></div>
+  <p data-if="section.text" class="pkg-lead" data-reveal="rise">{{section.text}}</p>
+  <div class="pkg-cover__names" data-reveal="rise" data-reveal-delay="200"><q-names tag="h1" script="true"></q-names></div>
+  <img class="pkg-cover__divider" src="assets/img/divider.svg" alt="" width="240" height="24" loading="lazy">
+  <div class="pkg-cover__date"><q-date format="columns" weekday="long" month="long" time="true"></q-date></div>
+  <p class="pkg-cover__guest">{{t.invitedFor}} <strong>{{guest.name}}</strong></p>
+  <div class="pkg-cover__cta"><q-cta action="confirm" variant="fill"></q-cta></div>
+  <div class="pkg-cover__cta"><q-cta action="calendar" variant="outline"></q-cta></div>
+</div>

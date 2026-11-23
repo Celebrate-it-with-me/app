@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "groups": [
+    {
+      "id": "cover",
+      "label": {
+        "es": "Portada",
+        "en": "Cover"
+      }
+    },
+    {
+      "id": "look",
+      "label": {
+        "es": "Aspecto",
+        "en": "Look"
+      }
+    }
+  ],
+  "fields": [
+    {
+      "id": "cover_photo",
+      "type": "image",
+      "group": "cover",
+      "label": {
+        "es": "Foto de portada",
+        "en": "Cover photo"
+      },
+      "bind": {
+        "section": "cover",
+        "setting": "image",
+        "focus": "focus"
+      },
+      "minWidth": 960,
+      "required": false,
+      "plan": "free"
+    },
+    {
+      "id": "cover_text",
+      "type": "text",
+      "group": "cover",
+      "label": {
+        "es": "Frase de apoyo",
+        "en": "Support phrase"
+      },
+      "bind": {
+        "section": "cover",
+        "field": "text"
+      },
+      "multiline": true,
+      "max": {
+        "es": 160,
+        "en": 160
+      },
+      "plan": "free"
+    },
+    {
+      "id": "palette",
+      "type": "choice",
+      "group": "look",
+      "label": {
+        "es": "Paleta",
+        "en": "Palette"
+      },
+      "bind": {
+        "theme": "preset"
+      },
+      "plan": "free",
+      "choices": [
+        {
+          "value": "rosa",
+          "label": {
+            "es": "Rosa y oro",
+            "en": "Rose & gold"
+          }
+        },
+        {
+          "value": "salvia",
+          "label": {
+            "es": "Salvia y marfil",
+            "en": "Sage & ivory"
+          }
+        },
+        {
+          "value": "noche",
+          "label": {
+            "es": "Azul noche",
+            "en": "Midnight blue"
+          }
+        }
+      ]
+    },
+    {
+      "id": "accent_color",
+      "type": "color",
+      "group": "look",
+      "label": {
+        "es": "Color de acento",
+        "en": "Accent color"
+      },
+      "bind": {
+        "theme": "colors.accent"
+      },
+      "plan": "full"
+    }
+  ]
+}
