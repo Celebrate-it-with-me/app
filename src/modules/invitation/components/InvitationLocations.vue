@@ -103,7 +103,7 @@ const mapSrc = place => {
 
             <div class="mt-6 flex w-full flex-col items-center gap-3">
               <InvitationButton v-if="place.primary" class="w-full sm:w-auto sm:min-w-56" :href="place.primary.href" target="_blank" rel="noopener" :aria-label="tt('locations.directionsIn', { name: place.name })">
-                {{ tt('locations.directions') }} <span class="text-sm font-normal opacity-80">· {{ tt(`locations.${place.primary.id}`) }}</span>
+                {{ tt('locations.directions') }} <span class="text-sm font-normal">· {{ tt(`locations.${place.primary.id}`) }}</span>
               </InvitationButton>
               <ul v-if="place.secondary.length" class="flex flex-wrap items-center justify-center gap-x-1" :aria-label="tt('locations.moreApps')">
                 <li v-for="app in place.secondary" :key="app.id">

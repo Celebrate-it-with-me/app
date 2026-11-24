@@ -80,6 +80,13 @@ describe('INV-011 locations', () => {
     expect(wrapper.findAll('a.inv-button')).toHaveLength(1)
   })
 
+  it('keeps the app name in the directions button at full opacity (R1-001)', () => {
+    vi.stubGlobal('navigator', { userAgent: 'Mozilla/5.0 (Linux; Android 14)' })
+    const primary = render(InvitationLocations, { items: [place()] }).get('a.inv-button')
+    expect(primary.get('span').classes().join(' ')).not.toContain('opacity')
+    expect(primary.text()).toContain('Google Maps')
+  })
+
   it('puts Apple Maps first on Apple devices', () => {
     vi.stubGlobal('navigator', { userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)' })
     expect(render(InvitationLocations, { items: [place()] }).get('a.inv-button').attributes('href')).toBe('https://a.example/m')
