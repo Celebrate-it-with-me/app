@@ -66,6 +66,15 @@ describe('RosterView list', () => {
     expect(document.querySelector('[role="checkbox"]')).toBeNull()
   })
 
+  it('shows a soft red chip with "n of limit" only when the list is over the plan limit', async () => {
+    await setup()
+    expect(document.querySelector('[data-testid="over-limit-chip"]')).toBeNull()
+    wrapper.unmount()
+    roster.list.mockResolvedValue(page([family(1, 'Ana Perez')], { counts: { ...counts, all: 39, limit: 30 } }))
+    await setup()
+    expect(document.querySelector('[data-testid="over-limit-chip"]').textContent).toContain('39 de 30')
+  })
+
   it('filters by delivery from the chips, toggles it off, and keeps it in the address', async () => {
     await setup()
     chip('Con problema').click()
@@ -161,10 +170,12 @@ describe('RosterView list', () => {
     await setup()
     expect(body()).toContain('Aún no hay invitados')
     expect(document.querySelector('[data-testid="send-bar"]')).toBeNull()
-    button('Añadir invitado').click()
+    // ORG-011: import is the primary action, the toolbar buttons are gone while the list is empty.
+    expect(button('Añadir invitado')).toBeUndefined()
+    button('Añadir uno por uno').click()
     await flushPromises()
     expect(body()).toContain('Nuevo invitado')
-    button('Importar').click()
+    button('Importar de Excel o CSV').click()
   })
 
   it('holds the place of the toolbar and the progress while the first load is under way', async () => {

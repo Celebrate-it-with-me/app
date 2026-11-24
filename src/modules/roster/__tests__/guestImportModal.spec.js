@@ -120,14 +120,25 @@ describe('GuestImportModal: choosing a file', () => {
     URL.revokeObjectURL = vi.fn()
     const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
     service.importTemplate.mockResolvedValue(new Blob(['n']))
-    button('Descargar plantilla').click()
+    button('Descargar plantilla de Excel').click()
     await flushPromises()
     expect(service.importTemplate).toHaveBeenCalledWith(7)
     expect(click).toHaveBeenCalled()
     service.importTemplate.mockRejectedValue(new Error('x'))
-    button('Descargar plantilla').click()
+    button('Descargar plantilla de Excel').click()
     await flushPromises()
     expect(toasts()).toContain('No pudimos descargar la plantilla. Inténtalo de nuevo.')
+  })
+
+  it('shows the template button above the drop area and an example of the columns (ORG-024)', async () => {
+    await mountModal()
+    const template = document.querySelector('[data-testid="import-template"]')
+    const zone = document.querySelector('.border-dashed')
+    expect(template.compareDocumentPosition(zone) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    const table = document.querySelector('[data-testid="import-example"] table')
+    expect([...table.querySelectorAll('th')].map(th => th.textContent)).toEqual(['Nombre', 'Teléfono', 'Correo', 'Grupo'])
+    expect(table.querySelectorAll('tbody tr')).toHaveLength(3)
+    expect(table.textContent).toContain('Ana Pérez')
   })
 
   it('starts over from the picker each time it opens', async () => {
@@ -152,7 +163,7 @@ describe('GuestImportModal: preview', () => {
     expect(button('Repetidos').textContent).toContain('1')
     expect(body()).toContain('Con +1 agregado')
     expect(body()).toContain('Revísalos antes de importar')
-    expect(body()).toContain('misma familia')
+    expect(body()).toContain('mismo grupo')
     expect(button('Importar 2 invitados')).toBeTruthy()
   })
 
@@ -260,7 +271,7 @@ describe('GuestImportModal: phone cards', () => {
     await flushPromises()
     expect(body()).toContain('2 de 4 seleccionados')
     expect(cards()[0].textContent).toContain('ana@x.com')
-    expect(cards()[0].textContent).toContain('Familia: Perez')
+    expect(cards()[0].textContent).toContain('Grupo: Perez')
     expect(cards()[1].textContent).toContain('+1 asumido')
     expect(cards()[3].textContent).toContain('Ya existe')
   })
@@ -277,7 +288,7 @@ describe('GuestImportModal: importing', () => {
       { name: 'Ana Perez', phone: '+13055550111', email: 'ana@x.com', family: 'Perez' },
       { name: 'Luis Perez', phone: '+13055550112', family: 'Perez' }
     ])
-    expect(toasts()).toEqual(['Importamos 2 invitados · 1 familia · 1 omitido'])
+    expect(toasts()).toEqual(['Importamos 2 invitados · 1 grupo · 1 omitido'])
     expect(wrapper.emitted('imported')[0][0]).toEqual({ created: 2, families: 1, skipped: 1 })
     expect(wrapper.emitted('update:open')[0]).toEqual([false])
   })

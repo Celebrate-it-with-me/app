@@ -18,7 +18,7 @@ import OnboardingService from '@/modules/onboarding/services/OnboardingService'
 import { allDone, normalizeProgress } from '@/modules/onboarding/utils/steps'
 import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardMore from './DashboardMore.vue'
-import { summarizeRsvp, readiness } from './dashboardLogic'
+import { summarizeRsvp, readiness, readableActivity } from './dashboardLogic'
 
 const { t } = useI18n()
 const { error: showError } = useToast()
@@ -112,7 +112,7 @@ async function loadStart(eventId) {
   }
 }
 
-const activity = computed(() => (activityStore.activities ?? []).slice(0, 5))
+const activity = computed(() => readableActivity(activityStore.activities ?? []).slice(0, 5))
 
 // The invitation's thumbnail: the preview image of the template in use (the only place the app gets it). Best effort: a
 // failure or a template without image just leaves the hero on its fallback card.

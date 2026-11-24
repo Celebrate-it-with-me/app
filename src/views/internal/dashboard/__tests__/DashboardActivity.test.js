@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import i18n, { setLocale } from '@/locales/i18n'
 import DashboardActivity from '../DashboardActivity.vue'
-import { activityTone, ACTIVITY_TONES, ACTIVITY_TONE_FALLBACK } from '../dashboardLogic'
+import { activityTone, ACTIVITY_TONES, ACTIVITY_TONE_FALLBACK, readableActivity } from '../dashboardLogic'
 
 const entry = (id, icon, color) => ({ id, type: 'x', message: `Mensaje ${id}`, icon, color, createdAt: 'hace 1 hora' })
 const mountActivity = activity => mount(DashboardActivity, { props: { activity }, global: { plugins: [i18n] } })
@@ -15,6 +15,19 @@ describe('activityTone', () => {
   })
   it('falls back to a neutral chip for unknown, empty or missing colours', () => {
     ;['paint', '', null, undefined, 42].forEach(c => expect(activityTone(c)).toBe(ACTIVITY_TONE_FALLBACK))
+  })
+})
+
+describe('readableActivity (ORG-016)', () => {
+  it('drops entries with no message or only the generic fallback, in both languages', () => {
+    const items = [{ id: 1, message: 'Actividad registrada.' }, { id: 2, message: ' Activity logged. ' }, { id: 3, message: '' }, { id: 4 }, { id: 5, message: 'Valentina confirmó' }]
+    expect(readableActivity(items).map(i => i.id)).toEqual([5])
+    expect(readableActivity()).toEqual([])
+  })
+  it('shows the empty text when nothing readable is left', () => {
+    const w = mountActivity([{ id: 1, message: 'Actividad registrada.', icon: 'bell', color: 'blue' }])
+    expect(w.text()).toContain('Cuando pase algo en tu evento')
+    expect(w.findAll('[data-testid=activity-chip]')).toHaveLength(0)
   })
 })
 

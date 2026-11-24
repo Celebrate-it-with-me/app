@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import { UiButton, UiField, UiInput, UiBadge, UiPagination, UiAvatar, UiSelect, useToast } from '@/ui'
@@ -129,6 +129,36 @@ describe('UiSelect lazy', () => {
     const wrapper = mount(UiSelect, { props: { id: 'lang', modelValue: 'es', options }, attachTo: document.body })
     expect(wrapper.get('button#lang').attributes('data-state')).toBe('closed')
     wrapper.unmount()
+  })
+})
+
+describe('UiSelect accessible name (ORG-020)', () => {
+  const options = [{ value: 'a', label: 'A' }]
+
+  it('puts aria-label and aria-labelledby on the trigger, in the real select and in the lazy button', () => {
+    const real = mount(UiSelect, { props: { id: 's1', modelValue: 'a', options, ariaLabel: 'Sort by' }, attachTo: document.body })
+    expect(real.get('button#s1').attributes('aria-label')).toBe('Sort by')
+    const lazy = mount(UiSelect, { props: { id: 's2', modelValue: 'a', options, ariaLabelledby: 'caption', lazy: true }, attachTo: document.body })
+    expect(lazy.get('button#s2').attributes('aria-labelledby')).toBe('caption')
+    real.unmount()
+    lazy.unmount()
+  })
+
+  it('warns in development when nothing names it, and stays quiet when something does', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const nameless = mount(UiSelect, { props: { id: 's3', modelValue: 'a', options }, attachTo: document.body })
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('No accessible name'))
+    warn.mockClear()
+    const named = mount(UiSelect, { props: { id: 's4', modelValue: 'a', options, ariaLabel: 'Sort by' }, attachTo: document.body })
+    const label = document.createElement('label')
+    label.setAttribute('for', 's5')
+    label.textContent = 'Language'
+    document.body.append(label)
+    const labelled = mount(UiSelect, { props: { id: 's5', modelValue: 'a', options }, attachTo: document.body })
+    expect(warn).not.toHaveBeenCalled()
+    ;[nameless, named, labelled].forEach(w => w.unmount())
+    label.remove()
+    warn.mockRestore()
   })
 })
 

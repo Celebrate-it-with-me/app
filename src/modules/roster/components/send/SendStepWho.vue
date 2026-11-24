@@ -32,7 +32,8 @@ const options = computed(() =>
       value: key,
       label: key === 'selected' ? t('app.whatsapp.wizard.who.selected') : `${t(`app.whatsapp.wizard.who.${key}`)} · ${t('app.whatsapp.wizard.who.families', { n }, n)}`,
       description: !open ? t('app.whatsapp.wizard.who.pendingClosed') : t(`app.whatsapp.wizard.who.${key}Help`),
-      disabled: !open
+      // A card with nobody in it is not a choice (ORG-012); the one already selected stays enabled so the group never ends up checked and disabled.
+      disabled: !open || (key !== 'selected' && n === 0 && key !== props.category)
     }
   })
 )

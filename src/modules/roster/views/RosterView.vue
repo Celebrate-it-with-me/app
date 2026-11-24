@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { FileSpreadsheet, Plus, Search, Send } from 'lucide-vue-next'
-import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast } from '@/ui'
+import { UiPageHeader, UiBadge, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { planLimitFrom } from '@/utils/planLimit'
@@ -253,6 +253,10 @@ onMounted(() => {
 const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), count: counts.value[tab.count] })))
 const answered = computed(() => counts.value.attending + counts.value.notAttending)
 const filtered = computed(() => !!search.value.trim() || status.value !== 'all' || !!delivery.value)
+/** Nobody on the list yet (and not because of a filter or an error): import is the main way in, so the toolbar buttons give way to the empty state (ORG-011). */
+const emptyList = computed(() => !loading.value && !loadFailed.value && !filtered.value && !families.value.length)
+/** Over the plan's guest limit: a soft red chip under the title says "39 of 30" at a glance (ORG-013). */
+const overLimit = computed(() => !!counts.value.limit && counts.value.all > counts.value.limit)
 const chips = computed(() => (counts.value.delivery ? deliveryChips(counts.value.delivery, { automatic: waAutomatic.value }) : []))
 const unsent = computed(() => counts.value.delivery?.unsent ?? 0)
 const canSend = computed(() => canEdit.value && counts.value.all > 0)
@@ -376,6 +380,7 @@ async function copyLink(family) {
         </div>
       </template>
     </UiPageHeader>
+    <UiBadge v-if="overLimit" tone="danger" class="-mt-3 mb-4" data-testid="over-limit-chip">{{ t('app.roster.overLimitChip', { n: counts.all, limit: counts.limit }) }}</UiBadge>
     <div v-if="canSend" ref="inlineSend" class="mb-4 sm:hidden" data-testid="send-inline">
       <UiButton block @click="openSend">
         <Send class="h-4 w-4" aria-hidden="true" />
@@ -449,7 +454,7 @@ async function copyLink(family) {
       </div>
     </div>
 
-    <div v-if="canEdit || (event?.id && counts.all)" class="mt-4 flex flex-wrap items-center gap-2">
+    <div v-if="!emptyList && (canEdit || (event?.id && counts.all))" class="mt-4 flex flex-wrap items-center gap-2">
       <div v-if="!counts.all && loading && (event?.guestsCount ?? 0) > 0" class="h-11 w-36" aria-hidden="true" data-testid="download-placeholder" />
       <template v-if="canEdit">
         <UiButton variant="secondary" @click="openForm()">
@@ -490,7 +495,16 @@ async function copyLink(family) {
       :title="t(filtered ? 'app.roster.noResultsTitle' : 'app.roster.emptyTitle')"
       :description="t(filtered ? 'app.roster.noResultsText' : 'app.roster.emptyText')"
     >
-      <UiButton v-if="canEdit && !filtered" @click="openForm()">{{ t('app.roster.add') }}</UiButton>
+      <div v-if="canEdit && !filtered" class="flex flex-col items-stretch gap-2 sm:flex-row sm:justify-center">
+        <UiButton @click="importOpen = true">
+          <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
+          {{ t('app.roster.importExcel') }}
+        </UiButton>
+        <UiButton variant="secondary" @click="openForm()">
+          <Plus class="h-4 w-4" aria-hidden="true" />
+          {{ t('app.roster.addOne') }}
+        </UiButton>
+      </div>
     </UiEmptyState>
 
     <ul v-else class="mt-5 space-y-3 transition-opacity duration-150" :class="loading && 'opacity-50'" :aria-busy="loading">
