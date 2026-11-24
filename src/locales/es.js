@@ -2817,7 +2817,7 @@ export default {
     guests: {
       removeCount: '{n} invitados | {n} invitado | {n} invitados',
       bannerTitle: 'Pasaste el límite del plan gratis',
-      banner: 'Tienes {total} invitados y el plan gratis permite {limit}. Sigue armando tu lista: para publicar, desbloquea tu evento o elimina {remove}.',
+      banner: 'Tienes {total} invitados; el plan gratis permite {limit}. Para publicar, desbloquea tu evento o elimina {remove}.',
       publishBlocked: 'Tu lista tiene {total} invitados y el plan gratis permite {limit}. Desbloquea tu evento completo o elimina {remove} para poder publicar.',
       addBlocked: 'Tu invitación ya está publicada y el plan gratis permite {limit} invitados. Desbloquea tu evento completo para agregar más.',
       unlock: 'Desbloquear evento completo',

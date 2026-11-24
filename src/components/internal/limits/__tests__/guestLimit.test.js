@@ -34,7 +34,7 @@ describe('GuestLimitNotice', () => {
   it('as a banner: says how far over the list is and what to do, with the real numbers', () => {
     const wrapper = mount(GuestLimitNotice, { props: { info }, ...setup(null) })
     expect(text(wrapper)).toContain('Pasaste el límite del plan gratis')
-    expect(text(wrapper)).toContain('Tienes 47 invitados y el plan gratis permite 30')
+    expect(text(wrapper)).toContain('Tienes 47 invitados; el plan gratis permite 30. Para publicar, desbloquea tu evento o elimina 17 invitados.')
     expect(text(wrapper)).toContain('elimina 17 invitados')
     expect(wrapper.get('a').attributes('href')).toBe('/dashboard/unlock/guests-limit')
   })
