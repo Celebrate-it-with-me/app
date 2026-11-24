@@ -510,6 +510,13 @@ export default {
       votesLeftNone: 'Ya usaste todos tus votos.',
       playPreview: 'Escuchar avance',
       pausePreview: 'Pausar avance',
+      listen: 'Escuchar',
+      player: {
+        close: 'Cerrar',
+        openInSpotify: 'Abrir en Spotify',
+        frameTitle: 'Reproductor de Spotify: {title}',
+        note: 'Al reproducir, Spotify puede guardar cookies en tu dispositivo.'
+      },
       previewError: 'No pudimos reproducir el avance.',
       sample: {
         1: { title: 'Tu canción favorita', artist: 'Artista' },

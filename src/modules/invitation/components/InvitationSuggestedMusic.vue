@@ -5,6 +5,8 @@ import InvitationService from '@/services/PublicEvents/InvitationService'
 import { useInvitationContext } from '../composables/useInvitation'
 import { safeHttpsUrl } from '../composables/safeUrl'
 import { AUDIO_EVENT, announceAudio } from '../composables/audioBus'
+import { spotifyTrackId } from '../composables/spotifyTrack'
+import InvitationSongPlayer from './InvitationSongPlayer.vue'
 import InvitationSection from './InvitationSection.vue'
 import InvitationPanel from './InvitationPanel.vue'
 import InvitationButton from './InvitationButton.vue'
@@ -351,6 +353,21 @@ function onVisibility() {
   if (document.hidden) stopPreview()
 }
 
+// ---- Popup with Spotify's embedded player: one at a time, mounted only on tap ----------------------------------------
+const player = ref(null) // the song in the popup, or null
+const playerOpener = ref(null) // the button that opened it, to give the focus back
+
+function openPlayer(song, event) {
+  if (preview || !spotifyTrackId(song)) return
+  stopPreview() // the 30 s preview (if any) and the background music step aside; the embed cannot be paused from here
+  announceAudio('suggested-music')
+  playerOpener.value = event?.currentTarget ?? null
+  player.value = song
+}
+function closePlayer() {
+  player.value = null
+}
+
 // ---- Lifecycle ------------------------------------------------------------------------------------------------------
 let observer
 onMounted(() => {
@@ -392,6 +409,7 @@ const votesLeftText = computed(() => {
 })
 const searchErrorText = computed(() => (searchError.value ? tt(`songs.errors.${searchError.value}`) : ''))
 const initial = song => [...(song.title || '?')][0].toUpperCase()
+const canPlay = song => !preview && !!spotifyTrackId(song)
 const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
 </script>
 
@@ -450,6 +468,16 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
                 <span class="block truncate text-sm text-inv-ink-soft">{{ song.artist }}</span>
               </span>
               <div class="inv-songs__actions ml-auto flex shrink-0 items-center gap-2">
+              <button
+                v-if="canPlay(song)"
+                type="button"
+                class="inv-songs__listen inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-inv-primary px-3 text-sm font-semibold text-inv-primary transition-[background-color,scale] duration-150 ease-out hover:bg-inv-primary/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary active:scale-[0.97]"
+                :aria-label="`${tt('songs.listen')}: ${song.title}`"
+                data-testid="song-listen"
+                @click="openPlayer(song, $event)"
+              >
+                <Play class="h-4 w-4" aria-hidden="true" />{{ tt('songs.listen') }}
+              </button>
               <button
                 v-if="previewable(song)"
                 type="button"
@@ -532,7 +560,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
           </p>
 
           <template v-else>
-            <ul :aria-label="tt('songs.list')" :class="variant === 'cards' ? 'grid gap-3 sm:grid-cols-2' : 'flex flex-col gap-3'">
+            <ul :aria-label="tt('songs.list')" :class="variant === 'cards' ? 'grid grid-cols-1 gap-3 sm:grid-cols-2' : 'flex flex-col gap-3'">
               <li
                 v-for="item in shown"
                 :key="item.id"
@@ -549,6 +577,16 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
                   <span v-if="previewFailed === item.id" class="block text-xs text-danger-700" role="alert">{{ tt('songs.previewError') }}</span>
                 </span>
                 <div class="inv-songs__actions ml-auto flex shrink-0 items-center gap-2">
+                <button
+                    v-if="canPlay(item)"
+                    type="button"
+                    class="inv-songs__listen inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border border-inv-primary px-3 text-sm font-semibold text-inv-primary transition-[background-color,scale] duration-150 ease-out hover:bg-inv-primary/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary active:scale-[0.97]"
+                    :aria-label="`${tt('songs.listen')}: ${item.title}`"
+                    data-testid="song-listen"
+                    @click="openPlayer(item, $event)"
+                >
+                    <Play class="h-4 w-4" aria-hidden="true" />{{ tt('songs.listen') }}
+                </button>
                 <button
                   v-if="previewable(item)"
                   type="button"
@@ -600,6 +638,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
         </div>
       </div>
     </div>
+    <InvitationSongPlayer :song="player" :opener="playerOpener" @close="closePlayer" />
   </InvitationSection>
 </template>
 
