@@ -66,6 +66,15 @@ describe('RosterView list', () => {
     expect(document.querySelector('[role="checkbox"]')).toBeNull()
   })
 
+  it('shows a soft red chip with "n of limit" only when the list is over the plan limit', async () => {
+    await setup()
+    expect(document.querySelector('[data-testid="over-limit-chip"]')).toBeNull()
+    wrapper.unmount()
+    roster.list.mockResolvedValue(page([family(1, 'Ana Perez')], { counts: { ...counts, all: 39, limit: 30 } }))
+    await setup()
+    expect(document.querySelector('[data-testid="over-limit-chip"]').textContent).toContain('39 de 30')
+  })
+
   it('filters by delivery from the chips, toggles it off, and keeps it in the address', async () => {
     await setup()
     chip('Con problema').click()

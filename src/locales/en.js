@@ -1787,6 +1787,7 @@ export default {
       retryLoad: 'Try again',
       counter: '{n} person | {n} people',
       counterLimit: '{n} of {limit} people on your plan',
+      overLimitChip: '{n} of {limit} · over the limit',
       search: 'Search by name, phone or email',
       add: 'Add guest',
       tabs: { all: 'All', attending: 'Confirmed', pending: 'Pending', 'not-attending': 'Declined' },

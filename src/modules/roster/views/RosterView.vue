@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { FileSpreadsheet, Plus, Search, Send } from 'lucide-vue-next'
-import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast } from '@/ui'
+import { UiPageHeader, UiBadge, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { planLimitFrom } from '@/utils/planLimit'
@@ -255,6 +255,8 @@ const answered = computed(() => counts.value.attending + counts.value.notAttendi
 const filtered = computed(() => !!search.value.trim() || status.value !== 'all' || !!delivery.value)
 /** Nobody on the list yet (and not because of a filter or an error): import is the main way in, so the toolbar buttons give way to the empty state (ORG-011). */
 const emptyList = computed(() => !loading.value && !loadFailed.value && !filtered.value && !families.value.length)
+/** Over the plan's guest limit: a soft red chip under the title says "39 of 30" at a glance (ORG-013). */
+const overLimit = computed(() => !!counts.value.limit && counts.value.all > counts.value.limit)
 const chips = computed(() => (counts.value.delivery ? deliveryChips(counts.value.delivery, { automatic: waAutomatic.value }) : []))
 const unsent = computed(() => counts.value.delivery?.unsent ?? 0)
 const canSend = computed(() => canEdit.value && counts.value.all > 0)
@@ -378,6 +380,7 @@ async function copyLink(family) {
         </div>
       </template>
     </UiPageHeader>
+    <UiBadge v-if="overLimit" tone="danger" class="-mt-3 mb-4" data-testid="over-limit-chip">{{ t('app.roster.overLimitChip', { n: counts.all, limit: counts.limit }) }}</UiBadge>
     <div v-if="canSend" ref="inlineSend" class="mb-4 sm:hidden" data-testid="send-inline">
       <UiButton block @click="openSend">
         <Send class="h-4 w-4" aria-hidden="true" />
