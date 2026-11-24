@@ -105,23 +105,51 @@
       "settings": {}
     },
     {
-      "type": "closing",
+      "type": "tables",
       "enabled": true,
       "order": 8,
       "title": {
-        "es": "Gracias por acompañarnos",
-        "en": "Thank you for celebrating with us"
+        "es": "Tu mesa",
+        "en": "Your table"
       },
       "text": {
-        "es": "Los esperamos con mucho cariño.",
-        "en": "We can’t wait to see you."
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "suggested_music",
+      "enabled": true,
+      "order": 9,
+      "title": {
+        "es": "Tu música",
+        "en": "Your music"
+      },
+      "text": {
+        "es": "Sugiere las canciones que no pueden faltar.",
+        "en": "Suggest the songs we can’t miss."
+      },
+      "settings": {}
+    },
+    {
+      "type": "comments",
+      "enabled": true,
+      "order": 10,
+      "title": {
+        "es": "Deja un mensaje",
+        "en": "Leave a message"
+      },
+      "text": {
+        "es": null,
+        "en": null
       },
       "settings": {}
     },
     {
       "type": "music",
       "enabled": true,
-      "order": 9,
+      "order": 11,
       "title": {
         "es": null,
         "en": null
@@ -133,6 +161,20 @@
       "settings": {
         "title": null
       }
+    },
+    {
+      "type": "closing",
+      "enabled": true,
+      "order": 12,
+      "title": {
+        "es": "Gracias por acompañarnos",
+        "en": "Thank you for celebrating with us"
+      },
+      "text": {
+        "es": "Los esperamos con mucho cariño.",
+        "en": "We can’t wait to see you."
+      },
+      "settings": {}
     }
   ],
   "quinceanera": [
@@ -241,23 +283,51 @@
       "settings": {}
     },
     {
-      "type": "closing",
+      "type": "tables",
       "enabled": true,
       "order": 8,
       "title": {
-        "es": "Gracias por ser parte de mi día",
-        "en": "Thank you for being part of my day"
+        "es": "Tu mesa",
+        "en": "Your table"
       },
       "text": {
-        "es": "Te espero con mucho cariño.",
-        "en": "I can’t wait to see you."
+        "es": null,
+        "en": null
+      },
+      "settings": {}
+    },
+    {
+      "type": "suggested_music",
+      "enabled": true,
+      "order": 9,
+      "title": {
+        "es": "Tu música",
+        "en": "Your music"
+      },
+      "text": {
+        "es": "Sugiere las canciones que no pueden faltar.",
+        "en": "Suggest the songs we can’t miss."
+      },
+      "settings": {}
+    },
+    {
+      "type": "comments",
+      "enabled": true,
+      "order": 10,
+      "title": {
+        "es": "Deja un mensaje",
+        "en": "Leave a message"
+      },
+      "text": {
+        "es": null,
+        "en": null
       },
       "settings": {}
     },
     {
       "type": "music",
       "enabled": true,
-      "order": 9,
+      "order": 11,
       "title": {
         "es": null,
         "en": null
@@ -269,6 +339,20 @@
       "settings": {
         "title": null
       }
+    },
+    {
+      "type": "closing",
+      "enabled": true,
+      "order": 12,
+      "title": {
+        "es": "Gracias por ser parte de mi día",
+        "en": "Thank you for being part of my day"
+      },
+      "text": {
+        "es": "Te espero con mucho cariño.",
+        "en": "I can’t wait to see you."
+      },
+      "settings": {}
     }
   ]
 }
