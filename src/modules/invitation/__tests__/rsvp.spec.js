@@ -26,7 +26,7 @@ function rsvpData(overrides = {}) {
   }
 }
 
-function mountRsvp(data) {
+function mountRsvp(data, context = {}) {
   const updateSection = vi.fn()
   const wrapper = mount(InvitationRsvp, {
     props: { section: { type: 'rsvp', title: '¿Me acompañas?', text: null, data } },
@@ -38,7 +38,8 @@ function mountRsvp(data) {
           formatDate: () => '10 de diciembre',
           slug: () => 'xv-de-valentina',
           code: () => 'AB1234',
-          updateSection
+          updateSection,
+          ...context
         }
       }
     }
@@ -70,6 +71,39 @@ describe('InvitationRsvp', () => {
     await radios(wrapper, 2)[0].setValue(true)
     expect(wrapper.find('fieldset[data-unanswered]').exists()).toBe(false)
     expect(wrapper.find('[data-rsvp-problem]').exists()).toBe(false)
+  })
+
+  it('joins the names with commas when Intl.ListFormat is unavailable', async () => {
+    const original = Intl.ListFormat
+    Intl.ListFormat = function () {
+      throw new Error('unsupported')
+    }
+    try {
+      const { wrapper } = mountRsvp(rsvpData())
+      await wrapper.get('form').trigger('submit')
+      expect(wrapper.get('[data-rsvp-problem]').text()).toBe(tt('rsvp.chooseFor', { names: 'Rosa, Jorge' }))
+    } finally {
+      Intl.ListFormat = original
+    }
+  })
+
+  it('does not send nor flag anything in preview mode', async () => {
+    const { wrapper } = mountRsvp(rsvpData(), { preview: true })
+    await wrapper.get('form').trigger('submit')
+    expect(saveRsvp).not.toHaveBeenCalled()
+    expect(wrapper.find('[data-rsvp-problem]').exists()).toBe(false)
+  })
+
+  it('still shows the problem when there is nothing to focus', async () => {
+    const { wrapper } = mountRsvp(rsvpData())
+    const spy = vi.spyOn(HTMLFormElement.prototype, 'querySelector').mockReturnValue(null)
+    try {
+      await wrapper.get('form').trigger('submit')
+      await flushPromises()
+      expect(wrapper.get('[data-rsvp-problem]').exists()).toBe(true)
+    } finally {
+      spy.mockRestore()
+    }
   })
 
   it('names everyone who is missing and focuses the first one', async () => {
