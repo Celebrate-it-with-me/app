@@ -15,7 +15,6 @@
 .pkg-cl-arch { position: relative; margin-bottom: 2rem; }
 .pkg-cl-arch::before { content: ""; position: absolute; inset: -0.75rem; border: 1px solid color-mix(in oklab, var(--inv-accent) 45%, transparent); border-radius: 9999px 9999px 0 0; pointer-events: none; }
 .pkg-cl-arch .inv-q--cover-photo { width: 10rem; height: 13rem; display: flex; align-items: center; justify-content: center; border-radius: 9999px 9999px 0 0; background-color: var(--inv-surface-alt); box-shadow: 0 0 0 1px color-mix(in oklab, var(--inv-accent) 60%, transparent), 0 4px 12px rgba(43,36,32,.08), 0 24px 48px -16px rgba(43,36,32,.24); }
-.pkg-cl-arch .inv-q--cover-photo[data-empty] { background-image: linear-gradient(to bottom, color-mix(in oklab, var(--inv-primary) 14%, transparent), color-mix(in oklab, var(--inv-accent) 18%, transparent)); }
 .pkg-cl-arch .inv-q-photo__emblem { color: var(--pkg-accent-ink); }
 
 .pkg-cl-phrase { margin: 0; font-family: var(--pkg-script); font-size: 2.25rem; line-height: 1.25; color: var(--pkg-primary-ink); }
@@ -68,6 +67,11 @@
 .pkg-sec { position: relative; padding: 5rem 1.5rem; }
 .pkg-sec--alt { background-color: var(--inv-surface-alt); }
 .pkg-sec--deep { background-color: color-mix(in oklab, var(--inv-primary) 38%, #1b0f12); color: var(--inv-surface); }
+/* Band rhythm of the native Classic: two warm bands in a row would merge, so every second one falls back to paper (the app does it for its own sections only). The wrappers are siblings, so the pairs that can meet are matched by type. */
+[data-inv-section="rsvp"] + [data-inv-section="suggested_music"] .pkg-sec--alt,
+[data-inv-section="rsvp"] + [data-inv-section="comments"] .pkg-sec--alt,
+[data-inv-section="suggested_music"] + [data-inv-section="comments"] .pkg-sec--alt { background-color: var(--inv-surface); }
+[data-inv-section="rsvp"] + [data-inv-section="suggested_music"] + [data-inv-section="comments"] .pkg-sec--alt { background-color: var(--inv-surface-alt); }
 .pkg-sec__in { position: relative; margin-inline: auto; max-width: 42rem; text-align: center; }
 .pkg-flourish { display: block; margin-inline: auto; width: 12rem; height: 1.5rem; background-color: var(--inv-accent); mask: url(assets/flourish.svg) center / 100% 100% no-repeat; }
 .pkg-sec--deep .pkg-flourish { filter: brightness(1.25); }
