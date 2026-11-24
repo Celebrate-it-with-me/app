@@ -8,7 +8,8 @@
     <div class="pkg-cl-arch" data-reveal="zoom"><q-cover-photo priority="true"></q-cover-photo></div>
     <p data-if="section.title" class="pkg-cl-phrase" data-reveal="rise" data-reveal-delay="200">{{section.title}}</p>
     <h1 class="pkg-cl-name" data-reveal="rise" data-reveal-delay="300">{{event.name}}</h1>
-    <p data-if="section.text" class="pkg-cl-text" data-reveal="rise" data-reveal-delay="400">{{section.text}}</p>
+    <p data-if="event.description" class="pkg-cl-intro pkg-cl-intro--desc" data-reveal="rise" data-reveal-delay="400">{{event.description}}</p>
+    <p data-if="section.text" class="pkg-cl-intro pkg-cl-intro--text" data-reveal="rise" data-reveal-delay="400">{{section.text}}</p>
     <div class="pkg-cl-date" data-reveal="rise" data-reveal-delay="600">
       <div class="pkg-cl-date__row">
         <p class="pkg-cl-date__side pkg-cl-date__side--l">{{event.date|weekday}}</p>
@@ -17,7 +18,6 @@
       </div>
       <p class="pkg-cl-date__sub">{{event.date|year}} · {{event.time}}</p>
     </div>
-    <p data-if="event.description" class="pkg-cl-desc" data-reveal="rise" data-reveal-delay="600">{{event.description}}</p>
     <div class="pkg-cl-guest" data-reveal="rise" data-reveal-delay="800">
       <p class="pkg-cl-guest__label">{{t.invitedFor}}</p>
       <p class="pkg-cl-guest__name">{{guest.name}}</p>

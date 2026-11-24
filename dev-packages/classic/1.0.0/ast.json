@@ -151,6 +151,95 @@
                 }
             ]
         },
+        "comments": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--alt"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "comments",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
         "countdown": {
             "v": 1,
             "kind": "section",
@@ -391,13 +480,35 @@
                                 },
                                 {
                                     "t": "if",
+                                    "path": "event.description",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-cl-intro pkg-cl-intro--desc",
+                                                "data-reveal": "rise",
+                                                "data-reveal-delay": "400"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "event.description",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
                                     "path": "section.text",
                                     "children": [
                                         {
                                             "t": "el",
                                             "tag": "p",
                                             "attrs": {
-                                                "class": "pkg-cl-text",
+                                                "class": "pkg-cl-intro pkg-cl-intro--text",
                                                 "data-reveal": "rise",
                                                 "data-reveal-delay": "400"
                                             },
@@ -490,28 +601,6 @@
                                                 {
                                                     "t": "var",
                                                     "path": "event.time",
-                                                    "filter": null
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "t": "if",
-                                    "path": "event.description",
-                                    "children": [
-                                        {
-                                            "t": "el",
-                                            "tag": "p",
-                                            "attrs": {
-                                                "class": "pkg-cl-desc",
-                                                "data-reveal": "rise",
-                                                "data-reveal-delay": "600"
-                                            },
-                                            "children": [
-                                                {
-                                                    "t": "var",
-                                                    "path": "event.description",
                                                     "filter": null
                                                 }
                                             ]
@@ -1200,6 +1289,184 @@
                                         {
                                             "t": "q",
                                             "name": "save-the-date",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "suggested_music": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--alt"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "suggested-music",
+                                            "props": {},
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "tables": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-sec pkg-sec--plain"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-sec__in"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "span",
+                                    "attrs": {
+                                        "class": "pkg-flourish",
+                                        "aria-hidden": "true"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.title",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "h2",
+                                            "attrs": {
+                                                "class": "pkg-sec__title"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.title",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-sec__text"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-sec__body"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "tables",
                                             "props": {},
                                             "attrs": {},
                                             "children": []
