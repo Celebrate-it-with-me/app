@@ -58,26 +58,42 @@ function measureEnvironment() {
   stack.value = !music || variant === 'button' ? 'none' : variant === 'bar' ? 'always' : 'phone'
 }
 
-let io = null
-function observe() {
+let frame = 0
+let cover = null
+let measured = false
+/**
+ * Reads the live position of the cover and of the RSVP section. A scroll listener (one read per frame) instead of an
+ * IntersectionObserver: that one stays silent when the guest jumps past the RSVP (an anchor, a fast flick) and the
+ * state would go stale.
+ */
+function update() {
+  frame = 0
   const doc = globalThis.document
-  const cover = doc.querySelector('#cover, .inv-cover')
+  cover = cover?.isConnected ? cover : doc.querySelector('#cover, .inv-cover')
   const target = doc.getElementById('rsvp')
-  if (!('IntersectionObserver' in globalThis)) return
-  io = new IntersectionObserver(entries => {
-    for (const entry of entries) {
-      if (entry.target === cover) coverVisible.value = entry.isIntersecting
-      else if (entry.target === target) rsvpAhead.value = !entry.isIntersecting && entry.boundingClientRect.top > 0
-    }
-    measureEnvironment()
-  })
-  if (cover) io.observe(cover)
-  else coverVisible.value = false
-  if (target) io.observe(target)
+  const coverOn = cover ? cover.getBoundingClientRect().bottom > 0 : false
+  const ahead = target ? target.getBoundingClientRect().top >= globalThis.innerHeight : false
+  // The surroundings (music control, a package's own CTA) are only looked at when the verdict changes: no style reads per scroll frame.
+  const changed = coverOn !== coverVisible.value || ahead !== rsvpAhead.value
+  coverVisible.value = coverOn
+  rsvpAhead.value = ahead
+  if (changed || !measured) measureEnvironment()
+  measured = true
+}
+function schedule() {
+  if (!frame) frame = globalThis.requestAnimationFrame(update)
 }
 
-onMounted(() => nextTick(() => (measureEnvironment(), observe())))
-onBeforeUnmount(() => io?.disconnect())
+onMounted(() => {
+  globalThis.addEventListener('scroll', schedule, { passive: true })
+  globalThis.addEventListener('resize', schedule, { passive: true })
+  nextTick(update)
+})
+onBeforeUnmount(() => {
+  globalThis.removeEventListener('scroll', schedule)
+  globalThis.removeEventListener('resize', schedule)
+  globalThis.cancelAnimationFrame?.(frame)
+})
 
 /** Smooth scroll to the RSVP and focus its first control (without a second jump). */
 function go() {
@@ -98,7 +114,7 @@ function go() {
     >
       <InvitationButton
         v-if="shown"
-        class="inv-q inv-q--rsvp-fab pointer-events-auto min-w-44 shadow-pop"
+        class="inv-q--rsvp-fab pointer-events-auto min-w-44 shadow-pop"
         data-inv-fab="rsvp"
         data-inv-system-ui
         data-testid="invitation-rsvp-fab"

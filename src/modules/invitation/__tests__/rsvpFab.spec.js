@@ -9,25 +9,16 @@ import InvitationRsvpFab from '../components/InvitationRsvpFab.vue'
 
 const tt = (key, params = {}) => i18n.global.t(`invitation.${key}`, params, { locale: 'es' })
 
-/** A controllable IntersectionObserver: tests push entries by hand. */
-let observers = []
-class FakeObserver {
-  constructor(callback) {
-    this.callback = callback
-    this.targets = []
-    observers.push(this)
-  }
-  observe(el) {
-    this.targets.push(el)
-  }
-  disconnect() {
-    this.targets = []
-  }
+/** Moves the page: where the bottom of the cover and the top of the RSVP are relative to the viewport. */
+function scrollTo({ coverBottom, rsvpTop }) {
+  const cover = document.querySelector('.inv-cover')
+  const target = document.getElementById('rsvp')
+  if (cover) cover.getBoundingClientRect = () => ({ bottom: coverBottom })
+  if (target) target.getBoundingClientRect = () => ({ top: rsvpTop })
+  window.dispatchEvent(new Event('scroll'))
 }
-const fire = (target, isIntersecting, top = 0) => {
-  const observer = observers.find(item => item.targets.includes(target))
-  observer.callback([{ target, isIntersecting, boundingClientRect: { top } }])
-}
+const COVER_ON = { coverBottom: 400, rsvpTop: 2000 }
+const PAST_COVER = { coverBottom: -200, rsvpTop: 1500 }
 
 let page
 const rsvpSection = (data = {}) => ({ type: 'rsvp', data: { isOpen: true, guest: { id: 1, status: 'pending' }, ...data } })
@@ -52,13 +43,17 @@ async function mountFab({ sections = [rsvpSection()], ...pageOptions } = {}) {
     global: { provide: { [INVITATION_KEY]: { invitation: ref({ sections }), tt } } }
   })
   await flushPromises()
-  return { wrapper, root, cover: root.querySelector('.inv-cover'), target: root.querySelector('#rsvp') }
+  return { wrapper, root, target: root.querySelector('#rsvp') }
+}
+const go = async position => {
+  scrollTo(position)
+  await flushPromises()
 }
 const button = wrapper => wrapper.find('[data-testid="invitation-rsvp-fab"]')
 
 beforeEach(() => {
-  observers = []
-  vi.stubGlobal('IntersectionObserver', FakeObserver)
+  vi.stubGlobal('requestAnimationFrame', callback => (queueMicrotask(callback), 1))
+  vi.stubGlobal('innerHeight', 844)
   Element.prototype.scrollIntoView = vi.fn()
 })
 afterEach(() => {
@@ -69,53 +64,48 @@ afterEach(() => {
 
 describe('InvitationRsvpFab', () => {
   it('stays hidden while the cover is on screen and appears once it scrolls away', async () => {
-    const { wrapper, cover } = await mountFab()
+    const { wrapper } = await mountFab()
+    await go(COVER_ON)
     expect(button(wrapper).exists()).toBe(false)
-    fire(cover, true)
-    fire(document.getElementById('rsvp'), false, 2000)
-    await flushPromises()
-    expect(button(wrapper).exists()).toBe(false)
-    fire(cover, false)
-    await flushPromises()
+    await go(PAST_COVER)
     expect(button(wrapper).exists()).toBe(true)
     expect(button(wrapper).text()).toBe(tt('confirmCta'))
   })
 
-  it('goes away when the RSVP reaches the screen and does not come back once the guest is past it', async () => {
-    const { wrapper, cover, target } = await mountFab()
-    fire(cover, false)
-    fire(target, false, 1500)
-    await flushPromises()
+  it('goes away when the RSVP reaches the screen and stays away once the guest is past it', async () => {
+    const { wrapper } = await mountFab()
+    await go(PAST_COVER)
     expect(button(wrapper).exists()).toBe(true)
-    fire(target, true, 100)
-    await flushPromises()
+    await go({ coverBottom: -1500, rsvpTop: 100 })
     expect(button(wrapper).exists()).toBe(false)
-    fire(target, false, -900)
-    await flushPromises()
+    await go({ coverBottom: -3000, rsvpTop: -900 })
     expect(button(wrapper).exists()).toBe(false)
   })
 
+  it('comes back when the guest jumps from below the RSVP to between the cover and the RSVP', async () => {
+    const { wrapper } = await mountFab()
+    await go({ coverBottom: -3000, rsvpTop: -900 })
+    await go(PAST_COVER)
+    expect(button(wrapper).exists()).toBe(true)
+  })
+
   it('offers "change my answer" once the guest has replied', async () => {
-    const { wrapper, cover, target } = await mountFab({ sections: [rsvpSection({ guest: { id: 1, status: 'attending' } })] })
-    fire(cover, false)
-    fire(target, false, 1500)
-    await flushPromises()
+    const { wrapper } = await mountFab({ sections: [rsvpSection({ guest: { id: 1, status: 'attending' } })] })
+    await go(PAST_COVER)
     expect(button(wrapper).text()).toBe(tt('rsvp.change'))
     expect(button(wrapper).attributes('aria-label')).toBe(`${tt('rsvp.change')}: ${tt('rsvpFab.changeHint')}`)
   })
 
   it('has a labelled, real button with the stable package hook', async () => {
-    const { wrapper, cover, target } = await mountFab()
-    fire(cover, false)
-    fire(target, false, 1500)
-    await flushPromises()
+    const { wrapper } = await mountFab()
+    await go(PAST_COVER)
     const fab = button(wrapper)
     expect(fab.element.tagName).toBe('BUTTON')
     expect(fab.attributes('aria-label')).toBe(`${tt('confirmCta')}: ${tt('rsvpFab.confirmHint')}`)
     expect(fab.classes()).toContain('inv-q--rsvp-fab')
     expect(fab.attributes('data-inv-fab')).toBe('rsvp')
     expect(fab.attributes('data-inv-system-ui')).toBeDefined()
-    expect(fab.classes().join(' ')).toContain('min-h-12')
+    expect(fab.classes()).toContain('min-h-12')
   })
 
   it.each([
@@ -123,47 +113,40 @@ describe('InvitationRsvpFab', () => {
     ['the RSVP is closed', { sections: [rsvpSection({ isOpen: false })] }],
     ['the page has no #rsvp to scroll to', { rsvp: false }]
   ])('never appears when %s', async (_name, options) => {
-    const { wrapper, cover, target } = await mountFab(options)
-    fire(cover, false)
-    if (target) fire(target, false, 1500)
-    await flushPromises()
+    const { wrapper } = await mountFab(options)
+    await go(PAST_COVER)
     expect(button(wrapper).exists()).toBe(false)
   })
 
-  it('appears from the start when the page has no cover to observe', async () => {
-    const { wrapper, target } = await mountFab({ cover: false })
-    fire(target, false, 1500)
-    await flushPromises()
+  it('is available from the start when the page has no cover to wait for', async () => {
+    const { wrapper } = await mountFab({ cover: false })
+    await go({ rsvpTop: 1500 })
     expect(button(wrapper).exists()).toBe(true)
   })
 
   it('is not drawn when the package already shows its own floating CTA', async () => {
-    const { wrapper, cover, target } = await mountFab({ ctaStyle: 'position: fixed; bottom: 0' })
-    fire(cover, false)
-    fire(target, false, 1500)
-    await flushPromises()
+    const { wrapper } = await mountFab({ ctaStyle: 'position: fixed; bottom: 0' })
+    await go(PAST_COVER)
     expect(button(wrapper).exists()).toBe(false)
   })
 
-  it('sits where the music control leaves room', async () => {
-    const none = await mountFab()
-    expect(none.wrapper.get('.inv-rsvp-fab').attributes('data-stack')).toBe('none')
-    none.wrapper.unmount()
-    none.root.remove()
-    const phone = await mountFab({ music: true })
-    fire(phone.cover, false)
-    expect(phone.wrapper.get('.inv-rsvp-fab').attributes('data-stack')).toBe('phone')
-    expect(phone.wrapper.get('.inv-rsvp-fab').classes()).toContain('bottom-20')
-    phone.wrapper.unmount()
-    phone.root.remove()
-    const bar = await mountFab({ music: 'bar' })
-    fire(bar.cover, false)
-    expect(bar.wrapper.get('.inv-rsvp-fab').attributes('data-stack')).toBe('always')
-    bar.wrapper.unmount()
-    bar.root.remove()
-    const floating = await mountFab({ music: 'button' })
-    fire(floating.cover, false)
-    expect(floating.wrapper.get('.inv-rsvp-fab').attributes('data-stack')).toBe('none')
+  it('still draws when the package CTA is an ordinary block', async () => {
+    const { wrapper } = await mountFab({ ctaStyle: 'margin: 0' })
+    await go(PAST_COVER)
+    expect(button(wrapper).exists()).toBe(true)
+  })
+
+  it.each([
+    [null, 'none', 'bottom-[max(1rem,env(safe-area-inset-bottom))]'],
+    [true, 'phone', 'bottom-20'],
+    ['bar', 'always', 'bottom-20'],
+    ['button', 'none', 'bottom-[max(1rem,env(safe-area-inset-bottom))]']
+  ])('stacks above the music control (music %s -> %s)', async (music, stack, cls) => {
+    const { wrapper } = await mountFab({ music })
+    await go(PAST_COVER)
+    const holder = wrapper.get('.inv-rsvp-fab')
+    expect(holder.attributes('data-stack')).toBe(stack)
+    expect(holder.classes()).toContain(cls)
   })
 
   it('animates only opacity and translate, 150-220 ms ease-out, and switches the motion off for reduced-motion guests', () => {
@@ -183,39 +166,28 @@ describe('InvitationRsvpFab', () => {
     [false, 'smooth'],
     [true, 'auto']
   ])('scrolls to the RSVP and focuses its first control (reduced motion: %s)', async (reduced, behavior) => {
-    vi.stubGlobal('matchMedia', query => ({ matches: reduced && /reduce/.test(query), media: query, addEventListener() {}, removeEventListener() {} }))
-    const { wrapper, cover, target } = await mountFab()
-    fire(cover, false)
-    fire(target, false, 1500)
-    await flushPromises()
-    const first = document.getElementById('first')
-    const focus = vi.spyOn(first, 'focus')
+    vi.stubGlobal('matchMedia', query => ({ matches: reduced && /reduce/.test(query), media: query }))
+    const { wrapper, target } = await mountFab()
+    await go(PAST_COVER)
+    const focus = vi.spyOn(document.getElementById('first'), 'focus')
     await button(wrapper).trigger('click')
     expect(target.scrollIntoView).toHaveBeenCalledWith({ behavior, block: 'start' })
     expect(focus).toHaveBeenCalledWith({ preventScroll: true })
   })
 
   it('does nothing on tap when the RSVP vanished meanwhile', async () => {
-    const { wrapper, cover, target } = await mountFab()
-    fire(cover, false)
-    fire(target, false, 1500)
-    await flushPromises()
+    const { wrapper, target } = await mountFab()
+    await go(PAST_COVER)
     target.remove()
     await button(wrapper).trigger('click')
     expect(Element.prototype.scrollIntoView).not.toHaveBeenCalled()
   })
 
-  it('shows nothing and does not fail without IntersectionObserver, and disconnects on unmount', async () => {
-    vi.unstubAllGlobals()
-    delete globalThis.IntersectionObserver
-    const without = await mountFab()
-    expect(button(without.wrapper).exists()).toBe(false)
-    without.wrapper.unmount()
-    without.root.remove()
-    vi.stubGlobal('IntersectionObserver', FakeObserver)
+  it('stops listening to the page when it unmounts', async () => {
     const { wrapper } = await mountFab()
-    const [observer] = observers.slice(-1)
+    const off = vi.spyOn(window, 'removeEventListener')
     wrapper.unmount()
-    expect(observer.targets).toEqual([])
+    expect(off).toHaveBeenCalledWith('scroll', expect.any(Function))
+    expect(off).toHaveBeenCalledWith('resize', expect.any(Function))
   })
 })
