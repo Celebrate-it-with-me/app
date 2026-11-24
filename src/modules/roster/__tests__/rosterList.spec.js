@@ -172,6 +172,9 @@ describe('RosterView list', () => {
     expect(document.querySelector('[data-testid="send-bar"]')).toBeNull()
     // ORG-011: import is the primary action, the toolbar buttons are gone while the list is empty.
     expect(button('Añadir invitado')).toBeUndefined()
+    // R1-005: no status tabs nor delivery filters with "0" while there are no guests.
+    expect(document.querySelector('[role="tablist"]')).toBeNull()
+    expect(document.querySelector('[data-testid="delivery-chips"]')).toBeNull()
     button('Añadir uno por uno').click()
     await flushPromises()
     expect(body()).toContain('Nuevo invitado')

@@ -433,11 +433,11 @@ async function copyLink(family) {
         />
       </div>
 
-      <div class="overflow-x-auto" role="group" :aria-label="t('app.roster.filters.answers')">
+      <div v-if="!emptyList" class="overflow-x-auto" role="group" :aria-label="t('app.roster.filters.answers')">
         <UiTabs v-model="status" :tabs="tabs" />
       </div>
 
-      <div v-if="chips.length" class="flex flex-wrap items-center gap-2" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">
+      <div v-if="chips.length && !emptyList" class="flex flex-wrap items-center gap-2" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">
         <span class="text-sm font-medium text-ink-500">{{ t('app.roster.filters.delivery') }}</span>
         <button
           v-for="chip in chips"
