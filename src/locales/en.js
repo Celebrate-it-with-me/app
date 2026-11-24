@@ -423,9 +423,10 @@ export default {
       pause: 'Pause music',
       error: 'We couldn\'t play the music.'
     },
-    padrinos: { sponsors: 'Sponsors {items}' },
+    padrinos: { sponsors: 'Gift: {items}' },
     itinerary: {
-      types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
+      types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' },
+      nextDay: '(+1 day)'
     },
     locations: {
       types: { ceremony: 'Ceremony', reception: 'Reception', other: 'Venue' },
@@ -433,6 +434,11 @@ export default {
       google: 'Google Maps',
       apple: 'Apple Maps',
       waze: 'Waze',
+      directions: 'Get directions',
+      directionsIn: 'Get directions to {name}',
+      moreApps: 'Open in',
+      copyAddress: 'Copy address',
+      copied: 'Address copied',
       showMap: 'Show map',
       hideMap: 'Hide map',
       map: 'Map of {name}',
@@ -449,7 +455,8 @@ export default {
       },
       reservedQuince: 'Colors reserved for the quinceañera and her court',
       reservedWedding: 'Colors reserved for the couple',
-      suggested: 'Suggested colors'
+      suggested: 'Suggested colors',
+      avoid: 'Avoid'
     },
     comments: {
       title: 'Leave a few words',

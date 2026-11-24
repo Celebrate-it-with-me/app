@@ -29,3 +29,15 @@ export function formatWallClock(iso, locale, options, timezone) {
   }
   return new Intl.DateTimeFormat(INTL[locale] ?? 'es-US', { ...options, timeZone }).format(date)
 }
+
+const CLOCK = { hour: 'numeric', minute: '2-digit' }
+
+/** "7:00 p.m." / "7:00 PM": 12-hour clock in the invitation's language (never the browser's 24 h default). */
+export const formatClock = (iso, locale, timezone) => formatWallClock(iso, locale, CLOCK, timezone)
+
+/** True when `end` falls on a later calendar day than `start` (a party that runs past midnight). */
+export function endsNextDay(start, end) {
+  if (typeof start !== 'string' || typeof end !== 'string') return false
+  const day = value => value.replace(' ', 'T').slice(0, 10)
+  return day(end) > day(start)
+}

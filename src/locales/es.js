@@ -423,9 +423,10 @@ export default {
       pause: 'Pausar música',
       error: 'No pudimos reproducir la música.'
     },
-    padrinos: { sponsors: 'Apadrina {items}' },
+    padrinos: { sponsors: 'Su regalo: {items}' },
     itinerary: {
-      types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' }
+      types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' },
+      nextDay: '(+1 día)'
     },
     locations: {
       types: { ceremony: 'Ceremonia', reception: 'Recepción', other: 'Lugar' },
@@ -433,6 +434,11 @@ export default {
       google: 'Google Maps',
       apple: 'Apple Maps',
       waze: 'Waze',
+      directions: 'Cómo llegar',
+      directionsIn: 'Cómo llegar a {name}',
+      moreApps: 'Abrir en',
+      copyAddress: 'Copiar dirección',
+      copied: 'Dirección copiada',
       showMap: 'Ver mapa',
       hideMap: 'Ocultar mapa',
       map: 'Mapa de {name}',
@@ -449,7 +455,8 @@ export default {
       },
       reservedQuince: 'Colores reservados para la quinceañera y su corte',
       reservedWedding: 'Colores reservados para los novios',
-      suggested: 'Colores sugeridos'
+      suggested: 'Colores sugeridos',
+      avoid: 'Evitar'
     },
     comments: {
       title: 'Deja unos saludos',
