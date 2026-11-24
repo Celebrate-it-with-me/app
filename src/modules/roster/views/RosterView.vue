@@ -375,7 +375,7 @@ async function copyLink(family) {
           <UiButton data-testid="send-header" @click="openSend">
             <Send class="h-4 w-4" aria-hidden="true" />
             {{ t('app.roster.sendInvitations') }}
-            <span v-if="unsent" class="rounded-full bg-white/25 px-2 py-0.5 text-xs">{{ unsent }}</span>
+            <span v-if="unsent" class="rounded-full bg-black/20 px-2 py-0.5 text-xs">{{ unsent }}</span>
           </UiButton>
         </div>
       </template>
