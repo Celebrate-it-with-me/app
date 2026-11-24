@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { ArrowDown, ArrowUp, Lock } from 'lucide-vue-next'
 import { UiButton, UiSwitch } from '@/ui'
-import { canMove, pick } from '../utils/editorFields'
+import { canMove, isClosingPinned, pick } from '../utils/editorFields'
 
 const props = defineProps({
   sections: { type: Array, required: true },
@@ -58,6 +58,10 @@ const unlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
           </UiButton>
         </div>
       </div>
+      <p v-if="isClosingPinned(section)" class="flex items-center gap-2 text-sm text-ink-600" data-testid="closing-pinned">
+        <Lock class="h-3.5 w-3.5 text-gold-700" aria-hidden="true" />
+        {{ t('invitationEditor.sections.closingLast') }}
+      </p>
       <div v-if="moduleLocked(section)" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-600" data-testid="section-locked">
         <Lock class="h-3.5 w-3.5 text-gold-700" aria-hidden="true" />
         <span>{{ t('invitationEditor.sections.moduleLocked') }}</span>

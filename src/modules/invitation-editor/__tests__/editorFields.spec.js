@@ -84,6 +84,16 @@ describe('sections', () => {
     expect(canMove(list, 'a', 1)).toBe(true)
     expect(canMove(list, 'rsvp', 1)).toBe(false)
   })
+  it('keeps the closing last: it does not move and nothing slides below it', () => {
+    const withClosing = [...list.slice(0, 3), { type: 'closing', enabled: true, order: 4 }]
+    expect(canMove(withClosing, 'closing', -1)).toBe(false)
+    expect(canMove(withClosing, 'b', 1)).toBe(false)
+    expect(canMove(withClosing, 'a', 1)).toBe(true)
+    // switched off, the closing is a normal section again
+    const off = withClosing.map(s => (s.type === 'closing' ? { ...s, enabled: false } : s))
+    expect(canMove(off, 'closing', -1)).toBe(true)
+    expect(canMove(off, 'b', 1)).toBe(true)
+  })
   it('moves and renumbers, and the payload carries only type, enabled and order', () => {
     const moved = moveSection(list, 'b', -1)
     expect(moved.map(s => s.type)).toEqual(['cover', 'b', 'a', 'rsvp'])

@@ -187,6 +187,20 @@ describe('InvitationEditorView', () => {
     expect(wrapper.get('[data-section=program] [data-testid=move-up]').attributes('disabled')).toBeUndefined()
   })
 
+  it('shows the closing pinned to the end, with no way to move it, and a clear message for closing_last', async () => {
+    const data = payload()
+    data.sections.push({ type: 'closing', enabled: true, order: 5, required: false, title: { es: 'Cierre', en: 'Closing' } })
+    svc.get.mockResolvedValue(data)
+    await setup()
+    const closing = wrapper.get('[data-section=closing]')
+    expect(closing.get('[data-testid=closing-pinned]').text()).toBe('El cierre siempre va al final de la invitación.')
+    expect(closing.get('[data-testid=move-up]').attributes('disabled')).toBeDefined()
+    expect(closing.get('[data-testid=move-down]').attributes('disabled')).toBeDefined()
+    expect(wrapper.get('[data-section=rsvp] [data-testid=move-down]').attributes('disabled')).toBeDefined()
+    expect(i18n.global.t('invitationEditor.sections.errors.closing_last')).toContain('cierre')
+    expect(i18n.global.t('invitationEditor.sections.errors.closing_last', {}, { locale: 'en' })).toContain('closing')
+  })
+
   it('required sections and sections of a locked module cannot be switched on', async () => {
     await setup()
     expect(wrapper.get('[data-section=cover] [role=switch]').attributes('disabled')).toBeDefined()

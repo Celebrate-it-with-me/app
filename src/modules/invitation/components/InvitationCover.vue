@@ -13,6 +13,8 @@ const { invitation, tt, formatDate } = useInvitationContext()
 
 const data = computed(() => props.section.data)
 const event = computed(() => invitation.value.event)
+/** Description and section phrase said almost the same thing twice: show one, the description first. */
+const intro = computed(() => data.value.description || props.section.text || '')
 const hasRsvp = computed(() => invitation.value.sections.some(item => item.type === 'rsvp'))
 
 /** Same-origin paths and https URLs only. */
@@ -36,6 +38,15 @@ const parts = computed(() => {
   }
 })
 
+/** Phone only: long names step down so the cover (and its button) still fit one screen. From `sm` up the size is fixed. */
+const nameSize = computed(() => {
+  const length = (data.value.eventName ?? '').length
+  return length > 48 ? 'text-[1.75rem]' : length > 28 ? 'text-[2.25rem]' : 'text-[2.75rem]'
+})
+/** Phone only: with a long name the arch gives up some height so the button stays clear of the music bar. */
+const archSize = computed(() => ((data.value.eventName ?? '').length > 28 ? 'h-44 w-36' : 'h-52 w-40'))
+const guestSize = computed(() => ((invitation.value.guest.name ?? '').length > 26 ? 'text-[1.75rem]' : 'text-[2.25rem]'))
+
 function goToRsvp() {
   document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
@@ -43,7 +54,7 @@ function goToRsvp() {
 
 <template>
   <header
-    class="inv-cover bg-pattern-lattice relative isolate flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 pb-16 pt-20 text-center sm:py-24"
+    class="inv-cover bg-pattern-lattice relative isolate flex min-h-svh flex-col items-center justify-center overflow-hidden px-6 pb-20 pt-12 text-center sm:py-24"
   >
     <!-- warm light from the top, and two sprigs on opposite corners -->
     <div
@@ -62,9 +73,9 @@ function goToRsvp() {
 
     <div class="relative mx-auto flex w-full max-w-xl flex-col items-center lg:max-w-2xl">
       <!-- arch window: the photo, or the lettering when there is none -->
-      <div class="inv-arch inv-cover__media relative mb-10">
+      <div class="inv-arch inv-cover__media relative mb-8 sm:mb-10">
         <div
-          class="relative flex h-64 w-48 items-center justify-center overflow-hidden rounded-t-full bg-inv-surface-alt shadow-pop ring-1 ring-inv-accent/60 sm:h-80 sm:w-64 lg:h-[26rem] lg:w-80"
+          :class="['relative flex items-center justify-center overflow-hidden rounded-t-full bg-inv-surface-alt shadow-pop ring-1 ring-inv-accent/60 sm:h-80 sm:w-64 lg:h-[26rem] lg:w-80', archSize]"
         >
           <img v-if="image" :src="image" alt="" class="h-full w-full object-cover" :style="{ objectPosition: focus }" @error="photoFailed = true" />
           <template v-else>
@@ -82,44 +93,41 @@ function goToRsvp() {
         <span aria-hidden="true" class="pointer-events-none absolute -inset-3 rounded-t-full border border-inv-accent/45" />
       </div>
 
-      <p v-if="section.title" style="--i: 2" class="inv-rise inv-cover__phrase font-inv-script text-[2.5rem] text-inv-primary-ink sm:text-5xl">
+      <p v-if="section.title" style="--i: 2" class="inv-rise inv-cover__phrase font-inv-script text-[2.25rem] leading-tight text-inv-primary-ink sm:text-5xl">
         {{ section.title }}
       </p>
       <h1
         style="--i: 3"
-        class="inv-rise inv-cover__name mt-2 font-inv-heading text-[2.75rem] leading-[1.04] tracking-[-0.01em] text-balance sm:text-6xl lg:text-7xl"
+        :class="['inv-rise inv-cover__name mt-2 font-inv-heading leading-[1.04] tracking-[-0.01em] text-balance sm:text-6xl lg:text-7xl', nameSize]"
       >
         {{ data.eventName }}
       </h1>
-      <p v-if="section.text" style="--i: 4" class="inv-rise inv-cover__text mt-5 max-w-md text-lg text-inv-ink-soft text-pretty">
-        {{ section.text }}
+      <!-- one intro line: the event description, or the section phrase when there is none -->
+      <p v-if="intro" style="--i: 4" class="inv-rise inv-cover__text inv-cover__description mt-2 max-w-md text-inv-ink-soft text-pretty sm:mt-5 sm:text-lg">
+        {{ intro }}
       </p>
 
       <!-- date lockup -->
-      <div style="--i: 5" class="inv-rise inv-cover__date mt-8 w-full max-w-sm">
+      <div style="--i: 5" class="inv-rise inv-cover__date mt-4 w-full sm:mt-8 max-w-sm">
         <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-          <p class="border-y border-inv-accent/50 py-2.5 text-right text-sm font-medium uppercase tracking-[0.16em]">
+          <p class="border-y border-inv-accent/50 py-2 sm:py-2.5 text-right text-sm font-medium uppercase tracking-[0.16em]">
             {{ parts.weekday }}
           </p>
-          <p class="font-inv-heading text-6xl leading-none sm:text-7xl">{{ parts.day }}</p>
-          <p class="border-y border-inv-accent/50 py-2.5 text-left text-sm font-medium uppercase tracking-[0.16em]">
+          <p class="font-inv-heading text-5xl leading-none sm:text-7xl">{{ parts.day }}</p>
+          <p class="border-y border-inv-accent/50 py-2 sm:py-2.5 text-left text-sm font-medium uppercase tracking-[0.16em]">
             {{ parts.month }}
           </p>
         </div>
-        <p class="mt-3 text-inv-ink-soft">{{ parts.year }} · {{ parts.time }}</p>
+        <p class="mt-2 text-inv-ink-soft sm:mt-3">{{ parts.year }} · {{ parts.time }}</p>
       </div>
-
-      <p v-if="data.description" style="--i: 6" class="inv-rise inv-cover__description mt-7 max-w-md text-inv-ink-soft text-pretty">
-        {{ data.description }}
-      </p>
 
       <!-- place card for the guest -->
-      <div style="--i: 7" class="inv-rise inv-cover__guest mt-8 flex flex-col items-center">
+      <div style="--i: 7" class="inv-rise inv-cover__guest mt-4 flex sm:mt-8 flex-col items-center">
         <p class="text-sm text-inv-ink-soft">{{ tt('invitedFor') }}</p>
-        <p class="mt-1 font-inv-script text-[2.5rem] leading-tight text-inv-primary-ink sm:text-5xl">{{ invitation.guest.name }}</p>
+        <p :class="['mt-1 font-inv-script leading-tight text-balance text-inv-primary-ink sm:text-5xl', guestSize]">{{ invitation.guest.name }}</p>
       </div>
 
-      <InvitationButton v-if="hasRsvp" style="--i: 8" class="inv-rise inv-cover__cta mt-8" @click="goToRsvp">
+      <InvitationButton v-if="hasRsvp" style="--i: 8" class="inv-rise inv-cover__cta mt-4 sm:mt-8" @click="goToRsvp">
         {{ tt('confirmCta') }}
       </InvitationButton>
     </div>

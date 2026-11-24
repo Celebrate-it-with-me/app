@@ -7,6 +7,7 @@ import InvitationSection from './InvitationSection.vue'
 import InvitationPanel from './InvitationPanel.vue'
 import InvitationButton from './InvitationButton.vue'
 import InvitationPetals from '../art/InvitationPetals.vue'
+import InvitationRsvpCalendar from './InvitationRsvpCalendar.vue'
 
 const props = defineProps({
   section: { type: Object, required: true },
@@ -59,12 +60,15 @@ const localProblem = ref('')
 /** Ids of the people the guest tapped "send" without answering for. */
 const unanswered = reactive(new Set())
 const form = ref(null)
+const noteEl = ref(null)
 
 const mainId = computed(() => rsvp.value.guest.id)
 const mainDeclined = computed(() => answers[mainId.value] === NOT_ATTENDING)
 // An unsaved sample guest (the editor preview) has no status at all: that is "pending", not an answer.
 const isPending = status => !status || status === 'pending'
 const hasAnswered = computed(() => !isPending(rsvp.value.guest.status))
+/** Calendar card: only for a "yes" (even once the RSVP closed), never while the guest is editing the answer. */
+const showCalendar = computed(() => Boolean(rsvp.value.calendar) && rsvp.value.guest.status === ATTENDING && !editing.value)
 const showSummary = computed(() => !rsvp.value.isOpen || (hasAnswered.value && !editing.value))
 
 /** Nobody attends under an invitation the main guest declined: mirror the server rule. */
@@ -195,6 +199,19 @@ async function focusFirstProblem(selector) {
   target.focus?.({ preventScroll: true })
 }
 
+/**
+ * After a saved answer: bring the confirmation (and the calendar card under it) into view and move the focus to the
+ * message, so neither a sighted guest nor a screen reader is left looking at the old form (R2A-004).
+ */
+async function revealOutcome() {
+  await nextTick()
+  const el = noteEl.value
+  if (!el) return
+  const reduced = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true
+  el.scrollIntoView?.({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+  el.focus?.({ preventScroll: true })
+}
+
 async function submit() {
   if (preview || saving.value) return
   failed.value = false
@@ -240,6 +257,7 @@ async function submit() {
     message.value = tt(data.data.guest.status === ATTENDING ? 'rsvp.thanksYes' : 'rsvp.thanksNo')
     // Petals only for a yes: a decline gets a warm word, not confetti.
     celebrate.value = data.data.guest.status === ATTENDING
+    await revealOutcome()
   } catch (error) {
     failed.value = true
     const status = error?.response?.status
@@ -440,14 +458,18 @@ async function submit() {
     </div>
 
     <p
+      ref="noteEl"
       role="status"
       aria-live="polite"
+      tabindex="-1"
       :class="[
-        'inv-rsvp__note mt-6 min-h-8 text-pretty',
+        'inv-rsvp__note scroll-mt-6 text-pretty focus:outline-none',
+        message ? 'mt-6 min-h-8' : '',
         failed ? 'text-danger-700' : 'font-inv-script text-4xl text-inv-primary-ink sm:text-5xl'
       ]"
     >
       {{ message }}
     </p>
+    <InvitationRsvpCalendar v-if="showCalendar" :calendar="rsvp.calendar" />
   </InvitationSection>
 </template>

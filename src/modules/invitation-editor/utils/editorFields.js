@@ -209,6 +209,9 @@ export function sectionsPayload(sections) {
   return orderedSections(sections).map((s, i) => ({ type: s.type, enabled: s.moduleState === 'locked' ? false : s.enabled, order: i + 1 }))
 }
 
+/** The closing is pinned to the end while it is on. */
+export const isClosingPinned = section => section?.type === 'closing' && section.enabled !== false
+
 /** Can this section move one place (`-1` up, `1` down)? The cover stays first; nothing goes above it. */
 export function canMove(sections, type, direction) {
   const list = orderedSections(sections)
@@ -218,6 +221,9 @@ export function canMove(sections, type, direction) {
   if (target < 0 || target >= list.length) return false
   if (list[i].type === 'cover') return false
   if (list[target].type === 'cover') return false
+  // The closing always goes last (the API answers 422 `closing_last` otherwise): it does not move, and nothing slides below it.
+  if (isClosingPinned(list[i])) return false
+  if (direction > 0 && isClosingPinned(list[target])) return false
   return true
 }
 

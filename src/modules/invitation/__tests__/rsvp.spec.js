@@ -207,6 +207,26 @@ describe('InvitationRsvp', () => {
     expect(wrapper.get('[role="status"]').text()).toBe(tt('rsvp.thanksYes'))
   })
 
+  it.each([[false, 'smooth'], [true, 'auto']])('after saving, scrolls to the outcome and moves the focus to the message (reduced motion: %s)', async (reduced, behavior) => {
+    vi.stubGlobal('matchMedia', query => ({ matches: reduced && /reduce/.test(query), media: query }))
+    const scroll = vi.fn()
+    Element.prototype.scrollIntoView = scroll
+    saveRsvp.mockResolvedValue({ data: { data: rsvpData({ guest: { id: 1, name: 'Rosa', status: 'attending' }, companions: [{ id: 2, name: 'Jorge', status: 'attending' }] }) } })
+    const { wrapper } = mountRsvp(rsvpData(), {})
+    document.body.appendChild(wrapper.element)
+    await radios(wrapper, 1)[0].setValue(true)
+    await radios(wrapper, 2)[0].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    const status = wrapper.get('[role="status"]')
+    expect(scroll).toHaveBeenCalledWith({ behavior, block: 'start' })
+    expect(document.activeElement).toBe(status.element)
+    expect(status.attributes('tabindex')).toBe('-1')
+    wrapper.element.remove()
+    vi.unstubAllGlobals()
+    delete Element.prototype.scrollIntoView
+  })
+
   it('shows an error and keeps the form when saving fails', async () => {
     failure.error = Object.assign(new Error('Request failed'), { response: { status: 500 } })
     const { wrapper } = mountRsvp(rsvpData())

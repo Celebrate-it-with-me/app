@@ -2,9 +2,9 @@
 import { computed } from 'vue'
 import { CalendarPlus } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
-import { CWM_API } from '@/services/axios'
 import { useInvitationContext } from '../composables/useInvitation'
 import { safeHttpsUrl } from '../composables/safeUrl'
+import { icsUrl as buildIcsUrl } from '../composables/calendarLinks'
 import InvitationSection from './InvitationSection.vue'
 import InvitationButton from './InvitationButton.vue'
 
@@ -21,10 +21,7 @@ const message = computed(() => props.section.data.message)
 const calendar = computed(() => props.section.data.calendar)
 // The .ics file is served by the API under the same invitation address.
 const googleUrl = computed(() => safeHttpsUrl(calendar.value?.google))
-const icsUrl = computed(() => {
-  const base = String(CWM_API.defaults.baseURL ?? '').replace(/\/$/, '')
-  return `${base}/invitation/${encodeURIComponent(route.params.slug)}/${encodeURIComponent(route.params.code)}/${calendar.value?.icsPath ?? 'calendar.ics'}`
-})
+const icsUrl = computed(() => buildIcsUrl(route.params.slug, route.params.code, calendar.value))
 </script>
 
 <template>

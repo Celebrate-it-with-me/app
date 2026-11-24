@@ -19,13 +19,13 @@ describe('activityTone', () => {
 })
 
 describe('readableActivity (ORG-016)', () => {
-  it('drops entries with no message or only the generic fallback, in both languages', () => {
-    const items = [{ id: 1, message: 'Actividad registrada.' }, { id: 2, message: ' Activity logged. ' }, { id: 3, message: '' }, { id: 4 }, { id: 5, message: 'Valentina confirmó' }]
-    expect(readableActivity(items).map(i => i.id)).toEqual([5])
+  it('drops only entries with no text and draws the translated message as the API sends it', () => {
+    const items = [{ id: 1, message: 'Actividad registrada.' }, { id: 3, message: '  ' }, { id: 4 }, { id: 5, message: 'Valentina confirmó' }]
+    expect(readableActivity(items).map(i => i.id)).toEqual([1, 5])
     expect(readableActivity()).toEqual([])
   })
   it('shows the empty text when nothing readable is left', () => {
-    const w = mountActivity([{ id: 1, message: 'Actividad registrada.', icon: 'bell', color: 'blue' }])
+    const w = mountActivity([{ id: 1, message: '', icon: 'bell', color: 'blue' }])
     expect(w.text()).toContain('Cuando pase algo en tu evento')
     expect(w.findAll('[data-testid=activity-chip]')).toHaveLength(0)
   })
