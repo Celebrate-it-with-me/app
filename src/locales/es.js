@@ -399,6 +399,7 @@ export default {
     invitedFor: 'Invitación para',
     seats: '{n} lugar | {n} lugares',
     confirmCta: 'Confirmar asistencia',
+    rsvpFab: { confirmHint: 'ir al formulario', changeHint: 'ir a cambiar tu respuesta' },
     directions: 'Cómo llegar',
     madeWith: 'Hecho con Quinvite',
     saveTheDate: {

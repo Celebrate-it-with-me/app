@@ -14,6 +14,7 @@ import { SECTION_COMPONENTS as COMPONENTS } from '../composables/sectionComponen
 import InvitationLangSwitch from '../components/InvitationLangSwitch.vue'
 import InvitationState from '../components/InvitationState.vue'
 import InvitationSections from '../components/InvitationSections.vue'
+import InvitationRsvpFab from '../components/InvitationRsvpFab.vue'
 import { PackageLayout, layoutIsValid, usePackageTheme, useIntegrityGuard, ENGINE } from '../package'
 
 const route = useRoute()
@@ -119,6 +120,7 @@ watch(pkg.state, state => {
         </PackageLayout>
         <InvitationSections v-else :sections="sections" :pkg="usable" />
       </main>
+      <InvitationRsvpFab />
     </template>
     <InvitationState v-else :status="status" @retry="load(requestedLang)" />
   </div>
