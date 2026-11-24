@@ -2465,6 +2465,7 @@ export default {
       hint: 'Choose what is shown and in which order. The cover always goes first.',
       required: 'Required',
       moduleLocked: 'This section is part of the full event.',
+      closingLast: 'The closing always stays at the end of the invitation.',
       moveUp: 'Move {name} up',
       moveDown: 'Move {name} down',
       types: {
@@ -2486,6 +2487,7 @@ export default {
       errors: {
         required_section: 'That section is required and cannot be hidden.',
         cover_first: 'The cover always goes first.',
+        closing_last: 'The closing always goes last: it cannot be placed before another active section.',
         invalid_type: 'That section does not exist in this template.',
         module_locked: 'That section is part of the full event.',
         event_archived: 'This event is archived and cannot be edited.',

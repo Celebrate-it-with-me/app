@@ -2465,6 +2465,7 @@ export default {
       hint: 'Elige qué se muestra y en qué orden. La portada va primero.',
       required: 'Obligatoria',
       moduleLocked: 'Esta sección es parte del evento completo.',
+      closingLast: 'El cierre siempre va al final de la invitación.',
       moveUp: 'Subir {name}',
       moveDown: 'Bajar {name}',
       types: {
@@ -2486,6 +2487,7 @@ export default {
       errors: {
         required_section: 'Esa sección es obligatoria y no se puede ocultar.',
         cover_first: 'La portada siempre va primero.',
+        closing_last: 'El cierre siempre va al final: no se puede poner antes de otra sección activa.',
         invalid_type: 'Esa sección no existe en esta plantilla.',
         module_locked: 'Esa sección es parte del evento completo.',
         event_archived: 'Este evento está archivado y no se puede editar.',
