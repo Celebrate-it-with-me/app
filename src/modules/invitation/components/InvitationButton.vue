@@ -21,7 +21,7 @@ defineProps({
     :class="[
       'inv-button inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-2 text-center text-base font-semibold transition-[background-color,color,opacity,scale] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary active:scale-[0.97] disabled:opacity-50',
       variant === 'outline'
-        ? 'inv-button--outline border border-inv-primary text-inv-primary hover:bg-inv-primary/10'
+        ? 'inv-button--outline border border-inv-primary text-inv-primary hover:bg-inv-primary/10 hover:text-inv-primary-ink'
         : 'bg-inv-primary text-inv-on-primary hover:opacity-90'
     ]"
   >
