@@ -129,7 +129,7 @@ const missingPeople = computed(() =>
 const canSubmit = computed(() => missingPeople.value.length === 0)
 const displayName = person => (person.id === mainId.value ? person.name : names[person.id] || person.name)
 const listNames = list => {
-  const items = list.map(displayName)
+  const items = list.map(person => displayName(person).trim().split(/\s+/)[0])
   try {
     return new Intl.ListFormat(locale?.value ?? 'es', { style: 'long', type: 'conjunction' }).format(items)
   } catch {
@@ -349,10 +349,9 @@ async function submit() {
             <fieldset
               :disabled="person.id !== mainId && mainDeclined"
               :data-unanswered="unanswered.has(person.id) ? '' : undefined"
-              :class="unanswered.has(person.id) ? 'rounded-2xl ring-2 ring-danger-500 ring-offset-4 ring-offset-inv-surface' : ''"
-            >
+              >
               <legend class="font-inv-heading text-xl">{{ person.id === mainId ? person.name : names[person.id] || person.name }}</legend>
-              <div class="mt-3 grid grid-cols-2 gap-3">
+              <div class="mt-3 grid grid-cols-2 gap-3" :class="unanswered.has(person.id) ? 'rounded-2xl ring-2 ring-danger-500 ring-offset-4 ring-offset-inv-surface' : ''">
                 <label v-for="option in OPTIONS" :key="option" class="block">
                   <input
                     type="radio"

@@ -73,6 +73,16 @@ describe('InvitationRsvp', () => {
     expect(wrapper.find('[data-rsvp-problem]').exists()).toBe(false)
   })
 
+  it('names people by first name in the unanswered message and rings the options, not the fieldset (R1-003, INV-005)', async () => {
+    const { wrapper } = mountRsvp(rsvpData({ guest: { id: 1, name: 'Rosa Fernandez', status: 'pending' }, companions: [{ id: 2, name: 'Jorge Fernandez', status: 'pending' }] }))
+    await wrapper.get('form').trigger('submit')
+    expect(wrapper.get('[data-rsvp-problem]').text()).toBe(tt('rsvp.chooseFor', { names: 'Rosa y Jorge' }))
+    const fieldset = wrapper.get('fieldset[data-unanswered]')
+    expect(fieldset.classes()).not.toContain('ring-2')
+    expect(fieldset.get('legend').classes()).not.toContain('ring-2')
+    expect(fieldset.get('div.grid').classes()).toContain('ring-danger-500')
+  })
+
   it('joins the names with commas when Intl.ListFormat is unavailable', async () => {
     const original = Intl.ListFormat
     Intl.ListFormat = function () {
