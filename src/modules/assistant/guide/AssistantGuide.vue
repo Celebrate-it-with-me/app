@@ -123,10 +123,22 @@ const welcomeCoversControl = () => {
   if (!box) return false
   const width = Math.min(256, window.innerWidth - 32)
   const bubble = { left: box.right - width, right: box.right, top: box.top - 8 - 96, bottom: box.top - 8 }
-  return [...document.querySelectorAll('main a[href], main button, main input, main select, main textarea, main [role="tab"], main [role="combobox"]')].some(el => {
-    const r = el.getBoundingClientRect()
-    return r.width > 0 && r.height > 0 && r.left < bubble.right && r.right > bubble.left && r.top < bubble.bottom && r.bottom > bubble.top
-  })
+  const overlaps = r => r.width > 0 && r.height > 0 && r.left < bubble.right && r.right > bubble.left && r.top < bubble.bottom && r.bottom > bubble.top
+  const hitsControl = [...document.querySelectorAll('main a[href], main button, main input, main select, main textarea, main [role="tab"], main [role="combobox"]')].some(el => overlaps(el.getBoundingClientRect()))
+  return hitsControl || welcomeCoversText(overlaps)
+}
+/** Same for readable text: the lines of text actually drawn (not their wide block boxes) must stay clear of the bubble (ORG-027). */
+const welcomeCoversText = overlaps => {
+  const main = document.querySelector('main')
+  if (!main) return false
+  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT)
+  const range = document.createRange()
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.nodeValue.trim()) continue
+    range.selectNodeContents(node)
+    if ([...(range.getClientRects?.() ?? [])].some(overlaps)) return true
+  }
+  return false
 }
 const scheduleWelcome = () => {
   if (welcome.value || wasWelcomed() || variant.value !== 'pill' || !showDot.value) return

@@ -297,4 +297,23 @@ describe('AssistantGuide welcome bubble (ORG-027)', () => {
     expect(localStorage.getItem('quinvite:guide:welcomed')).toBeNull()
     spy.mockRestore()
   })
+
+  it('does not appear over readable text either (ORG-027), and is not spent', async () => {
+    const main = document.createElement('main')
+    main.innerHTML = '<p>Actividad reciente</p>'
+    document.body.append(main)
+    const rect = (left, top, width, height) => ({ left, top, width, height, right: left + width, bottom: top + height })
+    const trigger = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
+      return this.dataset?.testid === 'guide-trigger' ? rect(900, 800, 150, 48) : rect(0, 0, 0, 0)
+    })
+    // The line of text sits where the bubble would be drawn (above the trigger).
+    const lines = (Range.prototype.getClientRects = vi.fn(() => [rect(820, 720, 200, 20)]))
+    await mountGuide()
+    await settle(2000)
+    expect(welcome()).toBeNull()
+    expect(localStorage.getItem('quinvite:guide:welcomed')).toBeNull()
+    expect(lines).toHaveBeenCalled()
+    trigger.mockRestore()
+    delete Range.prototype.getClientRects
+  })
 })
