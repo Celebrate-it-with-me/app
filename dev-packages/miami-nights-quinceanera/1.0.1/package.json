@@ -1,0 +1,9 @@
+{
+  "slug": "miami-nights-quinceanera", "version": "1.0.1", "engineMin": 1,
+  "preload": [],
+  "devTheme": {
+    "name": "miami-nights-quinceanera", "preset": "neon",
+    "colors": { "surface": "#080c24", "surfaceAlt": "#111730", "ink": "#fff9ef", "inkSoft": "#d6d9ed", "accent": "#f4d58b", "primary": "#ff74cb" },
+    "fonts": { "heading": "Bebas Neue", "body": "Figtree", "script": "Pinyon Script" }
+  }
+}

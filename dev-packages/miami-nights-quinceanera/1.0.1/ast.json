@@ -1,0 +1,1109 @@
+{
+    "templates": {
+        "closing": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-closing"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-divider",
+                                "src": {
+                                    "asset": "assets/img/deco-divider.svg"
+                                },
+                                "alt": "",
+                                "width": 240,
+                                "height": 40,
+                                "loading": "lazy",
+                                "decoding": "async"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-thanks"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-closing-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "p",
+                            "attrs": {
+                                "class": "pkg-signature"
+                            },
+                            "children": [
+                                {
+                                    "t": "var",
+                                    "path": "event.name",
+                                    "filter": null
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "img",
+                            "attrs": {
+                                "class": "pkg-skyline",
+                                "src": {
+                                    "asset": "assets/img/skyline.webp"
+                                },
+                                "alt": "",
+                                "width": 1200,
+                                "height": 400,
+                                "loading": "lazy",
+                                "decoding": "async"
+                            },
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        "comments": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-comments"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-section-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "comments",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "cards",
+                                        "max": 8
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "cover": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-cover"
+                    },
+                    "children": [
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cover__palms",
+                                "aria-hidden": "true"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cover__palms pkg-cover__palms--right",
+                                "aria-hidden": "true"
+                            },
+                            "children": []
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-eyebrow"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-photo"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "cover-photo",
+                                    "props": {
+                                        "aspect": "4:5",
+                                        "fit": "cover",
+                                        "priority": true
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-cover-body"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "names",
+                                    "props": {
+                                        "tag": "h1",
+                                        "script": true
+                                    },
+                                    "attrs": {
+                                        "class": "pkg-names"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-theme-name"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "t.themeName",
+                                            "filter": null
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "section.text",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-intro"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "section.text",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-datebox"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "date",
+                                            "props": {
+                                                "format": "columns",
+                                                "weekday": "none",
+                                                "month": "short",
+                                                "time": true
+                                            },
+                                            "attrs": {
+                                                "class": "pkg-date"
+                                            },
+                                            "children": []
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "img",
+                                    "attrs": {
+                                        "class": "pkg-divider",
+                                        "src": {
+                                            "asset": "assets/img/deco-divider.svg"
+                                        },
+                                        "alt": "",
+                                        "width": 240,
+                                        "height": 40,
+                                        "decoding": "async"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "event.description",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-description"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "event.description",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "if",
+                                    "path": "guest.name",
+                                    "children": [
+                                        {
+                                            "t": "el",
+                                            "tag": "p",
+                                            "attrs": {
+                                                "class": "pkg-guest-label"
+                                            },
+                                            "children": [
+                                                {
+                                                    "t": "var",
+                                                    "path": "t.invitedFor",
+                                                    "filter": null
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "t": "q",
+                                    "name": "guest",
+                                    "props": {
+                                        "greeting": false
+                                    },
+                                    "attrs": {
+                                        "class": "pkg-guest-name"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "q",
+                                    "name": "seats",
+                                    "props": {},
+                                    "attrs": {
+                                        "class": "pkg-seats"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "div",
+                                    "attrs": {
+                                        "class": "pkg-cta-wrap"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "q",
+                                            "name": "cta",
+                                            "props": {
+                                                "action": "confirm",
+                                                "variant": "fill"
+                                            },
+                                            "attrs": {},
+                                            "children": []
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "dress_code": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-dress-code"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-script-line"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-attire",
+                                "aria-hidden": "true"
+                            },
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "img",
+                                    "attrs": {
+                                        "class": "pkg-attire__img",
+                                        "src": {
+                                            "asset": "assets/img/dress.svg"
+                                        },
+                                        "alt": "",
+                                        "width": 200,
+                                        "height": 320,
+                                        "loading": "lazy",
+                                        "decoding": "async"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "t": "el",
+                                    "tag": "img",
+                                    "attrs": {
+                                        "class": "pkg-attire__img",
+                                        "src": {
+                                            "asset": "assets/img/suit.svg"
+                                        },
+                                        "alt": "",
+                                        "width": 160,
+                                        "height": 320,
+                                        "loading": "lazy",
+                                        "decoding": "async"
+                                    },
+                                    "children": []
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "dress-code",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "swatches"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "gallery": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-gallery"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-section-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "gallery",
+                                    "props": {
+                                        "frame": "bare",
+                                        "layout": "grid",
+                                        "columns": 2,
+                                        "max": 12,
+                                        "captions": false
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "itinerary": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-itinerary"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-section-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "itinerary",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "timeline"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "locations": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-locations"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-section-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "locations",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "cards",
+                                        "maps": true
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "music": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-music"
+                    },
+                    "children": [
+                        {
+                            "t": "q",
+                            "name": "music",
+                            "props": {
+                                "variant": "bar"
+                            },
+                            "attrs": {},
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        "padrinos": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-padrinos"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading pkg-heading--script"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-section-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "padrinos",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "list"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "rsvp": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-rsvp"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-section-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "rsvp",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "card"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "suggested_music": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-suggested-music"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-section-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "suggested-music",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "list"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "tables": {
+            "v": 1,
+            "kind": "section",
+            "nodes": [
+                {
+                    "t": "el",
+                    "tag": "div",
+                    "attrs": {
+                        "class": "pkg-section pkg-tables"
+                    },
+                    "children": [
+                        {
+                            "t": "if",
+                            "path": "section.title",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "h2",
+                                    "attrs": {
+                                        "class": "pkg-heading"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.title",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "if",
+                            "path": "section.text",
+                            "children": [
+                                {
+                                    "t": "el",
+                                    "tag": "p",
+                                    "attrs": {
+                                        "class": "pkg-section-text"
+                                    },
+                                    "children": [
+                                        {
+                                            "t": "var",
+                                            "path": "section.text",
+                                            "filter": null
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "t": "el",
+                            "tag": "div",
+                            "attrs": {
+                                "class": "pkg-content"
+                            },
+                            "children": [
+                                {
+                                    "t": "q",
+                                    "name": "tables",
+                                    "props": {
+                                        "frame": "bare",
+                                        "variant": "card"
+                                    },
+                                    "attrs": {},
+                                    "children": []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "layout": {
+        "v": 1,
+        "kind": "layout",
+        "nodes": [
+            {
+                "t": "el",
+                "tag": "div",
+                "attrs": {
+                    "class": "pkg-page"
+                },
+                "children": [
+                    {
+                        "t": "q",
+                        "name": "sections",
+                        "props": {},
+                        "attrs": {},
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    }
+}

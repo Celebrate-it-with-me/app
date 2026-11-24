@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "slug": "miami-nights-quinceanera",
+  "name": {
+    "es": "Miami Nights · Quinceañera",
+    "en": "Miami Nights · Quinceañera"
+  },
+  "description": {
+    "es": "Azul noche, neón tropical y detalles Art Déco dorados para unos quince inolvidables.",
+    "en": "Midnight blue, tropical neon and golden Art Deco details for an unforgettable celebration."
+  },
+  "version": "1.0.1",
+  "level": 1,
+  "eventTypes": [
+    "quinceanera"
+  ],
+  "tier": "premium",
+  "visibility": "public",
+  "engineMin": 1,
+  "author": {
+    "name": "Quinvite"
+  },
+  "license": {
+    "id": "quinvite-project-use",
+    "summary": "Original project assets for use and redistribution within Quinvite; bundled font under SIL OFL 1.1.",
+    "document": "LICENSES.md"
+  },
+  "assetsCredits": [
+    {
+      "path": "assets/fonts/bebas-latin.woff2",
+      "title": "Bebas Latin",
+      "author": "Bebas Neue Project Authors",
+      "source": "https://github.com/google/fonts/tree/main/ofl/bebasneue",
+      "license": "SIL OFL 1.1"
+    },
+    {
+      "path": "assets/fonts/pinyon-latin.woff2",
+      "title": "Pinyon Latin",
+      "author": "The Pinyon Project Authors",
+      "source": "https://github.com/google/fonts/tree/main/ofl/pinyonscript",
+      "license": "SIL OFL 1.1"
+    },
+    {
+      "path": "assets/img/deco-divider.svg",
+      "title": "Deco Divider",
+      "author": "Quinvite / OpenAI-assisted creation",
+      "source": "original",
+      "license": "Quinvite project use"
+    },
+    {
+      "path": "assets/img/dress.svg",
+      "title": "Evening Gown Silhouette",
+      "author": "Quinvite",
+      "source": "original",
+      "license": "Quinvite project use"
+    },
+    {
+      "path": "assets/img/palms.svg",
+      "title": "Neon Palms",
+      "author": "Quinvite",
+      "source": "original",
+      "license": "Quinvite project use"
+    },
+    {
+      "path": "assets/img/skyline.webp",
+      "title": "Miami Nights Skyline",
+      "author": "Quinvite / OpenAI-assisted creation",
+      "source": "original",
+      "license": "Quinvite project use"
+    },
+    {
+      "path": "assets/img/suit.svg",
+      "title": "Formal Suit Silhouette",
+      "author": "Quinvite",
+      "source": "original",
+      "license": "Quinvite project use"
+    }
+  ],
+  "thirdPartyMarks": []
+}
