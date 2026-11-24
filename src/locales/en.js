@@ -510,6 +510,13 @@ export default {
       votesLeftNone: 'You have used all your votes.',
       playPreview: 'Play preview',
       pausePreview: 'Pause preview',
+      listen: 'Listen',
+      player: {
+        close: 'Close',
+        openInSpotify: 'Open in Spotify',
+        frameTitle: 'Spotify player: {title}',
+        note: 'When you play, Spotify may store cookies on your device.'
+      },
       previewError: 'We could not play the preview.',
       sample: {
         1: { title: 'Your favourite song', artist: 'Artist' },
