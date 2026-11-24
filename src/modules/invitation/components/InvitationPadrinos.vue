@@ -12,7 +12,9 @@ defineProps({
 const { tt, locale } = useInvitationContext()
 
 /** "the cake, the DJ and the dress": the list in the invitation's language. */
-const sponsorsLine = items => tt('padrinos.sponsors', { items: new Intl.ListFormat(locale.value, { style: 'long', type: 'conjunction' }).format(items) })
+// Items are written as titles ("DJ y vals"): after "Su regalo:" they read as a list, so the first letter of each is lowered unless it is an acronym ("DJ").
+const lowerFirst = text => (/^\p{Lu}\p{Ll}/u.test(text) ? text.charAt(0).toLocaleLowerCase(locale.value) + text.slice(1) : text)
+const sponsorsLine = items => tt('padrinos.sponsors', { items: new Intl.ListFormat(locale.value, { style: 'long', type: 'conjunction' }).format(items.map(lowerFirst)) })
 </script>
 
 <template>

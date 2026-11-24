@@ -423,7 +423,7 @@ export default {
       pause: 'Pausar música',
       error: 'No pudimos reproducir la música.'
     },
-    padrinos: { sponsors: 'Apadrina {items}' },
+    padrinos: { sponsors: 'Su regalo: {items}' },
     itinerary: {
       types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' },
       nextDay: '(+1 día)'
