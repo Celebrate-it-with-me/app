@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject, ref } from 'vue'
+import { computed, inject, onMounted, ref } from 'vue'
 import {
   SelectRoot,
   SelectTrigger,
@@ -24,6 +24,9 @@ const props = defineProps({
   size: { type: String, default: 'md' },
   invalid: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
+  /** The accessible name of the trigger when no UiField labels it (a `<label for>` also works). Reka's renderless root drops attrs, so they are props. */
+  ariaLabel: { type: String, default: undefined },
+  ariaLabelledby: { type: String, default: undefined },
   id: { type: String, default: '' },
   /**
    * For long lists of selects (one per row): draws a plain button that looks the same and mounts the real select, already
@@ -38,6 +41,13 @@ const currentLabel = computed(() => props.options.find(o => String(o.value) === 
 
 const triggerId = computed(() => props.id || field?.id.value)
 const isInvalid = computed(() => props.invalid || field?.invalid.value)
+
+// A select with no name is announced as just "button" (axe `button-name`). Say so while developing instead of shipping it.
+onMounted(() => {
+  if (!import.meta.env.DEV || field || props.ariaLabel || props.ariaLabelledby) return
+  const el = triggerId.value ? document.getElementById(triggerId.value) : null
+  if (!el?.labels?.length) console.warn('[UiSelect] No accessible name: pass aria-label or aria-labelledby, or put it inside a UiField / a <label for>.')
+})
 
 const SIZES = { sm: 'h-9 text-sm', md: 'h-11 text-base', lg: 'h-13 text-lg' }
 
@@ -71,6 +81,8 @@ function onUpdate(value) {
     aria-expanded="false"
     :disabled="disabled"
     :class="triggerClasses"
+    :aria-label="ariaLabel"
+    :aria-labelledby="ariaLabelledby"
     :aria-invalid="isInvalid || undefined"
     :aria-describedby="field?.describedBy.value"
     :aria-required="field?.required.value || undefined"
@@ -84,6 +96,8 @@ function onUpdate(value) {
     <SelectTrigger
       :id="triggerId"
       :class="triggerClasses"
+      :aria-label="ariaLabel"
+      :aria-labelledby="ariaLabelledby"
       :aria-invalid="isInvalid || undefined"
       :aria-describedby="field?.describedBy.value"
       :aria-required="field?.required.value || undefined"
