@@ -109,6 +109,7 @@ watch(pkg.state, state => {
     :data-inv-stage="invitation?.stage === 'save_the_date' ? 'save_the_date' : 'invitation'"
     :data-inv-engine="ENGINE"
     :data-inv-pkg="pkg.usable.value ? pkg.state.value : undefined"
+    v-bind="pkg.optionAttrs.value"
   >
     <template v-if="status === 'ready' && invitation">
       <nav class="absolute top-3 right-3 z-10" :aria-label="tt('language')">
