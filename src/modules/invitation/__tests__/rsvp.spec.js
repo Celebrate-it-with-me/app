@@ -26,7 +26,7 @@ function rsvpData(overrides = {}) {
   }
 }
 
-function mountRsvp(data) {
+function mountRsvp(data, context = {}) {
   const updateSection = vi.fn()
   const wrapper = mount(InvitationRsvp, {
     props: { section: { type: 'rsvp', title: '¿Me acompañas?', text: null, data } },
@@ -38,7 +38,8 @@ function mountRsvp(data) {
           formatDate: () => '10 de diciembre',
           slug: () => 'xv-de-valentina',
           code: () => 'AB1234',
-          updateSection
+          updateSection,
+          ...context
         }
       }
     }
@@ -55,15 +56,113 @@ beforeEach(() => {
 })
 
 describe('InvitationRsvp', () => {
-  it('needs an answer for the guest and every companion before sending', async () => {
+  it('needs an answer for the guest and every companion before sending, without a disabled button', async () => {
     const { wrapper } = mountRsvp(rsvpData())
-    expect(submit(wrapper).attributes('disabled')).toBeDefined()
+    expect(submit(wrapper).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find('[data-rsvp-problem]').exists()).toBe(false)
 
     await radios(wrapper, 1)[0].setValue(true) // attending
-    expect(submit(wrapper).attributes('disabled')).toBeDefined()
+    await wrapper.get('form').trigger('submit')
+    expect(saveRsvp).not.toHaveBeenCalled()
+    expect(wrapper.get('[data-rsvp-problem]').text()).toBe(tt('rsvp.chooseFor', { names: 'Jorge' }))
+    expect(wrapper.get('[data-rsvp-problem]').attributes('role')).toBe('alert')
+    expect(wrapper.findAll('fieldset[data-unanswered]')).toHaveLength(1)
 
     await radios(wrapper, 2)[0].setValue(true)
-    expect(submit(wrapper).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find('fieldset[data-unanswered]').exists()).toBe(false)
+    expect(wrapper.find('[data-rsvp-problem]').exists()).toBe(false)
+  })
+
+  it('joins the names with commas when Intl.ListFormat is unavailable', async () => {
+    const original = Intl.ListFormat
+    Intl.ListFormat = function () {
+      throw new Error('unsupported')
+    }
+    try {
+      const { wrapper } = mountRsvp(rsvpData())
+      await wrapper.get('form').trigger('submit')
+      expect(wrapper.get('[data-rsvp-problem]').text()).toBe(tt('rsvp.chooseFor', { names: 'Rosa, Jorge' }))
+    } finally {
+      Intl.ListFormat = original
+    }
+  })
+
+  it('does not send nor flag anything in preview mode', async () => {
+    const { wrapper } = mountRsvp(rsvpData(), { preview: true })
+    await wrapper.get('form').trigger('submit')
+    expect(saveRsvp).not.toHaveBeenCalled()
+    expect(wrapper.find('[data-rsvp-problem]').exists()).toBe(false)
+  })
+
+  it('still shows the problem when there is nothing to focus', async () => {
+    const { wrapper } = mountRsvp(rsvpData())
+    const spy = vi.spyOn(HTMLFormElement.prototype, 'querySelector').mockReturnValue(null)
+    try {
+      await wrapper.get('form').trigger('submit')
+      await flushPromises()
+      expect(wrapper.get('[data-rsvp-problem]').exists()).toBe(true)
+    } finally {
+      spy.mockRestore()
+    }
+  })
+
+  it('names everyone who is missing and focuses the first one', async () => {
+    const { wrapper } = mountRsvp(rsvpData())
+    await wrapper.get('form').trigger('submit')
+    expect(wrapper.get('[data-rsvp-problem]').text()).toBe(tt('rsvp.chooseFor', { names: 'Rosa y Jorge' }))
+    expect(wrapper.findAll('fieldset[data-unanswered]')).toHaveLength(2)
+  })
+
+  it('marks an invalid name with a distinct message instead of the save error', async () => {
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[0].setValue(true)
+    await radios(wrapper, 2)[0].setValue(true)
+    await wrapper.get('input[name="name"]').setValue('')
+    const input = wrapper.get('input[name="name"]')
+    const scroll = vi.fn()
+    const focus = vi.fn()
+    input.element.scrollIntoView = scroll
+    input.element.focus = focus
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+
+    expect(saveRsvp).not.toHaveBeenCalled()
+    expect(wrapper.get('[data-rsvp-problem]').text()).toBe(tt('rsvp.checkNames'))
+    expect(wrapper.get('[role="status"]').text()).toBe('')
+    expect(input.classes()).toContain('border-danger-500')
+    expect(scroll).toHaveBeenCalled()
+    expect(focus).toHaveBeenCalled()
+  })
+
+  it('shows a confirmed title and status chips in the summary', () => {
+    const { wrapper } = mountRsvp(
+      rsvpData({
+        guest: { id: 1, name: 'Rosa', status: 'attending' },
+        companions: [{ id: 2, name: 'Jorge', status: 'not-attending' }]
+      })
+    )
+    expect(wrapper.get('[data-rsvp-confirmed]').text()).toBe(tt('rsvp.confirmedTitle'))
+    expect(wrapper.get('[data-status="attending"]').text()).toBe(tt('rsvp.status.attending'))
+    expect(wrapper.get('[data-status="not-attending"]').text()).toBe(tt('rsvp.status.not-attending'))
+  })
+
+  it('says "no reply" instead of "pending" once closed without an answer', () => {
+    const { wrapper } = mountRsvp(rsvpData({ isOpen: false }))
+    expect(wrapper.find('[data-rsvp-confirmed]').exists()).toBe(false)
+    expect(wrapper.text()).toContain(tt('rsvp.status.noAnswer'))
+    expect(wrapper.text()).not.toContain(tt('rsvp.status.pending'))
+  })
+
+  it('uses the validation message for server field errors, not the save error', async () => {
+    failure.error = Object.assign(new Error('422'), {
+      response: { status: 422, data: { errors: { 'companions.0.name': ['invalid_characters'] } } }
+    })
+    const { wrapper } = mountRsvp(rsvpData())
+    await radios(wrapper, 1)[0].setValue(true)
+    await radios(wrapper, 2)[0].setValue(true)
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.get('[role="status"]').text()).toBe(tt('rsvp.checkNames'))
   })
 
   it('locks companions as not attending when the guest declines', async () => {

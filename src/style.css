@@ -206,7 +206,7 @@
   --color-inv-primary: var(--inv-primary);
   --color-inv-on-primary: var(--inv-on-primary);
   --color-inv-accent: var(--inv-accent);
-  --color-inv-primary-ink: color-mix(in oklab, var(--inv-primary) 78%, #2b2420);
+  --color-inv-primary-ink: var(--inv-primary-ink, color-mix(in oklab, var(--inv-primary) 78%, #2b2420));
   --color-inv-accent-ink: color-mix(in oklab, var(--inv-accent) 60%, #3d2a08);
   --color-inv-deep: color-mix(in oklab, var(--inv-primary) 38%, #1b0f12);
   --font-inv-heading: var(--inv-font-heading, 'Fraunces', Georgia, serif);

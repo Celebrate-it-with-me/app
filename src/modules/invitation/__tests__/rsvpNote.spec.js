@@ -116,10 +116,10 @@ describe('RSVP of an unsaved sample guest (editor preview)', () => {
     expect(wrapper.text()).not.toContain('rsvp.status')
   })
 
-  it('labels a missing status as pending when the summary is shown (closed RSVP)', () => {
+  it('labels a missing status as no reply when the summary is shown (closed RSVP)', () => {
     const closed = { ...sample(), isOpen: false }
     const wrapper = mountNative([rsvpSection(closed)], closed)
     expect(wrapper.text()).not.toContain('rsvp.status')
-    expect(wrapper.text()).toContain(tt('rsvp.status.pending'))
+    expect(wrapper.text()).toContain(tt('rsvp.status.noAnswer'))
   })
 })
