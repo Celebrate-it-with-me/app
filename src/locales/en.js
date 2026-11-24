@@ -450,7 +450,8 @@ export default {
       },
       reservedQuince: 'Colors reserved for the quinceañera and her court',
       reservedWedding: 'Colors reserved for the couple',
-      suggested: 'Suggested colors'
+      suggested: 'Suggested colors',
+      avoid: 'Avoid'
     },
     comments: {
       title: 'Leave a few words',

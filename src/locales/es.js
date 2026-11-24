@@ -450,7 +450,8 @@ export default {
       },
       reservedQuince: 'Colores reservados para la quinceañera y su corte',
       reservedWedding: 'Colores reservados para los novios',
-      suggested: 'Colores sugeridos'
+      suggested: 'Colores sugeridos',
+      avoid: 'Evitar'
     },
     comments: {
       title: 'Deja unos saludos',
