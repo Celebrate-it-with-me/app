@@ -560,7 +560,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
           </p>
 
           <template v-else>
-            <ul :aria-label="tt('songs.list')" :class="variant === 'cards' ? 'grid gap-3 sm:grid-cols-2' : 'flex flex-col gap-3'">
+            <ul :aria-label="tt('songs.list')" :class="variant === 'cards' ? 'grid grid-cols-1 gap-3 sm:grid-cols-2' : 'flex flex-col gap-3'">
               <li
                 v-for="item in shown"
                 :key="item.id"
