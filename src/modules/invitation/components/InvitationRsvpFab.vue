@@ -16,14 +16,17 @@ import InvitationButton from './InvitationButton.vue'
 const { invitation, tt } = useInvitationContext()
 
 const rsvp = computed(() => invitation.value?.sections?.find(item => item.type === 'rsvp') ?? null)
-/** An RSVP that is off, or closed with nothing left to do, leaves the page without a button to nowhere. */
-const actionable = computed(() => Boolean(rsvp.value) && rsvp.value.data?.isOpen !== false)
 const answered = computed(() => {
   const status = rsvp.value?.data?.guest?.status
   return Boolean(status) && status !== 'pending'
 })
-const label = computed(() => tt(answered.value ? 'rsvp.change' : 'confirmCta'))
-const ariaLabel = computed(() => `${label.value}: ${tt(answered.value ? 'rsvpFab.changeHint' : 'rsvpFab.confirmHint')}`)
+/**
+ * An RSVP that is off, closed, or already answered leaves the page without a floating button: the guest who replied does
+ * not need a nudge all the way down, and "Cambiar mi respuesta" lives in the RSVP card itself (R2A-003).
+ */
+const actionable = computed(() => Boolean(rsvp.value) && rsvp.value.data?.isOpen !== false && !answered.value)
+const label = computed(() => tt('confirmCta'))
+const ariaLabel = computed(() => `${label.value}: ${tt('rsvpFab.confirmHint')}`)
 
 const coverVisible = ref(true)
 /** The RSVP section is below the viewport (not on screen and not already passed). */

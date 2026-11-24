@@ -89,11 +89,10 @@ describe('InvitationRsvpFab', () => {
     expect(button(wrapper).exists()).toBe(true)
   })
 
-  it('offers "change my answer" once the guest has replied', async () => {
-    const { wrapper } = await mountFab({ sections: [rsvpSection({ guest: { id: 1, status: 'attending' } })] })
+  it.each(['attending', 'not-attending'])('is not drawn once the guest has replied (%s): the RSVP card keeps "change my answer"', async status => {
+    const { wrapper } = await mountFab({ sections: [rsvpSection({ guest: { id: 1, status } })] })
     await go(PAST_COVER)
-    expect(button(wrapper).text()).toBe(tt('rsvp.change'))
-    expect(button(wrapper).attributes('aria-label')).toBe(`${tt('rsvp.change')}: ${tt('rsvpFab.changeHint')}`)
+    expect(button(wrapper).exists()).toBe(false)
   })
 
   it('has a labelled, real button with the stable package hook', async () => {
