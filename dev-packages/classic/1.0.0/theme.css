@@ -60,6 +60,13 @@
   .pkg-cl-name { font-size: 4.5rem; }
 }
 
+/* Phone only: long names step down like the native cover does. The engine states the facts on the cover wrapper (name 29-48 / > 48 characters, guest > 26). The arch cannot follow: the validator takes nothing that contains the photo as the subject of a fact rule. */
+@media (max-width: 639px) {
+  [data-inv-name-len="mid"] .pkg-cl-name { font-size: 2.25rem; }
+  [data-inv-name-len="long"] .pkg-cl-name { font-size: 1.75rem; }
+  [data-inv-guest-len="long"] .pkg-cl-guest .pkg-cl-guest__name { font-size: 1.75rem; }
+}
+
 /* Shared by every section: band, flourish, heading, text, body. */
 .pkg-sprig { position: absolute; pointer-events: none; }
 .pkg-sprig__stem { position: absolute; inset: 0; background-color: color-mix(in oklab, var(--inv-accent) var(--pkg-stem, 60%), transparent); mask: url(assets/sprig.svg) center / contain no-repeat; }
