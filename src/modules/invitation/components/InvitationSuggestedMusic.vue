@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, useId, watch } from 'vue'
 import { Check, Music2, Pause, Play, Search, ThumbsUp, Trash2 } from 'lucide-vue-next'
 import InvitationService from '@/services/PublicEvents/InvitationService'
 import { useInvitationContext } from '../composables/useInvitation'
@@ -30,6 +30,9 @@ const text = computed(() => props.section.text || data.value.subHeading || null)
 const canWrite = computed(() => data.value.canWrite !== false && !readOnlyNow.value)
 const maxSuggestions = computed(() => Number(data.value.maxSuggestions) || DEFAULT_MAX)
 const usePreview = computed(() => data.value.usePreview === true)
+// Cover art that failed to load (blocked CDN, bad network): fall back to the initial instead of a broken image.
+const brokenCovers = reactive(new Set())
+const cover = url => (url && !brokenCovers.has(url) ? url : '')
 const votesOff = ref(false) // flips on a 403 votes_disabled, in case the hydrated flag is stale
 const readOnlyNow = ref(false) // flips on a 403 read_only, in case the hydrated flag is stale
 const useVotes = computed(() => data.value.useVotes !== false && !votesOff.value)
@@ -460,7 +463,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
               class="inv-songs__result flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl bg-inv-surface px-3 py-2.5 ring-1 ring-inv-ink/10"
             >
               <span class="inv-songs__cover flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-inv-primary/10 font-inv-heading text-lg text-inv-primary-ink">
-                <img v-if="song.thumbnailUrl" :src="song.thumbnailUrl" alt="" width="48" height="48" loading="lazy" referrerpolicy="no-referrer" class="h-full w-full object-cover" />
+                <img v-if="cover(song.thumbnailUrl)" :src="song.thumbnailUrl" alt="" @error="brokenCovers.add(song.thumbnailUrl)" width="48" height="48" loading="lazy" referrerpolicy="no-referrer" class="h-full w-full object-cover" />
                 <template v-else>{{ initial(song) }}</template>
               </span>
               <span class="min-w-[9rem] flex-1">
@@ -567,7 +570,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
                 class="inv-songs__item flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl bg-inv-surface px-3 py-3 ring-1 ring-inv-ink/10"
               >
                 <span class="inv-songs__cover flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-inv-primary/10 font-inv-heading text-xl text-inv-primary-ink">
-                  <img v-if="safeHttpsUrl(item.thumbnailUrl)" :src="safeHttpsUrl(item.thumbnailUrl)" alt="" width="56" height="56" loading="lazy" referrerpolicy="no-referrer" class="h-full w-full object-cover" />
+                  <img v-if="cover(safeHttpsUrl(item.thumbnailUrl))" :src="safeHttpsUrl(item.thumbnailUrl)" alt="" @error="brokenCovers.add(safeHttpsUrl(item.thumbnailUrl))" width="56" height="56" loading="lazy" referrerpolicy="no-referrer" class="h-full w-full object-cover" />
                   <template v-else>{{ initial(item) }}</template>
                 </span>
                 <span class="min-w-[9rem] flex-1">
