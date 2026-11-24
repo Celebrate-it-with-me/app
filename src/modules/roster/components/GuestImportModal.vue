@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { FileSpreadsheet, TriangleAlert, Upload } from 'lucide-vue-next'
+import { Download, FileSpreadsheet, TriangleAlert, Upload } from 'lucide-vue-next'
 import { UiModal, UiButton, UiBadge, UiInput, UiCheckbox, UiSkeleton, useToast } from '@/ui'
 import GuestLimitNotice from '@/components/internal/limits/GuestLimitNotice.vue'
 import { planLimitFrom } from '@/utils/planLimit'
@@ -17,6 +17,13 @@ const props = defineProps({
 const emit = defineEmits(['update:open', 'imported'])
 const { t } = useI18n()
 const { success, error: showError } = useToast()
+
+/** The same rows the downloadable template carries. */
+const EXAMPLE_ROWS = [
+  ['Ana Pérez', '+1 305 555 0101', 'ana@example.com', 'Pérez'],
+  ['Luis Pérez', '', '', 'Pérez'],
+  ['Marta Gómez', '(786) 555-0102', '', '']
+]
 
 const stage = ref('pick') // pick | reading | preview
 const fileError = ref('')
@@ -158,6 +165,28 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
       </div>
 
       <template v-else>
+        <!-- The template is the step that helps a first-timer most: a visible button and the columns it expects (ORG-024). -->
+        <UiButton variant="secondary" block class="sm:w-auto" data-testid="import-template" @click="downloadTemplate">
+          <Download class="h-4 w-4" aria-hidden="true" />
+          {{ t('app.guestImport.template') }}
+        </UiButton>
+
+        <div class="import-example overflow-x-auto rounded-xl border border-line" role="region" tabindex="0" :aria-label="t('app.guestImport.exampleTitle')" data-testid="import-example">
+          <table class="w-full min-w-[26rem] text-left text-sm">
+            <caption class="border-b border-line bg-cream-100 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-ink-600">{{ t('app.guestImport.exampleTitle') }}</caption>
+            <thead class="text-ink-600">
+              <tr>
+                <th v-for="key in ['name', 'phone', 'email', 'family']" :key="key" scope="col" class="px-3 py-2 font-semibold">{{ t(`app.guestImport.columnsHead.${key}`) }}</th>
+              </tr>
+            </thead>
+            <tbody class="text-ink-900">
+              <tr v-for="row in EXAMPLE_ROWS" :key="row[0]" class="border-t border-line">
+                <td v-for="(cell, i) in row" :key="i" class="whitespace-nowrap px-3 py-2">{{ cell }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <div
           class="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-6 text-center transition-colors"
           :class="dragging ? 'border-rose-400 bg-rose-50' : 'border-line-strong bg-cream-50'"
@@ -166,13 +195,14 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
           @drop.prevent="onDrop"
         >
           <Upload class="h-8 w-8 text-rose-600" aria-hidden="true" />
-          <p class="font-heading text-lg text-ink-900">{{ t('app.guestImport.dropTitle') }}</p>
-          <p class="text-sm text-ink-500">{{ t('app.guestImport.dropOr') }}</p>
+          <!-- Dragging does not apply on a phone: there the button is the whole story. -->
+          <p class="hidden font-heading text-lg text-ink-900 sm:block">{{ t('app.guestImport.dropTitle') }}</p>
+          <p class="hidden text-sm text-ink-500 sm:block">{{ t('app.guestImport.dropOr') }}</p>
           <UiButton @click="fileInput.click()">
             <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
             {{ t('app.guestImport.choose') }}
           </UiButton>
-          <input ref="fileInput" type="file" class="sr-only" tabindex="-1" :accept="ACCEPT" data-testid="import-file" @change="onFileChange" />
+          <input ref="fileInput" type="file" class="sr-only" tabindex="-1" :aria-label="t('app.guestImport.choose')" :accept="ACCEPT" data-testid="import-file" @change="onFileChange" />
           <p class="text-sm text-ink-500">{{ t('app.guestImport.formats') }}</p>
         </div>
 
@@ -181,10 +211,7 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
           {{ fileError }}
         </p>
 
-        <div class="flex flex-col gap-1 text-sm text-ink-500">
-          <p>{{ t('app.guestImport.columns') }}</p>
-          <UiButton variant="link" size="sm" class="self-start" @click="downloadTemplate">{{ t('app.guestImport.template') }}</UiButton>
-        </div>
+        <p class="text-sm text-ink-500">{{ t('app.guestImport.columns') }}</p>
       </template>
     </div>
 
@@ -307,3 +334,15 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
     </template>
   </UiModal>
 </template>
+
+<style scoped>
+/* Shadows at the edges only while there is more to scroll to: tells a phone user that the table has more columns. */
+.import-example {
+  background:
+    linear-gradient(to right, #fff 30%, rgb(255 255 255 / 0)) left center / 1.5rem 100% no-repeat local,
+    linear-gradient(to left, #fff 30%, rgb(255 255 255 / 0)) right center / 1.5rem 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(60 40 30 / 0.22), rgb(60 40 30 / 0)) left center / 0.75rem 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(60 40 30 / 0.22), rgb(60 40 30 / 0)) right center / 0.75rem 100% no-repeat scroll;
+  background-color: #fff;
+}
+</style>

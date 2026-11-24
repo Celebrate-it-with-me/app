@@ -19,6 +19,7 @@ vi.mock('@/modules/events/stores/useEventsStore', () => ({
 }))
 vi.mock('../services/RosterService', () => ({ default: hoisted.service }))
 vi.mock('../services/SendWizardService', () => ({ default: {} }))
+vi.mock('@/modules/payments/services/PaymentsService', () => ({ default: { quote: () => Promise.reject(new Error('offline')) } }))
 vi.mock('@/modules/template-picker/components/InvitationMiniature.vue', () => ({ default: { template: '<div />' } }))
 vi.mock('../services/WhatsappService', () => ({ default: { activeBatch: () => Promise.resolve(null), latestByGuest: () => Promise.resolve({}), summary: () => Promise.resolve({ total: 0, queued: 0, sent: 0, delivered: 0, read: 0, failed: 0 }) } }))
 vi.mock('vue-router', () => ({ useRoute: () => ({ query: {} }), useRouter: () => ({ replace: vi.fn() }) }))

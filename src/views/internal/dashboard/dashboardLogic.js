@@ -96,6 +96,19 @@ export const ACTIVITY_TONES = {
   red: 'bg-danger-50 text-danger-700',
   yellow: 'bg-gold-100 text-gold-700'
 }
+/**
+ * The API answers with this generic sentence (es or en) for event types it has no text for. It tells the organizer nothing,
+ * so those entries are not shown (ORG-016). The durable fix is on the API: send `message: null` for such types.
+ */
+const GENERIC_ACTIVITY_MESSAGES = ['actividad registrada.', 'activity logged.']
+
+/** Entries that say something: no message, or only the generic fallback, means nothing to show. */
+export const readableActivity = (items = []) =>
+  items.filter(item => {
+    const message = String(item?.message ?? '').trim().toLowerCase()
+    return message !== '' && !GENERIC_ACTIVITY_MESSAGES.includes(message)
+  })
+
 export const ACTIVITY_TONE_FALLBACK = 'bg-cream-200 text-ink-700'
 
 /** The tone classes for an API colour; an unknown or missing one gets the neutral chip, never nothing. */

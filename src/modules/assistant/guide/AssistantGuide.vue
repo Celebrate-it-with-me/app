@@ -94,6 +94,7 @@ const variant = computed(() => {
 
 let lastY = 0
 const onScroll = () => {
+  if (welcome.value) dismissWelcome() // reading down the page is an answer: the bubble goes
   const y = window.scrollY
   tucked.value = nextTucked({ tucked: tucked.value, lastY, y })
   lastY = y
@@ -110,21 +111,49 @@ const checkDialogs = () => {
 const onFocusIn = e => (focusedElement.value = e.target)
 const onFocusOut = () => (focusedElement.value = null)
 
-// ---- welcome bubble: once in the life of the browser, never over a work screen ----------------------------------
+// ---- welcome bubble: once in the life of the browser, never over a work screen or a button -----------------------
+const WELCOME_MS = 6000
 const welcome = ref(false)
 let welcomeTimer
 let welcomeHide
+
+/** True when the bubble, drawn above the trigger, would cover something she can press or type in (a CTA, a filter, a field). */
+const welcomeCoversControl = () => {
+  const box = triggerRef.value?.getBoundingClientRect()
+  if (!box) return false
+  const width = Math.min(256, window.innerWidth - 32)
+  const bubble = { left: box.right - width, right: box.right, top: box.top - 8 - 96, bottom: box.top - 8 }
+  const overlaps = r => r.width > 0 && r.height > 0 && r.left < bubble.right && r.right > bubble.left && r.top < bubble.bottom && r.bottom > bubble.top
+  const hitsControl = [...document.querySelectorAll('main a[href], main button, main input, main select, main textarea, main [role="tab"], main [role="combobox"]')].some(el => overlaps(el.getBoundingClientRect()))
+  return hitsControl || welcomeCoversText(overlaps)
+}
+/** Same for readable text: the lines of text actually drawn (not their wide block boxes) must stay clear of the bubble (ORG-027). */
+const welcomeCoversText = overlaps => {
+  const main = document.querySelector('main')
+  if (!main) return false
+  const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT)
+  const range = document.createRange()
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (!node.nodeValue.trim()) continue
+    range.selectNodeContents(node)
+    if ([...(range.getClientRects?.() ?? [])].some(overlaps)) return true
+  }
+  return false
+}
 const scheduleWelcome = () => {
   if (welcome.value || wasWelcomed() || variant.value !== 'pill' || !showDot.value) return
   clearTimeout(welcomeTimer)
   welcomeTimer = setTimeout(() => {
     if (variant.value !== 'pill' || ownOpen.value) return
+    // Over a control it would hide it: not now, and it is not spent, so a calmer screen can still show it.
+    if (welcomeCoversControl()) return
     welcome.value = true
     markWelcomed()
-    welcomeHide = setTimeout(() => (welcome.value = false), 9000)
+    welcomeHide = setTimeout(() => (welcome.value = false), WELCOME_MS)
   }, 1500)
 }
 watch([variant, showDot], scheduleWelcome, { immediate: true })
+watch(() => route.fullPath, scheduleWelcome) // skipped over a control: try again on the next screen
 const dismissWelcome = () => {
   welcome.value = false
   clearTimeout(welcomeHide)

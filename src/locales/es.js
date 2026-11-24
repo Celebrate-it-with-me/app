@@ -65,7 +65,7 @@ export default {
     plan: 'Mi plan',
     locations: 'Ubicaciones',
     guests: 'Invitados',
-    saveTheDate: 'Save the date',
+    saveTheDate: 'Guarda la fecha',
     dressCode: 'Vestimenta',
     budget: 'Presupuesto',
     padrinos: 'Padrinos',
@@ -423,9 +423,10 @@ export default {
       pause: 'Pausar música',
       error: 'No pudimos reproducir la música.'
     },
-    padrinos: { sponsors: 'Apadrina {items}' },
+    padrinos: { sponsors: 'Su regalo: {items}' },
     itinerary: {
-      types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' }
+      types: { ceremony: 'Ceremonia', reception: 'Recepción', waltz: 'Vals', dinner: 'Cena', dance: 'Baile', toast: 'Brindis', other: 'Momento' },
+      nextDay: '(+1 día)'
     },
     locations: {
       types: { ceremony: 'Ceremonia', reception: 'Recepción', other: 'Lugar' },
@@ -433,6 +434,11 @@ export default {
       google: 'Google Maps',
       apple: 'Apple Maps',
       waze: 'Waze',
+      directions: 'Cómo llegar',
+      directionsIn: 'Cómo llegar a {name}',
+      moreApps: 'Abrir en',
+      copyAddress: 'Copiar dirección',
+      copied: 'Dirección copiada',
       showMap: 'Ver mapa',
       hideMap: 'Ocultar mapa',
       map: 'Mapa de {name}',
@@ -449,7 +455,8 @@ export default {
       },
       reservedQuince: 'Colores reservados para la quinceañera y su corte',
       reservedWedding: 'Colores reservados para los novios',
-      suggested: 'Colores sugeridos'
+      suggested: 'Colores sugeridos',
+      avoid: 'Evitar'
     },
     comments: {
       title: 'Deja unos saludos',
@@ -555,6 +562,8 @@ export default {
       thanksYes: '¡Gracias! Te esperamos.',
       thanksNo: 'Gracias por avisarnos. Te vamos a extrañar.',
       error: 'No pudimos guardar tu respuesta. Inténtalo de nuevo.',
+      chooseFor: 'Elige una opción para {names}.',
+      checkNames: 'Revisa los nombres marcados.',
       closedError: 'El plazo para confirmar ya terminó.',
       noteLabel: 'Un mensaje para los anfitriones (opcional)',
       noteCount: '{n}/{max}',
@@ -578,8 +587,10 @@ export default {
       status: {
         attending: 'Asistirá',
         'not-attending': 'No asistirá',
-        pending: 'Pendiente'
-      }
+        pending: 'Pendiente',
+        noAnswer: 'Sin respuesta'
+      },
+      confirmedTitle: 'Respuesta confirmada'
     }
   },
   app: {
@@ -620,11 +631,11 @@ export default {
         share: {
           title: 'Compartir',
           text: 'Tienes dos formas de avisar, y puedes usar una o las dos.',
-          saveTheDate: 'Save the date: un aviso corto con la fecha para que la reserven. Sale antes que la invitación.',
+          saveTheDate: 'Guarda la fecha: un aviso corto con la fecha para que la reserven. Sale antes que la invitación.',
           invitation: 'Invitación completa: programa, ubicaciones, vestimenta y confirmación de asistencia.',
-          publishSaveTheDate: 'Publicar Save the date',
+          publishSaveTheDate: 'Publicar «Guarda la fecha»',
           publishInvitation: 'Publicar invitación',
-          liveSaveTheDate: 'Tu Save the date ya está publicado.',
+          liveSaveTheDate: 'Tu aviso «Guarda la fecha» ya está publicado.',
           liveInvitation: 'Tu invitación ya está publicada.',
           sendLinks: 'Envía a cada invitado su enlace desde la lista de invitados.',
           goGuests: 'Ir a invitados'
@@ -635,12 +646,13 @@ export default {
       button: 'Importar',
       title: 'Importar invitados',
       pickText: 'Sube un archivo de Excel o CSV con una fila por invitado. Solo el nombre es obligatorio.',
-      columns: 'Reconocemos las columnas: nombre, teléfono, correo y familia.',
+      columns: 'Reconocemos las columnas: nombre, teléfono, correo y grupo (o familia).',
       dropTitle: 'Arrastra tu archivo aquí',
       dropOr: 'o',
       choose: 'Elegir archivo',
       formats: 'CSV, XLSX o XLS · máximo 2 MB',
-      template: 'Descargar plantilla',
+      template: 'Descargar plantilla de Excel',
+      exampleTitle: 'Así debe verse tu archivo',
       templateError: 'No pudimos descargar la plantilla. Inténtalo de nuevo.',
       reading: 'Revisando tu archivo…',
       errors: {
@@ -661,9 +673,9 @@ export default {
       },
       filtersLabel: 'Filtrar filas',
       selected: '{n} de {total} seleccionados',
-      familiesHint: 'Las filas con la misma familia se importan como un invitado principal (la primera fila) con sus acompañantes.',
+      familiesHint: 'Las filas con el mismo grupo se importan como un invitado principal (la primera fila) con sus acompañantes.',
       assumedHint: 'A los teléfonos sin código de país les pusimos +1 (EE. UU.). Revísalos antes de importar.',
-      columnsHead: { include: 'Incluir', name: 'Nombre', phone: 'Teléfono', email: 'Correo', family: 'Familia', status: 'Estado' },
+      columnsHead: { include: 'Incluir', name: 'Nombre', phone: 'Teléfono', email: 'Correo', family: 'Grupo', status: 'Estado' },
       row: 'Fila {n}',
       include: 'Incluir a {name}',
       nameLabel: 'Nombre de la fila {n}',
@@ -680,7 +692,7 @@ export default {
       confirm: 'Importar {n} invitados | Importar {n} invitado | Importar {n} invitados',
       nothingSelected: 'Selecciona al menos un invitado',
       done: 'Importamos {n} invitados | Importamos {n} invitado | Importamos {n} invitados',
-      doneFamilies: '{n} familias | {n} familia | {n} familias',
+      doneFamilies: '{n} grupos | {n} grupo | {n} grupos',
       doneSkipped: '{n} omitidos | {n} omitido | {n} omitidos',
       importError: 'No pudimos importar a tus invitados. Inténtalo de nuevo.'
     },
@@ -1505,23 +1517,23 @@ export default {
       previewSuggested: 'Colores sugeridos'
     },
     saveTheDate: {
-      title: 'Save the date',
+      title: 'Guarda la fecha',
       subtitle: 'Avisa la fecha con meses de anticipación. Más adelante, el mismo enlace se convierte en tu invitación completa.',
       stateTitle: 'Estado',
       state: {
         draft: { badge: 'Sin publicar', text: 'Tus invitados aún no lo ven. Cuando lo publiques, cada uno abrirá su enlace y verá la fecha, la cuenta regresiva y tu mensaje.' },
-        live: { badge: 'En línea', text: 'Tus invitados ya ven el Save the date. Cuando tengas listo el resto, pasa a la invitación completa: no hace falta enviar enlaces nuevos.' },
-        invitation: { badge: 'Invitación completa', text: 'Tu invitación completa ya está publicada. El Save the date dejó de mostrarse en el enlace.' },
+        live: { badge: 'En línea', text: 'Tus invitados ya ven el aviso «Guarda la fecha». Cuando tengas listo el resto, pasa a la invitación completa: no hace falta enviar enlaces nuevos.' },
+        invitation: { badge: 'Invitación completa', text: 'Tu invitación completa ya está publicada. El aviso «Guarda la fecha» dejó de mostrarse en el enlace.' },
         archived: { badge: 'Archivado', text: 'Este evento está archivado. Restáuralo para publicar algo.' }
 
       },
-      actions: { publishSaveTheDate: 'Publicar Save the date', upgrade: 'Pasar a la invitación completa', unpublish: 'Dejar de publicar' },
+      actions: { publishSaveTheDate: 'Publicar «Guarda la fecha»', upgrade: 'Pasar a la invitación completa', unpublish: 'Dejar de publicar' },
       confirm: {
-        publishSaveTheDate: { title: '¿Publicar el Save the date?', text: 'Tus invitados verán solo la fecha, la cuenta regresiva y tu mensaje. Aún no podrán confirmar asistencia.' },
-        upgrade: { title: '¿Pasar a la invitación completa?', text: 'El mismo enlace mostrará ahora el programa, las ubicaciones, la vestimenta y la confirmación de asistencia. No se puede volver al Save the date.' },
+        publishSaveTheDate: { title: '¿Publicar «Guarda la fecha»?', text: 'Tus invitados verán solo la fecha, la cuenta regresiva y tu mensaje. Aún no podrán confirmar asistencia.' },
+        upgrade: { title: '¿Pasar a la invitación completa?', text: 'El mismo enlace mostrará ahora el programa, las ubicaciones, la vestimenta y la confirmación de asistencia. No se puede volver a «Guarda la fecha».' },
         unpublish: { title: '¿Dejar de publicar?', text: 'Los enlaces dejarán de funcionar hasta que vuelvas a publicar.' }
       },
-      done: { publishSaveTheDate: 'Save the date publicado.', upgrade: 'Tu invitación completa está en línea.', unpublish: 'Dejaste de publicar.' },
+      done: { publishSaveTheDate: '«Guarda la fecha» publicado.', upgrade: 'Tu invitación completa está en línea.', unpublish: 'Dejaste de publicar.' },
       saveFirst: 'Guarda tus cambios antes de publicar.',
       sameLink: 'Cada invitado usa su propio enlace; los encuentras y los envías desde Invitados.',
       limitBlocked: 'Tu lista supera el límite de tu plan, así que no se puede publicar todavía.',
@@ -1536,7 +1548,7 @@ export default {
       save: 'Guardar cambios',
       saved: 'Cambios guardados.',
       saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
-      loadError: 'No pudimos cargar tu Save the date.',
+      loadError: 'No pudimos cargar tu «Guarda la fecha».',
       cancel: 'Cancelar',
       previewTitle: 'Así lo verán tus invitados',
       previewSubtitle: 'Vista rápida.',
@@ -1597,12 +1609,12 @@ export default {
         cancel: 'Cancelar',
         back: 'Atrás',
         next: 'Siguiente',
-        nextCount: 'Siguiente · {n} familia | Siguiente · {n} familias',
+        nextCount: 'Siguiente · {n} invitación | Siguiente · {n} invitaciones',
         close: 'Cerrar',
         banner: {
           locked: 'El envío automático es del plan completo. Mientras tanto, compártelas tú con WhatsApp.',
           lockedAction: 'Ver plan',
-          off: 'El envío automático aún no está disponible. Compártelas tú con WhatsApp; te llevamos la cuenta.',
+          off: 'Por ahora lo envías tú: te abrimos WhatsApp con el mensaje listo, y llevamos la cuenta.',
           unpublished: 'Tu evento aún no está publicado: los enlaces no abrirán hasta que lo publiques.',
           publish: 'Ir a publicar',
           rsvpClosed: 'El plazo para responder ya cerró. Solo puedes usar «Guarda la fecha».'
@@ -1611,15 +1623,18 @@ export default {
           title: '¿A quién se lo enviamos?',
           empty: 'Nadie por ahora. Añade invitados o importa tu lista.',
           unsent: 'Aún sin invitación',
-          unsentHelp: 'Familias a las que todavía no se la compartes.',
+          unsentHelp: 'Invitaciones que todavía no has compartido.',
+          unsentNone: 'No hay invitaciones sin enviar.',
           pending: 'Pendientes de responder',
           pendingHelp: 'El invitado principal no ha respondido y ya recibió algo. Un recordatorio amable.',
+          pendingNone: 'No hay invitaciones pendientes.',
           pendingClosed: 'No disponible: el plazo para responder ya cerró.',
           all: 'Todos',
           allHelp: 'Toda tu lista, incluso a quien ya se la compartiste.',
+          allNone: 'No hay invitaciones.',
           selected: 'Elegir invitados…',
           selectedHelp: 'Marca una por una a quién se la compartes.',
-          families: '{n} familia | {n} familias',
+          families: '{n} invitación | {n} invitaciones',
           sends: 'Se compartirá: «{template}».',
           noPhone: '{n} sin número: elegirás el contacto tú misma. | {n} sin número: elegirás el contacto tú misma.',
           blocked: 'No se pueden compartir ({n})',
@@ -1637,7 +1652,7 @@ export default {
           noLink: 'Sin enlace'
         },
         pick: {
-          title: 'Elige a las familias',
+          title: 'Elige las invitaciones',
           search: 'Buscar por nombre o teléfono',
           filterAll: 'Todas',
           filterUnsent: 'Sin enviar',
@@ -1648,11 +1663,11 @@ export default {
           counter: '{n} elegida | {n} elegidas',
           counterBlocked: '{n} no se puede compartir | {n} no se pueden compartir',
           more: 'Mostrar más',
-          none: 'Ninguna familia coincide.',
+          none: 'Ninguna invitación coincide.',
           done: 'Listo'
         },
         manual: {
-          title: 'Enviar a mano · {n} familia | Enviar a mano · {n} familias',
+          title: 'Enviar a mano · {n} invitación | Enviar a mano · {n} invitaciones',
           optedOutNote: 'Pidió no recibir mensajes. Compártela solo si tú decides hacerlo.',
           help: 'Toca cada nombre: se abre WhatsApp con el mensaje listo. Envíalo y vuelve aquí.',
           progress: 'Abiertos {done} de {total}',
@@ -1696,23 +1711,23 @@ export default {
           editorLabel: 'Texto del mensaje',
           editor: 'Editar el texto',
           hideEditor: 'Ocultar el texto',
-          editorHelp: 'Usa {name}, {event} y {link}: se cambian por los de cada familia.',
-          missingLink: 'Tu mensaje no incluye {link}: la familia no recibirá el enlace de la invitación.',
+          editorHelp: 'Usa {name}, {event} y {link}: se cambian por los de cada invitado.',
+          missingLink: 'Tu mensaje no incluye {link}: tu invitado no recibirá el enlace de la invitación.',
           restore: 'Restaurar mensaje',
           errorContinue: 'Puedes continuar de todos modos.',
-          missing: 'El mensaje en {language} aún no está aprobado por WhatsApp ({n} familia). Sin él, el envío falla entero. | El mensaje en {language} aún no está aprobado por WhatsApp ({n} familias). Sin él, el envío falla entero.',
-          exclude: 'Excluir esa familia y continuar | Excluir esas {n} y continuar'
+          missing: 'El mensaje en {language} aún no está aprobado por WhatsApp ({n} invitación). Sin él, el envío falla entero. | El mensaje en {language} aún no está aprobado por WhatsApp ({n} invitaciones). Sin él, el envío falla entero.',
+          exclude: 'Excluir esa invitación y continuar | Excluir esas {n} y continuar'
         },
         auto: {
           title: 'Listo para enviar',
-          summary: '{n} familia · {template} | {n} familias · {template}',
-          omitted: 'Se omite {n} familia | Se omiten {n} familias',
+          summary: '{n} invitación · {template} | {n} invitaciones · {template}',
+          omitted: 'Se omite {n} invitación | Se omiten {n} invitaciones',
           seeWho: 'Ver quiénes',
           hideWho: 'Ocultar',
           from: 'Llegarán desde el número de Quinvite. Si responden «Sí» o «No», se confirma solo.',
           unpublished: 'Tu evento aún no está publicado: los enlaces no abrirían. Publícalo para poder enviar.',
-          big: 'Son {n} familias. Entiendo que se enviará un mensaje a cada una y que no se puede deshacer.',
-          send: 'Enviar a {n} familia | Enviar a {n} familias',
+          big: 'Son {n} invitaciones. Entiendo que se enviará un mensaje a cada una y que no se puede deshacer.',
+          send: 'Enviar a {n} invitación | Enviar a {n} invitaciones',
           sending: 'Enviando…',
           doneTitle: 'Envío terminado',
           progress: '{done} de {total}',
@@ -1722,9 +1737,9 @@ export default {
           retryFailed: 'Reintentar el fallido | Reintentar los {n} fallidos',
           retryOne: 'Reintentar el mensaje a {name}',
           retried: 'Volvimos a intentar {n} mensaje. | Volvimos a intentar {n} mensajes.',
-          paused: 'Pausado: llegaste al tope de hoy y {n} familia quedó sin enviar; podrás seguir mañana. | Pausado: llegaste al tope de hoy y {n} familias quedaron sin enviar; podrás seguir mañana.',
+          paused: 'Pausado: llegaste al tope de hoy y {n} invitación quedó sin enviar; podrás seguir mañana. | Pausado: llegaste al tope de hoy y {n} invitaciones quedaron sin enviar; podrás seguir mañana.',
           pollError: 'No pudimos actualizar el avance. El envío sigue; revisa tu conexión.',
-          skippedTitle: 'No se envió a {n} familia | No se envió a {n} familias',
+          skippedTitle: 'No se envió a {n} invitación | No se envió a {n} invitaciones',
           statusOf: 'Estado del envío:',
           noActive: 'No hay ningún envío en curso.',
           closedWhileSending: 'El envío continúa: verás el avance en Invitados.'
@@ -1752,7 +1767,7 @@ export default {
         dailyLimit: 'Llegaste al límite diario de mensajes para este evento; podrás seguir mañana.',
         retryLimit: 'Este mensaje ya se reintentó el máximo de veces.',
         tooManyRequests: 'Demasiados intentos seguidos. Espera un momento e inténtalo de nuevo.',
-        confirmationRequired: 'Son muchas familias: confirma que entiendes que se enviará un mensaje a cada una.',
+        confirmationRequired: 'Son muchas invitaciones: confirma que entiendes que se enviará un mensaje a cada una.',
         notPublished: 'Publica tu evento antes de enviar: los enlaces no abrirían.',
         rsvpClosed: 'El plazo para responder ya cerró: solo puedes enviar «Guarda la fecha».',
         archived: 'Este evento está archivado: solo puedes verlo.'
@@ -1786,6 +1801,7 @@ export default {
       retryLoad: 'Reintentar',
       counter: '{n} persona | {n} personas',
       counterLimit: '{n} de {limit} personas en tu plan',
+      overLimitChip: '{n} de {limit} · pasaste el límite',
       search: 'Buscar por nombre, teléfono o correo',
       add: 'Añadir invitado',
       tabs: { all: 'Todos', attending: 'Confirmados', pending: 'Pendientes', 'not-attending': 'No asisten' },
@@ -1793,7 +1809,9 @@ export default {
       answer: { attending: 'Asiste', 'not-attending': 'No asiste' },
       people: '{n} persona | {n} personas',
       emptyTitle: 'Aún no hay invitados',
-      emptyText: 'Añade a tu primera familia o amiga. Cada invitado recibe su propio enlace.',
+      emptyText: 'Sube tu lista de Excel o CSV y cada invitado recibe su propio enlace. También puedes añadirlos uno por uno.',
+      importExcel: 'Importar de Excel o CSV',
+      addOne: 'Añadir uno por uno',
       noResultsTitle: 'No encontramos a nadie',
       noResultsText: 'Prueba con otro nombre o cambia de pestaña.',
       download: {
@@ -1949,7 +1967,7 @@ export default {
       locations: 'Ubicaciones',
       menus: 'Menú',
       seating: 'Mesas',
-      saveTheDate: 'Save the date',
+      saveTheDate: 'Guarda la fecha',
       comments: 'Comentarios',
       dressCode: 'Vestimenta',
       memories: 'Recuerdos',
@@ -2223,8 +2241,8 @@ export default {
       draftText: 'Tu invitación todavía no es visible. Cuando la publiques, tus invitados podrán abrirla con su enlace.',
       publishedText: 'Tu invitación está visible para quienes tengan su enlace.',
       archivedText: 'Este evento está archivado: su invitación no se muestra.',
-      stageSaveTheDate: 'Ahora se muestra el Save the date, no la invitación completa.',
-      stageSaveTheDateLink: 'Ir al Save the date',
+      stageSaveTheDate: 'Ahora se muestra el aviso «Guarda la fecha», no la invitación completa.',
+      stageSaveTheDateLink: 'Ir a «Guarda la fecha»',
       saveFirst: 'Guarda tus cambios antes de cambiar el estado.',
       publish: 'Publicar invitación',
       unpublish: 'Volver a borrador',
@@ -2799,10 +2817,11 @@ export default {
     guests: {
       removeCount: '{n} invitados | {n} invitado | {n} invitados',
       bannerTitle: 'Pasaste el límite del plan gratis',
-      banner: 'Tienes {total} invitados y el plan gratis permite {limit}. Puedes seguir armando tu lista; para publicar tu invitación, desbloquea tu evento completo o elimina {remove}.',
+      banner: 'Tienes {total} invitados; el plan gratis permite {limit}. Para publicar, desbloquea tu evento o elimina {remove}.',
       publishBlocked: 'Tu lista tiene {total} invitados y el plan gratis permite {limit}. Desbloquea tu evento completo o elimina {remove} para poder publicar.',
       addBlocked: 'Tu invitación ya está publicada y el plan gratis permite {limit} invitados. Desbloquea tu evento completo para agregar más.',
       unlock: 'Desbloquear evento completo',
+      unlockPrice: 'Desbloquear · {price}',
       seeGuests: 'Ver mi lista'
     }
   },

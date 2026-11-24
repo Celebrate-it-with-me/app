@@ -423,9 +423,10 @@ export default {
       pause: 'Pause music',
       error: 'We couldn\'t play the music.'
     },
-    padrinos: { sponsors: 'Sponsors {items}' },
+    padrinos: { sponsors: 'Gift: {items}' },
     itinerary: {
-      types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
+      types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' },
+      nextDay: '(+1 day)'
     },
     locations: {
       types: { ceremony: 'Ceremony', reception: 'Reception', other: 'Venue' },
@@ -433,6 +434,11 @@ export default {
       google: 'Google Maps',
       apple: 'Apple Maps',
       waze: 'Waze',
+      directions: 'Get directions',
+      directionsIn: 'Get directions to {name}',
+      moreApps: 'Open in',
+      copyAddress: 'Copy address',
+      copied: 'Address copied',
       showMap: 'Show map',
       hideMap: 'Hide map',
       map: 'Map of {name}',
@@ -449,7 +455,8 @@ export default {
       },
       reservedQuince: 'Colors reserved for the quinceañera and her court',
       reservedWedding: 'Colors reserved for the couple',
-      suggested: 'Suggested colors'
+      suggested: 'Suggested colors',
+      avoid: 'Avoid'
     },
     comments: {
       title: 'Leave a few words',
@@ -555,6 +562,8 @@ export default {
       thanksYes: 'Thank you! We look forward to seeing you.',
       thanksNo: 'Thanks for letting us know. We\'ll miss you.',
       error: 'We couldn\'t save your reply. Please try again.',
+      chooseFor: 'Choose an option for {names}.',
+      checkNames: 'Check the names marked below.',
       closedError: 'The deadline to reply has passed.',
       noteLabel: 'A message for the hosts (optional)',
       noteCount: '{n}/{max}',
@@ -578,8 +587,10 @@ export default {
       status: {
         attending: 'Will attend',
         'not-attending': 'Will not attend',
-        pending: 'Pending'
-      }
+        pending: 'Pending',
+        noAnswer: 'No reply'
+      },
+      confirmedTitle: 'Reply confirmed'
     }
   },
   app: {
@@ -635,12 +646,13 @@ export default {
       button: 'Import',
       title: 'Import guests',
       pickText: 'Upload an Excel or CSV file with one row per guest. Only the name is required.',
-      columns: 'We recognize these columns: name, phone, email and family.',
+      columns: 'We recognize these columns: name, phone, email and group (or family).',
       dropTitle: 'Drop your file here',
       dropOr: 'or',
       choose: 'Choose file',
       formats: 'CSV, XLSX or XLS · max 2 MB',
-      template: 'Download template',
+      template: 'Download the Excel template',
+      exampleTitle: 'What your file should look like',
       templateError: 'We could not download the template. Please try again.',
       reading: 'Checking your file…',
       errors: {
@@ -661,9 +673,9 @@ export default {
       },
       filtersLabel: 'Filter rows',
       selected: '{n} of {total} selected',
-      familiesHint: 'Rows with the same family are imported as one main guest (the first row) with their companions.',
+      familiesHint: 'Rows with the same group are imported as one main guest (the first row) with their companions.',
       assumedHint: 'Phones without a country code got +1 (U.S.). Check them before importing.',
-      columnsHead: { include: 'Include', name: 'Name', phone: 'Phone', email: 'Email', family: 'Family', status: 'Status' },
+      columnsHead: { include: 'Include', name: 'Name', phone: 'Phone', email: 'Email', family: 'Group', status: 'Status' },
       row: 'Row {n}',
       include: 'Include {name}',
       nameLabel: 'Name of row {n}',
@@ -680,7 +692,7 @@ export default {
       confirm: 'Import {n} guests | Import {n} guest | Import {n} guests',
       nothingSelected: 'Select at least one guest',
       done: 'Imported {n} guests | Imported {n} guest | Imported {n} guests',
-      doneFamilies: '{n} families | {n} family | {n} families',
+      doneFamilies: '{n} groups | {n} group | {n} groups',
       doneSkipped: '{n} skipped | {n} skipped | {n} skipped',
       importError: 'We could not import your guests. Please try again.'
     },
@@ -1597,12 +1609,12 @@ export default {
         cancel: 'Cancel',
         back: 'Back',
         next: 'Next',
-        nextCount: 'Next · {n} family | Next · {n} families',
+        nextCount: 'Next · {n} invitation | Next · {n} invitations',
         close: 'Close',
         banner: {
           locked: 'Automatic sending is part of the full plan. Meanwhile, share them yourself on WhatsApp.',
           lockedAction: 'See plan',
-          off: 'Automatic sending is not available yet. Share them yourself on WhatsApp; we keep count.',
+          off: 'For now you send them yourself: we open WhatsApp with the message ready, and we keep count.',
           unpublished: 'Your event is not published yet: the links will not open until you publish it.',
           publish: 'Go publish',
           rsvpClosed: 'The RSVP deadline has passed. You can only use "Save the date".'
@@ -1611,15 +1623,18 @@ export default {
           title: 'Who do we send it to?',
           empty: 'Nobody yet. Add guests or import your list.',
           unsent: 'No invitation yet',
-          unsentHelp: 'Families you have not shared it with yet.',
+          unsentHelp: 'Invitations you have not shared yet.',
+          unsentNone: 'There are no unsent invitations.',
           pending: 'Waiting for a reply',
           pendingHelp: 'The main guest has not replied and already got something. A friendly reminder.',
+          pendingNone: 'There are no pending invitations.',
           pendingClosed: 'Not available: the RSVP deadline has passed.',
           all: 'Everyone',
           allHelp: 'Your whole list, even those you already shared it with.',
+          allNone: 'There are no invitations.',
           selected: 'Choose guests…',
-          selectedHelp: 'Tick the families one by one.',
-          families: '{n} family | {n} families',
+          selectedHelp: 'Tick the invitations one by one.',
+          families: '{n} invitation | {n} invitations',
           sends: 'This will be shared: "{template}".',
           noPhone: '{n} without a number: you pick the contact yourself. | {n} without a number: you pick the contact yourself.',
           blocked: 'Cannot be shared ({n})',
@@ -1637,7 +1652,7 @@ export default {
           noLink: 'No link'
         },
         pick: {
-          title: 'Choose the families',
+          title: 'Choose the invitations',
           search: 'Search by name or phone',
           filterAll: 'All',
           filterUnsent: 'Not sent',
@@ -1648,11 +1663,11 @@ export default {
           counter: '{n} chosen | {n} chosen',
           counterBlocked: '{n} cannot be shared | {n} cannot be shared',
           more: 'Show more',
-          none: 'No family matches.',
+          none: 'No invitation matches.',
           done: 'Done'
         },
         manual: {
-          title: 'Send by hand · {n} family | Send by hand · {n} families',
+          title: 'Send by hand · {n} invitation | Send by hand · {n} invitations',
           optedOutNote: 'Asked not to get messages. Share only if you decide to.',
           help: 'Tap each name: WhatsApp opens with the message ready. Send it and come back here.',
           progress: 'Opened {done} of {total}',
@@ -1696,23 +1711,23 @@ export default {
           editorLabel: 'Message text',
           editor: 'Edit the text',
           hideEditor: 'Hide the text',
-          editorHelp: 'Use {name}, {event} and {link}: they are replaced with each family\'s own.',
-          missingLink: 'Your message does not include {link}: the family will not get the invitation link.',
+          editorHelp: 'Use {name}, {event} and {link}: they are replaced with each guest\'s own.',
+          missingLink: 'Your message does not include {link}: the guest will not get the invitation link.',
           restore: 'Restore message',
           errorContinue: 'You can continue anyway.',
-          missing: 'The {language} message is not approved by WhatsApp yet ({n} family). Without it the whole send fails. | The {language} message is not approved by WhatsApp yet ({n} families). Without it the whole send fails.',
-          exclude: 'Leave that family out and continue | Leave those {n} out and continue'
+          missing: 'The {language} message is not approved by WhatsApp yet ({n} invitation). Without it the whole send fails. | The {language} message is not approved by WhatsApp yet ({n} invitations). Without it the whole send fails.',
+          exclude: 'Leave that invitation out and continue | Leave those {n} out and continue'
         },
         auto: {
           title: 'Ready to send',
-          summary: '{n} family · {template} | {n} families · {template}',
-          omitted: '{n} family is left out | {n} families are left out',
+          summary: '{n} invitation · {template} | {n} invitations · {template}',
+          omitted: '{n} invitation is left out | {n} invitations are left out',
           seeWho: 'See who',
           hideWho: 'Hide',
           from: 'They will arrive from the Quinvite number. If they answer "Yes" or "No", it is confirmed on its own.',
           unpublished: 'Your event is not published yet: the links would not open. Publish it to send.',
-          big: 'That is {n} families. I understand a message will go to each of them and it cannot be undone.',
-          send: 'Send to {n} family | Send to {n} families',
+          big: 'That is {n} invitations. I understand a message will go to each of them and it cannot be undone.',
+          send: 'Send to {n} invitation | Send to {n} invitations',
           sending: 'Sending…',
           doneTitle: 'Send finished',
           progress: '{done} of {total}',
@@ -1722,9 +1737,9 @@ export default {
           retryFailed: 'Retry the failed one | Retry the {n} failed ones',
           retryOne: 'Retry the message to {name}',
           retried: 'We tried {n} message again. | We tried {n} messages again.',
-          paused: 'Paused: you reached today\'s limit and {n} family was not sent; you can continue tomorrow. | Paused: you reached today\'s limit and {n} families were not sent; you can continue tomorrow.',
+          paused: 'Paused: you reached today\'s limit and {n} invitation was not sent; you can continue tomorrow. | Paused: you reached today\'s limit and {n} invitations were not sent; you can continue tomorrow.',
           pollError: 'We could not update the progress. The send keeps going; check your connection.',
-          skippedTitle: '{n} family was not sent | {n} families were not sent',
+          skippedTitle: '{n} invitation was not sent | {n} invitations were not sent',
           statusOf: 'Send status:',
           noActive: 'There is no send in progress.',
           closedWhileSending: 'The send keeps going: you will see the progress in Guests.'
@@ -1752,7 +1767,7 @@ export default {
         dailyLimit: 'You reached the daily message limit for this event; you can keep going tomorrow.',
         retryLimit: 'This message was already retried the maximum number of times.',
         tooManyRequests: 'Too many attempts in a row. Wait a moment and try again.',
-        confirmationRequired: 'That is a lot of families: confirm you understand a message will go to each of them.',
+        confirmationRequired: 'That is a lot of invitations: confirm you understand a message will go to each of them.',
         notPublished: 'Publish your event before sending: the links would not open.',
         rsvpClosed: 'The RSVP deadline has passed: you can only send "Save the date".',
         archived: 'This event is archived: you can only view it.'
@@ -1786,6 +1801,7 @@ export default {
       retryLoad: 'Try again',
       counter: '{n} person | {n} people',
       counterLimit: '{n} of {limit} people on your plan',
+      overLimitChip: '{n} of {limit} · over the limit',
       search: 'Search by name, phone or email',
       add: 'Add guest',
       tabs: { all: 'All', attending: 'Confirmed', pending: 'Pending', 'not-attending': 'Declined' },
@@ -1793,7 +1809,9 @@ export default {
       answer: { attending: 'Attending', 'not-attending': 'Declined' },
       people: '{n} person | {n} people',
       emptyTitle: 'No guests yet',
-      emptyText: 'Add your first family or friend. Every guest gets their own link.',
+      emptyText: 'Upload your Excel or CSV list and every guest gets their own link. You can also add them one by one.',
+      importExcel: 'Import from Excel or CSV',
+      addOne: 'Add one by one',
       noResultsTitle: 'We could not find anyone',
       noResultsText: 'Try another name or switch tabs.',
       download: {
@@ -2799,10 +2817,11 @@ export default {
     guests: {
       removeCount: '{n} guests | {n} guest | {n} guests',
       bannerTitle: 'You went over the free plan limit',
-      banner: 'You have {total} guests and the free plan allows {limit}. You can keep building your list; to publish your invitation, unlock your full event or remove {remove}.',
+      banner: 'You have {total} guests; the free plan allows {limit}. To publish, unlock your event or remove {remove}.',
       publishBlocked: 'Your list has {total} guests and the free plan allows {limit}. Unlock your full event or remove {remove} to be able to publish.',
       addBlocked: 'Your invitation is already published and the free plan allows {limit} guests. Unlock your full event to add more.',
       unlock: 'Unlock full event',
+      unlockPrice: 'Unlock · {price}',
       seeGuests: 'See my list'
     }
   },

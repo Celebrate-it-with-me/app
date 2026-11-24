@@ -40,7 +40,8 @@ export const MODULE_VIEWS = {
   budget: { to: '/dashboard/budget', icon: Wallet, labelKey: 'app.nav.budget', primary: true },
   padrinos: { to: '/dashboard/padrinos', icon: HeartHandshake, labelKey: 'app.nav.padrinos' },
   menus: { to: '/dashboard/menus', icon: ChefHat, labelKey: 'app.nav.menus' },
-  seating: { to: '/dashboard/seating', icon: NotebookPen, labelKey: 'app.nav.seating' },
+  // `deferred`: the module is frozen until after the launch (decision 2026-11-18), so no menu draws it; the route and the screen stay.
+  seating: { to: '/dashboard/seating', icon: NotebookPen, labelKey: 'app.nav.seating', deferred: true },
   suggested_music: { to: '/dashboard/suggested-music', icon: Music, labelKey: 'app.nav.music' },
   memories: { to: '/dashboard/memories', icon: Camera, labelKey: 'app.nav.memories' },
   comments: { to: '/dashboard/event-comments', icon: MessageCircle, labelKey: 'app.nav.comments' },
@@ -90,7 +91,7 @@ export function buildNavSections(modules) {
   const drawn = (modules ?? [])
     .map(module => {
       const view = MODULE_VIEWS[module.key]
-      if (!view?.to) return null
+      if (!view?.to || view.deferred) return null
       const locked = module.state === 'locked'
       return {
         key: module.key,

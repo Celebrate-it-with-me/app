@@ -244,3 +244,76 @@ describe('AssistantGuide lifts above a fixed bottom bar', () => {
     expect(cls).toContain('var(--assistant-lift')
   })
 })
+
+describe('AssistantGuide welcome bubble (ORG-027)', () => {
+  const welcome = () => q('guide-welcome')
+  const settle = async ms => {
+    await vi.advanceTimersByTimeAsync(ms)
+    await nextTick()
+  }
+  beforeEach(() => vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] }))
+  afterEach(() => vi.useRealTimers())
+
+  it('shows once, then closes by itself after 6 seconds', async () => {
+    await mountGuide()
+    await settle(1600)
+    expect(welcome()).not.toBeNull()
+    expect(localStorage.getItem('quinvite:guide:welcomed')).not.toBeNull()
+    await settle(5000)
+    expect(welcome()).not.toBeNull()
+    await settle(1000)
+    expect(welcome()).toBeNull()
+  })
+
+  it('closes on the first scroll', async () => {
+    await mountGuide()
+    await settle(1600)
+    expect(welcome()).not.toBeNull()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(welcome()).toBeNull()
+  })
+
+  it('never shows again once it was shown', async () => {
+    localStorage.setItem('quinvite:guide:welcomed', '1')
+    await mountGuide()
+    await settle(2000)
+    expect(welcome()).toBeNull()
+  })
+
+  it('does not appear over a button, and is not spent when it holds back', async () => {
+    const main = document.createElement('main')
+    main.innerHTML = '<button id="cta">Publicar invitación</button>'
+    document.body.append(main)
+    // The trigger sits at the bottom right; the button is right above it, where the bubble would go.
+    const box = (left, top, width, height) => ({ left, top, width, height, right: left + width, bottom: top + height })
+    const spy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
+      if (this.dataset?.testid === 'guide-trigger') return box(300, 700, 80, 48)
+      return this.id === 'cta' ? box(200, 640, 180, 44) : box(0, 0, 0, 0)
+    })
+    await mountGuide()
+    await settle(2000)
+    expect(welcome()).toBeNull()
+    expect(localStorage.getItem('quinvite:guide:welcomed')).toBeNull()
+    spy.mockRestore()
+  })
+
+  it('does not appear over readable text either (ORG-027), and is not spent', async () => {
+    const main = document.createElement('main')
+    main.innerHTML = '<p>Actividad reciente</p>'
+    document.body.append(main)
+    const rect = (left, top, width, height) => ({ left, top, width, height, right: left + width, bottom: top + height })
+    const trigger = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function () {
+      return this.dataset?.testid === 'guide-trigger' ? rect(900, 800, 150, 48) : rect(0, 0, 0, 0)
+    })
+    // The line of text sits where the bubble would be drawn (above the trigger).
+    const lines = (Range.prototype.getClientRects = vi.fn(() => [rect(820, 720, 200, 20)]))
+    await mountGuide()
+    await settle(2000)
+    expect(welcome()).toBeNull()
+    expect(localStorage.getItem('quinvite:guide:welcomed')).toBeNull()
+    expect(lines).toHaveBeenCalled()
+    trigger.mockRestore()
+    delete Range.prototype.getClientRects
+  })
+})

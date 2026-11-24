@@ -20,6 +20,12 @@ describe('buildNavSections', () => {
     expect(first.items.map(i => i.key)).toEqual(['home', 'invitation'])
   })
 
+  it('does not draw the deferred seating module anywhere, but keeps its view for the unlock screen (ORG-017)', () => {
+    const keys = buildNavSections(modules).flatMap(s => s.items.map(i => i.key))
+    expect(keys).not.toContain('seating')
+    expect(MODULE_VIEWS.seating.to).toBe('/dashboard/seating')
+  })
+
   it('does not draw "Mi plan" anywhere: it lives in the floating guide, the route stays', () => {
     const keys = buildNavSections(modules).flatMap(s => s.items.map(i => i.key))
     expect(keys).not.toContain('plan')

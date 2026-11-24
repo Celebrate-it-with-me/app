@@ -23,8 +23,13 @@ const { invitation, tt } = useInvitationContext()
         class="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 rotate-180 text-inv-accent/60 sm:h-60 sm:w-60"
       />
     </template>
-    <p v-if="invitation.branding?.watermark === true" class="inv-watermark text-sm text-inv-surface/70">
-      <a href="/" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-inv-surface">
+    <p v-if="invitation.branding?.watermark === true" class="inv-watermark text-sm text-inv-surface/90">
+      <a
+        href="/"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex min-h-11 items-center px-3 underline underline-offset-4 hover:text-inv-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-surface"
+      >
         {{ tt('madeWith') }}
       </a>
     </p>

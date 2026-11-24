@@ -1,10 +1,13 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { TriangleAlert } from 'lucide-vue-next'
 import { UiButton } from '@/ui'
 import { planLimitMessage } from '@/utils/planLimit'
 import { useCanUnlock } from '@/composables/useCanUnlock'
+import { useEventsStore } from '@/modules/events/stores/useEventsStore'
+import PaymentsService from '@/modules/payments/services/PaymentsService'
+import { formatMoney } from '@/modules/payments/utils/money'
 
 const props = defineProps({
   /** `{ limit, total, excess }`: how far over the plan's guest limit the list is. */
@@ -15,8 +18,22 @@ const props = defineProps({
   withListLink: { type: Boolean, default: false }
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { canUnlock } = useCanUnlock()
+const eventsStore = useEventsStore()
+
+// The button carries the price the API quotes for this event (ORG-013); until it answers, or if it fails, the label has no price.
+const quote = ref(null)
+const price = computed(() => (quote.value ? formatMoney(quote.value.amountCents, quote.value.currency, locale.value) : ''))
+onMounted(async () => {
+  const id = eventsStore.activeEvent?.id
+  if (!id || !canUnlock.value) return
+  try {
+    quote.value = await PaymentsService.quote(id)
+  } catch {
+    quote.value = null
+  }
+})
 
 const text = computed(() =>
   props.variant === 'banner'
@@ -37,7 +54,7 @@ const text = computed(() =>
         <p class="text-base text-ink-700" :class="variant === 'banner' && 'mt-1'">{{ text }}</p>
         <p v-if="!canUnlock" class="mt-2 text-sm font-semibold text-ink-700" data-testid="owner-only">{{ t('unlock.ownerOnly') }}</p>
         <div class="mt-3 flex flex-col gap-2 sm:flex-row">
-          <UiButton v-if="canUnlock" size="sm" to="/dashboard/unlock/guests-limit">{{ t('limits.guests.unlock') }}</UiButton>
+          <UiButton v-if="canUnlock" size="sm" to="/dashboard/unlock/guests-limit">{{ price ? t('limits.guests.unlockPrice', { price }) : t('limits.guests.unlock') }}</UiButton>
           <UiButton v-if="withListLink" size="sm" variant="secondary" to="/dashboard/guests">{{ t('limits.guests.seeGuests') }}</UiButton>
         </div>
       </div>

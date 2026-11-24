@@ -46,8 +46,8 @@ describe('buildMobileNav', () => {
 
   it('puts the rest under Más, locked extras with their padlock state and unlock address', () => {
     const more = tabsFor(MODULES).find(t => t.key === 'more')
-    expect(keys(more.items)).toEqual(['save_the_date', 'menus', 'seating'])
-    expect(more.items.filter(i => i.state === 'locked').map(i => i.to)).toEqual(['/dashboard/unlock/menus', '/dashboard/unlock/seating'])
+    expect(keys(more.items)).toEqual(['save_the_date', 'menus']) // seating is deferred: no menu draws it (ORG-017)
+    expect(more.items.filter(i => i.state === 'locked').map(i => i.to)).toEqual(['/dashboard/unlock/menus'])
   })
 
   it('never draws a module the admin switched off', () => {
@@ -133,7 +133,7 @@ describe('AppBottomNav', () => {
     await wrapper.get('[data-testid=tab-more]').trigger('click')
     await flushPromises()
     const sheet = document.body.querySelector('[data-testid=sheet-items]')
-    expect(sheet.textContent).toContain('Save the date')
+    expect(sheet.textContent).toContain('Guarda la fecha')
     expect(sheet.textContent).toContain('Menú')
     expect(sheet.textContent).not.toContain('Programa del día')
     expect(document.body.querySelector('[data-testid=sheet-menus] [aria-label=Premium]')).not.toBeNull()
@@ -147,7 +147,7 @@ describe('AppBottomNav', () => {
     const sheet = document.body.querySelector('[data-testid=sheet-items]')
     expect(sheet.textContent).toContain('Programa del día')
     expect(sheet.textContent).toContain('Presupuesto')
-    expect(sheet.textContent).not.toContain('Save the date')
+    expect(sheet.textContent).not.toContain('Guarda la fecha')
   })
 
   it('closes the sheet when the route changes', async () => {
