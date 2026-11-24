@@ -1,6 +1,6 @@
 <script setup>
-import { computed, reactive, ref, useId } from 'vue'
-import { CalendarClock, Check, Minus, Utensils } from 'lucide-vue-next'
+import { computed, nextTick, reactive, ref, useId } from 'vue'
+import { CalendarClock, Check, CircleAlert, Minus, Utensils } from 'lucide-vue-next'
 import InvitationService from '@/services/PublicEvents/InvitationService'
 import { useInvitationContext } from '../composables/useInvitation'
 import InvitationSection from './InvitationSection.vue'
@@ -14,7 +14,7 @@ const props = defineProps({
   variant: { type: String, default: 'card' }
 })
 
-const { tt, formatDate, slug, code, updateSection, preview, invitation } = useInvitationContext()
+const { tt, formatDate, slug, code, updateSection, preview, invitation, locale } = useInvitationContext()
 
 const ATTENDING = 'attending'
 const NOT_ATTENDING = 'not-attending'
@@ -54,6 +54,11 @@ const saving = ref(false)
 const message = ref('')
 const failed = ref(false)
 const celebrate = ref(false)
+/** Local, pre-send problem shown next to the button (unanswered people, invalid fields); never a network error. */
+const localProblem = ref('')
+/** Ids of the people the guest tapped "send" without answering for. */
+const unanswered = reactive(new Set())
+const form = ref(null)
 
 const mainId = computed(() => rsvp.value.guest.id)
 const mainDeclined = computed(() => answers[mainId.value] === NOT_ATTENDING)
@@ -111,18 +116,29 @@ const dietLabel = diet => {
 /** Changing an answer to "not attending" drops that person's dishes (everyone's when the main guest declines). */
 function setAnswer(id, option) {
   answers[id] = option
+  unanswered.delete(id)
+  if (!unanswered.size && localProblem.value && !Object.keys(fieldErrors).length) localProblem.value = ''
   if (option !== NOT_ATTENDING) return
   for (const person of everyone.value) if (person.id === id || id === mainId.value) choices[person.id] = {}
 }
 
-const canSubmit = computed(
-  () =>
-    answers[mainId.value] !== null &&
-    (mainDeclined.value || rsvp.value.companions.every(item => answers[item.id] !== null))
+/** People whose answer is still missing (companions do not count when the main guest declines). */
+const missingPeople = computed(() =>
+  everyone.value.filter(person => answers[person.id] === null && (person.id === mainId.value || !mainDeclined.value))
 )
+const canSubmit = computed(() => missingPeople.value.length === 0)
+const displayName = person => (person.id === mainId.value ? person.name : names[person.id] || person.name)
+const listNames = list => {
+  const items = list.map(displayName)
+  try {
+    return new Intl.ListFormat(locale?.value ?? 'es', { style: 'long', type: 'conjunction' }).format(items)
+  } catch {
+    return items.join(', ')
+  }
+}
 
 const deadline = computed(() => (rsvp.value.deadline ? formatDate(rsvp.value.deadline) : ''))
-const statusLabel = status => tt(`rsvp.status.${isPending(status) ? 'pending' : status}`)
+const statusLabel = status => tt(`rsvp.status.${isPending(status) ? (rsvp.value.isOpen ? 'pending' : 'noAnswer') : status}`)
 const errorText = code => tt(`rsvp.errors.${code}`)
 
 /** Same codes the API answers with, so a client-side stop reads like a server one. */
@@ -155,7 +171,7 @@ function applyServerErrors(errors = {}) {
     if (code) fieldErrors[`name-${item.id}`] = code
   })
   if (first('note')) fieldErrors.note = first('note')
-  if (Object.keys(fieldErrors).length) return tt('rsvp.error')
+  if (Object.keys(fieldErrors).length) return tt('rsvp.checkNames')
   if (Object.keys(errors).some(key => key.endsWith('menuItemIds'))) {
     fieldErrors.menu = 'invalid'
     return tt('rsvp.menu.errors.invalid')
@@ -170,14 +186,29 @@ function syncDrafts(data) {
   loadChoices(data)
 }
 
+/** Moves the focus (and the viewport) to the first thing the guest has to fix. */
+async function focusFirstProblem(selector) {
+  await nextTick()
+  const target = form.value?.querySelector(selector)
+  if (!target) return
+  target.scrollIntoView?.({ block: 'center', behavior: 'smooth' })
+  target.focus?.({ preventScroll: true })
+}
+
 async function submit() {
-  if (preview || !canSubmit.value || saving.value) return
+  if (preview || saving.value) return
   failed.value = false
   message.value = ''
+  localProblem.value = ''
+  unanswered.clear()
+  if (!canSubmit.value) {
+    for (const person of missingPeople.value) unanswered.add(person.id)
+    localProblem.value = tt('rsvp.chooseFor', { names: listNames(missingPeople.value) })
+    return focusFirstProblem('[data-unanswered] input[type="radio"]')
+  }
   if (!validate()) {
-    failed.value = true
-    message.value = tt('rsvp.error')
-    return
+    localProblem.value = tt('rsvp.checkNames')
+    return focusFirstProblem('[aria-invalid="true"]')
   }
   saving.value = true
   // Only what changed travels: a name or message the guest did not touch is left alone.
@@ -205,6 +236,7 @@ async function submit() {
     syncDrafts(data.data)
     for (const person of [data.data.guest, ...data.data.companions]) answers[person.id] = answer(person.status)
     editing.value = false
+    localProblem.value = ''
     message.value = tt(data.data.guest.status === ATTENDING ? 'rsvp.thanksYes' : 'rsvp.thanksNo')
     // Petals only for a yes: a decline gets a warm word, not confetti.
     celebrate.value = data.data.guest.status === ATTENDING
@@ -243,6 +275,9 @@ async function submit() {
       <component :is="variant === 'inline' ? 'div' : InvitationPanel" class="inv-rsvp" :data-rsvp="variant" v-bind="variant === 'paper' ? { variant: 'flat' } : {}">
         <!-- Summary of what was answered -->
         <div v-if="showSummary">
+          <p v-if="hasAnswered" class="mb-4 flex items-center gap-2 font-inv-heading text-xl" data-rsvp-confirmed>
+            <Check class="h-5 w-5 text-inv-primary-ink" aria-hidden="true" />{{ tt('rsvp.confirmedTitle') }}
+          </p>
           <ul class="divide-y divide-inv-ink/10">
             <li
               v-for="person in [rsvp.guest, ...rsvp.companions]"
@@ -250,7 +285,19 @@ async function submit() {
               class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-3.5 first:pt-0 last:pb-0"
             >
               <span class="min-w-0 truncate font-inv-heading text-lg">{{ person.name }}</span>
-              <span class="shrink-0 text-inv-ink-soft">{{ statusLabel(person.status) }}</span>
+              <span
+                class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium"
+                :class="
+                  person.status === ATTENDING
+                    ? 'bg-inv-primary/15 text-inv-primary-ink'
+                    : 'bg-inv-ink/5 text-inv-ink-soft'
+                "
+                :data-status="isPending(person.status) ? 'pending' : person.status"
+              >
+                <Check v-if="person.status === ATTENDING" class="h-4 w-4" aria-hidden="true" />
+                <Minus v-else class="h-4 w-4" aria-hidden="true" />
+                {{ statusLabel(person.status) }}
+              </span>
               <p v-if="dishNames(person.id).length" class="basis-full text-sm text-inv-ink-soft">
                 <Utensils class="mr-1 inline h-4 w-4 align-text-bottom" aria-hidden="true" />{{ dishNames(person.id).join(' · ') }}
               </p>
@@ -266,7 +313,7 @@ async function submit() {
         </div>
 
         <!-- Form -->
-        <form v-else class="flex flex-col gap-6" novalidate @submit.prevent="submit">
+        <form v-else ref="form" class="flex flex-col gap-6" novalidate @submit.prevent="submit">
           <div
             v-for="person in [rsvp.guest, ...rsvp.companions]"
             :key="person.id"
@@ -285,13 +332,25 @@ async function submit() {
                 :maxlength="NAME_MAX + 20"
                 :aria-invalid="fieldErrors[`name-${person.id}`] ? 'true' : undefined"
                 :aria-describedby="fieldErrors[`name-${person.id}`] ? `${nameInputId(person.id)}-error` : undefined"
-                class="mt-1 block min-h-12 w-full rounded-2xl border border-inv-ink/20 bg-inv-surface px-4 text-base text-inv-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary"
+                :class="[
+                  'mt-1 block min-h-12 w-full rounded-2xl border bg-inv-surface px-4 text-base text-inv-ink placeholder:text-inv-ink-soft/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary',
+                  fieldErrors[`name-${person.id}`] ? 'border-2 border-danger-500' : 'border-inv-ink/20'
+                ]"
               />
-              <p v-if="fieldErrors[`name-${person.id}`]" :id="`${nameInputId(person.id)}-error`" class="mt-1 text-sm text-danger-700">
-                {{ errorText(fieldErrors[`name-${person.id}`]) }}
+              <p
+                v-if="fieldErrors[`name-${person.id}`]"
+                :id="`${nameInputId(person.id)}-error`"
+                class="mt-1.5 flex items-start gap-1.5 text-sm font-medium text-danger-700"
+              >
+                <CircleAlert class="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{{ errorText(fieldErrors[`name-${person.id}`]) }}</span>
               </p>
             </div>
-            <fieldset :disabled="person.id !== mainId && mainDeclined">
+            <fieldset
+              :disabled="person.id !== mainId && mainDeclined"
+              :data-unanswered="unanswered.has(person.id) ? '' : undefined"
+              :class="unanswered.has(person.id) ? 'rounded-2xl ring-2 ring-danger-500 ring-offset-4 ring-offset-inv-surface' : ''"
+            >
               <legend class="font-inv-heading text-xl">{{ person.id === mainId ? person.name : names[person.id] || person.name }}</legend>
               <div class="mt-3 grid grid-cols-2 gap-3">
                 <label v-for="option in OPTIONS" :key="option" class="block">
@@ -357,17 +416,24 @@ async function submit() {
               name="note"
               :aria-invalid="fieldErrors.note ? 'true' : undefined"
               :aria-describedby="`${noteId}-note-hint`"
-              class="mt-1 block min-h-24 w-full resize-y rounded-2xl border border-inv-ink/20 bg-inv-surface px-4 py-3 text-base text-inv-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary"
+              class="mt-1 block min-h-24 w-full resize-y rounded-2xl border bg-inv-surface px-4 py-3 text-base text-inv-ink placeholder:text-inv-ink-soft/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary"
             />
             <div :id="`${noteId}-note-hint`" class="mt-1 flex items-start justify-between gap-3 text-sm">
-              <p v-if="fieldErrors.note" class="text-danger-700">{{ errorText(fieldErrors.note) }}</p>
+              <p v-if="fieldErrors.note" class="flex items-start gap-1.5 font-medium text-danger-700">
+                <CircleAlert class="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{{ errorText(fieldErrors.note) }}</span>
+              </p>
               <span v-else />
               <span :class="note.length > NOTE_MAX ? 'text-danger-700' : 'text-inv-ink-soft'">{{ tt('rsvp.noteCount', { n: note.length, max: NOTE_MAX }) }}</span>
             </div>
           </div>
 
           <p v-if="preview" role="note" class="text-center text-sm text-inv-ink-soft">{{ tt('previewNotice') }}</p>
-          <InvitationButton type="submit" :loading="saving" :disabled="preview || !canSubmit" class="w-full">
+          <p v-if="localProblem" role="alert" class="flex items-start gap-2 text-sm font-medium text-danger-700" data-rsvp-problem>
+            <CircleAlert class="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            <span>{{ localProblem }}</span>
+          </p>
+          <InvitationButton type="submit" :loading="saving" :disabled="preview" class="w-full">
             {{ tt(hasAnswered ? 'rsvp.update' : 'rsvp.submit') }}
           </InvitationButton>
         </form>

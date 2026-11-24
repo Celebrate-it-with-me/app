@@ -555,6 +555,8 @@ export default {
       thanksYes: 'Thank you! We look forward to seeing you.',
       thanksNo: 'Thanks for letting us know. We\'ll miss you.',
       error: 'We couldn\'t save your reply. Please try again.',
+      chooseFor: 'Choose an option for {names}.',
+      checkNames: 'Check the names marked below.',
       closedError: 'The deadline to reply has passed.',
       noteLabel: 'A message for the hosts (optional)',
       noteCount: '{n}/{max}',
@@ -578,8 +580,10 @@ export default {
       status: {
         attending: 'Will attend',
         'not-attending': 'Will not attend',
-        pending: 'Pending'
-      }
+        pending: 'Pending',
+        noAnswer: 'No reply'
+      },
+      confirmedTitle: 'Reply confirmed'
     }
   },
   app: {

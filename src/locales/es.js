@@ -555,6 +555,8 @@ export default {
       thanksYes: '¡Gracias! Te esperamos.',
       thanksNo: 'Gracias por avisarnos. Te vamos a extrañar.',
       error: 'No pudimos guardar tu respuesta. Inténtalo de nuevo.',
+      chooseFor: 'Elige una opción para {names}.',
+      checkNames: 'Revisa los nombres marcados.',
       closedError: 'El plazo para confirmar ya terminó.',
       noteLabel: 'Un mensaje para los anfitriones (opcional)',
       noteCount: '{n}/{max}',
@@ -578,8 +580,10 @@ export default {
       status: {
         attending: 'Asistirá',
         'not-attending': 'No asistirá',
-        pending: 'Pendiente'
-      }
+        pending: 'Pendiente',
+        noAnswer: 'Sin respuesta'
+      },
+      confirmedTitle: 'Respuesta confirmada'
     }
   },
   app: {
