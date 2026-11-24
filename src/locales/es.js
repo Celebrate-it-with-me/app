@@ -591,6 +591,7 @@ export default {
         pending: 'Pendiente',
         noAnswer: 'Sin respuesta'
       },
+      calendar: { title: 'Guárdalo en tu calendario', download: 'Descargar .ics' },
       confirmedTitle: 'Respuesta confirmada'
     }
   },

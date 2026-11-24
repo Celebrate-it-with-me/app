@@ -591,6 +591,7 @@ export default {
         pending: 'Pending',
         noAnswer: 'No reply'
       },
+      calendar: { title: 'Save it to your calendar', download: 'Download .ics' },
       confirmedTitle: 'Reply confirmed'
     }
   },

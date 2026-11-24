@@ -7,6 +7,7 @@ import InvitationSection from './InvitationSection.vue'
 import InvitationPanel from './InvitationPanel.vue'
 import InvitationButton from './InvitationButton.vue'
 import InvitationPetals from '../art/InvitationPetals.vue'
+import InvitationRsvpCalendar from './InvitationRsvpCalendar.vue'
 
 const props = defineProps({
   section: { type: Object, required: true },
@@ -65,6 +66,8 @@ const mainDeclined = computed(() => answers[mainId.value] === NOT_ATTENDING)
 // An unsaved sample guest (the editor preview) has no status at all: that is "pending", not an answer.
 const isPending = status => !status || status === 'pending'
 const hasAnswered = computed(() => !isPending(rsvp.value.guest.status))
+/** Calendar card: only for a "yes" (even once the RSVP closed), never while the guest is editing the answer. */
+const showCalendar = computed(() => Boolean(rsvp.value.calendar) && rsvp.value.guest.status === ATTENDING && !editing.value)
 const showSummary = computed(() => !rsvp.value.isOpen || (hasAnswered.value && !editing.value))
 
 /** Nobody attends under an invitation the main guest declined: mirror the server rule. */
@@ -449,5 +452,6 @@ async function submit() {
     >
       {{ message }}
     </p>
+    <InvitationRsvpCalendar v-if="showCalendar" :calendar="rsvp.calendar" />
   </InvitationSection>
 </template>
