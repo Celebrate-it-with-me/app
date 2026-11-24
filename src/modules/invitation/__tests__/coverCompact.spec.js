@@ -41,9 +41,11 @@ describe('InvitationCover compact phone layout', () => {
   it('steps the name and the guest down for long text so the button stays on the first screen', () => {
     const short = mountCover()
     expect(short.get('.inv-cover__name').classes()).toContain('text-[2.75rem]')
+    expect(short.get('.inv-cover__media > div').classes()).toContain('h-52')
     expect(short.get('.inv-cover__guest p:last-child').classes()).toContain('text-[2.25rem]')
     const mid = mountCover({ eventName: 'Los XV de María Valentina Guadalupe' })
     expect(mid.get('.inv-cover__name').classes()).toContain('text-[2.25rem]')
+    expect(mid.get('.inv-cover__media > div').classes()).toContain('h-44')
     const long = mountCover({ eventName: 'Boda de María Guadalupe Fernández-Villaseñor y José Alejandro Rodríguez', guest: 'Rosa María del Carmen Fernández-Hernández' })
     expect(long.get('.inv-cover__name').classes()).toContain('text-[1.75rem]')
     expect(long.get('.inv-cover__guest p:last-child').classes()).toContain('text-[1.75rem]')
