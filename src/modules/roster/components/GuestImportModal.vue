@@ -171,7 +171,7 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
           {{ t('app.guestImport.template') }}
         </UiButton>
 
-        <div class="overflow-x-auto rounded-xl border border-line" data-testid="import-example">
+        <div class="overflow-x-auto rounded-xl border border-line" role="region" tabindex="0" :aria-label="t('app.guestImport.exampleTitle')" data-testid="import-example">
           <table class="w-full min-w-[26rem] text-left text-sm">
             <caption class="border-b border-line bg-cream-100 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-ink-600">{{ t('app.guestImport.exampleTitle') }}</caption>
             <thead class="text-ink-600">
@@ -202,7 +202,7 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
             <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
             {{ t('app.guestImport.choose') }}
           </UiButton>
-          <input ref="fileInput" type="file" class="sr-only" tabindex="-1" :accept="ACCEPT" data-testid="import-file" @change="onFileChange" />
+          <input ref="fileInput" type="file" class="sr-only" tabindex="-1" :aria-label="t('app.guestImport.choose')" :accept="ACCEPT" data-testid="import-file" @change="onFileChange" />
           <p class="text-sm text-ink-500">{{ t('app.guestImport.formats') }}</p>
         </div>
 
