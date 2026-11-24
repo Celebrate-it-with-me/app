@@ -459,7 +459,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
               :key="song.platformId"
               class="inv-songs__result flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl bg-inv-surface px-3 py-2.5 ring-1 ring-inv-ink/10"
             >
-              <span class="inv-songs__cover flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-inv-primary/10 font-inv-heading text-lg text-inv-primary">
+              <span class="inv-songs__cover flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-inv-primary/10 font-inv-heading text-lg text-inv-primary-ink">
                 <img v-if="song.thumbnailUrl" :src="song.thumbnailUrl" alt="" width="48" height="48" loading="lazy" referrerpolicy="no-referrer" class="h-full w-full object-cover" />
                 <template v-else>{{ initial(song) }}</template>
               </span>
@@ -532,7 +532,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
               :aria-pressed="orderBy === option"
               :disabled="preview"
               :class="[
-                'min-h-9 rounded-full px-3 text-sm font-medium transition-[background-color,color] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary',
+                'min-h-11 rounded-full px-4 text-sm font-medium transition-[background-color,color] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary',
                 orderBy === option ? 'bg-inv-primary text-inv-on-primary' : 'text-inv-ink-soft hover:text-inv-ink'
               ]"
               @click="setOrder(option)"
@@ -566,7 +566,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
                 :key="item.id"
                 class="inv-songs__item flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl bg-inv-surface px-3 py-3 ring-1 ring-inv-ink/10"
               >
-                <span class="inv-songs__cover flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-inv-primary/10 font-inv-heading text-xl text-inv-primary">
+                <span class="inv-songs__cover flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-inv-primary/10 font-inv-heading text-xl text-inv-primary-ink">
                   <img v-if="safeHttpsUrl(item.thumbnailUrl)" :src="safeHttpsUrl(item.thumbnailUrl)" alt="" width="56" height="56" loading="lazy" referrerpolicy="no-referrer" class="h-full w-full object-cover" />
                   <template v-else>{{ initial(item) }}</template>
                 </span>

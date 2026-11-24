@@ -308,6 +308,18 @@
   accent-color: var(--inv-primary);
 }
 
+/*
+ * Section rhythm: sections that ask for the warm band alternate with paper. Two alt bands in a row (RSVP, music and
+ * messages when there are no tables) would merge into one long block, so every second one of a run falls back to paper.
+ */
+.inv-root:not([data-inv-pkg]) .inv-section[data-band='alt'] + .inv-section[data-band='alt'],
+.inv-root:not([data-inv-pkg]) .inv-section[data-band='alt'] + .inv-section[data-band='alt'] + .inv-section[data-band='alt'] + .inv-section[data-band='alt'] {
+  background-color: var(--inv-surface);
+}
+.inv-root:not([data-inv-pkg]) .inv-section[data-band='alt'] + .inv-section[data-band='alt'] + .inv-section[data-band='alt'] {
+  background-color: var(--inv-surface-alt);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .inv-rise,
   .inv-arch,
