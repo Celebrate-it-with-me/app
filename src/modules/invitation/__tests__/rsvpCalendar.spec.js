@@ -96,6 +96,13 @@ describe('InvitationRsvp and the calendar card', () => {
     expect(mountRsvp(data('attending', { isOpen: false })).find('[data-rsvp-calendar]').exists()).toBe(true)
   })
 
+  it('takes no vertical space for an empty status line (no gap before the card)', () => {
+    const status = mountRsvp(data('attending', { isOpen: false })).get('[role="status"]')
+    expect(status.text()).toBe('')
+    expect(status.classes()).not.toContain('mt-6')
+    expect(status.classes()).not.toContain('min-h-8')
+  })
+
   it('does not show it for a no, a pending guest or an answer without calendar', () => {
     expect(mountRsvp(data('not-attending')).find('[data-rsvp-calendar]').exists()).toBe(false)
     expect(mountRsvp(data('pending')).find('[data-rsvp-calendar]').exists()).toBe(false)

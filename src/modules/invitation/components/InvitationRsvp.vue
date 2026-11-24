@@ -463,7 +463,8 @@ async function submit() {
       aria-live="polite"
       tabindex="-1"
       :class="[
-        'inv-rsvp__note mt-6 min-h-8 scroll-mt-6 text-pretty focus:outline-none',
+        'inv-rsvp__note scroll-mt-6 text-pretty focus:outline-none',
+        message ? 'mt-6 min-h-8' : '',
         failed ? 'text-danger-700' : 'font-inv-script text-4xl text-inv-primary-ink sm:text-5xl'
       ]"
     >
