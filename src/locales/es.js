@@ -640,7 +640,8 @@ export default {
       dropOr: 'o',
       choose: 'Elegir archivo',
       formats: 'CSV, XLSX o XLS · máximo 2 MB',
-      template: 'Descargar plantilla',
+      template: 'Descargar plantilla de Excel',
+      exampleTitle: 'Así debe verse tu archivo',
       templateError: 'No pudimos descargar la plantilla. Inténtalo de nuevo.',
       reading: 'Revisando tu archivo…',
       errors: {

@@ -120,14 +120,25 @@ describe('GuestImportModal: choosing a file', () => {
     URL.revokeObjectURL = vi.fn()
     const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {})
     service.importTemplate.mockResolvedValue(new Blob(['n']))
-    button('Descargar plantilla').click()
+    button('Descargar plantilla de Excel').click()
     await flushPromises()
     expect(service.importTemplate).toHaveBeenCalledWith(7)
     expect(click).toHaveBeenCalled()
     service.importTemplate.mockRejectedValue(new Error('x'))
-    button('Descargar plantilla').click()
+    button('Descargar plantilla de Excel').click()
     await flushPromises()
     expect(toasts()).toContain('No pudimos descargar la plantilla. Inténtalo de nuevo.')
+  })
+
+  it('shows the template button above the drop area and an example of the columns (ORG-024)', async () => {
+    await mountModal()
+    const template = document.querySelector('[data-testid="import-template"]')
+    const zone = document.querySelector('.border-dashed')
+    expect(template.compareDocumentPosition(zone) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    const table = document.querySelector('[data-testid="import-example"] table')
+    expect([...table.querySelectorAll('th')].map(th => th.textContent)).toEqual(['Nombre', 'Teléfono', 'Correo', 'Grupo'])
+    expect(table.querySelectorAll('tbody tr')).toHaveLength(3)
+    expect(table.textContent).toContain('Ana Pérez')
   })
 
   it('starts over from the picker each time it opens', async () => {

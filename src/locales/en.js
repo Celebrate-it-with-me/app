@@ -640,7 +640,8 @@ export default {
       dropOr: 'or',
       choose: 'Choose file',
       formats: 'CSV, XLSX or XLS · max 2 MB',
-      template: 'Download template',
+      template: 'Download the Excel template',
+      exampleTitle: 'What your file should look like',
       templateError: 'We could not download the template. Please try again.',
       reading: 'Checking your file…',
       errors: {
