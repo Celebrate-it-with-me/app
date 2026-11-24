@@ -532,7 +532,7 @@ const previewable = song => usePreview.value && !!safeHttpsUrl(song.previewUrl)
               :aria-pressed="orderBy === option"
               :disabled="preview"
               :class="[
-                'min-h-9 rounded-full px-3 text-sm font-medium transition-[background-color,color] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary',
+                'min-h-11 rounded-full px-4 text-sm font-medium transition-[background-color,color] duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-inv-primary',
                 orderBy === option ? 'bg-inv-primary text-inv-on-primary' : 'text-inv-ink-soft hover:text-inv-ink'
               ]"
               @click="setOrder(option)"
