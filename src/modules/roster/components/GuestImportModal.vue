@@ -171,7 +171,7 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
           {{ t('app.guestImport.template') }}
         </UiButton>
 
-        <div class="overflow-x-auto rounded-xl border border-line" role="region" tabindex="0" :aria-label="t('app.guestImport.exampleTitle')" data-testid="import-example">
+        <div class="import-example overflow-x-auto rounded-xl border border-line" role="region" tabindex="0" :aria-label="t('app.guestImport.exampleTitle')" data-testid="import-example">
           <table class="w-full min-w-[26rem] text-left text-sm">
             <caption class="border-b border-line bg-cream-100 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-ink-600">{{ t('app.guestImport.exampleTitle') }}</caption>
             <thead class="text-ink-600">
@@ -181,7 +181,7 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
             </thead>
             <tbody class="text-ink-900">
               <tr v-for="row in EXAMPLE_ROWS" :key="row[0]" class="border-t border-line">
-                <td v-for="(cell, i) in row" :key="i" class="px-3 py-2">{{ cell }}</td>
+                <td v-for="(cell, i) in row" :key="i" class="whitespace-nowrap px-3 py-2">{{ cell }}</td>
               </tr>
             </tbody>
           </table>
@@ -334,3 +334,15 @@ const confirmLabel = computed(() => t('app.guestImport.confirm', { n: counts.val
     </template>
   </UiModal>
 </template>
+
+<style scoped>
+/* Shadows at the edges only while there is more to scroll to: tells a phone user that the table has more columns. */
+.import-example {
+  background:
+    linear-gradient(to right, #fff 30%, rgb(255 255 255 / 0)) left center / 1.5rem 100% no-repeat local,
+    linear-gradient(to left, #fff 30%, rgb(255 255 255 / 0)) right center / 1.5rem 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(60 40 30 / 0.22), rgb(60 40 30 / 0)) left center / 0.75rem 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, rgb(60 40 30 / 0.22), rgb(60 40 30 / 0)) right center / 0.75rem 100% no-repeat scroll;
+  background-color: #fff;
+}
+</style>

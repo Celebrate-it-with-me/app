@@ -139,6 +139,11 @@ describe('GuestImportModal: choosing a file', () => {
     expect([...table.querySelectorAll('th')].map(th => th.textContent)).toEqual(['Nombre', 'Teléfono', 'Correo', 'Grupo'])
     expect(table.querySelectorAll('tbody tr')).toHaveLength(3)
     expect(table.textContent).toContain('Ana Pérez')
+    // R1-006: phone numbers never wrap, and the scroll area is a focusable region with edge shadows.
+    table.querySelectorAll('tbody td').forEach(td => expect(td.className).toContain('whitespace-nowrap'))
+    const region = document.querySelector('[data-testid="import-example"]')
+    expect(region.getAttribute('tabindex')).toBe('0')
+    expect(region.classList.contains('import-example')).toBe(true)
   })
 
   it('starts over from the picker each time it opens', async () => {
