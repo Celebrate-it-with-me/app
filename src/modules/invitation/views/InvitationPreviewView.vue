@@ -124,6 +124,7 @@ onUnmounted(() => {
     :data-inv-stage="invitation?.stage === 'save_the_date' ? 'save_the_date' : 'invitation'"
     :data-inv-engine="ENGINE"
     :data-inv-pkg="pkg.usable.value ? pkg.state.value : undefined"
+    v-bind="pkg.optionAttrs.value"
   >
     <main v-if="!allowedOrigin" class="flex min-h-svh items-center justify-center px-6 text-center">
       <p role="alert">{{ tt('preview.notConfigured') }}</p>
