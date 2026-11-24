@@ -104,3 +104,16 @@ describe('contrast of the free palettes', () => {
     expect(readableInk('#2b2420', ['#2b2420'])).toBe('#2b2420')
   })
 })
+
+describe('themeVars edge cases', () => {
+  it('leaves the text-safe ink out when the primary is not a 6-digit hex (the CSS fallback applies)', () => {
+    expect(themeVars({ colors: { primary: '#abc' } })).not.toHaveProperty('--inv-primary-ink')
+  })
+
+  it('emits the script font when valid and measures short hex colors', () => {
+    expect(themeVars({ fonts: { script: 'Pinyon Script' } })['--inv-font-script']).toBe("'Pinyon Script', cursive")
+    expect(contrast('#fff', '#000')).toBeCloseTo(21, 0)
+    expect(onColor('nope')).toBe('#ffffff')
+    expect(contrast('#777', '#fff')).toBeGreaterThan(4)
+  })
+})
