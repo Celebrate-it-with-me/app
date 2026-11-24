@@ -30,8 +30,11 @@ const emit = defineEmits(['update:modelValue'])
         cx(
           'flex cursor-pointer items-start gap-3',
           cards &&
-            'rounded-lg border border-line-strong bg-white p-4 transition-colors has-[[data-state=checked]]:border-rose-600 has-[[data-state=checked]]:bg-rose-50',
-          (option.disabled || disabled) && 'cursor-not-allowed opacity-60'
+            'rounded-lg border p-4 transition-colors has-[[data-state=checked]]:border-rose-600 has-[[data-state=checked]]:bg-rose-50',
+          cards && !(option.disabled || disabled) && 'border-line-strong bg-white',
+          // Disabled is shown with muted (still AA) colours, not opacity: opacity drops the text below the contrast minimum.
+          (option.disabled || disabled) && 'cursor-not-allowed',
+          cards && (option.disabled || disabled) && 'border-line bg-cream-100'
         )
       "
     >
@@ -43,7 +46,7 @@ const emit = defineEmits(['update:modelValue'])
         <RadioGroupIndicator class="h-2.5 w-2.5 rounded-full bg-rose-600" />
       </RadioGroupItem>
       <span class="flex flex-col">
-        <span class="text-base leading-5 text-ink-900">{{ option.label }}</span>
+        <span class="text-base leading-5" :class="option.disabled || disabled ? 'text-ink-500' : 'text-ink-900'">{{ option.label }}</span>
         <span v-if="option.description" class="text-sm text-ink-500">{{ option.description }}</span>
       </span>
     </label>

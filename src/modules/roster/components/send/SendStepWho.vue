@@ -28,12 +28,13 @@ const options = computed(() =>
   CATEGORIES.map(key => {
     const n = counts.value[key]
     const open = categoryAllowed(key, { rsvpOpen: props.rsvpOpen })
+    const disabled = !open || (key !== 'selected' && n === 0 && key !== props.category)
     return {
       value: key,
       label: key === 'selected' ? t('app.whatsapp.wizard.who.selected') : `${t(`app.whatsapp.wizard.who.${key}`)} · ${t('app.whatsapp.wizard.who.families', { n }, n)}`,
-      description: !open ? t('app.whatsapp.wizard.who.pendingClosed') : t(`app.whatsapp.wizard.who.${key}Help`),
+      description: !open ? t('app.whatsapp.wizard.who.pendingClosed') : disabled ? t(`app.whatsapp.wizard.who.${key}None`) : t(`app.whatsapp.wizard.who.${key}Help`),
       // A card with nobody in it is not a choice (ORG-012); the one already selected stays enabled so the group never ends up checked and disabled.
-      disabled: !open || (key !== 'selected' && n === 0 && key !== props.category)
+      disabled
     }
   })
 )

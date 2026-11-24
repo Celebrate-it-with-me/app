@@ -71,6 +71,11 @@ describe('SendWizard step 1', () => {
     const radios = [...document.querySelectorAll('[role="radio"]')]
     const pending = radios.find(r => r.closest('label, div')?.textContent.includes('Pendientes de responder'))
     expect(pending.disabled || pending.getAttribute('aria-disabled') === 'true' || pending.hasAttribute('data-disabled')).toBe(true)
+    // R1-002: really disabled, explained, and not dimmed with opacity (which fails axe color-contrast).
+    expect(pending.disabled).toBe(true)
+    const card = pending.closest('label')
+    expect(card.textContent).toContain('No hay invitaciones pendientes')
+    expect(card.className).not.toContain('opacity')
   })
 
   it('goes to the assisted list with the chosen families and Back returns to step 1', async () => {
