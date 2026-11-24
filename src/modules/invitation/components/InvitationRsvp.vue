@@ -304,7 +304,7 @@ async function submit() {
                     @change="setAnswer(person.id, option)"
                   />
                   <span
-                    class="inv-rsvp__option flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-inv-ink/20 bg-inv-surface px-3 text-center font-medium transition-[background-color,color,border-color,scale] duration-150 ease-out active:scale-[0.98] peer-checked:border-inv-primary peer-checked:bg-inv-primary peer-checked:text-inv-on-primary peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-inv-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-60"
+                    class="inv-rsvp__option flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-inv-ink/20 bg-inv-surface px-3 text-center leading-tight font-medium text-balance transition-[background-color,color,border-color,scale] duration-150 ease-out active:scale-[0.98] peer-checked:border-inv-primary peer-checked:bg-inv-primary peer-checked:text-inv-on-primary peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-inv-primary peer-disabled:cursor-not-allowed peer-disabled:opacity-60"
                   >
                     <component :is="option === ATTENDING ? Check : Minus" class="h-4 w-4 shrink-0" aria-hidden="true" />
                     {{ tt(option === ATTENDING ? 'rsvp.attending' : 'rsvp.notAttending') }}
