@@ -2801,10 +2801,11 @@ export default {
     guests: {
       removeCount: '{n} guests | {n} guest | {n} guests',
       bannerTitle: 'You went over the free plan limit',
-      banner: 'You have {total} guests and the free plan allows {limit}. You can keep building your list; to publish your invitation, unlock your full event or remove {remove}.',
+      banner: 'You have {total} guests and the free plan allows {limit}. Keep building your list: to publish, unlock your event or remove {remove}.',
       publishBlocked: 'Your list has {total} guests and the free plan allows {limit}. Unlock your full event or remove {remove} to be able to publish.',
       addBlocked: 'Your invitation is already published and the free plan allows {limit} guests. Unlock your full event to add more.',
       unlock: 'Unlock full event',
+      unlockPrice: 'Unlock · {price}',
       seeGuests: 'See my list'
     }
   },
