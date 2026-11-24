@@ -1793,7 +1793,9 @@ export default {
       answer: { attending: 'Attending', 'not-attending': 'Declined' },
       people: '{n} person | {n} people',
       emptyTitle: 'No guests yet',
-      emptyText: 'Add your first family or friend. Every guest gets their own link.',
+      emptyText: 'Upload your Excel or CSV list and every guest gets their own link. You can also add them one by one.',
+      importExcel: 'Import from Excel or CSV',
+      addOne: 'Add one by one',
       noResultsTitle: 'We could not find anyone',
       noResultsText: 'Try another name or switch tabs.',
       download: {

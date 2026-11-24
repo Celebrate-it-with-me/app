@@ -161,10 +161,12 @@ describe('RosterView list', () => {
     await setup()
     expect(body()).toContain('Aún no hay invitados')
     expect(document.querySelector('[data-testid="send-bar"]')).toBeNull()
-    button('Añadir invitado').click()
+    // ORG-011: import is the primary action, the toolbar buttons are gone while the list is empty.
+    expect(button('Añadir invitado')).toBeUndefined()
+    button('Añadir uno por uno').click()
     await flushPromises()
     expect(body()).toContain('Nuevo invitado')
-    button('Importar').click()
+    button('Importar de Excel o CSV').click()
   })
 
   it('holds the place of the toolbar and the progress while the first load is under way', async () => {

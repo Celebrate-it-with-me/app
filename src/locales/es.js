@@ -1793,7 +1793,9 @@ export default {
       answer: { attending: 'Asiste', 'not-attending': 'No asiste' },
       people: '{n} persona | {n} personas',
       emptyTitle: 'Aún no hay invitados',
-      emptyText: 'Añade a tu primera familia o amiga. Cada invitado recibe su propio enlace.',
+      emptyText: 'Sube tu lista de Excel o CSV y cada invitado recibe su propio enlace. También puedes añadirlos uno por uno.',
+      importExcel: 'Importar de Excel o CSV',
+      addOne: 'Añadir uno por uno',
       noResultsTitle: 'No encontramos a nadie',
       noResultsText: 'Prueba con otro nombre o cambia de pestaña.',
       download: {
