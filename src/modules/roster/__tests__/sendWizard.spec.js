@@ -59,14 +59,18 @@ describe('SendWizard step 1', () => {
     await open()
     expect(body()).toContain('¿A quién se lo enviamos?')
     expect(body()).toContain('Paso 1 de 3')
-    expect(body()).toContain('Aún sin invitación · 4 familias')
-    expect(body()).toContain('Pendientes de responder · 0 familias')
-    expect(body()).toContain('Todos · 4 familias')
+    expect(body()).toContain('Aún sin invitación · 4 invitaciones')
+    expect(body()).toContain('Pendientes de responder · 0 invitaciones')
+    expect(body()).toContain('Todos · 4 invitaciones')
     expect(body()).not.toContain('Meta')
-    expect(document.querySelector('[data-testid="who-summary"]').textContent).toContain('4 familias')
+    expect(document.querySelector('[data-testid="who-summary"]').textContent).toContain('4 invitaciones')
     expect(document.querySelector('[data-testid="who-nophone"]').textContent).toContain('1 sin número')
     expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('No se pueden compartir (1)')
-    expect(button('Siguiente · 4 familias').disabled).toBe(false)
+    expect(button('Siguiente · 4 invitaciones').disabled).toBe(false)
+    // A card with nobody in it is not a choice (ORG-012).
+    const radios = [...document.querySelectorAll('[role="radio"]')]
+    const pending = radios.find(r => r.closest('label, div')?.textContent.includes('Pendientes de responder'))
+    expect(pending.disabled || pending.getAttribute('aria-disabled') === 'true' || pending.hasAttribute('data-disabled')).toBe(true)
   })
 
   it('goes to the assisted list with the chosen families and Back returns to step 1', async () => {
@@ -77,7 +81,7 @@ describe('SendWizard step 1', () => {
     expect(body()).toContain('Así lo recibirán')
     await click('Siguiente')
     expect(body()).toContain('Paso 3 de 3')
-    expect(body()).toContain('Enviar a mano · 4 familias')
+    expect(body()).toContain('Enviar a mano · 4 invitaciones')
     expect(document.querySelectorAll('[data-testid="manual-row"]')).toHaveLength(4)
     await click('Atrás')
     await click('Atrás')
@@ -87,7 +91,7 @@ describe('SendWizard step 1', () => {
   it('starts on the first card that has people, and falls back to everyone when only a reminder fits and RSVP is closed', async () => {
     serve({ recipients: [rec(1, { delivery: { state: 'sent' } })] })
     await open()
-    expect(body()).toContain('Pendientes de responder · 1 familia')
+    expect(body()).toContain('Pendientes de responder · 1 invitación')
     wrapper.unmount()
     serve({ recipients: [rec(1, { delivery: { state: 'sent' } })], audience: info({ rsvp: { isOpen: false } }) })
     await open()
@@ -110,13 +114,13 @@ describe('SendWizard step 1', () => {
     expect(button('Siguiente').disabled).toBe(false)
     await click('Siguiente')
     await click('Siguiente')
-    expect(body()).toContain('Enviar a mano · 101 familias')
+    expect(body()).toContain('Enviar a mano · 101 invitaciones')
   })
 
   it('keeps blocking an opt-out in automatic mode and lists it', async () => {
     serve({ audience: info({ mode: { automatic: true } }) })
     await open({ mode: 'automatic' })
-    expect(body()).toContain('Aún sin invitación · 2 familias')
+    expect(body()).toContain('Aún sin invitación · 2 invitaciones')
     expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('Pidió no recibir mensajes')
     expect(document.querySelector('[data-testid="who-blocked"]').textContent).toContain('Falta el teléfono')
     expect(document.querySelector('[data-testid="who-optedout"]')).toBeNull()
@@ -175,7 +179,7 @@ describe('SendWizard step 1', () => {
     search.value = 'zzz'
     search.dispatchEvent(new Event('input'))
     await flushPromises()
-    expect(body()).toContain('Ninguna familia coincide.')
+    expect(body()).toContain('Ninguna invitación coincide.')
     search.value = ''
     search.dispatchEvent(new Event('input'))
     for (const label of ['Sin enviar', 'Pendientes', 'Con problema', 'Todas']) await click(label)
@@ -222,7 +226,8 @@ describe('SendWizard banners and errors', () => {
   it('says the automatic send is not available yet when the module is off', async () => {
     serve()
     await open()
-    expect(body()).toContain('El envío automático aún no está disponible')
+    expect(body()).toContain('Por ahora lo envías tú')
+    expect(document.querySelector('[data-testid="wizard-mode-banner"] svg[viewBox="0 0 24 24"]')).toBeTruthy() // WhatsApp glyph, not a padlock
   })
 
   it('warns that an unpublished event has links that will not open and offers to publish', async () => {
@@ -272,7 +277,7 @@ describe('SendWizard banners and errors', () => {
     await flushPromises()
     slow(info())
     await flushPromises()
-    expect(body()).toContain('Todos · 2 familias')
+    expect(body()).toContain('Todos · 2 invitaciones')
   })
 
   it('does not load while closed, and reloads when the parent bumps the token', async () => {
@@ -309,7 +314,7 @@ describe('SendWizard preselected family', () => {
     expect(body()).toContain('Paso 2 de 3')
     expect(body()).toContain('Así lo recibirán')
     await click('Siguiente')
-    expect(body()).toContain('Enviar a mano · 1 familia')
+    expect(body()).toContain('Enviar a mano · 1 invitación')
   })
 
   it('stays on step 1 when the family cannot be shared', async () => {
@@ -480,7 +485,7 @@ describe('SendWizard step 1 · automatic holds', () => {
     holds()
     await open({ mode: 'automatic' })
     expect(svc.allRecipients).toHaveBeenCalledWith(7, 'reminder_pending')
-    expect(body()).toContain('Aún sin invitación · 3 familias')
+    expect(body()).toContain('Aún sin invitación · 3 invitaciones')
     const group = document.querySelector('[data-testid="who-blocked"]')
     expect(group.textContent).toContain('No se pueden compartir (2)')
     expect(group.querySelector('[data-testid="who-blocked-recently_sent"]').textContent).toContain('Familia 2')
@@ -493,7 +498,7 @@ describe('SendWizard step 1 · automatic holds', () => {
     holds()
     await open()
     expect(svc.allRecipients).not.toHaveBeenCalledWith(7, 'reminder_pending')
-    expect(body()).toContain('Aún sin invitación · 4 familias')
+    expect(body()).toContain('Aún sin invitación · 4 invitaciones')
     expect(document.querySelector('[data-testid="who-blocked"]')).toBeNull()
   })
 
@@ -508,7 +513,7 @@ describe('SendWizard step 1 · automatic holds', () => {
     await wrapper.setProps({ reloadToken: 5 })
     await flushPromises()
     expect(body()).toContain('Paso 1 de 3')
-    expect(body()).toContain('Aún sin invitación · 1 familia')
+    expect(body()).toContain('Aún sin invitación · 1 invitación')
   })
 
   it('labels every reason in the pick list instead of calling it a bad number', async () => {

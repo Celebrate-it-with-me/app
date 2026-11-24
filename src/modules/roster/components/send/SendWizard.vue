@@ -1,7 +1,8 @@
 <script setup>
 import { computed, nextTick, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Lock, TriangleAlert } from 'lucide-vue-next'
+import { TriangleAlert } from 'lucide-vue-next'
+import WhatsAppIcon from '@/components/brand/WhatsAppIcon.vue'
 import { UiModal, UiButton, UiCard, UiSkeleton, UiEmptyState } from '@/ui'
 import SendWizardService from '../../services/SendWizardService'
 import { useToast } from '@/ui'
@@ -204,9 +205,9 @@ const bannerKey = computed(() => (props.locked ? 'locked' : 'off'))
       <template v-else>
         <p v-if="archived" role="alert" class="mb-4 rounded-lg bg-danger-50 px-3 py-2 text-sm text-danger-700">{{ t('app.whatsapp.wizard.errors.archived') }}</p>
 
-        <UiCard v-if="locked || audience?.mode?.automatic === false" padding="sm" class="mb-4 bg-gold-50" data-testid="wizard-mode-banner">
+        <UiCard v-if="locked || audience?.mode?.automatic === false" padding="sm" class="mb-4 bg-cream-100" data-testid="wizard-mode-banner">
           <div class="flex items-start gap-3">
-            <Lock class="mt-0.5 h-4 w-4 shrink-0 text-gold-700" aria-hidden="true" />
+            <WhatsAppIcon class="mt-0.5 h-4 w-4 shrink-0 text-success-700" />
             <div class="min-w-0">
               <p class="text-sm text-ink-700">{{ t(`app.whatsapp.wizard.banner.${bannerKey}`) }}</p>
               <UiButton v-if="locked" class="mt-2" size="sm" variant="outline" @click="emit('unlock')">{{ t('app.whatsapp.wizard.banner.lockedAction') }}</UiButton>
