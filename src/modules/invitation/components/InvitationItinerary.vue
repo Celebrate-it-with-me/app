@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from 'vue'
 import { useInvitationContext } from '../composables/useInvitation'
-import { iconFor, parseMoment } from '@/modules/timeline/utils/program'
+import { iconFor } from '@/modules/timeline/utils/program'
+import { endsNextDay, formatClock } from '../composables/wallClock'
 import InvitationSection from './InvitationSection.vue'
 
 const props = defineProps({
@@ -10,15 +11,17 @@ const props = defineProps({
   variant: { type: String, default: 'timeline' }
 })
 
-const { locale } = useInvitationContext()
+const { locale, tt } = useInvitationContext()
 
 const items = computed(() => {
-  const format = new Intl.DateTimeFormat(locale.value, { hour: 'numeric', minute: '2-digit' })
   return props.section.data.items.map(item => ({
     ...item,
     icon: iconFor(item.type),
-    time: format.format(parseMoment(item.startTime)),
-    until: item.endTime ? format.format(parseMoment(item.endTime)) : null
+    time: formatClock(item.startTime, locale.value),
+    // "1:00 a.m. (+1 day)": an end after midnight must not read as earlier than the start.
+    until: item.endTime
+      ? `${formatClock(item.endTime, locale.value)}${endsNextDay(item.startTime, item.endTime) ? ` ${tt('itinerary.nextDay')}` : ''}`
+      : null
   }))
 })
 </script>

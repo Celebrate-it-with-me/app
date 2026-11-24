@@ -425,7 +425,8 @@ export default {
     },
     padrinos: { sponsors: 'Sponsors {items}' },
     itinerary: {
-      types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' }
+      types: { ceremony: 'Ceremony', reception: 'Reception', waltz: 'Waltz', dinner: 'Dinner', dance: 'Dancing', toast: 'Toast', other: 'Moment' },
+      nextDay: '(+1 day)'
     },
     locations: {
       types: { ceremony: 'Ceremony', reception: 'Reception', other: 'Venue' },
