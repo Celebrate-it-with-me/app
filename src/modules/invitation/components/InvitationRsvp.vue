@@ -60,6 +60,7 @@ const localProblem = ref('')
 /** Ids of the people the guest tapped "send" without answering for. */
 const unanswered = reactive(new Set())
 const form = ref(null)
+const noteEl = ref(null)
 
 const mainId = computed(() => rsvp.value.guest.id)
 const mainDeclined = computed(() => answers[mainId.value] === NOT_ATTENDING)
@@ -198,6 +199,19 @@ async function focusFirstProblem(selector) {
   target.focus?.({ preventScroll: true })
 }
 
+/**
+ * After a saved answer: bring the confirmation (and the calendar card under it) into view and move the focus to the
+ * message, so neither a sighted guest nor a screen reader is left looking at the old form (R2A-004).
+ */
+async function revealOutcome() {
+  await nextTick()
+  const el = noteEl.value
+  if (!el) return
+  const reduced = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true
+  el.scrollIntoView?.({ behavior: reduced ? 'auto' : 'smooth', block: 'start' })
+  el.focus?.({ preventScroll: true })
+}
+
 async function submit() {
   if (preview || saving.value) return
   failed.value = false
@@ -243,6 +257,7 @@ async function submit() {
     message.value = tt(data.data.guest.status === ATTENDING ? 'rsvp.thanksYes' : 'rsvp.thanksNo')
     // Petals only for a yes: a decline gets a warm word, not confetti.
     celebrate.value = data.data.guest.status === ATTENDING
+    await revealOutcome()
   } catch (error) {
     failed.value = true
     const status = error?.response?.status
@@ -443,10 +458,12 @@ async function submit() {
     </div>
 
     <p
+      ref="noteEl"
       role="status"
       aria-live="polite"
+      tabindex="-1"
       :class="[
-        'inv-rsvp__note mt-6 min-h-8 text-pretty',
+        'inv-rsvp__note mt-6 min-h-8 scroll-mt-6 text-pretty focus:outline-none',
         failed ? 'text-danger-700' : 'font-inv-script text-4xl text-inv-primary-ink sm:text-5xl'
       ]"
     >
