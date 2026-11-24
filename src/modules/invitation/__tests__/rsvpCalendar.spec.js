@@ -10,6 +10,7 @@ import i18n from '@/locales/i18n'
 import { INVITATION_KEY } from '../composables/useInvitation'
 import { icsUrl } from '../composables/calendarLinks'
 import InvitationRsvp from '../components/InvitationRsvp.vue'
+import InvitationButton from '../components/InvitationButton.vue'
 import InvitationRsvpCalendar from '../components/InvitationRsvpCalendar.vue'
 
 const tt = (key, params = {}) => i18n.global.t(`invitation.${key}`, params, { locale: 'es' })
@@ -44,19 +45,38 @@ describe('InvitationRsvpCalendar', () => {
     expect(icsUrl('s', 'c', null)).toBe('http://api.test/api/v1/app/invitation/s/c/calendar.ics')
   })
 
-  it('offers Google Calendar and the .ics file, with the engine hooks', () => {
+  it('has ONE primary action: Google Calendar by default, the .ics file as a quiet link, and the saved date shown', () => {
     const wrapper = mountCard({ calendar: calendar() }, [{ type: 'locations' }])
     expect(wrapper.get('.inv-rsvp-calendar').attributes('aria-label')).toBe(tt('rsvp.calendar.title'))
-    const google = wrapper.get('.inv-rsvp-calendar__google')
-    expect(google.attributes('href')).toBe('https://calendar.google.com/calendar/render?action=TEMPLATE')
-    expect(google.attributes('target')).toBe('_blank')
-    expect(wrapper.get('.inv-rsvp-calendar__ics').attributes('href')).toBe('http://api.test/api/v1/app/invitation/xv-de-valentina/AB%2012/calendar.ics')
-    expect(wrapper.get('.inv-rsvp-calendar__ics').text()).toBe(tt('rsvp.calendar.download'))
+    expect(wrapper.get('[data-rsvp-calendar-when]').text()).toContain('10 de diciembre')
+    expect(wrapper.findAll('.inv-button')).toHaveLength(1)
+    const primary = wrapper.get('.inv-rsvp-calendar__primary')
+    expect(primary.classes()).toContain('inv-rsvp-calendar__google')
+    expect(primary.attributes('href')).toBe('https://calendar.google.com/calendar/render?action=TEMPLATE')
+    expect(primary.attributes('target')).toBe('_blank')
+    const file = wrapper.get('a.inv-rsvp-calendar__ics')
+    expect(file.attributes('href')).toBe('http://api.test/api/v1/app/invitation/xv-de-valentina/AB%2012/calendar.ics')
+    expect(file.text()).toBe(tt('rsvp.calendar.download'))
+    expect(file.classes()).toContain('min-h-11')
   })
 
-  it('drops a Google link that is not https', () => {
+  it('makes the .ics file primary on Apple devices and Google a quiet link', () => {
+    const ua = vi.spyOn(globalThis.navigator, 'userAgent', 'get').mockReturnValue('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)')
+    const wrapper = mountCard({ calendar: calendar() })
+    ua.mockRestore()
+    expect(wrapper.get('.inv-rsvp-calendar__primary').classes()).toContain('inv-rsvp-calendar__ics')
+    expect(wrapper.get('a.inv-rsvp-calendar__google').attributes('href')).toContain('calendar.google.com')
+    expect(wrapper.findAll('.inv-button')).toHaveLength(1)
+  })
+
+  it('drops a Google link that is not https: the file is then the only calendar action', () => {
     const wrapper = mountCard({ calendar: calendar({ google: 'javascript:alert(1)' }) })
     expect(wrapper.find('.inv-rsvp-calendar__google').exists()).toBe(false)
+    expect(wrapper.get('.inv-rsvp-calendar__primary').classes()).toContain('inv-rsvp-calendar__ics')
+  })
+
+  it('hides the date line when the API sent none', () => {
+    expect(mountCard({ calendar: calendar({ startsAt: null }) }).find('[data-rsvp-calendar-when]').exists()).toBe(false)
   })
 
   it('scrolls to the locations section when there is one', async () => {
@@ -64,6 +84,7 @@ describe('InvitationRsvpCalendar', () => {
     const wrapper = mountCard({ calendar: calendar() }, [{ type: 'locations' }])
     const button = wrapper.get('.inv-rsvp-calendar__directions')
     expect(button.element.tagName).toBe('BUTTON')
+    expect(button.classes()).toContain('min-h-11')
     await button.trigger('click')
     expect(document.getElementById('locations').scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' })
     document.body.innerHTML = ''
@@ -107,5 +128,14 @@ describe('InvitationRsvp and the calendar card', () => {
     expect(mountRsvp(data('not-attending')).find('[data-rsvp-calendar]').exists()).toBe(false)
     expect(mountRsvp(data('pending')).find('[data-rsvp-calendar]').exists()).toBe(false)
     expect(mountRsvp(data('attending', { calendar: undefined })).find('[data-rsvp-calendar]').exists()).toBe(false)
+  })
+})
+
+describe('InvitationButton outline hover (R2A-006)', () => {
+  it('darkens the text on the tinted hover background so the contrast holds, and leaves the filled button alone', () => {
+    const outline = mount(InvitationButton, { props: { variant: 'outline' }, slots: { default: 'x' } })
+    expect(outline.classes()).toContain('hover:bg-inv-primary/10')
+    expect(outline.classes()).toContain('hover:text-inv-primary-ink')
+    expect(mount(InvitationButton, { slots: { default: 'x' } }).classes()).not.toContain('hover:text-inv-primary-ink')
   })
 })
