@@ -136,6 +136,10 @@ describe('InvitationButton outline hover (R2A-006)', () => {
     const outline = mount(InvitationButton, { props: { variant: 'outline' }, slots: { default: 'x' } })
     expect(outline.classes()).toContain('hover:bg-inv-primary/10')
     expect(outline.classes()).toContain('hover:text-inv-primary-ink')
-    expect(mount(InvitationButton, { slots: { default: 'x' } }).classes()).not.toContain('hover:text-inv-primary-ink')
+    const filled = mount(InvitationButton, { slots: { default: 'x' } }).classes()
+    expect(filled).not.toContain('hover:text-inv-primary-ink')
+    // fading a filled button on hover lightened its background below 4.5:1 with white text; it darkens instead
+    expect(filled).toContain('hover:brightness-95')
+    expect(filled).not.toContain('hover:opacity-90')
   })
 })
