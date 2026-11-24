@@ -77,12 +77,15 @@ onMounted(async () => {
       <p class="text-sm font-medium text-inv-ink-soft">{{ palette.label }}</p>
       <ul class="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-5">
         <li v-for="color in palette.colors" :key="color.key" class="inv-dresscode__color flex w-24 flex-col items-center gap-2 text-center">
-          <span v-if="color.swatch && variant !== 'plain'" class="relative flex h-14 w-14 items-center justify-center">
+          <span v-if="variant !== 'plain'" class="relative flex h-14 w-14 items-center justify-center">
             <span
+              v-if="color.swatch"
               class="h-14 w-14 rounded-full shadow-soft ring-1 ring-inv-ink/15 ring-offset-2 ring-offset-inv-surface"
               :style="{ backgroundColor: color.swatch }"
               aria-hidden="true"
             />
+            <!-- A free-text color with no known swatch gets a neutral dashed circle so every row keeps the same height. -->
+            <span v-else class="inv-dresscode__unknown h-14 w-14 rounded-full border-2 border-dashed border-inv-ink/30" aria-hidden="true" />
             <span v-if="palette.avoid" class="absolute h-0.5 w-[4.25rem] -rotate-45 rounded-full bg-inv-ink ring-1 ring-inv-surface" aria-hidden="true" />
           </span>
           <span :class="['text-sm leading-tight text-inv-ink-soft text-balance', color.isCode && 'font-mono text-xs']">{{ color.label }}</span>

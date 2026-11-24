@@ -152,6 +152,15 @@ describe('INV-009 dress code', () => {
     expect(wrapper.findAll('.inv-dresscode__palette')[1].find('.inv-dresscode__avoid').exists()).toBe(false)
   })
 
+  it('gives a free-text color without a swatch a neutral circle so the rows align (R1-004)', () => {
+    const wrapper = render(InvitationDressCode, data())
+    const rows = wrapper.findAll('.inv-dresscode__palette')[0].findAll('.inv-dresscode__color')
+    expect(rows).toHaveLength(3)
+    rows.forEach(row => expect(row.find('span.h-14').exists()).toBe(true))
+    expect(wrapper.findAll('.inv-dresscode__unknown')).toHaveLength(1)
+    expect(render(InvitationDressCode, data(), { props: { variant: 'plain' } }).find('.inv-dresscode__unknown').exists()).toBe(false)
+  })
+
   it('names colors in English and shows the code when no name is close', () => {
     const text = render(InvitationDressCode, data(), { locale: 'en' }).text()
     expect(text).toContain('White')
