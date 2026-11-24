@@ -33,6 +33,7 @@ const band = computed(
     :id="frame === 'full' ? id : undefined"
     ref="root"
     :aria-labelledby="title && frame === 'full' ? `${id}-title` : undefined"
+    :data-band="variant"
     :class="['inv-section relative overflow-hidden px-6 py-20 sm:py-24', band]"
   >
     <slot name="decor" />

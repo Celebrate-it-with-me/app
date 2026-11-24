@@ -119,6 +119,13 @@ describe('frame scope', () => {
     expect(section).toBeTruthy()
   })
 
+  it('marks its band so the stylesheet can alternate runs of warm bands', () => {
+    const mountBand = variant => mount(InvitationSection, { props: { id: 'x', title: 'T', variant }, slots: { default: 'c' } })
+    expect(mountBand('alt').get('section').attributes('data-band')).toBe('alt')
+    expect(mountBand('deep').get('section').attributes('data-band')).toBe('deep')
+    expect(mountBand().get('section').attributes('data-band')).toBe('plain')
+  })
+
   it('inside a package: full has no anchor of its own, no-title drops heading and text, bare is only the content', () => {
     const full = frameOf('full')
     expect(full.find('section').attributes('id')).toBeUndefined()
