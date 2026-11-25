@@ -52,6 +52,17 @@ describe('variables', () => {
     expect(formatWallClock('nonsense', 'es', { day: 'numeric' })).toBe('')
   })
 
+  it('section.title and section.text fall back to the heading and subheading of the section data, like the native sections', () => {
+    const section = { type: 'comments', title: null, text: null, data: { heading: 'Mensajes', subHeading: 'Déjale unas palabras' } }
+    const c = ctx({ ctx: { section } })
+    expect(resolveVar('section.title', undefined, c)).toBe('Mensajes')
+    expect(resolveVar('section.text', undefined, c)).toBe('Déjale unas palabras')
+    const own = ctx({ ctx: { section: { ...section, title: 'Propio', text: 'Texto propio' } } })
+    expect(resolveVar('section.title', undefined, own)).toBe('Propio')
+    expect(resolveVar('section.text', undefined, own)).toBe('Texto propio')
+    expect(resolveVar('section.text', undefined, ctx({ ctx: { section: { type: 'comments', title: null, text: null, data: {} } } }))).toBe('')
+  })
+
   it('unknown paths do not leak anything and warn', () => {
     const warnings = []
     const c = ctx()
