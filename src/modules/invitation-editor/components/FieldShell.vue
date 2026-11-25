@@ -7,7 +7,6 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Lock, RotateCcw } from 'lucide-vue-next'
-import { UiButton } from '@/ui'
 import { pick } from '../utils/editorFields'
 
 const props = defineProps({
@@ -20,7 +19,7 @@ const props = defineProps({
   hideLabel: { type: Boolean, default: false },
   readOnly: { type: Boolean, default: false }
 })
-const emit = defineEmits(['reset', 'unlock'])
+const emit = defineEmits(['reset'])
 const { t, locale } = useI18n()
 
 const label = computed(() => pick(props.field.label, locale.value))
@@ -38,7 +37,8 @@ const describedBy = computed(() => [help.value && `${props.baseId}-help`, props.
         <Lock v-if="field.locked" class="ml-1 inline h-3.5 w-3.5 text-gold-700" aria-hidden="true" />
         <span v-if="field.locked" class="sr-only"> ({{ t('invitationEditor.field.lockedSr') }})</span>
       </component>
-      <span v-else :id="`${baseId}-label`" class="sr-only">{{ label }}</span>
+      <span v-else :id="`${baseId}-label`" class="sr-only">{{ label }}<template v-if="field.locked"> ({{ t('invitationEditor.field.lockedSr') }})</template></span>
+      <Lock v-if="hideLabel && field.locked" class="h-4 w-4 text-gold-700" aria-hidden="true" />
       <button
         v-if="canReset"
         type="button"
@@ -58,9 +58,5 @@ const describedBy = computed(() => [help.value && `${props.baseId}-help`, props.
 
     <p v-if="error" :id="`${baseId}-error`" class="text-sm text-danger-700" role="alert" data-testid="field-error">{{ error }}</p>
 
-    <div v-if="field.locked" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-600" data-testid="field-locked">
-      <span>{{ t('invitationEditor.field.lockedText') }}</span>
-      <UiButton variant="link" size="sm" @click="emit('unlock')">{{ t('invitationEditor.field.unlock') }}</UiButton>
-    </div>
   </div>
 </template>

@@ -80,7 +80,7 @@ describe('TemplatePickerEntry', () => {
     await mountEntry()
     await click('Cambiar plantilla')
     await click('Botánica')
-    await click('Desbloquear para usarla')
+    await click('Desbloquear')
     expect(mocks.push).toHaveBeenCalledWith({ name: 'unlock', params: { module: 'full' }, query: { from: 'template', template: '3' } })
   })
 
