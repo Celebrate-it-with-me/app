@@ -2,6 +2,7 @@ import { computed, defineComponent, h, inject, onBeforeUnmount, onMounted, ref }
 import { INVITATION_KEY } from '../composables/useInvitation'
 import { renderAst } from './renderer'
 import { startBehaviors } from './behaviors'
+import { coverAttrs } from './facts'
 import './engine.css'
 
 /**
@@ -56,7 +57,8 @@ export default defineComponent({
           'data-inv-parity': props.position % 2 === 0 ? 'even' : 'odd',
           'data-inv-first': props.position === 1 ? 'true' : undefined,
           'data-inv-last': props.position === props.count ? 'true' : undefined,
-          'aria-label': !isCover && title ? title : undefined
+          'aria-label': !isCover && title ? title : undefined,
+          ...(isCover ? coverAttrs(props.section, context.invitation.value) : {})
         },
         tree
       )

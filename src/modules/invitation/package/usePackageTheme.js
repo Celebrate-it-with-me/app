@@ -1,5 +1,6 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { LIMITS, astBytes } from './policy'
+import { optionAttrs } from './facts'
 
 /** Version of the package engine this app implements. A package with a higher `engineMin` is ignored. */
 export const ENGINE = 1
@@ -176,6 +177,8 @@ export function usePackageTheme(getPackage) {
     base: computed(() => current.value?.base ?? ''),
     templates: computed(() => current.value?.templates ?? {}),
     layout: computed(() => current.value?.layout ?? null),
-    strings: computed(() => current.value?.strings)
+    strings: computed(() => current.value?.strings),
+    /** `data-inv-opt-<id>` attributes for the root while the package is usable (see facts.js). */
+    optionAttrs: computed(() => (state.value === 'loading' || state.value === 'ready' ? optionAttrs(getPackage()?.options) : {}))
   }
 }
