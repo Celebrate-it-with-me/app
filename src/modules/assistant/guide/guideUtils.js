@@ -16,7 +16,9 @@ export const COMPACT_ROUTES = [
   /^\/dashboard\/memories(\/|$)/, // photo upload
   /^\/dashboard\/collaborators\/invite(\/|$)/,
   /^\/dashboard\/start(\/|$)/, // onboarding
-  /^\/dashboard\/plan(\/|$)/ // the full plan: the guide would only repeat it
+  /^\/dashboard\/plan(\/|$)/, // the full plan: the guide would only repeat it
+  /^\/settings(\/|$)/, // account forms: the pill would sit over the save button
+  /^\/dashboard\/guests(\/|$)/ // at 320 px the full pill covers the Import/Add row (seen in a capture)
 ]
 
 export const isCompactRoute = path => typeof path === 'string' && COMPACT_ROUTES.some(re => re.test(path))
