@@ -86,17 +86,38 @@ describe('InvitationEditorView', () => {
   it('shows the plan lock as a padlock on the row and one banner with the price on top, and disables the control', async () => {
     await setup()
     const field = wrapper.get('[data-field=color_primary]')
-    expect(field.find('[data-testid=field-locked]').exists()).toBe(false)
     expect(field.text()).not.toContain('Es parte del evento completo')
-    expect(field.find('svg').exists()).toBe(true)
+    const lock = field.get('[data-testid=field-locked]')
+    expect(lock.text()).toBe('Color principal') // the name with the padlock inline, one tap target
+    expect(lock.attributes('aria-label')).toBe('Bloqueado: Color principal. Se desbloquea con el evento completo.')
+    expect(lock.classes()).toContain('min-h-11')
     expect(wrapper.findAll('[data-testid=unlock-banner]')).toHaveLength(1)
     expect(wrapper.get('[data-testid=unlock-banner]').text()).toBe('Desbloquea todo por $79 · pago único')
     expect(field.get('[data-testid=color-hex]').attributes('disabled')).toBeDefined()
     expect(field.findAll('[data-testid=swatch]').every(s => s.attributes('disabled') !== undefined)).toBe(true)
-    await wrapper.get('[data-testid=unlock-banner]').trigger('click')
+    await lock.trigger('click')
     await flushPromises()
     expect(router.currentRoute.value.name).toBe('unlock')
     expect(router.currentRoute.value.params.module).toBe('full')
+  })
+
+  it('a locked section row has a padlock button to the payment, and the toggle field one too', async () => {
+    await setup()
+    await wrapper.get('[data-section=gallery] [data-testid=section-locked]').trigger('click')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('unlock')
+  })
+
+  it('a locked toggle (no visible label) still has a 44 px padlock button with the name for screen readers', async () => {
+    const data = payload()
+    data.fields.find(f => f.id === 'ornaments').locked = true
+    svc.get.mockResolvedValue(data)
+    await setup()
+    const lock = wrapper.get('[data-field=ornaments] [data-testid=field-locked]')
+    expect(lock.get('span').classes()).toContain('sr-only')
+    await lock.trigger('click')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('unlock')
   })
 
   it('saves a choice at once, by field id, and shows "Guardado"', async () => {

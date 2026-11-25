@@ -19,7 +19,7 @@ const props = defineProps({
   hideLabel: { type: Boolean, default: false },
   readOnly: { type: Boolean, default: false }
 })
-const emit = defineEmits(['reset'])
+const emit = defineEmits(['reset', 'unlock'])
 const { t, locale } = useI18n()
 
 const label = computed(() => pick(props.field.label, locale.value))
@@ -32,13 +32,21 @@ const describedBy = computed(() => [help.value && `${props.baseId}-help`, props.
 <template>
   <div class="flex flex-col gap-2" role="group" :aria-labelledby="`${baseId}-label`" :data-field="field.id">
     <div class="flex items-start gap-3" :class="hideLabel ? 'justify-end' : 'justify-between'">
-      <component :is="labelFor ? 'label' : 'span'" v-if="!hideLabel" :id="`${baseId}-label`" :for="labelFor || undefined" class="text-sm font-semibold text-ink-700">
-        {{ label }}
-        <Lock v-if="field.locked" class="ml-1 inline h-3.5 w-3.5 text-gold-700" aria-hidden="true" />
-        <span v-if="field.locked" class="sr-only"> ({{ t('invitationEditor.field.lockedSr') }})</span>
-      </component>
-      <span v-else :id="`${baseId}-label`" class="sr-only">{{ label }}<template v-if="field.locked"> ({{ t('invitationEditor.field.lockedSr') }})</template></span>
-      <Lock v-if="hideLabel && field.locked" class="h-4 w-4 text-gold-700" aria-hidden="true" />
+      <!-- A locked field is one tap target (>= 44 px) to the payment: the name with the padlock next to it. -->
+      <button
+        v-if="field.locked"
+        type="button"
+        class="-my-1 flex min-h-11 min-w-11 items-center gap-1.5 rounded-md text-left text-sm font-semibold text-ink-700 focus-visible:outline-2 focus-visible:outline-rose-600"
+        :class="hideLabel ? 'justify-end' : 'flex-1'"
+        :aria-label="t('invitationEditor.field.lockedAria', { name: label })"
+        data-testid="field-locked"
+        @click="emit('unlock')"
+      >
+        <span :id="`${baseId}-label`" :class="hideLabel && 'sr-only'">{{ label }}</span>
+        <Lock class="h-4 w-4 shrink-0 text-gold-700" aria-hidden="true" />
+      </button>
+      <component :is="labelFor ? 'label' : 'span'" v-else-if="!hideLabel" :id="`${baseId}-label`" :for="labelFor || undefined" class="text-sm font-semibold text-ink-700">{{ label }}</component>
+      <span v-else :id="`${baseId}-label`" class="sr-only">{{ label }}</span>
       <button
         v-if="canReset"
         type="button"
