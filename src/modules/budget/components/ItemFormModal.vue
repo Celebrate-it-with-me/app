@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { UiModal, UiField, UiInput, UiSelect, UiTextarea, UiButton } from '@/ui'
+import { UiModal, UiField, UiInput, UiSelect, UiTextarea, UiButton, UiDateTimeField } from '@/ui'
 import { NONE, emptyItem, formFromItem, itemErrors } from '../utils/budget'
 
 const props = defineProps({
@@ -58,7 +58,7 @@ function submit() {
         </UiField>
       </div>
       <UiField :label="t('app.budget.form.dueDate')" :hint="t('app.budget.form.dueDateHint')">
-        <UiInput v-model="form.dueDate" type="date" />
+        <UiDateTimeField v-model="form.dueDate" mode="date" />
       </UiField>
       <div class="grid gap-3 sm:grid-cols-2">
         <UiField :label="t('app.budget.form.vendor')">

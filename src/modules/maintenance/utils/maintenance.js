@@ -1,3 +1,5 @@
+import { formatEventDate } from '@/utils/eventDateTime'
+
 /**
  * Maintenance mode. The API answers `GET public/system-status` -> `{ maintenance, message, estimatedEnd }` and, while
  * it is on, 503 `{ code: 'maintenance', message, retryAfter }` to everything else. Nothing here may ever block the app
@@ -49,14 +51,7 @@ export function retryDelaySeconds(retryAfter, attempt = 0) {
 
 /** "13 nov, 4:30 p. m." in the person's language; null when there is no valid date. */
 export function formatEstimatedEnd(iso, locale = 'es') {
-  if (!iso) return null
-  const date = new Date(iso)
-  if (Number.isNaN(date.getTime())) return null
-  try {
-    return new Intl.DateTimeFormat(locale, { dateStyle: 'medium', timeStyle: 'short' }).format(date)
-  } catch {
-    return date.toLocaleString()
-  }
+  return formatEventDate(iso, 'dayTime', locale) || null
 }
 
 export function readDismissed() {

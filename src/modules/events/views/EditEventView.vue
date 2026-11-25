@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { SearchX } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiField, UiInput, UiTextarea, UiButton, UiModal, UiSkeleton, UiEmptyState, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiField, UiInput, UiTextarea, UiButton, UiModal, UiSkeleton, UiEmptyState, useToast, UiDateTimeField } from '@/ui'
 import { useEventsStore } from '../stores/useEventsStore'
 import { formFromEvent, buildPatch, SLUG_PATTERN, fieldErrors } from '../utils/eventForm'
 import { guestOverflow, planLimitFrom } from '@/utils/planLimit'
@@ -246,10 +246,10 @@ async function confirmDelete() {
 
           <div class="grid gap-5 sm:grid-cols-2">
             <UiField :label="t('events.edit.start')" :error="errors.startDate" id="event_start" required>
-              <UiInput v-model="form.startDate" type="datetime-local" :disabled="!canEdit" />
+              <UiDateTimeField v-model="form.startDate" mode="datetime" :disabled="!canEdit" />
             </UiField>
             <UiField :label="t('events.edit.end')" :hint="t('events.edit.endHint')" :error="errors.endDate" id="event_end">
-              <UiInput v-model="form.endDate" type="datetime-local" :disabled="!canEdit" />
+              <UiDateTimeField v-model="form.endDate" mode="datetime" :disabled="!canEdit" />
             </UiField>
           </div>
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { commentError, filterComments, formatDateTime, formatTime, statusKey, statusTone } from '../utils/comments'
+import { commentError, filterComments, statusKey, statusTone } from '../utils/comments'
 
 const c = (id, extra = {}) => ({ id, authorName: `Ana ${id}`, comment: `Hola ${id}`, status: 'visible', is_pinned: false, created_at: `2026-01-0${id}T10:00:00Z`, ...extra })
 
@@ -38,12 +38,6 @@ describe('status and formatting', () => {
     expect(statusTone('hidden')).toBe('danger')
     expect(statusTone('x')).toBe('neutral')
     expect(statusKey(null)).toBe('unknown')
-  })
-
-  it('formats dates and tolerates bad input', () => {
-    expect(formatDateTime('2026-01-01T10:00:00Z', 'en')).toContain('2026')
-    expect(formatTime('nope')).toBe('')
-    expect(formatTime(null)).toBe('')
   })
 })
 

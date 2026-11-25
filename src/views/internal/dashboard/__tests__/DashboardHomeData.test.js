@@ -20,18 +20,18 @@ import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 
 const stubs = {
   RouterLink: { props: ['to'], template: '<a><slot /></a>' },
-  DashboardHero: { props: ['plan'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" />' },
-  DashboardMore: { props: ['budget'], template: '<div data-testid="more" :data-budget="JSON.stringify(budget)" />' }
+  DashboardHero: { props: ['plan', 'startDate', 'timezone'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" :data-start="startDate" :data-zone="timezone" />' },
+  DashboardMore: { props: ['budget', 'program'], template: '<div data-testid="more" :data-budget="JSON.stringify(budget)" :data-program="JSON.stringify(program)" />' }
 }
 
 const totals = extra => ({ estimated: 18530.1, owed: 18530.1, paid: 100, remaining: 0, estimatedOverCap: true, estimatedOverByCents: 53010, overCap: true, overByCents: 53010, paidOverCap: false, paidOverByCents: 0, ...extra })
 
-async function mountDashboard({ next = null, summary = { cap: 18000, currency: 'USD', totals: totals(), categories: [], uncategorized: { itemCount: 1 } } } = {}) {
+async function mountDashboard({ next = null, event = {}, summary = { cap: 18000, currency: 'USD', totals: totals(), categories: [], uncategorized: { itemCount: 1 } } } = {}) {
   const pinia = createPinia()
   createApp({}).use(pinia)
   setActivePinia(pinia)
   m.summary.mockResolvedValue(summary)
-  useEventsStore().initActiveEvent({ id: 7, guestsCount: 5, eventName: 'XV', userRole: 'owner', modules: [{ key: 'budget', state: 'active' }] })
+  useEventsStore().initActiveEvent({ id: 7, guestsCount: 5, eventName: 'XV', userRole: 'owner', modules: [{ key: 'budget', state: 'active' }], ...event })
   if (next) useAssistantStore().$patch({ eventId: 7, next })
   const w = mount(Dashboard, { global: { plugins: [i18n, pinia], stubs } })
   await flushPromises()
@@ -51,6 +51,23 @@ beforeEach(() => {
 })
 
 describe('Dashboard home data', () => {
+  it('draws the program in 12 hours, in the language of the app', async () => {
+    m.list.mockResolvedValue([
+      { id: 2, title: 'Cena', start_time: '2027-01-02 20:30:00' },
+      { id: 1, title: 'Misa', start_time: '2027-01-02 16:30:00' }
+    ])
+    const program = read(await mountDashboard(), 'more', 'data-program')
+    expect(program.map(p => p.title)).toEqual(['Misa', 'Cena'])
+    expect(program[0].time).toMatch(/^4:30 p\.\s?m\.$/)
+    expect(program[1].time).toMatch(/^8:30 p\.\s?m\.$/)
+  })
+  it('gives the hero the ISO start of the event when the API sends it, else the wall-clock text', async () => {
+    const wall = await mountDashboard({ event: { startDate: '01/02/2027 18:00', timezone: 'America/New_York' } })
+    expect(wall.get('[data-testid=hero]').attributes('data-start')).toBe('01/02/2027 18:00')
+    const iso = await mountDashboard({ event: { startDate: '01/02/2027 18:00', startsAt: '2027-01-02T18:00:00-05:00', timezone: 'America/New_York' } })
+    expect(iso.get('[data-testid=hero]').attributes('data-start')).toBe('2027-01-02T18:00:00-05:00')
+    expect(iso.get('[data-testid=hero]').attributes('data-zone')).toBe('America/New_York')
+  })
   it('gives the hero the assistant plan progress, the same number as "Your next step"', async () => {
     const w = await mountDashboard({ next: { mode: 'normal', progress: { done: 7, total: 18 } } })
     expect(read(w, 'hero', 'data-plan')).toEqual({ done: 7, total: 18, ratio: 7 / 18 })

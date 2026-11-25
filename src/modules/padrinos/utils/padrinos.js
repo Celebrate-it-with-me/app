@@ -1,3 +1,5 @@
+import { formatEventDate } from '@/utils/eventDateTime'
+
 export const STATUSES = ['invited', 'accepted']
 export const STATUS_TONE = { invited: 'neutral', accepted: 'success' }
 
@@ -102,9 +104,7 @@ export const warningTitles = (warnings, items) =>
 export const unattributedTotal = conflict =>
   (conflict.unattributedPayments ?? []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0)
 
-/** `2026-09-12` -> "12 sep 2026"; parsed by hand so the timezone never moves the day. */
+/** `2026-09-12` -> "12 sep 2026"; a plain day, so the timezone never moves it. */
 export function formatPaidOn(value, locale = 'es') {
-  const [y, m, d] = String(value ?? '').slice(0, 10).split('-').map(Number)
-  if (!y || !m || !d) return ''
-  return new Intl.DateTimeFormat(locale === 'es' ? 'es-US' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(y, m - 1, d))
+  return formatEventDate(String(value ?? '').slice(0, 10), 'dateShort', locale)
 }

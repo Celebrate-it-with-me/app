@@ -6,6 +6,7 @@ import { UiBadge, UiButton } from '@/ui'
 import InvitationPreviewSheet from '@/modules/template-picker/components/InvitationPreviewSheet.vue'
 import DashboardPhone from './DashboardPhone.vue'
 import { parseEventDate, daysUntil, countdownInfo } from './dashboardLogic'
+import { formatEventDate } from '@/utils/eventDateTime'
 
 const props = defineProps({
   eventId: { type: [Number, String], default: null },
@@ -20,6 +21,8 @@ const props = defineProps({
   image: { type: String, default: '' },
   /** Only owners and editors change or publish the event; viewers just look. */
   canEdit: { type: Boolean, default: false },
+  /** Zone of the event; only needed when `startDate` is an instant (ISO with offset). */
+  timezone: { type: String, default: '' },
   /** Route to the event form, where the invitation is published. */
   editTo: { type: [String, Object], default: null }
 })
@@ -30,7 +33,7 @@ const date = computed(() => parseEventDate(props.startDate))
 const countdown = computed(() => countdownInfo(daysUntil(date.value)))
 const dateLabel = computed(() =>
   date.value
-    ? new Intl.DateTimeFormat(locale.value, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date.value)
+    ? formatEventDate(props.startDate, 'weekdayDate', locale.value, props.timezone)
     : t('app.dashboard.noDate')
 )
 const percent = computed(() => (props.plan?.total > 0 ? Math.round(Math.min(1, Math.max(0, props.plan.done / props.plan.total)) * 100) : 0))

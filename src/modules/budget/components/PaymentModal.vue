@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { UiModal, UiField, UiInput, UiSelect, UiButton } from '@/ui'
+import { UiModal, UiField, UiInput, UiSelect, UiButton, UiDateTimeField } from '@/ui'
 import { NONE, emptyPayment, paymentErrors, formatMoney } from '../utils/budget'
 
 const props = defineProps({
@@ -55,7 +55,7 @@ function submit() {
         <UiInput v-model="form.amount" type="number" inputmode="decimal" min="0" step="0.01" :invalid="!!errors.amount" />
       </UiField>
       <UiField :label="t('app.budget.payment.date')" :error="err('paidOn')" required>
-        <UiInput v-model="form.paidOn" type="date" :invalid="!!errors.paidOn" />
+        <UiDateTimeField v-model="form.paidOn" mode="date" :invalid="!!errors.paidOn" />
       </UiField>
       <UiField v-if="padrinos.length" :label="t('app.budget.payment.paidBy')">
         <UiSelect v-model="form.padrinoId" :options="payers" />
