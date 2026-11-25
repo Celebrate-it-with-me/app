@@ -365,10 +365,11 @@ async function submit() {
               </p>
             </div>
             <fieldset
+              class="min-w-0"
               :disabled="person.id !== mainId && mainDeclined"
               :data-unanswered="unanswered.has(person.id) ? '' : undefined"
               >
-              <legend class="font-inv-heading text-xl">{{ person.id === mainId ? person.name : names[person.id] || person.name }}</legend>
+              <legend class="font-inv-heading text-xl wrap-anywhere">{{ person.id === mainId ? person.name : names[person.id] || person.name }}</legend>
               <div class="mt-3 grid grid-cols-2 gap-3" :class="unanswered.has(person.id) ? 'rounded-2xl ring-2 ring-danger-500 ring-offset-4 ring-offset-inv-surface' : ''">
                 <label v-for="option in OPTIONS" :key="option" class="block">
                   <input
@@ -398,7 +399,7 @@ async function submit() {
               <p v-if="fieldErrors.menu" role="alert" class="mt-2 text-sm text-danger-700">{{ tt('rsvp.menu.errors.invalid') }}</p>
             </div>
             <fieldset v-for="person in attendees" :key="person.id" class="min-w-0" :data-menu-person="person.id">
-              <legend class="font-inv-heading text-lg">{{ person.id === mainId ? person.name : names[person.id] || person.name }}</legend>
+              <legend class="font-inv-heading text-lg wrap-anywhere">{{ person.id === mainId ? person.name : names[person.id] || person.name }}</legend>
               <div v-for="group in menuGroups" :key="group.type" class="mt-3" role="group" :aria-label="tt(`rsvp.menu.types.${group.type}`)">
                 <p class="text-sm font-medium text-inv-ink-soft">{{ tt(`rsvp.menu.types.${group.type}`) }}</p>
                 <div class="mt-2 grid gap-2">
