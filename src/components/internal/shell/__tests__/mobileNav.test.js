@@ -105,6 +105,11 @@ describe('AppBottomNav', () => {
     document.body.innerHTML = ''
   })
 
+  it('never breaks a tab label in the middle of a word', async () => {
+    await setup('/dashboard')
+    expect(wrapper.html()).not.toContain('break-words')
+  })
+
   it('shows the five tabs with their labels', async () => {
     await setup('/dashboard')
     const labels = wrapper.findAll('li').map(li => li.text())
