@@ -163,3 +163,44 @@ export function isActivePath(path, to) {
   if (typeof to !== 'string') return false
   return path === to || (to !== '/dashboard' && path.startsWith(to + '/'))
 }
+
+const HOME_PATHS = ['/dashboard/plan', '/dashboard/start']
+const GUEST_PATHS = ['/dashboard/guests', '/dashboard/rsvp']
+const INVITATIONS_SEND = /^\/dashboard\/events\/[^/]+\/invitations(\/|$)/
+const UNLOCK = /^\/dashboard\/unlock\/([^/]+)/
+
+/**
+ * Which tab of the phone's bottom bar is lit for a route. Every route inside the panel lights exactly one tab:
+ * - Home: `/dashboard` and the plan/start screens. "Tu invitación": the editor.
+ * - Guests (when its tab exists): the guest list, RSVP and everything the catalog files under the guests section
+ *   (Save the date, messaging), plus the invitation sending screen.
+ * - "Organización": its own items. An `unlock/:module` screen takes the tab of the section of that module.
+ * - Anything else (menus, music, memories, collaborators, settings, events, ...) is under "Más".
+ */
+export function activeTabKey(path, tabs, sections = [], routeName = null) {
+  const has = key => tabs.some(tab => tab.key === key)
+  const items = sections.flatMap(group => group.items)
+
+  const unlocked = UNLOCK.exec(path)
+  const target = unlocked ? items.find(item => item.key === unlocked[1]) : null
+  const section = target ? (target.key === 'guests' ? 'guests' : target.section) : null
+
+  if (has('home') && (path === '/dashboard' || HOME_PATHS.some(to => isActivePath(path, to)))) return 'home'
+
+  const invitation = tabs.find(tab => tab.key === 'invitation')
+  if (invitation && (invitation.routeNames?.includes(routeName) || isActivePath(path, invitation.to))) return 'invitation'
+
+  if (has('guests')) {
+    const inGuests = items.some(item => item.section === 'guests' && isActivePath(path, item.to))
+    if (inGuests || section === 'guests' || INVITATIONS_SEND.test(path) || GUEST_PATHS.some(to => isActivePath(path, to))) {
+      return 'guests'
+    }
+  }
+
+  const organization = tabs.find(tab => tab.key === 'organization')
+  if (organization && (section === 'organization' || organization.items.some(item => isActivePath(path, item.to)))) {
+    return 'organization'
+  }
+
+  return 'more'
+}
