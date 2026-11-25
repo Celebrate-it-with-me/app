@@ -33,7 +33,7 @@ describe('PurchasePanel when the event is already unlocked', () => {
     const wrapper = mountPanel()
     await flushPromises()
     expect(wrapper.emitted('already-unlocked')).toHaveLength(1)
-    expect(wrapper.findAll('button').at(-1).attributes('disabled')).toBeDefined()
+    expect(wrapper.find('[data-testid=pay]').attributes('disabled')).toBeDefined()
   })
 
   it('says nothing for an event that is still locked', async () => {
@@ -62,7 +62,7 @@ describe('PurchasePanel pay()', () => {
   })
   afterEach(() => vi.unstubAllGlobals())
   const pay = async wrapper => {
-    await wrapper.findAll('button').at(-1).trigger('click')
+    await wrapper.find('[data-testid=pay]').trigger('click')
     await flushPromises()
   }
 
@@ -73,7 +73,7 @@ describe('PurchasePanel pay()', () => {
     const wrapper = mountPanel()
     await flushPromises()
     await pay(wrapper)
-    expect(checkout).toHaveBeenCalledWith(5, 'FUND79')
+    expect(checkout).toHaveBeenCalledWith(5, 'FUND79', 7900)
     expect(assign).toHaveBeenCalledWith('https://checkout.stripe.com/c/pay/s1')
     expect(localStorage.getItem(PENDING_CODE_KEY)).toBeNull()
   })
@@ -105,18 +105,104 @@ describe('PurchasePanel pay()', () => {
     const wrapper = mountPanel()
     await flushPromises()
     await pay(wrapper)
-    expect(checkout).toHaveBeenCalledWith(5, undefined)
+    expect(checkout).toHaveBeenCalledWith(5, undefined, 9900)
   })
 
-  it.each(['checkout_in_progress', 'payment_in_progress'])('409 %s: says it is processing and goes to the status screen', async code => {
+  it.each(['checkout_in_progress', 'payment_in_progress'])('409 %s: explains it and offers to see the payment instead of redirecting', async code => {
     reject(409, { code })
     const wrapper = mountPanel()
     await flushPromises()
     await pay(wrapper)
-    expect(toast).toHaveBeenCalledWith({ title: es.payments.processing, tone: 'warning' })
+    expect(wrapper.find('[data-problem=payment_in_progress]').text()).toContain(es.payments.problems.payment_in_progress)
+    expect(wrapper.find('[data-problem=payment_in_progress]').attributes('aria-live')).toBe('assertive')
+    expect(wrapper.find('[data-testid=pay]').exists()).toBe(false) // no second payment offered
+    expect(push).not.toHaveBeenCalled()
+    await wrapper.find('[data-testid=problem-continue]').trigger('click')
     expect(push).toHaveBeenCalledWith('/dashboard/events/5/unlock')
     expect(assign).not.toHaveBeenCalled()
     expect(showError).not.toHaveBeenCalled()
+  })
+
+  it('409 previous_session_open: explains the open attempt and offers to see it', async () => {
+    reject(409, { code: 'previous_session_open' })
+    const wrapper = mountPanel()
+    await flushPromises()
+    await pay(wrapper)
+    expect(wrapper.find('[data-problem=previous_session_open]').text()).toContain('sigue abierto')
+    expect(wrapper.find('[data-testid=pay]').exists()).toBe(false)
+    await wrapper.find('[data-testid=problem-continue]').trigger('click')
+    expect(push).toHaveBeenCalledWith('/dashboard/events/5/unlock')
+  })
+
+  it('409 price_changed: reads the real price again, shows it and waits for a new confirmation', async () => {
+    quote.mockResolvedValueOnce({ ...full, amountCents: 7900, source: 'offer', offer: { active: true, priceCents: 7900, slotsLeft: 3, totalSlots: 100 } })
+    quote.mockResolvedValueOnce({ ...full, offer: { active: false, priceCents: 7900, slotsLeft: 0, totalSlots: 100, reason: 'inactive' } })
+    reject(409, { code: 'price_changed', data: { amountCents: 9900 } })
+    const wrapper = mountPanel()
+    await flushPromises()
+    expect(wrapper.find('[data-testid=pay]').text()).toContain('Pagar $79')
+    await pay(wrapper)
+    expect(wrapper.find('[data-problem=price_changed]').text()).toContain('$99')
+    expect(wrapper.find('[data-testid=purchase-total]').text()).toBe('$99')
+    expect(wrapper.find('[data-testid=pay]').text()).toContain('Pagar $99')
+    expect(assign).not.toHaveBeenCalled()
+    checkout.mockResolvedValue({ url: 'https://checkout.stripe.com/c/pay/s9' })
+    await pay(wrapper)
+    expect(checkout).toHaveBeenLastCalledWith(5, undefined, 9900)
+    expect(assign).toHaveBeenCalledWith('https://checkout.stripe.com/c/pay/s9')
+  })
+
+  it.each([['holds_full', 'pagos abiertos de otros eventos'], ['exhausted', 'se agotó']])('409 price_changed with reason %s: names the real cause', async (reason, text) => {
+    const closed = { ...full, offer: { active: false, priceCents: 7900, slotsLeft: 8, totalSlots: 100, reason } }
+    quote.mockResolvedValueOnce({ ...full, amountCents: 7900, source: 'offer', offer: { active: true, priceCents: 7900, slotsLeft: 8, totalSlots: 100, reason: null } }).mockResolvedValueOnce(closed)
+    reject(409, { code: 'price_changed', data: { amountCents: 9900, offer: closed.offer } })
+    const wrapper = mountPanel()
+    await flushPromises()
+    await pay(wrapper)
+    expect(wrapper.find(`[data-problem=${reason}]`).text()).toContain(text)
+    expect(wrapper.find('[data-testid=pay]').exists()).toBe(true) // she can still pay the normal price
+  })
+
+  it('409 price_changed: keeps the offer block of the answer when the new quote fails', async () => {
+    quote.mockResolvedValueOnce({ ...full, amountCents: 7900, source: 'offer', offer: { active: true, priceCents: 7900, slotsLeft: 8, totalSlots: 100, reason: null } }).mockRejectedValueOnce(new Error('net'))
+    reject(409, { code: 'price_changed', data: { amountCents: 9900, offer: { active: false, priceCents: 7900, slotsLeft: 8, totalSlots: 100, reason: 'holds_full' } } })
+    const wrapper = mountPanel()
+    await flushPromises()
+    await pay(wrapper)
+    expect(wrapper.find('[data-problem=holds_full]').exists()).toBe(true)
+  })
+
+  it('409 price_changed: falls back to the amount in the answer when the new quote fails', async () => {
+    quote.mockResolvedValueOnce({ ...full, amountCents: 7900 }).mockRejectedValueOnce(new Error('net'))
+    reject(409, { code: 'price_changed', data: { amountCents: 9900 } })
+    const wrapper = mountPanel()
+    await flushPromises()
+    await pay(wrapper)
+    expect(wrapper.find('[data-testid=purchase-total]').text()).toBe('$99')
+    expect(wrapper.find('[data-problem=price_changed]').exists()).toBe(true)
+  })
+
+  it('422 launch_offer_exhausted at checkout: drops the code and shows the list price with the reason', async () => {
+    localStorage.setItem(PENDING_CODE_KEY, 'LANZAMIENTO79')
+    quote.mockResolvedValueOnce({ ...full, amountCents: 7900, code: 'LANZAMIENTO79', source: 'coupon' }).mockResolvedValueOnce(full)
+    reject(422, { errors: { code: ['launch_offer_exhausted'] } })
+    const wrapper = mountPanel()
+    await flushPromises()
+    await pay(wrapper)
+    expect(wrapper.find('[data-problem=exhausted]').text()).toContain('se agotó')
+    expect(wrapper.find('[data-testid=purchase-total]').text()).toBe('$99')
+    expect(wrapper.find('input').element.value).toBe('')
+    expect(localStorage.getItem(PENDING_CODE_KEY)).toBeNull()
+    expect(showError).not.toHaveBeenCalled()
+  })
+
+  it('422 launch_offer_exhausted at checkout: generic error when the new quote fails', async () => {
+    quote.mockResolvedValueOnce({ ...full, amountCents: 7900, code: 'LANZAMIENTO79', source: 'coupon' }).mockRejectedValueOnce(new Error('net'))
+    reject(422, { errors: { code: ['launch_offer_exhausted'] } })
+    const wrapper = mountPanel()
+    await flushPromises()
+    await pay(wrapper)
+    expect(showError).toHaveBeenCalledWith(es.payments.checkoutFailed)
   })
 
   it('422 event already_unlocked: tells the parent', async () => {
@@ -151,7 +237,7 @@ describe('PurchasePanel pay()', () => {
     await pay(wrapper)
     expect(showError).toHaveBeenCalledWith(es.payments.gatewayError)
     // the button is usable again
-    expect(wrapper.findAll('button').at(-1).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find('[data-testid=pay]').attributes('disabled')).toBeUndefined()
   })
 
   it('any other failure: the generic checkout error', async () => {

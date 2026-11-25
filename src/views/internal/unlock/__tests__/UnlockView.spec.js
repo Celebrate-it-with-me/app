@@ -93,3 +93,26 @@ describe('UnlockView when the event is already unlocked', () => {
     expect(wrapper.find('[data-testid="already-unlocked"]').exists()).toBe(true)
   })
 })
+
+describe('UnlockView value tied to her event (ORG-004)', () => {
+  beforeEach(() => {
+    route.params = { module: 'full' }
+  })
+
+  it('names her guests and her event, and does not repeat the 300-guest cap', async () => {
+    const { wrapper } = mountView({ id: 7, userRole: 'owner', name: 'Los XV de Valentina', guestsCount: 39 })
+    await flushPromises()
+    const text = wrapper.text()
+    expect(text).toContain('Para tus 39 invitados de Los XV de Valentina')
+    expect(text.match(/300/g)?.length ?? 0).toBe(1) // only the "included" list says it
+  })
+
+  it('falls back to the event name alone, and to a generic line without it', async () => {
+    let view = mountView({ id: 7, userRole: 'owner', name: 'Los XV de Valentina', guestsCount: 1 })
+    await flushPromises()
+    expect(view.wrapper.text()).toContain('Para Los XV de Valentina: ')
+    view = mountView({ id: 7, userRole: 'owner' })
+    await flushPromises()
+    expect(view.wrapper.text()).toContain(es.unlock.full.benefit)
+  })
+})

@@ -66,7 +66,6 @@ const label = computed(() =>
         <Puzzle class="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
         <span>{{ t('templatePicker.missing.label', { names: missing }) }}</span>
       </span>
-      <span v-if="template.locked" class="mt-auto pt-1 text-xs font-medium text-gold-700">{{ t('templatePicker.lockedHint') }}</span>
     </span>
   </button>
 </template>

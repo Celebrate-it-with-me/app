@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import i18n from '@/locales/i18n'
 
 const mocks = vi.hoisted(() => ({ templates: vi.fn(), impact: vi.fn(), apply: vi.fn(), preview: vi.fn(), quote: vi.fn() }))
@@ -29,6 +30,7 @@ async function mountSheet(props = {}) {
 }
 
 beforeEach(() => {
+  setActivePinia(createPinia())
   i18n.global.locale.value = 'es'
   Object.values(mocks).forEach(fn => fn.mockReset())
   mocks.templates.mockResolvedValue(structuredClone(LIST))
@@ -46,7 +48,9 @@ describe('TemplatePickerSheet', () => {
     await mountSheet()
     const cards = [...document.body.querySelectorAll('ul li button')]
     expect(cards.map(c => c.getAttribute('aria-label'))).toEqual(['Clásica, Gratis, En uso', 'Rosas, Gratis', 'Botánica, Premium, bloqueada'])
-    expect(text()).toContain('Se desbloquea con el evento completo')
+    // one banner on top instead of a hint on every card
+    expect(text()).not.toContain('Se desbloquea')
+    expect(document.body.querySelector('[data-testid=unlock-banner]')?.textContent).toContain('Desbloquea todo por $79')
     expect(document.body.querySelectorAll('[data-testid=invitation-miniature]').length).toBe(3)
     expect(text()).not.toContain('Sin imagen')
   })
@@ -100,13 +104,20 @@ describe('TemplatePickerSheet', () => {
     expect(mocks.apply).not.toHaveBeenCalled()
   })
 
+  it('the banner on top of the list asks to unlock without a template', async () => {
+    await mountSheet()
+    document.body.querySelector('[data-testid=unlock-banner]').click()
+    await flushPromises()
+    expect(wrapper.emitted('unlock')[0]).toEqual([null])
+  })
+
   it('a premium template without the plan can be seen but only offers to unlock it', async () => {
     await mountSheet()
     await click('Botánica')
     expect(text()).toContain('Plantilla premium')
-    expect(text()).toContain('Evento completo: $79')
+    expect(button('Desbloquear · $79')).toBeDefined()
     expect(button('Usar esta plantilla')).toBeUndefined()
-    await click('Desbloquear para usarla')
+    await click('Desbloquear · $79')
     expect(wrapper.emitted('unlock')[0][0].id).toBe(3)
     expect(wrapper.emitted('update:open')[0]).toEqual([false])
     expect(mocks.apply).not.toHaveBeenCalled()

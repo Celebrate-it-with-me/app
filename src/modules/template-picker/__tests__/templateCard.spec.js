@@ -122,7 +122,8 @@ describe('TemplateCard miniature', () => {
     await flushPromises()
     expect(mocks.preview).toHaveBeenCalledWith(5, { templateId: 9, locale: 'es' })
     expect(w.find('[data-testid=miniature-frame]').exists()).toBe(true)
-    expect(w.text()).toContain('Se desbloquea con el evento completo')
+    expect(w.text()).not.toContain('Se desbloquea')
+    expect(w.find('[aria-hidden=true] svg').exists()).toBe(true)
   })
 
   it('falls back to the template image, then to the stationery card, when the cover fails', async () => {

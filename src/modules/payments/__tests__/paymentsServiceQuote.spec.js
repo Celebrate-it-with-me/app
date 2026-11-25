@@ -20,3 +20,17 @@ describe('PaymentsService.quote', () => {
     expect(get).toHaveBeenCalledTimes(3)
   })
 })
+
+describe('PaymentsService.checkout', () => {
+  it('sends the code and the amount the screen showed, and only what it has', async () => {
+    const post = vi.fn().mockResolvedValue({ data: { data: { purchaseId: 1, url: 'u' } } })
+    const { CWM_API } = await import('@/services/axios')
+    CWM_API.post = post
+    expect(await PaymentsService.checkout(5, 'X', 7900)).toEqual({ purchaseId: 1, url: 'u' })
+    expect(post).toHaveBeenLastCalledWith('/event/5/purchase/checkout', { code: 'X', expectedAmountCents: 7900 })
+    await PaymentsService.checkout(5)
+    expect(post).toHaveBeenLastCalledWith('/event/5/purchase/checkout', {})
+    await PaymentsService.checkout(5, undefined, 0)
+    expect(post).toHaveBeenLastCalledWith('/event/5/purchase/checkout', { expectedAmountCents: 0 })
+  })
+})

@@ -1,7 +1,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { ArrowDown, ArrowUp, Lock } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
 import { UiButton, UiSwitch } from '@/ui'
 import { canMove, isClosingPinned, pick } from '../utils/editorFields'
 
@@ -16,8 +16,8 @@ const router = useRouter()
 
 const name = section => pick(section.title, locale.value) || t(`invitationEditor.sections.types.${section.type}`)
 const moduleLocked = section => section.moduleState === 'locked'
-const toggleDisabled = section => props.readOnly || section.required || (moduleLocked(section) && !section.enabled)
 const unlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
+const toggleDisabled = section => props.readOnly || section.required || (moduleLocked(section) && !section.enabled)
 </script>
 
 <template>
@@ -34,6 +34,18 @@ const unlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
           />
         </div>
         <div class="flex shrink-0">
+          <UiButton
+            v-if="moduleLocked(section)"
+            variant="ghost"
+            size="sm"
+            icon
+            :aria-label="t('invitationEditor.field.lockedAria', { name: name(section) })"
+            data-testid="section-locked"
+            class="h-11 w-11"
+            @click="unlock"
+          >
+            <Lock class="h-4 w-4 text-gold-700" aria-hidden="true" />
+          </UiButton>
           <UiButton
             variant="ghost"
             size="sm"
@@ -62,11 +74,6 @@ const unlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
         <Lock class="h-3.5 w-3.5 text-gold-700" aria-hidden="true" />
         {{ t('invitationEditor.sections.closingLast') }}
       </p>
-      <div v-if="moduleLocked(section)" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-600" data-testid="section-locked">
-        <Lock class="h-3.5 w-3.5 text-gold-700" aria-hidden="true" />
-        <span>{{ t('invitationEditor.sections.moduleLocked') }}</span>
-        <UiButton variant="link" size="sm" @click="unlock">{{ t('invitationEditor.field.unlock') }}</UiButton>
-      </div>
     </li>
   </ol>
 </template>

@@ -7,7 +7,6 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Lock, RotateCcw } from 'lucide-vue-next'
-import { UiButton } from '@/ui'
 import { pick } from '../utils/editorFields'
 
 const props = defineProps({
@@ -33,12 +32,22 @@ const describedBy = computed(() => [help.value && `${props.baseId}-help`, props.
 <template>
   <div class="flex flex-col gap-2" role="group" :aria-labelledby="`${baseId}-label`" :data-field="field.id">
     <div class="flex items-start gap-3" :class="hideLabel ? 'justify-end' : 'justify-between'">
-      <component :is="labelFor ? 'label' : 'span'" v-if="!hideLabel" :id="`${baseId}-label`" :for="labelFor || undefined" class="text-sm font-semibold text-ink-700">
-        {{ label }}
-        <Lock v-if="field.locked" class="ml-1 inline h-3.5 w-3.5 text-gold-700" aria-hidden="true" />
-        <span v-if="field.locked" class="sr-only"> ({{ t('invitationEditor.field.lockedSr') }})</span>
-      </component>
+      <!-- A locked field is one tap target (>= 44 px) to the payment: the name with the padlock next to it. -->
+      <button
+        v-if="field.locked && field.type !== 'toggle'"
+        type="button"
+        class="-my-1 flex min-h-11 min-w-11 items-center gap-1.5 rounded-md text-left text-sm font-semibold text-ink-700 focus-visible:outline-2 focus-visible:outline-rose-600"
+        :class="hideLabel ? 'justify-end' : 'flex-1'"
+        :aria-label="t('invitationEditor.field.lockedAria', { name: label })"
+        data-testid="field-locked"
+        @click="emit('unlock')"
+      >
+        <span :id="`${baseId}-label`" :class="hideLabel && 'sr-only'">{{ label }}</span>
+        <Lock class="h-4 w-4 shrink-0 text-gold-700" aria-hidden="true" />
+      </button>
+      <component :is="labelFor ? 'label' : 'span'" v-else-if="!hideLabel" :id="`${baseId}-label`" :for="labelFor || undefined" class="text-sm font-semibold text-ink-700">{{ label }}</component>
       <span v-else :id="`${baseId}-label`" class="sr-only">{{ label }}</span>
+      <!-- A locked toggle carries its own padlock inline with the name (ToggleField). -->
       <button
         v-if="canReset"
         type="button"
@@ -58,9 +67,5 @@ const describedBy = computed(() => [help.value && `${props.baseId}-help`, props.
 
     <p v-if="error" :id="`${baseId}-error`" class="text-sm text-danger-700" role="alert" data-testid="field-error">{{ error }}</p>
 
-    <div v-if="field.locked" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-600" data-testid="field-locked">
-      <span>{{ t('invitationEditor.field.lockedText') }}</span>
-      <UiButton variant="link" size="sm" @click="emit('unlock')">{{ t('invitationEditor.field.unlock') }}</UiButton>
-    </div>
   </div>
 </template>
