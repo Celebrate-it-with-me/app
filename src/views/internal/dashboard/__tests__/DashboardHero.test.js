@@ -29,7 +29,7 @@ const mountHero = (props = {}) => {
   createApp({}).use(pinia)
   setActivePinia(pinia)
   return mount(DashboardHero, {
-    props: { eventId: 7, name: 'Los XV de Valentina', startDate: inDays(142), progress: 0.5, published: true, canViewGuests: true, canEdit: true, editTo, ...props },
+    props: { eventId: 7, name: 'Los XV de Valentina', startDate: inDays(142), plan: { done: 4, total: 9 }, published: true, canViewGuests: true, canEdit: true, editTo, ...props },
     global: { plugins: [i18n, pinia], stubs }
   })
 }
@@ -126,9 +126,23 @@ describe('DashboardHero phone', () => {
   })
 })
 
-describe('DashboardHero progress', () => {
-  it('keeps the discreet progress bar', () => {
-    const bar = mountHero({ progress: 0.62 }).get('[role=progressbar]')
-    expect(bar.attributes('aria-valuenow')).toBe('62')
+describe('DashboardHero plan progress', () => {
+  it('shows the plan as steps, never as "ready"', () => {
+    const w = mountHero({ plan: { done: 7, total: 18 } })
+    expect(w.get('[data-testid=hero-plan]').text()).toBe('Plan de organización · 7 de 18 pasos del plan')
+    expect(w.get('[role=progressbar]').attributes('aria-valuenow')).toBe('39')
+    expect(w.text()).not.toContain('listo')
+  })
+  it('says it in English', () => {
+    setLocale('en')
+    expect(mountHero({ plan: { done: 1, total: 2 } }).get('[data-testid=hero-plan]').text()).toBe('Organization plan · 1 of 2 plan steps')
+  })
+  it('hides the figure without assistant data or with an empty plan, instead of 0 % or 100 %', () => {
+    expect(mountHero({ plan: null }).find('[data-testid=hero-plan]').exists()).toBe(false)
+    expect(mountHero({ plan: { done: 0, total: 0 } }).find('[role=progressbar]').exists()).toBe(false)
+  })
+  it('caps the bar at 100 and ignores a negative count', () => {
+    expect(mountHero({ plan: { done: 12, total: 9 } }).get('[role=progressbar]').attributes('aria-valuenow')).toBe('100')
+    expect(mountHero({ plan: { done: -2, total: 9 } }).get('[role=progressbar]').attributes('aria-valuenow')).toBe('0')
   })
 })

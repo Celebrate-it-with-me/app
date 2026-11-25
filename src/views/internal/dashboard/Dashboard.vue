@@ -18,7 +18,8 @@ import OnboardingService from '@/modules/onboarding/services/OnboardingService'
 import { allDone, normalizeProgress } from '@/modules/onboarding/utils/steps'
 import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardMore from './DashboardMore.vue'
-import { summarizeRsvp, readiness, readableActivity } from './dashboardLogic'
+import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
+import { summarizeRsvp, planProgress, readableActivity } from './dashboardLogic'
 
 const { t } = useI18n()
 const { error: showError } = useToast()
@@ -27,6 +28,7 @@ const rsvpStore = useRsvpStore()
 const budgetStore = useBudgetStore()
 const timelineStore = useTimelineStore()
 const activityStore = useActivityStore()
+const assistantStore = useAssistantStore()
 
 const event = computed(() => eventsStore.activeEvent)
 // A module counts when the event's plan includes it (the API sends `event.modules` from the catalog).
@@ -34,7 +36,6 @@ const moduleActive = key => !!event.value?.modules?.some(m => m.key === key && m
 const budgetEnabled = computed(() => moduleActive('budget'))
 
 const rsvp = computed(() => summarizeRsvp(rsvpStore.stats))
-const guestCount = computed(() => event.value?.guestsCount ?? rsvp.value.people)
 const published = computed(() => event.value?.status === 'published')
 
 // Only owners and editors (`edit_event`) change the event; a viewer just reads.
@@ -43,22 +44,18 @@ const canViewGuests = computed(() => event.value?.userRole === 'owner' || events
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 const editTarget = computed(() => (event.value ? { name: 'edit-event', params: { id: event.value.id } } : null))
 
-const progress = computed(() =>
-  readiness({
-    hasDate: !!event.value?.startDate,
-    guestCount: guestCount.value,
-    published: published.value,
-    budgetEnabled: budgetEnabled.value,
-    budgetItems: budget.value.items
-  }).ratio
-)
+// One number for the plan: the assistant's, already loaded by the layout (never recalculated here).
+const plan = computed(() => (assistantStore.eventId === event.value?.id ? planProgress(assistantStore.next) : null))
 const budget = computed(() => {
   const summary = budgetStore.summary
   const count = (summary?.categories ?? []).reduce((total, c) => total + c.itemCount, 0) + (summary?.uncategorized?.itemCount ?? 0)
   return {
     cap: summary?.cap ?? 0,
+    // The card's "estimated" is what is owed (`owed`), so the warning follows `overCap` (over `owed`), not `estimatedOverCap`.
     estimated: summary?.totals.owed ?? 0,
     paid: summary?.totals.paid ?? 0,
+    overByCents: summary?.totals.overCap ? Number(summary.totals.overByCents) || 0 : 0,
+    paidOverByCents: summary?.totals.paidOverCap ? Number(summary.totals.paidOverByCents) || 0 : 0,
     currency: summary?.currency ?? 'USD',
     items: count
   }
@@ -154,7 +151,7 @@ onMounted(() => useUserStore().syncEmailVerified())
       :event-id="event.id"
       :name="event.eventName"
       :start-date="event.startDate"
-      :progress="progress"
+      :plan="plan"
       :published="published"
       :can-view-guests="canViewGuests"
       :image="thumb"

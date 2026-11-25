@@ -3,14 +3,14 @@ import { useI18n } from 'vue-i18n'
 import { BadgeCheck, Bell, Calendar, CalendarClock, Eye, Map, MapPin, MapPinOff, MessageCircle, MessageSquare, Music, PartyPopper, Pencil, Receipt, Sparkles, ThumbsUp, UserCheck, UserX } from 'lucide-vue-next'
 import { UiCard } from '@/ui'
 import { computed } from 'vue'
-import { activityTone, readableActivity } from './dashboardLogic'
+import { activitySentence, activityTime, activityTone, readableActivity } from './dashboardLogic'
 
 const props = defineProps({
-  /** `[{ id, message, icon, color, createdAt }]`; icon and color are names sent by the API. */
+  /** `[{ id, type, params, message, icon, color, createdAt, occurredAt }]`; icon and color are names sent by the API. */
   activity: { type: Array, default: () => [] }
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const items = computed(() => readableActivity(props.activity))
 
 /** API icon name -> lucide component. `edit` is the API's name for the pencil. Unknown names fall back to the bell. */
@@ -45,8 +45,8 @@ const iconOf = name => ICONS[String(name ?? '').toLowerCase()] ?? Bell
           <component :is="iconOf(item.icon)" class="h-4 w-4" aria-hidden="true" />
         </span>
         <div class="min-w-0">
-          <p class="text-ink-900">{{ item.message }}</p>
-          <p class="text-xs text-ink-500">{{ item.createdAt }}</p>
+          <p class="text-ink-900">{{ activitySentence(item, t) }}</p>
+          <p class="text-xs text-ink-500">{{ activityTime(item, locale) }}</p>
         </div>
       </li>
     </ul>
