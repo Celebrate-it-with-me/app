@@ -2346,12 +2346,14 @@ export default {
     offer: {
       title: 'Oferta de lanzamiento',
       slots: 'Queda {n} cupo de {total} | Quedan {n} cupos de {total}',
-      hold: 'Tu precio queda reservado 60 minutos cuando empiezas el pago.',
-      ended: 'La oferta de lanzamiento ya terminó. El precio es el normal.'
+      hold: 'Tu precio queda reservado {n} minutos cuando empiezas el pago.',
+      ended: 'La oferta de lanzamiento ya se agotó. El precio es el normal.',
+      holdsFull: 'Tienes pagos abiertos de otros eventos: termina o espera a que venzan para usar la oferta.'
     },
     problems: {
       price_changed: 'El precio cambió y ahora es {price}. Revisa el total y confirma de nuevo.',
       exhausted: 'La oferta de lanzamiento se agotó. El precio ahora es {price}.',
+      holds_full: 'Tienes pagos abiertos de otros eventos: termina o espera a que venzan para usar la oferta. El precio ahora es {price}.',
       previous_session_open: 'Tu intento de pago anterior sigue abierto y todavía no pudimos cerrarlo. Espera un par de minutos y vuelve a intentarlo, o mira cómo va ese pago.',
       payment_in_progress: 'Ya hay un pago de este evento en marcha. No necesitas pagar de nuevo.',
       viewPayment: 'Ver mi pago'

@@ -52,7 +52,7 @@ const known = computed(() => ['text', 'color', 'choice', 'toggle', 'image'].incl
     <TextField v-if="field.type === 'text'" :field="field" :base-id="baseId" :described-by="describedBy" :invalid="Boolean(error)" :invalid-lang="error?.lang ?? null" :disabled="disabled" @update="v => emit('update', v)" />
     <ColorField v-else-if="field.type === 'color'" :field="field" :base-id="baseId" :described-by="describedBy" :invalid="Boolean(error)" :disabled="disabled" @update="v => emit('update', v)" />
     <ChoiceField v-else-if="field.type === 'choice'" :field="field" :base-id="baseId" :described-by="describedBy" :disabled="disabled" @update="v => emit('update', v)" />
-    <ToggleField v-else-if="field.type === 'toggle'" :field="field" :disabled="disabled" @update="v => emit('update', v)" />
+    <ToggleField v-else-if="field.type === 'toggle'" :field="field" :disabled="disabled" @update="v => emit('update', v)" @unlock="unlock" />
     <CoverPhotoField v-else-if="field.type === 'image' && eventId != null" :field="field" :event-id="eventId" :disabled="disabled" @changed="v => emit('image-changed', v)" />
   </FieldShell>
 </template>

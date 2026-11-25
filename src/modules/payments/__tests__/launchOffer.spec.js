@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { checkoutProblem, offerApplies, offerSoldOut, slotsLeftOf } from '../utils/launchOffer'
+import { checkoutProblem, holdMinutesOf, offerApplies, offerNotice, slotsLeftOf } from '../utils/launchOffer'
 
 const offer = (over = {}) => ({ active: true, priceCents: 7900, listPriceCents: 9900, slotsLeft: 37, totalSlots: 100, ...over })
 const err = (status, data) => ({ response: { status, data } })
@@ -23,11 +23,25 @@ describe('launch offer helpers', () => {
   })
 
   it('says sold out only when there were slots and none are left', () => {
-    expect(offerSoldOut({ offer: offer({ active: false, slotsLeft: 0 }) })).toBe(true)
-    expect(offerSoldOut({ offer: offer({ active: false, slotsLeft: 5 }) })).toBe(false) // at her hold limit, not sold out
-    expect(offerSoldOut({ offer: offer() })).toBe(false)
-    expect(offerSoldOut({ offer: offer({ active: false, slotsLeft: 0, totalSlots: 0 }) })).toBe(false)
-    expect(offerSoldOut({})).toBe(false)
+    const closed = reason => ({ offer: offer({ active: false, reason }) })
+    expect(offerNotice(closed('exhausted'))).toBe('exhausted')
+    expect(offerNotice(closed('holds_full'))).toBe('holds_full')
+    expect(offerNotice(closed('inactive'))).toBeNull() // just the normal price
+    expect(offerNotice(closed('closed'))).toBeNull()
+    expect(offerNotice(closed(null))).toBeNull()
+    expect(offerNotice({ offer: offer({ reason: null }) })).toBeNull() // open
+    expect(offerNotice({})).toBeNull()
+    // an older API without `reason`: the old deduction
+    expect(offerNotice({ offer: offer({ active: false, slotsLeft: 0 }) })).toBe('exhausted')
+    expect(offerNotice({ offer: offer({ active: false, slotsLeft: 5 }) })).toBeNull()
+    expect(offerNotice({ offer: offer({ active: false, slotsLeft: 0, totalSlots: 0 }) })).toBeNull()
+  })
+
+  it('reads the hold minutes from the API and falls back to 60', () => {
+    expect(holdMinutesOf({ offer: offer({ holdMinutes: 30 }) })).toBe(30)
+    expect(holdMinutesOf({ offer: offer() })).toBe(60)
+    expect(holdMinutesOf({ offer: offer({ holdMinutes: 0 }) })).toBe(60)
+    expect(holdMinutesOf(null)).toBe(60)
   })
 
   it('classifies each checkout answer', () => {

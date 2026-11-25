@@ -34,7 +34,7 @@ const describedBy = computed(() => [help.value && `${props.baseId}-help`, props.
     <div class="flex items-start gap-3" :class="hideLabel ? 'justify-end' : 'justify-between'">
       <!-- A locked field is one tap target (>= 44 px) to the payment: the name with the padlock next to it. -->
       <button
-        v-if="field.locked"
+        v-if="field.locked && field.type !== 'toggle'"
         type="button"
         class="-my-1 flex min-h-11 min-w-11 items-center gap-1.5 rounded-md text-left text-sm font-semibold text-ink-700 focus-visible:outline-2 focus-visible:outline-rose-600"
         :class="hideLabel ? 'justify-end' : 'flex-1'"
@@ -47,6 +47,7 @@ const describedBy = computed(() => [help.value && `${props.baseId}-help`, props.
       </button>
       <component :is="labelFor ? 'label' : 'span'" v-else-if="!hideLabel" :id="`${baseId}-label`" :for="labelFor || undefined" class="text-sm font-semibold text-ink-700">{{ label }}</component>
       <span v-else :id="`${baseId}-label`" class="sr-only">{{ label }}</span>
+      <!-- A locked toggle carries its own padlock inline with the name (ToggleField). -->
       <button
         v-if="canReset"
         type="button"

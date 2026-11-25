@@ -15,10 +15,22 @@ export function slotsLeftOf(quote) {
   return Math.min(offer.slotsLeft, offer.totalSlots)
 }
 
-/** The campaign ran out: there were slots and none are left (not the same as "off" or "this buyer is at her hold limit"). */
-export function offerSoldOut(quote) {
+/** Minutes a pending payment holds a slot: the API's `holdMinutes`, 60 when an older API does not send it. */
+export function holdMinutesOf(quote) {
+  const minutes = Number(quote?.offer?.holdMinutes)
+  return Number.isInteger(minutes) && minutes > 0 ? minutes : 60
+}
+
+/**
+ * Why the offer does not apply to her, from the API's `offer.reason` (null | inactive | closed | exhausted | holds_full):
+ * 'exhausted' and 'holds_full' deserve a notice; 'inactive' and 'closed' are just the normal price (no notice).
+ * An older API without `reason` falls back to the old deduction: slots existed and none are left = exhausted.
+ */
+export function offerNotice(quote) {
   const offer = quote?.offer
-  return Boolean(offer) && !offer.active && offer.totalSlots > 0 && offer.slotsLeft <= 0
+  if (!offer || offer.active) return null
+  if (offer.reason !== undefined) return ['exhausted', 'holds_full'].includes(offer.reason) ? offer.reason : null
+  return offer.totalSlots > 0 && offer.slotsLeft <= 0 ? 'exhausted' : null
 }
 
 /**

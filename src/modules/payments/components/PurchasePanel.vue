@@ -7,7 +7,7 @@ import { UiButton, UiField, UiInput, useToast } from '@/ui'
 import PaymentsService from '../services/PaymentsService'
 import { isEmailNotVerified } from '@/modules/email-verification/utils/emailVerification'
 import { formatMoney, isAlreadyUnlocked, isInvalidCode } from '../utils/money'
-import { checkoutProblem, offerApplies, offerSoldOut, slotsLeftOf } from '../utils/launchOffer'
+import { checkoutProblem, holdMinutesOf, offerApplies, offerNotice, slotsLeftOf } from '../utils/launchOffer'
 import { readPendingCode, clearPendingCode } from '../utils/pendingCode'
 import { safeCheckoutUrl } from '../utils/checkoutUrl'
 
@@ -42,7 +42,8 @@ const isFree = computed(() => quote.value?.amountCents === 0)
 const saving = computed(() => (discounted.value ? money(quote.value.listPriceCents - quote.value.amountCents) : ''))
 const onOffer = computed(() => offerApplies(quote.value))
 const slotsLeft = computed(() => slotsLeftOf(quote.value))
-const soldOut = computed(() => offerSoldOut(quote.value) && !onOffer.value)
+const notice = computed(() => offerNotice(quote.value))
+const holdMinutes = computed(() => holdMinutesOf(quote.value))
 const discountLabel = computed(() => (quote.value?.source === 'offer' ? t('payments.summary.offer') : t('payments.summary.code', { code: quote.value?.code })))
 // Another payment of this event is open: the only way forward is to look at it, never to pay again.
 const blocked = computed(() => ['previous_session_open', 'payment_in_progress'].includes(problem.value?.kind))
@@ -99,14 +100,18 @@ function apply() {
 }
 
 /** The price moved under her feet: read the real one again and make her confirm it. */
-async function reconfirmPrice(fallbackCents) {
+async function reconfirmPrice(fallbackCents, offer) {
   try {
     quote.value = await PaymentsService.quote(props.eventId, quote.value?.code ?? undefined)
     notifyUnlocked()
   } catch {
-    if (quote.value && Number.isInteger(fallbackCents)) quote.value = { ...quote.value, amountCents: fallbackCents, source: 'list' }
+    if (quote.value && Number.isInteger(fallbackCents)) {
+      quote.value = { ...quote.value, amountCents: fallbackCents, source: 'list', offer: offer ? { ...quote.value.offer, ...offer, active: false } : quote.value.offer }
+    }
   }
-  problem.value = { kind: 'price_changed', price: price.value }
+  // The offer's own reason says why the price moved: sold out, or her other open payments hold the slots.
+  const reason = offerNotice(quote.value)
+  problem.value = { kind: reason ?? 'price_changed', price: price.value }
 }
 
 const toPayment = () => router.push(`/dashboard/events/${props.eventId}/unlock`)
@@ -130,7 +135,7 @@ async function pay() {
     // Unverified email: the global dialog explains it; the code and quote stay as they were.
     if (isEmailNotVerified(e)) return
     const known = checkoutProblem(e)
-    if (known?.kind === 'price_changed') await reconfirmPrice(known.amountCents)
+    if (known?.kind === 'price_changed') await reconfirmPrice(known.amountCents, known.offer)
     else if (known?.kind === 'exhausted') await dropExhaustedCode().catch(() => showError(t('payments.checkoutFailed')))
     else if (known) problem.value = { kind: known.kind }
     else if (isInvalidCode(e)) {
@@ -152,9 +157,11 @@ async function pay() {
         {{ t('payments.offer.title') }}
       </p>
       <p v-if="slotsLeft" data-testid="offer-slots">{{ t('payments.offer.slots', { n: slotsLeft, total: quote.offer.totalSlots }, slotsLeft) }}</p>
-      <p class="text-ink-600">{{ t('payments.offer.hold') }}</p>
+      <p class="text-ink-600">{{ t('payments.offer.hold', { n: holdMinutes }) }}</p>
     </div>
-    <p v-else-if="soldOut && !problem" class="rounded-lg bg-cream-100 p-3 text-sm text-ink-700" role="status" data-testid="offer-ended">{{ t('payments.offer.ended') }}</p>
+    <p v-else-if="notice && !problem" class="rounded-lg bg-cream-100 p-3 text-sm text-ink-700" role="status" :data-testid="notice === 'holds_full' ? 'offer-holds' : 'offer-ended'">
+      {{ notice === 'holds_full' ? t('payments.offer.holdsFull') : t('payments.offer.ended') }}
+    </p>
 
     <div
       v-if="problem"

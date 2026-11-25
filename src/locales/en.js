@@ -2346,12 +2346,14 @@ export default {
     offer: {
       title: 'Launch offer',
       slots: '{n} spot left of {total} | {n} spots left of {total}',
-      hold: 'Your price is reserved for 60 minutes once you start paying.',
-      ended: 'The launch offer is over. The regular price applies.'
+      hold: 'Your price is reserved for {n} minutes once you start paying.',
+      ended: 'The launch offer sold out. The regular price applies.',
+      holdsFull: 'You have open payments for other events: finish them or wait for them to expire to use the offer.'
     },
     problems: {
       price_changed: 'The price changed and is now {price}. Check the total and confirm again.',
       exhausted: 'The launch offer sold out. The price is now {price}.',
+      holds_full: 'You have open payments for other events: finish them or wait for them to expire to use the offer. The price is now {price}.',
       previous_session_open: 'Your previous payment attempt is still open and we could not close it yet. Wait a couple of minutes and try again, or check how that payment is going.',
       payment_in_progress: 'A payment for this event is already under way. You do not need to pay again.',
       viewPayment: 'See my payment'
