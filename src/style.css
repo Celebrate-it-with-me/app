@@ -410,3 +410,9 @@
     animation: none;
   }
 }
+
+/* Panel only: reserve the scrollbar width so the layout does not shift between short and long pages.
+   Scoped to the shell because public invitations have full-bleed heroes. */
+html:has(.app-shell) {
+  scrollbar-gutter: stable;
+}
