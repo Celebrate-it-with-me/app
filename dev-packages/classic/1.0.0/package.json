@@ -1,1 +1,0 @@
-{ "slug": "classic", "version": "1.0.0", "engineMin": 1, "preload": [{ "path": "assets/fonts/pinyon-script-latin-400-normal.woff2", "as": "font" }] }
