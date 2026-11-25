@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { MessageCircle, Plus, Search, SearchX } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiButton, UiSelect, UiSkeleton, UiEmptyState, UiModal } from '@/ui'
+import { UiPageHeader, UiCard, UiButton, UiSelect, UiSkeleton, UiEmptyState, UiModal, UiPage } from '@/ui'
 import { useEventCommentsStore } from '@/modules/comments/stores/useEventCommentsStore'
 import { useCommentsAdminController } from '@/modules/comments/composables/useCommentsAdminController'
 import ModuleTemplateGate from '@/modules/template-picker/components/ModuleTemplateGate.vue'
@@ -62,7 +62,7 @@ onBeforeUnmount(() => media?.removeEventListener('change', syncMedia))
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl">
+  <UiPage width="wide">
     <UiPageHeader :title="t('app.comments.title')" :subtitle="t('app.comments.subtitle')">
       <template #actions>
         <UiButton @click="ctrl.openCreate()">
@@ -157,5 +157,5 @@ onBeforeUnmount(() => media?.removeEventListener('change', syncMedia))
         <UiButton variant="danger" @click="ctrl.confirmDelete()">{{ t('app.comments.delete') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

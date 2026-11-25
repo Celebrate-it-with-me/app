@@ -1,7 +1,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { Pencil, Plus, UtensilsCrossed } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiButton, UiBadge, UiEmptyState, UiSkeleton } from '@/ui'
+import { UiPageHeader, UiCard, UiButton, UiBadge, UiEmptyState, UiSkeleton, UiPage } from '@/ui'
 import MenuItem from '@/modules/menus/components/MenuItem.vue'
 import AddMenuItemModal from '@/modules/menus/components/AddMenuItemModal.vue'
 import { useShowMenuController } from '@/modules/menus/composables/useShowMenuController'
@@ -22,7 +22,7 @@ const {
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl">
+  <UiPage width="wide">
     <div v-if="loading" class="space-y-3">
       <UiSkeleton class="h-16" />
       <UiSkeleton class="h-24" />
@@ -70,5 +70,5 @@ const {
     </template>
 
     <AddMenuItemModal v-if="menuSelected" v-model:open="openItemForm" :loading="addingItem" :errors="itemErrors" @submitted="handleAddItem" />
-  </div>
+  </UiPage>
 </template>

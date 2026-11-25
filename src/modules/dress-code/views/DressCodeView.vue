@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Shirt, ImagePlus, X } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiField, UiTextarea, UiButton, UiSkeleton, UiModal, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiField, UiTextarea, UiButton, UiSkeleton, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import DressCodeService from '../services/DressCodeService'
 import DressCodeColors from '../components/DressCodeColors.vue'
@@ -164,7 +164,7 @@ async function remove() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl">
+  <UiPage width="wide">
     <UiPageHeader :title="t('app.dressCode.title')" :subtitle="t('app.dressCode.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-4">
@@ -322,5 +322,5 @@ async function remove() {
         <UiButton variant="danger" :loading="saving" @click="remove">{{ t('app.dressCode.remove') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

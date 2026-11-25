@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { UiPageHeader, UiCard, UiField, UiInput, UiRadioGroup, UiButton, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiField, UiInput, UiRadioGroup, UiButton, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '../stores/useEventsStore'
 import { slugify, inputToApi, SLUG_PATTERN, fieldErrors } from '../utils/eventForm'
 import EventAddressField from '../components/EventAddressField.vue'
@@ -104,7 +104,7 @@ async function submit() {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-2xl">
+  <UiPage width="form">
     <UiPageHeader :title="t('events.create.title')" :subtitle="t('events.create.subtitle')" back="/dashboard/events" :back-label="t('events.edit.back')" />
 
     <UiCard>
@@ -133,5 +133,5 @@ async function submit() {
         </div>
       </form>
     </UiCard>
-  </div>
+  </UiPage>
 </template>

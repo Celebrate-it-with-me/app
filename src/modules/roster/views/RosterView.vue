@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { FileSpreadsheet, Plus, Search, Send } from 'lucide-vue-next'
-import { UiPageHeader, UiBadge, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast } from '@/ui'
+import { UiPageHeader, UiBadge, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { planLimitFrom } from '@/utils/planLimit'
@@ -368,7 +368,7 @@ async function copyLink(family) {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl" :class="canSend && !inlineSendVisible && 'pb-[calc(12.5rem+env(safe-area-inset-bottom))] sm:pb-0'">
+  <UiPage :class="canSend && !inlineSendVisible && 'pb-[calc(12.5rem+env(safe-area-inset-bottom))] sm:pb-0'">
     <UiPageHeader :title="t('app.roster.title')" :subtitle="counter">
       <template v-if="canEdit" #actions>
         <div v-if="canSend" class="hidden sm:block">
@@ -580,5 +580,5 @@ async function copyLink(family) {
         <UiButton variant="danger" :loading="saving" @click="confirmRemove">{{ t('app.roster.menu.remove') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

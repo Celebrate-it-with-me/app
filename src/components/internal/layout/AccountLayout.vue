@@ -1,7 +1,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
-import { UiPageHeader, UiScrollFade } from '@/ui'
+import { UiPageHeader, UiScrollFade, UiPage } from '@/ui'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 
 const { t } = useI18n()
@@ -18,7 +18,7 @@ const tabs = computed(() =>
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-2xl">
+  <UiPage width="form">
     <UiPageHeader :title="t('account.title')" :subtitle="t('account.subtitle')" />
 
     <UiScrollFade class="-mt-2 mb-6">
@@ -36,5 +36,5 @@ const tabs = computed(() =>
     </UiScrollFade>
 
     <router-view />
-  </div>
+  </UiPage>
 </template>
