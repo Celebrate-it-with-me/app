@@ -2337,8 +2337,25 @@ export default {
     }
   },
   payments: {
-    note: 'one-time payment · up to {n} guests',
+    note: 'One-time payment, no subscription',
     codeLabel: 'Have a code?',
+    codeFieldLabel: 'Your code',
+    payOffer: 'Apply and pay {price}',
+    trust: 'Secure payment with Stripe · Full refund before you publish',
+    details: 'See details',
+    offer: {
+      title: 'Launch offer',
+      slots: '{n} spot left of {total} | {n} spots left of {total}',
+      hold: 'Your price is reserved for 60 minutes once you start paying.',
+      ended: 'The launch offer is over. The regular price applies.'
+    },
+    problems: {
+      price_changed: 'The price changed and is now {price}. Check the total and confirm again.',
+      exhausted: 'The launch offer sold out. The price is now {price}.',
+      previous_session_open: 'Your previous payment attempt is still open and we could not close it yet. Wait a couple of minutes and try again, or check how that payment is going.',
+      payment_in_progress: 'A payment for this event is already under way. You do not need to pay again.',
+      viewPayment: 'See my payment'
+    },
     codePlaceholder: 'Type it here',
     apply: 'Apply',
     invalidCode: 'That code is not valid or has expired.',
@@ -2351,7 +2368,7 @@ export default {
     legal: 'By paying you accept the {terms} and the {refunds}.',
     termsLink: 'terms of service',
     refundLink: 'refund policy',
-    summary: { item: 'Full event', code: 'Code {code}', total: 'Total' },
+    summary: { item: 'Full event', code: 'Code {code}', offer: 'Launch offer', total: 'Total' },
     checkoutFailed: 'We could not start the payment. Please try again.',
     processing: 'Your payment is already being processed. We will take you to see how it is going.',
     tooManyAttempts: 'Too many attempts, wait a moment and try again.',
@@ -2387,6 +2404,10 @@ export default {
     refunded: { title: 'This payment was refunded', text: 'We returned your payment. It can take a few business days to show in your bank. Your event went back to the free plan.' },
     chargeback: { title: 'This payment is under review', text: 'Your bank opened a dispute on this payment. Write to us and we will sort it out with you.' },
     cancelled: { title: 'No payment was made', text: 'You were not charged. Your event is as it was.', cta: 'Try again' }
+  },
+  unlockBanner: {
+    withPrice: 'Unlock everything for {price} · one-time payment',
+    noPrice: 'Unlock everything · one-time payment'
   },
   accountSuspended: {
     title: 'Your access has been suspended',
@@ -2518,7 +2539,9 @@ export default {
   unlock: {
     full: {
       lead: 'Your full event, right away.',
-      benefit: 'Up to 300 guests, every module and your invitation ready to publish.'
+      benefit: 'Every module and your invitation ready to publish.',
+      forGuests: 'For your {n} guests at {event}: every module and your invitation ready to publish.',
+      forEvent: 'For {event}: every module and your invitation ready to publish.'
     },
     guestsLimit: {
       lead: 'Your list went over the free plan limit.',
@@ -2565,7 +2588,6 @@ export default {
       current: 'Your current template does not show {module} on the invitation.',
       change: 'Change template'
     },
-    lockedHint: 'Unlocked with the full event',
     applied: 'Done, you now use {name}.',
     undoNotice: 'You changed templates. You were using {name}.',
     undoNoticeGeneric: 'You changed templates.',
@@ -2593,11 +2615,11 @@ export default {
       failed: 'We could not prepare the preview.',
       premiumTitle: 'Premium template',
       premiumText: 'You can see it with your event details. To use it, unlock your full event.',
-      price: 'Full event: {price}',
       paid: 'You already unlocked your event. Use {name} now?',
       inUse: 'This is the template you use now.',
       inUseButton: 'Already in use',
       unlock: 'Unlock to use it',
+      unlockPrice: 'Unlock · {price}',
       use: 'Use this template',
       useNow: 'Use it now'
     },

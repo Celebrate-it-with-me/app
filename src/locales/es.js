@@ -2337,8 +2337,25 @@ export default {
     }
   },
   payments: {
-    note: 'pago único · hasta {n} invitados',
+    note: 'Pago único, sin suscripción',
     codeLabel: '¿Tienes un código?',
+    codeFieldLabel: 'Tu código',
+    payOffer: 'Aplicar y pagar {price}',
+    trust: 'Pago seguro con Stripe · Reembolso completo antes de publicar',
+    details: 'Ver detalles',
+    offer: {
+      title: 'Oferta de lanzamiento',
+      slots: 'Queda {n} cupo de {total} | Quedan {n} cupos de {total}',
+      hold: 'Tu precio queda reservado 60 minutos cuando empiezas el pago.',
+      ended: 'La oferta de lanzamiento ya terminó. El precio es el normal.'
+    },
+    problems: {
+      price_changed: 'El precio cambió y ahora es {price}. Revisa el total y confirma de nuevo.',
+      exhausted: 'La oferta de lanzamiento se agotó. El precio ahora es {price}.',
+      previous_session_open: 'Tu intento de pago anterior sigue abierto y todavía no pudimos cerrarlo. Espera un par de minutos y vuelve a intentarlo, o mira cómo va ese pago.',
+      payment_in_progress: 'Ya hay un pago de este evento en marcha. No necesitas pagar de nuevo.',
+      viewPayment: 'Ver mi pago'
+    },
     codePlaceholder: 'Escríbelo aquí',
     apply: 'Aplicar',
     invalidCode: 'Ese código no es válido o ya venció.',
@@ -2351,7 +2368,7 @@ export default {
     legal: 'Al pagar aceptas los {terms} y la {refunds}.',
     termsLink: 'términos del servicio',
     refundLink: 'política de reembolso',
-    summary: { item: 'Evento completo', code: 'Código {code}', total: 'Total' },
+    summary: { item: 'Evento completo', code: 'Código {code}', offer: 'Oferta de lanzamiento', total: 'Total' },
     checkoutFailed: 'No pudimos iniciar el pago. Inténtalo de nuevo.',
     processing: 'Tu pago ya se está procesando. Te llevamos a ver cómo va.',
     tooManyAttempts: 'Demasiados intentos, espera un momento y vuelve a probar.',
@@ -2387,6 +2404,10 @@ export default {
     refunded: { title: 'Este pago fue reembolsado', text: 'Te devolvimos el pago. El reembolso puede tardar unos días hábiles en verse en tu banco. Tu evento volvió al plan gratis.' },
     chargeback: { title: 'Este pago está en revisión', text: 'Tu banco abrió una disputa sobre este pago. Escríbenos y lo resolvemos contigo.' },
     cancelled: { title: 'No se hizo el pago', text: 'No te cobramos nada. Tu evento sigue como estaba.', cta: 'Intentar de nuevo' }
+  },
+  unlockBanner: {
+    withPrice: 'Desbloquea todo por {price} · pago único',
+    noPrice: 'Desbloquea todo · pago único'
   },
   accountSuspended: {
     title: 'Tu acceso fue suspendido',
@@ -2518,7 +2539,9 @@ export default {
   unlock: {
     full: {
       lead: 'Tu evento completo, de una vez.',
-      benefit: 'Hasta 300 invitados, todos los módulos y tu invitación lista para publicar.'
+      benefit: 'Todos los módulos y tu invitación lista para publicar.',
+      forGuests: 'Para tus {n} invitados de {event}: todos los módulos y tu invitación lista para publicar.',
+      forEvent: 'Para {event}: todos los módulos y tu invitación lista para publicar.'
     },
     guestsLimit: {
       lead: 'Tu lista pasó el límite del plan gratis.',
@@ -2565,7 +2588,6 @@ export default {
       current: 'Tu plantilla actual no muestra {module} en la invitación.',
       change: 'Cambiar plantilla'
     },
-    lockedHint: 'Se desbloquea con el evento completo',
     applied: 'Listo, ahora usas {name}.',
     undoNotice: 'Cambiaste de plantilla. Antes usabas {name}.',
     undoNoticeGeneric: 'Cambiaste de plantilla.',
@@ -2593,11 +2615,11 @@ export default {
       failed: 'No pudimos preparar la vista previa.',
       premiumTitle: 'Plantilla premium',
       premiumText: 'Puedes verla con los datos de tu evento. Para usarla, desbloquea tu evento completo.',
-      price: 'Evento completo: {price}',
       paid: 'Ya desbloqueaste tu evento. ¿Usamos {name} ahora?',
       inUse: 'Es la plantilla que usas ahora.',
       inUseButton: 'Ya la usas',
       unlock: 'Desbloquear para usarla',
+      unlockPrice: 'Desbloquear · {price}',
       use: 'Usar esta plantilla',
       useNow: 'Usar ahora'
     },
