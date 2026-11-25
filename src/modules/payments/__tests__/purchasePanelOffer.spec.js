@@ -114,3 +114,27 @@ describe('PurchasePanel with the launch offer', () => {
     expect(wrapper.get('[data-testid=pay]').attributes('disabled')).toBeDefined()
   })
 })
+
+describe('PurchasePanel edge paths', () => {
+  it('shows the generic error when the quote after an exhausted code also fails', async () => {
+    localStorage.setItem('quinvite:pending-code', 'LANZAMIENTO79')
+    quote.mockRejectedValueOnce({ response: { status: 422, data: { errors: { code: ['launch_offer_exhausted'] } } } }).mockRejectedValueOnce(new Error('net'))
+    const wrapper = mountPanel()
+    await flushPromises()
+    expect(wrapper.find('[data-problem=exhausted]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid=pay]').attributes('disabled')).toBeDefined()
+  })
+
+  it('applies a typed code and clears the previous notice', async () => {
+    quote.mockResolvedValue(open)
+    const wrapper = mountPanel()
+    await flushPromises()
+    await wrapper.get('[data-testid=code-toggle]').trigger('click')
+    await wrapper.get('input').setValue('LANZAMIENTO79')
+    quote.mockResolvedValue({ ...open, code: 'LANZAMIENTO79', source: 'coupon' })
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(quote).toHaveBeenLastCalledWith(1, 'LANZAMIENTO79')
+    expect(wrapper.get('[data-testid=pay]').text()).toBe('Aplicar y pagar $79')
+  })
+})

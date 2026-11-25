@@ -108,6 +108,13 @@ describe('InvitationEditorView', () => {
     expect(router.currentRoute.value.name).toBe('unlock')
   })
 
+  it('the banner leads to the payment', async () => {
+    await setup()
+    await wrapper.get('[data-testid=unlock-banner]').trigger('click')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('unlock')
+  })
+
   it('a locked toggle (no visible label) still has a 44 px padlock button with the name for screen readers', async () => {
     const data = payload()
     data.fields.find(f => f.id === 'ornaments').locked = true

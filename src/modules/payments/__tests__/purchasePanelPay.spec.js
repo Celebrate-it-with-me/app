@@ -176,6 +176,15 @@ describe('PurchasePanel pay()', () => {
     expect(showError).not.toHaveBeenCalled()
   })
 
+  it('422 launch_offer_exhausted at checkout: generic error when the new quote fails', async () => {
+    quote.mockResolvedValueOnce({ ...full, amountCents: 7900, code: 'LANZAMIENTO79', source: 'coupon' }).mockRejectedValueOnce(new Error('net'))
+    reject(422, { errors: { code: ['launch_offer_exhausted'] } })
+    const wrapper = mountPanel()
+    await flushPromises()
+    await pay(wrapper)
+    expect(showError).toHaveBeenCalledWith(es.payments.checkoutFailed)
+  })
+
   it('422 event already_unlocked: tells the parent', async () => {
     reject(422, { errors: { event: ['already_unlocked'] } })
     const wrapper = mountPanel()

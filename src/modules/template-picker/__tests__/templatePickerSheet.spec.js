@@ -104,6 +104,13 @@ describe('TemplatePickerSheet', () => {
     expect(mocks.apply).not.toHaveBeenCalled()
   })
 
+  it('the banner on top of the list asks to unlock without a template', async () => {
+    await mountSheet()
+    document.body.querySelector('[data-testid=unlock-banner]').click()
+    await flushPromises()
+    expect(wrapper.emitted('unlock')[0]).toEqual([null])
+  })
+
   it('a premium template without the plan can be seen but only offers to unlock it', async () => {
     await mountSheet()
     await click('Botánica')
