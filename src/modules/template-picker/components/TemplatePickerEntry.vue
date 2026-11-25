@@ -82,7 +82,7 @@ function openPicker() {
 }
 
 function goUnlock(template) {
-  router.push(unlockLocation(template.id))
+  router.push(template ? unlockLocation(template.id) : { name: 'unlock', params: { module: 'full' } })
 }
 
 function onChanged(data, template, undo) {

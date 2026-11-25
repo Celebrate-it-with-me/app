@@ -57,8 +57,15 @@ const lead = computed(() => {
   if (te(`unlock.leads.${key.value}`)) return t(`unlock.leads.${key.value}`)
   return t('unlock.lead', { module: moduleName.value })
 })
+// ORG-004: the value is tied to her own event and list.
 const benefit = computed(() => {
-  if (isFull.value) return t('unlock.full.benefit')
+  if (isFull.value) {
+    const event = eventsStore.activeEvent
+    const guests = Number(event?.guestsCount) || 0
+    if (event?.name && guests > 1) return t('unlock.full.forGuests', { n: guests, event: event.name })
+    if (event?.name) return t('unlock.full.forEvent', { event: event.name })
+    return t('unlock.full.benefit')
+  }
   if (isGuestsLimit.value) return t('unlock.guestsLimit.benefit')
   return te(`unlock.modules.${key.value}`) ? t(`unlock.modules.${key.value}`) : t('unlock.generic')
 })

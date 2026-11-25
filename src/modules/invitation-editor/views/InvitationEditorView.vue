@@ -7,6 +7,7 @@
  */
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { CloudOff, TriangleAlert, WandSparkles } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiEmptyState, UiPageHeader, UiSkeleton, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
@@ -18,10 +19,12 @@ import EditorPreviewEntry from '../components/EditorPreviewEntry.vue'
 import EditorGroup from '../components/EditorGroup.vue'
 import FieldRenderer from '../components/FieldRenderer.vue'
 import SectionsList from '../components/SectionsList.vue'
+import UnlockBanner from '@/modules/payments/components/UnlockBanner.vue'
 
 const { t, te } = useI18n()
 const { toast } = useToast()
 const eventsStore = useEventsStore()
+const router = useRouter()
 
 const event = computed(() => eventsStore.activeEvent)
 const eventId = computed(() => event.value?.id ?? null)
@@ -55,6 +58,10 @@ onBeforeUnmount(() => {
   window.removeEventListener('offline', setOnline)
 })
 watch(eventId, id => id && editor.load())
+
+// ORG-005: one banner for every padlock on the screen; the rows only show the padlock and the name.
+const hasLocks = computed(() => fields.value.some(field => field.locked) || sections.value.some(section => section.moduleState === 'locked'))
+const goUnlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
 
 const showOffline = computed(() => !online.value || saveStatus.value === 'offline')
 
@@ -117,6 +124,8 @@ function onImageChanged(id, value) {
         <UiBadge v-if="statusView" :tone="statusView.tone" dot>{{ t(`invitationEditor.status.${statusView.key}`) }}</UiBadge>
         <SaveIndicator :status="saveStatus" @retry="editor.retry()" />
       </div>
+
+      <UnlockBanner v-if="hasLocks && !readOnly" :event-id="eventId" @unlock="goUnlock" />
 
       <p v-if="readOnly" class="rounded-lg bg-cream-100 p-3 text-sm text-ink-600" role="note">{{ t('invitationEditor.readOnly') }}</p>
 

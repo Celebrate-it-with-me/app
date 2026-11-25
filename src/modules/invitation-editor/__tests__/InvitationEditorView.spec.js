@@ -14,6 +14,7 @@ vi.mock('@/modules/template-picker/services/TemplatePickerService', () => ({ def
 vi.mock('@/modules/payments/services/PaymentsService', () => ({ default: { quote: vi.fn() } }))
 
 import InvitationEditorView from '../views/InvitationEditorView.vue'
+import PaymentsService from '@/modules/payments/services/PaymentsService'
 
 const http = (status, data = {}) => Object.assign(new Error(`http ${status}`), { response: { status, data } })
 const payload = () => ({
@@ -58,6 +59,7 @@ describe('InvitationEditorView', () => {
     setLocale('es')
     vi.clearAllMocks()
     svc.get.mockResolvedValue(payload())
+    PaymentsService.quote.mockResolvedValue({ amountCents: 7900, currency: 'USD', unlocked: false })
     svc.saveFields.mockResolvedValue({ fields: [], savedAt: 'now' })
     svc.saveSections.mockResolvedValue({})
     picker.templates.mockResolvedValue([{ id: 12, name: 'Botánica', tier: 'premium', current: true, locked: false, previewImage: null }])
@@ -81,16 +83,50 @@ describe('InvitationEditorView', () => {
     expect(wrapper.find('[data-field=weird]').exists()).toBe(false) // unknown types are ignored, not a crash
   })
 
-  it('shows the plan lock with a way to unlock, and disables the control', async () => {
+  it('shows the plan lock as a padlock on the row and one banner with the price on top, and disables the control', async () => {
     await setup()
     const field = wrapper.get('[data-field=color_primary]')
-    expect(field.find('[data-testid=field-locked]').exists()).toBe(true)
+    expect(field.text()).not.toContain('Es parte del evento completo')
+    const lock = field.get('[data-testid=field-locked]')
+    expect(lock.text()).toBe('Color principal') // the name with the padlock inline, one tap target
+    expect(lock.attributes('aria-label')).toBe('Bloqueado: Color principal. Se desbloquea con el evento completo.')
+    expect(lock.classes()).toContain('min-h-11')
+    expect(wrapper.findAll('[data-testid=unlock-banner]')).toHaveLength(1)
+    expect(wrapper.get('[data-testid=unlock-banner]').text()).toBe('Desbloquea todo por $79 · pago único')
     expect(field.get('[data-testid=color-hex]').attributes('disabled')).toBeDefined()
     expect(field.findAll('[data-testid=swatch]').every(s => s.attributes('disabled') !== undefined)).toBe(true)
-    await field.get('[data-testid=field-locked] button').trigger('click')
+    await lock.trigger('click')
     await flushPromises()
     expect(router.currentRoute.value.name).toBe('unlock')
     expect(router.currentRoute.value.params.module).toBe('full')
+  })
+
+  it('a locked section row has a padlock button to the payment, and the toggle field one too', async () => {
+    await setup()
+    await wrapper.get('[data-section=gallery] [data-testid=section-locked]').trigger('click')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('unlock')
+  })
+
+  it('the banner leads to the payment', async () => {
+    await setup()
+    await wrapper.get('[data-testid=unlock-banner]').trigger('click')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('unlock')
+  })
+
+  it('a locked toggle has its padlock inline with the name, as a 44 px button to the payment', async () => {
+    const data = payload()
+    data.fields.find(f => f.id === 'ornaments').locked = true
+    svc.get.mockResolvedValue(data)
+    await setup()
+    const lock = wrapper.get('[data-field=ornaments] [data-testid=field-locked]')
+    expect(lock.text()).toBe('Adornos') // inline with the name, in the row of the switch
+    expect(lock.classes()).toContain('min-h-11')
+    expect(wrapper.findAll('[data-field=ornaments] [data-testid=field-locked]')).toHaveLength(1)
+    await lock.trigger('click')
+    await flushPromises()
+    expect(router.currentRoute.value.name).toBe('unlock')
   })
 
   it('saves a choice at once, by field id, and shows "Guardado"', async () => {
@@ -157,7 +193,8 @@ describe('InvitationEditorView', () => {
     await setup()
     await wrapper.get('[data-field=color_accent] [data-testid=swatch]').trigger('click')
     await flushPromises()
-    expect(wrapper.get('[data-field=color_accent] [data-testid=field-locked]').exists()).toBe(true)
+    expect(wrapper.get('[data-field=color_accent] svg').exists()).toBe(true)
+    expect(wrapper.get('[data-field=color_accent] [data-testid=color-hex]').attributes('disabled')).toBeDefined()
     expect(wrapper.get('[data-field=color_accent] [data-testid=color-hex]').element.value).toBe('#c9a24d')
   })
 

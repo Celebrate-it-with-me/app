@@ -14,6 +14,7 @@ import { formatMoney } from '@/modules/payments/utils/money'
 import { useTemplatePicker } from '../composables/useTemplatePicker'
 import { MINIATURE_SESSION, createMiniatureSession } from '../composables/useMiniatureSession'
 import { conflictingModules, moduleNames, pickText } from '../utils/templatePicker'
+import UnlockBanner from '@/modules/payments/components/UnlockBanner.vue'
 import TemplateCard from './TemplateCard.vue'
 import TemplatePreviewFrame from './TemplatePreviewFrame.vue'
 import SegmentedControl from './SegmentedControl.vue'
@@ -50,6 +51,8 @@ const missingAsk = ref(false) // the "this template lacks a module you use" dial
 
 const conflictNames = computed(() => moduleNames(conflictingModules(selected.value, props.activeModules), { t, te }).join(', '))
 const isCurrent = computed(() => !!selected.value?.current)
+const hasLockedTemplates = computed(() => picker.templates.value.some(template => template.locked))
+const unlockLabel = computed(() => (price.value ? t('templatePicker.preview.unlockPrice', { price: price.value }) : t('templatePicker.preview.unlock')))
 const isLocked = computed(() => !!selected.value?.locked)
 const paidNow = computed(() => props.fromPayment && !isCurrent.value && !isLocked.value && selected.value?.tier === 'premium')
 const included = computed(() => tm('pricing.full.items').slice(0, 4).map(item => rt(item)))
@@ -214,11 +217,14 @@ defineExpose({ undo, picker })
         </UiButton>
       </UiEmptyState>
       <UiEmptyState v-else-if="!picker.templates.value.length" :title="t('templatePicker.empty')" />
-      <ul v-else class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <template v-else>
+      <UnlockBanner v-if="hasLockedTemplates && !fromPayment" class="mb-3" :event-id="eventId" @unlock="goUnlock(null)" />
+      <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <li v-for="template in picker.templates.value" :key="template.id" class="flex">
           <TemplateCard :template="template" :event-id="eventId" @select="openPreview" />
         </li>
       </ul>
+      </template>
     </div>
 
     <!-- 2. live preview -->
@@ -249,7 +255,6 @@ defineExpose({ undo, picker })
             {{ t('templatePicker.preview.premiumTitle') }}
           </p>
           <p class="mt-1 text-sm text-ink-700">{{ t('templatePicker.preview.premiumText') }}</p>
-          <p v-if="price" class="mt-2 text-sm font-semibold text-ink-900">{{ t('templatePicker.preview.price', { price }) }}</p>
           <ul class="mt-3 flex flex-col gap-1.5">
             <li v-for="item in included" :key="item" class="flex items-start gap-2 text-sm text-ink-700">
               <Check class="mt-0.5 h-4 w-4 shrink-0 text-success-500" aria-hidden="true" />
@@ -314,7 +319,7 @@ defineExpose({ undo, picker })
         <UiButton v-if="isCurrent" disabled>{{ t('templatePicker.preview.inUseButton') }}</UiButton>
         <UiButton v-else-if="isLocked" variant="primary" @click="goUnlock">
           <Lock class="h-4 w-4" aria-hidden="true" />
-          {{ t('templatePicker.preview.unlock') }}
+          {{ unlockLabel }}
         </UiButton>
         <UiButton v-else @click="startUse">{{ paidNow ? t('templatePicker.preview.useNow') : t('templatePicker.preview.use') }}</UiButton>
       </template>
@@ -322,7 +327,7 @@ defineExpose({ undo, picker })
         <UiButton variant="ghost" :disabled="picker.applying.value" @click="view = 'preview'">{{ t('templatePicker.confirm.cancel') }}</UiButton>
         <UiButton v-if="picker.impact.value?.locked" @click="goUnlock">
           <Lock class="h-4 w-4" aria-hidden="true" />
-          {{ t('templatePicker.preview.unlock') }}
+          {{ unlockLabel }}
         </UiButton>
         <UiButton v-else :loading="picker.applying.value" :disabled="picker.impactStatus.value !== 'ready'" @click="confirm">{{ t('templatePicker.confirm.apply') }}</UiButton>
       </template>

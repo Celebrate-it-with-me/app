@@ -19,9 +19,9 @@ const props = defineProps({
 })
 const emit = defineEmits(['update', 'reset', 'image-changed'])
 const { t, te, locale } = useI18n()
-const router = useRouter()
 
 const baseId = computed(() => `ie-${props.field.id}`)
+const router = useRouter()
 const disabled = computed(() => props.readOnly || Boolean(props.field.locked))
 const message = computed(() => {
   if (!props.error) return ''
@@ -31,10 +31,9 @@ const message = computed(() => {
   const text = t(`invitationEditor.errors.${key}`, { max: typeof max === 'number' ? max : 1000 })
   return lang ? `${t(`invitationEditor.field.lang.${lang}`)}: ${text}` : text
 })
-const known = computed(() => ['text', 'color', 'choice', 'toggle', 'image'].includes(props.field.type))
-
 // No payment logic here: the existing unlock screen already explains and charges (`PurchasePanel`).
 const unlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
+const known = computed(() => ['text', 'color', 'choice', 'toggle', 'image'].includes(props.field.type))
 </script>
 
 <template>
@@ -53,7 +52,7 @@ const unlock = () => router.push({ name: 'unlock', params: { module: 'full' } })
     <TextField v-if="field.type === 'text'" :field="field" :base-id="baseId" :described-by="describedBy" :invalid="Boolean(error)" :invalid-lang="error?.lang ?? null" :disabled="disabled" @update="v => emit('update', v)" />
     <ColorField v-else-if="field.type === 'color'" :field="field" :base-id="baseId" :described-by="describedBy" :invalid="Boolean(error)" :disabled="disabled" @update="v => emit('update', v)" />
     <ChoiceField v-else-if="field.type === 'choice'" :field="field" :base-id="baseId" :described-by="describedBy" :disabled="disabled" @update="v => emit('update', v)" />
-    <ToggleField v-else-if="field.type === 'toggle'" :field="field" :disabled="disabled" @update="v => emit('update', v)" />
+    <ToggleField v-else-if="field.type === 'toggle'" :field="field" :disabled="disabled" @update="v => emit('update', v)" @unlock="unlock" />
     <CoverPhotoField v-else-if="field.type === 'image' && eventId != null" :field="field" :event-id="eventId" :disabled="disabled" @changed="v => emit('image-changed', v)" />
   </FieldShell>
 </template>

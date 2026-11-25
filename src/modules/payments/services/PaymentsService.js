@@ -18,9 +18,15 @@ class PaymentsService {
     return quotesInFlight.get(key)
   }
 
-  /** Creates the purchase and returns where to send the buyer: `{ purchaseId, url }`. */
-  async checkout(eventId, code) {
-    return (await CWM_API.post(`${base(eventId)}/checkout`, code ? { code } : {})).data.data
+  /**
+   * Creates the purchase and returns where to send the buyer: `{ purchaseId, url }`.
+   * `expectedAmountCents` is the price the screen showed: if the server's is different it answers 409 `price_changed` and charges nothing.
+   */
+  async checkout(eventId, code, expectedAmountCents) {
+    const body = {}
+    if (code) body.code = code
+    if (Number.isInteger(expectedAmountCents)) body.expectedAmountCents = expectedAmountCents
+    return (await CWM_API.post(`${base(eventId)}/checkout`, body)).data.data
   }
 
   /**
