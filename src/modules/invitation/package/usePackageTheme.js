@@ -61,6 +61,23 @@ export function allowedAssetUrl(value, origin = import.meta.env?.VITE_TEMPLATE_A
   }
 }
 
+let warnedOrigin = false
+
+/** Test hook: lets the once-only warning fire again. */
+export function resetOriginWarning() {
+  warnedOrigin = false
+}
+
+/**
+ * A package whose CSS lives on a rejected origin (not https, or not the allowed assets origin) silently turns the page
+ * into plain Clásica; say why, once, in development and production.
+ */
+function warnRejectedOrigin(raw) {
+  if (warnedOrigin || !raw || typeof raw !== 'object' || typeof raw.cssUrl !== 'string' || allowedAssetUrl(raw.cssUrl)) return
+  warnedOrigin = true
+  console.warn('[invitation package] CSS dropped: its origin is not allowed (https on the template assets origin, VITE_TEMPLATE_ASSETS_ORIGIN); showing plain Clásica')
+}
+
 /** Checks the `theme.package` block of the payload; returns what the engine needs or null (→ plain Clásica). */
 export function readPackage(pkg, origin) {
   if (!pkg || typeof pkg !== 'object') return null
@@ -112,6 +129,7 @@ export function usePackageTheme(getPackage) {
       current.value = pkg
       if (!pkg) {
         state.value = 'none'
+        warnRejectedOrigin(raw)
         return
       }
       state.value = 'loading'
