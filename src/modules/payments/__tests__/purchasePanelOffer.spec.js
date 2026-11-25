@@ -22,7 +22,7 @@ beforeEach(() => {
 })
 
 describe('PurchasePanel with the launch offer', () => {
-  it('shows the offer without a code: struck list price, $79, slots left and "Aplicar y pagar"', async () => {
+  it('shows the offer without a code: struck list price, $79, slots left and a plain "Pagar"', async () => {
     quote.mockResolvedValue(open)
     const wrapper = mountPanel()
     await flushPromises()
@@ -34,7 +34,7 @@ describe('PurchasePanel with the launch offer', () => {
     expect(summary).toContain('Oferta de lanzamiento')
     expect(summary).toContain('$20')
     expect(wrapper.get('[data-testid=purchase-total]').text()).toBe('$79')
-    expect(wrapper.get('[data-testid=pay]').text()).toBe('Aplicar y pagar $79')
+    expect(wrapper.get('[data-testid=pay]').text()).toBe('Pagar $79')
     expect(wrapper.text()).not.toContain('hasta 300')
   })
 
@@ -91,11 +91,18 @@ describe('PurchasePanel with the launch offer', () => {
     expect(wrapper.get('[data-testid=pay]').text()).toBe('Pagar $99')
   })
 
+  it('says "Aplicar y pagar" only when a code is applied', async () => {
+    quote.mockResolvedValue({ ...open, code: 'LANZAMIENTO79', source: 'coupon' })
+    const wrapper = mountPanel()
+    await flushPromises()
+    expect(wrapper.get('[data-testid=pay]').text()).toBe('Aplicar y pagar $79')
+  })
+
   it('reads in English', async () => {
     quote.mockResolvedValue(open)
     const wrapper = mountPanel('en')
     await flushPromises()
-    expect(wrapper.get('[data-testid=pay]').text()).toBe('Apply and pay $79')
+    expect(wrapper.get('[data-testid=pay]').text()).toBe('Pay $79')
     expect(wrapper.get('[data-testid=offer-slots]').text()).toBe('37 spots left of 100')
   })
 

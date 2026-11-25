@@ -44,9 +44,12 @@ const onOffer = computed(() => offerApplies(quote.value))
 const slotsLeft = computed(() => slotsLeftOf(quote.value))
 const soldOut = computed(() => offerSoldOut(quote.value) && !onOffer.value)
 const discountLabel = computed(() => (quote.value?.source === 'offer' ? t('payments.summary.offer') : t('payments.summary.code', { code: quote.value?.code })))
+// Another payment of this event is open: the only way forward is to look at it, never to pay again.
+const blocked = computed(() => ['previous_session_open', 'payment_in_progress'].includes(problem.value?.kind))
 const payLabel = computed(() => {
   if (isFree.value) return t('payments.unlockFree')
-  return onOffer.value ? t('payments.payOffer', { price: price.value }) : t('payments.pay', { price: price.value })
+  // "Apply" only makes sense when she applied a code; the automatic launch offer is just "Pay".
+  return quote.value?.code ? t('payments.payOffer', { price: price.value }) : t('payments.pay', { price: price.value })
 })
 
 function notifyUnlocked() {
@@ -157,6 +160,7 @@ async function pay() {
       v-if="problem"
       class="flex flex-col gap-3 rounded-lg border border-warning-500 bg-warning-50 p-3 text-sm text-ink-800"
       role="alert"
+      aria-live="assertive"
       :data-problem="problem.kind"
       data-testid="purchase-problem"
     >
@@ -164,7 +168,7 @@ async function pay() {
         <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0 text-warning-700" aria-hidden="true" />
         <span>{{ t(`payments.problems.${problem.kind}`, { price: problem.price ?? price }) }}</span>
       </p>
-      <UiButton v-if="problem.kind === 'previous_session_open' || problem.kind === 'payment_in_progress'" variant="secondary" block data-testid="problem-continue" @click="toPayment">
+      <UiButton v-if="blocked" block data-testid="problem-continue" @click="toPayment">
         {{ t('payments.problems.viewPayment') }}
       </UiButton>
     </div>
@@ -185,7 +189,7 @@ async function pay() {
       <p class="mt-1 text-right text-xs text-ink-600">{{ t('payments.note') }}</p>
     </dl>
 
-    <UiButton :loading="paying" :disabled="!quote || quote.unlocked" block data-testid="pay" @click="pay">{{ payLabel }}</UiButton>
+    <UiButton v-if="!blocked" :loading="paying" :disabled="!quote || quote.unlocked" block data-testid="pay" @click="pay">{{ payLabel }}</UiButton>
 
     <div class="flex flex-col gap-2 text-sm text-ink-600">
       <p v-if="!isFree" class="flex items-start gap-2" data-testid="trust">
