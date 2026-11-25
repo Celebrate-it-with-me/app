@@ -433,7 +433,7 @@ async function copyLink(family) {
         />
       </div>
 
-      <div v-if="!emptyList" class="overflow-x-auto" role="group" :aria-label="t('app.roster.filters.answers')">
+      <div v-if="!emptyList" role="group" :aria-label="t('app.roster.filters.answers')">
         <UiTabs v-model="status" :tabs="tabs" />
       </div>
 

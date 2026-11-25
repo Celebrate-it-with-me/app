@@ -121,7 +121,7 @@ const missingLocales = computed(() => [...new Set(props.missing.map(f => f.local
       </div>
     </div>
 
-    <div v-if="languages.length > 1" class="mt-4 overflow-x-auto" role="group" :aria-label="t('app.whatsapp.wizard.preview.language')">
+    <div v-if="languages.length > 1" class="mt-4" role="group" :aria-label="t('app.whatsapp.wizard.preview.language')">
       <UiTabs :model-value="sample?.locale" :tabs="languageTabs" @update:model-value="pickLanguage" />
     </div>
 

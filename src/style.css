@@ -378,6 +378,14 @@
   animation: ui-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* Scrollable row without the scrollbar (pair it with UiScrollFade so the edge still hints at more). */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /*
  * Touch target: on touch screens, grow the tappable area of a small control to 44x44 without changing how it looks.
  * The element must be positioned (add `relative`); on a mouse nothing changes.
