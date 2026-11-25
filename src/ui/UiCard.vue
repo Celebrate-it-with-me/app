@@ -32,9 +32,9 @@ const classes = computed(() =>
   <component :is="as" :class="classes">
     <header
       v-if="title || subtitle || $slots.header || $slots.actions"
-      class="mb-4 flex items-start justify-between gap-3"
+      class="mb-4 flex flex-wrap items-start justify-between gap-x-3 gap-y-1"
     >
-      <div class="min-w-0">
+      <div>
         <slot name="header">
           <component :is="headingLevel" v-if="title" class="font-heading text-xl text-ink-900">{{ title }}</component>
           <p v-if="subtitle" class="mt-0.5 text-sm text-ink-500">{{ subtitle }}</p>

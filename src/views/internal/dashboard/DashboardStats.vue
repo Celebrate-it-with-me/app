@@ -14,7 +14,7 @@ const props = defineProps({
 
 const { t } = useI18n()
 const figures = computed(() => statsFigures(props.rsvp))
-const TONES = { success: 'bg-success-500', gold: 'bg-gold-100/500', ink: 'bg-ink-400', rose: 'bg-rose-500' }
+const TONES = { success: 'bg-success-500', gold: 'bg-gold-500', ink: 'bg-ink-400', rose: 'bg-rose-500' }
 </script>
 
 <template>

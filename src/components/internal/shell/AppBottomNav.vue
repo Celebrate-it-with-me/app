@@ -43,7 +43,7 @@ const isTabActive = tab => (tab.kind === 'link' ? linkActive(tab) : sheetKey.val
 
 const tabClass = active =>
   cx(
-    'relative flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-lg px-0.5 py-1 text-center text-[0.6875rem] font-medium leading-tight',
+    'relative flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-lg px-0.5 py-1 text-center text-[0.625rem] font-medium leading-tight min-[360px]:text-[0.6875rem]',
     'motion-safe:transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-rose-500',
     active ? 'text-rose-800' : 'text-ink-600 hover:text-ink-900'
   )
@@ -70,7 +70,7 @@ const pillClass = active =>
           :data-testid="`tab-${tab.key}`"
         >
           <span :class="pillClass(isTabActive(tab))"><component :is="tab.icon" class="h-5 w-5" aria-hidden="true" /></span>
-          <span class="max-w-full break-words">{{ t(tab.labelKey) }}</span>
+          <span class="max-w-full">{{ t(tab.labelKey) }}</span>
         </router-link>
         <button
           v-else
@@ -82,7 +82,7 @@ const pillClass = active =>
           @click="sheetKey = tab.key"
         >
           <span :class="pillClass(isTabActive(tab))"><component :is="tab.icon" class="h-5 w-5" aria-hidden="true" /></span>
-          <span class="max-w-full break-words">{{ t(tab.labelKey) }}</span>
+          <span class="max-w-full">{{ t(tab.labelKey) }}</span>
         </button>
       </li>
     </ul>

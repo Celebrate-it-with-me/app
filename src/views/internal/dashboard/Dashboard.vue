@@ -167,7 +167,7 @@ onMounted(() => useUserStore().syncEmailVerified())
 
     <DashboardStats class="mt-6" :rsvp="rsvp" :can-edit="canEdit" />
 
-    <div class="mt-4 grid gap-4 lg:grid-cols-3">
+    <div class="mt-4 grid gap-4 lg:grid-cols-3 lg:items-start">
       <DashboardRsvp v-if="rsvp.people" class="lg:col-span-2" :rsvp="rsvp" />
       <DashboardActivity :activity="activity" :class="rsvp.people ? '' : 'lg:col-span-3'" />
     </div>

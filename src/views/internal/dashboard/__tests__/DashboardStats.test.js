@@ -27,4 +27,11 @@ describe('DashboardStats', () => {
   it('does not offer to add guests to a viewer', () => {
     expect(mountStats({ attending: 0, pending: 0, declined: 0, people: 0 }, false).find('a').exists()).toBe(false)
   })
+  it('paints every stat dot with a real colour class', () => {
+    const w = mountStats({ attending: 12, pending: 7, declined: 2, people: 21 })
+    const dots = w.findAll('dt span[aria-hidden=true], span.rounded-full[aria-hidden=true]')
+    expect(dots.length).toBeGreaterThanOrEqual(4)
+    expect(w.get('[data-stat=pending]').html()).toContain('bg-gold-500')
+    expect(w.html()).not.toMatch(/bg-[a-z]+-\d+\/\d{3}/)
+  })
 })

@@ -53,15 +53,15 @@ function select(event) {
       class="flex w-full max-w-full min-w-0 items-center gap-2.5 rounded-lg border border-line-strong bg-white px-2.5 py-1.5 text-left shadow-soft hover:bg-cream-100 focus-visible:outline-2 focus-visible:outline-rose-400 sm:w-auto sm:min-w-64 sm:max-w-96"
       :aria-label="t('app.switchEvent')"
     >
-      <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-rose-100 text-rose-700">
+      <span class="hidden h-8 w-8 shrink-0 items-center justify-center rounded-md bg-rose-100 text-rose-700 min-[400px]:flex">
         <CalendarDays class="h-4 w-4" aria-hidden="true" />
       </span>
       <span class="min-w-0 flex-1">
         <span class="flex items-baseline justify-between gap-3">
-          <span class="text-[0.65rem] font-semibold uppercase leading-tight tracking-wide text-ink-500">
+          <span class="whitespace-nowrap text-[0.65rem] font-semibold uppercase leading-tight tracking-wide text-ink-500">
             {{ t('app.activeEvent') }}
           </span>
-          <span v-if="countdown" class="shrink-0 text-[0.65rem] leading-tight text-ink-500">{{ countdown }}</span>
+          <span v-if="countdown" class="hidden shrink-0 text-[0.65rem] leading-tight text-ink-500 sm:inline">{{ countdown }}</span>
         </span>
         <span class="block truncate font-heading text-base leading-tight text-ink-900">
           {{ active?.eventName || t('app.noEvent') }}
