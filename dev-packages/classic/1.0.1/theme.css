@@ -18,7 +18,7 @@
 .pkg-cl-arch .inv-q-photo__emblem { color: var(--pkg-accent-ink); }
 
 .pkg-cl-phrase { margin: 0; font-family: var(--pkg-script); font-size: 2.25rem; line-height: 1.25; color: var(--pkg-primary-ink); }
-.pkg-cl-name { margin: 0.5rem 0 0; font-family: var(--pkg-heading); font-size: 2.75rem; line-height: 1.04; letter-spacing: -0.01em; text-wrap: balance; }
+.pkg-cl-name { min-width: 0; max-width: 100%; overflow: hidden; margin: 0.5rem 0 0; font-family: var(--pkg-heading); font-size: 2.75rem; line-height: 1.04; letter-spacing: -0.01em; text-wrap: balance; }
 /* One intro line: the event description, or the support phrase when there is none (the phrase comes second and gives way). */
 .pkg-cl-intro { margin: 0.5rem 0 0; max-width: 28rem; color: var(--inv-ink-soft); text-wrap: pretty; }
 .pkg-cl-intro--desc ~ .pkg-cl-intro--text { display: none; }
@@ -30,10 +30,10 @@
 .pkg-cl-date__side--r { text-align: left; }
 .pkg-cl-date__day { font-family: var(--pkg-heading); font-size: 3rem; line-height: 1; }
 .pkg-cl-date__sub { margin: 0.5rem 0 0; color: var(--inv-ink-soft); }
-.pkg-cl-guest { margin-top: 1rem; display: flex; flex-direction: column; align-items: center; }
+.pkg-cl-guest { min-width: 0; max-width: 100%; margin-top: 1rem; display: flex; flex-direction: column; align-items: center; }
 .pkg-cl-guest p { margin: 0; }
 .pkg-cl-guest__label { font-size: 0.875rem; line-height: 1.4286; color: var(--inv-ink-soft); }
-.pkg-cl-guest .pkg-cl-guest__name { margin-top: 0.25rem; font-family: var(--pkg-script); font-size: 2.25rem; line-height: 1.25; text-wrap: balance; color: var(--pkg-primary-ink); }
+.pkg-cl-guest .pkg-cl-guest__name { min-width: 0; max-width: 100%; overflow: hidden; margin-top: 0.25rem; font-family: var(--pkg-script); font-size: 2.25rem; line-height: 1.25; text-wrap: balance; color: var(--pkg-primary-ink); }
 .pkg-cl-cta { margin-top: 1rem; }
 
 @media (min-width: 640px) {
