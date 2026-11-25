@@ -33,6 +33,9 @@ CWM_API.interceptors.request.use(
     const userStore = useUserStore()
     const impersonation = useImpersonationStore()
 
+    // The API words messages, dates and emails in the language of the request: tell it the app's.
+    config.headers['X-Locale'] = i18n.global.locale.value
+
     // A support session lives on its own bearer token and never touches the cookies of the person's normal session.
     if (impersonation.active) {
       config.headers.Authorization = `Bearer ${impersonation.token}`

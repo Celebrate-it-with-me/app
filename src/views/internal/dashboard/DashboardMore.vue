@@ -2,10 +2,11 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiCard } from '@/ui'
+import { formatMoney } from '@/modules/budget/utils/budget'
 
 const props = defineProps({
   budgetEnabled: { type: Boolean, default: false },
-  budget: { type: Object, default: () => ({ cap: 0, estimated: 0, paid: 0, items: 0 }) },
+  budget: { type: Object, default: () => ({ cap: 0, estimated: 0, paid: 0, items: 0, overByCents: 0, paidOverByCents: 0 }) },
   /** Next moments of the day, already sorted: `[{ id, title, time }]`. */
   program: { type: Array, default: () => [] }
 })
@@ -18,6 +19,8 @@ const money = computed(() => value =>
     maximumFractionDigits: 0
   }).format(value || 0)
 )
+// The overage comes in whole cents (no float maths); it shows cents only when there are some.
+const overText = cents => t('app.dashboard.more.budgetOver', { amount: formatMoney(cents / 100, props.budget.currency, locale.value) })
 </script>
 
 <template>
@@ -35,12 +38,14 @@ const money = computed(() => value =>
           </div>
           <div class="flex justify-between gap-3">
             <dt class="text-ink-600">{{ t('app.dashboard.more.budgetEstimated') }}</dt>
-            <dd class="tabular-nums text-ink-900">{{ money(budget.estimated) }}</dd>
+            <dd class="tabular-nums" :class="budget.overByCents > 0 ? 'font-semibold text-warning-700' : 'text-ink-900'" data-testid="budget-estimated">{{ money(budget.estimated) }}</dd>
           </div>
+          <p v-if="budget.overByCents > 0" class="text-right text-xs font-semibold text-warning-700" data-testid="budget-over">{{ overText(budget.overByCents) }}</p>
           <div class="flex justify-between gap-3">
             <dt class="text-ink-600">{{ t('app.dashboard.more.budgetPaid') }}</dt>
-            <dd class="tabular-nums text-ink-900">{{ money(budget.paid) }}</dd>
+            <dd class="tabular-nums" :class="budget.paidOverByCents > 0 ? 'font-semibold text-warning-700' : 'text-ink-900'" data-testid="budget-paid">{{ money(budget.paid) }}</dd>
           </div>
+          <p v-if="budget.paidOverByCents > 0" class="text-right text-xs font-semibold text-warning-700" data-testid="budget-paid-over">{{ overText(budget.paidOverByCents) }}</p>
         </dl>
         <router-link to="/dashboard/budget" class="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-rose-700 underline-offset-4 hover:underline">{{ t('app.dashboard.more.budgetOpen') }}</router-link>
       </UiCard>

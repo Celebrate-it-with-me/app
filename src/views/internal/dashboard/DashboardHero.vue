@@ -11,8 +11,8 @@ const props = defineProps({
   eventId: { type: [Number, String], default: null },
   name: { type: String, default: '' },
   startDate: { type: String, default: '' },
-  /** 0..1 as sent by the API (`setupProgress`). */
-  progress: { type: Number, default: 0 },
+  /** The organization plan's progress (`{ done, total }`, the assistant's number); null hides it. */
+  plan: { type: Object, default: null },
   published: { type: Boolean, default: false },
   /** Sending goes through the guest list (each invitation has its own code): needs `view_guests`. */
   canViewGuests: { type: Boolean, default: false },
@@ -33,7 +33,8 @@ const dateLabel = computed(() =>
     ? new Intl.DateTimeFormat(locale.value, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date.value)
     : t('app.dashboard.noDate')
 )
-const percent = computed(() => Math.round(Math.min(1, Math.max(0, props.progress)) * 100))
+const percent = computed(() => (props.plan?.total > 0 ? Math.round(Math.min(1, Math.max(0, props.plan.done / props.plan.total)) * 100) : 0))
+const planLabel = computed(() => t('app.dashboard.planSteps', { done: props.plan?.done ?? 0, total: props.plan?.total ?? 0 }))
 
 const previewOpen = ref(false)
 </script>
@@ -68,15 +69,15 @@ const previewOpen = ref(false)
         </template>
       </p>
 
-      <div class="mt-4 max-w-md">
-        <p class="text-sm text-ink-700">{{ t('app.dashboard.setup', { n: percent }) }}</p>
+      <div v-if="plan && plan.total > 0" class="mt-4 max-w-md" data-testid="hero-plan">
+        <p class="text-sm text-ink-700"><span class="font-semibold text-ink-900">{{ t('app.dashboard.plan') }}</span> · {{ planLabel }}</p>
         <div
           class="mt-2 h-1.5 overflow-hidden rounded-full bg-cream-300"
           role="progressbar"
           :aria-valuenow="percent"
           aria-valuemin="0"
           aria-valuemax="100"
-          :aria-label="t('app.dashboard.setup', { n: percent })"
+          :aria-label="t('app.dashboard.plan') + ': ' + planLabel"
         >
           <div class="h-full rounded-full bg-gold-500" :style="{ width: percent + '%' }"></div>
         </div>
