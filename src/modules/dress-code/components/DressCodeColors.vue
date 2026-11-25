@@ -60,7 +60,7 @@ function addCustom(event) {
         :aria-label="t(`app.dressCode.palette.${item.key}`)"
         :title="t(`app.dressCode.palette.${item.key}`)"
         :disabled="!has(item.hex) && full"
-        class="h-9 w-9 rounded-full ring-1 ring-ink-900/15 ring-offset-2 ring-offset-white transition-[opacity,scale] active:scale-95 disabled:opacity-30"
+        class="touch-target relative h-9 w-9 rounded-full ring-1 ring-ink-900/15 ring-offset-2 ring-offset-white transition-[opacity,scale] active:scale-95 disabled:opacity-30"
         :class="has(item.hex) ? 'ring-2 ring-rose-600' : ''"
         :style="{ backgroundColor: item.hex }"
         @click="toggle(item.hex)"

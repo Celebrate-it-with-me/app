@@ -74,7 +74,7 @@ const classes = computed(() =>
     'transition-[background-color,color,scale] duration-150 select-none active:scale-[0.97] motion-reduce:active:scale-100',
     'disabled:cursor-not-allowed',
     VARIANTS[props.variant] ?? VARIANTS.primary,
-    props.icon ? ICON_SIZES[props.size] : props.block ? BLOCK_SIZES[props.size] : SIZES[props.size],
+    props.icon ? [ICON_SIZES[props.size], props.size === 'sm' && 'touch-target relative'] : props.block ? BLOCK_SIZES[props.size] : SIZES[props.size],
     props.block && 'w-full'
   )
 )
