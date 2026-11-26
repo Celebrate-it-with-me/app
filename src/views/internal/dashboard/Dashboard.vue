@@ -20,8 +20,9 @@ import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardMore from './DashboardMore.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 import { summarizeRsvp, planProgress, readableActivity } from './dashboardLogic'
+import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { error: showError } = useToast()
 const eventsStore = useEventsStore()
 const rsvpStore = useRsvpStore()
@@ -63,14 +64,14 @@ const budget = computed(() => {
 
 const program = computed(() =>
   [...(timelineStore.timelines ?? [])]
-    .map(item => ({ id: item.id, title: item.title, at: new Date(String(item.start_time ?? item.startTime).replace(' ', 'T')) }))
+    .map(item => ({ id: item.id, title: item.title, at: new Date(String(item.start_time ?? item.startTime).replace(' ', 'T')), raw: String(item.start_time ?? item.startTime) }))
     .filter(item => !Number.isNaN(item.at.getTime()))
     .sort((a, b) => a.at - b.at)
     .slice(0, 4)
     .map(item => ({
       id: item.id,
       title: item.title,
-      time: item.at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+      time: formatEventDate(item.raw, 'time', locale.value)
     }))
 )
 
@@ -150,7 +151,8 @@ onMounted(() => useUserStore().syncEmailVerified())
     <DashboardHero
       :event-id="event.id"
       :name="event.eventName"
-      :start-date="event.startDate"
+      :start-date="eventMoment(event)"
+      :timezone="event.timezone"
       :plan="plan"
       :published="published"
       :can-view-guests="canViewGuests"

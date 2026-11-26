@@ -10,6 +10,7 @@ import { useAssistantStore } from '../stores/useAssistantStore'
 import { apiFieldErrors, planIsEmpty, titleIndex } from '../utils/assistant'
 import PlanTaskRow from '../components/PlanTaskRow.vue'
 import CustomTaskModal from '../components/CustomTaskModal.vue'
+import { formatEventDate } from '@/utils/eventDateTime'
 
 const { t, locale } = useI18n()
 const { success, error: showError } = useToast()
@@ -144,8 +145,7 @@ const deleteOpen = computed({
 
 const dueText = item => {
   if (!item.dueDate) return ''
-  const [y, m, d] = item.dueDate.split('-').map(Number)
-  return t('app.assistant.custom.due', { date: new Date(y, m - 1, d).toLocaleDateString(locale.value, { day: 'numeric', month: 'long' }) })
+  return t('app.assistant.custom.due', { date: formatEventDate(item.dueDate, 'dayMonth', locale.value) })
 }
 
 const hasContent = computed(() => !planIsEmpty(plan.value))

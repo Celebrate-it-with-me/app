@@ -3,14 +3,17 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { MoreHorizontal, Pin, Star } from 'lucide-vue-next'
 import { UiAvatar, UiBadge, UiButton, UiDropdown } from '@/ui'
-import { formatTime, statusKey, statusTone } from '../utils/comments'
+import { statusKey, statusTone } from '../utils/comments'
+import { useEventDateTime } from '@/composables/useEventDateTime'
 
 const props = defineProps({
   comment: { type: Object, required: true },
   selected: { type: Boolean, default: false }
 })
 const emit = defineEmits(['select', 'toggle-pin', 'toggle-favorite'])
-const { t, locale } = useI18n()
+const { t } = useI18n()
+// A comment's moment is an instant: shown in the event's zone, 12 h (empty when the API does not send a date).
+const { format } = useEventDateTime()
 
 const items = computed(() => [
   {
@@ -39,7 +42,7 @@ const items = computed(() => [
       <span class="min-w-0 flex-1">
         <span class="flex items-center justify-between gap-2">
           <span class="truncate font-medium text-ink-900">{{ comment.authorName }}</span>
-          <span class="shrink-0 text-xs text-ink-500">{{ formatTime(comment.created_at, locale) }}</span>
+          <span class="shrink-0 text-xs text-ink-500">{{ format(comment.created_at, 'time') }}</span>
         </span>
         <span class="mt-0.5 line-clamp-2 block text-sm text-ink-700">{{ comment.comment }}</span>
         <span class="mt-2 flex items-center gap-2">

@@ -8,8 +8,10 @@ import { planLimitFrom } from '@/utils/planLimit'
 import GuestLimitNotice from '@/components/internal/limits/GuestLimitNotice.vue'
 import SaveTheDateService from '../services/SaveTheDateService'
 import { MESSAGE_MAX, emptySettings, settingsFromApi, settingsPayload, stageView } from '../utils/stage'
+import { useEventDateTime } from '@/composables/useEventDateTime'
 
 const { t } = useI18n()
+const { formatEvent } = useEventDateTime()
 const { success, error: showError } = useToast()
 const eventsStore = useEventsStore()
 
@@ -26,7 +28,7 @@ const confirming = ref(null)
 const limitInfo = ref(null)
 
 const dirty = computed(() => JSON.stringify(settingsPayload(form.value)) !== JSON.stringify(settingsPayload(saved.value)))
-const startDate = computed(() => event.value?.startDate?.split(' ')[0] ?? '')
+const startDate = computed(() => formatEvent(event.value, 'date'))
 
 async function load() {
   if (!event.value?.id) return

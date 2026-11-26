@@ -21,8 +21,8 @@ import { TABS, noCounts, personPayload } from '../utils/roster'
 import { whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/whatsapp'
 import { WIZARD_HANDLES_AUTOMATIC, batchProgress } from '../utils/sendWizard'
 import { useBatchPolling } from '../composables/useBatchPolling'
-import { parseEventDate } from '@/views/internal/dashboard/dashboardLogic'
 import { DELIVERY_FILTERS, deliveryChips, deliveryOf } from '../utils/delivery'
+import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -118,8 +118,7 @@ function resumeSend() {
 }
 
 const eventDateLabel = computed(() => {
-  const date = parseEventDate(event.value?.startDate)
-  return date ? new Intl.DateTimeFormat(locale.value, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date) : ''
+  return formatEventDate(eventMoment(event.value), 'weekdayDate', locale.value, event.value?.timezone)
 })
 
 /** The wizard asks to fix a guest's phone: the same form as the list, over the wizard. */

@@ -10,17 +10,6 @@ export const statusKey = status => {
 
 export const statusTone = status => STATUS_TONE[statusKey(status)] || 'neutral'
 
-const format = (value, locale, options) => {
-  if (!value) return ''
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
-  return new Intl.DateTimeFormat(locale, options).format(date)
-}
-
-export const formatTime = (value, locale = 'es') => format(value, locale, { hour: '2-digit', minute: '2-digit' })
-
-export const formatDateTime = (value, locale = 'es') => format(value, locale, { dateStyle: 'medium', timeStyle: 'short' })
-
 /** Client-side search, status filter and sort over normalized comments. */
 export function filterComments(list, { search = '', status = 'all', sort = 'newest' } = {}) {
   let result = [...(list || [])]

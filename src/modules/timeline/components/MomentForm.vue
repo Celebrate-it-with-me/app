@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { UiModal, UiField, UiInput, UiSelect, UiTextarea, UiButton } from '@/ui'
+import { UiModal, UiField, UiInput, UiSelect, UiTextarea, UiButton, UiDateTimeField } from '@/ui'
 import { MOMENT_TYPES, emptyMoment, formFromMoment, momentErrors } from '../utils/program'
 
 const props = defineProps({
@@ -48,10 +48,10 @@ function submit() {
       </UiField>
       <div class="grid grid-cols-2 gap-3">
         <UiField :label="t('app.timeline.fields.startTime')" :error="errors.startTime ? t(errors.startTime) : ''" required>
-          <UiInput v-model="form.startTime" type="time" :invalid="!!errors.startTime" />
+          <UiDateTimeField v-model="form.startTime" mode="time" :invalid="!!errors.startTime" />
         </UiField>
         <UiField :label="t('app.timeline.fields.endTime')" :hint="t('app.timeline.optional')">
-          <UiInput v-model="form.endTime" type="time" />
+          <UiDateTimeField v-model="form.endTime" mode="time" />
         </UiField>
       </div>
       <UiField :label="t('app.timeline.fields.description')" :hint="t('app.timeline.optional')">

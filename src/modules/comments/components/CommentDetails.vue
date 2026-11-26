@@ -2,14 +2,16 @@
 import { useI18n } from 'vue-i18n'
 import { Pin, Star, Trash2 } from 'lucide-vue-next'
 import { UiAvatar, UiBadge, UiButton } from '@/ui'
-import { formatDateTime, statusKey, statusTone } from '../utils/comments'
+import { statusKey, statusTone } from '../utils/comments'
+import { useEventDateTime } from '@/composables/useEventDateTime'
 
 const props = defineProps({
   comment: { type: Object, required: true },
   authorLabel: { type: String, default: '' }
 })
 const emit = defineEmits(['update-status', 'toggle-pin', 'toggle-favorite', 'delete'])
-const { t, locale } = useI18n()
+const { t } = useI18n()
+const { format } = useEventDateTime()
 
 const STATUSES = ['visible', 'hidden']
 const isCurrent = status => statusKey(props.comment.status) === status
@@ -24,7 +26,7 @@ const isCurrent = status => statusKey(props.comment.status) === status
         <div class="mt-1 flex flex-wrap items-center gap-2">
           <UiBadge size="sm">{{ authorLabel }}</UiBadge>
           <UiBadge :tone="statusTone(comment.status)" size="sm" dot>{{ t(`app.comments.status.${statusKey(comment.status)}`) }}</UiBadge>
-          <span class="text-sm text-ink-500">{{ formatDateTime(comment.created_at, locale) }}</span>
+          <span class="text-sm text-ink-500">{{ format(comment.created_at, 'dateTime') }}</span>
         </div>
       </div>
       <div class="flex shrink-0 gap-1">

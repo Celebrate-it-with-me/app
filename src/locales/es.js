@@ -23,6 +23,9 @@ export default {
     pagination: 'Paginación',
     notifications: 'Notificaciones',
     selectOption: 'Selecciona una opción',
+    pickDate: 'Elige una fecha',
+    pickTime: 'Elige una hora',
+    pickDateTime: 'Elige fecha y hora',
     skipToContent: 'Ir al contenido'
   },
   nav: {

@@ -5,6 +5,7 @@
 export { default as UiButton } from './UiButton.vue'
 export { default as UiField } from './UiField.vue'
 export { default as UiInput } from './UiInput.vue'
+export { default as UiDateTimeField } from './UiDateTimeField.vue'
 export { default as UiTextarea } from './UiTextarea.vue'
 export { default as UiSelect } from './UiSelect.vue'
 export { default as UiCheckbox } from './UiCheckbox.vue'

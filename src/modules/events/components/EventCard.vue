@@ -6,6 +6,7 @@ import { UiCard, UiBadge, UiButton } from '@/ui'
 import { parseEventDate, daysUntil } from '@/views/internal/dashboard/dashboardLogic'
 import { useEventsStore } from '../stores/useEventsStore'
 import EventStatusBadge from './EventStatusBadge.vue'
+import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
 const props = defineProps({
   event: { type: Object, required: true },
@@ -21,7 +22,7 @@ const eventsStore = useEventsStore()
 const date = computed(() => parseEventDate(props.event.startDate))
 const dateLabel = computed(() =>
   date.value
-    ? new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'long', year: 'numeric' }).format(date.value)
+    ? formatEventDate(eventMoment(props.event), 'date', locale.value, props.event.timezone)
     : t('events.card.noDate')
 )
 const days = computed(() => daysUntil(date.value))
