@@ -2676,7 +2676,6 @@ export default {
       unavailable: 'Tu plantilla ya no está disponible. Mientras eliges otra, tu invitación se ve con la Clásica.'
     },
     preview: {
-      back: 'Volver',
       language: 'Idioma de la vista previa',
       state: 'Qué ver',
       preset: 'Paleta',
@@ -2687,7 +2686,6 @@ export default {
       premiumTitle: 'Plantilla premium',
       premiumText: 'Puedes verla con los datos de tu evento. Para usarla, desbloquea tu evento completo.',
       paid: 'Ya desbloqueaste tu evento. ¿Usamos {name} ahora?',
-      inUse: 'Es la plantilla que usas ahora.',
       inUseButton: 'Ya la usas',
       unlock: 'Desbloquear para usarla',
       unlockPrice: 'Desbloquear · {price}',

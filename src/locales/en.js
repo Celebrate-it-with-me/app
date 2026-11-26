@@ -2676,7 +2676,6 @@ export default {
       unavailable: 'Your template is no longer available. Until you pick another one, your invitation shows Classic.'
     },
     preview: {
-      back: 'Back',
       language: 'Preview language',
       state: 'What to see',
       preset: 'Palette',
@@ -2687,7 +2686,6 @@ export default {
       premiumTitle: 'Premium template',
       premiumText: 'You can see it with your event details. To use it, unlock your full event.',
       paid: 'You already unlocked your event. Use {name} now?',
-      inUse: 'This is the template you use now.',
       inUseButton: 'Already in use',
       unlock: 'Unlock to use it',
       unlockPrice: 'Unlock · {price}',
