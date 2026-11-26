@@ -56,7 +56,7 @@ async function settle() {
 }
 
 function goBackToTemplate() {
-  const path = pickerReturnPath(templateReturn.templateId)
+  const path = pickerReturnPath(templateReturn.templateId, templateReturn.preset)
   clearTemplateReturn()
   router.push(path)
 }
