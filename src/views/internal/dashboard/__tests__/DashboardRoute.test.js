@@ -39,12 +39,13 @@ describe('DashboardRoute milestones', () => {
     const w = mountRoute()
     expect(node(w, 'foundation').attributes('data-state')).toBe('current')
     expect(node(w, 'invitations').attributes('data-state')).toBe('upcoming')
-    expect(node(w, 'foundation').text()).toContain('Reserva la misa y Define la corte')
+    expect(node(w, 'foundation').text()).toContain('Reserva la misa')
+    expect(node(w, 'foundation').text()).not.toContain('Define la corte')
     expect(node(w, 'foundation').text()).toContain('1 de 3 pasos')
     expect(node(w, 'foundation').text()).toContain('en curso')
     expect(node(w, 'invitations').text()).toContain('próximo')
   })
-  it('uses the singular for a one-step phase and lists at most two titles', () => {
+  it('uses the singular for a one-step phase and names only the next step', () => {
     const w = mountRoute({ plan: makePlan([task('A', 'next'), task('B', 'next'), task('C', 'next')], [task('Envía', 'next')]) })
     expect(node(w, 'invitations').text()).toContain('0 de 1 paso')
     expect(node(w, 'invitations').text()).not.toContain('0 de 1 pasos')

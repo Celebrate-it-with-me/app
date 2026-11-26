@@ -35,13 +35,6 @@ const availability = computed(() => routeAvailability(props.plan))
 const percent = computed(() => planPercent(props.plan?.progress))
 const milestones = computed(() => routeMilestones(props.plan, days.value))
 
-const list = new Map()
-const joinTitles = titles => {
-  const key = locale.value
-  if (!list.has(key)) list.set(key, new Intl.ListFormat(key === 'en' ? 'en-US' : 'es-US', { style: 'long', type: 'conjunction' }))
-  return list.get(key).format(titles.slice(0, 2))
-}
-
 const todayLabel = computed(() => formatEventDate(props.now.toISOString(), 'dayMonth', locale.value, props.timezone || undefined))
 const todayShort = computed(() => formatEventDate(props.now.toISOString(), 'dayMonthShort', locale.value, props.timezone || undefined))
 const summary = computed(() => {
@@ -64,7 +57,7 @@ const cards = computed(() =>
         days.value === null ? t('app.dashboard.route.eventNoDate') : days.value < 0 ? t('app.dashboard.route.eventPast') : days.value === 0 ? t('app.dashboard.route.eventToday') : t('app.dashboard.route.eventFuture')
       return { ...base, title: eventTitle.value, sub }
     }
-    const sub = m.state === 'done' ? t('app.dashboard.route.phaseDone') : m.state === 'empty' ? t('app.dashboard.route.phaseEmpty') : joinTitles(m.pending)
+    const sub = m.state === 'done' ? t('app.dashboard.route.phaseDone') : m.state === 'empty' ? t('app.dashboard.route.phaseEmpty') : m.pending[0] ?? ''
     const count = m.total > 0 && m.state !== 'done' ? t('app.dashboard.route.phaseCount', { done: m.done, total: m.total }, m.total) : ''
     return { ...base, title: t(`app.dashboard.route.${m.key}`), sub, count }
   })
