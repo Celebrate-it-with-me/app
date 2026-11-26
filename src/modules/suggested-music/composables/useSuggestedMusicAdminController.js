@@ -13,7 +13,8 @@ import {
   filterAndSortSongs,
   getTopSong,
   getTotalVotes,
-  mapSpotifyTracks
+  mapSpotifyTracks,
+  SONGS_PAGE_SIZE
 } from '@/modules/suggested-music/utils/music'
 
 export function useSuggestedMusicAdminController() {
@@ -66,7 +67,7 @@ export function useSuggestedMusicAdminController() {
   async function getSuggestedSongs() {
     loading.value = true
     try {
-      const response = await suggestedMusicStore.getSuggestedSongs(userStore.activeEvent)
+      const response = await suggestedMusicStore.getSuggestedSongs(userStore.activeEvent, { perPage: SONGS_PAGE_SIZE })
       if (response.status === 200) {
         suggestedMusicStore.setSongs(response?.data?.data ?? [])
       } else {

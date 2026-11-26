@@ -1,7 +1,7 @@
 export const SORT_OPTIONS = ['recent', 'popular', 'mostVoted', 'alphabetical']
 export const FILTER_OPTIONS = ['all', 'admin', 'guest', 'topVoted']
-/** A song counts as "top voted" from this net score on. */
-export const TOP_VOTED_SCORE = 10
+/** The organizer list is fetched in one page of this size and filtered/sorted client-side. */
+export const SONGS_PAGE_SIZE = 100
 /** The API requires a thumbnail string, so songs without art travel with this one. */
 export const THUMBNAIL_FALLBACK = 'https://via.placeholder.com/48'
 
@@ -18,9 +18,10 @@ export function getNetScore(song) {
   return getUpVotes(song) - getDownVotes(song)
 }
 
+/** Top voted = any song with a positive net score (up votes minus down votes). */
 export function isTopVoted(song) {
   if (!song?.votes) return false
-  return getNetScore(song) >= TOP_VOTED_SCORE
+  return getNetScore(song) >= 1
 }
 
 export function getTotalVotes(songs) {
@@ -55,7 +56,8 @@ export function filterAndSortSongs(songs, { search = '', filterBy = 'all', sortB
   else if (filterBy === 'guest') list = list.filter(song => song.suggestedBy?.isOrganizer === false)
   else if (filterBy === 'topVoted') list = list.filter(isTopVoted)
 
-  if (sortBy === 'popular') {
+  // "Top voted" always lists the highest net score first, whatever the sort selector says.
+  if (sortBy === 'popular' || filterBy === 'topVoted') {
     list.sort((a, b) => getNetScore(b) - getNetScore(a))
   } else if (sortBy === 'mostVoted') {
     list.sort((a, b) => getUpVotes(b) + getDownVotes(b) - (getUpVotes(a) + getDownVotes(a)))
