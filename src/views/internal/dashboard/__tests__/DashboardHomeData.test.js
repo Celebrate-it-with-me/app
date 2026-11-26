@@ -23,8 +23,7 @@ import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 
 const stubs = {
   RouterLink: { props: ['to'], template: '<a><slot /></a>' },
-  DashboardHero: { props: ['plan', 'startDate', 'timezone', 'templateName', 'templateStatus'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" :data-start="startDate" :data-zone="timezone" :data-template="templateName" :data-template-status="templateStatus" />' },
-  DashboardMore: { props: ['program'], template: '<div data-testid="more" :data-program="JSON.stringify(program)" />' }
+  DashboardHero: { props: ['plan', 'startDate', 'timezone', 'templateName', 'templateStatus'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" :data-start="startDate" :data-zone="timezone" :data-template="templateName" :data-template-status="templateStatus" />' }
 }
 
 const totals = extra => ({ estimated: 18530.1, owed: 18530.1, paid: 100, remaining: 0, estimatedOverCap: true, estimatedOverByCents: 53010, overCap: true, overByCents: 53010, paidOverCap: false, paidOverByCents: 0, ...extra })
@@ -134,15 +133,36 @@ describe('Dashboard home data', () => {
     const bad = await mountDashboard({ event: { userRole: 'viewer' } })
     expect(bad.get('[data-testid=hero]').attributes('data-template-status')).toBe('error')
   })
-  it('draws the program in 12 hours, in the language of the app', async () => {
-    m.list.mockResolvedValue([
-      { id: 2, title: 'Cena', start_time: '2027-01-02 20:30:00' },
-      { id: 1, title: 'Misa', start_time: '2027-01-02 16:30:00' }
+  it('gives the program its own block: skeleton, then every moment in time order with its description', async () => {
+    let resolve
+    m.list.mockReturnValue(new Promise(r => (resolve = r)))
+    const w = await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'active' }] } })
+    expect(w.find('[data-testid=program-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=program-empty]').exists()).toBe(false)
+    resolve([
+      { id: 2, title: 'Cena', startTime: '2027-01-02 20:30:00' },
+      { id: 1, title: 'Misa', startTime: '2027-01-02 16:30:00', description: 'En la parroquia' }
     ])
-    const program = read(await mountDashboard(), 'more', 'data-program')
-    expect(program.map(p => p.title)).toEqual(['Misa', 'Cena'])
-    expect(program[0].time).toMatch(/^4:30 p\.\s?m\.$/)
-    expect(program[1].time).toMatch(/^8:30 p\.\s?m\.$/)
+    await flushPromises()
+    expect(m.list).toHaveBeenCalledWith(7)
+    const moments = w.findAll('[data-testid=program-moment]').map(n => n.text())
+    expect(moments[0]).toMatch(/^4:30\sp\.\s?m\.\s*MisaEn la parroquia$/)
+    expect(moments[1]).toContain('Cena')
+  })
+  it('a failed program shows its own error with retry and no shared toast; a 403 or a module off hides it', async () => {
+    m.list.mockRejectedValue({ response: { status: 500 } })
+    const w = await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'active' }] } })
+    expect(w.find('[data-testid=dashboard-program] [data-testid=block-error]').exists()).toBe(true)
+    expect(useToast().toasts).toHaveLength(0)
+    m.list.mockResolvedValue([])
+    await w.get('[data-testid=dashboard-program] [data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.find('[data-testid=program-empty]').exists()).toBe(true)
+    m.list.mockRejectedValue({ response: { status: 403 } })
+    expect((await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'active' }] } })).find('[data-testid=dashboard-program]').exists()).toBe(false)
+    m.list.mockClear()
+    expect((await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'locked' }] } })).find('[data-testid=dashboard-program]').exists()).toBe(false)
+    expect(m.list).not.toHaveBeenCalled()
   })
   it('gives the hero the ISO start of the event when the API sends it, else the wall-clock text', async () => {
     const wall = await mountDashboard({ event: { startDate: '01/02/2027 18:00', timezone: 'America/New_York' } })

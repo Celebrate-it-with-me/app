@@ -2095,7 +2095,6 @@ export default {
       }
     },
     dashboard: {
-      loadError: 'We could not load some of your data. Try again in a moment.',
       noDate: 'No date set',
       countdown: 'It is today | {n} day to go | {n} days to go',
       past: 'Already happened',
@@ -2228,15 +2227,34 @@ export default {
         emptyCta: 'Start my budget',
         error: 'We could not load your budget.'
       },
-      more: {
-        title: 'More about your event',
-        subtitle: 'A summary of what you have already set up.',
-        program: 'Day program',
-        programEmpty: 'You have not added moments to the program yet.',
-        programOpen: 'See program',
-        activity: 'Recent activity',
-        activityEmpty: 'When something happens in your event, you will see it here.'
-      }
+      program: {
+        title: 'Day program',
+        open: 'See program',
+        more: 'See the remaining moment | See the {n} remaining moments',
+        emptyTitle: 'Plan the day',
+        emptyText: 'Add the mass, the reception, the waltz and dinner so everyone knows when to arrive.',
+        emptyCta: 'Plan the program',
+        error: 'We could not load the day program.'
+      },
+      dress: {
+        title: 'Dress code',
+        edit: 'Edit',
+        view: 'See',
+        reserved: 'Reserved colors',
+        reservedLabel: 'Reserved colors: {colors}',
+        emptyTitle: 'Set the dress code',
+        emptyText: 'Tell your guests what to wear and which colors to avoid.',
+        emptyCta: 'Set dress code',
+        emptyViewer: 'The dress code has not been set yet.',
+        error: 'We could not load the dress code.'
+      },
+      feed: {
+        title: 'Recent activity',
+        emptyTitle: 'No activity yet',
+        emptyText: 'When someone replies, opens their invitation or changes something in the event, you will see it here.',
+        error: 'We could not load the recent activity.'
+      },
+      denied: 'You do not have permission to open that section of this event.'
     },
     user: {
       logout: 'Sign out'

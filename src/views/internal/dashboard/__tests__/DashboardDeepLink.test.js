@@ -25,8 +25,7 @@ import { useUserStore } from '@/stores/useUserStore'
 
 const stubs = {
   RouterLink: { props: ['to'], template: '<a><slot /></a>' },
-  DashboardHero: { template: '<div />' },
-  DashboardMore: { template: '<div />' }
+  DashboardHero: { template: '<div />' }
 }
 
 function setup() {

@@ -37,8 +37,8 @@ const iconOf = name => ICONS[String(name ?? '').toLowerCase()] ?? Bell
 </script>
 
 <template>
-  <UiCard :title="t('app.dashboard.more.activity')" heading-level="h2">
-    <p v-if="!items.length" class="text-base text-ink-500">{{ t('app.dashboard.more.activityEmpty') }}</p>
+  <UiCard :title="t('app.dashboard.feed.title')" heading-level="h2">
+    <p v-if="!items.length" class="text-base text-ink-500">{{ t('app.dashboard.feed.emptyText') }}</p>
     <ul v-else class="space-y-3 text-sm">
       <li v-for="item in items" :key="item.id" class="flex items-start gap-3">
         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" :class="activityTone(item.color)" data-testid="activity-chip">

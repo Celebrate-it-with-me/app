@@ -2095,7 +2095,6 @@ export default {
       }
     },
     dashboard: {
-      loadError: 'No pudimos cargar algunos datos. Intenta de nuevo en un momento.',
       noDate: 'Sin fecha definida',
       countdown: 'Es hoy | Falta {n} día | Faltan {n} días',
       past: 'Ya pasó',
@@ -2228,15 +2227,34 @@ export default {
         emptyCta: 'Empezar mi presupuesto',
         error: 'No pudimos cargar tu presupuesto.'
       },
-      more: {
-        title: 'Más sobre tu evento',
-        subtitle: 'Resumen de lo que ya tienes configurado.',
-        program: 'Programa del día',
-        programEmpty: 'Aún no has agregado momentos al programa.',
-        programOpen: 'Ver programa',
-        activity: 'Actividad reciente',
-        activityEmpty: 'Cuando pase algo en tu evento, lo verás aquí.'
-      }
+      program: {
+        title: 'Programa del día',
+        open: 'Ver programa',
+        more: 'Ver el momento que falta | Ver los {n} momentos que faltan',
+        emptyTitle: 'Arma el programa del día',
+        emptyText: 'Anota la misa, la recepción, el vals y la cena para que todos sepan a qué hora llegar.',
+        emptyCta: 'Armar el programa',
+        error: 'No pudimos cargar el programa del día.'
+      },
+      dress: {
+        title: 'Vestimenta',
+        edit: 'Editar',
+        view: 'Ver',
+        reserved: 'Colores reservados',
+        reservedLabel: 'Colores reservados: {colors}',
+        emptyTitle: 'Define la vestimenta',
+        emptyText: 'Cuéntales a tus invitados qué ponerse y qué colores evitar.',
+        emptyCta: 'Definir vestimenta',
+        emptyViewer: 'Aún no se ha definido la vestimenta.',
+        error: 'No pudimos cargar la vestimenta.'
+      },
+      feed: {
+        title: 'Actividad reciente',
+        emptyTitle: 'Aún no hay actividad',
+        emptyText: 'Cuando alguien confirme, abra su invitación o cambie algo del evento, lo verás aquí.',
+        error: 'No pudimos cargar la actividad reciente.'
+      },
+      denied: 'No tienes permiso para abrir esa sección de este evento.'
     },
     user: {
       logout: 'Cerrar sesión'

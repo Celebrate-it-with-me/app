@@ -26,7 +26,7 @@ describe('readableActivity (ORG-016)', () => {
   })
   it('shows the empty text when nothing readable is left', () => {
     const w = mountActivity([{ id: 1, message: '', icon: 'bell', color: 'blue' }])
-    expect(w.text()).toContain('Cuando pase algo en tu evento')
+    expect(w.text()).toContain('Cuando alguien confirme')
     expect(w.findAll('[data-testid=activity-chip]')).toHaveLength(0)
   })
 })

@@ -1,6 +1,8 @@
 /**
  * Pure helpers behind the organizer dashboard. No stores, no Vue: easy to test.
  */
+import { wallClockToIso } from '@/utils/eventDateTime'
+import { PALETTE } from '@/modules/dress-code/utils/dressCodeForm'
 
 /** RSVP numbers from the stats endpoint payload (`response.data` of `GET /rsvp/stats`). People include companions. */
 export function summarizeRsvp(stats) {
@@ -271,4 +273,56 @@ export function activityTime(item, locale, now = new Date()) {
     if (abs >= size) return new Intl.RelativeTimeFormat(locale, { numeric: 'always' }).format(Math.trunc(seconds / size), unit)
   }
   return new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(0, 'second')
+}
+
+/** Activity types a guest does (answers, opens, comments, suggests a song): the person is `params.name`, not the actor. */
+const GUEST_SIDE = ['guest_confirmed', 'guest_declined', 'guest_rsvp_changed', 'invitation_opened', 'comment_added', 'music_suggested']
+
+/** Who an activity row is about, for its initials: the guest for what guests do, else whoever did it. '' when unknown. */
+export function activityWho(item) {
+  const params = item?.params ?? {}
+  const who = GUEST_SIDE.includes(item?.type) ? params.name : params.actor || params.name
+  return String(who ?? '').trim()
+}
+
+/**
+ * "Programa del día": the moments of `GET timeline` with a readable start and a title, in time order. `start` stays the
+ * wall-clock text the API sends (`Y-m-d H:i:s`), printed with `formatEventDate`; never a `Date` of the browser's zone.
+ * @returns {Array<{ id: any, title: string, description: string, start: string }>}
+ */
+export function programMoments(list) {
+  return (Array.isArray(list) ? list : [])
+    .map(item => {
+      const start = String(item?.startTime ?? item?.start_time ?? '')
+      return { id: item?.id, title: String(item?.title ?? '').trim(), description: String(item?.description ?? '').trim(), start, iso: wallClockToIso(start) }
+    })
+    .filter(moment => moment.iso && moment.title)
+    .sort((a, b) => (a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : 0))
+    .map(({ id, title, description, start }) => ({ id, title, description, start }))
+}
+
+const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i
+/** `#fff` -> `#ffffff`, lower case; null when it is not a colour. */
+const normalHex = value => {
+  const text = String(value ?? '').trim()
+  if (!HEX.test(text)) return null
+  const hex = text.toLowerCase()
+  return hex.length === 4 ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}` : hex
+}
+
+/**
+ * "Vestimenta" from `GET dress-code`: the style key, the indications and the reserved colours. Each colour carries the
+ * palette key when it is one of the form's quick picks (its translated name) or null (the hex is shown as text), so a
+ * colour is never told by its swatch alone. `empty` when nothing is defined yet.
+ * @returns {{ type: string, description: string, colors: Array<{ hex: string, key: string|null }>, empty: boolean }}
+ */
+export function dressCodeSummary(data) {
+  const type = String(data?.dressCodeType ?? '').trim()
+  const description = String(data?.description ?? '').trim()
+  const seen = new Set()
+  const colors = (Array.isArray(data?.reservedColors) ? data.reservedColors : [])
+    .map(normalHex)
+    .filter(hex => hex && !seen.has(hex) && seen.add(hex))
+    .map(hex => ({ hex, key: PALETTE.find(p => p.hex === hex)?.key ?? null }))
+  return { type, description, colors, empty: !type && !description && colors.length === 0 }
 }

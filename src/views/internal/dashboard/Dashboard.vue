@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import RsvpService from '@/modules/rsvp/services/RsvpService'
 import BudgetService from '@/modules/budget/services/BudgetService'
-import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
+import timelineService from '@/modules/timeline/services/timelineService'
 import { useActivityStore } from '@/stores/useActivityStore'
 import TemplatePickerService from '@/modules/template-picker/services/TemplatePickerService'
 import InvitationEditorService from '@/modules/invitation-editor/services/InvitationEditorService'
@@ -17,22 +17,23 @@ import DashboardActivity from './DashboardActivity.vue'
 import DashboardNow from './DashboardNow.vue'
 import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardBudget from './DashboardBudget.vue'
-import DashboardMore from './DashboardMore.vue'
+import DashboardProgram from './DashboardProgram.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 import { planProgress, readableActivity } from './dashboardLogic'
 import { useDashboardBlock } from './useDashboardBlock'
-import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
+import { eventMoment } from '@/utils/eventDateTime'
 
 const { t, locale } = useI18n()
 const { error: showError } = useToast()
 const eventsStore = useEventsStore()
-const timelineStore = useTimelineStore()
 const activityStore = useActivityStore()
 const assistantStore = useAssistantStore()
 
 const event = computed(() => eventsStore.activeEvent)
 // A module counts when the event's plan includes it (the API sends `event.modules` from the catalog).
 const moduleActive = key => !!event.value?.modules?.some(m => m.key === key && m.state === 'active')
+// Blocks whose module may be missing from old data: without the module list the request goes out and a 403 hides it.
+const moduleOpen = key => !Array.isArray(event.value?.modules) || moduleActive(key)
 
 // Blocks with their own request and state (skeleton, error with retry, hidden on a 403): see useDashboardBlock.
 const { status: rsvpStatus, data: rsvpStats, load: loadRsvp } = useDashboardBlock(async eventId => {
@@ -63,18 +64,7 @@ const retryRoute = () => assistantStore.fetchPlan({ eventId: event.value?.id, la
 const templateTo = { name: 'invitation-editor' }
 const { status: budgetStatus, data: budgetSummary, load: loadBudget, hide: hideBudget } = useDashboardBlock(eventId => BudgetService.summary(eventId))
 
-const program = computed(() =>
-  [...(timelineStore.timelines ?? [])]
-    .map(item => ({ id: item.id, title: item.title, at: new Date(String(item.start_time ?? item.startTime).replace(' ', 'T')), raw: String(item.start_time ?? item.startTime) }))
-    .filter(item => !Number.isNaN(item.at.getTime()))
-    .sort((a, b) => a.at - b.at)
-    .slice(0, 4)
-    .map(item => ({
-      id: item.id,
-      title: item.title,
-      time: formatEventDate(item.raw, 'time', locale.value)
-    }))
-)
+const { status: programStatus, data: programData, load: loadProgram, hide: hideProgram } = useDashboardBlock(eventId => timelineService.list(eventId))
 
 const activity = computed(() => readableActivity(activityStore.activities ?? []).slice(0, 5))
 
@@ -127,7 +117,9 @@ async function load() {
   else hideBudget()
   // Activity and program still come from their stores (their own blocks arrive with the next round): a failure there is
   // the only one left for the shared toast.
-  const jobs = [activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
+  if (moduleOpen('timeline')) loadProgram(current.id, { quiet: true })
+  else hideProgram()
+  const jobs = [activityStore.loadDashboardActivities()]
   const results = await Promise.allSettled(jobs)
   if (id === loadId && results.some(r => r.status === 'rejected')) showError(t('app.dashboard.loadError'))
 }
@@ -191,6 +183,13 @@ onMounted(() => useUserStore().syncEmailVerified())
 
     <DashboardActivity class="mt-4" :activity="activity" />
 
-    <DashboardMore :program="program" />
+    <DashboardProgram
+      v-if="programStatus !== 'hidden'"
+      class="mt-4"
+      :moments="programData"
+      :status="programStatus"
+      :can-edit="canEdit"
+      @retry="loadProgram(event.id)"
+    />
   </div>
 </template>
