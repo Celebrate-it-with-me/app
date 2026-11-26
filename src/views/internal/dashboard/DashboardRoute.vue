@@ -42,11 +42,9 @@ const summary = computed(() => {
   return days.value !== null && days.value > 0 ? `${head} · ${t('app.dashboard.route.remaining', { n: days.value }, days.value)}` : head
 })
 
-const eventTitle = computed(() => {
-  if (!hasDate.value) return t('app.dashboard.route.eventDay')
-  const day = formatEventDate(props.startDate, 'weekdayDayMonth', locale.value, props.timezone)
-  return hasClock(props.startDate) ? `${day} · ${formatClock(props.startDate, locale.value, props.timezone)}` : day
-})
+// The day is the title; the clock goes to the line below, so a 4-column route (768 px) never breaks "7:00 / p. m.".
+const eventTitle = computed(() => (hasDate.value ? formatEventDate(props.startDate, 'weekdayDayMonth', locale.value, props.timezone) : t('app.dashboard.route.eventDay')))
+const eventClock = computed(() => (hasDate.value && hasClock(props.startDate) ? formatClock(props.startDate, locale.value, props.timezone) : ''))
 
 const cards = computed(() =>
   milestones.value.map(m => {
@@ -55,7 +53,7 @@ const cards = computed(() =>
     if (m.key === 'event') {
       const sub =
         days.value === null ? t('app.dashboard.route.eventNoDate') : days.value < 0 ? t('app.dashboard.route.eventPast') : days.value === 0 ? t('app.dashboard.route.eventToday') : t('app.dashboard.route.eventFuture')
-      return { ...base, title: eventTitle.value, sub }
+      return { ...base, title: eventTitle.value, sub: eventClock.value ? `${eventClock.value} · ${sub}` : sub }
     }
     const sub = m.state === 'done' ? t('app.dashboard.route.phaseDone') : m.state === 'empty' ? t('app.dashboard.route.phaseEmpty') : m.pending[0] ?? ''
     const count = m.total > 0 && m.state !== 'done' ? t('app.dashboard.route.phaseCount', { done: m.done, total: m.total }, m.total) : ''

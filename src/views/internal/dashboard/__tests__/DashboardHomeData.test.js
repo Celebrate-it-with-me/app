@@ -4,12 +4,13 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
 import i18n, { setLocale } from '@/locales/i18n'
 
-const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn(), next: vi.fn(), plan: vi.fn() }))
+const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn(), next: vi.fn(), plan: vi.fn(), invitation: vi.fn() }))
 vi.mock('@/modules/assistant/services/AssistantService', () => ({ default: { next: m.next, plan: m.plan } }))
 vi.mock('@/modules/rsvp/services/RsvpService', () => ({ default: { loadStats: m.loadStats } }))
 vi.mock('@/services/ActivityService', () => ({ default: { loadDashboardActivities: m.activities } }))
 vi.mock('@/modules/onboarding/services/OnboardingService', () => ({ default: { progress: m.progress } }))
 vi.mock('@/modules/template-picker/services/TemplatePickerService', () => ({ default: { templates: m.templates } }))
+vi.mock('@/modules/invitation-editor/services/InvitationEditorService', () => ({ default: { get: m.invitation } }))
 vi.mock('@/modules/timeline/services/timelineService', () => ({ default: { list: m.list } }))
 vi.mock('@/modules/budget/services/BudgetService', () => ({ default: { summary: m.summary } }))
 vi.mock('@/modules/email-verification/components/EmailVerifyNotice.vue', () => ({ default: { template: '<div />' } }))
@@ -80,6 +81,15 @@ describe('Dashboard home data', () => {
     m.templates.mockRejectedValue(new Error('403'))
     const bad = await mountDashboard()
     expect(bad.get('[data-testid=hero]').attributes('data-template')).toBe('')
+    expect(bad.get('[data-testid=hero]').attributes('data-template-status')).toBe('error')
+  })
+  it('gives a viewer the template name from the invitation (the template list is for editors)', async () => {
+    m.invitation.mockResolvedValue({ template: { name: 'Clásica' } })
+    const w = await mountDashboard({ event: { userRole: 'viewer' } })
+    expect(m.templates).not.toHaveBeenCalled()
+    expect(w.get('[data-testid=hero]').attributes('data-template')).toBe('Clásica')
+    m.invitation.mockRejectedValue(new Error('500'))
+    const bad = await mountDashboard({ event: { userRole: 'viewer' } })
     expect(bad.get('[data-testid=hero]').attributes('data-template-status')).toBe('error')
   })
   it('draws the program in 12 hours, in the language of the app', async () => {

@@ -105,6 +105,13 @@ describe('DashboardHero roles', () => {
     const w = mountHero({ canEdit: false, published: false })
     ;['hero-edit', 'hero-publish', 'hero-view', 'hero-share'].forEach(id => expect(button(w, id).exists()).toBe(false))
   })
+  it('never lets a narrow button squeeze its icon away', () => {
+    for (const props of [{}, { published: false }]) {
+      const icons = mountHero(props).findAll('[data-testid^=hero-] svg').filter(svg => !svg.element.closest('[data-testid=hero-countdown]'))
+      expect(icons.length).toBeGreaterThan(1)
+      icons.forEach(svg => expect(svg.classes()).toContain('shrink-0'))
+    }
+  })
   it('shows Edit event for editors', () => {
     expect(button(mountHero(), 'hero-edit').text()).toContain('Editar')
     expect(JSON.parse(button(mountHero(), 'hero-edit').attributes('data-to')).name).toBe('edit-event')

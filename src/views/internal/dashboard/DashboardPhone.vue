@@ -19,7 +19,7 @@ defineProps({
 
 <template>
   <div
-    class="relative aspect-[9/18.5] w-36 rounded-[2rem] bg-ink-900 p-1.5 shadow-pop sm:w-48 sm:rounded-[2.5rem] sm:p-2"
+    class="relative aspect-[9/18.5] w-36 rounded-[2rem] bg-ink-900 p-1.5 shadow-pop sm:w-48 lg:w-40 xl:w-48 sm:rounded-[2.5rem] sm:p-2"
     data-testid="hero-phone"
   >
     <span class="absolute left-1/2 top-2.5 z-10 h-1.5 w-12 -translate-x-1/2 rounded-full bg-ink-700 sm:top-3.5 sm:h-2 sm:w-16" aria-hidden="true"></span>

@@ -7,6 +7,7 @@ import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
 import { useActivityStore } from '@/stores/useActivityStore'
 import TemplatePickerService from '@/modules/template-picker/services/TemplatePickerService'
+import InvitationEditorService from '@/modules/invitation-editor/services/InvitationEditorService'
 import { useToast } from '@/ui'
 import { useUserStore } from '@/stores/useUserStore'
 import EmailVerifyNotice from '@/modules/email-verification/components/EmailVerifyNotice.vue'
@@ -130,11 +131,20 @@ const templateStatus = ref('ready')
 async function loadThumb(eventId) {
   thumb.value = ''
   templateName.value = ''
+  templateStatus.value = 'loading'
+  // A viewer cannot list templates nor draw the live preview (403): the invitation itself gives the template's name, and
+  // the phone shows its stationery card.
   if (!canEdit.value) {
-    templateStatus.value = 'ready'
+    try {
+      const invitation = await InvitationEditorService.get(eventId)
+      if (eventId !== event.value?.id) return
+      templateName.value = invitation?.template?.name ?? ''
+      templateStatus.value = 'ready'
+    } catch {
+      if (eventId === event.value?.id) templateStatus.value = 'error'
+    }
     return
   }
-  templateStatus.value = 'loading'
   try {
     const current = (await TemplatePickerService.templates(eventId)).find(item => item.current)
     if (eventId !== event.value?.id) return

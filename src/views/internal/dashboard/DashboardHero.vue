@@ -57,7 +57,7 @@ const previewOpen = ref(false)
 </script>
 
 <template>
-  <UiCard as="header" padding="lg" class="grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-10" data-testid="dashboard-hero">
+  <UiCard as="header" padding="none" class="grid gap-6 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-10 sm:p-8 lg:gap-6 lg:p-6 xl:gap-10 xl:p-8" data-testid="dashboard-hero">
     <div class="min-w-0">
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
         <p class="flex items-center gap-2 text-sm text-ink-500">
@@ -114,22 +114,23 @@ const previewOpen = ref(false)
         </DashboardBlock>
       </div>
 
-      <div class="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3">
-        <UiButton v-if="published && canViewGuests" to="/dashboard/guests" class="col-span-2 sm:col-span-1" data-testid="hero-share">
-          <Share2 class="h-4 w-4" aria-hidden="true" />
-          <span class="sm:hidden">{{ t('app.dashboard.hero.share') }}</span>
-          <span class="hidden sm:inline">{{ t('app.dashboard.hero.shareLong') }}</span>
+      <!-- Two buttons per row from 360 px (one under it, so nothing touches the card's edges); one row from 640 px. -->
+      <div class="mt-5 grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:flex sm:flex-wrap sm:gap-3 lg:gap-2 xl:gap-3">
+        <UiButton v-if="published && canViewGuests" to="/dashboard/guests" class="min-[360px]:col-span-2 sm:col-span-1" data-testid="hero-share">
+          <Share2 class="h-4 w-4 shrink-0" aria-hidden="true" />
+          <span class="xl:hidden">{{ t('app.dashboard.hero.share') }}</span>
+          <span class="hidden xl:inline">{{ t('app.dashboard.hero.shareLong') }}</span>
         </UiButton>
-        <UiButton v-if="!published && canEdit && editTo" :to="editTo" class="col-span-2 sm:col-span-1" data-testid="hero-publish">
-          <Send class="h-4 w-4" aria-hidden="true" />
+        <UiButton v-if="!published && canEdit && editTo" :to="editTo" class="min-[360px]:col-span-2 sm:col-span-1" data-testid="hero-publish">
+          <Send class="h-4 w-4 shrink-0" aria-hidden="true" />
           {{ t('app.dashboard.hero.publish') }}
         </UiButton>
         <UiButton v-if="canEdit && eventId != null" variant="secondary" data-testid="hero-view" @click="previewOpen = true">
-          <Eye class="h-4 w-4" aria-hidden="true" />
+          <Eye class="h-4 w-4 shrink-0" aria-hidden="true" />
           {{ t('app.dashboard.hero.view') }}
         </UiButton>
         <UiButton v-if="canEdit && editTo" :to="editTo" variant="secondary" data-testid="hero-edit">
-          <Pencil class="h-4 w-4" aria-hidden="true" />
+          <Pencil class="h-4 w-4 shrink-0" aria-hidden="true" />
           {{ t('app.dashboard.edit') }}
         </UiButton>
       </div>

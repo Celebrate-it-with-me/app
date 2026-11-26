@@ -30,7 +30,8 @@ const { t } = useI18n()
     data-testid="block-error"
   >
     <TriangleAlert class="h-5 w-5 shrink-0" aria-hidden="true" />
-    <p class="min-w-0 flex-1 text-sm font-medium">{{ errorText }}</p>
+    <!-- basis-40: on narrow phones "Reintentar" drops to its own line instead of squeezing the text to a word per line. -->
+    <p class="min-w-0 flex-1 basis-40 text-sm font-medium">{{ errorText }}</p>
     <UiButton variant="secondary" size="md" data-testid="block-retry" @click="$emit('retry')">{{ t('app.dashboard.retry') }}</UiButton>
   </div>
   <slot v-else />
