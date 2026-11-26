@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Download, Plus, Search } from 'lucide-vue-next'
-import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, useToast } from '@/ui'
+import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import BudgetService from '../services/BudgetService'
 import PadrinosService from '@/modules/padrinos/services/PadrinosService'
@@ -161,7 +161,7 @@ async function download() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl">
+  <UiPage width="wide">
     <UiPageHeader :title="t('app.budget.title')" :subtitle="t('app.budget.subtitle')">
       <template #actions>
         <UiButton v-if="summary && store.items.length" variant="secondary" @click="download">
@@ -245,5 +245,5 @@ async function download() {
         <UiButton variant="danger" :loading="saving" @click="confirmRemove">{{ t('app.budget.item.remove') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

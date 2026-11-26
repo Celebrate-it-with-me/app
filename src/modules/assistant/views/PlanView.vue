@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { CalendarDays, ChevronDown, ListChecks, Pencil, Plus, Trash2 } from 'lucide-vue-next'
-import { UiBadge, UiButton, UiCard, UiEmptyState, UiModal, UiPageHeader, UiSkeleton, useToast } from '@/ui'
+import { UiBadge, UiButton, UiCard, UiEmptyState, UiModal, UiPageHeader, UiSkeleton, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import { useAssistantStore } from '../stores/useAssistantStore'
@@ -153,7 +153,7 @@ const noteKey = computed(() => ({ compressed: 'compressed', event_past: 'eventPa
 </script>
 
 <template>
-  <div v-if="event">
+  <UiPage width="wide" v-if="event">
     <UiPageHeader :title="t('app.assistant.plan.title')" :subtitle="t('app.assistant.plan.subtitle')" :eyebrow="event.eventName" />
 
     <!-- Loading -->
@@ -322,5 +322,5 @@ const noteKey = computed(() => ({ compressed: 'compressed', event_past: 'eventPa
         </div>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

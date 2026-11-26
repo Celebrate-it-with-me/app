@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Pencil, Trash2, Plus, CalendarClock } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useTimelineStore } from '../stores/timelineStore'
 import MomentForm from '../components/MomentForm.vue'
@@ -85,7 +85,7 @@ const hours = moment => (moment.endTime ? `${timeOf(moment.startTime)} – ${tim
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl">
+  <UiPage>
     <UiPageHeader :title="t('app.timeline.title')" :subtitle="t('app.timeline.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-3">
@@ -149,5 +149,5 @@ const hours = moment => (moment.endTime ? `${timeOf(moment.startTime)} – ${tim
         <UiButton variant="danger" :loading="saving" @click="confirmRemove">{{ t('app.timeline.remove') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

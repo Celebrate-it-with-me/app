@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Pencil, Trash2, Plus, MapPin, Church, GlassWater } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiButton, UiBadge, UiSkeleton, UiEmptyState, UiModal, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiButton, UiBadge, UiSkeleton, UiEmptyState, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useLocationsStore } from '../stores/useLocationsStore'
 import LocationsService from '../services/LocationsService'
@@ -78,7 +78,7 @@ const line = place => [place.address, [place.city, place.state].filter(Boolean).
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl">
+  <UiPage>
     <UiPageHeader :title="t('app.locations.title')" :subtitle="t('app.locations.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-3">
@@ -141,5 +141,5 @@ const line = place => [place.address, [place.city, place.state].filter(Boolean).
         <UiButton variant="danger" :loading="saving" @click="confirmRemove">{{ t('app.locations.remove') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

@@ -71,4 +71,10 @@ describe('InternalLayout', () => {
     expect(wrapper.find('[data-test="screen"]').exists()).toBe(true)
     expect(screenMounts).toBe(1)
   })
+
+  it('marks its root as the app shell so the scrollbar gutter rule applies', async () => {
+    const wrapper = mountLayout()
+    await flushPromises()
+    expect(wrapper.classes()).toContain('app-shell')
+  })
 })

@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { UiPageHeader, UiCard, UiButton, UiField, UiInput, UiTextarea, UiSwitch, UiModal, UiSkeleton } from '@/ui'
+import { UiPageHeader, UiCard, UiButton, UiField, UiInput, UiTextarea, UiSwitch, UiModal, UiSkeleton, UiPage } from '@/ui'
 import { useMenuFormController } from '@/modules/menus/composables/useMenuFormController'
 
 const { t } = useI18n()
@@ -10,7 +10,7 @@ const title = computed(() => (mode.value === 'edit' ? t('app.menus.editTitle') :
 </script>
 
 <template>
-  <div class="mx-auto max-w-2xl">
+  <UiPage width="form">
     <UiPageHeader :title="title" :subtitle="t('app.menus.formSubtitle')" back="/dashboard/menus" />
 
     <div v-if="loading" class="mt-6 space-y-3">
@@ -58,5 +58,5 @@ const title = computed(() => (mode.value === 'edit' ? t('app.menus.editTitle') :
         <UiButton variant="danger" :loading="deleting" @click="handleDeleteMenu">{{ t('app.menus.delete') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

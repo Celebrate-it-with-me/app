@@ -5,7 +5,7 @@ import { createApp } from 'vue'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import i18n, { setLocale } from '@/locales/i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { buildNavSections, buildMobileNav, isActivePath } from '../navModules'
+import { buildNavSections, buildMobileNav, isActivePath, activeTabKey } from '../navModules'
 import AppBottomNav from '../AppBottomNav.vue'
 
 const mod = (key, section, order, state = 'active') => ({ key, section, order, state })
@@ -74,12 +74,63 @@ describe('isActivePath', () => {
   })
 })
 
+describe('activeTabKey', () => {
+  const sections = buildNavSections(MODULES)
+  const tabs = buildMobileNav(sections, 7)
+  const keyOf = (path, routeName = null) => activeTabKey(path, tabs, sections, routeName)
+
+  it.each([
+    ['/dashboard', 'home'],
+    ['/dashboard/plan', 'home'],
+    ['/dashboard/start', 'home'],
+    ['/dashboard/invitation', 'invitation'],
+    ['/dashboard/guests', 'guests'],
+    ['/dashboard/guests/12', 'guests'],
+    ['/dashboard/rsvp', 'guests'],
+    ['/dashboard/save-the-date', 'guests'],
+    ['/dashboard/events/7/invitations', 'guests'],
+    ['/dashboard/timeline', 'organization'],
+    ['/dashboard/locations', 'organization'],
+    ['/dashboard/budget', 'organization'],
+    ['/dashboard/unlock/budget', 'organization'],
+    ['/dashboard/unlock/guests', 'guests'],
+    ['/dashboard/unlock/menus', 'more'],
+    ['/dashboard/unlock/unknown', 'more'],
+    ['/dashboard/menus', 'more'],
+    ['/dashboard/menus/create', 'more'],
+    ['/dashboard/collaborators', 'more'],
+    ['/dashboard/events', 'more'],
+    ['/dashboard/events/create', 'more'],
+    ['/dashboard/events/7/edit', 'more'],
+    ['/dashboard/events/7/unlock', 'more'],
+    ['/settings/profile', 'more'],
+    ['/settings/purchases', 'more']
+  ])('%s lights %s', (path, key) => {
+    expect(keyOf(path)).toBe(key)
+  })
+
+  it('lights "Tu invitación" by route name too', () => {
+    expect(keyOf('/somewhere', 'invitation-editor')).toBe('invitation')
+  })
+
+  it('files the guests section under Más when the Guests tab is not there', () => {
+    const noGuests = buildNavSections(MODULES.filter(m => m.key !== 'guests' && m.key !== 'save_the_date'))
+    const noGuestsTabs = buildMobileNav(noGuests, 7)
+    expect(activeTabKey('/dashboard/guests', noGuestsTabs, noGuests)).toBe('more')
+  })
+
+  it('has no Organización tab to light when the section is empty', () => {
+    const lone = buildNavSections([mod('menus', 'extras', 10, 'locked')])
+    expect(activeTabKey('/dashboard/timeline', buildMobileNav(lone, 7), lone)).toBe('more')
+  })
+})
+
 describe('AppBottomNav', () => {
   let wrapper
   const makeRouter = () =>
     createRouter({
       history: createMemoryHistory(),
-      routes: ['/dashboard', '/dashboard/guests', '/dashboard/timeline', '/dashboard/save-the-date', '/dashboard/collaborators', '/dashboard/unlock/:module'].map(path => ({
+      routes: ['/dashboard', '/dashboard/guests', '/dashboard/timeline', '/dashboard/save-the-date', '/dashboard/collaborators', '/settings/profile', '/dashboard/unlock/:module'].map(path => ({
         path,
         component: { template: '<div />' }
       })).concat({ path: '/dashboard/invitation', name: 'invitation-editor', component: { template: '<div />' } })
@@ -131,6 +182,19 @@ describe('AppBottomNav', () => {
     await setup('/dashboard/timeline')
     expect(wrapper.get('[data-testid=tab-organization]').classes()).toContain('text-rose-800')
     expect(wrapper.get('[data-testid=tab-home]').classes()).not.toContain('text-rose-800')
+  })
+
+  it('lights Invitados on Guarda la fecha and Más on Colaboradores and the account', async () => {
+    await setup('/dashboard/save-the-date')
+    expect(wrapper.get('[data-testid=tab-guests]').attributes('aria-current')).toBe('page')
+    expect(wrapper.get('[data-testid=tab-more]').classes()).not.toContain('text-rose-800')
+    wrapper.unmount()
+    for (const path of ['/dashboard/collaborators', '/settings/profile']) {
+      await setup(path)
+      expect(wrapper.get('[data-testid=tab-more]').classes()).toContain('text-rose-800')
+      expect(wrapper.get('[data-testid=tab-guests]').attributes('aria-current')).toBeUndefined()
+      wrapper.unmount()
+    }
   })
 
   it('opens the Más sheet with the rest of the modules, locked ones with a padlock', async () => {

@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { Plus, CalendarPlus, TriangleAlert } from 'lucide-vue-next'
-import { UiPageHeader, UiButton, UiTabs, UiEmptyState, UiSkeleton, useToast } from '@/ui'
+import { UiPageHeader, UiButton, UiTabs, UiEmptyState, UiSkeleton, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '../stores/useEventsStore'
 import { sortEvents } from '../utils/eventList'
 import EventCard from '../components/EventCard.vue'
@@ -65,7 +65,7 @@ async function restore(event) {
 </script>
 
 <template>
-  <div>
+  <UiPage width="wide">
     <UiPageHeader :title="t('events.title')" :subtitle="t('events.subtitle')">
       <template #actions>
         <UiButton to="/dashboard/events/create">
@@ -122,5 +122,5 @@ async function restore(event) {
         <UiEmptyState v-else :title="t('events.empty.archivedTitle')" :description="t('events.empty.archivedText')" compact />
       </template>
     </UiTabs>
-  </div>
+  </UiPage>
 </template>

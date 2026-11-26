@@ -1,7 +1,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { ImageIcon, Plus } from 'lucide-vue-next'
-import { UiButton, UiEmptyState, UiPageHeader, UiSkeleton, UiStat } from '@/ui'
+import { UiButton, UiEmptyState, UiPageHeader, UiSkeleton, UiStat, UiPage } from '@/ui'
 import { useMemoriesController } from '@/modules/sweet-memories/composables/useMemoriesController'
 import { openPhotoViewer } from '@/modules/sweet-memories/utils/viewer'
 import MemoriesFilters from '@/modules/sweet-memories/components/MemoriesFilters.vue'
@@ -14,7 +14,7 @@ const c = useMemoriesController()
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl">
+  <UiPage width="wide">
     <UiPageHeader :title="t('app.memories.title')" :subtitle="t('app.memories.subtitle')">
       <template #actions>
         <UiButton @click="c.openCreate()">
@@ -92,5 +92,5 @@ const c = useMemoriesController()
       @close="c.memoryToDelete.value = null"
       @confirm="c.confirmDelete"
     />
-  </div>
+  </UiPage>
 </template>

@@ -701,7 +701,7 @@ export default {
     memories: {
       title: 'Recuerdos',
       subtitle: 'El álbum de fotos de tu fiesta: sube y cuida tus mejores momentos.',
-      add: 'Agregar recuerdo',
+      add: 'Añadir recuerdo',
       loading: 'Cargando recuerdos',
       stats: { total: 'Recuerdos', visible: 'Visibles', hidden: 'Ocultos' },
       filters: {
@@ -719,7 +719,7 @@ export default {
       empty: {
         title: 'Aún no hay recuerdos',
         text: 'Empieza el álbum con tu primera foto: agrégale un título, el año y una descripción.',
-        cta: 'Agregar mi primer recuerdo'
+        cta: 'Añadir mi primer recuerdo'
       },
       card: {
         untitled: 'Recuerdo sin título',
@@ -1065,7 +1065,7 @@ export default {
     menus: {
       title: 'Menús',
       subtitle: 'Crea los menús entre los que eligen tus invitados y mira qué escogió cada uno.',
-      add: 'Agregar menú',
+      add: 'Añadir menú',
       optionsTitle: 'Opciones de menú',
       guestsTitle: 'Elecciones de los invitados',
       guestCount: '{n} invitado | {n} invitados',
@@ -1159,8 +1159,8 @@ export default {
     comments: {
       title: 'Comentarios',
       subtitle: 'Los mensajes que dejan tus invitados. Elige cuáles se ven en la invitación, fija los favoritos o elimina los que no quieras.',
-      add: 'Agregar comentario',
-      addFirst: 'Agregar el primero',
+      add: 'Añadir comentario',
+      addFirst: 'Añadir el primero',
       emptyTitle: 'Aún no hay comentarios',
       emptyText: 'Cuando tus invitados te dejen mensajes aparecerán aquí. También puedes escribir uno tú.',
       noResultsTitle: 'No encontramos comentarios',

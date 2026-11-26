@@ -85,7 +85,7 @@ function pickSwatch(color) {
         v-for="color in swatchList"
         :key="color"
         type="button"
-        class="h-9 w-9 rounded-full border border-line-strong outline-offset-2 focus-visible:outline-2 focus-visible:outline-rose-600 disabled:cursor-not-allowed disabled:opacity-60"
+        class="touch-target relative h-9 w-9 rounded-full border border-line-strong outline-offset-2 focus-visible:outline-2 focus-visible:outline-rose-600 disabled:cursor-not-allowed disabled:opacity-60"
         :class="current === color && 'ring-2 ring-rose-600 ring-offset-2'"
         :style="{ backgroundColor: color }"
         :disabled="disabled"

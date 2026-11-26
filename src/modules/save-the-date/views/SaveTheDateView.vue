@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { CalendarPlus, Link as LinkIcon } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiField, UiTextarea, UiSwitch, UiButton, UiBadge, UiSkeleton, UiModal, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiField, UiTextarea, UiSwitch, UiButton, UiBadge, UiSkeleton, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { planLimitFrom } from '@/utils/planLimit'
 import GuestLimitNotice from '@/components/internal/limits/GuestLimitNotice.vue'
@@ -80,7 +80,7 @@ const ask = action => (confirming.value = action)
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl">
+  <UiPage width="wide">
     <UiPageHeader :title="t('app.saveTheDate.title')" :subtitle="t('app.saveTheDate.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-4">
@@ -164,5 +164,5 @@ const ask = action => (confirming.value = action)
         </UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>
