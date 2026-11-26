@@ -17,7 +17,9 @@ export default [
     meta: {
       titleKey: 'titles.eventCreate',
       requiresAuth: true,
-      requiredPermission: ['create_event'],
+      // Creating an event is an account action, not a role on the active event: a viewer of someone else's event can
+      // still create their own. (`create_event` is an event permission viewers lack, so it must not be required here.)
+      requiredPermission: [],
       module: 'events'
     }
   },
@@ -29,6 +31,8 @@ export default [
       titleKey: 'titles.eventEdit',
       requiresAuth: true,
       requiredPermission: ['edit_event'],
+      // The event comes from the address: only the active event's permissions are known here (see permissionGuard).
+      eventParam: 'id',
       module: 'events'
     }
   }

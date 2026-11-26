@@ -3,6 +3,8 @@ import i18n, { LOCALES } from '@/locales/i18n'
 import { useHydrationStore } from '@/stores/useHydrationStore'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { moduleRedirect } from './moduleGuard'
+import { permissionRedirect } from './permissionGuard'
+import { useToast } from '@/ui/useToast'
 import { safeRedirect } from '@/utils/safeRedirect'
 import InvitationService from '@/services/PublicEvents/InvitationService'
 
@@ -76,5 +78,12 @@ export async function authGuard(to) {
   if (moduleKey) {
     const redirect = moduleRedirect(useEventsStore().activeEvent, moduleKey)
     if (redirect) return redirect
+  }
+
+  // 6. The event permissions the route declares (`meta.requiredPermission`): without them, back to the Inicio with a notice
+  const denied = await permissionRedirect(to, useEventsStore())
+  if (denied) {
+    useToast().toast({ title: i18n.global.t('app.dashboard.denied'), tone: 'warning' })
+    return denied
   }
 }

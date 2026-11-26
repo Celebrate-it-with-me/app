@@ -2,11 +2,16 @@ import { defineStore } from 'pinia'
 import EventsService from '../services/EventsService'
 import { useUserStore } from '@/stores/useUserStore'
 
+/** The API sends permission names (`['view_event', ...]`); older payloads and tests use `{ name }`. */
+const permissionName = perm => (typeof perm === 'string' ? perm : perm?.name)
+
 export const useEventsStore = defineStore('eventsStore', {
   state: () => ({
     events: [],
     activeEvent: null,
     eventPermissions: null,
+    /** The event `eventPermissions` belong to: a switch of event makes them stale until they are read again. */
+    permissionsEventId: null,
     eventPlans: [],
     eventTypes: []
   }),
@@ -22,7 +27,9 @@ export const useEventsStore = defineStore('eventsStore', {
 
         if (response.status === 200) {
           const { data } = response
-          this.eventPermissions = data.data?.eventPermissions ?? []
+          // The API answers `data.permissions` (names); `eventPermissions` was the old key.
+          this.eventPermissions = data.data?.permissions ?? data.data?.eventPermissions ?? []
+          this.permissionsEventId = eventId
         }
         return response
       } catch (error) {
@@ -65,8 +72,16 @@ export const useEventsStore = defineStore('eventsStore', {
     async setActiveEvent(event) {
       if (!event) return
       const userStore = useUserStore()
+      const changed = String(this.activeEvent?.id) !== String(event.id)
       this.activeEvent = event
       userStore.activeEvent = event.id
+      // The permissions are per event: the previous event's must never answer for this one (an owner of A may be a
+      // viewer of B). They are read again; until then nothing extra is granted (see `permissionsReady`).
+      if (changed || String(this.permissionsEventId) !== String(event.id)) {
+        this.eventPermissions = null
+        this.permissionsEventId = null
+        this.loadEventPermissions(event.id)
+      }
 
       await this.updateActiveEvent(event)
     },
@@ -122,6 +137,7 @@ export const useEventsStore = defineStore('eventsStore', {
      */
     initEventPermissions(permissions) {
       this.eventPermissions = permissions
+      this.permissionsEventId = permissions ? (this.activeEvent?.id ?? null) : null
     },
 
     /**
@@ -334,7 +350,7 @@ export const useEventsStore = defineStore('eventsStore', {
      */
     hasPermission: state => permission => {
       if (state.eventPermissions && state.eventPermissions.length > 0) {
-        return state.eventPermissions.some(perm => perm.name === permission)
+        return state.eventPermissions.some(perm => permissionName(perm) === permission)
       }
       return false
     },
@@ -346,7 +362,7 @@ export const useEventsStore = defineStore('eventsStore', {
      */
     hasAnyPermission: state => permissions => {
       if (state.eventPermissions && state.eventPermissions.length > 0) {
-        return state.eventPermissions.some(perm => permissions.includes(perm.name))
+        return state.eventPermissions.some(perm => permissions.includes(permissionName(perm)))
       }
       return false
     },
