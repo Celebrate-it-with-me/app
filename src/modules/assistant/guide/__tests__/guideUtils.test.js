@@ -4,6 +4,7 @@ import {
   guideView,
   hasNewDot,
   isCompactRoute,
+  isHelpOnlyRoute,
   getSeenKey,
   setSeenKey,
   wasWelcomed,
@@ -110,5 +111,15 @@ describe('browser memory', () => {
     expect(setSeenKey(8, 'a')).toBe(false)
     expect(wasWelcomed()).toBe(false)
     expect(markWelcomed()).toBe(false)
+  })
+})
+
+describe('isHelpOnlyRoute', () => {
+  it('matches the Inicio only', () => {
+    expect(isHelpOnlyRoute('/dashboard')).toBe(true)
+    expect(isHelpOnlyRoute('/dashboard/')).toBe(true)
+    expect(isHelpOnlyRoute('/dashboard/guests')).toBe(false)
+    expect(isHelpOnlyRoute('/dashboards')).toBe(false)
+    expect(isHelpOnlyRoute(undefined)).toBe(false)
   })
 })

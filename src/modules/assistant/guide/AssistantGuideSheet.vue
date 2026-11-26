@@ -99,7 +99,7 @@ const showProgress = computed(() => (kind.value === 'task' || kind.value === 'al
               <p v-if="isOverdue" class="mt-2 inline-block rounded-full bg-gold-100 px-3 py-1 text-sm font-semibold text-gold-700">
                 {{ t('assistantGuide.overdue') }}
               </p>
-              <DialogDescription class="mt-2 text-base text-ink-600" data-testid="guide-reason">{{ reason }}</DialogDescription>
+              <DialogDescription class="mt-2 text-base text-ink-700" data-testid="guide-reason">{{ reason }}</DialogDescription>
 
               <div v-if="(kind === 'task' || kind === 'setDate') && canEdit" class="mt-5 flex flex-col gap-2">
                 <UiButton v-if="target" :to="target" size="lg" block data-testid="guide-go" @click="emit('go')">
@@ -124,7 +124,7 @@ const showProgress = computed(() => (kind.value === 'task' || kind.value === 'al
               <div v-if="kind === 'task' && view.after.length" class="mt-5" data-testid="guide-after">
                 <p class="text-sm font-semibold text-ink-700">{{ t('assistantGuide.after') }}</p>
                 <ul class="mt-2 space-y-1.5">
-                  <li v-for="step in view.after" :key="step.key" class="flex items-start gap-2 text-sm text-ink-600">
+                  <li v-for="step in view.after" :key="step.key" class="flex items-start gap-2 text-sm text-ink-700">
                     <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gold-500" aria-hidden="true" />
                     {{ step.title }}
                   </li>
@@ -132,9 +132,9 @@ const showProgress = computed(() => (kind.value === 'task' || kind.value === 'al
               </div>
 
               <div v-if="showProgress" class="mt-5 rounded-xl bg-cream-100 p-4" data-testid="guide-progress">
-                <p class="flex flex-wrap items-baseline justify-between gap-x-3 text-sm font-semibold text-ink-800">
+                <p class="flex flex-wrap items-baseline justify-between gap-x-3 text-sm font-semibold text-ink-900">
                   <span>{{ t(`assistantGuide.progress.${tone}`, { percent }) }}</span>
-                  <span v-if="countdownText" class="font-normal text-ink-600">{{ countdownText }}</span>
+                  <span v-if="countdownText" class="font-normal text-ink-500">{{ countdownText }}</span>
                 </p>
                 <div
                   class="mt-2 h-2 overflow-hidden rounded-full bg-cream-300"
@@ -167,7 +167,7 @@ const showProgress = computed(() => (kind.value === 'task' || kind.value === 'al
           </router-link>
           <button
             type="button"
-            class="inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-600 underline-offset-4 hover:text-ink-900 hover:underline"
+            class="inline-flex min-h-11 items-center gap-1.5 text-sm text-ink-700 underline-offset-4 hover:text-ink-900 hover:underline"
             data-testid="guide-help"
             @click="emit('help')"
           >

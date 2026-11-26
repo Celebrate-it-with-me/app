@@ -1,54 +1,62 @@
 <script setup>
-import { useI18n } from 'vue-i18n'
-import { BadgeCheck, Bell, Calendar, CalendarClock, Eye, Map, MapPin, MapPinOff, MessageCircle, MessageSquare, Music, PartyPopper, Pencil, Receipt, Sparkles, ThumbsUp, UserCheck, UserX } from 'lucide-vue-next'
-import { UiCard } from '@/ui'
+/**
+ * "Actividad reciente": the latest entries of `GET dashboard-logs` (the API sends up to 10; the Inicio draws `max`), each
+ * with the initials of who it is about, the sentence in the app's language and "hace…".
+ */
 import { computed } from 'vue'
-import { activitySentence, activityTime, activityTone, readableActivity } from './dashboardLogic'
+import { useI18n } from 'vue-i18n'
+import { History } from 'lucide-vue-next'
+import { UiAvatar, UiCard, UiEmptyState, UiSkeleton } from '@/ui'
+import DashboardBlock from './DashboardBlock.vue'
+import { activitySentence, activityTime, activityWho, readableActivity } from './dashboardLogic'
 
 const props = defineProps({
-  /** `[{ id, type, params, message, icon, color, createdAt, occurredAt }]`; icon and color are names sent by the API. */
-  activity: { type: Array, default: () => [] }
+  /** `GET dashboard-logs` rows (null until they load). */
+  activity: { type: Array, default: null },
+  /** loading | ready | error */
+  status: { type: String, default: 'loading' },
+  max: { type: Number, default: 5 },
+  /** "Now", for the relative times (tests pin it). */
+  now: { type: Date, default: null }
 })
+defineEmits(['retry'])
 
 const { t, locale } = useI18n()
-const items = computed(() => readableActivity(props.activity))
-
-/** API icon name -> lucide component. `edit` is the API's name for the pencil. Unknown names fall back to the bell. */
-const ICONS = {
-  'badge-check': BadgeCheck,
-  calendar: Calendar,
-  'calendar-clock': CalendarClock,
-  edit: Pencil,
-  eye: Eye,
-  map: Map,
-  'map-pin': MapPin,
-  'map-pin-off': MapPinOff,
-  'message-circle': MessageCircle,
-  'message-square': MessageSquare,
-  music: Music,
-  'party-popper': PartyPopper,
-  receipt: Receipt,
-  sparkles: Sparkles,
-  'thumbs-up': ThumbsUp,
-  'user-check': UserCheck,
-  'user-x': UserX
-}
-const iconOf = name => ICONS[String(name ?? '').toLowerCase()] ?? Bell
+const items = computed(() =>
+  readableActivity(props.activity ?? [])
+    .slice(0, props.max)
+    .map(item => ({ id: item.id, who: activityWho(item), text: activitySentence(item, t), when: activityTime(item, locale.value, props.now ?? new Date()), at: item.occurredAt ?? '' }))
+)
 </script>
 
 <template>
-  <UiCard :title="t('app.dashboard.more.activity')" heading-level="h2">
-    <p v-if="!items.length" class="text-base text-ink-600">{{ t('app.dashboard.more.activityEmpty') }}</p>
-    <ul v-else class="space-y-3 text-sm">
-      <li v-for="item in items" :key="item.id" class="flex items-start gap-3">
-        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" :class="activityTone(item.color)" data-testid="activity-chip">
-          <component :is="iconOf(item.icon)" class="h-4 w-4" aria-hidden="true" />
-        </span>
-        <div class="min-w-0">
-          <p class="text-ink-900">{{ activitySentence(item, t) }}</p>
-          <p class="text-xs text-ink-500">{{ activityTime(item, locale) }}</p>
+  <UiCard as="section" :title="t('app.dashboard.feed.title')" heading-level="h2" data-testid="dashboard-activity">
+    <DashboardBlock :status="status" :error-text="t('app.dashboard.feed.error')" @retry="$emit('retry')">
+      <template #skeleton>
+        <div class="flex flex-col gap-4" data-testid="activity-skeleton">
+          <div v-for="n in 3" :key="n" class="flex gap-3">
+            <UiSkeleton circle width="2rem" height="2rem" />
+            <div class="flex-1"><UiSkeleton :lines="2" /></div>
+          </div>
         </div>
-      </li>
-    </ul>
+      </template>
+
+      <UiEmptyState v-if="!items.length" compact :title="t('app.dashboard.feed.emptyTitle')" :description="t('app.dashboard.feed.emptyText')" data-testid="activity-empty">
+        <template #icon><History class="h-6 w-6" aria-hidden="true" /></template>
+      </UiEmptyState>
+
+      <ul v-else class="flex flex-col gap-4" data-testid="activity-list">
+        <li v-for="item in items" :key="item.id" class="flex items-start gap-3" data-testid="activity-item">
+          <span aria-hidden="true" class="flex shrink-0" data-testid="activity-initials">
+            <UiAvatar v-if="item.who" :name="item.who" size="sm" />
+            <span v-else class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cream-200 text-ink-500"><History class="h-4 w-4" /></span>
+          </span>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm leading-snug text-ink-900 break-words">{{ item.text }}</p>
+            <p class="mt-0.5 text-xs text-ink-500"><time :datetime="item.at || undefined">{{ item.when }}</time></p>
+          </div>
+        </li>
+      </ul>
+    </DashboardBlock>
   </UiCard>
 </template>

@@ -31,7 +31,7 @@ const ROUTES = [
 
 let wrapper
 let router
-async function mountGuide({ userRole = 'owner', path = '/dashboard', next = NEXT, slug = 'quinceanera' } = {}) {
+async function mountGuide({ userRole = 'owner', path = '/dashboard/budget', next = NEXT, slug = 'quinceanera' } = {}) {
   const pinia = createPinia()
   createApp({}).use(pinia)
   setActivePinia(pinia)
@@ -64,6 +64,21 @@ beforeEach(() => {
 afterEach(() => {
   wrapper?.unmount()
   document.body.innerHTML = ''
+})
+
+describe('AssistantGuide on the Inicio', () => {
+  it('is only the help icon on /dashboard, where "Lo que toca ahora" shows the steps', async () => {
+    await mountGuide({ path: '/dashboard' })
+    expect(trigger().dataset.variant).toBe('help')
+    expect(q('guide-dot')).toBeNull()
+    expect(trigger().textContent).not.toContain('Tu siguiente paso')
+  })
+  it('comes back as the pill on the other screens', async () => {
+    await mountGuide({ path: '/dashboard' })
+    await router.push('/dashboard/budget')
+    await flushPromises()
+    expect(trigger().dataset.variant).toBe('pill')
+  })
 })
 
 describe('AssistantGuide pill', () => {

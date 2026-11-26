@@ -89,3 +89,20 @@ describe('the catalog the app knows how to draw', () => {
   })
   it('uses the sections the API sends', () => expect(SECTIONS).toEqual(['main', 'guests', 'organization', 'extras']))
 })
+
+describe('buildNavSections permissions', () => {
+  it('leaves Presupuesto and Padrinos out for people without view_budget', () => {
+    const modules = [mod('budget', 'organization', 40), mod('padrinos', 'organization', 50), mod('timeline', 'organization', 10)]
+    const keysOf = can => buildNavSections(modules, { can }).flatMap(g => g.items.map(i => i.key))
+    expect(keysOf(() => false)).not.toContain('budget')
+    expect(keysOf(() => false)).not.toContain('padrinos')
+    expect(keysOf(p => p === 'view_budget')).toEqual(expect.arrayContaining(['budget', 'padrinos', 'timeline']))
+    expect(keysOf(undefined)).toContain('budget')
+  })
+  it('the budget and padrinos routes declare view_budget', async () => {
+    const budget = (await import('@/modules/budget/routes/budget.routes.js')).default[0]
+    const padrinos = (await import('@/modules/padrinos/routes/padrinos.route.js')).default[0]
+    expect(budget.meta.requiredPermission).toEqual(['view_budget'])
+    expect(padrinos.meta.requiredPermission).toEqual(['view_budget'])
+  })
+})

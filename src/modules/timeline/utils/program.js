@@ -15,12 +15,6 @@ export const iconFor = type => (MOMENT_TYPES.find(t => t.value === type) ?? MOME
 
 const pad = n => String(n).padStart(2, '0')
 
-/** `m/d/Y H:i` (as the events API sends it) to a Date, or null. */
-export function parseEventDate(value) {
-  const match = /^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})$/.exec(value ?? '')
-  return match ? new Date(+match[3], +match[1] - 1, +match[2], +match[4], +match[5]) : null
-}
-
 /** `Y-m-d H:i:s` (local, no zone) to a Date. */
 export const parseMoment = value => {
   const [d, t = '00:00:00'] = String(value).split(' ')

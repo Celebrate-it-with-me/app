@@ -37,8 +37,9 @@ export const MODULE_VIEWS = {
   timeline: { to: '/dashboard/timeline', icon: CalendarClock, labelKey: 'app.nav.timeline' },
   locations: { to: '/dashboard/locations', icon: MapPin, labelKey: 'app.nav.locations' },
   dress_code: { to: '/dashboard/dress-code', icon: Shirt, labelKey: 'app.nav.dressCode' },
-  budget: { to: '/dashboard/budget', icon: Wallet, labelKey: 'app.nav.budget', primary: true },
-  padrinos: { to: '/dashboard/padrinos', icon: HeartHandshake, labelKey: 'app.nav.padrinos' },
+  // Money: only for people with `view_budget` (owners and editors; owner decision 2026-11-26).
+  budget: { to: '/dashboard/budget', icon: Wallet, labelKey: 'app.nav.budget', primary: true, permission: 'view_budget' },
+  padrinos: { to: '/dashboard/padrinos', icon: HeartHandshake, labelKey: 'app.nav.padrinos', permission: 'view_budget' },
   menus: { to: '/dashboard/menus', icon: ChefHat, labelKey: 'app.nav.menus' },
   // `deferred`: the module is frozen until after the launch (decision 2026-11-18), so no menu draws it; the route and the screen stay.
   seating: { to: '/dashboard/seating', icon: NotebookPen, labelKey: 'app.nav.seating', deferred: true },
@@ -87,11 +88,15 @@ export const unlockPath = key => `/dashboard/unlock/${key}`
  * Returns `[{ section, items: [{ key, to, icon, labelKey, section, order, state, primary }] }]`,
  * leaving out empty sections. Without modules (no event yet) only Home is shown.
  */
-export function buildNavSections(modules) {
+/**
+ * `can(permission)` says whether the person holds an event permission; entries that need one she lacks are left out.
+ */
+export function buildNavSections(modules, { can = () => true } = {}) {
   const drawn = (modules ?? [])
     .map(module => {
       const view = MODULE_VIEWS[module.key]
       if (!view?.to || view.deferred) return null
+      if (view.permission && !can(view.permission)) return null
       const locked = module.state === 'locked'
       return {
         key: module.key,

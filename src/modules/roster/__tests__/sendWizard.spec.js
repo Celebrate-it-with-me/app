@@ -9,6 +9,7 @@ vi.mock('../services/SendWizardService', () => ({ default: svc }))
 vi.mock('../services/WhatsappService', () => ({ default: wa }))
 vi.mock('@/modules/template-picker/components/InvitationMiniature.vue', () => ({ default: { props: ['eventId', 'width', 'name', 'dateLabel', 'live'], template: '<div data-testid="miniature" />' } }))
 import SendWizard from '../components/send/SendWizard.vue'
+import { sendCounts } from '../services/sendFamilies'
 
 const rec = (id, extra = {}) => ({ id, name: `Familia ${id}`, people: 2, phone: '+13055550101', status: 'pending', reason: null, delivery: { state: 'none' }, ...extra })
 const row = (id, extra = {}) => ({ id, phone: '+13055550101', link: `https://q.test/i/xv/${id}`, ...extra })
@@ -51,6 +52,39 @@ beforeEach(() => {
 afterEach(() => {
   wrapper?.unmount()
   document.body.innerHTML = ''
+})
+
+describe('SendWizard opened to remind the pending ones', () => {
+  const checked = () => [...document.querySelectorAll('label')].find(l => l.querySelector('[role="radio"][aria-checked="true"]'))?.textContent ?? ''
+  it('starts on the pending card even when it is empty, and sends nothing by itself', async () => {
+    serve()
+    await open({ initialCategory: 'pending' })
+    expect(checked()).toContain('Pendientes de responder')
+    expect(wa.preview).not.toHaveBeenCalled()
+    expect(svc.markShared).not.toHaveBeenCalled()
+  })
+  it('falls back to the usual first card when answers are closed', async () => {
+    serve({ audience: info({ rsvp: { isOpen: false } }) })
+    await open({ initialCategory: 'pending' })
+    expect(checked()).not.toContain('Pendientes de responder')
+  })
+  it("starts on the first-send card for the Inicio's 'Enviar invitaciones', and ignores any other value", async () => {
+    serve({ recipients: [rec(1, { delivery: { state: 'sent' } }), rec(2, { delivery: { state: 'sent' } })] })
+    await open({ initialCategory: 'unsent' })
+    expect(checked()).toContain('Aún sin invitación')
+    wrapper.unmount()
+    await open({ initialCategory: 'all' })
+    expect(checked()).toContain('Pendientes de responder')
+  })
+  it('its cards show the same numbers the Inicio reads with sendCounts', async () => {
+    serve({ recipients: [rec(1, { delivery: { state: 'sent' } }), rec(2, { delivery: { state: 'sent' } }), rec(3), rec(4, { status: 'attending' })] })
+    const counts = await sendCounts(7, 'manual')
+    expect(counts).toMatchObject({ pending: 2, unsent: 2 })
+    await open({ initialCategory: 'pending' })
+    const label = key => [...document.querySelectorAll('label')].find(l => l.textContent.includes(key)).textContent
+    expect(label('Pendientes de responder')).toContain(`${counts.pending} invitaciones`)
+    expect(label('Aún sin invitación')).toContain(`${counts.unsent} invitaciones`)
+  })
 })
 
 describe('SendWizard step 1', () => {

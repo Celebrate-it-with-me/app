@@ -8,6 +8,12 @@ import { whatsappUrl } from './roster'
 /** Cards of step 1, in order. `selected` opens the picker. */
 export const CATEGORIES = ['unsent', 'pending', 'all', 'selected']
 
+/**
+ * Cards the wizard can be opened on from outside (the Inicio, through `?send=`): `pending` for "Recordar" and `unsent`
+ * for "Enviar invitaciones". Exact values only; anything else in the URL is ignored.
+ */
+export const INITIAL_CATEGORIES = ['pending', 'unsent']
+
 /** Decision P7: an automatic batch of more families than this asks for an explicit "I understand" (not in manual mode). */
 export const BIG_BATCH = 100
 

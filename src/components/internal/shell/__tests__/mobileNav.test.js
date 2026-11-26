@@ -210,13 +210,20 @@ describe('AppBottomNav', () => {
   })
 
   it('opens the Organización sheet with its section', async () => {
-    await setup('/dashboard')
+    await setup('/dashboard', { permissions: ['view_budget'] })
     await wrapper.get('[data-testid=tab-organization]').trigger('click')
     await flushPromises()
     const sheet = document.body.querySelector('[data-testid=sheet-items]')
     expect(sheet.textContent).toContain('Programa del día')
     expect(sheet.textContent).toContain('Presupuesto')
     expect(sheet.textContent).not.toContain('Guarda la fecha')
+  })
+
+  it('leaves Presupuesto out of the sheet for a viewer without view_budget', async () => {
+    await setup('/dashboard')
+    await wrapper.get('[data-testid=tab-organization]').trigger('click')
+    await flushPromises()
+    expect(document.body.querySelector('[data-testid=sheet-items]').textContent).not.toContain('Presupuesto')
   })
 
   it('closes the sheet when the route changes', async () => {

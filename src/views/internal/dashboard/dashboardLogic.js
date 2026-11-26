@@ -1,51 +1,65 @@
 /**
  * Pure helpers behind the organizer dashboard. No stores, no Vue: easy to test.
  */
+import { wallClockToIso } from '@/utils/eventDateTime'
+import { PALETTE } from '@/modules/dress-code/utils/dressCodeForm'
 
-/** The API sends event dates as `m/d/Y H:i` (wall time of the event). */
-export function parseEventDate(value) {
-  if (!value || typeof value !== 'string') return null
-  const m = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[ T](\d{1,2}):(\d{2}))?/)
-  if (!m) {
-    const d = new Date(value)
-    return Number.isNaN(d.getTime()) ? null : d
-  }
-  const [, month, day, year, hour = '0', minute = '0'] = m
-  return new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute))
-}
-
-/** Whole calendar days from `now` to `date` (0 = today, negative = already past). */
-export function daysUntil(date, now = new Date()) {
-  if (!date) return null
-  const startOf = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
-  return Math.round((startOf(date) - startOf(now)) / 86_400_000)
-}
-
-/** RSVP numbers from the stats endpoint payload (`response.data` of `GET /rsvp/stats`). */
+/** RSVP numbers from the stats endpoint payload (`response.data` of `GET /rsvp/stats`). People include companions. */
 export function summarizeRsvp(stats) {
   const s = stats?.data ?? stats ?? {}
-  const attending = s.attending?.total ?? 0
-  const pending = s.pending?.total ?? 0
-  const declined = s.not_attending?.total ?? 0
-  const people = s.totals?.people ?? attending + pending + declined
+  const attending = Number(s.attending?.total) || 0
+  const pending = Number(s.pending?.total) || 0
+  const declined = Number(s.not_attending?.total) || 0
   return {
     attending,
     pending,
     declined,
-    people,
-    mainGuests: s.totals?.guests ?? 0,
-    pendingGuests: s.pending?.guests ?? 0,
-    responseRate: s.response_rate ?? 0
+    people: Number(s.totals?.people ?? attending + pending + declined) || 0,
+    mainGuests: Number(s.totals?.guests) || 0,
+    companions: Number(s.totals?.companions) || 0,
+    pendingGuests: Number(s.pending?.guests) || 0,
+    responseRate: Math.max(0, Math.min(100, Math.round(Number(s.response_rate) || 0)))
   }
 }
 
-/** Share of each status in the stacked bar, as whole percentages that always add up to 100 (or all 0). */
-export function rsvpShares({ attending, pending, declined }) {
+/** `recent.status` comes as stored (`not-attending`, with a dash); the stats keys use `not_attending`. Both mean declined. */
+const RECENT_STATUS = { attending: 'attending', 'not-attending': 'declined', not_attending: 'declined' }
+
+/**
+ * "Últimas respuestas": the latest answers of `rsvp/stats.recent`, newest first, at most `max`. Rows without a name, a
+ * known status or a date are dropped (never a blank line). A role that may not see names gets `[]`.
+ */
+export function recentResponses(stats, max = 4) {
+  const s = stats?.data ?? stats ?? {}
+  const rows = Array.isArray(s.recent) ? s.recent : []
+  return rows
+    .map(row => ({ name: String(row?.name ?? '').trim(), status: RECENT_STATUS[row?.status] ?? null, statusDate: row?.statusDate ?? null, at: Date.parse(row?.statusDate ?? '') }))
+    .filter(row => row.name && row.status && !Number.isNaN(row.at))
+    .sort((a, b) => b.at - a.at)
+    .slice(0, max)
+    .map(row => ({ name: row.name, status: row.status, statusDate: row.statusDate }))
+}
+
+/**
+ * The ring's arcs (attending, pending, declined) on a circle of `length` units, in that order and touching each other:
+ * `{ key, value, dash, offset }` ready for `stroke-dasharray` / `stroke-dashoffset`. Empty arcs are left out.
+ */
+export function ringSegments({ attending = 0, pending = 0, declined = 0 } = {}, length = 100) {
   const total = attending + pending + declined
-  if (!total) return { attending: 0, pending: 0, declined: 0 }
-  const a = Math.round((attending / total) * 100)
-  const d = Math.round((declined / total) * 100)
-  return { attending: a, declined: d, pending: Math.max(0, 100 - a - d) }
+  if (total <= 0) return []
+  let start = 0
+  return [
+    ['attending', attending],
+    ['pending', pending],
+    ['declined', declined]
+  ]
+    .filter(([, value]) => value > 0)
+    .map(([key, value]) => {
+      const dash = (value / total) * length
+      const segment = { key, value, dash, offset: -start }
+      start += dash
+      return segment
+    })
 }
 
 /**
@@ -60,6 +74,121 @@ export function planProgress(next) {
   return { done, total, ratio: done / total }
 }
 
+/** Whole percentage (0-100) of a `{ done, total }` progress; 0 for an empty one. */
+export function planPercent(progress) {
+  const total = Number(progress?.total) || 0
+  if (total <= 0) return 0
+  return Math.round(Math.min(1, Math.max(0, (Number(progress?.done) || 0) / total)) * 100)
+}
+
+/** States that are not something to do today. */
+const NOT_TODO = ['done', 'hidden', 'not_applicable']
+
+/** The steps of "Lo que toca ahora": the assistant's recommended steps (`next.steps`), at most `max`, never a closed one. */
+export function nowSteps(next, max = 3) {
+  const steps = Array.isArray(next?.steps) ? next.steps : []
+  return steps.filter(step => step?.key && !NOT_TODO.includes(step.state)).slice(0, max)
+}
+
+const amount = value => Math.round((Number(value) || 0) * 100) / 100
+
+/**
+ * The budget block's figures from `GET budget`: what is paid, what is left to pay (`totals.remaining`, the sum of what each
+ * item still owes), the cap (null without one) and how far what is committed (`owed`, not what is paid) goes past it.
+ */
+export function budgetFigures(summary) {
+  const totals = summary?.totals ?? {}
+  const cap = summary?.cap === null || summary?.cap === undefined ? null : amount(summary.cap)
+  const items = (summary?.categories ?? []).reduce((n, c) => n + (Number(c?.itemCount) || 0), 0) + (Number(summary?.uncategorized?.itemCount) || 0)
+  return {
+    currency: summary?.currency || 'USD',
+    paid: amount(totals.paid),
+    remaining: amount(totals.remaining),
+    cap,
+    overCap: cap !== null && !!totals.overCap,
+    overBy: cap !== null && totals.overCap ? amount(totals.overBy ?? (Number(totals.overByCents) || 0) / 100) : 0,
+    items
+  }
+}
+
+/**
+ * One bar per category with something estimated or paid, in `sortOrder` (items without category last, as `uncategorized`).
+ * The bar is what is paid and the mark what is estimated, both on one scale: the largest of those amounts across the bars.
+ * `over` (paid more than estimated) turns the bar red and the note into "+$X sobre".
+ * @returns {Array<{ key: string, name: string|null, estimated: number, paid: number, paidPct: number, estimatedPct: number, over: boolean, overBy: number }>}
+ */
+export function budgetBars(summary) {
+  const rows = [...(summary?.categories ?? [])]
+    .sort((a, b) => (Number(a?.sortOrder) || 0) - (Number(b?.sortOrder) || 0))
+    .map(c => ({ key: `category-${c.id ?? c.name}`, name: c.name ?? '', estimated: amount(c.totals?.estimated), paid: amount(c.totals?.paid) }))
+  const loose = summary?.uncategorized?.totals
+  if (loose) rows.push({ key: 'uncategorized', name: null, estimated: amount(loose.estimated), paid: amount(loose.paid) })
+  const shown = rows.filter(row => row.estimated > 0 || row.paid > 0)
+  const scale = Math.max(0, ...shown.flatMap(row => [row.estimated, row.paid]))
+  const pct = value => (scale > 0 ? Math.min(100, (value / scale) * 100) : 0)
+  return shown.map(row => ({
+    ...row,
+    paidPct: pct(row.paid),
+    estimatedPct: pct(row.estimated),
+    over: row.paid > row.estimated,
+    overBy: row.paid > row.estimated ? amount(row.paid - row.estimated) : 0
+  }))
+}
+
+/** The plan phases that become milestones of "Ruta al evento", in route order. */
+export const ROUTE_PHASES = ['foundation', 'invitations']
+
+/** Tasks the person can still act on count as steps; hidden or not-applicable ones are out of the route. */
+const countsAsStep = task => task && task.state !== 'hidden' && task.state !== 'not_applicable'
+
+/**
+ * One phase of `assistant/plan` as the route needs it: how many steps it has, how many are done and the titles of the
+ * pending ones (server order).
+ */
+export function phaseSummary(plan, key) {
+  const tasks = (plan?.phases?.find(phase => phase.key === key)?.tasks ?? []).filter(countsAsStep)
+  const pending = tasks.filter(task => task.state !== 'done')
+  return { key, total: tasks.length, done: tasks.length - pending.length, pending: pending.map(task => String(task.title ?? '').trim()).filter(Boolean) }
+}
+
+/**
+ * The route's phase milestones with their state: `done` (every step done), `current` (the first phase with steps left),
+ * `upcoming` (later ones with steps left) or `empty` (the plan has no steps there).
+ */
+export function routePhases(plan) {
+  let currentTaken = false
+  return ROUTE_PHASES.map(key => {
+    const summary = phaseSummary(plan, key)
+    if (summary.total === 0) return { ...summary, state: 'empty' }
+    if (summary.done === summary.total) return { ...summary, state: 'done' }
+    if (!currentTaken) {
+      currentTaken = true
+      return { ...summary, state: 'current' }
+    }
+    return { ...summary, state: 'upcoming' }
+  })
+}
+
+/**
+ * The four milestones (Hoy, the phases, the event day) with whether each one is `reached`; a connector is drawn filled
+ * when the milestone it leads to is reached. `daysLeft` is the days to the event (null without a date).
+ * @returns {Array<{ key: string, state: string, reached: boolean }>}
+ */
+export function routeMilestones(plan, daysLeft) {
+  return [
+    { key: 'today', state: 'now', reached: true },
+    ...routePhases(plan).map(phase => ({ ...phase, reached: phase.state === 'done' || phase.state === 'current' })),
+    { key: 'event', state: 'event', reached: daysLeft !== null && daysLeft !== undefined && daysLeft <= 0 }
+  ]
+}
+
+/** The route only makes sense for events the assistant plans: it is hidden for other types and after the event. */
+export const routeAvailability = plan => {
+  if (!plan) return 'none'
+  if (plan.mode === 'no_date') return 'no_date'
+  return plan.mode === 'normal' || plan.mode === 'compressed' ? 'ready' : 'none'
+}
+
 /**
  * What the hero's big countdown shows. `kind`: `none` (no date), `past`, `today` or `future` (with `n` days).
  */
@@ -71,42 +200,10 @@ export function countdownInfo(days) {
 }
 
 /**
- * The four figures of the strip. `empty` is true when there is nobody on the list yet (the strip then invites to add guests).
- * People include companions when the stats say so.
- */
-export function statsFigures(rsvp) {
-  return {
-    empty: !rsvp.people,
-    items: [
-      { key: 'attending', value: rsvp.attending, tone: 'success' },
-      { key: 'pending', value: rsvp.pending, tone: 'gold' },
-      { key: 'declined', value: rsvp.declined, tone: 'ink' },
-      { key: 'total', value: rsvp.people, tone: 'rose' }
-    ]
-  }
-}
-
-/** Colour names the API sends for activity entries -> soft chip classes (text on tinted background, contrast >= 4.5:1). */
-export const ACTIVITY_TONES = {
-  blue: 'bg-blue-50 text-blue-700',
-  cyan: 'bg-cyan-50 text-cyan-700',
-  green: 'bg-success-50 text-success-700',
-  indigo: 'bg-indigo-50 text-indigo-700',
-  orange: 'bg-orange-50 text-orange-700',
-  pink: 'bg-rose-50 text-rose-700',
-  red: 'bg-danger-50 text-danger-700',
-  yellow: 'bg-gold-100 text-gold-700'
-}
-/**
  * The API now sends only known event types, each with its translated `message` (ORG-016). The text is drawn as it comes;
  * the only thing left to drop is an entry with no text at all.
  */
 export const readableActivity = (items = []) => items.filter(item => String(item?.message ?? '').trim() !== '')
-
-export const ACTIVITY_TONE_FALLBACK = 'bg-cream-200 text-ink-700'
-
-/** The tone classes for an API colour; an unknown or missing one gets the neutral chip, never nothing. */
-export const activityTone = color => ACTIVITY_TONES[String(color ?? '').toLowerCase()] ?? ACTIVITY_TONE_FALLBACK
 
 /** What each activity type needs from `params` to make its sentence; a missing piece sends the row to the API's own `message`. */
 const SENTENCE_NEEDS = {
@@ -160,4 +257,56 @@ export function activityTime(item, locale, now = new Date()) {
     if (abs >= size) return new Intl.RelativeTimeFormat(locale, { numeric: 'always' }).format(Math.trunc(seconds / size), unit)
   }
   return new Intl.RelativeTimeFormat(locale, { numeric: 'auto' }).format(0, 'second')
+}
+
+/** Activity types a guest does (answers, opens, comments, suggests a song): the person is `params.name`, not the actor. */
+const GUEST_SIDE = ['guest_confirmed', 'guest_declined', 'guest_rsvp_changed', 'invitation_opened', 'comment_added', 'music_suggested']
+
+/** Who an activity row is about, for its initials: the guest for what guests do, else whoever did it. '' when unknown. */
+export function activityWho(item) {
+  const params = item?.params ?? {}
+  const who = GUEST_SIDE.includes(item?.type) ? params.name : params.actor || params.name
+  return String(who ?? '').trim()
+}
+
+/**
+ * "Programa del día": the moments of `GET timeline` with a readable start and a title, in time order. `start` stays the
+ * wall-clock text the API sends (`Y-m-d H:i:s`), printed with `formatEventDate`; never a `Date` of the browser's zone.
+ * @returns {Array<{ id: any, title: string, description: string, start: string }>}
+ */
+export function programMoments(list) {
+  return (Array.isArray(list) ? list : [])
+    .map(item => {
+      const start = String(item?.startTime ?? item?.start_time ?? '')
+      return { id: item?.id, title: String(item?.title ?? '').trim(), description: String(item?.description ?? '').trim(), start, iso: wallClockToIso(start) }
+    })
+    .filter(moment => moment.iso && moment.title)
+    .sort((a, b) => (a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : 0))
+    .map(({ id, title, description, start }) => ({ id, title, description, start }))
+}
+
+const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i
+/** `#fff` -> `#ffffff`, lower case; null when it is not a colour. */
+const normalHex = value => {
+  const text = String(value ?? '').trim()
+  if (!HEX.test(text)) return null
+  const hex = text.toLowerCase()
+  return hex.length === 4 ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}` : hex
+}
+
+/**
+ * "Vestimenta" from `GET dress-code`: the style key, the indications and the reserved colours. Each colour carries the
+ * palette key when it is one of the form's quick picks (its translated name) or null (the hex is shown as text), so a
+ * colour is never told by its swatch alone. `empty` when nothing is defined yet.
+ * @returns {{ type: string, description: string, colors: Array<{ hex: string, key: string|null }>, empty: boolean }}
+ */
+export function dressCodeSummary(data) {
+  const type = String(data?.dressCodeType ?? '').trim()
+  const description = String(data?.description ?? '').trim()
+  const seen = new Set()
+  const colors = (Array.isArray(data?.reservedColors) ? data.reservedColors : [])
+    .map(normalHex)
+    .filter(hex => hex && !seen.has(hex) && seen.add(hex))
+    .map(hex => ({ hex, key: PALETTE.find(p => p.hex === hex)?.key ?? null }))
+  return { type, description, colors, empty: !type && !description && colors.length === 0 }
 }

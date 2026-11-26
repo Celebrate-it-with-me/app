@@ -610,9 +610,7 @@ export default {
       done: 'Listo',
       pending: 'Pendiente',
       skip: 'Ir a mi dashboard',
-      skipHint: 'Esta guía no es obligatoria. La encuentras siempre en tu dashboard.',
-      dashboardLink: 'Primeros pasos · {done} de {total}',
-      dashboardLinkText: 'Retoma lo que falta para dejar tu fiesta lista.',
+      skipHint: 'Esta guía no es obligatoria. Tu Inicio te irá mostrando lo que toca en cada momento.',
       steps: {
         event: {
           title: 'Tu fiesta',
@@ -2097,13 +2095,13 @@ export default {
       }
     },
     dashboard: {
-      loadError: 'No pudimos cargar algunos datos. Intenta de nuevo en un momento.',
       noDate: 'Sin fecha definida',
       countdown: 'Es hoy | Falta {n} día | Faltan {n} días',
       past: 'Ya pasó',
       edit: 'Editar evento',
       plan: 'Plan de organización',
-      planSteps: '{done} de {total} pasos del plan',
+      planSteps: '{done} de {total} pasos · {percent} %',
+      retry: 'Reintentar',
       activity: {
         event_created: '{actor} creó el evento {name}',
         event_updated: '{actor} actualizó el evento {name}',
@@ -2136,13 +2134,28 @@ export default {
       },
       rsvp: {
         title: 'Confirmaciones',
-        attending: 'Confirmados',
+        attending: 'Asisten',
         pending: 'Pendientes',
         declined: 'No asisten',
-        people: 'personas',
-        empty: 'Todavía no hay invitados en la lista.',
-        bar: 'Reparto de respuestas',
-        viewAll: 'Ver detalle'
+        persons: '{n} persona | {n} personas',
+        inInvitations: 'en {n} invitación | en {n} invitaciones',
+        companions: 'sin acompañantes | {n} acompañante | {n} acompañantes',
+        responded: 'respondieron',
+        ring: {
+          attending: '{n} asiste | {n} asisten',
+          pending: '{n} pendiente | {n} pendientes',
+          declined: '{n} no asiste | {n} no asisten',
+          rate: '{n} % de las invitaciones respondieron'
+        },
+        remind: 'Recordar a la invitación pendiente | Recordar a las {n} invitaciones pendientes',
+        sendInvitations: 'Enviar invitaciones',
+        recentTitle: 'Últimas respuestas',
+        recent: { attending: 'Asiste', declined: 'No asiste' },
+        emptyTitle: 'Aún no tienes invitados',
+        emptyText: 'Agrega a tu familia y amigos para poder enviarles la invitación y ver quién confirma.',
+        emptyCta: 'Agregar invitados',
+        error: 'No pudimos cargar las confirmaciones.',
+        viewAll: 'Ver invitados'
       },
       invitation: {
         published: 'Publicada',
@@ -2155,35 +2168,94 @@ export default {
         setDate: 'Definir la fecha',
         publish: 'Publicar invitación',
         share: 'Compartir',
+        shareLong: 'Compartir invitación',
         view: 'Ver invitación',
+        template: 'Plantilla',
+        changeTemplate: 'Cambiar plantilla',
+        planError: 'No pudimos cargar tu plan de organización.',
         draftHint: 'Es un borrador: nadie puede verla todavía. Publícala para poder compartirla.'
       },
-      stats: {
-        title: 'Resumen de invitados',
-        attending: 'Confirmados',
-        pending: 'Pendientes',
-        declined: 'No asisten',
-        total: 'Invitados en total',
-        emptyTitle: 'Aún no tienes invitados',
-        emptyText: 'Agrega a tu familia y amigos para poder enviarles la invitación y ver quién confirma.',
-        emptyCta: 'Agregar invitados'
+      now: {
+        title: 'Lo que toca ahora',
+        heading: 'Un paso para avanzar tu plan | {n} pasos para avanzar tu plan',
+        loadingHeading: 'Tus próximos pasos',
+        go: 'Empezar',
+        unlock: 'Desbloquear',
+        locked: 'Incluido en otro plan.',
+        markDone: 'Marcar como hecho: {title}',
+        markPending: 'Marcar como pendiente: {title}',
+        doneAnnounce: 'Hecho: {title}',
+        undone: 'Pendiente otra vez: {title}',
+        allSetTitle: 'Todo al día',
+        allSetText: 'No tienes pasos pendientes por ahora. Cuando toque el siguiente, lo verás aquí.',
+        planLink: 'Ver el plan completo',
+        error: 'No pudimos cargar tus próximos pasos.'
       },
-      more: {
-        title: 'Más sobre tu evento',
-        subtitle: 'Resumen de lo que ya tienes configurado.',
-        budget: 'Presupuesto',
-        budgetCap: 'Tope',
-        budgetEstimated: 'Estimado',
-        budgetPaid: 'Pagado',
-        budgetOver: '+{amount} sobre el tope',
-        budgetEmpty: 'Aún no hay gastos anotados.',
-        budgetOpen: 'Ver presupuesto',
-        program: 'Programa del día',
-        programEmpty: 'Aún no has agregado momentos al programa.',
-        programOpen: 'Ver programa',
-        activity: 'Actividad reciente',
-        activityEmpty: 'Cuando pase algo en tu evento, lo verás aquí.'
-      }
+      route: {
+        title: 'Ruta al evento',
+        summary: 'Hoy, {date}',
+        remaining: 'queda {n} día | quedan {n} días',
+        today: 'Hoy · {date}',
+        planAt: 'Plan al {percent} %',
+        foundation: 'Fundamentos',
+        invitations: 'Invitaciones',
+        eventDay: 'Día del evento',
+        eventFuture: 'Tu gran día',
+        eventToday: '¡Es hoy!',
+        eventPast: 'Ya pasó',
+        eventNoDate: 'Sin fecha definida',
+        phaseDone: 'Todo listo',
+        phaseEmpty: 'Sin pasos por ahora',
+        phaseCount: '{done} de {total} paso | {done} de {total} pasos',
+        state: { now: 'hoy', done: 'completado', current: 'en curso', upcoming: 'próximo', empty: 'sin pasos', event: 'día del evento' },
+        noDate: 'Define la fecha de tu evento para ver tu ruta.',
+        error: 'No pudimos cargar tu ruta al evento.'
+      },
+      budget: {
+        title: 'Presupuesto',
+        open: 'Ver presupuesto',
+        paid: 'Pagado',
+        remaining: 'Por pagar',
+        cap: 'Tope',
+        over: 'Comprometido sobre el tope',
+        uncategorized: 'Sin categoría',
+        overEstimate: '+{amount} sobre',
+        barLabel: 'pagado {paid} de {estimated} estimado',
+        legend: 'La barra es lo pagado; la marca, lo estimado. En rojo: ya pagaste más de lo estimado.',
+        noItems: 'Aún no hay gastos anotados.',
+        emptyTitle: 'Define tu presupuesto',
+        emptyText: 'Pon un tope y anota los gastos para saber cuánto llevas pagado y cuánto falta.',
+        emptyCta: 'Empezar mi presupuesto',
+        error: 'No pudimos cargar tu presupuesto.'
+      },
+      program: {
+        title: 'Programa del día',
+        open: 'Ver programa',
+        more: 'Ver el momento que falta | Ver los {n} momentos que faltan',
+        emptyTitle: 'Arma el programa del día',
+        emptyText: 'Anota la misa, la recepción, el vals y la cena para que todos sepan a qué hora llegar.',
+        emptyCta: 'Armar el programa',
+        error: 'No pudimos cargar el programa del día.'
+      },
+      dress: {
+        title: 'Vestimenta',
+        edit: 'Editar',
+        view: 'Ver',
+        reserved: 'Colores reservados',
+        reservedLabel: 'Colores reservados: {colors}',
+        emptyTitle: 'Define la vestimenta',
+        emptyText: 'Cuéntales a tus invitados qué ponerse y qué colores evitar.',
+        emptyCta: 'Definir vestimenta',
+        emptyViewer: 'Aún no se ha definido la vestimenta.',
+        error: 'No pudimos cargar la vestimenta.'
+      },
+      feed: {
+        title: 'Actividad reciente',
+        emptyTitle: 'Aún no hay actividad',
+        emptyText: 'Cuando alguien confirme, abra su invitación o cambie algo del evento, lo verás aquí.',
+        error: 'No pudimos cargar la actividad reciente.'
+      },
+      denied: 'No tienes permiso para abrir esa sección de este evento.'
     },
     user: {
       logout: 'Cerrar sesión'

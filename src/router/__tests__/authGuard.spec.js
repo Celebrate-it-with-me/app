@@ -10,6 +10,8 @@ vi.mock('@/stores/useHydrationStore', () => ({ useHydrationStore: () => hydratio
 vi.mock('@/modules/events/stores/useEventsStore', () => ({ useEventsStore: () => eventsStore }))
 
 const { authGuard } = await import('../authGuard')
+const { useToast } = await import('@/ui/useToast')
+const { setLocale } = await import('@/locales/i18n')
 
 const route = (meta = {}, fullPath = '/dashboard') => ({ meta, fullPath })
 
@@ -145,5 +147,35 @@ describe('authGuard with modules', () => {
   it('does not look at modules on routes that are not modules', async () => {
     eventsStore.activeEvent = { modules: [] }
     expect(await authGuard(route({ requiresAuth: true }, '/dashboard/events'))).toBeUndefined()
+  })
+})
+
+describe('authGuard with event permissions', () => {
+  beforeEach(() => {
+    userStore.isAuthenticated = true
+    hydrationStore.isHydrated = true
+    eventsStore.activeEvent = { id: 1, userRole: 'viewer', modules: [{ key: 'budget', state: 'active' }] }
+    eventsStore.eventPermissions = ['view_event', 'view_guests']
+    eventsStore.permissionsEventId = 1
+    eventsStore.hasPermission = name => eventsStore.eventPermissions.includes(name)
+    eventsStore.loadEventPermissions = vi.fn()
+    setLocale('es')
+    useToast().toasts.map(t => t.id).forEach(id => useToast().dismiss(id))
+  })
+
+  it('sends a viewer who types /dashboard/budget back to the Inicio, with a notice', async () => {
+    const result = await authGuard(route({ requiresAuth: true, moduleKey: 'budget', requiredPermission: ['view_budget'] }, '/dashboard/budget'))
+    expect(result).toEqual({ name: 'dashboard' })
+    expect(useToast().toasts.map(t => t.title)).toEqual(['No tienes permiso para abrir esa sección de este evento.'])
+  })
+
+  it('lets the same viewer into a route they hold the permission for, without a notice', async () => {
+    expect(await authGuard(route({ requiresAuth: true, requiredPermission: ['view_guests'] }, '/dashboard/guests'))).toBeUndefined()
+    expect(useToast().toasts).toHaveLength(0)
+  })
+
+  it('checks the module first: a locked module still goes to the unlock screen', async () => {
+    eventsStore.activeEvent.modules = [{ key: 'budget', state: 'locked' }]
+    expect(await authGuard(route({ requiresAuth: true, moduleKey: 'budget', requiredPermission: ['view_budget'] }, '/dashboard/budget'))).toBe('/dashboard/unlock/budget')
   })
 })

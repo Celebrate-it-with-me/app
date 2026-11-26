@@ -7,7 +7,7 @@ export default [
       moduleKey: 'budget',
       titleKey: 'titles.budget',
       requiresAuth: true,
-      requiredPermission: [],
+      requiredPermission: ['view_budget'],
       module: 'budget'
     }
   }

@@ -70,6 +70,66 @@ describe('PadrinosView', () => {
     expect(text()).toContain('Tío Raúl')
   })
 
+  it('a 403 (money is not for this role) clears the screen and goes back to the Inicio with a notice', async () => {
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useEventsStore().activeEvent = { id: 7, userRole: 'viewer', eventName: 'XV' }
+    api.list.mockRejectedValue({ response: { status: 403 } })
+    budget.items.mockResolvedValue(ITEMS)
+    const replace = vi.fn()
+    // useRouter() reads the router injection: the view gets a stand-in.
+    const { routerKey } = await import('vue-router')
+    wrapper = mount(PadrinosView, { global: { plugins: [i18n, pinia], provide: { [routerKey]: { replace } } }, attachTo: document.body })
+    await flushPromises()
+    expect(replace).toHaveBeenCalledWith({ name: 'dashboard' })
+    expect(toasts()).toContain('warning:No tienes permiso para abrir esa sección de este evento.')
+    expect(text()).not.toContain('Tío Raúl')
+  })
+
+  it('never shows the padrinos of event A under event B, also when B fails', async () => {
+    const pinia = await setup()
+    expect(text()).toContain('Tío Raúl')
+    let reject
+    api.list.mockReturnValue(new Promise((_, r) => (reject = r)))
+    useEventsStore(pinia).activeEvent = { id: 8, userRole: 'owner', eventName: 'B' }
+    await flushPromises()
+    expect(text()).not.toContain('Tío Raúl')
+    reject({ response: { status: 500 } })
+    await flushPromises()
+    expect(text()).not.toContain('Tío Raúl')
+    expect(toasts()).toContain('danger:No pudimos cargar los padrinos.')
+  })
+
+  it('a late answer of event A, ok or failed, never lands under event B nor raises its error there', async () => {
+    const pinia = await setup()
+    let resolveA
+    let rejectA
+    // A slow read of A (answered after B), then a slow failure of A again.
+    api.list.mockReturnValueOnce(new Promise(r => (resolveA = r)))
+    useEventsStore(pinia).activeEvent = { id: 6, userRole: 'owner', eventName: 'A' }
+    await flushPromises()
+    api.list.mockResolvedValueOnce(listOf([raul({ id: 10, name: 'Madrina Bea' })]))
+    useEventsStore(pinia).activeEvent = { id: 8, userRole: 'owner', eventName: 'B' }
+    await flushPromises()
+    resolveA(listOf([raul({ name: 'Padrino de A' })]))
+    await flushPromises()
+    expect(text()).toContain('Madrina Bea')
+    expect(text()).not.toContain('Padrino de A')
+
+    api.list.mockReturnValueOnce(new Promise((_, r) => (rejectA = r)))
+    useEventsStore(pinia).activeEvent = { id: 6, userRole: 'owner', eventName: 'A' }
+    await flushPromises()
+    api.list.mockResolvedValueOnce(listOf([raul({ id: 10, name: 'Madrina Bea' })]))
+    useEventsStore(pinia).activeEvent = { id: 8, userRole: 'owner', eventName: 'B' }
+    await flushPromises()
+    const before = toasts().length
+    rejectA({ response: { status: 500 } })
+    await flushPromises()
+    expect(text()).toContain('Madrina Bea')
+    expect(toasts()).toHaveLength(before)
+  })
+
   it('shows the summary with the paid share and the cards', async () => {
     await setup()
     expect(text()).toContain('Tío Raúl')

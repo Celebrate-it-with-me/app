@@ -1,27 +1,35 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
 import i18n, { setLocale } from '@/locales/i18n'
+import { useToast } from '@/ui'
 
-const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn() }))
+const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn(), dress: vi.fn(), next: vi.fn(), plan: vi.fn(), invitation: vi.fn() }))
+vi.mock('@/modules/assistant/services/AssistantService', () => ({ default: { next: m.next, plan: m.plan } }))
 vi.mock('@/modules/rsvp/services/RsvpService', () => ({ default: { loadStats: m.loadStats } }))
 vi.mock('@/services/ActivityService', () => ({ default: { loadDashboardActivities: m.activities } }))
 vi.mock('@/modules/onboarding/services/OnboardingService', () => ({ default: { progress: m.progress } }))
 vi.mock('@/modules/template-picker/services/TemplatePickerService', () => ({ default: { templates: m.templates } }))
+vi.mock('@/modules/invitation-editor/services/InvitationEditorService', () => ({ default: { get: m.invitation } }))
 vi.mock('@/modules/timeline/services/timelineService', () => ({ default: { list: m.list } }))
+vi.mock('@/modules/dress-code/services/DressCodeService', () => ({ default: { get: m.dress } }))
 vi.mock('@/modules/budget/services/BudgetService', () => ({ default: { summary: m.summary } }))
 vi.mock('@/modules/email-verification/components/EmailVerifyNotice.vue', () => ({ default: { template: '<div />' } }))
 vi.mock('@/services/axios', () => ({ CWM_API: { get: vi.fn() } }))
+const wiz = vi.hoisted(() => ({ audience: vi.fn(), allRecipients: vi.fn(), allRoster: vi.fn() }))
+vi.mock('@/modules/roster/services/SendWizardService', () => ({ default: wiz }))
 
 import Dashboard from '../Dashboard.vue'
+import DashboardNow from '../DashboardNow.vue'
+import DashboardProgram from '../DashboardProgram.vue'
+import DashboardDressCode from '../DashboardDressCode.vue'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 
 const stubs = {
   RouterLink: { props: ['to'], template: '<a><slot /></a>' },
-  DashboardHero: { props: ['plan', 'startDate', 'timezone'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" :data-start="startDate" :data-zone="timezone" />' },
-  DashboardMore: { props: ['budget', 'program'], template: '<div data-testid="more" :data-budget="JSON.stringify(budget)" :data-program="JSON.stringify(program)" />' }
+  DashboardHero: { props: ['plan', 'startDate', 'timezone', 'templateName', 'templateStatus'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" :data-start="startDate" :data-zone="timezone" :data-template="templateName" :data-template-status="templateStatus" />' }
 }
 
 const totals = extra => ({ estimated: 18530.1, owed: 18530.1, paid: 100, remaining: 0, estimatedOverCap: true, estimatedOverByCents: 53010, overCap: true, overByCents: 53010, paidOverCap: false, paidOverByCents: 0, ...extra })
@@ -30,9 +38,12 @@ async function mountDashboard({ next = null, event = {}, summary = { cap: 18000,
   const pinia = createPinia()
   createApp({}).use(pinia)
   setActivePinia(pinia)
-  m.summary.mockResolvedValue(summary)
+  if (summary instanceof Promise) {
+    summary.catch(() => {})
+    m.summary.mockReturnValue(summary)
+  } else m.summary.mockResolvedValue(summary)
   useEventsStore().initActiveEvent({ id: 7, guestsCount: 5, eventName: 'XV', userRole: 'owner', modules: [{ key: 'budget', state: 'active' }], ...event })
-  if (next) useAssistantStore().$patch({ eventId: 7, next })
+  m.next.mockResolvedValue(next ?? { mode: 'normal', progress: { done: 0, total: 0 } })
   const w = mount(Dashboard, { global: { plugins: [i18n, pinia], stubs } })
   await flushPromises()
   return w
@@ -42,24 +53,198 @@ const read = (w, id, attr) => JSON.parse(w.get(`[data-testid=${id}]`).attributes
 beforeEach(() => {
   setLocale('es')
   localStorage.clear()
+  useToast().toasts.map(x => x.id).forEach(id => useToast().dismiss(id))
   Object.values(m).forEach(fn => fn.mockReset())
   m.loadStats.mockResolvedValue({ status: 200, data: { totals: { people: 5 } } })
   m.activities.mockResolvedValue({ status: 200, data: { data: [] } })
   m.progress.mockResolvedValue({})
   m.templates.mockResolvedValue([])
   m.list.mockResolvedValue([])
+  m.dress.mockResolvedValue({ dressCodeType: null, reservedColors: [] })
+  m.plan.mockResolvedValue({ mode: 'normal', phases: [] })
+})
+
+describe('Dashboard layout', () => {
+  const order = w => w.findAll('[data-testid^=dashboard-]').map(n => n.attributes('data-testid')).filter(id => !['dashboard-columns'].includes(id))
+  const ALL = [{ key: 'budget', state: 'active' }, { key: 'timeline', state: 'active' }, { key: 'dress_code', state: 'active' }]
+  const withWidth = wide => {
+    const listeners = []
+    window.matchMedia = vi.fn(() => ({ matches: wide, addEventListener: (_, fn) => listeners.push(fn), removeEventListener: vi.fn() }))
+    return listeners
+  }
+  afterEach(() => delete window.matchMedia)
+
+  it('below 1024 px: one column in the mobile prototype order, "Lo que toca ahora" before the route', async () => {
+    withWidth(false)
+    m.next.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 1 }, steps: [] })
+    const w = await mountDashboard({ event: { modules: ALL } })
+    expect(order(w)).toEqual(['dashboard-main', 'dashboard-now', 'dashboard-route', 'dashboard-rsvp', 'dashboard-budget', 'dashboard-side', 'dashboard-program', 'dashboard-dress', 'dashboard-activity'])
+  })
+  it('from 1024 px: the route over both columns; left now, confirmations, budget; right program, dress code, activity', async () => {
+    const listeners = withWidth(true)
+    const w = await mountDashboard({ event: { modules: ALL } })
+    expect(order(w)).toEqual(['dashboard-route', 'dashboard-main', 'dashboard-now', 'dashboard-rsvp', 'dashboard-budget', 'dashboard-side', 'dashboard-program', 'dashboard-dress', 'dashboard-activity'])
+    listeners.forEach(fn => fn({ matches: false }))
+    await flushPromises()
+    expect(order(w).slice(0, 3)).toEqual(['dashboard-main', 'dashboard-now', 'dashboard-route'])
+  })
+  it('a viewer (no next steps, no budget) gets the program under the confirmations, to keep the columns even', async () => {
+    withWidth(true)
+    const w = await mountDashboard({ event: { userRole: 'viewer', modules: ALL } })
+    expect(order(w)).toEqual(['dashboard-route', 'dashboard-main', 'dashboard-rsvp', 'dashboard-program', 'dashboard-side', 'dashboard-dress', 'dashboard-activity'])
+  })
 })
 
 describe('Dashboard home data', () => {
-  it('draws the program in 12 hours, in the language of the app', async () => {
-    m.list.mockResolvedValue([
-      { id: 2, title: 'Cena', start_time: '2027-01-02 20:30:00' },
-      { id: 1, title: 'Misa', start_time: '2027-01-02 16:30:00' }
+  it('loads the plan and the next steps in parallel, for everybody', async () => {
+    await mountDashboard()
+    expect(m.next).toHaveBeenCalledTimes(1)
+    expect(m.plan).toHaveBeenCalledTimes(1)
+  })
+  it('draws the route from the plan phases', async () => {
+    m.plan.mockResolvedValue({ mode: 'normal', progress: { done: 1, total: 2 }, phases: [{ key: 'foundation', tasks: [{ title: 'Reserva la misa', state: 'next' }] }] })
+    const w = await mountDashboard()
+    expect(w.get('[data-testid=route-foundation]').text()).toContain('Reserva la misa')
+  })
+  it('a failed plan only fails the route: the hero stays and the route offers to retry', async () => {
+    m.plan.mockRejectedValue(new Error('boom'))
+    const w = await mountDashboard()
+    expect(w.find('[data-testid=hero]').exists()).toBe(true)
+    expect(w.get('[data-testid=dashboard-route] [role=alert]').exists()).toBe(true)
+    m.plan.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 1 }, phases: [{ key: 'foundation', tasks: [{ title: 'Ya', state: 'next' }] }] })
+    await w.get('[data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.get('[data-testid=route-foundation]').text()).toContain('Ya')
+  })
+  it('gives the hero the template name and keeps the chip off when the list fails', async () => {
+    m.templates.mockResolvedValue([{ id: 1, name: 'Miami Nights', current: true, previewImage: 'x.webp' }])
+    const ok = await mountDashboard()
+    expect(ok.get('[data-testid=hero]').attributes('data-template')).toBe('Miami Nights')
+    m.templates.mockRejectedValue(new Error('403'))
+    const bad = await mountDashboard()
+    expect(bad.get('[data-testid=hero]').attributes('data-template')).toBe('')
+    expect(bad.get('[data-testid=hero]').attributes('data-template-status')).toBe('error')
+  })
+  it('gives the confirmations block its own skeleton, then the stats', async () => {
+    let resolve
+    m.loadStats.mockReturnValue(new Promise(r => (resolve = r)))
+    const w = await mountDashboard()
+    expect(w.find('[data-testid=rsvp-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=rsvp-empty]').exists()).toBe(false)
+    resolve({ status: 200, data: { data: { attending: { total: 2 }, pending: { total: 0 }, not_attending: { total: 0 }, totals: { people: 2, guests: 1, companions: 1 }, response_rate: 100 } } })
+    await flushPromises()
+    expect(w.get('[data-testid=rsvp-totals]').text()).toContain('2 personas en 1 invitación')
+  })
+  it('a failed stats request shows its own error and retry, no empty list and no shared toast', async () => {
+    m.loadStats.mockRejectedValue({ response: { status: 500 } })
+    const w = await mountDashboard()
+    expect(w.find('[data-testid=dashboard-rsvp] [data-testid=block-error]').exists()).toBe(true)
+    expect(w.find('[data-testid=rsvp-empty]').exists()).toBe(false)
+    expect(useToast().toasts).toHaveLength(0)
+    m.loadStats.mockResolvedValue({ status: 200, data: { totals: { people: 0 } } })
+    await w.get('[data-testid=dashboard-rsvp] [data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.find('[data-testid=rsvp-empty]').exists()).toBe(true)
+  })
+  it('hides the confirmations when the API says they are not for this role or plan (403)', async () => {
+    m.loadStats.mockRejectedValue({ response: { status: 403, data: { code: 'module_locked' } } })
+    expect((await mountDashboard()).find('[data-testid=dashboard-rsvp]').exists()).toBe(false)
+  })
+  it('drops a late answer of the previous event: names of event A never show under event B', async () => {
+    let resolveA
+    m.loadStats.mockReturnValueOnce(new Promise(r => (resolveA = r)))
+    m.loadStats.mockResolvedValueOnce({ status: 200, data: { totals: { people: 1, guests: 1 }, attending: { total: 1 }, recent: [{ name: 'Beto B', status: 'attending', statusDate: '2026-11-20T10:00:00Z' }] } })
+    const w = await mountDashboard()
+    useEventsStore().initActiveEvent({ id: 8, eventName: 'B', userRole: 'owner', modules: [] })
+    await flushPromises()
+    resolveA({ status: 200, data: { totals: { people: 1, guests: 1 }, attending: { total: 1 }, recent: [{ name: 'Ana A', status: 'attending', statusDate: '2026-11-21T10:00:00Z' }] } })
+    await flushPromises()
+    expect(w.get('[data-testid=rsvp-recent]').text()).toContain('Beto B')
+    expect(w.text()).not.toContain('Ana A')
+  })
+  it('gives a viewer the template name from the invitation (the template list is for editors)', async () => {
+    m.invitation.mockResolvedValue({ template: { name: 'Clásica' } })
+    const w = await mountDashboard({ event: { userRole: 'viewer' } })
+    expect(m.templates).not.toHaveBeenCalled()
+    expect(w.get('[data-testid=hero]').attributes('data-template')).toBe('Clásica')
+    m.invitation.mockRejectedValue(new Error('500'))
+    const bad = await mountDashboard({ event: { userRole: 'viewer' } })
+    expect(bad.get('[data-testid=hero]').attributes('data-template-status')).toBe('error')
+  })
+  it('gives the program its own block: skeleton, then every moment in time order with its description', async () => {
+    let resolve
+    m.list.mockReturnValue(new Promise(r => (resolve = r)))
+    const w = await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'active' }] } })
+    expect(w.find('[data-testid=program-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=program-empty]').exists()).toBe(false)
+    resolve([
+      { id: 2, title: 'Cena', startTime: '2027-01-02 20:30:00' },
+      { id: 1, title: 'Misa', startTime: '2027-01-02 16:30:00', description: 'En la parroquia' }
     ])
-    const program = read(await mountDashboard(), 'more', 'data-program')
-    expect(program.map(p => p.title)).toEqual(['Misa', 'Cena'])
-    expect(program[0].time).toMatch(/^4:30 p\.\s?m\.$/)
-    expect(program[1].time).toMatch(/^8:30 p\.\s?m\.$/)
+    await flushPromises()
+    expect(m.list).toHaveBeenCalledWith(7)
+    const moments = w.findAll('[data-testid=program-moment]').map(n => n.text())
+    expect(moments[0]).toMatch(/^4:30\sp\.\s?m\.\s*MisaEn la parroquia$/)
+    expect(moments[1]).toContain('Cena')
+  })
+  it('a failed program shows its own error with retry and no shared toast; a 403 or a module off hides it', async () => {
+    m.list.mockRejectedValue({ response: { status: 500 } })
+    const w = await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'active' }] } })
+    expect(w.find('[data-testid=dashboard-program] [data-testid=block-error]').exists()).toBe(true)
+    expect(useToast().toasts).toHaveLength(0)
+    m.list.mockResolvedValue([])
+    await w.get('[data-testid=dashboard-program] [data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.find('[data-testid=program-empty]').exists()).toBe(true)
+    m.list.mockRejectedValue({ response: { status: 403 } })
+    expect((await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'active' }] } })).find('[data-testid=dashboard-program]').exists()).toBe(false)
+    m.list.mockClear()
+    expect((await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'locked' }] } })).find('[data-testid=dashboard-program]').exists()).toBe(false)
+    expect(m.list).not.toHaveBeenCalled()
+  })
+  it('gives the dress code its own block: skeleton, then the style; an error retries only that block', async () => {
+    let resolve
+    m.dress.mockReturnValue(new Promise(r => (resolve = r)))
+    const on = { event: { modules: [{ key: 'dress_code', state: 'active' }] } }
+    const w = await mountDashboard(on)
+    expect(w.find('[data-testid=dress-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=dress-empty]').exists()).toBe(false)
+    resolve({ dressCodeType: 'formal', description: '', reservedColors: ['#C2185B'] })
+    await flushPromises()
+    expect(m.dress).toHaveBeenCalledWith(7)
+    expect(w.get('[data-testid=dress-type]').text()).toBe('Formal')
+    m.dress.mockRejectedValue({ response: { status: 500 } })
+    const bad = await mountDashboard(on)
+    expect(bad.find('[data-testid=dashboard-dress] [data-testid=block-error]').exists()).toBe(true)
+    expect(useToast().toasts).toHaveLength(0)
+    m.dress.mockClear()
+    const off = await mountDashboard({ event: { modules: [{ key: 'dress_code', state: 'locked' }] } })
+    expect(off.find('[data-testid=dashboard-dress]').exists()).toBe(false)
+    expect(m.dress).not.toHaveBeenCalled()
+  })
+  it('gives the activity its own block and drops a late answer of the previous event', async () => {
+    let resolveA
+    m.activities.mockReturnValueOnce(new Promise(r => (resolveA = r)))
+    m.activities.mockResolvedValueOnce({ status: 200, data: { data: [{ id: 2, type: 'x', message: 'Pasó algo en B', occurredAt: new Date().toISOString() }] } })
+    const w = await mountDashboard()
+    expect(w.find('[data-testid=activity-skeleton]').exists()).toBe(true)
+    useEventsStore().initActiveEvent({ id: 8, eventName: 'B', userRole: 'owner', modules: [] })
+    await flushPromises()
+    resolveA({ status: 200, data: { data: [{ id: 1, type: 'x', message: 'Pasó algo en A', occurredAt: new Date().toISOString() }] } })
+    await flushPromises()
+    expect(w.get('[data-testid=activity-list]').text()).toContain('Pasó algo en B')
+    expect(w.text()).not.toContain('Pasó algo en A')
+  })
+  it('a failed activity shows its error with retry and no toast; nothing on the Inicio raises the shared toast', async () => {
+    m.activities.mockRejectedValue({ response: { status: 500 } })
+    m.loadStats.mockRejectedValue({ response: { status: 500 } })
+    const w = await mountDashboard()
+    expect(w.find('[data-testid=dashboard-activity] [data-testid=block-error]').exists()).toBe(true)
+    expect(useToast().toasts).toHaveLength(0)
+    m.activities.mockResolvedValue({ status: 200, data: { data: [] } })
+    await w.get('[data-testid=dashboard-activity] [data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.find('[data-testid=activity-empty]').exists()).toBe(true)
   })
   it('gives the hero the ISO start of the event when the API sends it, else the wall-clock text', async () => {
     const wall = await mountDashboard({ event: { startDate: '01/02/2027 18:00', timezone: 'America/New_York' } })
@@ -82,14 +267,198 @@ describe('Dashboard home data', () => {
     await flushPromises()
     expect(read(w, 'hero', 'data-plan')).toBeNull()
   })
-  it('passes the overage of what is owed (the card "estimated") and of what is paid', async () => {
-    const w = await mountDashboard({ summary: { cap: 18000, currency: 'USD', totals: totals({ paidOverCap: true, paidOverByCents: 250 }), categories: [], uncategorized: { itemCount: 1 } } })
-    expect(read(w, 'more', 'data-budget')).toMatchObject({ estimated: 18530.1, overByCents: 53010, paidOverByCents: 250 })
+  it('gives the budget its own block: skeleton first, never a false "no expenses"', async () => {
+    let resolve
+    m.summary.mockReset()
+    m.summary.mockReturnValue(new Promise(r => (resolve = r)))
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useEventsStore().initActiveEvent({ id: 7, eventName: 'XV', userRole: 'owner', modules: [{ key: 'budget', state: 'active' }] })
+    m.next.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 0 } })
+    const w = mount(Dashboard, { global: { plugins: [i18n, pinia], stubs } })
+    await flushPromises()
+    expect(w.find('[data-testid=budget-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=budget-empty]').exists()).toBe(false)
+    resolve({ cap: 18000, currency: 'USD', totals: totals(), categories: [], uncategorized: { itemCount: 1, totals: { estimated: 10, paid: 5 } } })
+    await flushPromises()
+    expect(w.find('[data-tile=cap]').text()).toContain('$18,000')
   })
-  it('passes zeros without a cap or with an old API', async () => {
-    const free = await mountDashboard({ summary: { cap: null, totals: totals({ overCap: false, overByCents: 0, paidOverCap: false }), categories: [], uncategorized: { itemCount: 1 } } })
-    expect(read(free, 'more', 'data-budget')).toMatchObject({ overByCents: 0, paidOverByCents: 0 })
-    const old = await mountDashboard({ summary: { cap: 10, totals: { owed: 20, paid: 1, overCap: true }, categories: [], uncategorized: { itemCount: 1 } } })
-    expect(read(old, 'more', 'data-budget')).toMatchObject({ overByCents: 0 })
+  it('shows the budget error with retry, no empty state and no shared toast', async () => {
+    const w = await mountDashboard({ summary: Promise.reject({ response: { status: 500 } }) })
+    expect(w.find('[data-testid=dashboard-budget] [data-testid=block-error]').exists()).toBe(true)
+    expect(w.find('[data-testid=budget-empty]').exists()).toBe(false)
+    expect(useToast().toasts).toHaveLength(0)
+    m.summary.mockResolvedValue({ cap: null, currency: 'USD', totals: totals({ overCap: false }), categories: [], uncategorized: { itemCount: 0 } })
+    await w.get('[data-testid=dashboard-budget] [data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.find('[data-testid=budget-empty]').exists()).toBe(true)
+  })
+  it('never asks a viewer for the budget nor shows it', async () => {
+    const w = await mountDashboard({ event: { userRole: 'viewer' } })
+    expect(m.summary).not.toHaveBeenCalled()
+    expect(w.find('[data-testid=dashboard-budget]').exists()).toBe(false)
+    expect(w.text()).not.toMatch(/\$\d/)
+  })
+  it('asks for the budget only with view_budget (owners always have it)', async () => {
+    await mountDashboard({ event: { userRole: 'editor' } })
+    expect(m.summary).not.toHaveBeenCalled()
+    m.summary.mockClear()
+    await mountDashboard()
+    expect(m.summary).toHaveBeenCalledWith(7)
+  })
+  it('shows the budget once the permissions of a new event arrive, and hides it if they do not grant it', async () => {
+    const w = await mountDashboard({ event: { userRole: 'editor' } })
+    expect(m.summary).not.toHaveBeenCalled()
+    useEventsStore().eventPermissions = ['view_event', 'view_budget']
+    await flushPromises()
+    expect(m.summary).toHaveBeenCalledWith(7)
+    expect(w.find('[data-tile=cap]').exists()).toBe(true)
+    useEventsStore().eventPermissions = ['view_event']
+    await flushPromises()
+    expect(w.find('[data-testid=dashboard-budget]').exists()).toBe(false)
+  })
+  it('hides the budget when the API says it is not for this role (403), and skips it without the module', async () => {
+    m.summary.mockReset()
+    m.summary.mockRejectedValue({ response: { status: 403, data: { code: 'forbidden' } } })
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useEventsStore().initActiveEvent({ id: 7, eventName: 'XV', userRole: 'editor', modules: [{ key: 'budget', state: 'active' }] })
+    useEventsStore().eventPermissions = [{ name: 'view_budget' }]
+    m.next.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 0 } })
+    const w = mount(Dashboard, { global: { plugins: [i18n, pinia], stubs } })
+    await flushPromises()
+    expect(w.find('[data-testid=dashboard-budget]').exists()).toBe(false)
+    expect(useToast().toasts).toHaveLength(0)
+    const off = await mountDashboard({ event: { modules: [] } })
+    expect(off.find('[data-testid=dashboard-budget]').exists()).toBe(false)
+  })
+})
+
+describe('Dashboard "Recordar" (the send wizard\'s own count)', () => {
+  const STATS = { status: 200, data: { totals: { people: 9, guests: 5, companions: 4 }, attending: { total: 4, guests: 2 }, pending: { total: 5, guests: 3 }, not_attending: { total: 0 }, response_rate: 40 } }
+  const rec = (id, extra = {}) => ({ id, name: `F${id}`, people: 1, phone: '+13055550101', status: 'pending', reason: null, delivery: { state: 'none' }, ...extra })
+  const WA = [{ key: 'whatsapp', state: 'active' }]
+  function serve(recipients, audience = { event: { archived: false }, rsvp: { isOpen: true }, mode: { automatic: true } }) {
+    wiz.audience.mockResolvedValue(audience)
+    wiz.allRecipients.mockResolvedValue(recipients)
+    wiz.allRoster.mockResolvedValue(recipients.map(r => ({ id: r.id, phone: r.phone, link: `https://q.test/i/${r.id}` })))
+  }
+  beforeEach(() => {
+    Object.values(wiz).forEach(fn => fn.mockReset())
+    m.loadStats.mockResolvedValue(STATS)
+  })
+
+  it('shows the number of families the wizard can remind, not the 3 the stats count as pending', async () => {
+    serve([rec(1, { delivery: { state: 'delivered' } }), rec(2, { delivery: { state: 'read' } }), rec(3), rec(4, { status: 'attending', delivery: { state: 'read' } })])
+    const w = await mountDashboard({ event: { modules: WA } })
+    expect(wiz.audience).toHaveBeenCalledWith(7, 'invitation')
+    expect(w.get('[data-testid=rsvp-remind]').text()).toContain('Recordar a las 2 invitaciones pendientes')
+    expect(w.find('[data-testid=rsvp-invite]').exists()).toBe(false)
+  })
+  it('when nobody got the invitation yet, offers to send it instead of a reminder to nobody', async () => {
+    serve([rec(1), rec(2), rec(3)])
+    const w = await mountDashboard({ event: { modules: WA } })
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    expect(w.get('[data-testid=rsvp-invite]').text()).toBe('Enviar invitaciones')
+  })
+  it('never asks with the WhatsApp module locked, for a viewer, or without pending invitations', async () => {
+    serve([rec(1, { delivery: { state: 'read' } })])
+    const locked = await mountDashboard({ event: { modules: [{ key: 'whatsapp', state: 'locked' }] } })
+    expect(locked.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    await mountDashboard({ event: { userRole: 'viewer', modules: WA } })
+    m.loadStats.mockResolvedValue({ status: 200, data: { ...STATS.data, pending: { total: 0, guests: 0 } } })
+    await mountDashboard({ event: { modules: WA } })
+    expect(wiz.audience).not.toHaveBeenCalled()
+  })
+  it('a failed count leaves the confirmations without the button, with no error and no toast', async () => {
+    serve([rec(1, { delivery: { state: 'read' } })])
+    wiz.allRoster.mockRejectedValue({ response: { status: 500 } })
+    const w = await mountDashboard({ event: { modules: WA } })
+    expect(w.find('[data-testid=rsvp-ring]').exists()).toBe(true)
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    expect(w.find('[data-testid=dashboard-rsvp] [data-testid=block-error]').exists()).toBe(false)
+    expect(useToast().toasts).toHaveLength(0)
+  })
+  it('counts in manual mode when the module is off (a family without phone can still be shared by hand)', async () => {
+    serve([rec(1, { phone: '', delivery: { state: 'none', sharedAt: '2026-11-20T10:00:00Z' } })], { event: { archived: false }, rsvp: { isOpen: true }, mode: { automatic: false } })
+    const w = await mountDashboard({ event: { modules: [] } })
+    expect(w.get('[data-testid=rsvp-remind]').text()).toContain('Recordar a la invitación pendiente')
+  })
+  it('drops the button when another event without pending invitations is picked', async () => {
+    serve([rec(1, { delivery: { state: 'read' } })])
+    const w = await mountDashboard({ event: { modules: WA } })
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(true)
+    m.loadStats.mockResolvedValue({ status: 200, data: { ...STATS.data, pending: { total: 0, guests: 0 } } })
+    useEventsStore().initActiveEvent({ id: 8, eventName: 'B', userRole: 'owner', modules: WA })
+    await flushPromises()
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    expect(wiz.audience).not.toHaveBeenCalledWith(8, 'invitation')
+  })
+})
+
+describe('Dashboard retries, event switches and teardown', () => {
+  const ALL = [{ key: 'budget', state: 'active' }, { key: 'timeline', state: 'active' }, { key: 'dress_code', state: 'active' }]
+  afterEach(() => delete window.matchMedia)
+
+  it('"Lo que toca ahora" retries the next steps for this event, skipping the cache', async () => {
+    m.next.mockRejectedValueOnce({ response: { status: 500 } })
+    const w = await mountDashboard()
+    m.next.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 1 }, steps: [] })
+    const calls = m.next.mock.calls.length
+    w.findComponent(DashboardNow).vm.$emit('retry')
+    await flushPromises()
+    expect(m.next.mock.calls.length).toBe(calls + 1)
+    expect(m.next.mock.calls.at(-1)[0]).toBe(7)
+  })
+  it('the program (also when it sits under the confirmations for a viewer) and the dress code retry only their own request', async () => {
+    window.matchMedia = vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() }))
+    m.list.mockRejectedValueOnce({ response: { status: 500 } })
+    m.dress.mockRejectedValueOnce({ response: { status: 500 } })
+    const w = await mountDashboard({ event: { userRole: 'viewer', modules: ALL } })
+    expect(w.get('[data-testid=dashboard-main]').find('[data-testid=dashboard-program]').exists()).toBe(true)
+    const stats = m.loadStats.mock.calls.length
+    w.findComponent(DashboardProgram).vm.$emit('retry')
+    w.findComponent(DashboardDressCode).vm.$emit('retry')
+    await flushPromises()
+    expect(m.list).toHaveBeenCalledTimes(2)
+    expect(m.dress).toHaveBeenCalledTimes(2)
+    expect(m.loadStats.mock.calls.length).toBe(stats)
+  })
+  it('drops a late template answer of the previous event, for editors and for viewers', async () => {
+    let resolveA
+    m.templates.mockReturnValueOnce(new Promise(r => (resolveA = r))).mockResolvedValue([{ id: 2, name: 'Garden', current: true }])
+    const w = await mountDashboard()
+    useEventsStore().initActiveEvent({ id: 8, eventName: 'B', userRole: 'owner', modules: [] })
+    await flushPromises()
+    resolveA([{ id: 1, name: 'Miami Nights', current: true }])
+    await flushPromises()
+    expect(w.get('[data-testid=hero]').attributes('data-template')).toBe('Garden')
+
+    let resolveV
+    m.invitation.mockReturnValueOnce(new Promise(r => (resolveV = r))).mockResolvedValue({ template: { name: 'Clásica' } })
+    const v = await mountDashboard({ event: { userRole: 'viewer' } })
+    useEventsStore().initActiveEvent({ id: 9, eventName: 'C', userRole: 'viewer', modules: [] })
+    await flushPromises()
+    resolveV({ template: { name: 'De A' } })
+    await flushPromises()
+    expect(v.get('[data-testid=hero]').attributes('data-template')).toBe('Clásica')
+  })
+  it('with no active event left (logged out, deleted) it asks nothing more and draws nothing', async () => {
+    const w = await mountDashboard()
+    const before = m.summary.mock.calls.length
+    useEventsStore().activeEvent = null
+    await flushPromises()
+    expect(m.summary.mock.calls.length).toBe(before)
+    expect(w.find('[data-testid=dashboard-columns]').exists()).toBe(false)
+  })
+  it('stops listening to the width when it leaves the screen', async () => {
+    const add = vi.fn()
+    const remove = vi.fn()
+    window.matchMedia = vi.fn(() => ({ matches: false, addEventListener: add, removeEventListener: remove }))
+    const w = await mountDashboard()
+    w.unmount()
+    expect(remove).toHaveBeenCalledWith('change', add.mock.calls[0][1])
   })
 })

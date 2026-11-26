@@ -43,7 +43,7 @@ const tabClass = active =>
   cx(
     'relative flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-lg px-0.5 py-1 text-center text-[0.625rem] font-medium leading-tight min-[360px]:text-[0.6875rem]',
     'motion-safe:transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-rose-500',
-    active ? 'text-rose-800' : 'text-ink-600 hover:text-ink-900'
+    active ? 'text-rose-800' : 'text-ink-700 hover:text-ink-900'
   )
 const pillClass = active =>
   cx(
@@ -94,7 +94,7 @@ const pillClass = active =>
             :to="item.to"
             :class="
               cx(
-                'flex min-h-[5.5rem] flex-col items-center justify-center gap-2 rounded-lg border px-2 py-3 text-center text-xs font-medium text-ink-800 hover:bg-cream-200',
+                'flex min-h-[5.5rem] flex-col items-center justify-center gap-2 rounded-lg border px-2 py-3 text-center text-xs font-medium text-ink-900 hover:bg-cream-200',
                 isActivePath(route.path, item.to) ? 'border-rose-300 bg-rose-50' : 'border-line bg-cream-50'
               )
             "
@@ -105,7 +105,7 @@ const pillClass = active =>
               <component :is="item.icon" class="h-5 w-5" :class="item.state === 'locked' ? 'text-ink-500' : 'text-rose-700'" aria-hidden="true" />
               <Lock
                 v-if="item.state === 'locked'"
-                class="absolute -right-2 -top-1.5 h-3 w-3 text-ink-600"
+                class="absolute -right-2 -top-1.5 h-3 w-3 text-ink-500"
                 :aria-label="t('app.nav.premium')"
                 role="img"
               />
@@ -119,7 +119,7 @@ const pillClass = active =>
         <router-link
           v-if="canManageCollaborators"
           to="/dashboard/collaborators"
-          class="flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-800 hover:bg-cream-200"
+          class="flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-900 hover:bg-cream-200"
           data-testid="sheet-collaborators"
         >
           <UsersRound class="h-4.5 w-4.5" aria-hidden="true" />
@@ -127,7 +127,7 @@ const pillClass = active =>
         </router-link>
         <button
           type="button"
-          class="flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-800 hover:bg-cream-200"
+          class="flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-900 hover:bg-cream-200"
           @click="sheetKey = null; signOut()"
         >
           <LogOut class="h-4.5 w-4.5" aria-hidden="true" />

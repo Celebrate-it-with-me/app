@@ -14,9 +14,8 @@ import {
 } from 'reka-ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { cx } from '@/ui/utils'
-import { parseEventDate, daysUntil } from '@/views/internal/dashboard/dashboardLogic'
 import EventStatusBadge from '@/modules/events/components/EventStatusBadge.vue'
-import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
+import { daysUntilEvent, eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
 /**
  * The event you are working on, as a control in the top bar: label, name, a quiet countdown and the
@@ -36,7 +35,7 @@ const shortDate = event => {
 // Quiet on purpose: small, regular weight, no colour. It is information, not an alert.
 const countdown = computed(() => {
   if (!active.value || active.value.status === 'archived') return ''
-  const days = daysUntil(parseEventDate(active.value.startDate))
+  const days = daysUntilEvent(active.value)
   if (days === null) return ''
   if (days < 0) return t('app.dashboard.past')
   return t('app.dashboard.countdown', { n: days }, days)

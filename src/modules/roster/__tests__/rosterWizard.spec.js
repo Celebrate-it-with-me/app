@@ -22,13 +22,13 @@ let router
 const body = () => document.body.textContent
 const button = text => [...document.body.querySelectorAll('button')].find(b => b.textContent.trim().includes(text))
 
-async function setup({ modules = [{ key: 'whatsapp', state: 'locked' }] } = {}) {
+async function setup({ modules = [{ key: 'whatsapp', state: 'locked' }], path = '/', userRole = 'owner' } = {}) {
   const pinia = createPinia()
   createApp({}).use(pinia)
   setActivePinia(pinia)
-  useEventsStore().activeEvent = { id: 7, userRole: 'owner', modules, eventName: 'Los XV' }
+  useEventsStore().activeEvent = { id: 7, userRole, modules, eventName: 'Los XV' }
   router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/:p(.*)', component: { template: '<div />' } }, { path: '/edit/:id', name: 'edit-event', component: { template: '<div />' } }] })
-  await router.push('/')
+  await router.push(path)
   wrapper = mount(RosterView, { global: { plugins: [i18n, pinia, router] }, attachTo: document.body })
   await flushPromises()
 }
@@ -77,6 +77,56 @@ describe('RosterView mobile send bar', () => {
     document.querySelector('[data-testid="send-inline"] button').click()
     await flushPromises()
     expect(body()).toContain('¿A quién se lo enviamos?')
+  })
+})
+
+describe('RosterView ?send=pending (from the Inicio)', () => {
+  const wizard = () => wrapper.findComponent({ name: 'SendWizard' })
+  it('opens the wizard on the pending card and drops the parameter, keeping the other filters', async () => {
+    await setup({ path: '/dashboard/guests?send=pending&status=pending' })
+    expect(wizard().props('open')).toBe(true)
+    expect(wizard().props('initialCategory')).toBe('pending')
+    expect(wizard().props('preselectedIds')).toEqual([])
+    expect(router.currentRoute.value.query).toEqual({ status: 'pending' })
+  })
+  it("?send=unsent (the Inicio's 'Enviar invitaciones') opens the wizard on the first-send card and drops the parameter", async () => {
+    await setup({ path: '/dashboard/guests?send=unsent' })
+    expect(wizard().props('open')).toBe(true)
+    expect(wizard().props('initialCategory')).toBe('unsent')
+    expect(wizard().props('preselectedIds')).toEqual([])
+    expect(router.currentRoute.value.query.send).toBeUndefined()
+  })
+  it('never takes a near value nor a list: only the exact words open it', async () => {
+    for (const path of ['/dashboard/guests?send=UNSENT', '/dashboard/guests?send=unsent&send=pending', '/dashboard/guests?send=']) {
+      await setup({ path })
+      expect(wizard().props('open')).toBe(false)
+      expect(router.currentRoute.value.query.send).toBeUndefined()
+      wrapper.unmount()
+    }
+  })
+  it('does not open the first-send card for a viewer either', async () => {
+    await setup({ path: '/dashboard/guests?send=unsent', userRole: 'viewer' })
+    expect(wizard().props('open')).toBe(false)
+  })
+  it('ignores any other value and any guest ids, and still cleans the URL', async () => {
+    await setup({ path: '/dashboard/guests?send=all&guest_ids=1,2' })
+    expect(wizard().props('open')).toBe(false)
+    expect(wizard().props('preselectedIds')).toEqual([])
+    expect(router.currentRoute.value.query.send).toBeUndefined()
+  })
+  it('does nothing for people who cannot send', async () => {
+    await setup({ path: '/dashboard/guests?send=pending', userRole: 'viewer' })
+    expect(wizard().props('open')).toBe(false)
+    expect(router.currentRoute.value.query.send).toBeUndefined()
+  })
+  it('a later open from the header starts without the pending card forced', async () => {
+    await setup({ path: '/dashboard/guests?send=pending' })
+    wizard().vm.$emit('update:open', false)
+    wizard().vm.$emit('closed')
+    await flushPromises()
+    document.querySelector('[data-testid="send-header"]').click()
+    await flushPromises()
+    expect(wizard().props('initialCategory')).toBeNull()
   })
 })
 

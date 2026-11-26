@@ -610,9 +610,7 @@ export default {
       done: 'Done',
       pending: 'To do',
       skip: 'Go to my dashboard',
-      skipHint: 'This guide is optional. You can always find it on your dashboard.',
-      dashboardLink: 'First steps · {done} of {total}',
-      dashboardLinkText: 'Pick up what is left to get your event ready.',
+      skipHint: 'This guide is optional. Your Home will keep showing you what to do next.',
       steps: {
         event: {
           title: 'Your event',
@@ -2097,13 +2095,13 @@ export default {
       }
     },
     dashboard: {
-      loadError: 'We could not load some of your data. Try again in a moment.',
       noDate: 'No date set',
       countdown: 'It is today | {n} day to go | {n} days to go',
       past: 'Already happened',
       edit: 'Edit event',
       plan: 'Organization plan',
-      planSteps: '{done} of {total} plan steps',
+      planSteps: '{done} of {total} steps · {percent}%',
+      retry: 'Try again',
       activity: {
         event_created: '{actor} created the event {name}',
         event_updated: '{actor} updated the event {name}',
@@ -2139,10 +2137,25 @@ export default {
         attending: 'Attending',
         pending: 'Pending',
         declined: 'Not attending',
-        people: 'people',
-        empty: 'There are no guests on the list yet.',
-        bar: 'Split of replies',
-        viewAll: 'See details'
+        persons: '{n} person | {n} people',
+        inInvitations: 'in {n} invitation | in {n} invitations',
+        companions: 'no companions | {n} companion | {n} companions',
+        responded: 'responded',
+        ring: {
+          attending: '{n} attending | {n} attending',
+          pending: '{n} pending | {n} pending',
+          declined: '{n} not attending | {n} not attending',
+          rate: '{n} % of invitations responded'
+        },
+        remind: 'Remind the pending invitation | Remind the {n} pending invitations',
+        sendInvitations: 'Send invitations',
+        recentTitle: 'Latest replies',
+        recent: { attending: 'Attending', declined: 'Not attending' },
+        emptyTitle: 'You have no guests yet',
+        emptyText: 'Add your family and friends so you can send them the invitation and see who confirms.',
+        emptyCta: 'Add guests',
+        error: 'We could not load the confirmations.',
+        viewAll: 'See guests'
       },
       invitation: {
         published: 'Published',
@@ -2155,35 +2168,94 @@ export default {
         setDate: 'Set the date',
         publish: 'Publish invitation',
         share: 'Share',
+        shareLong: 'Share invitation',
         view: 'View invitation',
+        template: 'Template',
+        changeTemplate: 'Change template',
+        planError: 'We could not load your organization plan.',
         draftHint: 'It is a draft: no one can see it yet. Publish it to be able to share it.'
       },
-      stats: {
-        title: 'Guest summary',
-        attending: 'Attending',
-        pending: 'Pending',
-        declined: 'Not attending',
-        total: 'Guests in total',
-        emptyTitle: 'You have no guests yet',
-        emptyText: 'Add your family and friends so you can send them the invitation and see who confirms.',
-        emptyCta: 'Add guests'
+      now: {
+        title: 'What to do now',
+        heading: 'One step to move your plan forward | {n} steps to move your plan forward',
+        loadingHeading: 'Your next steps',
+        go: 'Start',
+        unlock: 'Unlock',
+        locked: 'Included in another plan.',
+        markDone: 'Mark as done: {title}',
+        markPending: 'Mark as pending: {title}',
+        doneAnnounce: 'Done: {title}',
+        undone: 'Pending again: {title}',
+        allSetTitle: 'All caught up',
+        allSetText: 'Nothing pending for now. When the next step comes up, you will see it here.',
+        planLink: 'See the full plan',
+        error: 'We could not load your next steps.'
       },
-      more: {
-        title: 'More about your event',
-        subtitle: 'A summary of what you have already set up.',
-        budget: 'Budget',
-        budgetCap: 'Cap',
-        budgetEstimated: 'Estimated',
-        budgetPaid: 'Paid',
-        budgetOver: '+{amount} over the cap',
-        budgetEmpty: 'No expenses noted yet.',
-        budgetOpen: 'See budget',
-        program: 'Day program',
-        programEmpty: 'You have not added moments to the program yet.',
-        programOpen: 'See program',
-        activity: 'Recent activity',
-        activityEmpty: 'When something happens in your event, you will see it here.'
-      }
+      route: {
+        title: 'Road to the event',
+        summary: 'Today, {date}',
+        remaining: '{n} day left | {n} days left',
+        today: 'Today · {date}',
+        planAt: 'Plan at {percent}%',
+        foundation: 'Foundations',
+        invitations: 'Invitations',
+        eventDay: 'Event day',
+        eventFuture: 'Your big day',
+        eventToday: 'It is today!',
+        eventPast: 'Already happened',
+        eventNoDate: 'No date set',
+        phaseDone: 'All done',
+        phaseEmpty: 'No steps for now',
+        phaseCount: '{done} of {total} step | {done} of {total} steps',
+        state: { now: 'today', done: 'completed', current: 'in progress', upcoming: 'upcoming', empty: 'no steps', event: 'event day' },
+        noDate: 'Set your event date to see your road.',
+        error: 'We could not load your road to the event.'
+      },
+      budget: {
+        title: 'Budget',
+        open: 'See budget',
+        paid: 'Paid',
+        remaining: 'Left to pay',
+        cap: 'Cap',
+        over: 'Committed over the cap',
+        uncategorized: 'No category',
+        overEstimate: '+{amount} over',
+        barLabel: 'paid {paid} of {estimated} estimated',
+        legend: 'The bar is what is paid; the mark, what is estimated. In red: you already paid more than estimated.',
+        noItems: 'No expenses written down yet.',
+        emptyTitle: 'Set your budget',
+        emptyText: 'Set a cap and write down the expenses to know how much is paid and how much is left.',
+        emptyCta: 'Start my budget',
+        error: 'We could not load your budget.'
+      },
+      program: {
+        title: 'Day program',
+        open: 'See program',
+        more: 'See the remaining moment | See the {n} remaining moments',
+        emptyTitle: 'Plan the day',
+        emptyText: 'Add the mass, the reception, the waltz and dinner so everyone knows when to arrive.',
+        emptyCta: 'Plan the program',
+        error: 'We could not load the day program.'
+      },
+      dress: {
+        title: 'Dress code',
+        edit: 'Edit',
+        view: 'See',
+        reserved: 'Reserved colors',
+        reservedLabel: 'Reserved colors: {colors}',
+        emptyTitle: 'Set the dress code',
+        emptyText: 'Tell your guests what to wear and which colors to avoid.',
+        emptyCta: 'Set dress code',
+        emptyViewer: 'The dress code has not been set yet.',
+        error: 'We could not load the dress code.'
+      },
+      feed: {
+        title: 'Recent activity',
+        emptyTitle: 'No activity yet',
+        emptyText: 'When someone replies, opens their invitation or changes something in the event, you will see it here.',
+        error: 'We could not load the recent activity.'
+      },
+      denied: 'You do not have permission to open that section of this event.'
     },
     user: {
       logout: 'Sign out'

@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest'
-import { buildPayload, formFromMoment, iconFor, momentErrors, parseEventDate, parseMoment, timeOf, MOMENT_TYPES } from '../utils/program'
+import { buildPayload, formFromMoment, iconFor, momentErrors, parseMoment, timeOf, MOMENT_TYPES } from '../utils/program'
+import { eventDate } from '@/utils/eventDateTime'
 
-const start = parseEventDate('03/20/2027 16:30')
+const start = eventDate({ startDate: '03/20/2027 16:30' })
 const form = (extra = {}) => ({ title: ' Vals ', type: 'waltz', startTime: '19:00', endTime: '', description: '', ...extra })
 
 describe('program helpers', () => {
   it('reads the event date and the moments', () => {
     expect(start.getFullYear()).toBe(2027)
     expect(start.getHours()).toBe(16)
-    expect(parseEventDate('nada')).toBeNull()
     expect(timeOf('2027-03-20 19:05:00')).toBe('19:05')
     expect(parseMoment('2027-03-20 19:05:00').getMinutes()).toBe(5)
   })

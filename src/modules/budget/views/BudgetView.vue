@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { Download, Plus, Search } from 'lucide-vue-next'
 import { UiPageHeader, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
@@ -18,7 +19,8 @@ import ItemSponsorsModal from '../components/ItemSponsorsModal.vue'
 import { FILTERS, filterCounts, filterItems, groupByCategory, itemPayload, paymentPayload } from '../utils/budget'
 
 const { t } = useI18n()
-const { success, error: showError } = useToast()
+const { success, error: showError, toast } = useToast()
+const router = useRouter()
 const eventsStore = useEventsStore()
 const store = useBudgetStore()
 
@@ -53,7 +55,15 @@ async function load() {
     // Who besides the family can have paid a payment; if padrinos cannot load the budget still works.
     padrinoList.value = await PadrinosService.list(event.value.id).then(r => r.data).catch(() => [])
     padrinos.value = padrinoList.value.map(p => ({ id: p.id, name: p.name }))
-  } catch {
+  } catch (e) {
+    // The store already dropped what it had: no amounts of another event stay on screen.
+    padrinoList.value = []
+    padrinos.value = []
+    if (e?.response?.status === 403) {
+      toast({ title: t('app.dashboard.denied'), tone: 'warning' })
+      router?.replace({ name: 'dashboard' })
+      return
+    }
     showError(t('app.budget.loadError'))
   } finally {
     loading.value = false

@@ -19,7 +19,8 @@ import RosterDownloadMenu from '../components/RosterDownloadMenu.vue'
 import SendWizard from '../components/send/SendWizard.vue'
 import { TABS, noCounts, personPayload } from '../utils/roster'
 import { whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/whatsapp'
-import { WIZARD_HANDLES_AUTOMATIC, batchProgress } from '../utils/sendWizard'
+import { INITIAL_CATEGORIES, batchProgress } from '../utils/sendWizard'
+import { wizardModeOf } from '../services/sendFamilies'
 import { useBatchPolling } from '../composables/useBatchPolling'
 import { DELIVERY_FILTERS, deliveryChips, deliveryOf } from '../utils/delivery'
 import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
@@ -63,7 +64,7 @@ const moduleState = computed(() => mockState.value ?? whatsappModuleState(event.
 const waLocked = computed(() => moduleState.value === 'locked')
 const waAutomatic = computed(() => !waLocked.value && moduleState.value !== 'off')
 // The wizard drives both modes: automatic when the WhatsApp module is on and unlocked, manual otherwise (module off or locked).
-const wizardMode = computed(() => (waAutomatic.value && WIZARD_HANDLES_AUTOMATIC ? 'automatic' : 'manual'))
+const wizardMode = computed(() => wizardModeOf(moduleState.value))
 const wizardOpen = ref(false)
 const wizardResume = ref(false)
 const reloadToken = ref(0)
@@ -72,15 +73,20 @@ let pollTimer
 
 const deliveryOfRow = family => deliveryOf(family)
 
+/** Card the wizard starts on; only the Inicio's "remind the pending ones" sets it (`?send=pending`). */
+const sendCategory = ref(null)
+
 /** One family from its menu: the wizard (or the old dialog) opens with her preselected. */
 function sendTo(family) {
   sendIds.value = [family.id]
+  sendCategory.value = null
   wizardResume.value = false
   wizardOpen.value = true
 }
 
 function openSend() {
   sendIds.value = []
+  sendCategory.value = null
   wizardResume.value = false
   wizardOpen.value = true
 }
@@ -137,6 +143,7 @@ async function editFromWizard(guest) {
 
 function wizardClosed() {
   sendIds.value = []
+  sendCategory.value = null
   wizardResume.value = false
   load({ silent: true })
   checkActiveBatch()
@@ -244,9 +251,30 @@ watch(() => event.value?.id, () => {
   load()
   checkActiveBatch()
 })
+/**
+ * `?send=pending` (the Inicio's "Recordar a las N invitaciones pendientes") opens the send wizard on the pending card, and
+ * `?send=unsent` (its "Enviar invitaciones", when nobody got the invitation yet) on the first-send card.
+ * Only those exact values and only for people who can send; it never sends anything by itself, takes no guest ids from
+ * the URL, and the parameter is removed right away so a reload or the back button does not open the wizard again.
+ */
+function openFromQuery() {
+  if (!('send' in route.query)) return
+  const requested = route.query.send
+  const wanted = INITIAL_CATEGORIES.includes(requested) && canEdit.value
+  const query = { ...route.query }
+  delete query.send
+  router.replace({ query })
+  if (!wanted) return
+  sendIds.value = []
+  sendCategory.value = requested
+  wizardResume.value = false
+  wizardOpen.value = true
+}
+
 onMounted(() => {
   load()
   checkActiveBatch()
+  openFromQuery()
 })
 
 const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), count: counts.value[tab.count] })))
@@ -552,6 +580,7 @@ async function copyLink(family) {
       :mode="wizardMode"
       :can-edit="canEdit"
       :preselected-ids="sendIds"
+      :initial-category="sendCategory"
       :reload-token="reloadToken"
       :resume="wizardResume"
       @closed="wizardClosed"

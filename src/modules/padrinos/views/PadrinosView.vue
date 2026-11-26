@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
@@ -17,6 +18,7 @@ import { padrinoPayload, warningTitles, whatsappUrl } from '../utils/padrinos'
 const { t, locale } = useI18n()
 const { success, error: showError, toast } = useToast()
 const eventsStore = useEventsStore()
+const router = useRouter()
 
 const event = computed(() => eventsStore.activeEvent)
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
@@ -37,19 +39,43 @@ const removing = ref(null)
 const money = value => formatMoney(value, currency.value, locale.value)
 const paidShare = computed(() => percent(totals.value.paid, totals.value.committed))
 
+/** What is on screen belongs to this event; nothing of another event stays while (or after failing) to read. */
+let shownFor = null
+let reads = 0
+function clear() {
+  padrinos.value = []
+  totals.value = { committed: 0, paid: 0, remaining: 0, count: 0 }
+  currency.value = 'USD'
+  items.value = []
+  shownFor = null
+}
+
 async function load() {
-  if (!event.value?.id) return
+  const eventId = event.value?.id
+  if (!eventId) return
+  const read = ++reads
+  if (shownFor !== eventId) clear()
   loading.value = true
   try {
-    const [list, budgetItems] = await Promise.all([PadrinosService.list(event.value.id), BudgetService.items(event.value.id)])
+    const [list, budgetItems] = await Promise.all([PadrinosService.list(eventId), BudgetService.items(eventId)])
+    if (read !== reads) return
     padrinos.value = list.data
     totals.value = list.totals
     currency.value = list.currency
     items.value = budgetItems
-  } catch {
+    shownFor = eventId
+  } catch (e) {
+    if (read !== reads) return
+    clear()
+    // Money is not for this role on this event (a viewer): back to the Inicio with the same notice as the route guard.
+    if (e?.response?.status === 403) {
+      toast({ title: t('app.dashboard.denied'), tone: 'warning' })
+      router?.replace({ name: 'dashboard' })
+      return
+    }
     showError(t('app.padrinos.loadError'))
   } finally {
-    loading.value = false
+    if (read === reads) loading.value = false
   }
 }
 onMounted(load)

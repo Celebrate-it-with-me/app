@@ -1,145 +1,165 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
-import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
-import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
-import { useActivityStore } from '@/stores/useActivityStore'
+import RsvpService from '@/modules/rsvp/services/RsvpService'
+import BudgetService from '@/modules/budget/services/BudgetService'
+import timelineService from '@/modules/timeline/services/timelineService'
+import DressCodeService from '@/modules/dress-code/services/DressCodeService'
+import ActivityService from '@/services/ActivityService'
 import TemplatePickerService from '@/modules/template-picker/services/TemplatePickerService'
-import { useToast } from '@/ui'
+import InvitationEditorService from '@/modules/invitation-editor/services/InvitationEditorService'
 import { useUserStore } from '@/stores/useUserStore'
 import EmailVerifyNotice from '@/modules/email-verification/components/EmailVerifyNotice.vue'
 import DashboardHero from './DashboardHero.vue'
-import DashboardStats from './DashboardStats.vue'
+import DashboardRoute from './DashboardRoute.vue'
 import DashboardActivity from './DashboardActivity.vue'
-import DashboardStartLink from './DashboardStartLink.vue'
-import OnboardingService from '@/modules/onboarding/services/OnboardingService'
-import { allDone, normalizeProgress } from '@/modules/onboarding/utils/steps'
+import DashboardNow from './DashboardNow.vue'
 import DashboardRsvp from './DashboardRsvp.vue'
-import DashboardMore from './DashboardMore.vue'
+import DashboardBudget from './DashboardBudget.vue'
+import DashboardProgram from './DashboardProgram.vue'
+import DashboardDressCode from './DashboardDressCode.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
-import { summarizeRsvp, planProgress, readableActivity } from './dashboardLogic'
-import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
+import { planProgress } from './dashboardLogic'
+import { useDashboardBlock } from './useDashboardBlock'
+import { sendCounts, wizardModeOf } from '@/modules/roster/services/sendFamilies'
+import { whatsappModuleState } from '@/modules/roster/utils/whatsapp'
+import { eventMoment } from '@/utils/eventDateTime'
 
-const { t, locale } = useI18n()
-const { error: showError } = useToast()
+const { locale } = useI18n()
 const eventsStore = useEventsStore()
-const rsvpStore = useRsvpStore()
-const budgetStore = useBudgetStore()
-const timelineStore = useTimelineStore()
-const activityStore = useActivityStore()
 const assistantStore = useAssistantStore()
 
 const event = computed(() => eventsStore.activeEvent)
 // A module counts when the event's plan includes it (the API sends `event.modules` from the catalog).
 const moduleActive = key => !!event.value?.modules?.some(m => m.key === key && m.state === 'active')
-const budgetEnabled = computed(() => moduleActive('budget'))
+// Blocks whose module may be missing from old data: without the module list the request goes out and a 403 hides it.
+const moduleOpen = key => !Array.isArray(event.value?.modules) || moduleActive(key)
 
-const rsvp = computed(() => summarizeRsvp(rsvpStore.stats))
+// Blocks with their own request and state (skeleton, error with retry, hidden on a 403): see useDashboardBlock.
+const { status: rsvpStatus, data: rsvpStats, load: loadRsvp } = useDashboardBlock(async eventId => {
+  const response = await RsvpService.loadStats({ eventId })
+  return response?.data?.data ?? response?.data ?? {}
+})
 const published = computed(() => event.value?.status === 'published')
 
 // Only owners and editors (`edit_event`) change the event; a viewer just reads.
 // Owners always see their guests; other roles by the `view_guests` permission (same rule as the collaborators menu).
 const canViewGuests = computed(() => event.value?.userRole === 'owner' || eventsStore.hasPermission('view_guests'))
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
+// Money is for owners and editors (owner decision, 2026-11-26) through the `view_budget` event permission the hydration
+// sends (owners hold every permission): a viewer never asks for the budget nor sees an amount. A 403 hides the block.
+const canSeeBudget = computed(() => moduleActive('budget') && (event.value?.userRole === 'owner' || eventsStore.hasPermission('view_budget')))
 const editTarget = computed(() => (event.value ? { name: 'edit-event', params: { id: event.value.id } } : null))
+
+// "Recordar" promises the number the send wizard will show, so it asks the wizard's own count (sendFamilies.js). Only
+// for people who can send, with the WhatsApp module not locked, and only when the stats say somebody has not answered.
+// Any failure just leaves the confirmations without the button.
+const waState = computed(() => whatsappModuleState(event.value))
+const { status: sendStatus, data: sendData, load: loadSend, hide: hideSend } = useDashboardBlock(eventId => sendCounts(eventId, wizardModeOf(waState.value)), { hideOn: () => true })
+const askSendCounts = computed(() => {
+  const pending = Number(rsvpStats.value?.pending?.guests) || 0
+  return rsvpStatus.value === 'ready' && canEdit.value && canViewGuests.value && waState.value !== 'locked' && pending > 0 ? event.value?.id : null
+})
+watch(askSendCounts, eventId => (eventId ? loadSend(eventId, { quiet: true }) : hideSend()), { immediate: true })
+const remindCounts = computed(() => (sendStatus.value === 'ready' ? sendData.value : null))
 
 // One number for the plan: the assistant's, already loaded by the layout (never recalculated here).
 const plan = computed(() => (assistantStore.eventId === event.value?.id ? planProgress(assistantStore.next) : null))
-const budget = computed(() => {
-  const summary = budgetStore.summary
-  const count = (summary?.categories ?? []).reduce((total, c) => total + c.itemCount, 0) + (summary?.uncategorized?.itemCount ?? 0)
-  return {
-    cap: summary?.cap ?? 0,
-    // The card's "estimated" is what is owed (`owed`), so the warning follows `overCap` (over `owed`), not `estimatedOverCap`.
-    estimated: summary?.totals.owed ?? 0,
-    paid: summary?.totals.paid ?? 0,
-    overByCents: summary?.totals.overCap ? Number(summary.totals.overByCents) || 0 : 0,
-    paidOverByCents: summary?.totals.paidOverCap ? Number(summary.totals.paidOverByCents) || 0 : 0,
-    currency: summary?.currency ?? 'USD',
-    items: count
-  }
+// Each request has its own state, so a slow or failed one never empties the others.
+const blockStatus = status => (status === 'ready' || status === 'error' ? status : 'loading')
+const sameEvent = computed(() => assistantStore.eventId === event.value?.id)
+const planStatus = computed(() => (sameEvent.value ? blockStatus(assistantStore.nextStatus) : 'loading'))
+const routePlan = computed(() => (sameEvent.value ? assistantStore.plan : null))
+const routeStatus = computed(() => (sameEvent.value ? blockStatus(assistantStore.planStatus) : 'loading'))
+const retryPlan = () => assistantStore.fetchNext({ eventId: event.value?.id, lang: locale.value, force: true })
+const retryRoute = () => assistantStore.fetchPlan({ eventId: event.value?.id, lang: locale.value })
+const templateTo = { name: 'invitation-editor' }
+const { status: budgetStatus, data: budgetSummary, load: loadBudget, hide: hideBudget } = useDashboardBlock(eventId => BudgetService.summary(eventId))
+
+const { status: programStatus, data: programData, load: loadProgram, hide: hideProgram } = useDashboardBlock(eventId => timelineService.list(eventId))
+const { status: dressStatus, data: dressData, load: loadDress, hide: hideDress } = useDashboardBlock(eventId => DressCodeService.get(eventId))
+
+const { status: activityStatus, data: activityData, load: loadActivity } = useDashboardBlock(async eventId => {
+  const response = await ActivityService.loadDashboardActivities({ eventId })
+  return response?.data?.data ?? []
 })
 
-const program = computed(() =>
-  [...(timelineStore.timelines ?? [])]
-    .map(item => ({ id: item.id, title: item.title, at: new Date(String(item.start_time ?? item.startTime).replace(' ', 'T')), raw: String(item.start_time ?? item.startTime) }))
-    .filter(item => !Number.isNaN(item.at.getTime()))
-    .sort((a, b) => a.at - b.at)
-    .slice(0, 4)
-    .map(item => ({
-      id: item.id,
-      title: item.title,
-      time: formatEventDate(item.raw, 'time', locale.value)
-    }))
-)
-
-// First steps: a calm link while some are pending. A failure here just hides the link.
-const start = ref(null)
-const startLoading = ref(false)
-const showStart = computed(() => start.value && !allDone(start.value))
-// The link's slot is held while its data loads, but only when it was there last time (or never seen): people who
-// finished the first steps would otherwise see the slot appear and collapse on every visit.
-const startKey = id => `quinvite.dashboard.start.${id}`
-const startWasShown = id => {
-  try {
-    return localStorage.getItem(startKey(id)) !== '0'
-  } catch {
-    return true
-  }
-}
-const holdStartSlot = computed(() => startLoading.value && !showStart.value && startWasShown(event.value?.id))
-async function loadStart(eventId) {
-  start.value = null
-  startLoading.value = true
-  try {
-    const data = normalizeProgress(await OnboardingService.progress(eventId))
-    if (eventId === event.value?.id) start.value = data
-  } catch {
-    start.value = null
-  } finally {
-    if (eventId === event.value?.id) {
-      startLoading.value = false
-      try {
-        localStorage.setItem(startKey(eventId), showStart.value ? '1' : '0')
-      } catch {
-        // Storage can be unavailable (private mode): the slot just follows the default.
-      }
-    }
-  }
-}
-
-const activity = computed(() => readableActivity(activityStore.activities ?? []).slice(0, 5))
-
-// The invitation's thumbnail: the preview image of the template in use (the only place the app gets it). Best effort: a
-// failure or a template without image just leaves the hero on its fallback card.
+// The template in use: its name (chip) and its preview image (the invitation's thumbnail) come from the same list. Best
+// effort: a failure or a template without image leaves the hero on its fallback card and without the chip.
 const thumb = ref('')
+const templateName = ref('')
+const templateStatus = ref('ready')
 async function loadThumb(eventId) {
   thumb.value = ''
-  if (!canEdit.value) return
+  templateName.value = ''
+  templateStatus.value = 'loading'
+  // A viewer cannot list templates nor draw the live preview (403): the invitation itself gives the template's name, and
+  // the phone shows its stationery card.
+  if (!canEdit.value) {
+    try {
+      const invitation = await InvitationEditorService.get(eventId)
+      if (eventId !== event.value?.id) return
+      templateName.value = invitation?.template?.name ?? ''
+      templateStatus.value = 'ready'
+    } catch {
+      if (eventId === event.value?.id) templateStatus.value = 'error'
+    }
+    return
+  }
   try {
     const current = (await TemplatePickerService.templates(eventId)).find(item => item.current)
-    if (eventId === event.value?.id) thumb.value = current?.previewImage ?? ''
+    if (eventId !== event.value?.id) return
+    thumb.value = current?.previewImage ?? ''
+    templateName.value = current?.name ?? ''
+    templateStatus.value = 'ready'
   } catch {
     // Viewers and unsupported event types get an error here; the fallback card is fine.
+    if (eventId === event.value?.id) templateStatus.value = 'error'
   }
 }
 
-let loadId = 0
-async function load() {
+// Every block asks in parallel and keeps its own state: no cascade, no shared error toast.
+function load() {
   const current = event.value
   if (!current?.id) return
-  const id = ++loadId
-  loadStart(current.id)
   loadThumb(current.id)
-  const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
-  if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
-  const results = await Promise.allSettled(jobs)
-  if (id === loadId && results.some(r => r.status === 'rejected')) showError(t('app.dashboard.loadError'))
+  // The assistant never throws into the screen: its store keeps a status per request.
+  assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
+  // A revisit refreshes the plan quietly: no skeleton over data that is already on screen.
+  assistantStore.fetchPlan({ eventId: current.id, lang: locale.value, quiet: sameEvent.value && assistantStore.planStatus === 'ready' })
+  loadRsvp(current.id, { quiet: true })
+  if (canSeeBudget.value) loadBudget(current.id, { quiet: true })
+  else hideBudget()
+  if (moduleOpen('timeline')) loadProgram(current.id, { quiet: true })
+  else hideProgram()
+  if (moduleOpen('dress_code')) loadDress(current.id, { quiet: true })
+  else hideDress()
+  loadActivity(current.id, { quiet: true })
 }
 
 watch(() => event.value?.id, load, { immediate: true })
+// The permissions arrive after an event switch (they are per event): the budget follows them without a reload.
+watch(canSeeBudget, can => {
+  if (!event.value?.id) return
+  if (can) loadBudget(event.value.id, { quiet: true })
+  else hideBudget()
+})
+
+/**
+ * Two columns from 1024 px (the prototype): the route goes on top, over both. Below that, one column in the mobile
+ * prototype's order, where "Lo que toca ahora" comes before the route. The route is placed in ONE spot per layout (not
+ * moved with CSS `order`), so the reading and tab order always match what is on screen.
+ */
+const WIDE = '(min-width: 1024px)'
+const wideQuery = typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(WIDE) : null
+const wide = ref(!!wideQuery?.matches)
+const syncWide = e => (wide.value = e.matches)
+onMounted(() => wideQuery?.addEventListener?.('change', syncWide))
+// A viewer has neither "Lo que toca ahora" nor the budget: the program moves under the confirmations so the two columns
+// stay balanced (the order on a phone is the same either way).
+const programLeft = computed(() => wide.value && !canEdit.value && budgetStatus.value === 'hidden')
+onBeforeUnmount(() => wideQuery?.removeEventListener?.('change', syncWide))
 
 // The permanent notice follows the API's flag; read it fresh on every visit so it disappears once the email is verified.
 onMounted(() => useUserStore().syncEmailVerified())
@@ -154,23 +174,90 @@ onMounted(() => useUserStore().syncEmailVerified())
       :start-date="eventMoment(event)"
       :timezone="event.timezone"
       :plan="plan"
+      :plan-status="planStatus"
       :published="published"
       :can-view-guests="canViewGuests"
       :image="thumb"
+      :template-name="templateName"
+      :template-status="templateStatus"
       :can-edit="canEdit"
       :edit-to="editTarget"
+      :template-to="templateTo"
+      @retry-plan="retryPlan"
     />
 
-    <DashboardStartLink v-if="showStart" :done="start.done" :total="start.total" />
-    <div v-else-if="holdStartSlot" class="mt-3 h-[4.125rem] rounded-xl border border-line bg-white" aria-hidden="true" data-testid="start-link-slot" />
+    <DashboardRoute
+      v-if="wide"
+      class="mt-4 lg:mt-6"
+      :plan="routePlan"
+      :status="routeStatus"
+      :start-date="eventMoment(event)"
+      :timezone="event.timezone"
+      :can-edit="canEdit"
+      :edit-to="editTarget"
+      @retry="retryRoute"
+    />
 
-    <DashboardStats class="mt-6" :rsvp="rsvp" :can-edit="canEdit" />
-
-    <div class="mt-4 grid gap-4 lg:grid-cols-3 lg:items-start">
-      <DashboardRsvp v-if="rsvp.people" class="lg:col-span-2" :rsvp="rsvp" />
-      <DashboardActivity :activity="activity" :class="rsvp.people ? '' : 'lg:col-span-3'" />
+    <div class="mt-4 grid gap-4 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]" data-testid="dashboard-columns">
+      <div class="flex min-w-0 flex-col gap-4 lg:gap-6" data-testid="dashboard-main">
+        <DashboardNow v-if="canEdit" :key="event.id" :next="sameEvent ? assistantStore.next : null" :status="planStatus" :event-id="event.id" @retry="retryPlan" />
+        <DashboardRoute
+          v-if="!wide"
+          :plan="routePlan"
+          :status="routeStatus"
+          :start-date="eventMoment(event)"
+          :timezone="event.timezone"
+          :can-edit="canEdit"
+          :edit-to="editTarget"
+          @retry="retryRoute"
+        />
+        <DashboardRsvp
+          v-if="rsvpStatus !== 'hidden'"
+          :stats="rsvpStats"
+          :status="rsvpStatus"
+          :can-edit="canEdit"
+          :can-view-guests="canViewGuests"
+          :send-counts="remindCounts"
+          :timezone="event.timezone"
+          @retry="loadRsvp(event.id)"
+        />
+        <DashboardBudget
+          v-if="budgetStatus !== 'hidden'"
+          :summary="budgetSummary"
+          :status="budgetStatus"
+          :can-edit="canEdit"
+          @retry="loadBudget(event.id)"
+        />
+        <DashboardProgram
+          v-if="programStatus !== 'hidden' && programLeft"
+          :moments="programData"
+          :status="programStatus"
+          :can-edit="canEdit"
+          @retry="loadProgram(event.id)"
+        />
+      </div>
+      <div class="flex min-w-0 flex-col gap-4 lg:gap-6" data-testid="dashboard-side">
+        <DashboardProgram
+          v-if="programStatus !== 'hidden' && !programLeft"
+          :moments="programData"
+          :status="programStatus"
+          :can-edit="canEdit"
+          @retry="loadProgram(event.id)"
+        />
+        <DashboardDressCode
+          v-if="dressStatus !== 'hidden'"
+          :dress-code="dressData"
+          :status="dressStatus"
+          :can-edit="canEdit"
+          @retry="loadDress(event.id)"
+        />
+        <DashboardActivity
+          v-if="activityStatus !== 'hidden'"
+          :activity="activityData"
+          :status="activityStatus"
+          @retry="loadActivity(event.id)"
+        />
+      </div>
     </div>
-
-    <DashboardMore :budget-enabled="budgetEnabled" :budget="budget" :program="program" />
   </div>
 </template>
