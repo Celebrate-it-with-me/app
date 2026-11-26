@@ -181,7 +181,7 @@ onMounted(() => useUserStore().syncEmailVerified())
       @retry="retryRoute"
     />
 
-    <div class="mt-4 grid gap-4 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start lg:gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]" data-testid="dashboard-columns">
+    <div class="mt-4 grid gap-4 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]" data-testid="dashboard-columns">
       <div class="flex min-w-0 flex-col gap-4 lg:gap-6" data-testid="dashboard-main">
         <DashboardNow v-if="canEdit" :key="event.id" :next="sameEvent ? assistantStore.next : null" :status="planStatus" :event-id="event.id" @retry="retryPlan" />
         <DashboardRoute

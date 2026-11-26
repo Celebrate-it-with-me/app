@@ -94,7 +94,7 @@ async function toggle(row) {
 <template>
   <section
     v-if="visible"
-    class="min-w-0 rounded-xl border-2 border-rose-600 bg-white p-5 shadow-card sm:p-6"
+    class="@container min-w-0 rounded-xl border-2 border-rose-600 bg-white p-5 shadow-card sm:p-6"
     aria-labelledby="now-title"
     data-testid="dashboard-now"
   >
@@ -128,7 +128,7 @@ async function toggle(row) {
           <li
             v-for="row in rows"
             :key="row.key"
-            class="grid grid-cols-[2.75rem_minmax(0,1fr)] items-start gap-x-2 py-2 sm:grid-cols-[2.75rem_minmax(0,1fr)_auto]"
+            class="grid grid-cols-[2.75rem_minmax(0,1fr)] items-start gap-x-2 py-2 @md:grid-cols-[2.75rem_minmax(0,1fr)_auto]"
             :data-testid="`now-${row.key}`"
             :data-done="row.done"
           >
@@ -159,7 +159,7 @@ async function toggle(row) {
             <router-link
               v-if="!row.done && target(row)"
               :to="target(row)"
-              class="col-start-2 inline-flex min-h-11 items-center gap-1 justify-self-start rounded-md text-sm font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600 sm:col-start-3 sm:px-1"
+              class="col-start-2 inline-flex min-h-11 items-center gap-1 justify-self-start rounded-md text-sm font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600 @md:col-start-3 @md:px-1"
               data-testid="now-go"
             >
               {{ t(row.moduleLocked ? 'app.dashboard.now.unlock' : 'app.dashboard.now.go') }}
