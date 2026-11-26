@@ -69,7 +69,7 @@ const determinatePostLoginRoute = async () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-cream-100 text-ink-900">
+  <div class="app-shell flex min-h-screen flex-col bg-cream-100 text-ink-900">
     <div class="sticky top-0 z-40">
     <ImpersonationBanner v-if="impersonation.active" />
     <header class="border-b border-line/70 bg-cream-100/90 backdrop-blur">

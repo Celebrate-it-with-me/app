@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { FileSpreadsheet, Plus, Search, Send } from 'lucide-vue-next'
-import { UiPageHeader, UiBadge, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast } from '@/ui'
+import { UiPageHeader, UiBadge, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { planLimitFrom } from '@/utils/planLimit'
@@ -21,8 +21,8 @@ import { TABS, noCounts, personPayload } from '../utils/roster'
 import { whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/whatsapp'
 import { WIZARD_HANDLES_AUTOMATIC, batchProgress } from '../utils/sendWizard'
 import { useBatchPolling } from '../composables/useBatchPolling'
-import { parseEventDate } from '@/views/internal/dashboard/dashboardLogic'
 import { DELIVERY_FILTERS, deliveryChips, deliveryOf } from '../utils/delivery'
+import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
 const { t, locale } = useI18n()
 const route = useRoute()
@@ -118,8 +118,7 @@ function resumeSend() {
 }
 
 const eventDateLabel = computed(() => {
-  const date = parseEventDate(event.value?.startDate)
-  return date ? new Intl.DateTimeFormat(locale.value, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date) : ''
+  return formatEventDate(eventMoment(event.value), 'weekdayDate', locale.value, event.value?.timezone)
 })
 
 /** The wizard asks to fix a guest's phone: the same form as the list, over the wizard. */
@@ -368,7 +367,7 @@ async function copyLink(family) {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl" :class="canSend && !inlineSendVisible && 'pb-[calc(12.5rem+env(safe-area-inset-bottom))] sm:pb-0'">
+  <UiPage :class="canSend && !inlineSendVisible && 'pb-[calc(12.5rem+env(safe-area-inset-bottom))] sm:pb-0'">
     <UiPageHeader :title="t('app.roster.title')" :subtitle="counter">
       <template v-if="canEdit" #actions>
         <div v-if="canSend" class="hidden sm:block">
@@ -433,7 +432,7 @@ async function copyLink(family) {
         />
       </div>
 
-      <div v-if="!emptyList" class="overflow-x-auto" role="group" :aria-label="t('app.roster.filters.answers')">
+      <div v-if="!emptyList" role="group" :aria-label="t('app.roster.filters.answers')">
         <UiTabs v-model="status" :tabs="tabs" />
       </div>
 
@@ -580,5 +579,5 @@ async function copyLink(family) {
         <UiButton variant="danger" :loading="saving" @click="confirmRemove">{{ t('app.roster.menu.remove') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

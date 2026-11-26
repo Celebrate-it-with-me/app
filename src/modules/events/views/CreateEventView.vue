@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { UiPageHeader, UiCard, UiField, UiInput, UiRadioGroup, UiButton, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiField, UiInput, UiRadioGroup, UiButton, useToast, UiPage, UiDateTimeField } from '@/ui'
 import { useEventsStore } from '../stores/useEventsStore'
 import { slugify, inputToApi, SLUG_PATTERN, fieldErrors } from '../utils/eventForm'
 import EventAddressField from '../components/EventAddressField.vue'
@@ -104,7 +104,7 @@ async function submit() {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-2xl">
+  <UiPage width="form">
     <UiPageHeader :title="t('events.create.title')" :subtitle="t('events.create.subtitle')" back="/dashboard/events" :back-label="t('events.edit.back')" />
 
     <UiCard>
@@ -118,7 +118,7 @@ async function submit() {
         </UiField>
 
         <UiField :label="t('events.create.date')" :error="errors.startDate" id="event_start" required>
-          <UiInput v-model="form.startDate" type="datetime-local" />
+          <UiDateTimeField v-model="form.startDate" mode="datetime" />
         </UiField>
 
         <UiField :label="t('payments.planLabel')" id="event_plan">
@@ -133,5 +133,5 @@ async function submit() {
         </div>
       </form>
     </UiCard>
-  </div>
+  </UiPage>
 </template>

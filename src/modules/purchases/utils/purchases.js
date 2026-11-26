@@ -1,3 +1,5 @@
+import { formatEventDate } from '@/utils/eventDateTime'
+
 /** Badge tone and i18n key of a purchase row. */
 export function purchaseState(purchase) {
   return purchase.status === 'refunded'
@@ -5,8 +7,7 @@ export function purchaseState(purchase) {
     : { tone: 'success', key: 'paid' }
 }
 
-/** Date in the interface language: "13 nov 2026" / "Nov 13, 2026". */
+/** Date in the interface language: "13 nov 2026" / "Nov 13, 2026". `paidAt` is an instant (ISO with offset): shown in the browser's zone. */
 export function shortDate(iso, locale = 'es') {
-  if (!iso) return ''
-  return new Date(iso).toLocaleDateString(locale === 'es' ? 'es-US' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' })
+  return formatEventDate(iso, 'dateShort', locale)
 }

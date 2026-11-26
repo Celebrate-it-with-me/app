@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Check, Clock, EyeOff, Lock, MoreHorizontal, RotateCcw, Ban } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiDropdown } from '@/ui'
 import { SNOOZE_OPTIONS, resolveTaskRoute } from '../utils/assistant'
+import { formatEventDate } from '@/utils/eventDateTime'
 
 const props = defineProps({
   task: { type: Object, required: true },
@@ -37,9 +38,8 @@ const target = computed(() => (locked.value ? `/dashboard/unlock/${props.task.mo
 const showReason = computed(() => !isDone.value && !props.hiddenRow && !locked.value && !!props.task.reason)
 const blockers = computed(() => props.task.blockedBy.map(k => props.titles[k]).filter(Boolean))
 const snoozedUntil = computed(() => {
-  const d = props.task.snoozedUntil ? new Date(props.task.snoozedUntil) : null
-  if (!d || Number.isNaN(d.getTime())) return ''
-  return t('app.assistant.task.snoozedUntil', { date: d.toLocaleDateString(locale.value, { day: 'numeric', month: 'long' }) })
+  const date = formatEventDate(props.task.snoozedUntil, 'dayMonth', locale.value)
+  return date ? t('app.assistant.task.snoozedUntil', { date }) : ''
 })
 // A task the detector sees as done cannot be undone by hand: `reset` would change nothing.
 const canUndo = computed(() => isDone.value && props.task.doneBy !== 'data')

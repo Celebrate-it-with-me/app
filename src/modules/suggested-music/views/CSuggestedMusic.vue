@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ChevronDown, Download } from 'lucide-vue-next'
 import ModuleTemplateGate from '@/modules/template-picker/components/ModuleTemplateGate.vue'
-import { UiPageHeader, UiButton, UiDropdown, UiModal, UiSkeleton } from '@/ui'
+import { UiPageHeader, UiButton, UiDropdown, UiModal, UiSkeleton, UiPage } from '@/ui'
 import { useSuggestedMusicAdminController } from '@/modules/suggested-music/composables/useSuggestedMusicAdminController'
 import SuggestedMusicSearchAdd from '@/modules/suggested-music/components/SuggestedMusicSearchAdd.vue'
 import SuggestedMusicList from '@/modules/suggested-music/components/SuggestedMusicList.vue'
@@ -54,7 +54,7 @@ const exportItems = computed(() => [
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl">
+  <UiPage width="wide">
     <UiPageHeader :title="t('app.music.title')" :subtitle="t('app.music.subtitle')">
       <template #actions>
         <UiDropdown :items="exportItems">
@@ -130,5 +130,5 @@ const exportItems = computed(() => [
         </div>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

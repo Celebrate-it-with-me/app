@@ -26,7 +26,7 @@ const id = uniqueId('switch')
       :id="id"
       :model-value="modelValue"
       :disabled="disabled"
-      class="relative inline-flex h-7 w-12 shrink-0 items-center rounded-full bg-ink-300 transition-colors data-[state=checked]:bg-rose-600 focus-visible:outline-2 focus-visible:outline-rose-400 focus-visible:outline-offset-2"
+      class="touch-target relative inline-flex h-7 w-12 shrink-0 items-center rounded-full bg-ink-300 transition-colors data-[state=checked]:bg-rose-600 focus-visible:outline-2 focus-visible:outline-rose-400 focus-visible:outline-offset-2"
       @update:model-value="value => emit('update:modelValue', value)"
     >
       <SwitchThumb

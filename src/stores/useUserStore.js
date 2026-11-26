@@ -1,7 +1,6 @@
 import { LOCALES, setLocale } from '@/locales/i18n'
 import { defineStore } from 'pinia'
 import UserService from '../services/UserService'
-import { format } from 'date-fns'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { smartResetAllStores } from '@/utils/reset'
 
@@ -326,18 +325,6 @@ export const useUserStore = defineStore('userStore', {
      */
     isAuthenticated(state) {
       return state.userId != null && state.userId !== ''
-    },
-
-    /**
-     * Get formatted last login date
-     * @returns {string} Formatted last login date or empty string if no login date
-     */
-    lastLoginDate() {
-      if (!this.lastLogin) {
-        return ''
-      }
-
-      return format(new Date(this.lastLogin.login_time), "MMMM dd, yyyy 'at' h:mm a")
     }
   }
 })

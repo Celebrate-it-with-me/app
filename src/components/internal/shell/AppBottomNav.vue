@@ -8,7 +8,7 @@ import { useSignOut } from './useSignOut'
 import { UiModal } from '@/ui'
 import { cx } from '@/ui/utils'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { isActivePath } from './navModules'
+import { activeTabKey, isActivePath } from './navModules'
 
 /**
  * Phone navigation (below `lg`, where the sidebar takes over): Home, "Tu invitación", Guests, "Organización" and
@@ -18,7 +18,7 @@ import { isActivePath } from './navModules'
 const { t } = useI18n()
 const route = useRoute()
 const eventsStore = useEventsStore()
-const { mobileTabs } = useAppNav()
+const { mobileTabs, sections } = useAppNav()
 const signOut = useSignOut()
 
 const sheetKey = ref(null)
@@ -36,10 +36,8 @@ const canManageCollaborators = computed(
   () => eventsStore.activeEvent?.userRole === 'owner' || eventsStore.hasPermission('manage_collaborators')
 )
 
-const linkActive = tab =>
-  tab.routeNames ? tab.routeNames.includes(route.name) : isActivePath(route.path, tab.to)
-const sheetActive = tab => tab.items.some(item => isActivePath(route.path, item.to))
-const isTabActive = tab => (tab.kind === 'link' ? linkActive(tab) : sheetKey.value === tab.key || sheetActive(tab))
+const activeKey = computed(() => activeTabKey(route.path, mobileTabs.value, sections.value, route.name))
+const isTabActive = tab => activeKey.value === tab.key || sheetKey.value === tab.key
 
 const tabClass = active =>
   cx(

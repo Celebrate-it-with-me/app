@@ -16,6 +16,7 @@ import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { cx } from '@/ui/utils'
 import { parseEventDate, daysUntil } from '@/views/internal/dashboard/dashboardLogic'
 import EventStatusBadge from '@/modules/events/components/EventStatusBadge.vue'
+import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
 /**
  * The event you are working on, as a control in the top bar: label, name, a quiet countdown and the
@@ -29,8 +30,7 @@ const eventsStore = useEventsStore()
 const active = computed(() => eventsStore.activeEvent)
 
 const shortDate = event => {
-  const date = parseEventDate(event?.startDate)
-  return date ? new Intl.DateTimeFormat(locale.value, { day: 'numeric', month: 'short', year: 'numeric' }).format(date) : ''
+  return formatEventDate(eventMoment(event), 'dateShort', locale.value, event?.timezone)
 }
 
 // Quiet on purpose: small, regular weight, no colour. It is information, not an alert.

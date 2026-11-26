@@ -19,7 +19,7 @@ defineProps({
       <router-link
         v-if="back"
         :to="back"
-        class="-ml-2 mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink-500 hover:bg-cream-200"
+        class="touch-target relative -ml-2 mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink-500 hover:bg-cream-200"
         :aria-label="backLabel"
       >
         <ChevronLeft class="h-5 w-5" aria-hidden="true" />

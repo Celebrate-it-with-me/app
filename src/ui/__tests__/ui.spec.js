@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import { UiButton, UiField, UiInput, UiBadge, UiPagination, UiAvatar, UiSelect, useToast } from '@/ui'
+import { UiButton, UiSwitch, UiField, UiInput, UiBadge, UiPagination, UiAvatar, UiSelect, useToast } from '@/ui'
 import { initials, avatarTone, cx } from '@/ui/utils'
 
 describe('utils', () => {
@@ -25,6 +25,16 @@ describe('UiButton', () => {
   it('renders an anchor when href is given', () => {
     const wrapper = mount(UiButton, { props: { href: 'https://quinvite.com' } })
     expect(wrapper.get('a').attributes('href')).toBe('https://quinvite.com')
+  })
+})
+
+describe('touch targets', () => {
+  it('grows the small icon button, the switch, and leaves the 44 px ones alone', () => {
+    expect(mount(UiButton, { props: { icon: true, size: 'sm' } }).classes()).toContain('touch-target')
+    expect(mount(UiButton, { props: { icon: true, size: 'md' } }).classes()).not.toContain('touch-target')
+    expect(mount(UiButton, { props: { size: 'sm' } }).classes()).not.toContain('touch-target')
+    const wrapper = mount(UiSwitch, { props: { label: 'x' } })
+    expect(wrapper.get('[role=switch]').classes()).toContain('touch-target')
   })
 })
 

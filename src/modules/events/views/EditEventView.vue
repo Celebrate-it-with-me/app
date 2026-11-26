@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { SearchX } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiField, UiInput, UiTextarea, UiButton, UiModal, UiSkeleton, UiEmptyState, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiField, UiInput, UiTextarea, UiButton, UiModal, UiSkeleton, UiEmptyState, useToast, UiPage, UiDateTimeField } from '@/ui'
 import { useEventsStore } from '../stores/useEventsStore'
 import { formFromEvent, buildPatch, SLUG_PATTERN, fieldErrors } from '../utils/eventForm'
 import { guestOverflow, planLimitFrom } from '@/utils/planLimit'
@@ -218,7 +218,7 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-2xl">
+  <UiPage width="form">
     <div v-if="loading" class="flex flex-col gap-4" aria-busy="true">
       <UiSkeleton height="3rem" width="60%" />
       <UiSkeleton height="22rem" />
@@ -246,10 +246,10 @@ async function confirmDelete() {
 
           <div class="grid gap-5 sm:grid-cols-2">
             <UiField :label="t('events.edit.start')" :error="errors.startDate" id="event_start" required>
-              <UiInput v-model="form.startDate" type="datetime-local" :disabled="!canEdit" />
+              <UiDateTimeField v-model="form.startDate" mode="datetime" :disabled="!canEdit" />
             </UiField>
             <UiField :label="t('events.edit.end')" :hint="t('events.edit.endHint')" :error="errors.endDate" id="event_end">
-              <UiInput v-model="form.endDate" type="datetime-local" :disabled="!canEdit" />
+              <UiDateTimeField v-model="form.endDate" mode="datetime" :disabled="!canEdit" />
             </UiField>
           </div>
 
@@ -337,5 +337,5 @@ async function confirmDelete() {
         <UiButton variant="danger" :disabled="!canDelete" :loading="deleting" @click="confirmDelete">{{ t('events.danger.confirm') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

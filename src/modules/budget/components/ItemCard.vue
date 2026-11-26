@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { MoreHorizontal, Pencil, Trash2, WalletCards, ChevronDown, Phone, HandHeart } from 'lucide-vue-next'
 import { UiCard, UiBadge, UiButton, UiDropdown } from '@/ui'
 import { STATUS_TONE, formatMoney, percent } from '../utils/budget'
+import { formatEventDate } from '@/utils/eventDateTime'
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -18,7 +19,7 @@ const { t, locale } = useI18n()
 const open = ref(false)
 const money = value => formatMoney(value, props.currency, locale.value)
 const share = computed(() => percent(props.item.paid, props.item.owed))
-const date = value => (value ? new Intl.DateTimeFormat(locale.value === 'es' ? 'es-US' : 'en-US', { dateStyle: 'medium' }).format(new Date(`${value}T00:00:00`)) : '')
+const date = value => formatEventDate(value, 'dateShort', locale.value)
 
 const menu = computed(() => [
   { label: t('app.budget.item.edit'), icon: Pencil, onSelect: () => emit('edit', props.item) },

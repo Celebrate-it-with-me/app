@@ -2,13 +2,14 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Pencil, Trash2, Plus, CalendarClock } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useTimelineStore } from '../stores/timelineStore'
 import MomentForm from '../components/MomentForm.vue'
-import { buildPayload, iconFor, parseEventDate, timeOf } from '../utils/program'
+import { buildPayload, iconFor, parseEventDate } from '../utils/program'
+import { formatEventDate } from '@/utils/eventDateTime'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { success, error: showError } = useToast()
 const eventsStore = useEventsStore()
 const store = useTimelineStore()
@@ -81,11 +82,13 @@ async function confirmRemove() {
   }
 }
 
-const hours = moment => (moment.endTime ? `${timeOf(moment.startTime)} – ${timeOf(moment.endTime)}` : timeOf(moment.startTime))
+// Only what is drawn is 12 h; `timeOf` stays 24 h because the form's time input needs it.
+const clock = value => formatEventDate(value, 'time', locale.value)
+const hours = moment => (moment.endTime ? `${clock(moment.startTime)} – ${clock(moment.endTime)}` : clock(moment.startTime))
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl">
+  <UiPage>
     <UiPageHeader :title="t('app.timeline.title')" :subtitle="t('app.timeline.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-3">
@@ -149,5 +152,5 @@ const hours = moment => (moment.endTime ? `${timeOf(moment.startTime)} – ${tim
         <UiButton variant="danger" :loading="saving" @click="confirmRemove">{{ t('app.timeline.remove') }}</UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

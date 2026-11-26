@@ -8,6 +8,7 @@ import InvitationMiniature from '@/modules/template-picker/components/Invitation
 import WhatsappService from '../../services/WhatsappService'
 import { allowedTemplates, keepsLink, localeCounts, renderMessage, wizardSendErrorKey } from '../../utils/sendWizard'
 import { sendErrorKey } from '../../utils/whatsapp'
+import { formatEventDate } from '@/utils/eventDateTime'
 
 /**
  * Step 2 · Preview (contract 3.4): the real cover, the message as it will arrive (a bubble), the template and the
@@ -31,7 +32,7 @@ const props = defineProps({
   canEdit: { type: Boolean, default: true }
 })
 const emit = defineEmits(['update:template', 'update:text', 'restore', 'exclude', 'unapproved'])
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const automatic = computed(() => props.mode === 'automatic')
 const choosing = ref(false)
@@ -94,7 +95,8 @@ const bubbleText = computed(() => {
 })
 const linkPreview = computed(() => result.value?.linkPreview ?? null)
 const buttons = computed(() => (automatic.value ? result.value?.buttons ?? [] : []))
-const time = computed(() => new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(new Date()))
+// The clock of the sample bubble: now, in the app's language (12 h), not the browser's.
+const time = computed(() => formatEventDate(new Date().toISOString(), 'time', locale.value))
 const missingLocales = computed(() => [...new Set(props.missing.map(f => f.locale))])
 </script>
 
@@ -121,7 +123,7 @@ const missingLocales = computed(() => [...new Set(props.missing.map(f => f.local
       </div>
     </div>
 
-    <div v-if="languages.length > 1" class="mt-4 overflow-x-auto" role="group" :aria-label="t('app.whatsapp.wizard.preview.language')">
+    <div v-if="languages.length > 1" class="mt-4" role="group" :aria-label="t('app.whatsapp.wizard.preview.language')">
       <UiTabs :model-value="sample?.locale" :tabs="languageTabs" @update:model-value="pickLanguage" />
     </div>
 

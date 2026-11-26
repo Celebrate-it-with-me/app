@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { UiButton, UiField, UiInput, UiModal, UiTextarea } from '@/ui'
+import { UiButton, UiField, UiInput, UiModal, UiTextarea, UiDateTimeField } from '@/ui'
 import { validateCustomTask } from '../utils/assistant'
 
 const props = defineProps({
@@ -62,7 +62,7 @@ function submit() {
         <UiTextarea v-model="form.notes" :rows="3" :maxlength="500" />
       </UiField>
       <UiField :label="t('app.assistant.custom.dueLabel')" :hint="t('app.assistant.custom.optional')" :error="errors.dueDate">
-        <UiInput v-model="form.dueDate" type="date" />
+        <UiDateTimeField v-model="form.dueDate" mode="date" />
       </UiField>
     </form>
     <template #footer>

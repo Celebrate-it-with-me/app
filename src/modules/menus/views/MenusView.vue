@@ -1,7 +1,7 @@
 <script setup>
 import { useI18n } from 'vue-i18n'
 import { Plus } from 'lucide-vue-next'
-import { UiPageHeader, UiButton, UiBadge } from '@/ui'
+import { UiPageHeader, UiButton, UiBadge, UiPage } from '@/ui'
 import MenusTable from '@/modules/menus/components/MenusTable.vue'
 import GuestsMenu from '@/modules/menus/components/GuestsMenu.vue'
 import { useMenusView } from '@/modules/menus/composables/useMenusView'
@@ -11,7 +11,7 @@ const { loading, guestMenuCount, createMenu } = useMenusView()
 </script>
 
 <template>
-  <div class="mx-auto max-w-5xl">
+  <UiPage width="wide">
     <UiPageHeader :title="t('app.menus.title')" :subtitle="t('app.menus.subtitle')">
       <template #actions>
         <UiButton :disabled="loading" @click="createMenu">
@@ -33,5 +33,5 @@ const { loading, guestMenuCount, createMenu } = useMenusView()
       </div>
       <GuestsMenu class="mt-3" :loading="loading" />
     </section>
-  </div>
+  </UiPage>
 </template>

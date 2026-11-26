@@ -3,7 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { Lock, UserPlus, UsersRound } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useToast } from '@/ui'
+import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import CollaboratorsService from '@/services/CollaboratorsService'
 import { isModuleLocked } from '@/utils/moduleLocked'
@@ -129,7 +129,7 @@ const confirmOpen = computed({
 </script>
 
 <template>
-  <div v-if="event">
+  <UiPage width="wide" v-if="event">
     <UiPageHeader :title="t('app.collaborators.title')" :subtitle="t('app.collaborators.subtitle')">
       <template v-if="manage" #actions>
         <UiButton :disabled="locked" @click="openInvite"><UserPlus class="h-5 w-5" aria-hidden="true" />{{ t('app.collaborators.add') }}</UiButton>
@@ -190,5 +190,5 @@ const confirmOpen = computed({
         </UiButton>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

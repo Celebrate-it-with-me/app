@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Download, Plus, Trash2 } from 'lucide-vue-next'
-import { UiButton, UiCard, UiModal, UiPageHeader, UiStat, UiTabs } from '@/ui'
+import { UiButton, UiCard, UiModal, UiPageHeader, UiStat, UiTabs, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useSeatingController } from '@/modules/seating/composables/useSeatingController'
 import ModuleTemplateNotice from '@/modules/template-picker/components/ModuleTemplateNotice.vue'
@@ -31,7 +31,7 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
 </script>
 
 <template>
-  <div class="mx-auto max-w-6xl">
+  <UiPage width="wide">
     <UiPageHeader :title="t('app.seating.title')" :subtitle="t('app.seating.subtitle')">
       <template #actions>
         <div class="flex flex-wrap gap-2">
@@ -212,5 +212,5 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
       @close="c.guestToRemove.value = null"
       @confirm="c.confirmRemoveGuest()"
     />
-  </div>
+  </UiPage>
 </template>

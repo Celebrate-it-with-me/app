@@ -3,13 +3,14 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { CalendarDays, ChevronDown, ListChecks, Pencil, Plus, Trash2 } from 'lucide-vue-next'
-import { UiBadge, UiButton, UiCard, UiEmptyState, UiModal, UiPageHeader, UiSkeleton, useToast } from '@/ui'
+import { UiBadge, UiButton, UiCard, UiEmptyState, UiModal, UiPageHeader, UiSkeleton, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import { useAssistantStore } from '../stores/useAssistantStore'
 import { apiFieldErrors, planIsEmpty, titleIndex } from '../utils/assistant'
 import PlanTaskRow from '../components/PlanTaskRow.vue'
 import CustomTaskModal from '../components/CustomTaskModal.vue'
+import { formatEventDate } from '@/utils/eventDateTime'
 
 const { t, locale } = useI18n()
 const { success, error: showError } = useToast()
@@ -144,8 +145,7 @@ const deleteOpen = computed({
 
 const dueText = item => {
   if (!item.dueDate) return ''
-  const [y, m, d] = item.dueDate.split('-').map(Number)
-  return t('app.assistant.custom.due', { date: new Date(y, m - 1, d).toLocaleDateString(locale.value, { day: 'numeric', month: 'long' }) })
+  return t('app.assistant.custom.due', { date: formatEventDate(item.dueDate, 'dayMonth', locale.value) })
 }
 
 const hasContent = computed(() => !planIsEmpty(plan.value))
@@ -153,7 +153,7 @@ const noteKey = computed(() => ({ compressed: 'compressed', event_past: 'eventPa
 </script>
 
 <template>
-  <div v-if="event">
+  <UiPage width="wide" v-if="event">
     <UiPageHeader :title="t('app.assistant.plan.title')" :subtitle="t('app.assistant.plan.subtitle')" :eyebrow="event.eventName" />
 
     <!-- Loading -->
@@ -322,5 +322,5 @@ const noteKey = computed(() => ({ compressed: 'compressed', event_past: 'eventPa
         </div>
       </template>
     </UiModal>
-  </div>
+  </UiPage>
 </template>

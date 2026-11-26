@@ -16,13 +16,13 @@ export function useAppNav() {
   )
   const items = computed(() => byGroup.value.flatMap(group => group.items))
 
+  /** The same sections in the shape `buildMobileNav` and `activeTabKey` read. */
+  const sections = computed(() => byGroup.value.map(group => ({ section: group.group, items: group.items })))
+
   // The phone's bottom bar: Home, "Tu invitación", Guests, "Organización" (sheet) and "Más" (sheet).
   const mobileTabs = computed(() =>
-    buildMobileNav(
-      byGroup.value.map(group => ({ section: group.group, items: group.items })),
-      eventsStore.activeEvent?.id ?? null
-    )
+    buildMobileNav(sections.value, eventsStore.activeEvent?.id ?? null)
   )
 
-  return { items, byGroup, mobileTabs }
+  return { items, byGroup, sections, mobileTabs }
 }

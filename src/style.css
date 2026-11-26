@@ -378,6 +378,32 @@
   animation: ui-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* Scrollable row without the scrollbar (pair it with UiScrollFade so the edge still hints at more). */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/*
+ * Touch target: on touch screens, grow the tappable area of a small control to 44x44 without changing how it looks.
+ * The element must be positioned (add `relative`); on a mouse nothing changes.
+ */
+@utility touch-target {
+  @media (pointer: coarse) {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: max(100%, 44px);
+      height: max(100%, 44px);
+      translate: -50% -50%;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-in,
   .animate-out,
@@ -409,4 +435,10 @@
   .guide-pulse {
     animation: none;
   }
+}
+
+/* Panel only: reserve the scrollbar width so the layout does not shift between short and long pages.
+   Scoped to the shell because public invitations have full-bleed heroes. */
+html:has(.app-shell) {
+  scrollbar-gutter: stable;
 }
