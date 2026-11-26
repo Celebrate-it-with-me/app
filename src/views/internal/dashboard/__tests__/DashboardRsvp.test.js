@@ -84,6 +84,12 @@ describe('DashboardRsvp', () => {
     expect(none(withCounts({}, { canEdit: false }))).toBe(true)
     expect(none(withCounts({ pending: 0, pendingUnsent: 3 }, { canViewGuests: false }))).toBe(true)
   })
+  it('reminds with the rose-700 outline button, without icon', () => {
+    const w = mountRsvp({ sendCounts: { pending: 3, pendingUnsent: 0, unsent: 0, rsvpOpen: true, archived: false }, canEdit: true, canViewGuests: true })
+    const remind = w.get('[data-testid=rsvp-remind]')
+    expect(remind.classes()).toEqual(expect.arrayContaining(['border-rose-700', 'text-rose-700']))
+    expect(remind.find('svg').exists()).toBe(false)
+  })
   it('keeps the ring next to its legend at every width (a grid that never wraps) and the sub-heading in the body font', () => {
     const w = mountRsvp()
     const summary = w.get('[data-testid=rsvp-summary]')

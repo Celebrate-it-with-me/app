@@ -7,8 +7,11 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Shirt } from 'lucide-vue-next'
-import { UiButton, UiCard, UiEmptyState, UiSkeleton } from '@/ui'
+import { UiEmptyState, UiSkeleton } from '@/ui'
 import DashboardBlock from './DashboardBlock.vue'
+import DashboardCard from './DashboardCard.vue'
+import DashboardAction from './DashboardAction.vue'
+import { HEADER_LINK } from './dashboardUi'
 import { dressCodeSummary } from './dashboardLogic'
 
 const props = defineProps({
@@ -32,12 +35,9 @@ const colorsLabel = computed(() => t('app.dashboard.dress.reservedLabel', { colo
 </script>
 
 <template>
-  <UiCard as="section" :title="t('app.dashboard.dress.title')" heading-level="h2" data-testid="dashboard-dress">
+  <DashboardCard :title="t('app.dashboard.dress.title')" data-testid="dashboard-dress">
     <template v-if="status === 'ready' && !summary.empty" #actions>
-      <router-link
-        to="/dashboard/dress-code"
-        class="inline-flex min-h-11 items-center text-sm font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600"
-      >{{ canEdit ? t('app.dashboard.dress.edit') : t('app.dashboard.dress.view') }}</router-link>
+      <router-link to="/dashboard/dress-code" :class="HEADER_LINK">{{ canEdit ? t('app.dashboard.dress.edit') : t('app.dashboard.dress.view') }}</router-link>
     </template>
 
     <DashboardBlock :status="status" :error-text="t('app.dashboard.dress.error')" @retry="$emit('retry')">
@@ -59,16 +59,17 @@ const colorsLabel = computed(() => t('app.dashboard.dress.reservedLabel', { colo
         data-testid="dress-empty"
       >
         <template #icon><Shirt class="h-6 w-6" aria-hidden="true" /></template>
-        <UiButton v-if="canEdit" to="/dashboard/dress-code">{{ t('app.dashboard.dress.emptyCta') }}</UiButton>
+        <DashboardAction v-if="canEdit" to="/dashboard/dress-code">{{ t('app.dashboard.dress.emptyCta') }}</DashboardAction>
       </UiEmptyState>
 
       <div v-else class="flex flex-col gap-3">
-        <p v-if="typeName" class="text-base font-semibold text-ink-900" data-testid="dress-type">{{ typeName }}</p>
-        <p v-if="summary.description" class="text-sm leading-relaxed text-ink-700 break-words" data-testid="dress-description">{{ summary.description }}</p>
+        <p v-if="typeName" class="text-[15px] font-semibold text-ink-900" data-testid="dress-type">{{ typeName }}</p>
+        <p v-if="summary.description" class="text-sm leading-normal text-ink-700 break-words" data-testid="dress-description">{{ summary.description }}</p>
         <div v-if="summary.colors.length">
-          <h3 class="font-body text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{{ t('app.dashboard.dress.reserved') }}</h3>
-          <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-2" :aria-label="colorsLabel" data-testid="dress-colors">
-            <li v-for="color in summary.colors" :key="color.hex" class="flex min-h-7 items-center gap-2 text-sm text-ink-700" :data-hex="color.hex">
+          <!-- The prototype shows the swatches straight away: the sub-heading stays for screen readers only. -->
+          <h3 class="sr-only">{{ t('app.dashboard.dress.reserved') }}</h3>
+          <ul class="flex flex-wrap gap-x-4 gap-y-2" :aria-label="colorsLabel" data-testid="dress-colors">
+            <li v-for="color in summary.colors" :key="color.hex" class="flex min-h-7 items-center gap-2 text-[13px] text-ink-500" :data-hex="color.hex">
               <span class="h-7 w-7 shrink-0 rounded-full ring-1 ring-line-strong ring-inset" :style="{ backgroundColor: color.hex }" aria-hidden="true"></span>
               <span :class="color.key ? '' : 'font-mono text-xs'" data-testid="dress-color-name">{{ colorName(color) }}</span>
             </li>
@@ -76,5 +77,5 @@ const colorsLabel = computed(() => t('app.dashboard.dress.reservedLabel', { colo
         </div>
       </div>
     </DashboardBlock>
-  </UiCard>
+  </DashboardCard>
 </template>

@@ -1,11 +1,13 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { CalendarDays, Eye, Pencil, Send, Share2 } from 'lucide-vue-next'
-import { UiBadge, UiButton, UiCard, UiSkeleton } from '@/ui'
+import { UiSkeleton } from '@/ui'
 import InvitationPreviewSheet from '@/modules/template-picker/components/InvitationPreviewSheet.vue'
 import DashboardPhone from './DashboardPhone.vue'
 import DashboardBlock from './DashboardBlock.vue'
+import DashboardCard from './DashboardCard.vue'
+import DashboardAction from './DashboardAction.vue'
+import { LINK } from './dashboardUi'
 import { countdownInfo, planPercent } from './dashboardLogic'
 import { daysUntilEvent, eventDay, formatClock, formatEventDate, hasClock } from '@/utils/eventDateTime'
 import { useMinWidth } from '@/composables/useMinWidth'
@@ -49,7 +51,11 @@ const dateLabel = computed(() => {
   return hasClock(props.startDate) ? `${day} · ${formatClock(props.startDate, locale.value, props.timezone)}` : day
 })
 const percent = computed(() => planPercent(props.plan))
-const planLabel = computed(() => t('app.dashboard.planSteps', { done: props.plan?.done ?? 0, total: props.plan?.total ?? 0, percent: percent.value }))
+const planArgs = computed(() => ({ done: props.plan?.done ?? 0, total: props.plan?.total ?? 0, percent: percent.value }))
+const planLabel = computed(() => t('app.dashboard.planSteps', planArgs.value))
+// The phone's line is shorter ("13 de 33 · 39 %"); the bar's accessible text keeps the long one.
+const planShort = computed(() => t('app.dashboard.planStepsShort', planArgs.value))
+const CHIP = 'inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-[3px] text-xs font-semibold'
 // The phone only exists from 640 px up (the phone layout has no thumbnail): do not even load it below.
 const wide = useMinWidth(640)
 
@@ -57,39 +63,42 @@ const previewOpen = ref(false)
 </script>
 
 <template>
-  <UiCard as="header" padding="none" class="grid gap-6 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-10 sm:p-8 lg:gap-6 lg:p-6 xl:gap-10 xl:p-8" data-testid="dashboard-hero">
-    <div class="min-w-0">
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-        <p class="flex items-center gap-2 text-sm text-ink-500">
-          <CalendarDays class="h-4 w-4 shrink-0 text-gold-700" aria-hidden="true" />
-          <span class="first-letter:uppercase" data-testid="hero-date">{{ dateLabel }}</span>
-        </p>
-        <UiBadge :tone="published ? 'success' : 'warning'" size="sm" dot data-testid="hero-status">
+  <DashboardCard
+    as="header"
+    :padded="false"
+    class="grid gap-6 p-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-8 sm:p-8 lg:p-6 xl:p-8"
+    data-testid="dashboard-hero"
+  >
+    <div class="flex min-w-0 flex-col gap-3.5">
+      <div class="flex flex-wrap items-center gap-2.5 text-sm text-ink-500">
+        <span class="first-letter:uppercase" data-testid="hero-date">{{ dateLabel }}</span>
+        <span :class="[CHIP, published ? 'bg-success-50 text-success-700' : 'bg-warning-50 text-warning-700']" data-testid="hero-status">
           {{ t(published ? 'app.dashboard.invitation.published' : 'app.dashboard.invitation.draft') }}
-        </UiBadge>
-        <UiSkeleton v-if="templateStatus === 'loading'" width="6.5rem" height="1.5rem" data-testid="hero-template-skeleton" />
-        <UiBadge v-else-if="templateName" size="sm" class="max-w-full" data-testid="hero-template">
+        </span>
+        <!-- The template's chip is a desktop detail (the phone layout has no thumbnail either). -->
+        <UiSkeleton v-if="templateStatus === 'loading'" width="6.5rem" height="1.375rem" class="max-sm:hidden" data-testid="hero-template-skeleton" />
+        <span v-else-if="templateName" :class="[CHIP, 'max-w-full bg-cream-200 text-gold-700 max-sm:hidden']" data-testid="hero-template">
           <span class="sr-only">{{ t('app.dashboard.hero.template') }}: </span>
           <span class="truncate">{{ templateName }}</span>
-        </UiBadge>
+        </span>
       </div>
 
-      <h1 class="mt-3 font-heading text-3xl text-ink-900 text-balance sm:text-5xl">{{ name }}</h1>
+      <h1 class="font-heading text-[32px] font-semibold leading-[1.05] text-ink-900 text-balance sm:text-[44px]">{{ name }}</h1>
 
-      <p class="mt-4 flex items-baseline gap-2 text-ink-700" data-testid="hero-countdown" :data-kind="countdown.kind">
+      <p class="flex items-baseline gap-2 sm:gap-2.5" data-testid="hero-countdown" :data-kind="countdown.kind">
         <template v-if="countdown.kind === 'future'">
-          <span class="font-heading text-6xl leading-none text-rose-700 tabular-nums sm:text-7xl">{{ countdown.n }}</span>
-          <span class="text-base">{{ t('app.dashboard.hero.daysLeft', { n: countdown.n }, countdown.n) }}</span>
+          <span class="font-heading text-[56px] leading-none text-rose-700 tabular-nums sm:text-7xl">{{ countdown.n }}</span>
+          <span class="text-[15px] text-ink-500 sm:text-base">{{ t('app.dashboard.hero.daysLeft', { n: countdown.n }, countdown.n) }}</span>
         </template>
         <span v-else-if="countdown.kind === 'today'" class="font-heading text-4xl leading-none text-rose-700 sm:text-5xl">{{ t('app.dashboard.hero.today') }}</span>
         <span v-else-if="countdown.kind === 'past'" class="font-heading text-3xl leading-none text-ink-700">{{ t('app.dashboard.past') }}</span>
         <template v-else>
-          <span class="text-base">{{ t('app.dashboard.noDate') }}</span>
-          <router-link v-if="canEdit && editTo" :to="editTo" class="inline-flex min-h-11 items-center text-sm font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600">{{ t('app.dashboard.hero.setDate') }}</router-link>
+          <span class="text-base text-ink-500">{{ t('app.dashboard.noDate') }}</span>
+          <router-link v-if="canEdit && editTo" :to="editTo" :class="LINK">{{ t('app.dashboard.hero.setDate') }}</router-link>
         </template>
       </p>
 
-      <div class="mt-4 max-w-lg" data-testid="hero-plan-slot">
+      <div class="max-w-[520px]" data-testid="hero-plan-slot">
         <DashboardBlock :status="planStatus" :error-text="t('app.dashboard.hero.planError')" @retry="$emit('retry-plan')">
           <template #skeleton>
             <div class="flex flex-col gap-2" data-testid="hero-plan-skeleton">
@@ -97,10 +106,13 @@ const previewOpen = ref(false)
               <UiSkeleton height="0.625rem" />
             </div>
           </template>
-          <div v-if="plan && plan.total > 0" data-testid="hero-plan">
-            <p class="text-sm text-ink-700"><span class="font-semibold text-ink-900">{{ t('app.dashboard.plan') }}</span> · <span data-testid="hero-plan-label">{{ planLabel }}</span></p>
+          <div v-if="plan && plan.total > 0" class="flex flex-col gap-1.5 sm:gap-2" data-testid="hero-plan">
+            <p class="flex flex-wrap justify-between gap-x-3 text-[13px]">
+              <strong class="font-semibold text-ink-900">{{ t('app.dashboard.plan') }}</strong>
+              <span class="text-ink-500"><span class="sm:hidden" data-testid="hero-plan-short">{{ planShort }}</span><span class="max-sm:hidden" data-testid="hero-plan-label">{{ planLabel }}</span></span>
+            </p>
             <div
-              class="mt-2 h-2.5 overflow-hidden rounded-full bg-cream-300"
+              class="h-2.5 overflow-hidden rounded-full bg-cream-300"
               role="progressbar"
               :aria-valuenow="percent"
               aria-valuemin="0"
@@ -114,39 +126,30 @@ const previewOpen = ref(false)
         </DashboardBlock>
       </div>
 
-      <!-- Two buttons per row from 360 px (one under it, so nothing touches the card's edges); one row from 640 px. -->
-      <div class="mt-5 grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:flex sm:flex-wrap sm:gap-3 lg:gap-2 xl:gap-3">
-        <UiButton v-if="published && canViewGuests" to="/dashboard/guests" class="min-[360px]:col-span-2 sm:col-span-1" data-testid="hero-share">
-          <Share2 class="h-4 w-4 shrink-0" aria-hidden="true" />
+      <!-- Phone: the main action and "Ver invitación" side by side, "Editar evento" under them; one row from 640 px. -->
+      <div class="mt-1.5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
+        <DashboardAction v-if="published && canViewGuests" to="/dashboard/guests" size="hero" class="only:col-span-2" data-testid="hero-share">
           <span class="xl:hidden">{{ t('app.dashboard.hero.share') }}</span>
           <span class="hidden xl:inline">{{ t('app.dashboard.hero.shareLong') }}</span>
-        </UiButton>
-        <UiButton v-if="!published && canEdit && editTo" :to="editTo" class="min-[360px]:col-span-2 sm:col-span-1" data-testid="hero-publish">
-          <Send class="h-4 w-4 shrink-0" aria-hidden="true" />
+        </DashboardAction>
+        <DashboardAction v-if="!published && canEdit && editTo" :to="editTo" size="hero" data-testid="hero-publish">
           {{ t('app.dashboard.hero.publish') }}
-        </UiButton>
-        <UiButton v-if="canEdit && eventId != null" variant="secondary" data-testid="hero-view" @click="previewOpen = true">
-          <Eye class="h-4 w-4 shrink-0" aria-hidden="true" />
+        </DashboardAction>
+        <DashboardAction v-if="canEdit && eventId != null" variant="secondary" size="hero" data-testid="hero-view" @click="previewOpen = true">
           {{ t('app.dashboard.hero.view') }}
-        </UiButton>
-        <UiButton v-if="canEdit && editTo" :to="editTo" variant="secondary" data-testid="hero-edit">
-          <Pencil class="h-4 w-4 shrink-0" aria-hidden="true" />
+        </DashboardAction>
+        <DashboardAction v-if="canEdit && editTo" :to="editTo" variant="secondary" size="hero" class="col-span-2" data-testid="hero-edit">
           {{ t('app.dashboard.edit') }}
-        </UiButton>
+        </DashboardAction>
       </div>
-      <p v-if="!published" class="mt-3 max-w-md text-sm text-ink-500" data-testid="hero-draft-hint">{{ t('app.dashboard.hero.draftHint') }}</p>
+      <p v-if="!published" class="max-w-md text-[13px] text-ink-500" data-testid="hero-draft-hint">{{ t('app.dashboard.hero.draftHint') }}</p>
     </div>
 
-    <div v-if="wide" class="flex flex-col items-center gap-2" data-testid="hero-thumb">
+    <div v-if="wide" class="flex flex-col items-center gap-2.5" data-testid="hero-thumb">
       <DashboardPhone :event-id="eventId" :live="canEdit && eventId != null" :image="image" :name="name" :date-label="hasDate ? dateLabel : ''" />
-      <router-link
-        v-if="canEdit && templateTo"
-        :to="templateTo"
-        class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600"
-        data-testid="hero-change-template"
-      >{{ t('app.dashboard.hero.changeTemplate') }}</router-link>
+      <router-link v-if="canEdit && templateTo" :to="templateTo" :class="[LINK, 'px-2']" data-testid="hero-change-template">{{ t('app.dashboard.hero.changeTemplate') }}</router-link>
     </div>
 
     <InvitationPreviewSheet v-if="canEdit && eventId != null" v-model:open="previewOpen" :event-id="eventId" />
-  </UiCard>
+  </DashboardCard>
 </template>

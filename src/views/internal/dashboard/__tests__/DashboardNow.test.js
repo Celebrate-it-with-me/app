@@ -33,6 +33,17 @@ beforeEach(() => {
 })
 
 describe('DashboardNow', () => {
+  it('looks like the prototype: flat card with a rose-700 border, a text arrow on the links, the title only for screen readers on a phone', () => {
+    const w = mountNow()
+    const card = w.get('[data-testid=dashboard-now]')
+    expect(card.classes()).toEqual(expect.arrayContaining(['rounded-2xl', 'border-rose-700']))
+    expect(card.classes()).not.toContain('shadow-card')
+    expect(w.get('#now-title').classes()).toContain('max-sm:sr-only')
+    const go = w.get('[data-testid=now-go]')
+    expect(go.find('svg').exists()).toBe(false)
+    expect(go.text()).toContain('→')
+    expect(go.classes()).toContain('text-[13px]')
+  })
   it('draws a skeleton while the steps load, and no false "Todo al día"', () => {
     const w = mountNow({ next: null, status: 'loading' })
     expect(w.find('[data-testid=now-skeleton]').exists()).toBe(true)

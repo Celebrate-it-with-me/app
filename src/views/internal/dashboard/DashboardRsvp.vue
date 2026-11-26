@@ -5,9 +5,12 @@
  */
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { BellRing, Send, UserPlus, Users } from 'lucide-vue-next'
-import { UiBadge, UiButton, UiCard, UiEmptyState, UiSkeleton } from '@/ui'
+import { Users } from 'lucide-vue-next'
+import { UiEmptyState, UiSkeleton } from '@/ui'
 import DashboardBlock from './DashboardBlock.vue'
+import DashboardCard from './DashboardCard.vue'
+import DashboardAction from './DashboardAction.vue'
+import { HEADER_LINK } from './dashboardUi'
 import RsvpRing from './RsvpRing.vue'
 import { recentResponses, summarizeRsvp } from './dashboardLogic'
 import { formatEventDate } from '@/utils/eventDateTime'
@@ -52,16 +55,14 @@ const sendAction = computed(() => {
   if (counts.pendingUnsent > 0) return { kind: 'invite', to: { path: '/dashboard/guests', query: { send: 'unsent' } } }
   return null
 })
+const CHIP = 'inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-1 text-xs font-semibold'
 const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.value, props.timezone || undefined)
 </script>
 
 <template>
-  <UiCard as="section" :title="t('app.dashboard.rsvp.title')" heading-level="h2" class="@container" data-testid="dashboard-rsvp">
+  <DashboardCard :title="t('app.dashboard.rsvp.title')" class="@container" data-testid="dashboard-rsvp">
     <template v-if="canViewGuests" #actions>
-      <router-link
-        to="/dashboard/guests"
-        class="inline-flex min-h-11 items-center text-sm font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600"
-      >{{ t('app.dashboard.rsvp.viewAll') }}</router-link>
+      <router-link to="/dashboard/guests" :class="HEADER_LINK">{{ t('app.dashboard.rsvp.viewAll') }}</router-link>
     </template>
 
     <DashboardBlock :status="status" :error-text="t('app.dashboard.rsvp.error')" @retry="$emit('retry')">
@@ -77,10 +78,7 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
 
       <UiEmptyState v-if="!rsvp.people" compact :title="t('app.dashboard.rsvp.emptyTitle')" :description="t('app.dashboard.rsvp.emptyText')" data-testid="rsvp-empty">
         <template #icon><Users class="h-6 w-6" aria-hidden="true" /></template>
-        <UiButton v-if="canEdit && canViewGuests" to="/dashboard/guests">
-          <UserPlus class="h-4 w-4 shrink-0" aria-hidden="true" />
-          {{ t('app.dashboard.rsvp.emptyCta') }}
-        </UiButton>
+        <DashboardAction v-if="canEdit && canViewGuests" to="/dashboard/guests">{{ t('app.dashboard.rsvp.emptyCta') }}</DashboardAction>
       </UiEmptyState>
 
       <template v-else>
@@ -91,38 +89,40 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
           <div class="contents">
             <ul class="flex min-w-0 flex-col gap-2 @md:gap-2.5" data-testid="rsvp-rows">
               <li v-for="row in rows" :key="row.key" class="flex items-center justify-between gap-3" :data-row="row.key">
-                <span class="flex items-center gap-2 text-ink-700">
+                <span class="flex items-center gap-2 text-ink-900">
                   <span class="h-2.5 w-2.5 shrink-0 rounded-full" :class="row.dot" aria-hidden="true"></span>
                   {{ t(`app.dashboard.rsvp.${row.key}`) }}
                 </span>
-                <strong class="font-semibold text-ink-900 tabular-nums">{{ t('app.dashboard.rsvp.persons', { n: row.value }, row.value) }}</strong>
+                <!-- A narrow card shows just the number (like the prototype's phone); the word stays for screen readers. -->
+                <strong class="font-semibold text-ink-900 tabular-nums">
+                  <span class="@md:hidden" aria-hidden="true">{{ row.value }}</span>
+                  <span class="sr-only @md:not-sr-only">{{ t('app.dashboard.rsvp.persons', { n: row.value }, row.value) }}</span>
+                </strong>
               </li>
             </ul>
-            <p class="col-span-2 border-t border-cream-300 pt-2.5 text-ink-500 @md:col-span-1" data-testid="rsvp-totals">{{ totalsLine }}</p>
-            <UiButton v-if="sendAction?.kind === 'remind'" :to="sendAction.to" variant="secondary" block class="col-span-2 @md:col-span-1" data-testid="rsvp-remind">
-              <BellRing class="h-4 w-4 shrink-0" aria-hidden="true" />
+            <p class="col-span-2 border-t border-cream-200 pt-2.5 text-ink-500 @md:col-span-1" data-testid="rsvp-totals">{{ totalsLine }}</p>
+            <DashboardAction v-if="sendAction?.kind === 'remind'" :to="sendAction.to" variant="outline" block class="col-span-2 @md:col-span-1" data-testid="rsvp-remind">
               {{ t('app.dashboard.rsvp.remind', { n: sendAction.n }, sendAction.n) }}
-            </UiButton>
-            <UiButton v-else-if="sendAction?.kind === 'invite'" :to="sendAction.to" variant="secondary" block class="col-span-2 @md:col-span-1" data-testid="rsvp-invite">
-              <Send class="h-4 w-4 shrink-0" aria-hidden="true" />
+            </DashboardAction>
+            <DashboardAction v-else-if="sendAction?.kind === 'invite'" :to="sendAction.to" variant="outline" block class="col-span-2 @md:col-span-1" data-testid="rsvp-invite">
               {{ t('app.dashboard.rsvp.sendInvitations') }}
-            </UiButton>
+            </DashboardAction>
           </div>
         </div>
 
-        <div v-if="recent.length" class="mt-5 border-t border-cream-300 pt-3" data-testid="rsvp-recent">
-          <h3 class="font-body text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{{ t('app.dashboard.rsvp.recentTitle') }}</h3>
-          <ul class="mt-1">
-            <li v-for="row in recent" :key="`${row.name}-${row.statusDate}`" class="flex min-h-11 items-center justify-between gap-3 py-1">
-              <span class="min-w-0 truncate text-base font-medium text-ink-900">{{ row.name }}</span>
-              <span class="flex shrink-0 items-center gap-2.5">
-                <span class="text-sm text-ink-500 tabular-nums">{{ dateOf(row) }}</span>
-                <UiBadge :tone="row.status === 'attending' ? 'success' : 'neutral'" size="sm">{{ t(`app.dashboard.rsvp.recent.${row.status}`) }}</UiBadge>
+        <div v-if="recent.length" class="mt-4 border-t border-cream-200 pt-3 lg:mt-[18px]" data-testid="rsvp-recent">
+          <h3 class="mb-1 font-body text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{{ t('app.dashboard.rsvp.recentTitle') }}</h3>
+          <ul>
+            <li v-for="row in recent" :key="`${row.name}-${row.statusDate}`" class="flex min-h-12 items-center justify-between gap-2 sm:min-h-11 sm:gap-2.5">
+              <span class="min-w-0 truncate text-sm font-medium text-ink-900 sm:text-[15px]">{{ row.name }}</span>
+              <span class="flex shrink-0 items-center gap-2 sm:gap-2.5">
+                <span class="text-xs text-ink-500 tabular-nums sm:text-[13px]">{{ dateOf(row) }}</span>
+                <span :class="[CHIP, row.status === 'attending' ? 'bg-success-50 text-success-700' : 'bg-cream-200 text-ink-700']">{{ t(`app.dashboard.rsvp.recent.${row.status}`) }}</span>
               </span>
             </li>
           </ul>
         </div>
       </template>
     </DashboardBlock>
-  </UiCard>
+  </DashboardCard>
 </template>

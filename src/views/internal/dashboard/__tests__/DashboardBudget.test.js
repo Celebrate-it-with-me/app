@@ -42,7 +42,7 @@ describe('DashboardBudget', () => {
     expect(tile(w, 'paid').text()).toContain('$12,030')
     expect(tile(w, 'remaining').text()).toContain('$8,400')
     expect(tile(w, 'cap').text()).toContain('$18,000')
-    expect(tile(w, 'over').text()).toContain('Comprometido sobre el tope')
+    expect(tile(w, 'over').text()).toContain('Sobre el tope')
     expect(tile(w, 'over').text()).toContain('$530')
     expect(mountBudget({ summary: { ...SUMMARY, currency: 'EUR' } }).find('[data-tile=paid]').text()).toMatch(/EUR|€/)
   })
@@ -88,7 +88,7 @@ describe('DashboardBudget', () => {
   it('speaks English', () => {
     setLocale('en')
     const w = mountBudget()
-    expect(tile(w, 'over').text()).toContain('Committed over the cap')
+    expect(tile(w, 'over').text()).toContain('Over the cap')
     expect(w.get('[data-bar=category-4] [data-testid=bar-note]').text()).toContain('+$1,200 over')
   })
 })
