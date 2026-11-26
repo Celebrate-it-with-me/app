@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import RsvpService from '@/modules/rsvp/services/RsvpService'
@@ -126,6 +126,18 @@ function load() {
 
 watch(() => event.value?.id, load, { immediate: true })
 
+/**
+ * Two columns from 1024 px (the prototype): the route goes on top, over both. Below that, one column in the mobile
+ * prototype's order, where "Lo que toca ahora" comes before the route. The route is placed in ONE spot per layout (not
+ * moved with CSS `order`), so the reading and tab order always match what is on screen.
+ */
+const WIDE = '(min-width: 1024px)'
+const wideQuery = typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(WIDE) : null
+const wide = ref(!!wideQuery?.matches)
+const syncWide = e => (wide.value = e.matches)
+onMounted(() => wideQuery?.addEventListener?.('change', syncWide))
+onBeforeUnmount(() => wideQuery?.removeEventListener?.('change', syncWide))
+
 // The permanent notice follows the API's flag; read it fresh on every visit so it disappears once the email is verified.
 onMounted(() => useUserStore().syncEmailVerified())
 </script>
@@ -152,6 +164,8 @@ onMounted(() => useUserStore().syncEmailVerified())
     />
 
     <DashboardRoute
+      v-if="wide"
+      class="mt-4 lg:mt-6"
       :plan="routePlan"
       :status="routeStatus"
       :start-date="eventMoment(event)"
@@ -161,50 +175,58 @@ onMounted(() => useUserStore().syncEmailVerified())
       @retry="retryRoute"
     />
 
-    <DashboardNow v-if="canEdit" :key="event.id" :next="sameEvent ? assistantStore.next : null" :status="planStatus" :event-id="event.id" @retry="retryPlan" />
-
-    <DashboardRsvp
-      v-if="rsvpStatus !== 'hidden'"
-      :stats="rsvpStats"
-      :status="rsvpStatus"
-      :can-edit="canEdit"
-      :can-view-guests="canViewGuests"
-      :timezone="event.timezone"
-      @retry="loadRsvp(event.id)"
-    />
-
-    <DashboardBudget
-      v-if="budgetStatus !== 'hidden'"
-      :summary="budgetSummary"
-      :status="budgetStatus"
-      :can-edit="canEdit"
-      @retry="loadBudget(event.id)"
-    />
-
-    <DashboardActivity
-      v-if="activityStatus !== 'hidden'"
-      class="mt-4"
-      :activity="activityData"
-      :status="activityStatus"
-      @retry="loadActivity(event.id)"
-    />
-
-    <DashboardProgram
-      v-if="programStatus !== 'hidden'"
-      class="mt-4"
-      :moments="programData"
-      :status="programStatus"
-      :can-edit="canEdit"
-      @retry="loadProgram(event.id)"
-    />
-
-    <DashboardDressCode
-      v-if="dressStatus !== 'hidden'"
-      class="mt-4"
-      :dress-code="dressData"
-      :status="dressStatus"
-      :can-edit="canEdit"
-      @retry="loadDress(event.id)"
-    />
+    <div class="mt-4 grid gap-4 lg:mt-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)] lg:items-start lg:gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]" data-testid="dashboard-columns">
+      <div class="flex min-w-0 flex-col gap-4 lg:gap-6" data-testid="dashboard-main">
+        <DashboardNow v-if="canEdit" :key="event.id" :next="sameEvent ? assistantStore.next : null" :status="planStatus" :event-id="event.id" @retry="retryPlan" />
+        <DashboardRoute
+          v-if="!wide"
+          :plan="routePlan"
+          :status="routeStatus"
+          :start-date="eventMoment(event)"
+          :timezone="event.timezone"
+          :can-edit="canEdit"
+          :edit-to="editTarget"
+          @retry="retryRoute"
+        />
+        <DashboardRsvp
+          v-if="rsvpStatus !== 'hidden'"
+          :stats="rsvpStats"
+          :status="rsvpStatus"
+          :can-edit="canEdit"
+          :can-view-guests="canViewGuests"
+          :timezone="event.timezone"
+          @retry="loadRsvp(event.id)"
+        />
+        <DashboardBudget
+          v-if="budgetStatus !== 'hidden'"
+          :summary="budgetSummary"
+          :status="budgetStatus"
+          :can-edit="canEdit"
+          @retry="loadBudget(event.id)"
+        />
+      </div>
+      <div class="flex min-w-0 flex-col gap-4 lg:gap-6" data-testid="dashboard-side">
+        <DashboardProgram
+          v-if="programStatus !== 'hidden'"
+          :moments="programData"
+          :status="programStatus"
+          :can-edit="canEdit"
+          @retry="loadProgram(event.id)"
+        />
+        <DashboardDressCode
+          v-if="dressStatus !== 'hidden'"
+          :dress-code="dressData"
+          :status="dressStatus"
+          :can-edit="canEdit"
+          @retry="loadDress(event.id)"
+        />
+        <DashboardActivity
+          v-if="activityStatus !== 'hidden'"
+          :activity="activityData"
+          :status="activityStatus"
+          @retry="loadActivity(event.id)"
+        />
+      </div>
+    </div>
   </div>
 </template>

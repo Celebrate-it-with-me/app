@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
@@ -57,6 +57,32 @@ beforeEach(() => {
   m.list.mockResolvedValue([])
   m.dress.mockResolvedValue({ dressCodeType: null, reservedColors: [] })
   m.plan.mockResolvedValue({ mode: 'normal', phases: [] })
+})
+
+describe('Dashboard layout', () => {
+  const order = w => w.findAll('[data-testid^=dashboard-]').map(n => n.attributes('data-testid')).filter(id => !['dashboard-columns'].includes(id))
+  const ALL = [{ key: 'budget', state: 'active' }, { key: 'timeline', state: 'active' }, { key: 'dress_code', state: 'active' }]
+  const withWidth = wide => {
+    const listeners = []
+    window.matchMedia = vi.fn(() => ({ matches: wide, addEventListener: (_, fn) => listeners.push(fn), removeEventListener: vi.fn() }))
+    return listeners
+  }
+  afterEach(() => delete window.matchMedia)
+
+  it('below 1024 px: one column in the mobile prototype order, "Lo que toca ahora" before the route', async () => {
+    withWidth(false)
+    m.next.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 1 }, steps: [] })
+    const w = await mountDashboard({ event: { modules: ALL } })
+    expect(order(w)).toEqual(['dashboard-main', 'dashboard-now', 'dashboard-route', 'dashboard-rsvp', 'dashboard-budget', 'dashboard-side', 'dashboard-program', 'dashboard-dress', 'dashboard-activity'])
+  })
+  it('from 1024 px: the route over both columns; left now, confirmations, budget; right program, dress code, activity', async () => {
+    const listeners = withWidth(true)
+    const w = await mountDashboard({ event: { modules: ALL } })
+    expect(order(w)).toEqual(['dashboard-route', 'dashboard-main', 'dashboard-now', 'dashboard-rsvp', 'dashboard-budget', 'dashboard-side', 'dashboard-program', 'dashboard-dress', 'dashboard-activity'])
+    listeners.forEach(fn => fn({ matches: false }))
+    await flushPromises()
+    expect(order(w).slice(0, 3)).toEqual(['dashboard-main', 'dashboard-now', 'dashboard-route'])
+  })
 })
 
 describe('Dashboard home data', () => {

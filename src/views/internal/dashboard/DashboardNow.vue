@@ -94,7 +94,7 @@ async function toggle(row) {
 <template>
   <section
     v-if="visible"
-    class="mt-4 min-w-0 rounded-xl border-2 border-rose-600 bg-white p-5 shadow-card sm:p-6"
+    class="min-w-0 rounded-xl border-2 border-rose-600 bg-white p-5 shadow-card sm:p-6"
     aria-labelledby="now-title"
     data-testid="dashboard-now"
   >

@@ -74,7 +74,7 @@ const ringClass = card =>
 </script>
 
 <template>
-  <UiCard v-if="availability !== 'none' || status !== 'ready'" as="section" class="mt-4" data-testid="dashboard-route">
+  <UiCard v-if="availability !== 'none' || status !== 'ready'" as="section" data-testid="dashboard-route">
     <header class="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
       <h2 class="font-heading text-xl text-ink-900 sm:text-2xl">{{ t('app.dashboard.route.title') }}</h2>
       <p v-if="status === 'ready' && availability === 'ready'" class="text-sm text-ink-500" data-testid="route-summary">{{ summary }}</p>

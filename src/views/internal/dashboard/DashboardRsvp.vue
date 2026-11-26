@@ -44,7 +44,7 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
 </script>
 
 <template>
-  <UiCard as="section" :title="t('app.dashboard.rsvp.title')" heading-level="h2" class="mt-4" data-testid="dashboard-rsvp">
+  <UiCard as="section" :title="t('app.dashboard.rsvp.title')" heading-level="h2" data-testid="dashboard-rsvp">
     <template v-if="canViewGuests" #actions>
       <router-link
         to="/dashboard/guests"

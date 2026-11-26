@@ -42,7 +42,7 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
 </script>
 
 <template>
-  <UiCard as="section" :title="t('app.dashboard.budget.title')" heading-level="h2" class="mt-4" data-testid="dashboard-budget">
+  <UiCard as="section" :title="t('app.dashboard.budget.title')" heading-level="h2" class="@container" data-testid="dashboard-budget">
     <template #actions>
       <router-link
         to="/dashboard/budget"
@@ -53,7 +53,7 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
     <DashboardBlock :status="status" :error-text="t('app.dashboard.budget.error')" @retry="$emit('retry')">
       <template #skeleton>
         <div data-testid="budget-skeleton">
-          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div class="grid grid-cols-2 gap-3 @xl:grid-cols-4">
             <UiSkeleton v-for="n in 4" :key="n" height="4.25rem" />
           </div>
           <div class="mt-5 flex flex-col gap-4">
@@ -68,7 +68,7 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
       </UiEmptyState>
 
       <template v-else>
-        <dl class="grid grid-cols-2 gap-3 sm:grid-cols-4" data-testid="budget-tiles">
+        <dl class="grid grid-cols-2 gap-3 @xl:grid-cols-4" data-testid="budget-tiles">
           <div
             v-for="tile in tiles"
             :key="tile.key"
@@ -77,7 +77,7 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
             :data-tile="tile.key"
           >
             <dt class="text-xs" :class="tile.warn ? 'font-semibold text-danger-700' : 'text-ink-500'">{{ tile.label }}</dt>
-            <dd class="mt-0.5 truncate font-heading text-xl tabular-nums sm:text-2xl" :class="tile.warn ? 'text-danger-700' : 'text-ink-900'">{{ money(tile.value) }}</dd>
+            <dd class="mt-0.5 truncate font-heading text-xl tabular-nums @xl:text-2xl" :class="tile.warn ? 'text-danger-700' : 'text-ink-900'">{{ money(tile.value) }}</dd>
           </div>
         </dl>
 
@@ -85,17 +85,17 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
           <li
             v-for="bar in bars"
             :key="bar.key"
-            class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 sm:grid-cols-[9.5rem_minmax(0,1fr)_8.5rem]"
+            class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 @lg:grid-cols-[9.5rem_minmax(0,1fr)_8.5rem]"
             :data-bar="bar.key"
             :data-over="bar.over"
           >
             <span class="min-w-0 truncate text-sm text-ink-900">{{ nameOf(bar) }}</span>
             <span
-              class="text-right text-[0.8125rem] tabular-nums sm:order-last"
+              class="text-right text-[0.8125rem] tabular-nums @lg:order-last"
               :class="bar.over ? 'font-semibold text-danger-700' : 'text-ink-500'"
               data-testid="bar-note"
             >{{ noteOf(bar) }}<span class="sr-only"> ({{ srOf(bar) }})</span></span>
-            <span class="relative col-span-2 h-3 rounded-full bg-cream-300 sm:col-span-1" aria-hidden="true">
+            <span class="relative col-span-2 h-3 rounded-full bg-cream-300 @lg:col-span-1" aria-hidden="true">
               <span class="absolute inset-y-0 left-0 rounded-full" :class="bar.over ? 'bg-danger-500' : 'bg-success-500'" :style="{ width: `${bar.paidPct}%` }" data-testid="bar-paid"></span>
               <span
                 v-if="bar.estimated > 0"
