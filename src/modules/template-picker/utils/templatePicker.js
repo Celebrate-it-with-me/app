@@ -209,3 +209,78 @@ export function nudgeFocus(focus, key, fine = false) {
   else return null
   return { x: clamp(next.x), y: clamp(next.y) }
 }
+
+// ---- redesign: tags, palettes, filters, favorites ----
+
+/** The style tags of a template (`tags`); a template without them (or an API that does not send them yet) has none. */
+export function templateTags(template) {
+  return Array.isArray(template?.tags) ? template.tags.map(String).filter(Boolean) : []
+}
+
+/**
+ * The palettes a template offers, normalized: `[{ key, label, palette: { background, text, accent } }]`.
+ * Reads `key/palette` and falls back to `value/colors` (`[surface, accent, primary]`) when the API has not got them yet.
+ * A palette without a key is dropped: nothing to ask the API for.
+ */
+export function templatePresets(template) {
+  const list = Array.isArray(template?.presets) ? template.presets : []
+  return list
+    .map(preset => {
+      const key = String(preset?.key ?? preset?.value ?? '')
+      const colors = Array.isArray(preset?.colors) ? preset.colors : []
+      const palette = preset?.palette ?? { background: colors[0], accent: colors[1], text: colors[2] }
+      return { key, label: preset?.label ?? preset?.name ?? key, palette: { background: palette.background ?? null, text: palette.text ?? null, accent: palette.accent ?? null } }
+    })
+    .filter(preset => preset.key)
+}
+
+/** Lower case without accents: "Botánica" matches "botanica". */
+export function normalizeText(value) {
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+}
+
+/** Search, filters and favorites only help when there is something to choose from: more than two templates. */
+export const BROWSE_MIN_TEMPLATES = 3
+export const canBrowse = list => Array.isArray(list) && list.length >= BROWSE_MIN_TEMPLATES
+
+/** The distinct tags present in the list, in first-seen order. */
+export function availableTags(list) {
+  return [...new Set((Array.isArray(list) ? list : []).flatMap(templateTags))]
+}
+
+/** `access`: all | free | premium. `tag`: '' or one of the tags. `query`: part of the name. `favoritesOnly` with the set of ids. */
+export function filterTemplates(list, { access = 'all', tag = '', query = '', favoritesOnly = false, favorites = new Set() } = {}) {
+  const needle = normalizeText(query)
+  return (Array.isArray(list) ? list : []).filter(template => {
+    if (access === 'free' && template.tier === 'premium') return false
+    if (access === 'premium' && template.tier !== 'premium') return false
+    if (tag && !templateTags(template).includes(tag)) return false
+    if (needle && !normalizeText(template.name).includes(needle)) return false
+    if (favoritesOnly && !favorites.has(String(template.id))) return false
+    return true
+  })
+}
+
+const FAVORITES_KEY = 'qv.templateFavs'
+
+/** Favorite template ids of this browser and user (local on purpose: nothing to sync). Never throws. */
+export function readFavorites(userId = 'anon') {
+  try {
+    const saved = JSON.parse(localStorage.getItem(`${FAVORITES_KEY}.${userId}`) ?? '[]')
+    return Array.isArray(saved) ? saved.map(String) : []
+  } catch {
+    return []
+  }
+}
+
+export function writeFavorites(ids, userId = 'anon') {
+  try {
+    localStorage.setItem(`${FAVORITES_KEY}.${userId}`, JSON.stringify([...ids]))
+  } catch {
+    /* private mode or full storage: favorites last until the tab closes */
+  }
+}
