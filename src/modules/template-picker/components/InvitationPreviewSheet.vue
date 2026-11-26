@@ -16,7 +16,16 @@ const props = defineProps({
   open: { type: Boolean, default: false },
   eventId: { type: [Number, String], required: true },
   /** `{ <fieldId>: value }`: the form's edits, sent to the preview without saving them. */
-  fields: { type: Object, default: () => ({}) }
+  fields: { type: Object, default: () => ({}) },
+  /** Show this template (and palette) instead of the saved one: the selector's "see the full invitation". */
+  templateId: { type: [Number, String], default: null },
+  preset: { type: String, default: '' },
+  /** Language the sheet opens in (the selector passes the one she was looking at). */
+  initialLocale: { type: String, default: '' },
+  initialState: { type: String, default: 'invitation' },
+  /** Replaces the editor's "with your edits" line, and drops "Sin foto" (the selector has no use for it). */
+  description: { type: String, default: '' },
+  noPhoto: { type: Boolean, default: true }
 })
 const emit = defineEmits(['update:open'])
 
@@ -32,20 +41,20 @@ const languageOptions = [
 const stateOptions = computed(() => [
   { value: 'invitation', label: t('templatePicker.preview.states.invitation') },
   { value: 'save_the_date', label: t('templatePicker.preview.states.saveTheDate') },
-  { value: 'no_photo', label: t('templatePicker.preview.states.noPhoto') }
+  ...(props.noPhoto ? [{ value: 'no_photo', label: t('templatePicker.preview.states.noPhoto') }] : [])
 ])
 const failedText = computed(() => (picker.previewError.value === 'forbidden' ? t('templatePicker.errors.previewForbidden') : t('templatePicker.preview.failed')))
 
 function render() {
-  picker.loadPreview(null, { locale: previewLocale.value, state: previewState.value, fields: props.fields })
+  picker.loadPreview(props.templateId != null ? { id: props.templateId } : null, { locale: previewLocale.value, state: previewState.value, fields: props.fields, preset: props.preset || undefined })
 }
 
 watch(
   () => props.open,
   open => {
     if (!open) return picker.resetPreview()
-    previewLocale.value = locale.value === 'en' ? 'en' : 'es'
-    previewState.value = 'invitation'
+    previewLocale.value = (props.initialLocale || locale.value) === 'en' ? 'en' : 'es'
+    previewState.value = props.initialState || 'invitation'
     render()
   },
   { immediate: true }
@@ -54,7 +63,7 @@ watch([previewLocale, previewState], () => props.open && render())
 </script>
 
 <template>
-  <UiModal :open="open" :title="t('invitationEditor.actions.preview')" :description="t('invitationEditor.previewHint')" size="full" @update:open="value => emit('update:open', value)">
+  <UiModal :open="open" :title="t('invitationEditor.actions.preview')" :description="description || t('invitationEditor.previewHint')" size="full" @update:open="value => emit('update:open', value)">
     <div class="flex flex-col items-center gap-3">
       <div class="flex flex-wrap items-center justify-center gap-2">
         <SegmentedControl v-model="previewLocale" :options="languageOptions" :label="t('templatePicker.preview.language')" />

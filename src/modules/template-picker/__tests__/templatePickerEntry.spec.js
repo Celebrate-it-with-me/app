@@ -18,6 +18,7 @@ vi.mock('vue-router', () => ({ useRoute: () => ({ query: mocks.query }), useRout
 vi.mock('@/modules/events/stores/useEventsStore', () => ({ useEventsStore: () => ({ activeEvent: { modules: [{ key: 'comments', state: 'active' }] } }) }))
 
 import TemplatePickerEntry from '../components/TemplatePickerEntry.vue'
+import { useToast } from '@/ui'
 
 const LIST = [
   { id: 1, name: 'Clásica', tier: 'free', locked: false, current: true, previewImage: null, description: { es: 'a', en: 'a' } },
@@ -119,5 +120,75 @@ describe('TemplatePickerEntry', () => {
   it('warns when the template of the event is gone', async () => {
     await mountEntry({ unavailable: true })
     expect(text()).toContain('Tu plantilla ya no está disponible')
+  })
+
+  const PRESETS = [
+    { key: 'salvia', label: { es: 'Salvia', en: 'Sage' }, palette: { background: '#eef3e8', text: '#3f5a3a', accent: '#7f9c78' } },
+    { key: 'rosa', label: { es: 'Rosa', en: 'Rose' }, palette: { background: '#fbeff1', text: '#7b2d3f', accent: '#c9657c' } }
+  ]
+  const withPresets = locked => LIST.map(item => (item.id === 3 ? { ...item, locked, presets: PRESETS } : item))
+  const toasts = () => {
+    const { toasts: list, dismiss } = useToast()
+    return { list, clear: () => [...list].forEach(item => dismiss(item.id)) }
+  }
+
+  it('takes the palette to the unlock screen and back', async () => {
+    mocks.templates.mockResolvedValue(withPresets(true))
+    await mountEntry()
+    await click('Cambiar plantilla')
+    await click('Botánica')
+    document.body.querySelector('[data-testid=palette-swatches] button[aria-label="Rosa"]').click()
+    await flushPromises()
+    await click('Desbloquear')
+    expect(mocks.push).toHaveBeenCalledWith({ name: 'unlock', params: { module: 'full' }, query: { from: 'template', template: '3', preset: 'rosa' } })
+  })
+
+  it('reopens on the palette she had chosen when she comes back from the payment', async () => {
+    mocks.query.template = '3'
+    mocks.query.preset = 'rosa'
+    mocks.templates.mockResolvedValue(withPresets(false))
+    await mountEntry()
+    expect(document.body.querySelector('[data-testid=palette-swatches] button[aria-label="Rosa"]').getAttribute('aria-pressed')).toBe('true')
+    expect(mocks.replace).toHaveBeenCalledWith({ query: {} })
+  })
+
+  it('says "Listo" with an Undo action in a toast that goes back to the previous template', async () => {
+    const { list, clear } = toasts()
+    clear()
+    mocks.apply.mockResolvedValueOnce({ undo: { until: new Date(Date.now() + 600000).toISOString(), templateId: 1 } }).mockResolvedValueOnce({ undo: null })
+    mocks.templates.mockResolvedValue(LIST.map(item => ({ ...item, locked: false })))
+    await mountEntry()
+    await click('Cambiar plantilla')
+    await click('Botánica')
+    await click('Usar esta plantilla')
+    await click('Cambiar')
+    const toast = list.find(item => item.title === 'Listo, ahora usas Botánica.')
+    expect(toast.action.label).toBe('Deshacer')
+    await toast.action.onClick()
+    await flushPromises()
+    expect(mocks.apply).toHaveBeenLastCalledWith(5, 1, { undo: true })
+    expect(wrapper.emitted('changed')).toHaveLength(2)
+    clear()
+  })
+
+  it('a palette saved on its own gets its own toast and no "before you used" notice', async () => {
+    const { list, clear } = toasts()
+    clear()
+    mocks.templates.mockResolvedValue(LIST.map(item => (item.id === 1 ? { ...item, presets: PRESETS } : item)))
+    mocks.apply.mockResolvedValue({ undo: { until: new Date(Date.now() + 600000).toISOString(), templateId: 1, preset: null } })
+    await mountEntry()
+    await click('Cambiar plantilla')
+    document.body.querySelector('[data-testid=palette-swatches] button[aria-label="Rosa"]').click()
+    await flushPromises()
+    await click('Guardar paleta')
+    expect(list.some(item => item.title === 'Listo, la paleta Rosa quedó guardada.' && item.action?.label === 'Deshacer')).toBe(true)
+    expect(text()).not.toContain('Antes usabas')
+    clear()
+  })
+
+  it('gives the selector the stage of the invitation', async () => {
+    await mountEntry({ stage: 'save_the_date' })
+    await click('Cambiar plantilla')
+    expect(mocks.preview.mock.calls.filter(([, body]) => body.state).at(-1)[1].state).toBe('save_the_date')
   })
 })

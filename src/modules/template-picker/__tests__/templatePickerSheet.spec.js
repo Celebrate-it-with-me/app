@@ -76,7 +76,7 @@ describe('TemplatePickerSheet layout and list', () => {
     await mountSheet()
     document.body.querySelector('[data-testid=unlock-banner]').click()
     await flushPromises()
-    expect(wrapper.emitted('unlock')).toHaveLength(1)
+    expect(wrapper.emitted('unlock')).toEqual([[null, '']])
     expect(wrapper.emitted('update:open')[0]).toEqual([false])
   })
 

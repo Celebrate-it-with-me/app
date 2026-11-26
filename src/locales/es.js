@@ -2599,6 +2599,18 @@ export default {
     alreadyUnlocked: { title: 'Este evento ya está desbloqueado', text: 'No hace falta pagar de nuevo: ya tienes todos los módulos y el límite completo de invitados.', invoices: 'Ver mis facturas' },
   },
   templatePicker: {
+    compare: {
+      toggle: 'Comparar con la actual',
+      hide: 'Dejar de comparar',
+      current: 'Actual',
+      chosen: 'Elegida',
+      failed: 'No pudimos mostrar tu invitación actual.',
+      label: 'Comparación con tu plantilla actual'
+    },
+    fullView: { open: 'Ver invitación completa', hint: 'Así se vería tu invitación con {name}. No se guarda nada.' },
+    savePalette: 'Guardar paleta',
+    paletteSaved: 'Listo, la paleta {name} quedó guardada.',
+    retryAction: 'Reintentar',
     panel: { label: 'Vista previa de la plantilla' },
     action: { keeps: 'Tu contenido y fotos se conservan.' },
     discard: {
@@ -2622,7 +2634,7 @@ export default {
     styles: { elegante: 'Elegante', moderna: 'Moderna', floral: 'Floral', minimal: 'Minimal' },
     noResults: { title: 'Ninguna plantilla coincide', text: 'Prueba con otra búsqueda o quita los filtros.' },
     favorite: { add: 'Marcar {name} como favorita', remove: 'Quitar {name} de tus favoritas' },
-    palettes: { count: '{count} paletas' },
+    palettes: { count: '{count} paletas', label: 'Paleta de colores' },
     strip: { label: 'Tus plantillas' },
     card: { select: 'Ver {name}' },
     title: 'Elige tu plantilla',
@@ -2664,7 +2676,6 @@ export default {
       unavailable: 'Tu plantilla ya no está disponible. Mientras eliges otra, tu invitación se ve con la Clásica.'
     },
     preview: {
-      back: 'Volver',
       language: 'Idioma de la vista previa',
       state: 'Qué ver',
       preset: 'Paleta',
@@ -2675,7 +2686,6 @@ export default {
       premiumTitle: 'Plantilla premium',
       premiumText: 'Puedes verla con los datos de tu evento. Para usarla, desbloquea tu evento completo.',
       paid: 'Ya desbloqueaste tu evento. ¿Usamos {name} ahora?',
-      inUse: 'Es la plantilla que usas ahora.',
       inUseButton: 'Ya la usas',
       unlock: 'Desbloquear para usarla',
       unlockPrice: 'Desbloquear · {price}',

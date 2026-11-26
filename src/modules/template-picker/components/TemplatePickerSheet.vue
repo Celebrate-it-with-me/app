@@ -22,17 +22,19 @@ import { useTemplatePicker } from '../composables/useTemplatePicker'
 import { useTemplateBrowser } from '../composables/useTemplateBrowser'
 import { useFavoriteTemplates } from '../composables/useFavoriteTemplates'
 import { MINIATURE_SESSION, createMiniatureSession } from '../composables/useMiniatureSession'
-import { conflictingModules, moduleNames, storedUserId } from '../utils/templatePicker'
+import { conflictingModules, moduleNames, pickText, storedUserId, templatePresets } from '../utils/templatePicker'
 import TemplateFilters from './TemplateFilters.vue'
 import TemplateGrid from './TemplateGrid.vue'
 import TemplateThumbStrip from './TemplateThumbStrip.vue'
 import TemplatePreviewPanel from './TemplatePreviewPanel.vue'
+import InvitationPreviewSheet from './InvitationPreviewSheet.vue'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
   eventId: { type: [Number, String], required: true },
-  /** Open straight on this template (coming back from the payment, or a deep link). */
+  /** Open straight on this template (coming back from the payment, or a deep link), with the palette she had chosen. */
   initialTemplateId: { type: [Number, String], default: null },
+  initialPreset: { type: String, default: '' },
   /** True when she just came back from paying: the button offers "use it now". */
   fromPayment: { type: Boolean, default: false },
   /** Slugs of the event's active modules: changing to a template that lacks one asks for confirmation first. */
@@ -43,7 +45,7 @@ const props = defineProps({
 const emit = defineEmits(['update:open', 'changed', 'unlock', 'undone'])
 
 const { t, te, tm, rt, locale } = useI18n()
-const toast = useToast()
+const { toast, error: toastError, success: toastSuccess } = useToast()
 const eventsStore = useEventsStore()
 const picker = useTemplatePicker(() => props.eventId)
 const favorites = useFavoriteTemplates(storedUserId)
@@ -61,15 +63,27 @@ const confirmOpen = ref(false)
 const confirmError = ref('') // '' or the key of templatePicker.errors.*
 const discardAsk = ref(false)
 const publishedOpen = ref(false)
+const previewPreset = ref('') // '' = the template's own palette
+const comparing = ref(false)
+const fullOpen = ref(false)
 
 const event = computed(() => eventsStore.activeEvent)
 const eventName = computed(() => event.value?.eventName ?? '')
 const dateLabel = computed(() => (event.value ? formatEventDate(eventMoment(event.value), 'date', locale.value, event.value.timezone) : ''))
 const conflictNames = computed(() => moduleNames(conflictingModules(selected.value, props.activeModules), { t, te }).join(', '))
+const presets = computed(() => templatePresets(selected.value))
+// The palette saved on the template in use; the API may not say (then the first one is the template's own).
+const savedPreset = computed(() => (selected.value?.current ? selected.value.activePreset || presets.value[0]?.key || '' : ''))
+const activePreset = computed(() => previewPreset.value || savedPreset.value || presets.value[0]?.key || '')
 const isCurrent = computed(() => !!selected.value?.current)
+const paletteChanged = computed(() => isCurrent.value && !!previewPreset.value && previewPreset.value !== savedPreset.value)
+const paletteName = computed(() => {
+  const found = presets.value.find(preset => preset.key === previewPreset.value)
+  return found ? pickText(found.label, locale.value) || found.key : ''
+})
 const isLocked = computed(() => !!selected.value?.locked)
 const hasLockedTemplates = computed(() => picker.templates.value.some(template => template.locked))
-const dirty = computed(() => !!selected.value && !isCurrent.value)
+const dirty = computed(() => !!selected.value && (!isCurrent.value || paletteChanged.value))
 const price = computed(() => (quote.value ? formatMoney(quote.value.amountCents, quote.value.currency, locale.value) : ''))
 const unlockLabel = computed(() => (price.value ? t('templatePicker.preview.unlockPrice', { price: price.value }) : t('templatePicker.preview.unlock')))
 const paidNow = computed(() => props.fromPayment && !isCurrent.value && !isLocked.value && selected.value?.tier === 'premium')
@@ -79,8 +93,17 @@ const busy = computed(() => picker.applying.value)
 
 function renderPreview() {
   if (!selected.value) return
-  picker.loadPreview(selected.value, { locale: previewLocale.value, state: previewState.value })
+  picker.loadPreview(selected.value, { locale: previewLocale.value, state: previewState.value, preset: previewPreset.value || undefined })
+  if (comparing.value) picker.loadCompare({ locale: previewLocale.value, state: previewState.value })
 }
+
+// Looking at a card or a swatch warms that combination, so choosing it is instant. Quiet: a failure is simply not cached.
+let hoverTimer = null
+function prefetch(template, preset = '') {
+  clearTimeout(hoverTimer)
+  hoverTimer = setTimeout(() => picker.prefetchPreview(template, { locale: previewLocale.value, state: previewState.value, preset: preset || undefined }), 150)
+}
+onBeforeUnmount(() => clearTimeout(hoverTimer))
 
 async function loadQuote() {
   quote.value = null
@@ -94,13 +117,15 @@ async function loadQuote() {
 function select(template) {
   if (!template || String(selected.value?.id) === String(template.id)) return
   selected.value = template
+  previewPreset.value = ''
   confirmError.value = ''
   if (!template.current) picker.loadImpact(template)
   if (template.locked) loadQuote()
 }
 
-function goUnlock() {
-  emit('unlock', selected.value)
+/** To the payment screen: with the template (and palette) being looked at, or with none (the banner on top). */
+function goUnlock(withTemplate = true) {
+  emit('unlock', withTemplate ? selected.value : null, withTemplate ? previewPreset.value : '')
   emit('update:open', false)
 }
 
@@ -126,6 +151,8 @@ function needsConfirmation(data) {
 async function primary() {
   if (isLocked.value) return goUnlock()
   confirmError.value = ''
+  // Only the palette of the template in use changes: nothing restarts, nothing to confirm.
+  if (isCurrent.value) return apply()
   const data = picker.impactStatus.value === 'ready' ? picker.impact.value : await picker.loadImpact(selected.value)
   if (!data || needsConfirmation(data)) {
     confirmOpen.value = true
@@ -137,10 +164,11 @@ async function primary() {
 async function apply() {
   confirmError.value = ''
   const target = selected.value
-  const result = await picker.apply(target)
+  const paletteOnly = isCurrent.value
+  const result = await picker.apply(target, { preset: previewPreset.value || undefined })
   if (result.ok) {
     confirmOpen.value = false
-    emit('changed', result.data, target, picker.undo.value)
+    emit('changed', result.data, target, picker.undo.value, paletteOnly ? { paletteOnly: true, name: paletteName.value } : null)
     emit('update:open', false)
     return
   }
@@ -155,12 +183,16 @@ async function apply() {
   }
   if (result.code === 'template_not_available' || result.code === 'template_not_found') {
     confirmOpen.value = false
-    toast.error(t('templatePicker.errors.notAvailable'))
+    toastError(t('templatePicker.errors.notAvailable'))
     await picker.load()
     select(picker.templates.value.find(item => item.current) ?? picker.templates.value[0])
     return
   }
   confirmError.value = result.code === 'event_archived' ? 'archived' : result.code === 'forbidden' ? 'forbidden' : 'generic'
+  // A failure of the direct save: say it and offer to try again, without leaving the screen.
+  if (!confirmOpen.value) {
+    toast({ title: t(`templatePicker.errors.${confirmError.value}`), tone: 'danger', duration: 8000, action: confirmError.value === 'generic' ? { label: t('templatePicker.retryAction'), onClick: primary } : undefined })
+  }
 }
 
 async function undo() {
@@ -168,10 +200,10 @@ async function undo() {
   const result = await picker.undoLast()
   if (result.ok) {
     emit('undone', result.data)
-    toast.success(t('templatePicker.undone', { name }))
+    toastSuccess(t('templatePicker.undone', { name }))
   } else {
     const key = { event_archived: 'archived', forbidden: 'forbidden' }[result.code]
-    toast.error(result.code === 'template_locked' ? t('templatePicker.published.text') : t(`templatePicker.errors.${key ?? 'generic'}`))
+    toastError(result.code === 'template_locked' ? t('templatePicker.published.text') : t(`templatePicker.errors.${key ?? 'generic'}`))
   }
   return result
 }
@@ -186,6 +218,10 @@ async function begin() {
   confirmOpen.value = false
   discardAsk.value = false
   confirmError.value = ''
+  previewPreset.value = ''
+  comparing.value = false
+  fullOpen.value = false
+  picker.clearPreviewCache()
   browser.clear()
   previewLocale.value = locale.value === 'en' ? 'en' : 'es'
   previewState.value = props.stage === 'save_the_date' ? 'save_the_date' : 'invitation'
@@ -194,6 +230,7 @@ async function begin() {
   const list = picker.templates.value
   const wanted = props.initialTemplateId != null ? list.find(item => String(item.id) === String(props.initialTemplateId)) : null
   select(wanted ?? list.find(item => item.current) ?? list[0])
+  if (wanted && props.initialPreset && templatePresets(wanted).some(preset => preset.key === props.initialPreset)) previewPreset.value = props.initialPreset
 }
 
 watch(
@@ -204,7 +241,13 @@ watch(
   },
   { immediate: true }
 )
-watch([selected, previewLocale, previewState], renderPreview)
+watch([selected, previewLocale, previewState, previewPreset], renderPreview)
+watch(comparing, on => {
+  if (on) picker.loadCompare({ locale: previewLocale.value, state: previewState.value })
+  else picker.resetCompare()
+})
+// Looking at the current template there is nothing to compare with.
+watch(isCurrent, current => current && (comparing.value = false))
 
 defineExpose({ undo, picker })
 </script>
@@ -213,7 +256,7 @@ defineExpose({ undo, picker })
   <UiModal :open="open" :title="t('templatePicker.title')" :description="t('templatePicker.subtitle')" size="xl" bare fullscreen-mobile @update:open="onOpenChange">
     <div class="flex h-full flex-col sm:h-[min(44rem,calc(92dvh-9.5rem))]" data-testid="template-picker-body">
     <div v-if="hasLockedTemplates && !fromPayment" class="shrink-0 px-4 pt-2 sm:px-6">
-      <UnlockBanner :event-id="eventId" @unlock="goUnlock" />
+      <UnlockBanner :event-id="eventId" @unlock="goUnlock(false)" />
     </div>
     <div class="flex min-h-0 flex-1 flex-col overflow-y-auto lg:grid lg:grid-cols-[minmax(0,1fr)_25rem] lg:overflow-hidden">
       <!-- left zone (wide screens): search, filters and the grid, with its own scroll -->
@@ -240,6 +283,7 @@ defineExpose({ undo, picker })
             :can-favorite="browser.enabled.value"
             :is-favorite="favorites.isFavorite"
             @select="select"
+            @hover="template => prefetch(template)"
             @favorite="template => favorites.toggle(template.id)"
             @retry="picker.load()"
             @clear="browser.clear()"
@@ -256,11 +300,21 @@ defineExpose({ undo, picker })
         :error="picker.previewError.value"
         :language="previewLocale"
         :stage="previewState"
+        :presets="presets"
+        :preset="activePreset"
+        :can-compare="!isCurrent"
+        :comparing="comparing"
+        :compare-payload="picker.comparePayload.value"
+        :compare-status="picker.compareStatus.value"
         :included="included"
         :paid-now="paidNow"
         class="order-1 lg:order-none lg:shrink"
         @update:language="previewLocale = $event"
         @update:stage="previewState = $event"
+        @update:preset="previewPreset = $event"
+        @update:comparing="comparing = $event"
+        @hover-preset="preset => prefetch(selected, preset.key)"
+        @full="fullOpen = true"
         @retry="renderPreview"
       />
       <div v-else-if="picker.status.value === 'loading' || picker.status.value === 'idle'" class="p-5 lg:hidden" role="status" :aria-label="t('templatePicker.loading')"><UiSkeleton height="20rem" /></div>
@@ -277,7 +331,8 @@ defineExpose({ undo, picker })
       <p v-if="confirmError" class="mr-auto self-center text-sm text-danger-700" role="alert">{{ t(`templatePicker.errors.${confirmError}`) }}</p>
       <p v-else-if="selected && !isCurrent && !isLocked" class="mr-auto hidden self-center text-sm text-ink-500 sm:block">{{ t('templatePicker.action.keeps') }}</p>
       <UiButton variant="ghost" @click="onOpenChange(false)">{{ t('templatePicker.confirm.cancel') }}</UiButton>
-      <UiButton v-if="selected && isCurrent" disabled>{{ t('templatePicker.preview.inUseButton') }}</UiButton>
+      <UiButton v-if="selected && isCurrent && !paletteChanged" disabled>{{ t('templatePicker.preview.inUseButton') }}</UiButton>
+      <UiButton v-else-if="selected && isCurrent" data-testid="primary-action" :loading="busy" @click="primary">{{ t('templatePicker.savePalette') }}</UiButton>
       <UiButton v-else-if="selected && isLocked" data-testid="primary-action" @click="primary">
         <Lock class="h-4 w-4" aria-hidden="true" />
         {{ unlockLabel }}
@@ -317,7 +372,7 @@ defineExpose({ undo, picker })
       </div>
       <template #footer>
         <UiButton variant="ghost" :disabled="busy" @click="confirmOpen = false">{{ conflictNames ? t('templatePicker.missing.cancel') : t('templatePicker.confirm.cancel') }}</UiButton>
-        <UiButton v-if="picker.impact.value?.locked" @click="goUnlock">
+        <UiButton v-if="picker.impact.value?.locked" @click="goUnlock()">
           <Lock class="h-4 w-4" aria-hidden="true" />
           {{ unlockLabel }}
         </UiButton>
@@ -326,6 +381,9 @@ defineExpose({ undo, picker })
         </UiButton>
       </template>
     </UiModal>
+
+    <!-- the whole invitation, full screen, with the template and palette being looked at -->
+    <InvitationPreviewSheet v-if="fullOpen" v-model:open="fullOpen" :event-id="eventId" :template-id="selected?.id" :preset="previewPreset" :initial-locale="previewLocale" :initial-state="previewState" :description="t('templatePicker.fullView.hint', { name: selected?.name ?? '' })" :no-photo="false" />
 
     <!-- the invitation is published: only support changes the template -->
     <UiModal :open="publishedOpen" :title="t('templatePicker.published.title')" size="sm" @update:open="value => (publishedOpen = value)">

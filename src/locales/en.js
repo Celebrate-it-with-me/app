@@ -2599,6 +2599,18 @@ export default {
     alreadyUnlocked: { title: 'This event is already unlocked', text: 'There is no need to pay again: you already have every module and the full guest limit.', invoices: 'See my invoices' },
   },
   templatePicker: {
+    compare: {
+      toggle: 'Compare with the current one',
+      hide: 'Stop comparing',
+      current: 'Current',
+      chosen: 'Chosen',
+      failed: 'We could not show your current invitation.',
+      label: 'Comparison with your current template'
+    },
+    fullView: { open: 'See the full invitation', hint: 'This is how your invitation would look with {name}. Nothing is saved.' },
+    savePalette: 'Save palette',
+    paletteSaved: 'Done, the {name} palette is saved.',
+    retryAction: 'Try again',
     panel: { label: 'Template preview' },
     action: { keeps: 'Your content and photos are kept.' },
     discard: {
@@ -2622,7 +2634,7 @@ export default {
     styles: { elegante: 'Elegant', moderna: 'Modern', floral: 'Floral', minimal: 'Minimal' },
     noResults: { title: 'No template matches', text: 'Try another search or clear the filters.' },
     favorite: { add: 'Mark {name} as a favorite', remove: 'Remove {name} from your favorites' },
-    palettes: { count: '{count} palettes' },
+    palettes: { count: '{count} palettes', label: 'Color palette' },
     strip: { label: 'Your templates' },
     card: { select: 'View {name}' },
     title: 'Choose your template',
@@ -2664,7 +2676,6 @@ export default {
       unavailable: 'Your template is no longer available. Until you pick another one, your invitation shows Classic.'
     },
     preview: {
-      back: 'Back',
       language: 'Preview language',
       state: 'What to see',
       preset: 'Palette',
@@ -2675,7 +2686,6 @@ export default {
       premiumTitle: 'Premium template',
       premiumText: 'You can see it with your event details. To use it, unlock your full event.',
       paid: 'You already unlocked your event. Use {name} now?',
-      inUse: 'This is the template you use now.',
       inUseButton: 'Already in use',
       unlock: 'Unlock to use it',
       unlockPrice: 'Unlock · {price}',

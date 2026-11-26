@@ -69,7 +69,7 @@ const CATALOG = [
 
 const MISSING = { 2: ['seating'], 3: ['comments', 'seating'], 4: ['seating'] }
 
-const state = { current: 1, undo: null, cover: null }
+const state = { current: 1, undo: null, cover: null, preset: null }
 
 const EXTRA_NAMES = ['Jardín de peonías', 'Minimal blanco', 'Gala dorada']
 const LONG_NAME = 'Una plantilla con un nombre larguísimo que no cabe en una sola línea de la tarjeta'
@@ -103,7 +103,9 @@ function snapshot() {
     // Contract module-template-compat: slugs of the modules this template has no block for (native templates: none).
     missingModules: flags.includes('missingcurrent') && template.id === 1 ? ['comments', 'seating'] : (MISSING[template.id] ?? []), // flag `missingcurrent`: the one in use lacks both
     locked: template.tier === 'premium' && !unlocked,
-    current: template.id === state.current
+    current: template.id === state.current,
+    // Not in the API contract yet (asked of Atlas): the palette saved on the template in use.
+    ...(template.id === state.current && template.presets ? { activePreset: state.preset } : {})
   }))
 }
 
@@ -138,7 +140,8 @@ export async function impact(eventId, templateId) {
   }
 }
 
-export async function apply(eventId, { template_id: id }) {
+export async function apply(eventId, body) {
+  const { template_id: id } = body
   const flags = mockFlags()
   await wait(400)
   const template = snapshot().find(item => item.id === Number(id))
@@ -147,8 +150,14 @@ export async function apply(eventId, { template_id: id }) {
   if (flags.includes('gone')) throw fail(403, { message: 'Not available.', code: 'template_not_available' })
   if (template.locked || (flags.includes('noplan') && template.tier === 'premium')) throw fail(403, { message: 'Plan required.', code: 'plan_required' })
   const from = state.current
+  const until = new Date(Date.now() + 10 * 60 * 1000).toISOString()
+  if ('preset' in body && body.preset && !(template.presets ?? []).some(p => p.key === body.preset)) throw fail(422, { message: 'Invalid.', errors: { preset: ['invalid_choice'] } })
+  const paletteOnly = from === template.id && 'preset' in body
+  const previous = state.preset
   state.current = template.id
-  state.undo = { until: new Date(Date.now() + 10 * 60 * 1000).toISOString(), templateId: from }
+  if ('preset' in body) state.preset = body.preset
+  else if (from !== template.id) state.preset = null
+  state.undo = { until, templateId: from, ...(paletteOnly ? { preset: previous } : {}) }
   return { template: { id: template.id, slug: template.slug, name: template.name, tier: template.tier }, undo: state.undo }
 }
 
@@ -157,13 +166,15 @@ const SECTION_COPY = {
   en: { phrase: 'Celebrate with me', closing: 'Thank you for joining me' }
 }
 
-export async function preview(eventId, { template_id: id, locale = 'es', state: stage = 'invitation' }) {
+export async function preview(eventId, { template_id: id, locale = 'es', state: stage = 'invitation', preset }) {
   const flags = mockFlags()
   await wait(300)
   const template = snapshot().find(item => item.id === Number(id ?? state.current))
   if (!template) throw fail(404, { message: 'Not found.', code: 'template_not_found' })
   if (flags.includes('gone') && template.id !== state.current) throw fail(403, { message: 'Not available.', code: 'template_not_available' })
-  const color = catalog().find(item => item.id === template.id).color
+  const entry = catalog().find(item => item.id === template.id)
+  const chosen = (entry.presets ?? []).find(p => p.key === (preset ?? (template.id === state.current ? state.preset : null)))
+  const color = chosen?.palette.accent ?? entry.color
   const copy = SECTION_COPY[locale] ?? SECTION_COPY.es
   const std = stage === 'save_the_date'
   const photo = stage === 'no_photo' || std ? null : state.cover?.url ? PORTRAIT : null

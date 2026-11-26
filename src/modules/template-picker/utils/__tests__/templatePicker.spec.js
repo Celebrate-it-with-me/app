@@ -58,11 +58,21 @@ describe('unlock bridge', () => {
     clearTemplateReturn()
     expect(readTemplateReturn(5)).toBeNull()
     rememberTemplateReturn(5, 12, 1000)
-    expect(readTemplateReturn(5, 2000)).toEqual({ eventId: '5', templateId: '12' })
+    expect(readTemplateReturn(5, 2000)).toEqual({ eventId: '5', templateId: '12', preset: '' })
     expect(readTemplateReturn(6, 2000)).toBeNull()
     expect(readTemplateReturn(5, 1000 + 3 * 60 * 60 * 1000)).toBeNull()
     clearTemplateReturn()
     expect(readTemplateReturn(5, 2000)).toBeNull()
+  })
+
+  it('carries the palette she was looking at through the payment', () => {
+    rememberTemplateReturn(5, 12, 1000, 'rosa')
+    expect(readTemplateReturn(5, 2000)).toEqual({ eventId: '5', templateId: '12', preset: 'rosa' })
+    expect(unlockLocation(12, 'rosa').query).toEqual({ from: 'template', template: '12', preset: 'rosa' })
+    expect(unlockLocation(12).query).toEqual({ from: 'template', template: '12' })
+    expect(pickerReturnPath(12, 'rosa')).toBe('/dashboard/invitation?template=12&preset=rosa')
+    expect(pickerReturnPath(12)).toBe('/dashboard/invitation?template=12')
+    clearTemplateReturn()
   })
 })
 
