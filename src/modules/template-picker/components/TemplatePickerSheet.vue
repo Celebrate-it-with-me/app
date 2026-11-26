@@ -382,7 +382,7 @@ defineExpose({ undo, picker })
     </UiModal>
 
     <!-- the whole invitation, full screen, with the template and palette being looked at -->
-    <InvitationPreviewSheet v-if="fullOpen" v-model:open="fullOpen" :event-id="eventId" :template-id="selected?.id" :preset="previewPreset" :initial-locale="previewLocale" :initial-state="previewState" />
+    <InvitationPreviewSheet v-if="fullOpen" v-model:open="fullOpen" :event-id="eventId" :template-id="selected?.id" :preset="previewPreset" :initial-locale="previewLocale" :initial-state="previewState" :description="t('templatePicker.fullView.hint', { name: selected?.name ?? '' })" :no-photo="false" />
 
     <!-- the invitation is published: only support changes the template -->
     <UiModal :open="publishedOpen" :title="t('templatePicker.published.title')" size="sm" @update:open="value => (publishedOpen = value)">

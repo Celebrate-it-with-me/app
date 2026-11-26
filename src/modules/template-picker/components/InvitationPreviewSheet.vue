@@ -22,7 +22,10 @@ const props = defineProps({
   preset: { type: String, default: '' },
   /** Language the sheet opens in (the selector passes the one she was looking at). */
   initialLocale: { type: String, default: '' },
-  initialState: { type: String, default: 'invitation' }
+  initialState: { type: String, default: 'invitation' },
+  /** Replaces the editor's "with your edits" line, and drops "Sin foto" (the selector has no use for it). */
+  description: { type: String, default: '' },
+  noPhoto: { type: Boolean, default: true }
 })
 const emit = defineEmits(['update:open'])
 
@@ -38,7 +41,7 @@ const languageOptions = [
 const stateOptions = computed(() => [
   { value: 'invitation', label: t('templatePicker.preview.states.invitation') },
   { value: 'save_the_date', label: t('templatePicker.preview.states.saveTheDate') },
-  { value: 'no_photo', label: t('templatePicker.preview.states.noPhoto') }
+  ...(props.noPhoto ? [{ value: 'no_photo', label: t('templatePicker.preview.states.noPhoto') }] : [])
 ])
 const failedText = computed(() => (picker.previewError.value === 'forbidden' ? t('templatePicker.errors.previewForbidden') : t('templatePicker.preview.failed')))
 
@@ -60,7 +63,7 @@ watch([previewLocale, previewState], () => props.open && render())
 </script>
 
 <template>
-  <UiModal :open="open" :title="t('invitationEditor.actions.preview')" :description="t('invitationEditor.previewHint')" size="full" @update:open="value => emit('update:open', value)">
+  <UiModal :open="open" :title="t('invitationEditor.actions.preview')" :description="description || t('invitationEditor.previewHint')" size="full" @update:open="value => emit('update:open', value)">
     <div class="flex flex-col items-center gap-3">
       <div class="flex flex-wrap items-center justify-center gap-2">
         <SegmentedControl v-model="previewLocale" :options="languageOptions" :label="t('templatePicker.preview.language')" />

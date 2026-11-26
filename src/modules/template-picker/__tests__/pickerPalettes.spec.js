@@ -200,6 +200,8 @@ describe('TemplatePickerSheet compare and full view', () => {
     const fullCalls = mocks.preview.mock.calls.map(([, body]) => body)
     expect(fullCalls.at(-1)).toMatchObject({ templateId: 2, locale: 'es', state: 'invitation', preset: 'rosa' })
     expect(document.body.querySelector('[data-testid=editor-preview]')).not.toBeNull()
+    expect(text()).toContain('Así se vería tu invitación con Botánica. No se guarda nada.')
+    expect(text()).not.toContain('Sin foto')
   })
 })
 

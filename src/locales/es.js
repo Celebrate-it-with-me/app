@@ -2607,7 +2607,7 @@ export default {
       failed: 'No pudimos mostrar tu invitación actual.',
       label: 'Comparación con tu plantilla actual'
     },
-    fullView: { open: 'Ver invitación completa' },
+    fullView: { open: 'Ver invitación completa', hint: 'Así se vería tu invitación con {name}. No se guarda nada.' },
     savePalette: 'Guardar paleta',
     paletteSaved: 'Listo, la paleta {name} quedó guardada.',
     retryAction: 'Reintentar',

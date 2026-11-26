@@ -2607,7 +2607,7 @@ export default {
       failed: 'We could not show your current invitation.',
       label: 'Comparison with your current template'
     },
-    fullView: { open: 'See the full invitation' },
+    fullView: { open: 'See the full invitation', hint: 'This is how your invitation would look with {name}. Nothing is saved.' },
     savePalette: 'Save palette',
     paletteSaved: 'Done, the {name} palette is saved.',
     retryAction: 'Try again',
