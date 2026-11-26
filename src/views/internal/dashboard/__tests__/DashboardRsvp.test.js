@@ -49,16 +49,40 @@ describe('DashboardRsvp', () => {
     setLocale('en')
     expect(mountRsvp().get('[data-testid=rsvp-totals]').text()).toBe('39 people in 24 invitations · 15 companions')
   })
-  it('reminds the pending invitations through the send wizard, with the pending card preselected', () => {
-    const remind = mountRsvp().get('[data-testid=rsvp-remind]')
-    expect(remind.text()).toContain('Recordar a las 5 invitaciones pendientes')
+  // The wizard's own counts: `pending` is what its reminders card shows, `pendingUnsent` who never got the invitation.
+  const COUNTS = { unsent: 0, pending: 3, all: 20, pendingUnsent: 0, rsvpOpen: true, archived: false }
+  const withCounts = (over = {}, props = {}) => mountRsvp({ sendCounts: { ...COUNTS, ...over }, ...props })
+  it('reminds with the number the send wizard shows, not the stats pending count', () => {
+    const remind = withCounts().get('[data-testid=rsvp-remind]')
+    expect(remind.text()).toContain('Recordar a las 3 invitaciones pendientes')
+    expect(remind.text()).not.toContain('5')
     expect(JSON.parse(remind.attributes('data-to'))).toEqual({ path: '/dashboard/guests', query: { send: 'pending' } })
-    expect(mountRsvp({ stats: one('pending', { guests: 1 }) }).get('[data-testid=rsvp-remind]').text()).toContain('Recordar a la invitación pendiente')
+    expect(withCounts({ pending: 1 }).get('[data-testid=rsvp-remind]').text()).toContain('Recordar a la invitación pendiente')
+    setLocale('en')
+    expect(withCounts().get('[data-testid=rsvp-remind]').text()).toContain('Remind the 3 pending invitations')
   })
-  it('has no remind button without pending invitations or for people who cannot send', () => {
-    expect(mountRsvp({ stats: one('pending', { guests: 0 }) }).find('[data-testid=rsvp-remind]').exists()).toBe(false)
-    expect(mountRsvp({ canEdit: false }).find('[data-testid=rsvp-remind]').exists()).toBe(false)
-    expect(mountRsvp({ canViewGuests: false }).find('[data-testid=rsvp-remind]').exists()).toBe(false)
+  it('offers to send the invitations when nobody can be reminded because the pending ones never got it', () => {
+    const w = withCounts({ pending: 0, unsent: 4, pendingUnsent: 4 })
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    const invite = w.get('[data-testid=rsvp-invite]')
+    expect(invite.text()).toBe('Enviar invitaciones')
+    expect(invite.text()).not.toMatch(/\d/)
+    expect(JSON.parse(invite.attributes('data-to'))).toEqual({ path: '/dashboard/guests', query: { send: 'unsent' } })
+  })
+  it('shows no button while the counts are unknown or failed, nor when nobody can get anything', () => {
+    for (const w of [mountRsvp(), withCounts({ pending: 0, pendingUnsent: 0, unsent: 2 })]) {
+      expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+      expect(w.find('[data-testid=rsvp-invite]').exists()).toBe(false)
+      expect(w.find('[data-testid=rsvp-ring]').exists()).toBe(true)
+    }
+  })
+  it('shows no button with the answers closed, an archived event, no pending invitations or for people who cannot send', () => {
+    const none = w => !w.find('[data-testid=rsvp-remind]').exists() && !w.find('[data-testid=rsvp-invite]').exists()
+    expect(none(withCounts({ rsvpOpen: false }))).toBe(true)
+    expect(none(withCounts({ archived: true }))).toBe(true)
+    expect(none(withCounts({}, { stats: one('pending', { guests: 0 }) }))).toBe(true)
+    expect(none(withCounts({}, { canEdit: false }))).toBe(true)
+    expect(none(withCounts({ pending: 0, pendingUnsent: 3 }, { canViewGuests: false }))).toBe(true)
   })
   it('lists the four latest answers, newest first, with their state in words', () => {
     const rows = mountRsvp().findAll('[data-testid=rsvp-recent] li')

@@ -89,6 +89,25 @@ describe('RosterView ?send=pending (from the Inicio)', () => {
     expect(wizard().props('preselectedIds')).toEqual([])
     expect(router.currentRoute.value.query).toEqual({ status: 'pending' })
   })
+  it("?send=unsent (the Inicio's 'Enviar invitaciones') opens the wizard on the first-send card and drops the parameter", async () => {
+    await setup({ path: '/dashboard/guests?send=unsent' })
+    expect(wizard().props('open')).toBe(true)
+    expect(wizard().props('initialCategory')).toBe('unsent')
+    expect(wizard().props('preselectedIds')).toEqual([])
+    expect(router.currentRoute.value.query.send).toBeUndefined()
+  })
+  it('never takes a near value nor a list: only the exact words open it', async () => {
+    for (const path of ['/dashboard/guests?send=UNSENT', '/dashboard/guests?send=unsent&send=pending', '/dashboard/guests?send=']) {
+      await setup({ path })
+      expect(wizard().props('open')).toBe(false)
+      expect(router.currentRoute.value.query.send).toBeUndefined()
+      wrapper.unmount()
+    }
+  })
+  it('does not open the first-send card for a viewer either', async () => {
+    await setup({ path: '/dashboard/guests?send=unsent', userRole: 'viewer' })
+    expect(wizard().props('open')).toBe(false)
+  })
   it('ignores any other value and any guest ids, and still cleans the URL', async () => {
     await setup({ path: '/dashboard/guests?send=all&guest_ids=1,2' })
     expect(wizard().props('open')).toBe(false)

@@ -4,9 +4,9 @@ import { useI18n } from 'vue-i18n'
 import { TriangleAlert } from 'lucide-vue-next'
 import WhatsAppIcon from '@/components/brand/WhatsAppIcon.vue'
 import { UiModal, UiButton, UiCard, UiSkeleton, UiEmptyState } from '@/ui'
-import SendWizardService from '../../services/SendWizardService'
+import { effectiveModeOf, loadSendFamilies } from '../../services/sendFamilies'
 import { useToast } from '@/ui'
-import { MODE_DEFAULT, STEPS, allowedTemplates, categoryAllowed, loadErrorKey, mergeFamilies, membersOf, templateFor, withoutTemplate } from '../../utils/sendWizard'
+import { INITIAL_CATEGORIES, MODE_DEFAULT, STEPS, allowedTemplates, categoryAllowed, loadErrorKey, membersOf, templateFor, withoutTemplate } from '../../utils/sendWizard'
 import SendStepWho from './SendStepWho.vue'
 import SendStepPreview from './SendStepPreview.vue'
 import SendStepManual from './SendStepManual.vue'
@@ -30,7 +30,7 @@ const props = defineProps({
   canEdit: { type: Boolean, default: true },
   /** Families to start with (the row menu): step 1 is skipped when they can be shared. */
   preselectedIds: { type: Array, default: () => [] },
-  /** Card to start on when nothing is preselected: `pending` (the Inicio's "remind") opens on the reminders. */
+  /** Card to start on when nothing is preselected: `pending` (the Inicio's "remind") or `unsent` (its "send invitations"). */
   initialCategory: { type: String, default: null },
   /** Bumped by the parent after it edits a guest, so the wizard reads the families again. */
   reloadToken: { type: Number, default: 0 },
@@ -61,7 +61,7 @@ let loadId = 0
 
 const step = computed(() => STEPS[stepIndex.value])
 // The server has the last word: an automatic request falls back to manual when it says the send is not available.
-const effectiveMode = computed(() => (props.mode === 'automatic' && audience.value?.mode?.automatic === false ? 'manual' : props.mode))
+const effectiveMode = computed(() => effectiveModeOf(props.mode, audience.value))
 const automatic = computed(() => effectiveMode.value === 'automatic')
 const rsvpOpen = computed(() => audience.value?.rsvp?.isOpen !== false)
 const archived = computed(() => !!audience.value?.event?.archived)
@@ -94,18 +94,11 @@ async function load({ keepStep = false } = {}) {
   loading.value = true
   errorKey.value = null
   try {
-    const [info, recipients, roster, reminderInfo] = await Promise.all([
-      SendWizardService.audience(props.eventId, 'invitation'),
-      SendWizardService.allRecipients(props.eventId, 'invitation'),
-      SendWizardService.allRoster(props.eventId),
-      // Who is held back depends on the template: the 3-reminders cap only shows up when asking for reminders.
-      SendWizardService.audience(props.eventId, 'reminder_pending').catch(() => null)
-    ])
-    const holds = reminderInfo?.blocked?.reminder_limit > 0 || reminderInfo?.blocked?.recently_sent > 0
-    const reminders = props.mode === 'automatic' && info?.mode?.automatic !== false && holds ? await SendWizardService.allRecipients(props.eventId, 'reminder_pending').catch(() => []) : []
+    // The same read the Inicio's "Recordar" counts with (sendFamilies.js), so both show one number.
+    const { info, families: rows } = await loadSendFamilies(props.eventId, props.mode)
     if (id !== loadId) return
     audience.value = info
-    families.value = mergeFamilies(recipients, roster, reminders)
+    families.value = rows
     if (!keepStep) start()
     if (props.resume) resumeBatch()
   } catch (e) {
@@ -136,8 +129,8 @@ function start() {
   }
   selectedIds.value = []
   const open = rsvpOpen.value
-  if (props.initialCategory === 'pending' && categoryAllowed('pending', { rsvpOpen: open })) {
-    category.value = 'pending'
+  if (INITIAL_CATEGORIES.includes(props.initialCategory) && categoryAllowed(props.initialCategory, { rsvpOpen: open })) {
+    category.value = props.initialCategory
     return
   }
   const first = ['unsent', 'pending', 'all'].find(key => membersOf(families.value, key, { template: templateFor(key, { rsvpOpen: open }), mode: effectiveMode.value }).length)

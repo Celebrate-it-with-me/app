@@ -5,7 +5,7 @@
  */
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { BellRing, UserPlus, Users } from 'lucide-vue-next'
+import { BellRing, Send, UserPlus, Users } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiCard, UiEmptyState, UiSkeleton } from '@/ui'
 import DashboardBlock from './DashboardBlock.vue'
 import RsvpRing from './RsvpRing.vue'
@@ -21,6 +21,8 @@ const props = defineProps({
   canEdit: { type: Boolean, default: false },
   /** The guest list is behind `view_guests`. */
   canViewGuests: { type: Boolean, default: false },
+  /** The send wizard's counts (`sendCounts` in sendFamilies.js), null while unknown, failed or not asked for. */
+  sendCounts: { type: Object, default: null },
   /** The event's zone, for the answer dates. */
   timezone: { type: String, default: '' }
 })
@@ -38,8 +40,18 @@ const totalsLine = computed(() => {
   const { people, mainGuests, companions } = rsvp.value
   return `${t('app.dashboard.rsvp.persons', { n: people }, people)} ${t('app.dashboard.rsvp.inInvitations', { n: mainGuests }, mainGuests)} · ${t('app.dashboard.rsvp.companions', { n: companions }, companions)}`
 })
-const canRemind = computed(() => props.canEdit && props.canViewGuests && rsvp.value.pendingGuests > 0)
-const remindTo = { path: '/dashboard/guests', query: { send: 'pending' } }
+/**
+ * The button under the totals, from the send wizard's own counts (never `pending.guests`, which also counts families the
+ * invitation never reached): "Recordar a N" when N families can get a reminder; "Enviar invitaciones" when nobody can be
+ * reminded because the pending ones never got the invitation; nothing otherwise (closed RSVP, archived event, no counts).
+ */
+const sendAction = computed(() => {
+  const counts = props.sendCounts
+  if (!props.canEdit || !props.canViewGuests || rsvp.value.pendingGuests === 0 || !counts || !counts.rsvpOpen || counts.archived) return null
+  if (counts.pending > 0) return { kind: 'remind', n: counts.pending, to: { path: '/dashboard/guests', query: { send: 'pending' } } }
+  if (counts.pendingUnsent > 0) return { kind: 'invite', to: { path: '/dashboard/guests', query: { send: 'unsent' } } }
+  return null
+})
 const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.value, props.timezone || undefined)
 </script>
 
@@ -85,9 +97,13 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
               </li>
             </ul>
             <p class="border-t border-cream-300 pt-2.5 text-ink-500" data-testid="rsvp-totals">{{ totalsLine }}</p>
-            <UiButton v-if="canRemind" :to="remindTo" variant="secondary" block class="mt-1" data-testid="rsvp-remind">
+            <UiButton v-if="sendAction?.kind === 'remind'" :to="sendAction.to" variant="secondary" block class="mt-1" data-testid="rsvp-remind">
               <BellRing class="h-4 w-4 shrink-0" aria-hidden="true" />
-              {{ t('app.dashboard.rsvp.remind', { n: rsvp.pendingGuests }, rsvp.pendingGuests) }}
+              {{ t('app.dashboard.rsvp.remind', { n: sendAction.n }, sendAction.n) }}
+            </UiButton>
+            <UiButton v-else-if="sendAction?.kind === 'invite'" :to="sendAction.to" variant="secondary" block class="mt-1" data-testid="rsvp-invite">
+              <Send class="h-4 w-4 shrink-0" aria-hidden="true" />
+              {{ t('app.dashboard.rsvp.sendInvitations') }}
             </UiButton>
           </div>
         </div>

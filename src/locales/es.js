@@ -2148,6 +2148,7 @@ export default {
           rate: '{n} % de las invitaciones respondieron'
         },
         remind: 'Recordar a la invitación pendiente | Recordar a las {n} invitaciones pendientes',
+        sendInvitations: 'Enviar invitaciones',
         recentTitle: 'Últimas respuestas',
         recent: { attending: 'Asiste', declined: 'No asiste' },
         emptyTitle: 'Aún no tienes invitados',

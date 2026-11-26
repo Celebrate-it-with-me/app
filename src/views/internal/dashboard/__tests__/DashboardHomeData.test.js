@@ -17,6 +17,8 @@ vi.mock('@/modules/dress-code/services/DressCodeService', () => ({ default: { ge
 vi.mock('@/modules/budget/services/BudgetService', () => ({ default: { summary: m.summary } }))
 vi.mock('@/modules/email-verification/components/EmailVerifyNotice.vue', () => ({ default: { template: '<div />' } }))
 vi.mock('@/services/axios', () => ({ CWM_API: { get: vi.fn() } }))
+const wiz = vi.hoisted(() => ({ audience: vi.fn(), allRecipients: vi.fn(), allRoster: vi.fn() }))
+vi.mock('@/modules/roster/services/SendWizardService', () => ({ default: wiz }))
 
 import Dashboard from '../Dashboard.vue'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
@@ -328,5 +330,67 @@ describe('Dashboard home data', () => {
     expect(useToast().toasts).toHaveLength(0)
     const off = await mountDashboard({ event: { modules: [] } })
     expect(off.find('[data-testid=dashboard-budget]').exists()).toBe(false)
+  })
+})
+
+describe('Dashboard "Recordar" (the send wizard\'s own count)', () => {
+  const STATS = { status: 200, data: { totals: { people: 9, guests: 5, companions: 4 }, attending: { total: 4, guests: 2 }, pending: { total: 5, guests: 3 }, not_attending: { total: 0 }, response_rate: 40 } }
+  const rec = (id, extra = {}) => ({ id, name: `F${id}`, people: 1, phone: '+13055550101', status: 'pending', reason: null, delivery: { state: 'none' }, ...extra })
+  const WA = [{ key: 'whatsapp', state: 'active' }]
+  function serve(recipients, audience = { event: { archived: false }, rsvp: { isOpen: true }, mode: { automatic: true } }) {
+    wiz.audience.mockResolvedValue(audience)
+    wiz.allRecipients.mockResolvedValue(recipients)
+    wiz.allRoster.mockResolvedValue(recipients.map(r => ({ id: r.id, phone: r.phone, link: `https://q.test/i/${r.id}` })))
+  }
+  beforeEach(() => {
+    Object.values(wiz).forEach(fn => fn.mockReset())
+    m.loadStats.mockResolvedValue(STATS)
+  })
+
+  it('shows the number of families the wizard can remind, not the 3 the stats count as pending', async () => {
+    serve([rec(1, { delivery: { state: 'delivered' } }), rec(2, { delivery: { state: 'read' } }), rec(3), rec(4, { status: 'attending', delivery: { state: 'read' } })])
+    const w = await mountDashboard({ event: { modules: WA } })
+    expect(wiz.audience).toHaveBeenCalledWith(7, 'invitation')
+    expect(w.get('[data-testid=rsvp-remind]').text()).toContain('Recordar a las 2 invitaciones pendientes')
+    expect(w.find('[data-testid=rsvp-invite]').exists()).toBe(false)
+  })
+  it('when nobody got the invitation yet, offers to send it instead of a reminder to nobody', async () => {
+    serve([rec(1), rec(2), rec(3)])
+    const w = await mountDashboard({ event: { modules: WA } })
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    expect(w.get('[data-testid=rsvp-invite]').text()).toBe('Enviar invitaciones')
+  })
+  it('never asks with the WhatsApp module locked, for a viewer, or without pending invitations', async () => {
+    serve([rec(1, { delivery: { state: 'read' } })])
+    const locked = await mountDashboard({ event: { modules: [{ key: 'whatsapp', state: 'locked' }] } })
+    expect(locked.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    await mountDashboard({ event: { userRole: 'viewer', modules: WA } })
+    m.loadStats.mockResolvedValue({ status: 200, data: { ...STATS.data, pending: { total: 0, guests: 0 } } })
+    await mountDashboard({ event: { modules: WA } })
+    expect(wiz.audience).not.toHaveBeenCalled()
+  })
+  it('a failed count leaves the confirmations without the button, with no error and no toast', async () => {
+    serve([rec(1, { delivery: { state: 'read' } })])
+    wiz.allRoster.mockRejectedValue({ response: { status: 500 } })
+    const w = await mountDashboard({ event: { modules: WA } })
+    expect(w.find('[data-testid=rsvp-ring]').exists()).toBe(true)
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    expect(w.find('[data-testid=dashboard-rsvp] [data-testid=block-error]').exists()).toBe(false)
+    expect(useToast().toasts).toHaveLength(0)
+  })
+  it('counts in manual mode when the module is off (a family without phone can still be shared by hand)', async () => {
+    serve([rec(1, { phone: '', delivery: { state: 'none', sharedAt: '2026-11-20T10:00:00Z' } })], { event: { archived: false }, rsvp: { isOpen: true }, mode: { automatic: false } })
+    const w = await mountDashboard({ event: { modules: [] } })
+    expect(w.get('[data-testid=rsvp-remind]').text()).toContain('Recordar a la invitación pendiente')
+  })
+  it('drops the button when another event without pending invitations is picked', async () => {
+    serve([rec(1, { delivery: { state: 'read' } })])
+    const w = await mountDashboard({ event: { modules: WA } })
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(true)
+    m.loadStats.mockResolvedValue({ status: 200, data: { ...STATS.data, pending: { total: 0, guests: 0 } } })
+    useEventsStore().initActiveEvent({ id: 8, eventName: 'B', userRole: 'owner', modules: WA })
+    await flushPromises()
+    expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
+    expect(wiz.audience).not.toHaveBeenCalledWith(8, 'invitation')
   })
 })

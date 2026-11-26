@@ -2148,6 +2148,7 @@ export default {
           rate: '{n} % of invitations responded'
         },
         remind: 'Remind the pending invitation | Remind the {n} pending invitations',
+        sendInvitations: 'Send invitations',
         recentTitle: 'Latest replies',
         recent: { attending: 'Attending', declined: 'Not attending' },
         emptyTitle: 'You have no guests yet',

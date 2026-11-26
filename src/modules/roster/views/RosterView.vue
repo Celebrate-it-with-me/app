@@ -19,7 +19,8 @@ import RosterDownloadMenu from '../components/RosterDownloadMenu.vue'
 import SendWizard from '../components/send/SendWizard.vue'
 import { TABS, noCounts, personPayload } from '../utils/roster'
 import { whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/whatsapp'
-import { WIZARD_HANDLES_AUTOMATIC, batchProgress } from '../utils/sendWizard'
+import { INITIAL_CATEGORIES, batchProgress } from '../utils/sendWizard'
+import { wizardModeOf } from '../services/sendFamilies'
 import { useBatchPolling } from '../composables/useBatchPolling'
 import { DELIVERY_FILTERS, deliveryChips, deliveryOf } from '../utils/delivery'
 import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
@@ -63,7 +64,7 @@ const moduleState = computed(() => mockState.value ?? whatsappModuleState(event.
 const waLocked = computed(() => moduleState.value === 'locked')
 const waAutomatic = computed(() => !waLocked.value && moduleState.value !== 'off')
 // The wizard drives both modes: automatic when the WhatsApp module is on and unlocked, manual otherwise (module off or locked).
-const wizardMode = computed(() => (waAutomatic.value && WIZARD_HANDLES_AUTOMATIC ? 'automatic' : 'manual'))
+const wizardMode = computed(() => wizardModeOf(moduleState.value))
 const wizardOpen = ref(false)
 const wizardResume = ref(false)
 const reloadToken = ref(0)
@@ -251,19 +252,21 @@ watch(() => event.value?.id, () => {
   checkActiveBatch()
 })
 /**
- * `?send=pending` (the Inicio's "Recordar a las N invitaciones pendientes") opens the send wizard on the pending card.
- * Only that exact value and only for people who can send; it never sends anything by itself, takes no guest ids from the
- * URL, and the parameter is removed right away so a reload or the back button does not open the wizard again.
+ * `?send=pending` (the Inicio's "Recordar a las N invitaciones pendientes") opens the send wizard on the pending card, and
+ * `?send=unsent` (its "Enviar invitaciones", when nobody got the invitation yet) on the first-send card.
+ * Only those exact values and only for people who can send; it never sends anything by itself, takes no guest ids from
+ * the URL, and the parameter is removed right away so a reload or the back button does not open the wizard again.
  */
 function openFromQuery() {
   if (!('send' in route.query)) return
-  const wanted = route.query.send === 'pending' && canEdit.value
+  const requested = route.query.send
+  const wanted = INITIAL_CATEGORIES.includes(requested) && canEdit.value
   const query = { ...route.query }
   delete query.send
   router.replace({ query })
   if (!wanted) return
   sendIds.value = []
-  sendCategory.value = 'pending'
+  sendCategory.value = requested
   wizardResume.value = false
   wizardOpen.value = true
 }

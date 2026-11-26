@@ -22,6 +22,8 @@ import DashboardDressCode from './DashboardDressCode.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 import { planProgress } from './dashboardLogic'
 import { useDashboardBlock } from './useDashboardBlock'
+import { sendCounts, wizardModeOf } from '@/modules/roster/services/sendFamilies'
+import { whatsappModuleState } from '@/modules/roster/utils/whatsapp'
 import { eventMoment } from '@/utils/eventDateTime'
 
 const { locale } = useI18n()
@@ -49,6 +51,18 @@ const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRol
 // sends (owners hold every permission): a viewer never asks for the budget nor sees an amount. A 403 hides the block.
 const canSeeBudget = computed(() => moduleActive('budget') && (event.value?.userRole === 'owner' || eventsStore.hasPermission('view_budget')))
 const editTarget = computed(() => (event.value ? { name: 'edit-event', params: { id: event.value.id } } : null))
+
+// "Recordar" promises the number the send wizard will show, so it asks the wizard's own count (sendFamilies.js). Only
+// for people who can send, with the WhatsApp module not locked, and only when the stats say somebody has not answered.
+// Any failure just leaves the confirmations without the button.
+const waState = computed(() => whatsappModuleState(event.value))
+const { status: sendStatus, data: sendData, load: loadSend, hide: hideSend } = useDashboardBlock(eventId => sendCounts(eventId, wizardModeOf(waState.value)), { hideOn: () => true })
+const askSendCounts = computed(() => {
+  const pending = Number(rsvpStats.value?.pending?.guests) || 0
+  return rsvpStatus.value === 'ready' && canEdit.value && canViewGuests.value && waState.value !== 'locked' && pending > 0 ? event.value?.id : null
+})
+watch(askSendCounts, eventId => (eventId ? loadSend(eventId, { quiet: true }) : hideSend()), { immediate: true })
+const remindCounts = computed(() => (sendStatus.value === 'ready' ? sendData.value : null))
 
 // One number for the plan: the assistant's, already loaded by the layout (never recalculated here).
 const plan = computed(() => (assistantStore.eventId === event.value?.id ? planProgress(assistantStore.next) : null))
@@ -203,6 +217,7 @@ onMounted(() => useUserStore().syncEmailVerified())
           :status="rsvpStatus"
           :can-edit="canEdit"
           :can-view-guests="canViewGuests"
+          :send-counts="remindCounts"
           :timezone="event.timezone"
           @retry="loadRsvp(event.id)"
         />
