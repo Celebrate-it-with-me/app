@@ -6,10 +6,9 @@ import RsvpService from '@/modules/rsvp/services/RsvpService'
 import BudgetService from '@/modules/budget/services/BudgetService'
 import timelineService from '@/modules/timeline/services/timelineService'
 import DressCodeService from '@/modules/dress-code/services/DressCodeService'
-import { useActivityStore } from '@/stores/useActivityStore'
+import ActivityService from '@/services/ActivityService'
 import TemplatePickerService from '@/modules/template-picker/services/TemplatePickerService'
 import InvitationEditorService from '@/modules/invitation-editor/services/InvitationEditorService'
-import { useToast } from '@/ui'
 import { useUserStore } from '@/stores/useUserStore'
 import EmailVerifyNotice from '@/modules/email-verification/components/EmailVerifyNotice.vue'
 import DashboardHero from './DashboardHero.vue'
@@ -21,14 +20,12 @@ import DashboardBudget from './DashboardBudget.vue'
 import DashboardProgram from './DashboardProgram.vue'
 import DashboardDressCode from './DashboardDressCode.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
-import { planProgress, readableActivity } from './dashboardLogic'
+import { planProgress } from './dashboardLogic'
 import { useDashboardBlock } from './useDashboardBlock'
 import { eventMoment } from '@/utils/eventDateTime'
 
-const { t, locale } = useI18n()
-const { error: showError } = useToast()
+const { locale } = useI18n()
 const eventsStore = useEventsStore()
-const activityStore = useActivityStore()
 const assistantStore = useAssistantStore()
 
 const event = computed(() => eventsStore.activeEvent)
@@ -69,7 +66,10 @@ const { status: budgetStatus, data: budgetSummary, load: loadBudget, hide: hideB
 const { status: programStatus, data: programData, load: loadProgram, hide: hideProgram } = useDashboardBlock(eventId => timelineService.list(eventId))
 const { status: dressStatus, data: dressData, load: loadDress, hide: hideDress } = useDashboardBlock(eventId => DressCodeService.get(eventId))
 
-const activity = computed(() => readableActivity(activityStore.activities ?? []).slice(0, 5))
+const { status: activityStatus, data: activityData, load: loadActivity } = useDashboardBlock(async eventId => {
+  const response = await ActivityService.loadDashboardActivities({ eventId })
+  return response?.data?.data ?? []
+})
 
 // The template in use: its name (chip) and its preview image (the invitation's thumbnail) come from the same list. Best
 // effort: a failure or a template without image leaves the hero on its fallback card and without the chip.
@@ -105,28 +105,23 @@ async function loadThumb(eventId) {
   }
 }
 
-let loadId = 0
-async function load() {
+// Every block asks in parallel and keeps its own state: no cascade, no shared error toast.
+function load() {
   const current = event.value
   if (!current?.id) return
-  const id = ++loadId
   loadThumb(current.id)
-  // The assistant never throws into the screen (its stores keep a status), so it stays out of the shared error toast.
+  // The assistant never throws into the screen: its store keeps a status per request.
   assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
   // A revisit refreshes the plan quietly: no skeleton over data that is already on screen.
   assistantStore.fetchPlan({ eventId: current.id, lang: locale.value, quiet: sameEvent.value && assistantStore.planStatus === 'ready' })
   loadRsvp(current.id, { quiet: true })
   if (canSeeBudget.value) loadBudget(current.id, { quiet: true })
   else hideBudget()
-  // Activity and program still come from their stores (their own blocks arrive with the next round): a failure there is
-  // the only one left for the shared toast.
   if (moduleOpen('timeline')) loadProgram(current.id, { quiet: true })
   else hideProgram()
   if (moduleOpen('dress_code')) loadDress(current.id, { quiet: true })
   else hideDress()
-  const jobs = [activityStore.loadDashboardActivities()]
-  const results = await Promise.allSettled(jobs)
-  if (id === loadId && results.some(r => r.status === 'rejected')) showError(t('app.dashboard.loadError'))
+  loadActivity(current.id, { quiet: true })
 }
 
 watch(() => event.value?.id, load, { immediate: true })
@@ -186,7 +181,13 @@ onMounted(() => useUserStore().syncEmailVerified())
       @retry="loadBudget(event.id)"
     />
 
-    <DashboardActivity class="mt-4" :activity="activity" />
+    <DashboardActivity
+      v-if="activityStatus !== 'hidden'"
+      class="mt-4"
+      :activity="activityData"
+      :status="activityStatus"
+      @retry="loadActivity(event.id)"
+    />
 
     <DashboardProgram
       v-if="programStatus !== 'hidden'"

@@ -199,27 +199,11 @@ export function countdownInfo(days) {
   return { kind: 'future', n: days }
 }
 
-/** Colour names the API sends for activity entries -> soft chip classes (text on tinted background, contrast >= 4.5:1). */
-export const ACTIVITY_TONES = {
-  blue: 'bg-blue-50 text-blue-700',
-  cyan: 'bg-cyan-50 text-cyan-700',
-  green: 'bg-success-50 text-success-700',
-  indigo: 'bg-indigo-50 text-indigo-700',
-  orange: 'bg-orange-50 text-orange-700',
-  pink: 'bg-rose-50 text-rose-700',
-  red: 'bg-danger-50 text-danger-700',
-  yellow: 'bg-gold-100 text-gold-700'
-}
 /**
  * The API now sends only known event types, each with its translated `message` (ORG-016). The text is drawn as it comes;
  * the only thing left to drop is an entry with no text at all.
  */
 export const readableActivity = (items = []) => items.filter(item => String(item?.message ?? '').trim() !== '')
-
-export const ACTIVITY_TONE_FALLBACK = 'bg-cream-200 text-ink-700'
-
-/** The tone classes for an API colour; an unknown or missing one gets the neutral chip, never nothing. */
-export const activityTone = color => ACTIVITY_TONES[String(color ?? '').toLowerCase()] ?? ACTIVITY_TONE_FALLBACK
 
 /** What each activity type needs from `params` to make its sentence; a missing piece sends the row to the API's own `message`. */
 const SENTENCE_NEEDS = {
