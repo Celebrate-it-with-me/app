@@ -38,9 +38,11 @@ describe('votes helpers', () => {
     expect(getNetScore(null)).toBe(0)
   })
 
-  it('flags top voted from net score 10', () => {
+  it('flags top voted from net score 1', () => {
     expect(isTopVoted(songs[1])).toBe(true)
-    expect(isTopVoted(songs[0])).toBe(false)
+    expect(isTopVoted(songs[0])).toBe(true)
+    expect(isTopVoted(songs[2])).toBe(false)
+    expect(isTopVoted(songs[3])).toBe(false)
     expect(isTopVoted({})).toBe(false)
   })
 
@@ -72,7 +74,8 @@ describe('filterAndSortSongs', () => {
   it('filters by origin and top voted', () => {
     expect(filterAndSortSongs(songs, { filterBy: 'admin' }).map(s => s.id)).toEqual([1, 4])
     expect(filterAndSortSongs(songs, { filterBy: 'guest' }).map(s => s.id)).toEqual([2, 3])
-    expect(filterAndSortSongs(songs, { filterBy: 'topVoted' }).map(s => s.id)).toEqual([2])
+    expect(filterAndSortSongs(songs, { filterBy: 'topVoted' }).map(s => s.id)).toEqual([2, 1])
+    expect(filterAndSortSongs(songs, { filterBy: 'topVoted', sortBy: 'alphabetical' }).map(s => s.id)).toEqual([2, 1])
   })
 
   it('sorts by popularity, volume and title', () => {
