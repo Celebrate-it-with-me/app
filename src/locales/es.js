@@ -2163,6 +2163,26 @@ export default {
         planError: 'No pudimos cargar tu plan de organización.',
         draftHint: 'Es un borrador: nadie puede verla todavía. Publícala para poder compartirla.'
       },
+      route: {
+        title: 'Ruta al evento',
+        summary: 'Hoy, {date}',
+        remaining: 'queda {n} día | quedan {n} días',
+        today: 'Hoy · {date}',
+        planAt: 'Plan al {percent} %',
+        foundation: 'Fundamentos',
+        invitations: 'Invitaciones',
+        eventDay: 'Día del evento',
+        eventFuture: 'Tu gran día',
+        eventToday: '¡Es hoy!',
+        eventPast: 'Ya pasó',
+        eventNoDate: 'Sin fecha definida',
+        phaseDone: 'Todo listo',
+        phaseEmpty: 'Sin pasos por ahora',
+        phaseCount: '{done} de {total} paso | {done} de {total} pasos',
+        state: { now: 'hoy', done: 'completado', current: 'en curso', upcoming: 'próximo', empty: 'sin pasos', event: 'día del evento' },
+        noDate: 'Define la fecha de tu evento para ver tu ruta.',
+        error: 'No pudimos cargar tu ruta al evento.'
+      },
       stats: {
         title: 'Resumen de invitados',
         attending: 'Confirmados',

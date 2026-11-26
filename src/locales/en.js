@@ -2163,6 +2163,26 @@ export default {
         planError: 'We could not load your organization plan.',
         draftHint: 'It is a draft: no one can see it yet. Publish it to be able to share it.'
       },
+      route: {
+        title: 'Road to the event',
+        summary: 'Today, {date}',
+        remaining: '{n} day left | {n} days left',
+        today: 'Today · {date}',
+        planAt: 'Plan at {percent}%',
+        foundation: 'Foundations',
+        invitations: 'Invitations',
+        eventDay: 'Event day',
+        eventFuture: 'Your big day',
+        eventToday: 'It is today!',
+        eventPast: 'Already happened',
+        eventNoDate: 'No date set',
+        phaseDone: 'All done',
+        phaseEmpty: 'No steps for now',
+        phaseCount: '{done} of {total} step | {done} of {total} steps',
+        state: { now: 'today', done: 'completed', current: 'in progress', upcoming: 'upcoming', empty: 'no steps', event: 'event day' },
+        noDate: 'Set your event date to see your road.',
+        error: 'We could not load your road to the event.'
+      },
       stats: {
         title: 'Guest summary',
         attending: 'Attending',

@@ -11,6 +11,7 @@ import { useToast } from '@/ui'
 import { useUserStore } from '@/stores/useUserStore'
 import EmailVerifyNotice from '@/modules/email-verification/components/EmailVerifyNotice.vue'
 import DashboardHero from './DashboardHero.vue'
+import DashboardRoute from './DashboardRoute.vue'
 import DashboardStats from './DashboardStats.vue'
 import DashboardActivity from './DashboardActivity.vue'
 import DashboardStartLink from './DashboardStartLink.vue'
@@ -51,7 +52,10 @@ const plan = computed(() => (assistantStore.eventId === event.value?.id ? planPr
 const blockStatus = status => (status === 'ready' || status === 'error' ? status : 'loading')
 const sameEvent = computed(() => assistantStore.eventId === event.value?.id)
 const planStatus = computed(() => (sameEvent.value ? blockStatus(assistantStore.nextStatus) : 'loading'))
+const routePlan = computed(() => (sameEvent.value ? assistantStore.plan : null))
+const routeStatus = computed(() => (sameEvent.value ? blockStatus(assistantStore.planStatus) : 'loading'))
 const retryPlan = () => assistantStore.fetchNext({ eventId: event.value?.id, lang: locale.value, force: true })
+const retryRoute = () => assistantStore.fetchPlan({ eventId: event.value?.id, lang: locale.value })
 const templateTo = { name: 'invitation-editor' }
 const budget = computed(() => {
   const summary = budgetStore.summary
@@ -152,6 +156,8 @@ async function load() {
   loadThumb(current.id)
   // The assistant never throws into the screen (its stores keep a status), so it stays out of the shared error toast.
   assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
+  // A revisit refreshes the plan quietly: no skeleton over data that is already on screen.
+  assistantStore.fetchPlan({ eventId: current.id, lang: locale.value, quiet: sameEvent.value && assistantStore.planStatus === 'ready' })
   const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
   if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
   const results = await Promise.allSettled(jobs)
@@ -183,6 +189,16 @@ onMounted(() => useUserStore().syncEmailVerified())
       :edit-to="editTarget"
       :template-to="templateTo"
       @retry-plan="retryPlan"
+    />
+
+    <DashboardRoute
+      :plan="routePlan"
+      :status="routeStatus"
+      :start-date="eventMoment(event)"
+      :timezone="event.timezone"
+      :can-edit="canEdit"
+      :edit-to="editTarget"
+      @retry="retryRoute"
     />
 
     <DashboardStartLink v-if="showStart" :done="start.done" :total="start.total" />

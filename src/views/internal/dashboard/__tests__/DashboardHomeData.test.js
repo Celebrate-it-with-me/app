@@ -53,9 +53,25 @@ beforeEach(() => {
 })
 
 describe('Dashboard home data', () => {
-  it('loads the next steps for everybody', async () => {
+  it('loads the plan and the next steps in parallel, for everybody', async () => {
     await mountDashboard()
     expect(m.next).toHaveBeenCalledTimes(1)
+    expect(m.plan).toHaveBeenCalledTimes(1)
+  })
+  it('draws the route from the plan phases', async () => {
+    m.plan.mockResolvedValue({ mode: 'normal', progress: { done: 1, total: 2 }, phases: [{ key: 'foundation', tasks: [{ title: 'Reserva la misa', state: 'next' }] }] })
+    const w = await mountDashboard()
+    expect(w.get('[data-testid=route-foundation]').text()).toContain('Reserva la misa')
+  })
+  it('a failed plan only fails the route: the hero stays and the route offers to retry', async () => {
+    m.plan.mockRejectedValue(new Error('boom'))
+    const w = await mountDashboard()
+    expect(w.find('[data-testid=hero]').exists()).toBe(true)
+    expect(w.get('[data-testid=dashboard-route] [role=alert]').exists()).toBe(true)
+    m.plan.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 1 }, phases: [{ key: 'foundation', tasks: [{ title: 'Ya', state: 'next' }] }] })
+    await w.get('[data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.get('[data-testid=route-foundation]').text()).toContain('Ya')
   })
   it('gives the hero the template name and keeps the chip off when the list fails', async () => {
     m.templates.mockResolvedValue([{ id: 1, name: 'Miami Nights', current: true, previewImage: 'x.webp' }])

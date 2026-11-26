@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import i18n, { setLocale } from '@/locales/i18n'
-import { planPercent, summarizeRsvp, rsvpShares, planProgress, countdownInfo, statsFigures, activitySentence, activityTime } from '../dashboardLogic'
+import { planPercent, phaseSummary, routePhases, routeMilestones, routeAvailability, summarizeRsvp, rsvpShares, planProgress, countdownInfo, statsFigures, activitySentence, activityTime } from '../dashboardLogic'
 
 describe('summarizeRsvp', () => {
   it('maps the stats payload', () => {
@@ -143,6 +143,9 @@ describe('activityTime', () => {
   })
 })
 
+const task = (title, state = 'available') => ({ title, state })
+const plan = (foundation, invitations) => ({ phases: [{ key: 'foundation', tasks: foundation }, { key: 'planning', tasks: [task('Reservas')] }, { key: 'invitations', tasks: invitations }] })
+
 describe('planPercent', () => {
   it('rounds the share of steps done', () => {
     expect(planPercent({ done: 13, total: 33 })).toBe(39)
@@ -154,4 +157,60 @@ describe('planPercent', () => {
     expect(planPercent({ done: 12, total: 9 })).toBe(100)
     expect(planPercent({ done: -2, total: 9 })).toBe(0)
   })
+})
+
+describe('phaseSummary', () => {
+  it('counts steps and lists the pending titles in server order', () => {
+    const s = phaseSummary(plan([task('Misa', 'next'), task('Corte', 'upcoming'), task('Fecha', 'done')], []), 'foundation')
+    expect(s).toEqual({ key: 'foundation', total: 3, done: 1, pending: ['Misa', 'Corte'] })
+  })
+  it('leaves hidden and not-applicable steps out', () => {
+    const s = phaseSummary(plan([task('A', 'hidden'), task('B', 'not_applicable'), task('C', 'done')], []), 'foundation')
+    expect(s).toMatchObject({ total: 1, done: 1, pending: [] })
+  })
+  it('is empty for a missing phase or plan', () => {
+    expect(phaseSummary(null, 'foundation')).toEqual({ key: 'foundation', total: 0, done: 0, pending: [] })
+    expect(phaseSummary({ phases: [] }, 'invitations').total).toBe(0)
+  })
+})
+
+describe('routePhases', () => {
+  it('marks the first phase with steps left as current and the next one as upcoming', () => {
+    const phases = routePhases(plan([task('A', 'next')], [task('B', 'upcoming')]))
+    expect(phases.map(p => p.state)).toEqual(['current', 'upcoming'])
+  })
+  it('moves "current" to the invitations once the foundations are done', () => {
+    expect(routePhases(plan([task('A', 'done')], [task('B', 'next')])).map(p => p.state)).toEqual(['done', 'current'])
+  })
+  it('marks both done and flags a phase without steps as empty', () => {
+    expect(routePhases(plan([task('A', 'done')], [task('B', 'done')])).map(p => p.state)).toEqual(['done', 'done'])
+    expect(routePhases(plan([], [task('B', 'next')])).map(p => p.state)).toEqual(['empty', 'current'])
+  })
+})
+
+describe('routeMilestones', () => {
+  it('has the four milestones in order, with Hoy always reached', () => {
+    const m = routeMilestones(plan([task('A', 'next')], [task('B', 'upcoming')]), 37)
+    expect(m.map(x => x.key)).toEqual(['today', 'foundation', 'invitations', 'event'])
+    expect(m.map(x => x.reached)).toEqual([true, true, false, false])
+  })
+  it('reaches the event day on the day itself and after it, never without a date', () => {
+    const last = days => routeMilestones(plan([], []), days).at(-1).reached
+    expect(last(0)).toBe(true)
+    expect(last(-3)).toBe(true)
+    expect(last(5)).toBe(false)
+    expect(last(null)).toBe(false)
+    expect(last(undefined)).toBe(false)
+  })
+})
+
+describe('routeAvailability', () => {
+  it.each([
+    [{ mode: 'normal' }, 'ready'],
+    [{ mode: 'compressed' }, 'ready'],
+    [{ mode: 'no_date' }, 'no_date'],
+    [{ mode: 'unsupported' }, 'none'],
+    [{ mode: 'event_past' }, 'none'],
+    [null, 'none']
+  ])('%j -> %s', (p, expected) => expect(routeAvailability(p)).toBe(expected))
 })

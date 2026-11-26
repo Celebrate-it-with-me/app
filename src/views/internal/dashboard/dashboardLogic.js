@@ -48,6 +48,60 @@ export function planPercent(progress) {
   return Math.round(Math.min(1, Math.max(0, (Number(progress?.done) || 0) / total)) * 100)
 }
 
+/** The plan phases that become milestones of "Ruta al evento", in route order. */
+export const ROUTE_PHASES = ['foundation', 'invitations']
+
+/** Tasks the person can still act on count as steps; hidden or not-applicable ones are out of the route. */
+const countsAsStep = task => task && task.state !== 'hidden' && task.state !== 'not_applicable'
+
+/**
+ * One phase of `assistant/plan` as the route needs it: how many steps it has, how many are done and the titles of the
+ * pending ones (server order).
+ */
+export function phaseSummary(plan, key) {
+  const tasks = (plan?.phases?.find(phase => phase.key === key)?.tasks ?? []).filter(countsAsStep)
+  const pending = tasks.filter(task => task.state !== 'done')
+  return { key, total: tasks.length, done: tasks.length - pending.length, pending: pending.map(task => String(task.title ?? '').trim()).filter(Boolean) }
+}
+
+/**
+ * The route's phase milestones with their state: `done` (every step done), `current` (the first phase with steps left),
+ * `upcoming` (later ones with steps left) or `empty` (the plan has no steps there).
+ */
+export function routePhases(plan) {
+  let currentTaken = false
+  return ROUTE_PHASES.map(key => {
+    const summary = phaseSummary(plan, key)
+    if (summary.total === 0) return { ...summary, state: 'empty' }
+    if (summary.done === summary.total) return { ...summary, state: 'done' }
+    if (!currentTaken) {
+      currentTaken = true
+      return { ...summary, state: 'current' }
+    }
+    return { ...summary, state: 'upcoming' }
+  })
+}
+
+/**
+ * The four milestones (Hoy, the phases, the event day) with whether each one is `reached`; a connector is drawn filled
+ * when the milestone it leads to is reached. `daysLeft` is the days to the event (null without a date).
+ * @returns {Array<{ key: string, state: string, reached: boolean }>}
+ */
+export function routeMilestones(plan, daysLeft) {
+  return [
+    { key: 'today', state: 'now', reached: true },
+    ...routePhases(plan).map(phase => ({ ...phase, reached: phase.state === 'done' || phase.state === 'current' })),
+    { key: 'event', state: 'event', reached: daysLeft !== null && daysLeft !== undefined && daysLeft <= 0 }
+  ]
+}
+
+/** The route only makes sense for events the assistant plans: it is hidden for other types and after the event. */
+export const routeAvailability = plan => {
+  if (!plan) return 'none'
+  if (plan.mode === 'no_date') return 'no_date'
+  return plan.mode === 'normal' || plan.mode === 'compressed' ? 'ready' : 'none'
+}
+
 /**
  * What the hero's big countdown shows. `kind`: `none` (no date), `past`, `today` or `future` (with `n` days).
  */
