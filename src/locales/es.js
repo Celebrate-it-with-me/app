@@ -2599,6 +2599,18 @@ export default {
     alreadyUnlocked: { title: 'Este evento ya está desbloqueado', text: 'No hace falta pagar de nuevo: ya tienes todos los módulos y el límite completo de invitados.', invoices: 'Ver mis facturas' },
   },
   templatePicker: {
+    compare: {
+      toggle: 'Comparar con la actual',
+      hide: 'Dejar de comparar',
+      current: 'Actual',
+      chosen: 'Elegida',
+      failed: 'No pudimos mostrar tu invitación actual.',
+      label: 'Comparación con tu plantilla actual'
+    },
+    fullView: { open: 'Ver invitación completa' },
+    savePalette: 'Guardar paleta',
+    paletteSaved: 'Listo, la paleta {name} quedó guardada.',
+    retryAction: 'Reintentar',
     panel: { label: 'Vista previa de la plantilla' },
     action: { keeps: 'Tu contenido y fotos se conservan.' },
     discard: {
@@ -2622,7 +2634,7 @@ export default {
     styles: { elegante: 'Elegante', moderna: 'Moderna', floral: 'Floral', minimal: 'Minimal' },
     noResults: { title: 'Ninguna plantilla coincide', text: 'Prueba con otra búsqueda o quita los filtros.' },
     favorite: { add: 'Marcar {name} como favorita', remove: 'Quitar {name} de tus favoritas' },
-    palettes: { count: '{count} paletas' },
+    palettes: { count: '{count} paletas', label: 'Paleta de colores' },
     strip: { label: 'Tus plantillas' },
     card: { select: 'Ver {name}' },
     title: 'Elige tu plantilla',

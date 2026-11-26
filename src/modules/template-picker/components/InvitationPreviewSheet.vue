@@ -16,7 +16,13 @@ const props = defineProps({
   open: { type: Boolean, default: false },
   eventId: { type: [Number, String], required: true },
   /** `{ <fieldId>: value }`: the form's edits, sent to the preview without saving them. */
-  fields: { type: Object, default: () => ({}) }
+  fields: { type: Object, default: () => ({}) },
+  /** Show this template (and palette) instead of the saved one: the selector's "see the full invitation". */
+  templateId: { type: [Number, String], default: null },
+  preset: { type: String, default: '' },
+  /** Language the sheet opens in (the selector passes the one she was looking at). */
+  initialLocale: { type: String, default: '' },
+  initialState: { type: String, default: 'invitation' }
 })
 const emit = defineEmits(['update:open'])
 
@@ -37,15 +43,15 @@ const stateOptions = computed(() => [
 const failedText = computed(() => (picker.previewError.value === 'forbidden' ? t('templatePicker.errors.previewForbidden') : t('templatePicker.preview.failed')))
 
 function render() {
-  picker.loadPreview(null, { locale: previewLocale.value, state: previewState.value, fields: props.fields })
+  picker.loadPreview(props.templateId != null ? { id: props.templateId } : null, { locale: previewLocale.value, state: previewState.value, fields: props.fields, preset: props.preset || undefined })
 }
 
 watch(
   () => props.open,
   open => {
     if (!open) return picker.resetPreview()
-    previewLocale.value = locale.value === 'en' ? 'en' : 'es'
-    previewState.value = 'invitation'
+    previewLocale.value = (props.initialLocale || locale.value) === 'en' ? 'en' : 'es'
+    previewState.value = props.initialState || 'invitation'
     render()
   },
   { immediate: true }
