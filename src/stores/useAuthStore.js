@@ -24,7 +24,8 @@ export const useAuthStore = defineStore('auth', {
 
       for (let attempt = 0; attempt < maxAttempts; attempt++) {
         try {
-          await CWM_API.get('/auth/ready')
+          // A 401 here only means the cookies are not in place yet: retry, never log the person out (see axios onError).
+          await CWM_API.get('/auth/ready', { skipUnauthorizedHandler: true })
           this.isReady = true
           return
         } catch (err) {

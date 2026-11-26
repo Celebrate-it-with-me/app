@@ -86,6 +86,8 @@ const onError = async error => {
   if (error.response) {
     switch (error.response.status) {
       case 401:
+        // A request that expects a 401 and retries by itself (`/auth/ready` right after login) must not close the session.
+        if (error.config?.skipUnauthorizedHandler) break
         await handleUnauthorized()
         break
       case 403:
