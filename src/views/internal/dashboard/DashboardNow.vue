@@ -123,12 +123,12 @@ async function toggle(row) {
           <router-link to="/dashboard/plan" :class="LINK">{{ t('app.dashboard.now.planLink') }}</router-link>
         </UiEmptyState>
 
-        <!-- The link goes under the text in a narrow card (phones) and to the right from ~370 px of card (1024 px up). -->
+        <!-- The link goes under the text in a narrow card (phones) and to the right from ~345 px of card (1024 px up, wide phones). -->
         <ul v-else class="divide-y divide-cream-200 border-t border-cream-200" data-testid="now-list">
           <li
             v-for="row in rows"
             :key="row.key"
-            class="grid grid-cols-[2.75rem_minmax(0,1fr)] items-start gap-x-1 py-2.5 sm:gap-x-2 sm:py-3 @min-[370px]:grid-cols-[2.75rem_minmax(0,1fr)_auto] @min-[370px]:gap-x-2"
+            class="grid grid-cols-[2.75rem_minmax(0,1fr)] items-start gap-x-1 py-2.5 sm:gap-x-2 sm:py-3 @min-[345px]:grid-cols-[2.75rem_minmax(0,1fr)_auto] @min-[345px]:gap-x-2"
             :data-testid="`now-${row.key}`"
             :data-done="row.done"
           >
@@ -159,7 +159,7 @@ async function toggle(row) {
             <router-link
               v-if="!row.done && target(row)"
               :to="target(row)"
-              :class="[LINK, 'col-start-2 justify-self-start @min-[370px]:col-start-3 @min-[370px]:px-1']"
+              :class="[LINK, 'col-start-2 justify-self-start @min-[345px]:col-start-3 @min-[345px]:px-1']"
               data-testid="now-go"
             >
               {{ t(row.moduleLocked ? 'app.dashboard.now.unlock' : 'app.dashboard.now.go') }}<span aria-hidden="true">&nbsp;→</span>

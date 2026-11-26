@@ -110,6 +110,12 @@ describe('DashboardHero roles', () => {
       expect(mountHero(props).findAll('[data-testid^=hero-] svg')).toHaveLength(0)
     }
   })
+  it('gives the phone a short date line and keeps the long one from 640 px', () => {
+    const w = mountHero({ startDate: '01/10/2027 19:00' })
+    expect(w.get('[data-testid=hero-date-short]').classes()).toContain('sm:hidden')
+    expect(w.get('[data-testid=hero-date-short]').text()).toMatch(/dom.*10.*ene.*·.*7:00/i)
+    expect(w.get('[data-testid=hero-date]').text()).toMatch(/domingo.*10 de enero de 2027/i)
+  })
   it('uses the one rose of the Inicio (rose-700) for its main action', () => {
     expect(button(mountHero(), 'hero-share').classes()).toContain('bg-rose-700')
     expect(button(mountHero({ published: false }), 'hero-publish').classes()).toContain('bg-rose-700')

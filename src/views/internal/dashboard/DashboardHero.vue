@@ -45,11 +45,14 @@ const { t, locale } = useI18n()
 const moment = computed(() => ({ startDate: props.startDate, timezone: props.timezone }))
 const hasDate = computed(() => !!eventDay(moment.value))
 const countdown = computed(() => countdownInfo(daysUntilEvent(moment.value)))
-const dateLabel = computed(() => {
+const dateOf = style => {
   if (!hasDate.value) return t('app.dashboard.noDate')
-  const day = formatEventDate(props.startDate, 'weekdayDate', locale.value, props.timezone)
+  const day = formatEventDate(props.startDate, style, locale.value, props.timezone)
   return hasClock(props.startDate) ? `${day} · ${formatClock(props.startDate, locale.value, props.timezone)}` : day
-})
+}
+const dateLabel = computed(() => dateOf('weekdayDate'))
+// A phone gets the short day ("Dom, 10 ene · 7:00 p.m."), so the status chip stays on the same line (the prototype).
+const dateShort = computed(() => dateOf('weekdayDayMonth'))
 const percent = computed(() => planPercent(props.plan))
 const planArgs = computed(() => ({ done: props.plan?.done ?? 0, total: props.plan?.total ?? 0, percent: percent.value }))
 const planLabel = computed(() => t('app.dashboard.planSteps', planArgs.value))
@@ -71,7 +74,8 @@ const previewOpen = ref(false)
   >
     <div class="flex min-w-0 flex-col gap-3.5">
       <div class="flex flex-wrap items-center gap-2.5 text-sm text-ink-500">
-        <span class="first-letter:uppercase" data-testid="hero-date">{{ dateLabel }}</span>
+        <span class="first-letter:uppercase sm:hidden" data-testid="hero-date-short">{{ dateShort }}</span>
+        <span class="first-letter:uppercase max-sm:hidden" data-testid="hero-date">{{ dateLabel }}</span>
         <span :class="[CHIP, published ? 'bg-success-50 text-success-700' : 'bg-warning-50 text-warning-700']" data-testid="hero-status">
           {{ t(published ? 'app.dashboard.invitation.published' : 'app.dashboard.invitation.draft') }}
         </span>
