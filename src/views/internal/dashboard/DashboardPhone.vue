@@ -1,7 +1,8 @@
 <script setup>
 /**
- * The invitation in miniature inside a phone frame. The screen is the real cover (InvitationMiniature); when it cannot
- * be drawn it shows the template's image or a calm stationery card from the brand tokens instead of an empty box.
+ * The invitation in miniature inside a phone frame (the Inicio's hero, 190 x 360 like the prototype). The screen is the
+ * real cover (InvitationMiniature); while it loads, a skeleton with the shape of a cover (arch, title, button) so the
+ * phone never reads as empty; when it cannot be drawn it shows the template's image or a calm stationery card.
  */
 import InvitationMiniature from '@/modules/template-picker/components/InvitationMiniature.vue'
 
@@ -19,12 +20,21 @@ defineProps({
 
 <template>
   <div
-    class="relative aspect-[9/18.5] w-36 rounded-[2rem] bg-ink-900 p-1.5 shadow-pop sm:w-48 lg:w-40 xl:w-48 sm:rounded-[2.5rem] sm:p-2"
+    class="relative h-[360px] w-[190px] shrink-0 overflow-hidden rounded-[30px] border-[6px] border-ink-900 bg-ink-900 shadow-[0_18px_36px_rgba(43,36,32,0.25)]"
     data-testid="hero-phone"
   >
-    <span class="absolute left-1/2 top-2.5 z-10 h-1.5 w-12 -translate-x-1/2 rounded-full bg-ink-700 sm:top-3.5 sm:h-2 sm:w-16" aria-hidden="true"></span>
-    <div class="h-full w-full overflow-hidden rounded-[1.5rem] bg-cream-100 sm:rounded-[2rem]">
-      <InvitationMiniature :event-id="eventId" :live="live" :fallback-image="image" :name="name" :date-label="dateLabel" class="h-full" />
+    <div class="h-full w-full overflow-hidden rounded-[24px] bg-cream-100">
+      <InvitationMiniature :event-id="eventId" :live="live" :fallback-image="image" :name="name" :date-label="dateLabel" class="h-full">
+        <template #skeleton>
+          <div class="flex h-full w-full flex-col items-center justify-center gap-3 bg-cream-200 px-5 motion-safe:animate-pulse" data-testid="hero-phone-skeleton">
+            <span class="h-2 w-16 rounded-full bg-cream-300"></span>
+            <span class="h-28 w-24 rounded-t-full rounded-b-md bg-cream-300"></span>
+            <span class="h-4 w-28 rounded-md bg-cream-300"></span>
+            <span class="h-4 w-20 rounded-md bg-cream-300"></span>
+            <span class="mt-1 h-6 w-24 rounded-full bg-cream-300"></span>
+          </div>
+        </template>
+      </InvitationMiniature>
     </div>
   </div>
 </template>

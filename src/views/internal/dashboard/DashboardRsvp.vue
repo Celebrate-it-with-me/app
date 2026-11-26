@@ -56,7 +56,7 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
 </script>
 
 <template>
-  <UiCard as="section" :title="t('app.dashboard.rsvp.title')" heading-level="h2" data-testid="dashboard-rsvp">
+  <UiCard as="section" :title="t('app.dashboard.rsvp.title')" heading-level="h2" class="@container" data-testid="dashboard-rsvp">
     <template v-if="canViewGuests" #actions>
       <router-link
         to="/dashboard/guests"
@@ -66,9 +66,9 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
 
     <DashboardBlock :status="status" :error-text="t('app.dashboard.rsvp.error')" @retry="$emit('retry')">
       <template #skeleton>
-        <div class="flex flex-wrap items-center gap-6 sm:gap-7" data-testid="rsvp-skeleton">
-          <UiSkeleton circle width="8.5rem" height="8.5rem" class="shrink-0" />
-          <div class="flex min-w-0 flex-1 basis-56 flex-col gap-3">
+        <div class="flex items-center gap-[18px] @md:gap-7" data-testid="rsvp-skeleton">
+          <UiSkeleton circle width="7.5rem" height="7.5rem" class="shrink-0" />
+          <div class="flex min-w-0 flex-1 flex-col gap-3">
             <UiSkeleton v-for="n in 3" :key="n" height="1.25rem" />
             <UiSkeleton height="2.75rem" class="mt-2" />
           </div>
@@ -84,10 +84,12 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
       </UiEmptyState>
 
       <template v-else>
-        <div class="flex flex-wrap items-center gap-x-7 gap-y-5">
-          <RsvpRing class="mx-auto sm:mx-0" :attending="rsvp.attending" :pending="rsvp.pending" :declined="rsvp.declined" :rate="rsvp.responseRate" />
-          <div class="flex min-w-0 flex-1 basis-56 flex-col gap-2.5 text-sm">
-            <ul class="flex flex-col gap-2.5" data-testid="rsvp-rows">
+        <!-- The ring always sits next to its legend (120 px in a narrow card, 150 px in a wide one); in a narrow card the
+             totals and the button go under both, full width. -->
+        <div class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-[18px] gap-y-3 text-sm @md:gap-x-7 @md:gap-y-2.5" data-testid="rsvp-summary">
+          <RsvpRing class="@md:row-span-3" :attending="rsvp.attending" :pending="rsvp.pending" :declined="rsvp.declined" :rate="rsvp.responseRate" />
+          <div class="contents">
+            <ul class="flex min-w-0 flex-col gap-2 @md:gap-2.5" data-testid="rsvp-rows">
               <li v-for="row in rows" :key="row.key" class="flex items-center justify-between gap-3" :data-row="row.key">
                 <span class="flex items-center gap-2 text-ink-700">
                   <span class="h-2.5 w-2.5 shrink-0 rounded-full" :class="row.dot" aria-hidden="true"></span>
@@ -96,12 +98,12 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
                 <strong class="font-semibold text-ink-900 tabular-nums">{{ t('app.dashboard.rsvp.persons', { n: row.value }, row.value) }}</strong>
               </li>
             </ul>
-            <p class="border-t border-cream-300 pt-2.5 text-ink-500" data-testid="rsvp-totals">{{ totalsLine }}</p>
-            <UiButton v-if="sendAction?.kind === 'remind'" :to="sendAction.to" variant="secondary" block class="mt-1" data-testid="rsvp-remind">
+            <p class="col-span-2 border-t border-cream-300 pt-2.5 text-ink-500 @md:col-span-1" data-testid="rsvp-totals">{{ totalsLine }}</p>
+            <UiButton v-if="sendAction?.kind === 'remind'" :to="sendAction.to" variant="secondary" block class="col-span-2 @md:col-span-1" data-testid="rsvp-remind">
               <BellRing class="h-4 w-4 shrink-0" aria-hidden="true" />
               {{ t('app.dashboard.rsvp.remind', { n: sendAction.n }, sendAction.n) }}
             </UiButton>
-            <UiButton v-else-if="sendAction?.kind === 'invite'" :to="sendAction.to" variant="secondary" block class="mt-1" data-testid="rsvp-invite">
+            <UiButton v-else-if="sendAction?.kind === 'invite'" :to="sendAction.to" variant="secondary" block class="col-span-2 @md:col-span-1" data-testid="rsvp-invite">
               <Send class="h-4 w-4 shrink-0" aria-hidden="true" />
               {{ t('app.dashboard.rsvp.sendInvitations') }}
             </UiButton>
@@ -109,7 +111,7 @@ const dateOf = row => formatEventDate(row.statusDate, 'dayMonthShort', locale.va
         </div>
 
         <div v-if="recent.length" class="mt-5 border-t border-cream-300 pt-3" data-testid="rsvp-recent">
-          <h3 class="text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{{ t('app.dashboard.rsvp.recentTitle') }}</h3>
+          <h3 class="font-body text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{{ t('app.dashboard.rsvp.recentTitle') }}</h3>
           <ul class="mt-1">
             <li v-for="row in recent" :key="`${row.name}-${row.statusDate}`" class="flex min-h-11 items-center justify-between gap-3 py-1">
               <span class="min-w-0 truncate text-base font-medium text-ink-900">{{ row.name }}</span>

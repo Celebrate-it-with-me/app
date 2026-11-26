@@ -3,8 +3,9 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent, h } from 'vue'
 
+const currentRoute = vi.hoisted(() => ({ path: '/dashboard/guests', name: 'guests' }))
 vi.mock('vue-router', () => ({
-  useRoute: () => ({ path: '/dashboard/guests', name: 'guests' }),
+  useRoute: () => currentRoute,
   useRouter: () => ({ push: vi.fn() })
 }))
 vi.mock('@/services/axios', () => ({ CWM_API: { get: vi.fn(), post: vi.fn() } }))
@@ -49,6 +50,7 @@ function mountLayout() {
 
 describe('InternalLayout', () => {
   beforeEach(() => {
+    currentRoute.path = '/dashboard/guests'
     setActivePinia(createPinia())
     screenMounts = 0
     useHydrationStore().isHydrated = true
@@ -70,6 +72,16 @@ describe('InternalLayout', () => {
     expect(wrapper.find('[data-test="loader"]').exists()).toBe(false)
     expect(wrapper.find('[data-test="screen"]').exists()).toBe(true)
     expect(screenMounts).toBe(1)
+  })
+
+  it('offers the help button a place in the header only on the Inicio', async () => {
+    const other = mountLayout()
+    await flushPromises()
+    expect(other.find('[data-testid="help-dock"]').exists()).toBe(false)
+    currentRoute.path = '/dashboard'
+    const inicio = mountLayout()
+    await flushPromises()
+    expect(inicio.find('#shell-help-dock').exists()).toBe(true)
   })
 
   it('marks its root as the app shell so the scrollbar gutter rule applies', async () => {

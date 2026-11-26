@@ -84,6 +84,13 @@ describe('DashboardRsvp', () => {
     expect(none(withCounts({}, { canEdit: false }))).toBe(true)
     expect(none(withCounts({ pending: 0, pendingUnsent: 3 }, { canViewGuests: false }))).toBe(true)
   })
+  it('keeps the ring next to its legend at every width (a grid that never wraps) and the sub-heading in the body font', () => {
+    const w = mountRsvp()
+    const summary = w.get('[data-testid=rsvp-summary]')
+    expect(summary.classes()).toContain('grid-cols-[auto_minmax(0,1fr)]')
+    expect(summary.classes()).not.toContain('flex-wrap')
+    expect(w.get('[data-testid=rsvp-recent] h3').classes()).toContain('font-body')
+  })
   it('lists the four latest answers, newest first, with their state in words', () => {
     const rows = mountRsvp().findAll('[data-testid=rsvp-recent] li')
     expect(rows.map(r => r.text().split(/\d/)[0].trim())).toEqual(['Héctor Fernández', 'Javier Montes', 'Ana María Pérez', 'Alejandra Núñez'])

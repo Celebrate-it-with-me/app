@@ -66,7 +66,7 @@ const colorsLabel = computed(() => t('app.dashboard.dress.reservedLabel', { colo
         <p v-if="typeName" class="text-base font-semibold text-ink-900" data-testid="dress-type">{{ typeName }}</p>
         <p v-if="summary.description" class="text-sm leading-relaxed text-ink-700 break-words" data-testid="dress-description">{{ summary.description }}</p>
         <div v-if="summary.colors.length">
-          <h3 class="text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{{ t('app.dashboard.dress.reserved') }}</h3>
+          <h3 class="font-body text-xs font-semibold uppercase tracking-[0.14em] text-ink-500">{{ t('app.dashboard.dress.reserved') }}</h3>
           <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-2" :aria-label="colorsLabel" data-testid="dress-colors">
             <li v-for="color in summary.colors" :key="color.hex" class="flex min-h-7 items-center gap-2 text-sm text-ink-700" :data-hex="color.hex">
               <span class="h-7 w-7 shrink-0 rounded-full ring-1 ring-line-strong ring-inset" :style="{ backgroundColor: color.hex }" aria-hidden="true"></span>

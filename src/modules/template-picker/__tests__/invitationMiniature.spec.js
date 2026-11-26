@@ -65,6 +65,18 @@ describe('InvitationMiniature live view', () => {
     expect(w.attributes('data-state')).toBe('loading')
   })
 
+  it('draws the caller\'s own skeleton while loading, when it brings one', async () => {
+    wrapper = mount(InvitationMiniature, {
+      props: { eventId: 5, width: 78, name: 'Valentina' },
+      slots: { skeleton: '<div data-testid="own-skeleton"></div>' },
+      global: { plugins: [i18n] },
+      attachTo: document.body
+    })
+    instances.push(wrapper)
+    await flushPromises()
+    expect(wrapper.find('[data-testid=miniature-skeleton] [data-testid=own-skeleton]').exists()).toBe(true)
+  })
+
   it('passes an explicit template id', async () => {
     await mountMini({ templateId: 3 })
     expect(mocks.preview.mock.calls[0][1].templateId).toBe(3)
