@@ -2599,6 +2599,32 @@ export default {
     alreadyUnlocked: { title: 'This event is already unlocked', text: 'There is no need to pay again: you already have every module and the full guest limit.', invoices: 'See my invoices' },
   },
   templatePicker: {
+    panel: { label: 'Template preview' },
+    action: { keeps: 'Your content and photos are kept.' },
+    discard: {
+      title: 'Leave without changing?',
+      text: 'You are looking at {name}, but your invitation keeps another template.',
+      stay: 'Keep looking',
+      leave: 'Leave'
+    },
+    currentBadge: 'Current',
+    count: '{count} template | {count} templates',
+    search: { label: 'Search templates', placeholder: 'Search by name' },
+    filters: {
+      access: 'Access',
+      all: 'All',
+      free: 'Free',
+      premium: 'Premium',
+      style: 'Style',
+      favorites: 'Favorites',
+      clear: 'Clear filters'
+    },
+    styles: { elegante: 'Elegant', moderna: 'Modern', floral: 'Floral', minimal: 'Minimal' },
+    noResults: { title: 'No template matches', text: 'Try another search or clear the filters.' },
+    favorite: { add: 'Mark {name} as a favorite', remove: 'Remove {name} from your favorites' },
+    palettes: { count: '{count} palettes' },
+    strip: { label: 'Your templates' },
+    card: { select: 'View {name}' },
     title: 'Choose your template',
     subtitle: 'See how it looks with your event details before you use it.',
     loading: 'Loading templates',

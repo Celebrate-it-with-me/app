@@ -62,12 +62,13 @@ export function useTemplatePicker(eventId) {
     impactStatus.value = 'loading'
     try {
       const data = await TemplatePickerService.impact(toValue(eventId), template.id)
-      if (ticket !== impactTicket) return
+      if (ticket !== impactTicket) return null
       impact.value = data
       impactStatus.value = 'ready'
+      return data
     } catch {
-      if (ticket !== impactTicket) return
-      impactStatus.value = 'error'
+      if (ticket === impactTicket) impactStatus.value = 'error'
+      return null
     }
   }
 
