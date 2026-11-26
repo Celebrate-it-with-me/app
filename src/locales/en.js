@@ -610,9 +610,7 @@ export default {
       done: 'Done',
       pending: 'To do',
       skip: 'Go to my dashboard',
-      skipHint: 'This guide is optional. You can always find it on your dashboard.',
-      dashboardLink: 'First steps · {done} of {total}',
-      dashboardLinkText: 'Pick up what is left to get your event ready.',
+      skipHint: 'This guide is optional. Your Home will keep showing you what to do next.',
       steps: {
         event: {
           title: 'Your event',
@@ -2162,6 +2160,22 @@ export default {
         changeTemplate: 'Change template',
         planError: 'We could not load your organization plan.',
         draftHint: 'It is a draft: no one can see it yet. Publish it to be able to share it.'
+      },
+      now: {
+        title: 'What to do now',
+        heading: 'One step to move your plan forward | {n} steps to move your plan forward',
+        loadingHeading: 'Your next steps',
+        go: 'Start',
+        unlock: 'Unlock',
+        locked: 'Included in another plan.',
+        markDone: 'Mark as done: {title}',
+        markPending: 'Mark as pending: {title}',
+        doneAnnounce: 'Done: {title}',
+        undone: 'Pending again: {title}',
+        allSetTitle: 'All caught up',
+        allSetText: 'Nothing pending for now. When the next step comes up, you will see it here.',
+        planLink: 'See the full plan',
+        error: 'We could not load your next steps.'
       },
       route: {
         title: 'Road to the event',

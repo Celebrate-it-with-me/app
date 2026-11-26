@@ -30,6 +30,7 @@ import {
   hasNewDot,
   isCompactForSession,
   isCompactRoute,
+  isHelpOnlyRoute,
   markWelcomed,
   setCompactForSession,
   setSeenKey,
@@ -52,6 +53,8 @@ const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRol
 const tone = computed(() => toneFor(eventsStore.eventTypes.find(type => type.id === event.value?.eventType)?.slug))
 
 const view = computed(() => {
+  // On the Inicio the steps live in "Lo que toca ahora": only the help icon stays.
+  if (isHelpOnlyRoute(route.path)) return { kind: 'help' }
   if (!eventId.value || !canEdit.value || nextStatus.value !== 'ready' || store.eventId !== eventId.value) return { kind: 'help' }
   return guideView(next.value)
 })

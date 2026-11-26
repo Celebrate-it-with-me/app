@@ -48,6 +48,15 @@ export function planPercent(progress) {
   return Math.round(Math.min(1, Math.max(0, (Number(progress?.done) || 0) / total)) * 100)
 }
 
+/** States that are not something to do today. */
+const NOT_TODO = ['done', 'hidden', 'not_applicable']
+
+/** The steps of "Lo que toca ahora": the assistant's recommended steps (`next.steps`), at most `max`, never a closed one. */
+export function nowSteps(next, max = 3) {
+  const steps = Array.isArray(next?.steps) ? next.steps : []
+  return steps.filter(step => step?.key && !NOT_TODO.includes(step.state)).slice(0, max)
+}
+
 /** The plan phases that become milestones of "Ruta al evento", in route order. */
 export const ROUTE_PHASES = ['foundation', 'invitations']
 

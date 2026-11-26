@@ -610,9 +610,7 @@ export default {
       done: 'Listo',
       pending: 'Pendiente',
       skip: 'Ir a mi dashboard',
-      skipHint: 'Esta guía no es obligatoria. La encuentras siempre en tu dashboard.',
-      dashboardLink: 'Primeros pasos · {done} de {total}',
-      dashboardLinkText: 'Retoma lo que falta para dejar tu fiesta lista.',
+      skipHint: 'Esta guía no es obligatoria. Tu Inicio te irá mostrando lo que toca en cada momento.',
       steps: {
         event: {
           title: 'Tu fiesta',
@@ -2162,6 +2160,22 @@ export default {
         changeTemplate: 'Cambiar plantilla',
         planError: 'No pudimos cargar tu plan de organización.',
         draftHint: 'Es un borrador: nadie puede verla todavía. Publícala para poder compartirla.'
+      },
+      now: {
+        title: 'Lo que toca ahora',
+        heading: 'Un paso para avanzar tu plan | {n} pasos para avanzar tu plan',
+        loadingHeading: 'Tus próximos pasos',
+        go: 'Empezar',
+        unlock: 'Desbloquear',
+        locked: 'Incluido en otro plan.',
+        markDone: 'Marcar como hecho: {title}',
+        markPending: 'Marcar como pendiente: {title}',
+        doneAnnounce: 'Hecho: {title}',
+        undone: 'Pendiente otra vez: {title}',
+        allSetTitle: 'Todo al día',
+        allSetText: 'No tienes pasos pendientes por ahora. Cuando toque el siguiente, lo verás aquí.',
+        planLink: 'Ver el plan completo',
+        error: 'No pudimos cargar tus próximos pasos.'
       },
       route: {
         title: 'Ruta al evento',

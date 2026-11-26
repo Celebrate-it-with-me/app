@@ -15,9 +15,7 @@ import DashboardHero from './DashboardHero.vue'
 import DashboardRoute from './DashboardRoute.vue'
 import DashboardStats from './DashboardStats.vue'
 import DashboardActivity from './DashboardActivity.vue'
-import DashboardStartLink from './DashboardStartLink.vue'
-import OnboardingService from '@/modules/onboarding/services/OnboardingService'
-import { allDone, normalizeProgress } from '@/modules/onboarding/utils/steps'
+import DashboardNow from './DashboardNow.vue'
 import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardMore from './DashboardMore.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
@@ -86,41 +84,6 @@ const program = computed(() =>
     }))
 )
 
-// First steps: a calm link while some are pending. A failure here just hides the link.
-const start = ref(null)
-const startLoading = ref(false)
-const showStart = computed(() => start.value && !allDone(start.value))
-// The link's slot is held while its data loads, but only when it was there last time (or never seen): people who
-// finished the first steps would otherwise see the slot appear and collapse on every visit.
-const startKey = id => `quinvite.dashboard.start.${id}`
-const startWasShown = id => {
-  try {
-    return localStorage.getItem(startKey(id)) !== '0'
-  } catch {
-    return true
-  }
-}
-const holdStartSlot = computed(() => startLoading.value && !showStart.value && startWasShown(event.value?.id))
-async function loadStart(eventId) {
-  start.value = null
-  startLoading.value = true
-  try {
-    const data = normalizeProgress(await OnboardingService.progress(eventId))
-    if (eventId === event.value?.id) start.value = data
-  } catch {
-    start.value = null
-  } finally {
-    if (eventId === event.value?.id) {
-      startLoading.value = false
-      try {
-        localStorage.setItem(startKey(eventId), showStart.value ? '1' : '0')
-      } catch {
-        // Storage can be unavailable (private mode): the slot just follows the default.
-      }
-    }
-  }
-}
-
 const activity = computed(() => readableActivity(activityStore.activities ?? []).slice(0, 5))
 
 // The template in use: its name (chip) and its preview image (the invitation's thumbnail) come from the same list. Best
@@ -162,7 +125,6 @@ async function load() {
   const current = event.value
   if (!current?.id) return
   const id = ++loadId
-  loadStart(current.id)
   loadThumb(current.id)
   // The assistant never throws into the screen (its stores keep a status), so it stays out of the shared error toast.
   assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
@@ -211,8 +173,7 @@ onMounted(() => useUserStore().syncEmailVerified())
       @retry="retryRoute"
     />
 
-    <DashboardStartLink v-if="showStart" :done="start.done" :total="start.total" />
-    <div v-else-if="holdStartSlot" class="mt-3 h-[4.125rem] rounded-xl border border-line bg-white" aria-hidden="true" data-testid="start-link-slot" />
+    <DashboardNow v-if="canEdit" :key="event.id" :next="sameEvent ? assistantStore.next : null" :status="planStatus" :event-id="event.id" @retry="retryPlan" />
 
     <DashboardStats class="mt-6" :rsvp="rsvp" :can-edit="canEdit" />
 

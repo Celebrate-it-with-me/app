@@ -21,6 +21,14 @@ export const COMPACT_ROUTES = [
   /^\/dashboard\/guests(\/|$)/ // at 320 px the full pill covers the Import/Add row (seen in a capture)
 ]
 
+/**
+ * Screens where the next step already has its own place on the page (the Inicio's "Lo que toca ahora"): the guide is
+ * only the help icon there. Exact paths, so the rest of /dashboard/* keeps the guide.
+ */
+export const HELP_ONLY_ROUTES = [/^\/dashboard\/?$/]
+
+export const isHelpOnlyRoute = path => typeof path === 'string' && HELP_ONLY_ROUTES.some(re => re.test(path))
+
 export const isCompactRoute = path => typeof path === 'string' && COMPACT_ROUTES.some(re => re.test(path))
 
 /** Tone of the copy: weddings are more sober, everything else (quince) is warm and festive. */

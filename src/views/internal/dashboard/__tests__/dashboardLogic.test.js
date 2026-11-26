@@ -214,3 +214,13 @@ describe('routeAvailability', () => {
     [null, 'none']
   ])('%j -> %s', (p, expected) => expect(routeAvailability(p)).toBe(expected))
 })
+
+describe('nowSteps', () => {
+  it('keeps at most three open steps, in the server order', async () => {
+    const { nowSteps } = await import('../dashboardLogic')
+    const steps = ['a', 'b', 'c', 'd'].map(key => ({ key, state: 'next' }))
+    expect(nowSteps({ steps }).map(s => s.key)).toEqual(['a', 'b', 'c'])
+    expect(nowSteps({ steps: [{ key: 'x', state: 'done' }, { key: 'y', state: 'hidden' }, { key: 'z', state: 'overdue' }, { state: 'next' }] }).map(s => s.key)).toEqual(['z'])
+    expect(nowSteps(null)).toEqual([])
+  })
+})
