@@ -123,8 +123,9 @@ function select(template) {
   if (template.locked) loadQuote()
 }
 
-function goUnlock() {
-  emit('unlock', selected.value, previewPreset.value)
+/** To the payment screen: with the template (and palette) being looked at, or with none (the banner on top). */
+function goUnlock(withTemplate = true) {
+  emit('unlock', withTemplate ? selected.value : null, withTemplate ? previewPreset.value : '')
   emit('update:open', false)
 }
 
@@ -255,7 +256,7 @@ defineExpose({ undo, picker })
   <UiModal :open="open" :title="t('templatePicker.title')" :description="t('templatePicker.subtitle')" size="xl" bare fullscreen-mobile @update:open="onOpenChange">
     <div class="flex h-full flex-col sm:h-[min(44rem,calc(92dvh-9.5rem))]" data-testid="template-picker-body">
     <div v-if="hasLockedTemplates && !fromPayment" class="shrink-0 px-4 pt-2 sm:px-6">
-      <UnlockBanner :event-id="eventId" @unlock="goUnlock" />
+      <UnlockBanner :event-id="eventId" @unlock="goUnlock(false)" />
     </div>
     <div class="flex min-h-0 flex-1 flex-col overflow-y-auto lg:grid lg:grid-cols-[minmax(0,1fr)_25rem] lg:overflow-hidden">
       <!-- left zone (wide screens): search, filters and the grid, with its own scroll -->
@@ -371,7 +372,7 @@ defineExpose({ undo, picker })
       </div>
       <template #footer>
         <UiButton variant="ghost" :disabled="busy" @click="confirmOpen = false">{{ conflictNames ? t('templatePicker.missing.cancel') : t('templatePicker.confirm.cancel') }}</UiButton>
-        <UiButton v-if="picker.impact.value?.locked" @click="goUnlock">
+        <UiButton v-if="picker.impact.value?.locked" @click="goUnlock()">
           <Lock class="h-4 w-4" aria-hidden="true" />
           {{ unlockLabel }}
         </UiButton>
