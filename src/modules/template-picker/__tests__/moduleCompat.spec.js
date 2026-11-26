@@ -80,17 +80,16 @@ describe('TemplatePickerSheet confirmation', () => {
   async function toUse(activeModules) {
     wrapper = mount(TemplatePickerSheet, { props: { open: true, eventId: 5, activeModules }, global: { plugins: [i18n] }, attachTo: document.body })
     await flushPromises()
-    document.body.querySelectorAll('ul li button')[1].click()
+    document.body.querySelector('[data-testid=template-grid] button[aria-label^="Mínima"]').click()
     await flushPromises()
-    await click('Usar esta plantilla')
+    document.body.querySelector('[data-testid=primary-action]').click()
+    await flushPromises()
   }
-  it('asks before going on when the template lacks an active module, and accept continues', async () => {
+  it('asks before going on when the template lacks an active module, and accept applies', async () => {
     await toUse(['comments'])
     expect(text()).toContain('Esta plantilla no incluye Comentarios, que tienes activo. No se mostrará en tu invitación. ¿Cambiar de todos modos?')
-    expect(mocks.impact).not.toHaveBeenCalled()
+    expect(mocks.apply).not.toHaveBeenCalled()
     await click('Cambiar de todos modos')
-    expect(mocks.impact).toHaveBeenCalled()
-    await click('Cambiar')
     expect(mocks.apply).toHaveBeenCalledTimes(1)
   })
   it('cancelling the dialog keeps the preview and applies nothing', async () => {
@@ -99,10 +98,11 @@ describe('TemplatePickerSheet confirmation', () => {
     expect(text()).not.toContain('Cambiar de todos modos')
     expect(mocks.apply).not.toHaveBeenCalled()
   })
-  it('does not ask when the missing modules are not active', async () => {
+  it('does not ask when the missing modules are not active: it saves straight away', async () => {
     await toUse(['rsvp'])
     expect(text()).not.toContain('Cambiar de todos modos')
     expect(mocks.impact).toHaveBeenCalled()
+    expect(mocks.apply).toHaveBeenCalledTimes(1)
   })
 })
 

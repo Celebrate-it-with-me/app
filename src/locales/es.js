@@ -2599,6 +2599,32 @@ export default {
     alreadyUnlocked: { title: 'Este evento ya está desbloqueado', text: 'No hace falta pagar de nuevo: ya tienes todos los módulos y el límite completo de invitados.', invoices: 'Ver mis facturas' },
   },
   templatePicker: {
+    panel: { label: 'Vista previa de la plantilla' },
+    action: { keeps: 'Tu contenido y fotos se conservan.' },
+    discard: {
+      title: '¿Salir sin cambiar?',
+      text: 'Estás viendo {name}, pero tu invitación sigue con otra plantilla.',
+      stay: 'Seguir viendo',
+      leave: 'Salir'
+    },
+    currentBadge: 'Actual',
+    count: '{count} plantilla | {count} plantillas',
+    search: { label: 'Buscar plantilla', placeholder: 'Buscar por nombre' },
+    filters: {
+      access: 'Acceso',
+      all: 'Todas',
+      free: 'Gratis',
+      premium: 'Premium',
+      style: 'Estilo',
+      favorites: 'Favoritas',
+      clear: 'Quitar filtros'
+    },
+    styles: { elegante: 'Elegante', moderna: 'Moderna', floral: 'Floral', minimal: 'Minimal' },
+    noResults: { title: 'Ninguna plantilla coincide', text: 'Prueba con otra búsqueda o quita los filtros.' },
+    favorite: { add: 'Marcar {name} como favorita', remove: 'Quitar {name} de tus favoritas' },
+    palettes: { count: '{count} paletas' },
+    strip: { label: 'Tus plantillas' },
+    card: { select: 'Ver {name}' },
     title: 'Elige tu plantilla',
     subtitle: 'Mira cómo queda con los datos de tu evento antes de usarla.',
     loading: 'Cargando plantillas',

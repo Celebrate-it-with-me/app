@@ -28,7 +28,9 @@ const props = defineProps({
   /** The event's template is gone and the invitation falls back to Clásica (`fallbackToClassic`). */
   unavailable: { type: Boolean, default: false },
   /** The role cannot edit (viewer): the change button stays off. */
-  disabled: { type: Boolean, default: false }
+  disabled: { type: Boolean, default: false },
+  /** Stage of the invitation (`invitation` | `save_the_date`): what the selector previews first. */
+  stage: { type: String, default: 'invitation' }
 })
 const emit = defineEmits(['changed'])
 
@@ -168,6 +170,7 @@ watch(() => props.eventId, loadCurrent)
       :initial-template-id="initialTemplateId"
       :from-payment="fromPayment"
       :active-modules="activeModules"
+      :stage="stage"
       @changed="onChanged"
       @unlock="goUnlock"
     />

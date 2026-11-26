@@ -135,6 +135,7 @@ function onImageChanged(id, value) {
         :unavailable="Boolean(data.template?.fallbackToClassic)"
         :event-id="eventId"
         :disabled="readOnly"
+        :stage="data.state?.stage === 'save_the_date' ? 'save_the_date' : 'invitation'"
         @changed="editor.applyState"
       />
 
