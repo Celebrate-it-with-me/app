@@ -118,6 +118,34 @@ describe('templatePickerMock (dev stand-in of the contract)', () => {
     expect((await run(mock.templates(1))).v).toEqual([])
   })
 
+  it('trims or extends the catalog to the asked count, with long names on request', async () => {
+    flag('unlocked,count:2')
+    expect((await run(mock.templates(1))).v.map(t => t.id)).toEqual([1, 2])
+    flag('unlocked,count:7')
+    const many = (await run(mock.templates(1))).v
+    expect(many.length).toBe(7)
+    expect(many[5].name).toBe('Jardín de peonías')
+    expect(many[6].name).toBe('Minimal blanco')
+    flag('unlocked,count:6,longnames')
+    expect((await run(mock.templates(1))).v.at(-1).name.length).toBeGreaterThan(60)
+    expect((await run(mock.templates(1))).v.every(t => Array.isArray(t.tags))).toBe(true)
+  })
+
+  it('saves a palette with the template, refuses an unknown one and undoes a palette-only change with the old palette', async () => {
+    flag('unlocked')
+    const before = (await run(mock.apply(1, { template_id: 4 }))).v
+    expect(before.undo.templateId).toBe(1)
+    expect((await run(mock.apply(1, { template_id: 4, preset: 'nope' }))).e.response.data.errors.preset).toEqual(['invalid_choice'])
+    expect((await run(mock.apply(1, { template_id: 3, preset: 'rosa' }))).v.undo.preset).toBeUndefined()
+    const same = (await run(mock.apply(1, { template_id: 3, preset: 'noche' }))).v
+    expect(same.undo).toMatchObject({ templateId: 3, preset: 'rosa' })
+    expect((await run(mock.templates(1))).v.find(t => t.current).activePreset).toBe('noche')
+    const preview = (await run(mock.preview(1, { template_id: 3, preset: 'salvia' }))).v
+    expect(preview.theme.colors.primary).toBe('#7f9c78')
+    await run(mock.apply(1, { template_id: 1 }))
+    expect((await run(mock.templates(1))).v.find(t => t.current).activePreset).toBeUndefined()
+  })
+
   it('answers the impact, the 404 and the 500', async () => {
     flag('published')
     const impact = (await run(mock.impact(1, 3))).v
