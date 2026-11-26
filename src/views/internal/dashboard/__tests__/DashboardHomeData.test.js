@@ -5,7 +5,7 @@ import { createApp } from 'vue'
 import i18n, { setLocale } from '@/locales/i18n'
 import { useToast } from '@/ui'
 
-const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn(), next: vi.fn(), plan: vi.fn(), invitation: vi.fn() }))
+const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn(), dress: vi.fn(), next: vi.fn(), plan: vi.fn(), invitation: vi.fn() }))
 vi.mock('@/modules/assistant/services/AssistantService', () => ({ default: { next: m.next, plan: m.plan } }))
 vi.mock('@/modules/rsvp/services/RsvpService', () => ({ default: { loadStats: m.loadStats } }))
 vi.mock('@/services/ActivityService', () => ({ default: { loadDashboardActivities: m.activities } }))
@@ -13,6 +13,7 @@ vi.mock('@/modules/onboarding/services/OnboardingService', () => ({ default: { p
 vi.mock('@/modules/template-picker/services/TemplatePickerService', () => ({ default: { templates: m.templates } }))
 vi.mock('@/modules/invitation-editor/services/InvitationEditorService', () => ({ default: { get: m.invitation } }))
 vi.mock('@/modules/timeline/services/timelineService', () => ({ default: { list: m.list } }))
+vi.mock('@/modules/dress-code/services/DressCodeService', () => ({ default: { get: m.dress } }))
 vi.mock('@/modules/budget/services/BudgetService', () => ({ default: { summary: m.summary } }))
 vi.mock('@/modules/email-verification/components/EmailVerifyNotice.vue', () => ({ default: { template: '<div />' } }))
 vi.mock('@/services/axios', () => ({ CWM_API: { get: vi.fn() } }))
@@ -54,6 +55,7 @@ beforeEach(() => {
   m.progress.mockResolvedValue({})
   m.templates.mockResolvedValue([])
   m.list.mockResolvedValue([])
+  m.dress.mockResolvedValue({ dressCodeType: null, reservedColors: [] })
   m.plan.mockResolvedValue({ mode: 'normal', phases: [] })
 })
 
@@ -163,6 +165,26 @@ describe('Dashboard home data', () => {
     m.list.mockClear()
     expect((await mountDashboard({ event: { modules: [{ key: 'timeline', state: 'locked' }] } })).find('[data-testid=dashboard-program]').exists()).toBe(false)
     expect(m.list).not.toHaveBeenCalled()
+  })
+  it('gives the dress code its own block: skeleton, then the style; an error retries only that block', async () => {
+    let resolve
+    m.dress.mockReturnValue(new Promise(r => (resolve = r)))
+    const on = { event: { modules: [{ key: 'dress_code', state: 'active' }] } }
+    const w = await mountDashboard(on)
+    expect(w.find('[data-testid=dress-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=dress-empty]').exists()).toBe(false)
+    resolve({ dressCodeType: 'formal', description: '', reservedColors: ['#C2185B'] })
+    await flushPromises()
+    expect(m.dress).toHaveBeenCalledWith(7)
+    expect(w.get('[data-testid=dress-type]').text()).toBe('Formal')
+    m.dress.mockRejectedValue({ response: { status: 500 } })
+    const bad = await mountDashboard(on)
+    expect(bad.find('[data-testid=dashboard-dress] [data-testid=block-error]').exists()).toBe(true)
+    expect(useToast().toasts).toHaveLength(0)
+    m.dress.mockClear()
+    const off = await mountDashboard({ event: { modules: [{ key: 'dress_code', state: 'locked' }] } })
+    expect(off.find('[data-testid=dashboard-dress]').exists()).toBe(false)
+    expect(m.dress).not.toHaveBeenCalled()
   })
   it('gives the hero the ISO start of the event when the API sends it, else the wall-clock text', async () => {
     const wall = await mountDashboard({ event: { startDate: '01/02/2027 18:00', timezone: 'America/New_York' } })

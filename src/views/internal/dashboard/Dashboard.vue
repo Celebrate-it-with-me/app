@@ -5,6 +5,7 @@ import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import RsvpService from '@/modules/rsvp/services/RsvpService'
 import BudgetService from '@/modules/budget/services/BudgetService'
 import timelineService from '@/modules/timeline/services/timelineService'
+import DressCodeService from '@/modules/dress-code/services/DressCodeService'
 import { useActivityStore } from '@/stores/useActivityStore'
 import TemplatePickerService from '@/modules/template-picker/services/TemplatePickerService'
 import InvitationEditorService from '@/modules/invitation-editor/services/InvitationEditorService'
@@ -18,6 +19,7 @@ import DashboardNow from './DashboardNow.vue'
 import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardBudget from './DashboardBudget.vue'
 import DashboardProgram from './DashboardProgram.vue'
+import DashboardDressCode from './DashboardDressCode.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 import { planProgress, readableActivity } from './dashboardLogic'
 import { useDashboardBlock } from './useDashboardBlock'
@@ -65,6 +67,7 @@ const templateTo = { name: 'invitation-editor' }
 const { status: budgetStatus, data: budgetSummary, load: loadBudget, hide: hideBudget } = useDashboardBlock(eventId => BudgetService.summary(eventId))
 
 const { status: programStatus, data: programData, load: loadProgram, hide: hideProgram } = useDashboardBlock(eventId => timelineService.list(eventId))
+const { status: dressStatus, data: dressData, load: loadDress, hide: hideDress } = useDashboardBlock(eventId => DressCodeService.get(eventId))
 
 const activity = computed(() => readableActivity(activityStore.activities ?? []).slice(0, 5))
 
@@ -119,6 +122,8 @@ async function load() {
   // the only one left for the shared toast.
   if (moduleOpen('timeline')) loadProgram(current.id, { quiet: true })
   else hideProgram()
+  if (moduleOpen('dress_code')) loadDress(current.id, { quiet: true })
+  else hideDress()
   const jobs = [activityStore.loadDashboardActivities()]
   const results = await Promise.allSettled(jobs)
   if (id === loadId && results.some(r => r.status === 'rejected')) showError(t('app.dashboard.loadError'))
@@ -190,6 +195,15 @@ onMounted(() => useUserStore().syncEmailVerified())
       :status="programStatus"
       :can-edit="canEdit"
       @retry="loadProgram(event.id)"
+    />
+
+    <DashboardDressCode
+      v-if="dressStatus !== 'hidden'"
+      class="mt-4"
+      :dress-code="dressData"
+      :status="dressStatus"
+      :can-edit="canEdit"
+      @retry="loadDress(event.id)"
     />
   </div>
 </template>
