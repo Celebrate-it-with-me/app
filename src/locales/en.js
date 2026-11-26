@@ -2138,10 +2138,24 @@ export default {
         attending: 'Attending',
         pending: 'Pending',
         declined: 'Not attending',
-        people: 'people',
-        empty: 'There are no guests on the list yet.',
-        bar: 'Split of replies',
-        viewAll: 'See details'
+        persons: '{n} person | {n} people',
+        inInvitations: 'in {n} invitation | in {n} invitations',
+        companions: 'no companions | {n} companion | {n} companions',
+        responded: 'responded',
+        ring: {
+          attending: '{n} attending | {n} attending',
+          pending: '{n} pending | {n} pending',
+          declined: '{n} not attending | {n} not attending',
+          rate: '{n} % of invitations responded'
+        },
+        remind: 'Remind the pending invitation | Remind the {n} pending invitations',
+        recentTitle: 'Latest replies',
+        recent: { attending: 'Attending', declined: 'Not attending' },
+        emptyTitle: 'You have no guests yet',
+        emptyText: 'Add your family and friends so you can send them the invitation and see who confirms.',
+        emptyCta: 'Add guests',
+        error: 'We could not load the confirmations.',
+        viewAll: 'See guests'
       },
       invitation: {
         published: 'Published',
@@ -2196,16 +2210,6 @@ export default {
         state: { now: 'today', done: 'completed', current: 'in progress', upcoming: 'upcoming', empty: 'no steps', event: 'event day' },
         noDate: 'Set your event date to see your road.',
         error: 'We could not load your road to the event.'
-      },
-      stats: {
-        title: 'Guest summary',
-        attending: 'Attending',
-        pending: 'Pending',
-        declined: 'Not attending',
-        total: 'Guests in total',
-        emptyTitle: 'You have no guests yet',
-        emptyText: 'Add your family and friends so you can send them the invitation and see who confirms.',
-        emptyCta: 'Add guests'
       },
       more: {
         title: 'More about your event',

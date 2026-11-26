@@ -53,6 +53,22 @@ afterEach(() => {
   document.body.innerHTML = ''
 })
 
+describe('SendWizard opened to remind the pending ones', () => {
+  const checked = () => [...document.querySelectorAll('label')].find(l => l.querySelector('[role="radio"][aria-checked="true"]'))?.textContent ?? ''
+  it('starts on the pending card even when it is empty, and sends nothing by itself', async () => {
+    serve()
+    await open({ initialCategory: 'pending' })
+    expect(checked()).toContain('Pendientes de responder')
+    expect(wa.preview).not.toHaveBeenCalled()
+    expect(svc.markShared).not.toHaveBeenCalled()
+  })
+  it('falls back to the usual first card when answers are closed', async () => {
+    serve({ audience: info({ rsvp: { isOpen: false } }) })
+    await open({ initialCategory: 'pending' })
+    expect(checked()).not.toContain('Pendientes de responder')
+  })
+})
+
 describe('SendWizard step 1', () => {
   it('shows the cards with live counts, the summary and what cannot be shared', async () => {
     serve()

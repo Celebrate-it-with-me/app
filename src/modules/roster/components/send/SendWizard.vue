@@ -6,7 +6,7 @@ import WhatsAppIcon from '@/components/brand/WhatsAppIcon.vue'
 import { UiModal, UiButton, UiCard, UiSkeleton, UiEmptyState } from '@/ui'
 import SendWizardService from '../../services/SendWizardService'
 import { useToast } from '@/ui'
-import { MODE_DEFAULT, STEPS, allowedTemplates, loadErrorKey, mergeFamilies, membersOf, templateFor, withoutTemplate } from '../../utils/sendWizard'
+import { MODE_DEFAULT, STEPS, allowedTemplates, categoryAllowed, loadErrorKey, mergeFamilies, membersOf, templateFor, withoutTemplate } from '../../utils/sendWizard'
 import SendStepWho from './SendStepWho.vue'
 import SendStepPreview from './SendStepPreview.vue'
 import SendStepManual from './SendStepManual.vue'
@@ -30,6 +30,8 @@ const props = defineProps({
   canEdit: { type: Boolean, default: true },
   /** Families to start with (the row menu): step 1 is skipped when they can be shared. */
   preselectedIds: { type: Array, default: () => [] },
+  /** Card to start on when nothing is preselected: `pending` (the Inicio's "remind") opens on the reminders. */
+  initialCategory: { type: String, default: null },
   /** Bumped by the parent after it edits a guest, so the wizard reads the families again. */
   reloadToken: { type: Number, default: 0 },
   /** `manual` (wa.me) or `automatic` (Meta, F4). Opt-outs are shareable and big batches need no confirmation in manual mode. */
@@ -134,6 +136,10 @@ function start() {
   }
   selectedIds.value = []
   const open = rsvpOpen.value
+  if (props.initialCategory === 'pending' && categoryAllowed('pending', { rsvpOpen: open })) {
+    category.value = 'pending'
+    return
+  }
   const first = ['unsent', 'pending', 'all'].find(key => membersOf(families.value, key, { template: templateFor(key, { rsvpOpen: open }), mode: effectiveMode.value }).length)
   category.value = first === 'pending' && !open ? 'all' : (first ?? 'unsent')
 }

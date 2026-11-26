@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import i18n, { setLocale } from '@/locales/i18n'
-import { planPercent, phaseSummary, routePhases, routeMilestones, routeAvailability, summarizeRsvp, rsvpShares, planProgress, countdownInfo, statsFigures, activitySentence, activityTime } from '../dashboardLogic'
+import { planPercent, phaseSummary, routePhases, routeMilestones, routeAvailability, summarizeRsvp, recentResponses, ringSegments, planProgress, countdownInfo, activitySentence, activityTime } from '../dashboardLogic'
 
 describe('summarizeRsvp', () => {
   it('maps the stats payload', () => {
@@ -13,20 +13,45 @@ describe('summarizeRsvp', () => {
         response_rate: 80
       }
     })
-    expect(r).toMatchObject({ attending: 29, pending: 7, declined: 3, people: 39, pendingGuests: 5, responseRate: 80 })
+    expect(r).toMatchObject({ attending: 29, pending: 7, declined: 3, people: 39, mainGuests: 25, pendingGuests: 5, responseRate: 80 })
   })
   it('is all zeros when stats are missing', () => {
     expect(summarizeRsvp({})).toMatchObject({ attending: 0, pending: 0, declined: 0, people: 0 })
   })
 })
 
-describe('rsvpShares', () => {
-  it('always adds up to 100', () => {
-    const s = rsvpShares({ attending: 1, pending: 1, declined: 1 })
-    expect(s.attending + s.pending + s.declined).toBe(100)
+describe('recentResponses', () => {
+  const recent = [
+    { name: 'Ana', status: 'attending', statusDate: '2026-11-14T10:00:00Z' },
+    { name: 'Javier', status: 'not-attending', statusDate: '2026-11-15T10:00:00Z' },
+    { name: 'Héctor', status: 'attending', statusDate: '2026-11-16T10:00:00Z' },
+    { name: '', status: 'attending', statusDate: '2026-11-17T10:00:00Z' },
+    { name: 'Pepa', status: 'pending', statusDate: '2026-11-18T10:00:00Z' },
+    { name: 'Luis', status: 'attending', statusDate: null },
+    { name: 'Alejandra', status: 'attending', statusDate: '2026-11-12T10:00:00Z' },
+    { name: 'Zoe', status: 'attending', statusDate: '2026-11-11T10:00:00Z' }
+  ]
+  it('keeps the four newest answers and reads the dashed not-attending as declined', () => {
+    const rows = recentResponses({ data: { recent } })
+    expect(rows.map(r => r.name)).toEqual(['Héctor', 'Javier', 'Ana', 'Alejandra'])
+    expect(rows[1].status).toBe('declined')
   })
-  it('is zero with no one invited', () => {
-    expect(rsvpShares({ attending: 0, pending: 0, declined: 0 })).toEqual({ attending: 0, pending: 0, declined: 0 })
+  it('is empty when the API sends nothing (older API or a role without names)', () => {
+    expect(recentResponses({})).toEqual([])
+    expect(recentResponses({ recent: null })).toEqual([])
+  })
+})
+
+describe('ringSegments', () => {
+  it('splits the circle in touching arcs, in order, without empty ones', () => {
+    const s = ringSegments({ attending: 29, pending: 7, declined: 0 }, 360)
+    expect(s.map(x => x.key)).toEqual(['attending', 'pending'])
+    expect(s[0]).toMatchObject({ offset: -0 })
+    expect(s[0].dash + s[1].dash).toBeCloseTo(360)
+    expect(s[1].offset).toBeCloseTo(-s[0].dash)
+  })
+  it('draws nothing with nobody invited', () => {
+    expect(ringSegments({ attending: 0, pending: 0, declined: 0 })).toEqual([])
   })
 })
 
@@ -54,17 +79,6 @@ describe('countdownInfo', () => {
     expect(countdownInfo(-3).kind).toBe('past')
     expect(countdownInfo(0).kind).toBe('today')
     expect(countdownInfo(142)).toEqual({ kind: 'future', n: 142 })
-  })
-})
-
-describe('statsFigures', () => {
-  it('lists the four figures with people (companions included) as the total', () => {
-    const f = statsFigures({ attending: 5, pending: 3, declined: 1, people: 9 })
-    expect(f.empty).toBe(false)
-    expect(f.items.map(i => [i.key, i.value])).toEqual([['attending', 5], ['pending', 3], ['declined', 1], ['total', 9]])
-  })
-  it('is empty with nobody on the list', () => {
-    expect(statsFigures({ attending: 0, pending: 0, declined: 0, people: 0 }).empty).toBe(true)
   })
 })
 

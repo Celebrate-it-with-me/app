@@ -72,15 +72,20 @@ let pollTimer
 
 const deliveryOfRow = family => deliveryOf(family)
 
+/** Card the wizard starts on; only the Inicio's "remind the pending ones" sets it (`?send=pending`). */
+const sendCategory = ref(null)
+
 /** One family from its menu: the wizard (or the old dialog) opens with her preselected. */
 function sendTo(family) {
   sendIds.value = [family.id]
+  sendCategory.value = null
   wizardResume.value = false
   wizardOpen.value = true
 }
 
 function openSend() {
   sendIds.value = []
+  sendCategory.value = null
   wizardResume.value = false
   wizardOpen.value = true
 }
@@ -137,6 +142,7 @@ async function editFromWizard(guest) {
 
 function wizardClosed() {
   sendIds.value = []
+  sendCategory.value = null
   wizardResume.value = false
   load({ silent: true })
   checkActiveBatch()
@@ -244,9 +250,28 @@ watch(() => event.value?.id, () => {
   load()
   checkActiveBatch()
 })
+/**
+ * `?send=pending` (the Inicio's "Recordar a las N invitaciones pendientes") opens the send wizard on the pending card.
+ * Only that exact value and only for people who can send; it never sends anything by itself, takes no guest ids from the
+ * URL, and the parameter is removed right away so a reload or the back button does not open the wizard again.
+ */
+function openFromQuery() {
+  if (!('send' in route.query)) return
+  const wanted = route.query.send === 'pending' && canEdit.value
+  const query = { ...route.query }
+  delete query.send
+  router.replace({ query })
+  if (!wanted) return
+  sendIds.value = []
+  sendCategory.value = 'pending'
+  wizardResume.value = false
+  wizardOpen.value = true
+}
+
 onMounted(() => {
   load()
   checkActiveBatch()
+  openFromQuery()
 })
 
 const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), count: counts.value[tab.count] })))
@@ -552,6 +577,7 @@ async function copyLink(family) {
       :mode="wizardMode"
       :can-edit="canEdit"
       :preselected-ids="sendIds"
+      :initial-category="sendCategory"
       :reload-token="reloadToken"
       :resume="wizardResume"
       @closed="wizardClosed"

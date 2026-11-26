@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { useRsvpStore } from '@/modules/rsvp/stores/useRsvpStore'
+import RsvpService from '@/modules/rsvp/services/RsvpService'
 import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
 import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
 import { useActivityStore } from '@/stores/useActivityStore'
@@ -13,19 +13,18 @@ import { useUserStore } from '@/stores/useUserStore'
 import EmailVerifyNotice from '@/modules/email-verification/components/EmailVerifyNotice.vue'
 import DashboardHero from './DashboardHero.vue'
 import DashboardRoute from './DashboardRoute.vue'
-import DashboardStats from './DashboardStats.vue'
 import DashboardActivity from './DashboardActivity.vue'
 import DashboardNow from './DashboardNow.vue'
 import DashboardRsvp from './DashboardRsvp.vue'
 import DashboardMore from './DashboardMore.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
-import { summarizeRsvp, planProgress, readableActivity } from './dashboardLogic'
+import { planProgress, readableActivity } from './dashboardLogic'
+import { useDashboardBlock } from './useDashboardBlock'
 import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
 const { t, locale } = useI18n()
 const { error: showError } = useToast()
 const eventsStore = useEventsStore()
-const rsvpStore = useRsvpStore()
 const budgetStore = useBudgetStore()
 const timelineStore = useTimelineStore()
 const activityStore = useActivityStore()
@@ -36,7 +35,11 @@ const event = computed(() => eventsStore.activeEvent)
 const moduleActive = key => !!event.value?.modules?.some(m => m.key === key && m.state === 'active')
 const budgetEnabled = computed(() => moduleActive('budget'))
 
-const rsvp = computed(() => summarizeRsvp(rsvpStore.stats))
+// Blocks with their own request and state (skeleton, error with retry, hidden on a 403): see useDashboardBlock.
+const { status: rsvpStatus, data: rsvpStats, load: loadRsvp } = useDashboardBlock(async eventId => {
+  const response = await RsvpService.loadStats({ eventId })
+  return response?.data?.data ?? response?.data ?? {}
+})
 const published = computed(() => event.value?.status === 'published')
 
 // Only owners and editors (`edit_event`) change the event; a viewer just reads.
@@ -130,7 +133,10 @@ async function load() {
   assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
   // A revisit refreshes the plan quietly: no skeleton over data that is already on screen.
   assistantStore.fetchPlan({ eventId: current.id, lang: locale.value, quiet: sameEvent.value && assistantStore.planStatus === 'ready' })
-  const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
+  loadRsvp(current.id, { quiet: true })
+  // Activity and program still come from their stores (their own blocks arrive with the next round): a failure there is
+  // the only one left for the shared toast.
+  const jobs = [activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
   if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
   const results = await Promise.allSettled(jobs)
   if (id === loadId && results.some(r => r.status === 'rejected')) showError(t('app.dashboard.loadError'))
@@ -175,12 +181,17 @@ onMounted(() => useUserStore().syncEmailVerified())
 
     <DashboardNow v-if="canEdit" :key="event.id" :next="sameEvent ? assistantStore.next : null" :status="planStatus" :event-id="event.id" @retry="retryPlan" />
 
-    <DashboardStats class="mt-6" :rsvp="rsvp" :can-edit="canEdit" />
+    <DashboardRsvp
+      v-if="rsvpStatus !== 'hidden'"
+      :stats="rsvpStats"
+      :status="rsvpStatus"
+      :can-edit="canEdit"
+      :can-view-guests="canViewGuests"
+      :timezone="event.timezone"
+      @retry="loadRsvp(event.id)"
+    />
 
-    <div class="mt-4 grid gap-4 lg:grid-cols-3 lg:items-start">
-      <DashboardRsvp v-if="rsvp.people" class="lg:col-span-2" :rsvp="rsvp" />
-      <DashboardActivity :activity="activity" :class="rsvp.people ? '' : 'lg:col-span-3'" />
-    </div>
+    <DashboardActivity class="mt-4" :activity="activity" />
 
     <DashboardMore :budget-enabled="budgetEnabled" :budget="budget" :program="program" />
   </div>

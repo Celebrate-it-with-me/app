@@ -3,6 +3,7 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
 import i18n, { setLocale } from '@/locales/i18n'
+import { useToast } from '@/ui'
 
 const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn(), next: vi.fn(), plan: vi.fn(), invitation: vi.fn() }))
 vi.mock('@/modules/assistant/services/AssistantService', () => ({ default: { next: m.next, plan: m.plan } }))
@@ -44,6 +45,7 @@ const read = (w, id, attr) => JSON.parse(w.get(`[data-testid=${id}]`).attributes
 beforeEach(() => {
   setLocale('es')
   localStorage.clear()
+  useToast().toasts.map(x => x.id).forEach(id => useToast().dismiss(id))
   Object.values(m).forEach(fn => fn.mockReset())
   m.loadStats.mockResolvedValue({ status: 200, data: { totals: { people: 5 } } })
   m.activities.mockResolvedValue({ status: 200, data: { data: [] } })
@@ -82,6 +84,43 @@ describe('Dashboard home data', () => {
     const bad = await mountDashboard()
     expect(bad.get('[data-testid=hero]').attributes('data-template')).toBe('')
     expect(bad.get('[data-testid=hero]').attributes('data-template-status')).toBe('error')
+  })
+  it('gives the confirmations block its own skeleton, then the stats', async () => {
+    let resolve
+    m.loadStats.mockReturnValue(new Promise(r => (resolve = r)))
+    const w = await mountDashboard()
+    expect(w.find('[data-testid=rsvp-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=rsvp-empty]').exists()).toBe(false)
+    resolve({ status: 200, data: { data: { attending: { total: 2 }, pending: { total: 0 }, not_attending: { total: 0 }, totals: { people: 2, guests: 1, companions: 1 }, response_rate: 100 } } })
+    await flushPromises()
+    expect(w.get('[data-testid=rsvp-totals]').text()).toContain('2 personas en 1 invitación')
+  })
+  it('a failed stats request shows its own error and retry, no empty list and no shared toast', async () => {
+    m.loadStats.mockRejectedValue({ response: { status: 500 } })
+    const w = await mountDashboard()
+    expect(w.find('[data-testid=dashboard-rsvp] [data-testid=block-error]').exists()).toBe(true)
+    expect(w.find('[data-testid=rsvp-empty]').exists()).toBe(false)
+    expect(useToast().toasts).toHaveLength(0)
+    m.loadStats.mockResolvedValue({ status: 200, data: { totals: { people: 0 } } })
+    await w.get('[data-testid=dashboard-rsvp] [data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.find('[data-testid=rsvp-empty]').exists()).toBe(true)
+  })
+  it('hides the confirmations when the API says they are not for this role or plan (403)', async () => {
+    m.loadStats.mockRejectedValue({ response: { status: 403, data: { code: 'module_locked' } } })
+    expect((await mountDashboard()).find('[data-testid=dashboard-rsvp]').exists()).toBe(false)
+  })
+  it('drops a late answer of the previous event: names of event A never show under event B', async () => {
+    let resolveA
+    m.loadStats.mockReturnValueOnce(new Promise(r => (resolveA = r)))
+    m.loadStats.mockResolvedValueOnce({ status: 200, data: { totals: { people: 1, guests: 1 }, attending: { total: 1 }, recent: [{ name: 'Beto B', status: 'attending', statusDate: '2026-11-20T10:00:00Z' }] } })
+    const w = await mountDashboard()
+    useEventsStore().initActiveEvent({ id: 8, eventName: 'B', userRole: 'owner', modules: [] })
+    await flushPromises()
+    resolveA({ status: 200, data: { totals: { people: 1, guests: 1 }, attending: { total: 1 }, recent: [{ name: 'Ana A', status: 'attending', statusDate: '2026-11-21T10:00:00Z' }] } })
+    await flushPromises()
+    expect(w.get('[data-testid=rsvp-recent]').text()).toContain('Beto B')
+    expect(w.text()).not.toContain('Ana A')
   })
   it('gives a viewer the template name from the invitation (the template list is for editors)', async () => {
     m.invitation.mockResolvedValue({ template: { name: 'Clásica' } })

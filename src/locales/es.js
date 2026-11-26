@@ -2135,13 +2135,27 @@ export default {
       },
       rsvp: {
         title: 'Confirmaciones',
-        attending: 'Confirmados',
+        attending: 'Asisten',
         pending: 'Pendientes',
         declined: 'No asisten',
-        people: 'personas',
-        empty: 'Todavía no hay invitados en la lista.',
-        bar: 'Reparto de respuestas',
-        viewAll: 'Ver detalle'
+        persons: '{n} persona | {n} personas',
+        inInvitations: 'en {n} invitación | en {n} invitaciones',
+        companions: 'sin acompañantes | {n} acompañante | {n} acompañantes',
+        responded: 'respondieron',
+        ring: {
+          attending: '{n} asiste | {n} asisten',
+          pending: '{n} pendiente | {n} pendientes',
+          declined: '{n} no asiste | {n} no asisten',
+          rate: '{n} % de las invitaciones respondieron'
+        },
+        remind: 'Recordar a la invitación pendiente | Recordar a las {n} invitaciones pendientes',
+        recentTitle: 'Últimas respuestas',
+        recent: { attending: 'Asiste', declined: 'No asiste' },
+        emptyTitle: 'Aún no tienes invitados',
+        emptyText: 'Agrega a tu familia y amigos para poder enviarles la invitación y ver quién confirma.',
+        emptyCta: 'Agregar invitados',
+        error: 'No pudimos cargar las confirmaciones.',
+        viewAll: 'Ver invitados'
       },
       invitation: {
         published: 'Publicada',
@@ -2196,16 +2210,6 @@ export default {
         state: { now: 'hoy', done: 'completado', current: 'en curso', upcoming: 'próximo', empty: 'sin pasos', event: 'día del evento' },
         noDate: 'Define la fecha de tu evento para ver tu ruta.',
         error: 'No pudimos cargar tu ruta al evento.'
-      },
-      stats: {
-        title: 'Resumen de invitados',
-        attending: 'Confirmados',
-        pending: 'Pendientes',
-        declined: 'No asisten',
-        total: 'Invitados en total',
-        emptyTitle: 'Aún no tienes invitados',
-        emptyText: 'Agrega a tu familia y amigos para poder enviarles la invitación y ver quién confirma.',
-        emptyCta: 'Agregar invitados'
       },
       more: {
         title: 'Más sobre tu evento',

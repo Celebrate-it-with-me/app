@@ -16,7 +16,10 @@ export const useRsvpStore = defineStore('rsvpStore', {
         return
       }
 
-      const response = await RsvpService.loadStats({ eventId: userStore.activeEvent })
+      const eventId = userStore.activeEvent
+      const response = await RsvpService.loadStats({ eventId })
+      // A late answer for an event that is no longer the active one is dropped: its names must never show under another.
+      if (useUserStore().activeEvent !== eventId) return
 
       if (response.status !== 200) {
         useToast().error(i18n.global.t('rsvpStatsError'))

@@ -45,6 +45,17 @@ describe('useRsvpStore', () => {
     expect(setup(5).stats).toEqual({})
   })
 
+  it('drops a late answer that belongs to an event no longer active', async () => {
+    let resolve
+    get.mockReturnValue(new Promise(r => (resolve = r)))
+    const store = setup(9)
+    const pending = store.fetchStats()
+    useUserStore().activeEvent = 10
+    resolve({ status: 200, data: { recent: [{ name: 'Ana' }] } })
+    await pending
+    expect(store.stats).toEqual({})
+  })
+
   it('keeps the counters of the active event', async () => {
     get.mockResolvedValue({ status: 200, data: { attending: 4, pending: 2 } })
     const store = setup(9)

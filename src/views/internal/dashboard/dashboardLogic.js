@@ -2,31 +2,62 @@
  * Pure helpers behind the organizer dashboard. No stores, no Vue: easy to test.
  */
 
-/** RSVP numbers from the stats endpoint payload (`response.data` of `GET /rsvp/stats`). */
+/** RSVP numbers from the stats endpoint payload (`response.data` of `GET /rsvp/stats`). People include companions. */
 export function summarizeRsvp(stats) {
   const s = stats?.data ?? stats ?? {}
-  const attending = s.attending?.total ?? 0
-  const pending = s.pending?.total ?? 0
-  const declined = s.not_attending?.total ?? 0
-  const people = s.totals?.people ?? attending + pending + declined
+  const attending = Number(s.attending?.total) || 0
+  const pending = Number(s.pending?.total) || 0
+  const declined = Number(s.not_attending?.total) || 0
   return {
     attending,
     pending,
     declined,
-    people,
-    mainGuests: s.totals?.guests ?? 0,
-    pendingGuests: s.pending?.guests ?? 0,
-    responseRate: s.response_rate ?? 0
+    people: Number(s.totals?.people ?? attending + pending + declined) || 0,
+    mainGuests: Number(s.totals?.guests) || 0,
+    companions: Number(s.totals?.companions) || 0,
+    pendingGuests: Number(s.pending?.guests) || 0,
+    responseRate: Math.max(0, Math.min(100, Math.round(Number(s.response_rate) || 0)))
   }
 }
 
-/** Share of each status in the stacked bar, as whole percentages that always add up to 100 (or all 0). */
-export function rsvpShares({ attending, pending, declined }) {
+/** `recent.status` comes as stored (`not-attending`, with a dash); the stats keys use `not_attending`. Both mean declined. */
+const RECENT_STATUS = { attending: 'attending', 'not-attending': 'declined', not_attending: 'declined' }
+
+/**
+ * "Últimas respuestas": the latest answers of `rsvp/stats.recent`, newest first, at most `max`. Rows without a name, a
+ * known status or a date are dropped (never a blank line). A role that may not see names gets `[]`.
+ */
+export function recentResponses(stats, max = 4) {
+  const s = stats?.data ?? stats ?? {}
+  const rows = Array.isArray(s.recent) ? s.recent : []
+  return rows
+    .map(row => ({ name: String(row?.name ?? '').trim(), status: RECENT_STATUS[row?.status] ?? null, statusDate: row?.statusDate ?? null, at: Date.parse(row?.statusDate ?? '') }))
+    .filter(row => row.name && row.status && !Number.isNaN(row.at))
+    .sort((a, b) => b.at - a.at)
+    .slice(0, max)
+    .map(row => ({ name: row.name, status: row.status, statusDate: row.statusDate }))
+}
+
+/**
+ * The ring's arcs (attending, pending, declined) on a circle of `length` units, in that order and touching each other:
+ * `{ key, value, dash, offset }` ready for `stroke-dasharray` / `stroke-dashoffset`. Empty arcs are left out.
+ */
+export function ringSegments({ attending = 0, pending = 0, declined = 0 } = {}, length = 100) {
   const total = attending + pending + declined
-  if (!total) return { attending: 0, pending: 0, declined: 0 }
-  const a = Math.round((attending / total) * 100)
-  const d = Math.round((declined / total) * 100)
-  return { attending: a, declined: d, pending: Math.max(0, 100 - a - d) }
+  if (total <= 0) return []
+  let start = 0
+  return [
+    ['attending', attending],
+    ['pending', pending],
+    ['declined', declined]
+  ]
+    .filter(([, value]) => value > 0)
+    .map(([key, value]) => {
+      const dash = (value / total) * length
+      const segment = { key, value, dash, offset: -start }
+      start += dash
+      return segment
+    })
 }
 
 /**
@@ -119,22 +150,6 @@ export function countdownInfo(days) {
   if (days < 0) return { kind: 'past', n: 0 }
   if (days === 0) return { kind: 'today', n: 0 }
   return { kind: 'future', n: days }
-}
-
-/**
- * The four figures of the strip. `empty` is true when there is nobody on the list yet (the strip then invites to add guests).
- * People include companions when the stats say so.
- */
-export function statsFigures(rsvp) {
-  return {
-    empty: !rsvp.people,
-    items: [
-      { key: 'attending', value: rsvp.attending, tone: 'success' },
-      { key: 'pending', value: rsvp.pending, tone: 'gold' },
-      { key: 'declined', value: rsvp.declined, tone: 'ink' },
-      { key: 'total', value: rsvp.people, tone: 'rose' }
-    ]
-  }
 }
 
 /** Colour names the API sends for activity entries -> soft chip classes (text on tinted background, contrast >= 4.5:1). */
