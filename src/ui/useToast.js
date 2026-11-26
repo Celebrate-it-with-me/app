@@ -4,17 +4,21 @@ const state = reactive({ toasts: [] })
 let counter = 0
 /** Most toasts on screen at once: the oldest goes when a new one would pass it. */
 const MAX_VISIBLE = 3
+/** A toast the person can act on (Undo, Retry) needs time to be read and clicked. */
+const ACTION_DURATION = 10000
 
 /**
  * Global toast queue. `UiToaster` (mounted once in App.vue) renders it.
- * toast({ title, description?, tone?: 'neutral'|'success'|'danger'|'warning', duration? })
+ * toast({ title, description?, tone?: 'neutral'|'success'|'danger'|'warning', duration?, action?: { label, onClick } })
+ * A toast with an action (Undo, Retry) stays longer unless `duration` says otherwise.
  */
 export function useToast() {
   function toast(options) {
+    const given = typeof options === 'string' ? { title: options } : options
     const next = {
       tone: 'neutral',
-      duration: 4000,
-      ...(typeof options === 'string' ? { title: options } : options)
+      duration: given.action ? ACTION_DURATION : 4000,
+      ...given
     }
     // The same message already on screen (a double click, a repeated failure) is not stacked again.
     const twin = state.toasts.find(t => t.title === next.title && t.description === next.description && t.tone === next.tone)

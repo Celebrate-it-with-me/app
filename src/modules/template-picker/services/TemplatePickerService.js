@@ -27,11 +27,13 @@ class TemplatePickerService {
   /**
    * Applies the template. Answers the editor state (like GET invitation) with `undo: { until, templateId }`.
    * `undo: true` marks the call as the "Deshacer" of the last change (the API only logs it differently).
+   * `preset` (a palette key of the target template, or null to clear it) is saved in the same call; left out, the palette is not touched.
    * A published invitation answers 409 `template_locked` (D-1): there is no "confirm" way around it, only support.
    */
-  async apply(eventId, templateId, { undo = false } = {}) {
+  async apply(eventId, templateId, { undo = false, preset } = {}) {
     const body = { template_id: templateId }
     if (undo) body.undo = true
+    if (preset !== undefined) body.preset = preset
     const mock = await getMock()
     if (mock) return mock.apply(eventId, body)
     return (await CWM_API.put(`${base(eventId)}/template`, body)).data.data

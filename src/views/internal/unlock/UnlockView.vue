@@ -25,9 +25,10 @@ const eventId = computed(() => eventsStore.activeEvent?.id)
 // Opened from a premium template (?from=template&template=<id>): remember it, because the payment's return address cannot
 // carry it, and let "back" lead to the selector instead of home.
 const fromTemplate = computed(() => (route.query.from === 'template' && route.query.template ? String(route.query.template) : null))
-const backTo = computed(() => (fromTemplate.value ? pickerReturnPath(fromTemplate.value) : '/dashboard'))
+const fromPreset = computed(() => (fromTemplate.value && route.query.preset ? String(route.query.preset) : ''))
+const backTo = computed(() => (fromTemplate.value ? pickerReturnPath(fromTemplate.value, fromPreset.value) : '/dashboard'))
 watchEffect(() => {
-  if (fromTemplate.value && eventId.value) rememberTemplateReturn(eventId.value, fromTemplate.value)
+  if (fromTemplate.value && eventId.value) rememberTemplateReturn(eventId.value, fromTemplate.value, Date.now(), fromPreset.value)
 })
 const view = computed(() => (isGuestsLimit.value ? null : (MODULE_VIEWS[key.value] ?? null)))
 const state = computed(() =>

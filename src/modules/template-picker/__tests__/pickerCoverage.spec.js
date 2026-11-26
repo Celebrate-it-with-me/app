@@ -33,6 +33,16 @@ describe('TemplatePickerService (real API)', () => {
     expect(http.put).toHaveBeenLastCalledWith('/event/5/invitation/template', { template_id: 3, undo: true })
   })
 
+  it('saves the palette in the same call, clears it with null, and leaves it alone when not given', async () => {
+    http.put.mockResolvedValue({ data: { data: { ok: true } } })
+    await TemplatePickerService.apply(5, 3, { preset: 'rosa' })
+    expect(http.put).toHaveBeenLastCalledWith('/event/5/invitation/template', { template_id: 3, preset: 'rosa' })
+    await TemplatePickerService.apply(5, 3, { preset: null, undo: true })
+    expect(http.put).toHaveBeenLastCalledWith('/event/5/invitation/template', { template_id: 3, undo: true, preset: null })
+    await TemplatePickerService.apply(5, 3)
+    expect(http.put).toHaveBeenLastCalledWith('/event/5/invitation/template', { template_id: 3 })
+  })
+
   it('sends only what the preview was given', async () => {
     http.post.mockResolvedValue({ data: { data: { sections: [] } } })
     await TemplatePickerService.preview(5)
@@ -106,6 +116,34 @@ describe('templatePickerMock (dev stand-in of the contract)', () => {
     expect((await run(mock.templates(1))).e.response.status).toBe(500)
     flag('empty')
     expect((await run(mock.templates(1))).v).toEqual([])
+  })
+
+  it('trims or extends the catalog to the asked count, with long names on request', async () => {
+    flag('unlocked,count:2')
+    expect((await run(mock.templates(1))).v.map(t => t.id)).toEqual([1, 2])
+    flag('unlocked,count:7')
+    const many = (await run(mock.templates(1))).v
+    expect(many.length).toBe(7)
+    expect(many[5].name).toBe('Jardín de peonías')
+    expect(many[6].name).toBe('Minimal blanco')
+    flag('unlocked,count:6,longnames')
+    expect((await run(mock.templates(1))).v.at(-1).name.length).toBeGreaterThan(60)
+    expect((await run(mock.templates(1))).v.every(t => Array.isArray(t.tags))).toBe(true)
+  })
+
+  it('saves a palette with the template, refuses an unknown one and undoes a palette-only change with the old palette', async () => {
+    flag('unlocked')
+    const before = (await run(mock.apply(1, { template_id: 4 }))).v
+    expect(before.undo.templateId).toBe(1)
+    expect((await run(mock.apply(1, { template_id: 4, preset: 'nope' }))).e.response.data.errors.preset).toEqual(['invalid_choice'])
+    expect((await run(mock.apply(1, { template_id: 3, preset: 'rosa' }))).v.undo.preset).toBeUndefined()
+    const same = (await run(mock.apply(1, { template_id: 3, preset: 'noche' }))).v
+    expect(same.undo).toMatchObject({ templateId: 3, preset: 'rosa' })
+    expect((await run(mock.templates(1))).v.find(t => t.current).activePreset).toBe('noche')
+    const preview = (await run(mock.preview(1, { template_id: 3, preset: 'salvia' }))).v
+    expect(preview.theme.colors.primary).toBe('#7f9c78')
+    await run(mock.apply(1, { template_id: 1 }))
+    expect((await run(mock.templates(1))).v.find(t => t.current).activePreset).toBeUndefined()
   })
 
   it('answers the impact, the 404 and the 500', async () => {

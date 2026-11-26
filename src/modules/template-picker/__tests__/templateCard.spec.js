@@ -45,11 +45,11 @@ describe('TemplateCard miniature', () => {
   it('draws the real cover of the event with that card\'s template and is still the button', async () => {
     const w = card(tpl(7))
     await flushPromises()
-    expect(w.element.tagName).toBe('BUTTON')
+    expect(w.get('button').element.tagName).toBe('BUTTON')
     expect(mocks.preview).toHaveBeenCalledWith(5, { templateId: 7, locale: 'es' })
     expect(w.find('[data-testid=miniature-frame]').exists()).toBe(true)
     expect(w.text()).not.toContain('Sin imagen')
-    await w.trigger('click')
+    await w.get('button').trigger('click')
     expect(w.emitted('select')[0][0].id).toBe(7)
   })
 

@@ -13,6 +13,8 @@
  *   nocover      the cover photo answers 409 package_no_cover_field
  *   cover:<code> the photo upload answers 422 with that code (not_an_image, too_large, too_small...)
  *   photo        the event starts with a cover photo
+ *   count:<n>    only n templates (1, 2) or n in total with synthetic extras (6), to see the grid at every size
+ *   longnames    the extra templates carry very long names
  */
 const PORTRAIT = '/demo/valentina-portrait.webp'
 
@@ -43,41 +45,67 @@ function poster(a, b, label) {
 }
 
 const CATALOG = [
-  { id: 1, slug: 'classic', name: 'Clásica', description: { es: 'Elegante y atemporal, con adornos dorados.', en: 'Elegant and timeless, with gold details.' }, tier: 'free', previewImage: poster('#f7ecdd', '#e9cfa7', 'XV'), hasPresets: false, color: '#b04a62' },
-  { id: 2, slug: 'sage-roses', name: 'Rosas de salvia', description: { es: 'Verdes suaves y rosas de acuarela.', en: 'Soft greens and watercolor roses.' }, tier: 'free', previewImage: poster('#e4ecdf', '#b9cdb0', 'XV'), hasPresets: false, color: '#566f52' },
-  { id: 5, slug: 'ivory', name: 'Marfil', description: { es: 'Sencilla y luminosa, para cualquier fiesta.', en: 'Simple and bright, for any party.' }, tier: 'free', previewImage: null, hasPresets: false, color: '#8a7a5c' },
+  { id: 1, slug: 'classic', name: 'Clásica', description: { es: 'Elegante y atemporal, con adornos dorados.', en: 'Elegant and timeless, with gold details.' }, tier: 'free', tags: ['elegante'], previewImage: poster('#f7ecdd', '#e9cfa7', 'XV'), hasPresets: false, color: '#b04a62' },
+  { id: 2, slug: 'sage-roses', name: 'Rosas de salvia', description: { es: 'Verdes suaves y rosas de acuarela.', en: 'Soft greens and watercolor roses.' }, tier: 'free', tags: ['floral'], previewImage: poster('#e4ecdf', '#b9cdb0', 'XV'), hasPresets: false, color: '#566f52' },
+  { id: 5, slug: 'ivory', name: 'Marfil', description: { es: 'Sencilla y luminosa, para cualquier fiesta.', en: 'Simple and bright, for any party.' }, tier: 'free', tags: ['minimal'], previewImage: null, hasPresets: false, color: '#8a7a5c' },
   {
     id: 3,
     slug: 'botanical-quinceanera',
     name: 'Botánica acuarela',
     description: { es: 'Follaje pintado a mano con tres paletas.', en: 'Hand-painted foliage in three palettes.' },
     tier: 'premium',
+    tags: ['floral', 'elegante'],
     previewImage: poster('#dfe9d6', '#7f9c78', 'XV'),
     hasPresets: true,
     presets: [
-      { value: 'salvia', label: { es: 'Salvia', en: 'Sage' } },
-      { value: 'rosa', label: { es: 'Rosa', en: 'Rose' } }
+      { value: 'salvia', key: 'salvia', name: 'Salvia', label: { es: 'Salvia', en: 'Sage' }, colors: ['#eef3e8', '#7f9c78', '#3f5a3a'], palette: { background: '#eef3e8', text: '#3f5a3a', accent: '#7f9c78' } },
+      { value: 'rosa', key: 'rosa', name: 'Rosa', label: { es: 'Rosa', en: 'Rose' }, colors: ['#fbeff1', '#c9657c', '#7b2d3f'], palette: { background: '#fbeff1', text: '#7b2d3f', accent: '#c9657c' } },
+      { value: 'noche', key: 'noche', name: 'Noche', label: { es: 'Noche', en: 'Night' }, colors: ['#232634', '#c9a24b', '#f5efe0'], palette: { background: '#232634', text: '#f5efe0', accent: '#c9a24b' } }
     ],
     color: '#7b2d5b'
   },
-  { id: 4, slug: 'golden-night', name: 'Noche dorada', description: { es: 'Fondo oscuro con detalles en oro.', en: 'Dark background with gold details.' }, tier: 'premium', previewImage: poster('#3a2f4b', '#17121f', 'XV'), hasPresets: false, color: '#c9a24b' }
+  { id: 4, slug: 'golden-night', name: 'Noche dorada', description: { es: 'Fondo oscuro con detalles en oro.', en: 'Dark background with gold details.' }, tier: 'premium', tags: ['moderna'], previewImage: poster('#3a2f4b', '#17121f', 'XV'), hasPresets: false, color: '#c9a24b' }
 ]
 
 const MISSING = { 2: ['seating'], 3: ['comments', 'seating'], 4: ['seating'] }
 
-const state = { current: 1, undo: null, cover: null }
+const state = { current: 1, undo: null, cover: null, preset: null }
+
+const EXTRA_NAMES = ['Jardín de peonías', 'Minimal blanco', 'Gala dorada']
+const LONG_NAME = 'Una plantilla con un nombre larguísimo que no cabe en una sola línea de la tarjeta'
+
+/** The catalog the flags ask for: `count:1` keeps the current one; `count:6` adds synthetic extras. */
+function catalog() {
+  const flags = mockFlags()
+  const wanted = Number(flags.find(item => item.startsWith('count:'))?.slice(6)) || CATALOG.length
+  if (wanted <= CATALOG.length) return CATALOG.slice(0, wanted)
+  const extras = Array.from({ length: wanted - CATALOG.length }, (_, index) => ({
+    id: 100 + index,
+    slug: `extra-${index}`,
+    name: flags.includes('longnames') ? `${LONG_NAME} ${index + 1}` : (EXTRA_NAMES[index] ?? `Extra ${index + 1}`),
+    description: { es: 'Plantilla de ejemplo para el mock.', en: 'Sample template for the mock.' },
+    tier: index % 2 ? 'premium' : 'free',
+    tags: [index % 2 ? 'moderna' : 'minimal'],
+    previewImage: poster('#efe6f5', '#c4b0d8', 'XV'),
+    hasPresets: false,
+    color: '#6b4f8a'
+  }))
+  return [...CATALOG, ...extras]
+}
 
 function snapshot() {
   const flags = mockFlags()
   const unlocked = flags.includes('unlocked')
   if (flags.includes('photo') && !state.cover && !state.photoDismissed) state.cover = coverValue()
-  return CATALOG.map(template => ({
+  return catalog().map(template => ({
     ...Object.fromEntries(Object.entries(template).filter(([key]) => key !== 'color')),
     eventTypes: ['quinceanera', 'wedding'],
     // Contract module-template-compat: slugs of the modules this template has no block for (native templates: none).
     missingModules: flags.includes('missingcurrent') && template.id === 1 ? ['comments', 'seating'] : (MISSING[template.id] ?? []), // flag `missingcurrent`: the one in use lacks both
     locked: template.tier === 'premium' && !unlocked,
-    current: template.id === state.current
+    current: template.id === state.current,
+    // Not in the API contract yet (asked of Atlas): the palette saved on the template in use.
+    ...(template.id === state.current && template.presets ? { activePreset: state.preset } : {})
   }))
 }
 
@@ -112,7 +140,8 @@ export async function impact(eventId, templateId) {
   }
 }
 
-export async function apply(eventId, { template_id: id }) {
+export async function apply(eventId, body) {
+  const { template_id: id } = body
   const flags = mockFlags()
   await wait(400)
   const template = snapshot().find(item => item.id === Number(id))
@@ -121,8 +150,14 @@ export async function apply(eventId, { template_id: id }) {
   if (flags.includes('gone')) throw fail(403, { message: 'Not available.', code: 'template_not_available' })
   if (template.locked || (flags.includes('noplan') && template.tier === 'premium')) throw fail(403, { message: 'Plan required.', code: 'plan_required' })
   const from = state.current
+  const until = new Date(Date.now() + 10 * 60 * 1000).toISOString()
+  if ('preset' in body && body.preset && !(template.presets ?? []).some(p => p.key === body.preset)) throw fail(422, { message: 'Invalid.', errors: { preset: ['invalid_choice'] } })
+  const paletteOnly = from === template.id && 'preset' in body
+  const previous = state.preset
   state.current = template.id
-  state.undo = { until: new Date(Date.now() + 10 * 60 * 1000).toISOString(), templateId: from }
+  if ('preset' in body) state.preset = body.preset
+  else if (from !== template.id) state.preset = null
+  state.undo = { until, templateId: from, ...(paletteOnly ? { preset: previous } : {}) }
   return { template: { id: template.id, slug: template.slug, name: template.name, tier: template.tier }, undo: state.undo }
 }
 
@@ -131,13 +166,15 @@ const SECTION_COPY = {
   en: { phrase: 'Celebrate with me', closing: 'Thank you for joining me' }
 }
 
-export async function preview(eventId, { template_id: id, locale = 'es', state: stage = 'invitation' }) {
+export async function preview(eventId, { template_id: id, locale = 'es', state: stage = 'invitation', preset }) {
   const flags = mockFlags()
   await wait(300)
   const template = snapshot().find(item => item.id === Number(id ?? state.current))
   if (!template) throw fail(404, { message: 'Not found.', code: 'template_not_found' })
   if (flags.includes('gone') && template.id !== state.current) throw fail(403, { message: 'Not available.', code: 'template_not_available' })
-  const color = CATALOG.find(item => item.id === template.id).color
+  const entry = catalog().find(item => item.id === template.id)
+  const chosen = (entry.presets ?? []).find(p => p.key === (preset ?? (template.id === state.current ? state.preset : null)))
+  const color = chosen?.palette.accent ?? entry.color
   const copy = SECTION_COPY[locale] ?? SECTION_COPY.es
   const std = stage === 'save_the_date'
   const photo = stage === 'no_photo' || std ? null : state.cover?.url ? PORTRAIT : null

@@ -28,7 +28,9 @@ const props = defineProps({
   /** The event's template is gone and the invitation falls back to Clásica (`fallbackToClassic`). */
   unavailable: { type: Boolean, default: false },
   /** The role cannot edit (viewer): the change button stays off. */
-  disabled: { type: Boolean, default: false }
+  disabled: { type: Boolean, default: false },
+  /** Stage of the invitation (`invitation` | `save_the_date`): what the selector previews first. */
+  stage: { type: String, default: 'invitation' }
 })
 const emit = defineEmits(['changed'])
 
@@ -42,6 +44,7 @@ const activeModules = computed(() => activeModuleKeys(eventsStore.activeEvent?.m
 const open = ref(false)
 const sheet = ref(null)
 const initialTemplateId = ref(null)
+const initialPreset = ref('')
 const fromPayment = ref(false)
 const own = ref(null)
 const loadingCurrent = ref(false)
@@ -68,29 +71,39 @@ function takeTemplateFromAddress() {
   const wanted = route.query.template
   if (!wanted) return
   initialTemplateId.value = String(wanted)
+  initialPreset.value = route.query.preset ? String(route.query.preset) : ''
   fromPayment.value = true
   open.value = true
   const rest = { ...route.query }
   delete rest.template
+  delete rest.preset
   router.replace({ query: rest })
 }
 
 function openPicker() {
   initialTemplateId.value = null
+  initialPreset.value = ''
   fromPayment.value = false
   open.value = true
 }
 
-function goUnlock(template) {
-  router.push(template ? unlockLocation(template.id) : { name: 'unlock', params: { module: 'full' } })
+function goUnlock(template, preset = '') {
+  router.push(template ? unlockLocation(template.id, preset) : { name: 'unlock', params: { module: 'full' } })
 }
 
-function onChanged(data, template, undo) {
+/** `extra` is `{ paletteOnly, name }` when only the palette of the template in use was saved. */
+function onChanged(data, template, undoData, extra = null) {
   own.value = { ...(own.value ?? {}), ...template, current: true }
-  toast.success(t('templatePicker.applied', { name: template.name }))
+  // The message carries "Deshacer" for the API's 10-minute window (the notice below stays for after the toast is gone).
+  toast.toast({
+    title: extra?.paletteOnly ? t('templatePicker.paletteSaved', { name: extra.name }) : t('templatePicker.applied', { name: template.name }),
+    tone: 'success',
+    action: undoData ? { label: t('templatePicker.undo'), onClick: undo } : undefined
+  })
   clearTimeout(undoTimer)
-  const until = undo?.until ? new Date(undo.until).getTime() : Date.now() + 10 * 60 * 1000
-  undoNotice.value = { name: undo?.name || '', until }
+  const until = undoData?.until ? new Date(undoData.until).getTime() : Date.now() + 10 * 60 * 1000
+  // The notice under the card repeats the undo for the API's whole window; a palette alone has no "before" template to name.
+  undoNotice.value = extra?.paletteOnly ? null : { name: undoData?.name || '', until }
   undoTimer = setTimeout(() => (undoNotice.value = null), Math.max(0, until - Date.now()))
   emit('changed', data)
 }
@@ -166,8 +179,10 @@ watch(() => props.eventId, loadCurrent)
       v-model:open="open"
       :event-id="eventId"
       :initial-template-id="initialTemplateId"
+      :initial-preset="initialPreset"
       :from-payment="fromPayment"
       :active-modules="activeModules"
+      :stage="stage"
       @changed="onChanged"
       @unlock="goUnlock"
     />
