@@ -70,6 +70,37 @@ describe('PadrinosView', () => {
     expect(text()).toContain('Tío Raúl')
   })
 
+  it('a 403 (money is not for this role) clears the screen and goes back to the Inicio with a notice', async () => {
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useEventsStore().activeEvent = { id: 7, userRole: 'viewer', eventName: 'XV' }
+    api.list.mockRejectedValue({ response: { status: 403 } })
+    budget.items.mockResolvedValue(ITEMS)
+    const replace = vi.fn()
+    // useRouter() reads the router injection: the view gets a stand-in.
+    const { routerKey } = await import('vue-router')
+    wrapper = mount(PadrinosView, { global: { plugins: [i18n, pinia], provide: { [routerKey]: { replace } } }, attachTo: document.body })
+    await flushPromises()
+    expect(replace).toHaveBeenCalledWith({ name: 'dashboard' })
+    expect(toasts()).toContain('warning:No tienes permiso para abrir esa sección de este evento.')
+    expect(text()).not.toContain('Tío Raúl')
+  })
+
+  it('never shows the padrinos of event A under event B, also when B fails', async () => {
+    const pinia = await setup()
+    expect(text()).toContain('Tío Raúl')
+    let reject
+    api.list.mockReturnValue(new Promise((_, r) => (reject = r)))
+    useEventsStore(pinia).activeEvent = { id: 8, userRole: 'owner', eventName: 'B' }
+    await flushPromises()
+    expect(text()).not.toContain('Tío Raúl')
+    reject({ response: { status: 500 } })
+    await flushPromises()
+    expect(text()).not.toContain('Tío Raúl')
+    expect(toasts()).toContain('danger:No pudimos cargar los padrinos.')
+  })
+
   it('shows the summary with the paid share and the cards', async () => {
     await setup()
     expect(text()).toContain('Tío Raúl')
