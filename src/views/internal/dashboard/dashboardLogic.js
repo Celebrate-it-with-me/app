@@ -88,6 +88,51 @@ export function nowSteps(next, max = 3) {
   return steps.filter(step => step?.key && !NOT_TODO.includes(step.state)).slice(0, max)
 }
 
+const amount = value => Math.round((Number(value) || 0) * 100) / 100
+
+/**
+ * The budget block's figures from `GET budget`: what is paid, what is left to pay (`totals.remaining`, the sum of what each
+ * item still owes), the cap (null without one) and how far what is committed (`owed`, not what is paid) goes past it.
+ */
+export function budgetFigures(summary) {
+  const totals = summary?.totals ?? {}
+  const cap = summary?.cap === null || summary?.cap === undefined ? null : amount(summary.cap)
+  const items = (summary?.categories ?? []).reduce((n, c) => n + (Number(c?.itemCount) || 0), 0) + (Number(summary?.uncategorized?.itemCount) || 0)
+  return {
+    currency: summary?.currency || 'USD',
+    paid: amount(totals.paid),
+    remaining: amount(totals.remaining),
+    cap,
+    overCap: cap !== null && !!totals.overCap,
+    overBy: cap !== null && totals.overCap ? amount(totals.overBy ?? (Number(totals.overByCents) || 0) / 100) : 0,
+    items
+  }
+}
+
+/**
+ * One bar per category with something estimated or paid, in `sortOrder` (items without category last, as `uncategorized`).
+ * The bar is what is paid and the mark what is estimated, both on one scale: the largest of those amounts across the bars.
+ * `over` (paid more than estimated) turns the bar red and the note into "+$X sobre".
+ * @returns {Array<{ key: string, name: string|null, estimated: number, paid: number, paidPct: number, estimatedPct: number, over: boolean, overBy: number }>}
+ */
+export function budgetBars(summary) {
+  const rows = [...(summary?.categories ?? [])]
+    .sort((a, b) => (Number(a?.sortOrder) || 0) - (Number(b?.sortOrder) || 0))
+    .map(c => ({ key: `category-${c.id ?? c.name}`, name: c.name ?? '', estimated: amount(c.totals?.estimated), paid: amount(c.totals?.paid) }))
+  const loose = summary?.uncategorized?.totals
+  if (loose) rows.push({ key: 'uncategorized', name: null, estimated: amount(loose.estimated), paid: amount(loose.paid) })
+  const shown = rows.filter(row => row.estimated > 0 || row.paid > 0)
+  const scale = Math.max(0, ...shown.flatMap(row => [row.estimated, row.paid]))
+  const pct = value => (scale > 0 ? Math.min(100, (value / scale) * 100) : 0)
+  return shown.map(row => ({
+    ...row,
+    paidPct: pct(row.paid),
+    estimatedPct: pct(row.estimated),
+    over: row.paid > row.estimated,
+    overBy: row.paid > row.estimated ? amount(row.paid - row.estimated) : 0
+  }))
+}
+
 /** The plan phases that become milestones of "Ruta al evento", in route order. */
 export const ROUTE_PHASES = ['foundation', 'invitations']
 

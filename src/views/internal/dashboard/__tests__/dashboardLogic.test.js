@@ -238,3 +238,20 @@ describe('nowSteps', () => {
     expect(nowSteps(null)).toEqual([])
   })
 })
+
+describe('budgetFigures and budgetBars', () => {
+  it('reads the overage of what is committed only with a cap', async () => {
+    const { budgetFigures } = await import('../dashboardLogic')
+    expect(budgetFigures({ cap: 100, totals: { paid: 10, remaining: 5, overCap: true, overByCents: 2550 } })).toMatchObject({ cap: 100, overCap: true, overBy: 25.5, currency: 'USD' })
+    expect(budgetFigures({ cap: null, totals: { overCap: true, overBy: 9 } })).toMatchObject({ cap: null, overCap: false, overBy: 0 })
+    expect(budgetFigures(null)).toMatchObject({ paid: 0, remaining: 0, cap: null, items: 0 })
+  })
+  it('scales to the largest amount and flags paid over estimated with cents kept', async () => {
+    const { budgetBars } = await import('../dashboardLogic')
+    const bars = budgetBars({ categories: [{ id: 1, name: 'A', sortOrder: 2, totals: { estimated: 100, paid: 200.1 } }, { id: 2, name: 'B', sortOrder: 1, totals: { estimated: 50, paid: 0 } }] })
+    expect(bars.map(b => b.name)).toEqual(['B', 'A'])
+    expect(bars[1]).toMatchObject({ over: true, overBy: 100.1, paidPct: 100 })
+    expect(bars[0].estimatedPct).toBeCloseTo((50 / 200.1) * 100)
+    expect(budgetBars({ categories: [{ id: 1, name: 'A', totals: { estimated: 0, paid: 0 } }] })).toEqual([])
+  })
+})

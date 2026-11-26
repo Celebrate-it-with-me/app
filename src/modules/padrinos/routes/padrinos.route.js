@@ -7,7 +7,7 @@ export default [
       moduleKey: 'padrinos',
       titleKey: 'titles.padrinos',
       requiresAuth: true,
-      requiredPermission: [],
+      requiredPermission: ['view_budget'],
       module: 'padrinos'
     }
   }

@@ -3,7 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import RsvpService from '@/modules/rsvp/services/RsvpService'
-import { useBudgetStore } from '@/modules/budget/stores/useBudgetStore'
+import BudgetService from '@/modules/budget/services/BudgetService'
 import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
 import { useActivityStore } from '@/stores/useActivityStore'
 import TemplatePickerService from '@/modules/template-picker/services/TemplatePickerService'
@@ -16,6 +16,7 @@ import DashboardRoute from './DashboardRoute.vue'
 import DashboardActivity from './DashboardActivity.vue'
 import DashboardNow from './DashboardNow.vue'
 import DashboardRsvp from './DashboardRsvp.vue'
+import DashboardBudget from './DashboardBudget.vue'
 import DashboardMore from './DashboardMore.vue'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 import { planProgress, readableActivity } from './dashboardLogic'
@@ -25,7 +26,6 @@ import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
 const { t, locale } = useI18n()
 const { error: showError } = useToast()
 const eventsStore = useEventsStore()
-const budgetStore = useBudgetStore()
 const timelineStore = useTimelineStore()
 const activityStore = useActivityStore()
 const assistantStore = useAssistantStore()
@@ -33,7 +33,6 @@ const assistantStore = useAssistantStore()
 const event = computed(() => eventsStore.activeEvent)
 // A module counts when the event's plan includes it (the API sends `event.modules` from the catalog).
 const moduleActive = key => !!event.value?.modules?.some(m => m.key === key && m.state === 'active')
-const budgetEnabled = computed(() => moduleActive('budget'))
 
 // Blocks with their own request and state (skeleton, error with retry, hidden on a 403): see useDashboardBlock.
 const { status: rsvpStatus, data: rsvpStats, load: loadRsvp } = useDashboardBlock(async eventId => {
@@ -46,6 +45,9 @@ const published = computed(() => event.value?.status === 'published')
 // Owners always see their guests; other roles by the `view_guests` permission (same rule as the collaborators menu).
 const canViewGuests = computed(() => event.value?.userRole === 'owner' || eventsStore.hasPermission('view_guests'))
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
+// Money is for owners and editors (owner decision, 2026-11-26) through the `view_budget` event permission the hydration
+// sends (owners hold every permission): a viewer never asks for the budget nor sees an amount. A 403 hides the block.
+const canSeeBudget = computed(() => moduleActive('budget') && (event.value?.userRole === 'owner' || eventsStore.hasPermission('view_budget')))
 const editTarget = computed(() => (event.value ? { name: 'edit-event', params: { id: event.value.id } } : null))
 
 // One number for the plan: the assistant's, already loaded by the layout (never recalculated here).
@@ -59,20 +61,7 @@ const routeStatus = computed(() => (sameEvent.value ? blockStatus(assistantStore
 const retryPlan = () => assistantStore.fetchNext({ eventId: event.value?.id, lang: locale.value, force: true })
 const retryRoute = () => assistantStore.fetchPlan({ eventId: event.value?.id, lang: locale.value })
 const templateTo = { name: 'invitation-editor' }
-const budget = computed(() => {
-  const summary = budgetStore.summary
-  const count = (summary?.categories ?? []).reduce((total, c) => total + c.itemCount, 0) + (summary?.uncategorized?.itemCount ?? 0)
-  return {
-    cap: summary?.cap ?? 0,
-    // The card's "estimated" is what is owed (`owed`), so the warning follows `overCap` (over `owed`), not `estimatedOverCap`.
-    estimated: summary?.totals.owed ?? 0,
-    paid: summary?.totals.paid ?? 0,
-    overByCents: summary?.totals.overCap ? Number(summary.totals.overByCents) || 0 : 0,
-    paidOverByCents: summary?.totals.paidOverCap ? Number(summary.totals.paidOverByCents) || 0 : 0,
-    currency: summary?.currency ?? 'USD',
-    items: count
-  }
-})
+const { status: budgetStatus, data: budgetSummary, load: loadBudget, hide: hideBudget } = useDashboardBlock(eventId => BudgetService.summary(eventId))
 
 const program = computed(() =>
   [...(timelineStore.timelines ?? [])]
@@ -134,10 +123,11 @@ async function load() {
   // A revisit refreshes the plan quietly: no skeleton over data that is already on screen.
   assistantStore.fetchPlan({ eventId: current.id, lang: locale.value, quiet: sameEvent.value && assistantStore.planStatus === 'ready' })
   loadRsvp(current.id, { quiet: true })
+  if (canSeeBudget.value) loadBudget(current.id, { quiet: true })
+  else hideBudget()
   // Activity and program still come from their stores (their own blocks arrive with the next round): a failure there is
   // the only one left for the shared toast.
   const jobs = [activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
-  if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
   const results = await Promise.allSettled(jobs)
   if (id === loadId && results.some(r => r.status === 'rejected')) showError(t('app.dashboard.loadError'))
 }
@@ -191,8 +181,16 @@ onMounted(() => useUserStore().syncEmailVerified())
       @retry="loadRsvp(event.id)"
     />
 
+    <DashboardBudget
+      v-if="budgetStatus !== 'hidden'"
+      :summary="budgetSummary"
+      :status="budgetStatus"
+      :can-edit="canEdit"
+      @retry="loadBudget(event.id)"
+    />
+
     <DashboardActivity class="mt-4" :activity="activity" />
 
-    <DashboardMore :budget-enabled="budgetEnabled" :budget="budget" :program="program" />
+    <DashboardMore :program="program" />
   </div>
 </template>

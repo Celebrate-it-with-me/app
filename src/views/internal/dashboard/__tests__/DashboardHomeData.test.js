@@ -24,7 +24,7 @@ import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 const stubs = {
   RouterLink: { props: ['to'], template: '<a><slot /></a>' },
   DashboardHero: { props: ['plan', 'startDate', 'timezone', 'templateName', 'templateStatus'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" :data-start="startDate" :data-zone="timezone" :data-template="templateName" :data-template-status="templateStatus" />' },
-  DashboardMore: { props: ['budget', 'program'], template: '<div data-testid="more" :data-budget="JSON.stringify(budget)" :data-program="JSON.stringify(program)" />' }
+  DashboardMore: { props: ['program'], template: '<div data-testid="more" :data-program="JSON.stringify(program)" />' }
 }
 
 const totals = extra => ({ estimated: 18530.1, owed: 18530.1, paid: 100, remaining: 0, estimatedOverCap: true, estimatedOverByCents: 53010, overCap: true, overByCents: 53010, paidOverCap: false, paidOverByCents: 0, ...extra })
@@ -33,7 +33,10 @@ async function mountDashboard({ next = null, event = {}, summary = { cap: 18000,
   const pinia = createPinia()
   createApp({}).use(pinia)
   setActivePinia(pinia)
-  m.summary.mockResolvedValue(summary)
+  if (summary instanceof Promise) {
+    summary.catch(() => {})
+    m.summary.mockReturnValue(summary)
+  } else m.summary.mockResolvedValue(summary)
   useEventsStore().initActiveEvent({ id: 7, guestsCount: 5, eventName: 'XV', userRole: 'owner', modules: [{ key: 'budget', state: 'active' }], ...event })
   m.next.mockResolvedValue(next ?? { mode: 'normal', progress: { done: 0, total: 0 } })
   const w = mount(Dashboard, { global: { plugins: [i18n, pinia], stubs } })
@@ -162,14 +165,60 @@ describe('Dashboard home data', () => {
     await flushPromises()
     expect(read(w, 'hero', 'data-plan')).toBeNull()
   })
-  it('passes the overage of what is owed (the card "estimated") and of what is paid', async () => {
-    const w = await mountDashboard({ summary: { cap: 18000, currency: 'USD', totals: totals({ paidOverCap: true, paidOverByCents: 250 }), categories: [], uncategorized: { itemCount: 1 } } })
-    expect(read(w, 'more', 'data-budget')).toMatchObject({ estimated: 18530.1, overByCents: 53010, paidOverByCents: 250 })
+  it('gives the budget its own block: skeleton first, never a false "no expenses"', async () => {
+    let resolve
+    m.summary.mockReset()
+    m.summary.mockReturnValue(new Promise(r => (resolve = r)))
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useEventsStore().initActiveEvent({ id: 7, eventName: 'XV', userRole: 'owner', modules: [{ key: 'budget', state: 'active' }] })
+    m.next.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 0 } })
+    const w = mount(Dashboard, { global: { plugins: [i18n, pinia], stubs } })
+    await flushPromises()
+    expect(w.find('[data-testid=budget-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=budget-empty]').exists()).toBe(false)
+    resolve({ cap: 18000, currency: 'USD', totals: totals(), categories: [], uncategorized: { itemCount: 1, totals: { estimated: 10, paid: 5 } } })
+    await flushPromises()
+    expect(w.find('[data-tile=cap]').text()).toContain('$18,000')
   })
-  it('passes zeros without a cap or with an old API', async () => {
-    const free = await mountDashboard({ summary: { cap: null, totals: totals({ overCap: false, overByCents: 0, paidOverCap: false }), categories: [], uncategorized: { itemCount: 1 } } })
-    expect(read(free, 'more', 'data-budget')).toMatchObject({ overByCents: 0, paidOverByCents: 0 })
-    const old = await mountDashboard({ summary: { cap: 10, totals: { owed: 20, paid: 1, overCap: true }, categories: [], uncategorized: { itemCount: 1 } } })
-    expect(read(old, 'more', 'data-budget')).toMatchObject({ overByCents: 0 })
+  it('shows the budget error with retry, no empty state and no shared toast', async () => {
+    const w = await mountDashboard({ summary: Promise.reject({ response: { status: 500 } }) })
+    expect(w.find('[data-testid=dashboard-budget] [data-testid=block-error]').exists()).toBe(true)
+    expect(w.find('[data-testid=budget-empty]').exists()).toBe(false)
+    expect(useToast().toasts).toHaveLength(0)
+    m.summary.mockResolvedValue({ cap: null, currency: 'USD', totals: totals({ overCap: false }), categories: [], uncategorized: { itemCount: 0 } })
+    await w.get('[data-testid=dashboard-budget] [data-testid=block-retry]').trigger('click')
+    await flushPromises()
+    expect(w.find('[data-testid=budget-empty]').exists()).toBe(true)
+  })
+  it('never asks a viewer for the budget nor shows it', async () => {
+    const w = await mountDashboard({ event: { userRole: 'viewer' } })
+    expect(m.summary).not.toHaveBeenCalled()
+    expect(w.find('[data-testid=dashboard-budget]').exists()).toBe(false)
+    expect(w.text()).not.toMatch(/\$\d/)
+  })
+  it('asks for the budget only with view_budget (owners always have it)', async () => {
+    await mountDashboard({ event: { userRole: 'editor' } })
+    expect(m.summary).not.toHaveBeenCalled()
+    m.summary.mockClear()
+    await mountDashboard()
+    expect(m.summary).toHaveBeenCalledWith(7)
+  })
+  it('hides the budget when the API says it is not for this role (403), and skips it without the module', async () => {
+    m.summary.mockReset()
+    m.summary.mockRejectedValue({ response: { status: 403, data: { code: 'forbidden' } } })
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useEventsStore().initActiveEvent({ id: 7, eventName: 'XV', userRole: 'editor', modules: [{ key: 'budget', state: 'active' }] })
+    useEventsStore().eventPermissions = [{ name: 'view_budget' }]
+    m.next.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 0 } })
+    const w = mount(Dashboard, { global: { plugins: [i18n, pinia], stubs } })
+    await flushPromises()
+    expect(w.find('[data-testid=dashboard-budget]').exists()).toBe(false)
+    expect(useToast().toasts).toHaveLength(0)
+    const off = await mountDashboard({ event: { modules: [] } })
+    expect(off.find('[data-testid=dashboard-budget]').exists()).toBe(false)
   })
 })

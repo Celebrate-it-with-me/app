@@ -9,10 +9,12 @@ import { buildNavSections, buildMobileNav } from './navModules'
  */
 export function useAppNav() {
   const eventsStore = useEventsStore()
+  // Owners hold every permission; the rest by the event permissions the hydration sends (e.g. `view_budget`).
+  const can = permission => eventsStore.activeEvent?.userRole === 'owner' || eventsStore.hasPermission(permission)
 
   /** `[{ section, items }]`; `section` titles are `app.groups.<section>` (the first one has none). */
   const byGroup = computed(() =>
-    buildNavSections(eventsStore.activeEvent?.modules).map(group => ({ group: group.section, items: group.items }))
+    buildNavSections(eventsStore.activeEvent?.modules, { can }).map(group => ({ group: group.section, items: group.items }))
   )
   const items = computed(() => byGroup.value.flatMap(group => group.items))
 
