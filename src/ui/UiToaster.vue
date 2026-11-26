@@ -5,6 +5,7 @@ import {
   ToastTitle,
   ToastDescription,
   ToastClose,
+  ToastAction,
   ToastViewport
 } from 'reka-ui'
 import { CircleCheck, CircleAlert, TriangleAlert, Info, X } from 'lucide-vue-next'
@@ -13,6 +14,14 @@ import { cx } from './utils'
 import { uiText } from './i18n'
 
 const { toasts, dismiss } = useToast()
+
+function runAction(item) {
+  try {
+    item.action.onClick?.()
+  } finally {
+    dismiss(item.id)
+  }
+}
 
 const TONES = {
   neutral: { icon: Info, classes: 'text-info-500' },
@@ -41,6 +50,14 @@ const TONES = {
         <ToastDescription v-if="item.description" class="mt-0.5 text-sm text-ink-500">
           {{ item.description }}
         </ToastDescription>
+        <ToastAction
+          v-if="item.action"
+          :alt-text="item.action.altText || item.action.label"
+          class="mt-2 inline-flex min-h-9 items-center rounded-full px-3 text-sm font-semibold text-rose-600 hover:bg-cream-200 focus-visible:outline-2 focus-visible:outline-rose-500"
+          @click="runAction(item)"
+        >
+          {{ item.action.label }}
+        </ToastAction>
       </div>
       <ToastClose class="-mr-1 -mt-1 rounded-full p-1 text-ink-400 hover:bg-cream-200" :aria-label="uiText('common.close')">
         <X class="h-4 w-4" aria-hidden="true" />

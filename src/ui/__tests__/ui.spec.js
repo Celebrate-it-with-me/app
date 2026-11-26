@@ -190,3 +190,69 @@ describe('UiModal fullscreenMobile', () => {
     plain.unmount()
   })
 })
+
+describe('UiModal kit additions', () => {
+  it('xl is wider and bare leaves the body without padding or its own scroll', async () => {
+    const { mount } = await import('@vue/test-utils')
+    const { nextTick } = await import('vue')
+    const { UiModal } = await import('../index.js')
+    const wrapper = mount(UiModal, {
+      props: { open: true, title: 'x', size: 'xl', bare: true },
+      slots: { default: '<p id="inner">hi</p>', footer: '<button>ok</button>' },
+      attachTo: document.body
+    })
+    await nextTick()
+    const content = document.body.querySelector('[role="dialog"]')
+    expect(content.className).toContain('sm:max-w-6xl')
+    const body = document.body.querySelector('#inner').parentElement
+    expect(body.className).toContain('overflow-hidden')
+    expect(body.className).not.toContain('overflow-y-auto')
+    expect(body.className).not.toContain('px-5')
+    expect(content.innerHTML).toContain('safe-area-inset-bottom')
+    wrapper.unmount()
+    const normal = mount(UiModal, { props: { open: true, title: 'x' }, slots: { default: '<p id="inner2">hi</p>' }, attachTo: document.body })
+    await nextTick()
+    expect(document.body.querySelector('#inner2').parentElement.className).toContain('overflow-y-auto')
+    normal.unmount()
+  })
+})
+
+describe('UiToaster action', () => {
+  it('gives an action toast a longer life and runs the action once, closing the toast', async () => {
+    const { mount } = await import('@vue/test-utils')
+    const { nextTick } = await import('vue')
+    const { UiToaster } = await import('../index.js')
+    const { toasts, toast, dismiss } = useToast()
+    ;[...toasts].forEach(t => dismiss(t.id))
+    const onClick = vi.fn()
+    const id = toast({ title: 'Listo', action: { label: 'Deshacer', onClick } })
+    expect(toasts.find(t => t.id === id).duration).toBe(10000)
+    expect(toast({ title: 'Otro', duration: 2000, action: { label: 'x' } })).toBeGreaterThan(id)
+    expect(toasts.find(t => t.title === 'Otro').duration).toBe(2000)
+    const wrapper = mount(UiToaster, { attachTo: document.body })
+    await nextTick()
+    const button = [...document.body.querySelectorAll('button')].find(b => b.textContent.trim() === 'Deshacer')
+    expect(button).toBeTruthy()
+    button.click()
+    await nextTick()
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(toasts.find(t => t.id === id)).toBeUndefined()
+    wrapper.unmount()
+    ;[...toasts].forEach(t => dismiss(t.id))
+  })
+
+  it('does not draw an action button when there is no action', async () => {
+    const { mount } = await import('@vue/test-utils')
+    const { nextTick } = await import('vue')
+    const { UiToaster } = await import('../index.js')
+    const { toasts, toast, dismiss } = useToast()
+    ;[...toasts].forEach(t => dismiss(t.id))
+    toast({ title: 'Solo aviso' })
+    const wrapper = mount(UiToaster, { attachTo: document.body })
+    await nextTick()
+    expect(document.body.textContent).toContain('Solo aviso')
+    expect(document.body.querySelectorAll('[data-reka-toast-action], [data-radix-toast-action]').length).toBe(0)
+    wrapper.unmount()
+    ;[...toasts].forEach(t => dismiss(t.id))
+  })
+})

@@ -17,17 +17,19 @@ const props = defineProps({
   open: { type: Boolean, default: false },
   title: { type: String, default: '' },
   description: { type: String, default: '' },
-  /** sm | md | lg | full */
+  /** sm | md | lg | full | xl */
   size: { type: String, default: 'md' },
   /** On phones a sheet slides up from the bottom; on larger screens both look centered. */
   sheet: { type: Boolean, default: true },
   /** On phones the dialog covers the whole screen (a flow with steps); larger screens keep the centered card. */
   fullscreenMobile: { type: Boolean, default: false },
+  /** The body does not scroll and has no padding: the content lays itself out (two zones, each with its own scroll). */
+  bare: { type: Boolean, default: false },
   closeLabel: { type: String, default: () => uiText('common.close') }
 })
 const emit = defineEmits(['update:open'])
 
-const WIDTHS = { sm: 'sm:max-w-sm', md: 'sm:max-w-lg', lg: 'sm:max-w-2xl', full: 'sm:max-w-4xl' }
+const WIDTHS = { sm: 'sm:max-w-sm', md: 'sm:max-w-lg', lg: 'sm:max-w-2xl', full: 'sm:max-w-4xl', xl: 'sm:max-w-6xl' }
 
 const contentClasses = computed(() =>
   cx(
@@ -66,12 +68,12 @@ const contentClasses = computed(() =>
             <X class="h-5 w-5" aria-hidden="true" />
           </DialogClose>
         </div>
-        <div class="min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6">
+        <div :class="bare ? 'min-h-0 flex-1 overflow-hidden' : 'min-h-0 flex-1 overflow-y-auto px-5 py-4 sm:px-6'">
           <slot />
         </div>
         <div
           v-if="$slots.footer"
-          class="flex flex-col-reverse gap-2 border-t border-line px-5 py-4 sm:flex-row sm:justify-end sm:px-6"
+          class="flex flex-col-reverse gap-2 border-t border-line px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end sm:px-6"
         >
           <slot name="footer" />
         </div>
