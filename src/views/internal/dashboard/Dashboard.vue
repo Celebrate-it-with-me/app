@@ -125,6 +125,12 @@ function load() {
 }
 
 watch(() => event.value?.id, load, { immediate: true })
+// The permissions arrive after an event switch (they are per event): the budget follows them without a reload.
+watch(canSeeBudget, can => {
+  if (!event.value?.id) return
+  if (can) loadBudget(event.value.id, { quiet: true })
+  else hideBudget()
+})
 
 /**
  * Two columns from 1024 px (the prototype): the route goes on top, over both. Below that, one column in the mobile

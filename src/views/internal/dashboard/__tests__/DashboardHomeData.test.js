@@ -297,6 +297,17 @@ describe('Dashboard home data', () => {
     await mountDashboard()
     expect(m.summary).toHaveBeenCalledWith(7)
   })
+  it('shows the budget once the permissions of a new event arrive, and hides it if they do not grant it', async () => {
+    const w = await mountDashboard({ event: { userRole: 'editor' } })
+    expect(m.summary).not.toHaveBeenCalled()
+    useEventsStore().eventPermissions = ['view_event', 'view_budget']
+    await flushPromises()
+    expect(m.summary).toHaveBeenCalledWith(7)
+    expect(w.find('[data-tile=cap]').exists()).toBe(true)
+    useEventsStore().eventPermissions = ['view_event']
+    await flushPromises()
+    expect(w.find('[data-testid=dashboard-budget]').exists()).toBe(false)
+  })
   it('hides the budget when the API says it is not for this role (403), and skips it without the module', async () => {
     m.summary.mockReset()
     m.summary.mockRejectedValue({ response: { status: 403, data: { code: 'forbidden' } } })
