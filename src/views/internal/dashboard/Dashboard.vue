@@ -251,8 +251,10 @@ onMounted(() => useUserStore().syncEmailVerified())
           :can-edit="canEdit"
           @retry="loadDress(event.id)"
         />
+        <!-- Not on a phone (owner decision, 2026-11-26, like the prototype): the Inicio ends with the dress code there. -->
         <DashboardActivity
           v-if="activityStatus !== 'hidden'"
+          class="max-sm:hidden"
           :activity="activityData"
           :status="activityStatus"
           @retry="loadActivity(event.id)"

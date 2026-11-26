@@ -88,6 +88,11 @@ describe('Dashboard layout', () => {
     await flushPromises()
     expect(order(w).slice(0, 3)).toEqual(['dashboard-main', 'dashboard-now', 'dashboard-route'])
   })
+  it('hides the activity on a phone (owner decision, 2026-11-26) and keeps it from 640 px', async () => {
+    withWidth(false)
+    const w = await mountDashboard({ event: { modules: ALL } })
+    expect(w.get('[data-testid=dashboard-activity]').classes()).toContain('max-sm:hidden')
+  })
   it('a viewer (no next steps, no budget) gets the program under the confirmations, to keep the columns even', async () => {
     withWidth(true)
     const w = await mountDashboard({ event: { userRole: 'viewer', modules: ALL } })
