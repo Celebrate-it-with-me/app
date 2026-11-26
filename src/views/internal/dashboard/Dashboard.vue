@@ -142,6 +142,9 @@ const wideQuery = typeof window !== 'undefined' && typeof window.matchMedia === 
 const wide = ref(!!wideQuery?.matches)
 const syncWide = e => (wide.value = e.matches)
 onMounted(() => wideQuery?.addEventListener?.('change', syncWide))
+// A viewer has neither "Lo que toca ahora" nor the budget: the program moves under the confirmations so the two columns
+// stay balanced (the order on a phone is the same either way).
+const programLeft = computed(() => wide.value && !canEdit.value && budgetStatus.value === 'hidden')
 onBeforeUnmount(() => wideQuery?.removeEventListener?.('change', syncWide))
 
 // The permanent notice follows the API's flag; read it fresh on every visit so it disappears once the email is verified.
@@ -210,10 +213,17 @@ onMounted(() => useUserStore().syncEmailVerified())
           :can-edit="canEdit"
           @retry="loadBudget(event.id)"
         />
+        <DashboardProgram
+          v-if="programStatus !== 'hidden' && programLeft"
+          :moments="programData"
+          :status="programStatus"
+          :can-edit="canEdit"
+          @retry="loadProgram(event.id)"
+        />
       </div>
       <div class="flex min-w-0 flex-col gap-4 lg:gap-6" data-testid="dashboard-side">
         <DashboardProgram
-          v-if="programStatus !== 'hidden'"
+          v-if="programStatus !== 'hidden' && !programLeft"
           :moments="programData"
           :status="programStatus"
           :can-edit="canEdit"

@@ -83,6 +83,11 @@ describe('Dashboard layout', () => {
     await flushPromises()
     expect(order(w).slice(0, 3)).toEqual(['dashboard-main', 'dashboard-now', 'dashboard-route'])
   })
+  it('a viewer (no next steps, no budget) gets the program under the confirmations, to keep the columns even', async () => {
+    withWidth(true)
+    const w = await mountDashboard({ event: { userRole: 'viewer', modules: ALL } })
+    expect(order(w)).toEqual(['dashboard-route', 'dashboard-main', 'dashboard-rsvp', 'dashboard-program', 'dashboard-side', 'dashboard-dress', 'dashboard-activity'])
+  })
 })
 
 describe('Dashboard home data', () => {
