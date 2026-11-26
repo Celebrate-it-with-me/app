@@ -267,6 +267,18 @@ export function filterTemplates(list, { access = 'all', tag = '', query = '', fa
 
 const FAVORITES_KEY = 'qv.templateFavs'
 
+/**
+ * Id of the signed-in user, read from what the user store keeps in this browser (`user-store`): the favorites are theirs and
+ * the selector does not need to pull the whole store (and the router behind it) just for a number. 'anon' when unknown.
+ */
+export function storedUserId() {
+  try {
+    return String(JSON.parse(localStorage.getItem('user-store') ?? 'null')?.userId || 'anon')
+  } catch {
+    return 'anon'
+  }
+}
+
 /** Favorite template ids of this browser and user (local on purpose: nothing to sync). Never throws. */
 export function readFavorites(userId = 'anon') {
   try {

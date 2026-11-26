@@ -133,3 +133,16 @@ describe('useTemplateBrowser', () => {
     expect(browser.tag.value).toBe('')
   })
 })
+
+describe('storedUserId', () => {
+  it('reads the user the store keeps in this browser and never throws', async () => {
+    const { storedUserId } = await import('../utils/templatePicker')
+    expect(storedUserId()).toBe('anon')
+    localStorage.setItem('user-store', JSON.stringify({ userId: 42 }))
+    expect(storedUserId()).toBe('42')
+    localStorage.setItem('user-store', '{broken')
+    expect(storedUserId()).toBe('anon')
+    localStorage.setItem('user-store', JSON.stringify({ userId: '' }))
+    expect(storedUserId()).toBe('anon')
+  })
+})
