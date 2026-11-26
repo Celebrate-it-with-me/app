@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
@@ -129,13 +129,13 @@ describe('DashboardHero phone', () => {
 describe('DashboardHero plan progress', () => {
   it('shows the plan as steps, never as "ready"', () => {
     const w = mountHero({ plan: { done: 7, total: 18 } })
-    expect(w.get('[data-testid=hero-plan]').text()).toBe('Plan de organización · 7 de 18 pasos del plan')
+    expect(w.get('[data-testid=hero-plan]').text()).toBe('Plan de organización · 7 de 18 pasos · 39 %')
     expect(w.get('[role=progressbar]').attributes('aria-valuenow')).toBe('39')
     expect(w.text()).not.toContain('listo')
   })
   it('says it in English', () => {
     setLocale('en')
-    expect(mountHero({ plan: { done: 1, total: 2 } }).get('[data-testid=hero-plan]').text()).toBe('Organization plan · 1 of 2 plan steps')
+    expect(mountHero({ plan: { done: 1, total: 2 } }).get('[data-testid=hero-plan]').text()).toBe('Organization plan · 1 of 2 steps · 50%')
   })
   it('hides the figure without assistant data or with an empty plan, instead of 0 % or 100 %', () => {
     expect(mountHero({ plan: null }).find('[data-testid=hero-plan]').exists()).toBe(false)
@@ -144,5 +144,75 @@ describe('DashboardHero plan progress', () => {
   it('caps the bar at 100 and ignores a negative count', () => {
     expect(mountHero({ plan: { done: 12, total: 9 } }).get('[role=progressbar]').attributes('aria-valuenow')).toBe('100')
     expect(mountHero({ plan: { done: -2, total: 9 } }).get('[role=progressbar]').attributes('aria-valuenow')).toBe('0')
+  })
+})
+
+describe('DashboardHero date, template and thumbnail', () => {
+  it('prints the date with the time of the event', () => {
+    const text = mountHero({ startDate: '01/02/2027 19:00' }).get('[data-testid=hero-date]').text()
+    expect(text).toMatch(/^sábado, 2 de enero de 2027 · 7:00\s?p\.\s?m\.$/)
+  })
+  it('does not invent a time when the date has none', () => {
+    expect(mountHero({ startDate: '01/02/2027' }).get('[data-testid=hero-date]').text()).not.toMatch(/[ap]\.\s?m\./)
+  })
+  it('shows the template name as a chip next to Publicada', () => {
+    const w = mountHero({ templateName: 'Miami Nights' })
+    expect(w.get('[data-testid=hero-template]').text()).toContain('Miami Nights')
+    expect(w.get('[data-testid=hero-template]').text()).toContain('Plantilla')
+    expect(w.get('[data-testid=hero-status]').text()).toContain('Publicada')
+  })
+  it('holds the chip with a skeleton while the template loads and hides it without a name', () => {
+    const loading = mountHero({ templateStatus: 'loading' })
+    expect(loading.find('[data-testid=hero-template-skeleton]').exists()).toBe(true)
+    expect(loading.find('[data-testid=hero-template]').exists()).toBe(false)
+    expect(mountHero({ templateName: '', templateStatus: 'error' }).find('[data-testid=hero-template]').exists()).toBe(false)
+  })
+  it('links "Cambiar plantilla" to the invitation editor, for editors only', () => {
+    const w = mountHero({ templateTo: { name: 'invitation-editor' } })
+    expect(w.get('[data-testid=hero-change-template]').text()).toBe('Cambiar plantilla')
+    expect(JSON.parse(w.get('[data-testid=hero-change-template]').attributes('data-to'))).toEqual({ name: 'invitation-editor' })
+    expect(mountHero({ templateTo: { name: 'invitation-editor' }, canEdit: false }).find('[data-testid=hero-change-template]').exists()).toBe(false)
+    expect(mountHero().find('[data-testid=hero-change-template]').exists()).toBe(false)
+  })
+  it('uses the long share label on wide screens and the short one on phones', () => {
+    const t = mountHero().get('[data-testid=hero-share]').text()
+    expect(t).toContain('Compartir')
+    expect(t).toContain('Compartir invitación')
+  })
+})
+
+describe('DashboardHero plan block states', () => {
+  it('draws a skeleton in the plan slot while the assistant loads', () => {
+    const w = mountHero({ plan: null, planStatus: 'loading' })
+    expect(w.find('[data-testid=hero-plan-skeleton]').exists()).toBe(true)
+    expect(w.find('[data-testid=hero-plan]').exists()).toBe(false)
+  })
+  it('draws an error with retry in the plan slot and keeps the rest of the hero', async () => {
+    const w = mountHero({ plan: null, planStatus: 'error' })
+    expect(w.get('[role=alert]').text()).toContain('No pudimos cargar tu plan')
+    expect(w.find('[data-testid=hero-view]').exists()).toBe(true)
+    await w.get('[data-testid=block-retry]').trigger('click')
+    expect(w.emitted('retry-plan')).toHaveLength(1)
+  })
+  it('shows the steps with their percentage', () => {
+    expect(mountHero({ plan: { done: 13, total: 33 } }).get('[data-testid=hero-plan-label]').text()).toBe('13 de 33 pasos · 39 %')
+    expect(mountHero({ plan: { done: 13, total: 33 } }).get('[role=progressbar]').attributes('aria-valuetext')).toBe('13 de 33 pasos · 39 %')
+  })
+})
+
+describe('DashboardHero on a phone', () => {
+  const original = window.matchMedia
+  beforeEach(() => {
+    window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} })
+  })
+  afterEach(() => {
+    window.matchMedia = original
+  })
+  it('does not mount the phone nor the template link (the thumbnail is desktop only)', () => {
+    const w = mountHero({ templateTo: { name: 'invitation-editor' } })
+    expect(w.find('[data-testid=hero-phone]').exists()).toBe(false)
+    expect(w.find('[data-testid=mini]').exists()).toBe(false)
+    expect(w.find('[data-testid=hero-change-template]').exists()).toBe(false)
+    expect(w.find('[data-testid=hero-view]').exists()).toBe(true)
   })
 })

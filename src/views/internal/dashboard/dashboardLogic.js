@@ -41,6 +41,13 @@ export function planProgress(next) {
   return { done, total, ratio: done / total }
 }
 
+/** Whole percentage (0-100) of a `{ done, total }` progress; 0 for an empty one. */
+export function planPercent(progress) {
+  const total = Number(progress?.total) || 0
+  if (total <= 0) return 0
+  return Math.round(Math.min(1, Math.max(0, (Number(progress?.done) || 0) / total)) * 100)
+}
+
 /**
  * What the hero's big countdown shows. `kind`: `none` (no date), `past`, `today` or `future` (with `n` days).
  */

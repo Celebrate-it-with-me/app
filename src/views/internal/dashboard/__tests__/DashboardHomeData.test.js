@@ -4,7 +4,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
 import i18n, { setLocale } from '@/locales/i18n'
 
-const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn() }))
+const m = vi.hoisted(() => ({ loadStats: vi.fn(), activities: vi.fn(), progress: vi.fn(), templates: vi.fn(), list: vi.fn(), summary: vi.fn(), next: vi.fn(), plan: vi.fn() }))
+vi.mock('@/modules/assistant/services/AssistantService', () => ({ default: { next: m.next, plan: m.plan } }))
 vi.mock('@/modules/rsvp/services/RsvpService', () => ({ default: { loadStats: m.loadStats } }))
 vi.mock('@/services/ActivityService', () => ({ default: { loadDashboardActivities: m.activities } }))
 vi.mock('@/modules/onboarding/services/OnboardingService', () => ({ default: { progress: m.progress } }))
@@ -20,7 +21,7 @@ import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 
 const stubs = {
   RouterLink: { props: ['to'], template: '<a><slot /></a>' },
-  DashboardHero: { props: ['plan', 'startDate', 'timezone'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" :data-start="startDate" :data-zone="timezone" />' },
+  DashboardHero: { props: ['plan', 'startDate', 'timezone', 'templateName', 'templateStatus'], template: '<div data-testid="hero" :data-plan="JSON.stringify(plan)" :data-start="startDate" :data-zone="timezone" :data-template="templateName" :data-template-status="templateStatus" />' },
   DashboardMore: { props: ['budget', 'program'], template: '<div data-testid="more" :data-budget="JSON.stringify(budget)" :data-program="JSON.stringify(program)" />' }
 }
 
@@ -32,7 +33,7 @@ async function mountDashboard({ next = null, event = {}, summary = { cap: 18000,
   setActivePinia(pinia)
   m.summary.mockResolvedValue(summary)
   useEventsStore().initActiveEvent({ id: 7, guestsCount: 5, eventName: 'XV', userRole: 'owner', modules: [{ key: 'budget', state: 'active' }], ...event })
-  if (next) useAssistantStore().$patch({ eventId: 7, next })
+  m.next.mockResolvedValue(next ?? { mode: 'normal', progress: { done: 0, total: 0 } })
   const w = mount(Dashboard, { global: { plugins: [i18n, pinia], stubs } })
   await flushPromises()
   return w
@@ -48,9 +49,23 @@ beforeEach(() => {
   m.progress.mockResolvedValue({})
   m.templates.mockResolvedValue([])
   m.list.mockResolvedValue([])
+  m.plan.mockResolvedValue({ mode: 'normal', phases: [] })
 })
 
 describe('Dashboard home data', () => {
+  it('loads the next steps for everybody', async () => {
+    await mountDashboard()
+    expect(m.next).toHaveBeenCalledTimes(1)
+  })
+  it('gives the hero the template name and keeps the chip off when the list fails', async () => {
+    m.templates.mockResolvedValue([{ id: 1, name: 'Miami Nights', current: true, previewImage: 'x.webp' }])
+    const ok = await mountDashboard()
+    expect(ok.get('[data-testid=hero]').attributes('data-template')).toBe('Miami Nights')
+    m.templates.mockRejectedValue(new Error('403'))
+    const bad = await mountDashboard()
+    expect(bad.get('[data-testid=hero]').attributes('data-template')).toBe('')
+    expect(bad.get('[data-testid=hero]').attributes('data-template-status')).toBe('error')
+  })
   it('draws the program in 12 hours, in the language of the app', async () => {
     m.list.mockResolvedValue([
       { id: 2, title: 'Cena', start_time: '2027-01-02 20:30:00' },

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import i18n, { setLocale } from '@/locales/i18n'
-import { summarizeRsvp, rsvpShares, planProgress, countdownInfo, statsFigures, activitySentence, activityTime } from '../dashboardLogic'
+import { planPercent, summarizeRsvp, rsvpShares, planProgress, countdownInfo, statsFigures, activitySentence, activityTime } from '../dashboardLogic'
 
 describe('summarizeRsvp', () => {
   it('maps the stats payload', () => {
@@ -140,5 +140,18 @@ describe('activityTime', () => {
     expect(activityTime({ createdAt: 'hace 1 día' }, 'es', now)).toBe('hace 1 día')
     expect(activityTime(at('not a date'), 'es', now)).toBe('texto del API')
     expect(activityTime(undefined, 'es', now)).toBe('')
+  })
+})
+
+describe('planPercent', () => {
+  it('rounds the share of steps done', () => {
+    expect(planPercent({ done: 13, total: 33 })).toBe(39)
+    expect(planPercent({ done: 1, total: 3 })).toBe(33)
+  })
+  it('is 0 for an empty or missing plan and clamps to 0-100', () => {
+    expect(planPercent(null)).toBe(0)
+    expect(planPercent({ done: 3, total: 0 })).toBe(0)
+    expect(planPercent({ done: 12, total: 9 })).toBe(100)
+    expect(planPercent({ done: -2, total: 9 })).toBe(0)
   })
 })

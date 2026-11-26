@@ -10,6 +10,7 @@ import {
   endsNextDay,
   daysUntilEvent,
   eventDate,
+  hasClock,
   DATE_STYLES
 } from '../eventDateTime'
 
@@ -212,5 +213,28 @@ describe('eventDate', () => {
     expect(eventDate({ startDate: 'nope' })).toBeNull()
     expect(eventDate({ startsAt: 'x+99:99', startDate: '' })).toBeNull()
     expect(eventDate(undefined)).toBeNull()
+  })
+})
+
+describe('hasClock', () => {
+  it('is true when there is a time of day', () => {
+    expect(hasClock('01/02/2027 19:00')).toBe(true)
+    expect(hasClock('2027-01-02T19:00:00')).toBe(true)
+    expect(hasClock('2027-01-03T00:30:00Z')).toBe(true)
+  })
+  it('is false for a bare date, garbage and non-text', () => {
+    expect(hasClock('01/02/2027')).toBe(false)
+    expect(hasClock('2027-01-02')).toBe(false)
+    expect(hasClock('hola 10:00')).toBe(false)
+    expect(hasClock(null)).toBe(false)
+  })
+})
+
+describe('short day styles', () => {
+  it('prints 2 ene and sáb, 2 ene in Spanish and Jan 2 / Sat, Jan 2 in English', () => {
+    expect(formatEventDate('01/02/2027 19:00', 'dayMonthShort', 'es')).toMatch(/^2 ene/)
+    expect(formatEventDate('01/02/2027 19:00', 'weekdayDayMonth', 'es')).toMatch(/^sáb/i)
+    expect(formatEventDate('01/02/2027 19:00', 'dayMonthShort', 'en')).toBe('Jan 2')
+    expect(formatEventDate('01/02/2027 19:00', 'weekdayDayMonth', 'en')).toBe('Sat, Jan 2')
   })
 })

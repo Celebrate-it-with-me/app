@@ -47,6 +47,12 @@ const editTarget = computed(() => (event.value ? { name: 'edit-event', params: {
 
 // One number for the plan: the assistant's, already loaded by the layout (never recalculated here).
 const plan = computed(() => (assistantStore.eventId === event.value?.id ? planProgress(assistantStore.next) : null))
+// Each request has its own state, so a slow or failed one never empties the others.
+const blockStatus = status => (status === 'ready' || status === 'error' ? status : 'loading')
+const sameEvent = computed(() => assistantStore.eventId === event.value?.id)
+const planStatus = computed(() => (sameEvent.value ? blockStatus(assistantStore.nextStatus) : 'loading'))
+const retryPlan = () => assistantStore.fetchNext({ eventId: event.value?.id, lang: locale.value, force: true })
+const templateTo = { name: 'invitation-editor' }
 const budget = computed(() => {
   const summary = budgetStore.summary
   const count = (summary?.categories ?? []).reduce((total, c) => total + c.itemCount, 0) + (summary?.uncategorized?.itemCount ?? 0)
@@ -112,17 +118,28 @@ async function loadStart(eventId) {
 
 const activity = computed(() => readableActivity(activityStore.activities ?? []).slice(0, 5))
 
-// The invitation's thumbnail: the preview image of the template in use (the only place the app gets it). Best effort: a
-// failure or a template without image just leaves the hero on its fallback card.
+// The template in use: its name (chip) and its preview image (the invitation's thumbnail) come from the same list. Best
+// effort: a failure or a template without image leaves the hero on its fallback card and without the chip.
 const thumb = ref('')
+const templateName = ref('')
+const templateStatus = ref('ready')
 async function loadThumb(eventId) {
   thumb.value = ''
-  if (!canEdit.value) return
+  templateName.value = ''
+  if (!canEdit.value) {
+    templateStatus.value = 'ready'
+    return
+  }
+  templateStatus.value = 'loading'
   try {
     const current = (await TemplatePickerService.templates(eventId)).find(item => item.current)
-    if (eventId === event.value?.id) thumb.value = current?.previewImage ?? ''
+    if (eventId !== event.value?.id) return
+    thumb.value = current?.previewImage ?? ''
+    templateName.value = current?.name ?? ''
+    templateStatus.value = 'ready'
   } catch {
     // Viewers and unsupported event types get an error here; the fallback card is fine.
+    if (eventId === event.value?.id) templateStatus.value = 'error'
   }
 }
 
@@ -133,6 +150,8 @@ async function load() {
   const id = ++loadId
   loadStart(current.id)
   loadThumb(current.id)
+  // The assistant never throws into the screen (its stores keep a status), so it stays out of the shared error toast.
+  assistantStore.fetchNext({ eventId: current.id, lang: locale.value })
   const jobs = [rsvpStore.fetchStats(), activityStore.loadDashboardActivities(), timelineStore.fetchTimelines(current.id)]
   if (budgetEnabled.value) jobs.push(budgetStore.fetchSummary(current.id))
   const results = await Promise.allSettled(jobs)
@@ -154,11 +173,16 @@ onMounted(() => useUserStore().syncEmailVerified())
       :start-date="eventMoment(event)"
       :timezone="event.timezone"
       :plan="plan"
+      :plan-status="planStatus"
       :published="published"
       :can-view-guests="canViewGuests"
       :image="thumb"
+      :template-name="templateName"
+      :template-status="templateStatus"
       :can-edit="canEdit"
       :edit-to="editTarget"
+      :template-to="templateTo"
+      @retry-plan="retryPlan"
     />
 
     <DashboardStartLink v-if="showStart" :done="start.done" :total="start.total" />

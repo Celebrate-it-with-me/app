@@ -2103,7 +2103,8 @@ export default {
       past: 'Already happened',
       edit: 'Edit event',
       plan: 'Organization plan',
-      planSteps: '{done} of {total} plan steps',
+      planSteps: '{done} of {total} steps · {percent}%',
+      retry: 'Try again',
       activity: {
         event_created: '{actor} created the event {name}',
         event_updated: '{actor} updated the event {name}',
@@ -2155,7 +2156,11 @@ export default {
         setDate: 'Set the date',
         publish: 'Publish invitation',
         share: 'Share',
+        shareLong: 'Share invitation',
         view: 'View invitation',
+        template: 'Template',
+        changeTemplate: 'Change template',
+        planError: 'We could not load your organization plan.',
         draftHint: 'It is a draft: no one can see it yet. Publish it to be able to share it.'
       },
       stats: {

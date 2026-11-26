@@ -2103,7 +2103,8 @@ export default {
       past: 'Ya pasó',
       edit: 'Editar evento',
       plan: 'Plan de organización',
-      planSteps: '{done} de {total} pasos del plan',
+      planSteps: '{done} de {total} pasos · {percent} %',
+      retry: 'Reintentar',
       activity: {
         event_created: '{actor} creó el evento {name}',
         event_updated: '{actor} actualizó el evento {name}',
@@ -2155,7 +2156,11 @@ export default {
         setDate: 'Definir la fecha',
         publish: 'Publicar invitación',
         share: 'Compartir',
+        shareLong: 'Compartir invitación',
         view: 'Ver invitación',
+        template: 'Plantilla',
+        changeTemplate: 'Cambiar plantilla',
+        planError: 'No pudimos cargar tu plan de organización.',
         draftHint: 'Es un borrador: nadie puede verla todavía. Publícala para poder compartirla.'
       },
       stats: {

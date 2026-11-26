@@ -94,6 +94,10 @@ const STYLES = {
   dateShort: { day: 'numeric', month: 'short', year: 'numeric' },
   /** 2 de enero */
   dayMonth: { day: 'numeric', month: 'long' },
+  /** 2 ene */
+  dayMonthShort: { day: 'numeric', month: 'short' },
+  /** sáb, 2 ene */
+  weekdayDayMonth: { weekday: 'short', day: 'numeric', month: 'short' },
   /** sábado, 2 de enero de 2027 */
   weekdayDate: { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' },
   /** 2 ene, 4:30 p. m. */
@@ -119,6 +123,14 @@ export function formatEventDate(value, style, locale, timezone) {
 
 /** "7:00 p.m." / "7:00 PM": 12-hour clock in the app's language (never the browser's 24 h default). */
 export const formatClock = (value, locale, timezone) => formatEventDate(value, 'time', locale, timezone)
+
+/** True when the value carries a time of day (a bare date, `01/02/2027`, would print as a made-up midnight). */
+export function hasClock(value) {
+  if (typeof value !== 'string') return false
+  const text = value.trim()
+  if (HAS_OFFSET.test(text)) return true
+  return /[ T]\d{1,2}:\d{2}/.test(text) && parseWallClock(text) !== null
+}
 
 /**
  * The value to print for an event's start or end: the ISO instant when the API sends one, else the wall-clock text.
