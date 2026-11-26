@@ -3,10 +3,9 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { CalendarDays, Users } from 'lucide-vue-next'
 import { UiCard, UiBadge, UiButton } from '@/ui'
-import { parseEventDate, daysUntil } from '@/views/internal/dashboard/dashboardLogic'
 import { useEventsStore } from '../stores/useEventsStore'
 import EventStatusBadge from './EventStatusBadge.vue'
-import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
+import { daysUntilEvent, eventDay, eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
 const props = defineProps({
   event: { type: Object, required: true },
@@ -19,13 +18,13 @@ const emit = defineEmits(['open', 'restore'])
 const { t, locale } = useI18n()
 const eventsStore = useEventsStore()
 
-const date = computed(() => parseEventDate(props.event.startDate))
+const hasDate = computed(() => !!eventDay(props.event))
 const dateLabel = computed(() =>
-  date.value
+  hasDate.value
     ? formatEventDate(eventMoment(props.event), 'date', locale.value, props.event.timezone)
     : t('events.card.noDate')
 )
-const days = computed(() => daysUntil(date.value))
+const days = computed(() => daysUntilEvent(props.event))
 const countdown = computed(() => {
   if (props.event.status === 'archived' || days.value === null) return ''
   if (days.value < 0) return t('app.dashboard.past')

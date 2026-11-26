@@ -145,6 +145,52 @@ export function eventDay(event, which = 'start') {
   return wallClockToIso(value).slice(0, 10)
 }
 
+/** Today's `YYYY-MM-DD` in the event's zone, or in the browser's zone when the event has none (or an invalid one). */
+function todayIn(timezone, now) {
+  const zone = validZone(timezone)
+  if (zone) return new Intl.DateTimeFormat('en-CA', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(now)
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
+}
+
+const dayNumber = ymd => {
+  const [y, m, d] = ymd.split('-').map(Number)
+  return Date.UTC(y, m - 1, d) / 86_400_000
+}
+
+/**
+ * Whole calendar days from today to the event's start day (0 = today, negative = already past), counted in the event's
+ * zone so the browser's zone never moves the day. `null` when the event has no readable date.
+ * @param {object} event `{ startDate, startsAt?, timezone? }`
+ * @param {Date} [now]
+ */
+export function daysUntilEvent(event, now = new Date()) {
+  const day = eventDay(event)
+  return day ? Math.round(dayNumber(day) - dayNumber(todayIn(event?.timezone, now))) : null
+}
+
+/**
+ * The event's start (or end) as a `Date` whose LOCAL fields are the event's wall clock: for sorting and for building
+ * times of that same day (never print it with a zone; use `formatEventDate` for text). `null` when not readable.
+ * @param {object} event
+ * @param {'start'|'end'} [which]
+ */
+export function eventDate(event, which = 'start') {
+  const value = eventMoment(event, which)
+  let parts = parseWallClock(value)
+  if (!parts && HAS_OFFSET.test(value.trim())) {
+    const instant = new Date(value.trim())
+    if (!Number.isNaN(instant.getTime())) {
+      const found = Object.fromEntries(
+        new Intl.DateTimeFormat('en-CA', { timeZone: validZone(event?.timezone) ?? 'UTC', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+          .formatToParts(instant)
+          .map(p => [p.type, +p.value])
+      )
+      parts = { year: found.year, month: found.month, day: found.day, hour: found.hour, minute: found.minute }
+    }
+  }
+  return parts ? new Date(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute) : null
+}
+
 /** True when `end` falls on a later calendar day than `start` (a party that runs past midnight). */
 export function endsNextDay(start, end) {
   const a = wallClockToIso(start).slice(0, 10)

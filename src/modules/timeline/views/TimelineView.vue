@@ -6,8 +6,8 @@ import { UiPageHeader, UiCard, UiButton, UiSkeleton, UiEmptyState, UiModal, useT
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useTimelineStore } from '../stores/timelineStore'
 import MomentForm from '../components/MomentForm.vue'
-import { buildPayload, iconFor, parseEventDate } from '../utils/program'
-import { formatEventDate } from '@/utils/eventDateTime'
+import { buildPayload, iconFor } from '../utils/program'
+import { eventDate, formatEventDate } from '@/utils/eventDateTime'
 
 const { t, locale } = useI18n()
 const { success, error: showError } = useToast()
@@ -16,7 +16,7 @@ const store = useTimelineStore()
 
 const event = computed(() => eventsStore.activeEvent)
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
-const eventStart = computed(() => parseEventDate(event.value?.startDate))
+const eventStart = computed(() => eventDate(event.value))
 
 const loading = ref(true)
 const saving = ref(false)

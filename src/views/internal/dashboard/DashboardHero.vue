@@ -5,8 +5,8 @@ import { CalendarDays, Eye, Pencil, Send, Share2 } from 'lucide-vue-next'
 import { UiBadge, UiButton } from '@/ui'
 import InvitationPreviewSheet from '@/modules/template-picker/components/InvitationPreviewSheet.vue'
 import DashboardPhone from './DashboardPhone.vue'
-import { parseEventDate, daysUntil, countdownInfo } from './dashboardLogic'
-import { formatEventDate } from '@/utils/eventDateTime'
+import { countdownInfo } from './dashboardLogic'
+import { daysUntilEvent, eventDay, formatEventDate } from '@/utils/eventDateTime'
 
 const props = defineProps({
   eventId: { type: [Number, String], default: null },
@@ -29,10 +29,11 @@ const props = defineProps({
 
 const { t, locale } = useI18n()
 
-const date = computed(() => parseEventDate(props.startDate))
-const countdown = computed(() => countdownInfo(daysUntil(date.value)))
+const moment = computed(() => ({ startDate: props.startDate, timezone: props.timezone }))
+const hasDate = computed(() => !!eventDay(moment.value))
+const countdown = computed(() => countdownInfo(daysUntilEvent(moment.value)))
 const dateLabel = computed(() =>
-  date.value
+  hasDate.value
     ? formatEventDate(props.startDate, 'weekdayDate', locale.value, props.timezone)
     : t('app.dashboard.noDate')
 )
@@ -44,7 +45,7 @@ const previewOpen = ref(false)
 
 <template>
   <header class="grid gap-6 pb-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-center sm:gap-10" data-testid="dashboard-hero">
-    <DashboardPhone :event-id="eventId" :live="canEdit && eventId != null" :image="image" :name="name" :date-label="date ? dateLabel : ''" class="mx-auto sm:mx-0" />
+    <DashboardPhone :event-id="eventId" :live="canEdit && eventId != null" :image="image" :name="name" :date-label="hasDate ? dateLabel : ''" class="mx-auto sm:mx-0" />
 
     <div class="min-w-0">
       <div class="flex flex-wrap items-center gap-x-3 gap-y-2">

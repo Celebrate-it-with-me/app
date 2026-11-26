@@ -2,25 +2,6 @@
  * Pure helpers behind the organizer dashboard. No stores, no Vue: easy to test.
  */
 
-/** The API sends event dates as `m/d/Y H:i` (wall time of the event). */
-export function parseEventDate(value) {
-  if (!value || typeof value !== 'string') return null
-  const m = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[ T](\d{1,2}):(\d{2}))?/)
-  if (!m) {
-    const d = new Date(value)
-    return Number.isNaN(d.getTime()) ? null : d
-  }
-  const [, month, day, year, hour = '0', minute = '0'] = m
-  return new Date(Number(year), Number(month) - 1, Number(day), Number(hour), Number(minute))
-}
-
-/** Whole calendar days from `now` to `date` (0 = today, negative = already past). */
-export function daysUntil(date, now = new Date()) {
-  if (!date) return null
-  const startOf = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
-  return Math.round((startOf(date) - startOf(now)) / 86_400_000)
-}
-
 /** RSVP numbers from the stats endpoint payload (`response.data` of `GET /rsvp/stats`). */
 export function summarizeRsvp(stats) {
   const s = stats?.data ?? stats ?? {}

@@ -1,31 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import i18n, { setLocale } from '@/locales/i18n'
-import { parseEventDate, daysUntil, summarizeRsvp, rsvpShares, planProgress, countdownInfo, statsFigures, activitySentence, activityTime } from '../dashboardLogic'
-
-describe('parseEventDate', () => {
-  it('reads the API format as wall time', () => {
-    const d = parseEventDate('12/25/2026 18:30')
-    expect([d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()]).toEqual([2026, 11, 25, 18, 30])
-  })
-  it('accepts a date without time and ISO strings', () => {
-    expect(parseEventDate('01/05/2027').getDate()).toBe(5)
-    expect(parseEventDate('2027-03-04T10:00:00')).toBeInstanceOf(Date)
-  })
-  it('returns null for empty or garbage', () => {
-    expect(parseEventDate(null)).toBeNull()
-    expect(parseEventDate('nope')).toBeNull()
-  })
-})
-
-describe('daysUntil', () => {
-  const now = new Date(2026, 10, 12, 23, 30)
-  it('counts calendar days, not 24h blocks', () => {
-    expect(daysUntil(new Date(2026, 10, 13, 0, 5), now)).toBe(1)
-    expect(daysUntil(new Date(2026, 10, 12, 8, 0), now)).toBe(0)
-    expect(daysUntil(new Date(2026, 10, 10, 8, 0), now)).toBe(-2)
-  })
-  it('is null without a date', () => expect(daysUntil(null, now)).toBeNull())
-})
+import { summarizeRsvp, rsvpShares, planProgress, countdownInfo, statsFigures, activitySentence, activityTime } from '../dashboardLogic'
 
 describe('summarizeRsvp', () => {
   it('maps the stats payload', () => {

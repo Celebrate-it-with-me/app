@@ -8,6 +8,8 @@ import {
   eventMoment,
   eventDay,
   endsNextDay,
+  daysUntilEvent,
+  eventDate,
   DATE_STYLES
 } from '../eventDateTime'
 
@@ -159,5 +161,56 @@ describe('endsNextDay', () => {
 
   it('compares plain text when it is not a known shape', () => {
     expect(endsNextDay('2027-01-02 xx', '2027-01-03 yy')).toBe(true)
+  })
+})
+
+describe('daysUntilEvent', () => {
+  const now = new Date(2026, 10, 12, 23, 30)
+  it('counts calendar days, not 24 h blocks', () => {
+    expect(daysUntilEvent({ startDate: '11/13/2026 00:05' }, now)).toBe(1)
+    expect(daysUntilEvent({ startDate: '11/12/2026 08:00' }, now)).toBe(0)
+    expect(daysUntilEvent({ startDate: '11/10/2026 08:00' }, now)).toBe(-2)
+  })
+  it('accepts the other wall-clock shapes', () => {
+    expect(daysUntilEvent({ startDate: '2026-11-14T10:00:00' }, now)).toBe(2)
+    expect(daysUntilEvent({ startDate: '2026-11-14' }, now)).toBe(2)
+  })
+  it('counts today in the event zone, not the browser one', () => {
+    // 2026-11-13 03:30 UTC is still the 12th in Miami (UTC-5) and already the 13th in UTC.
+    const instant = new Date(Date.UTC(2026, 10, 13, 3, 30))
+    expect(daysUntilEvent({ startDate: '11/13/2026 19:00', timezone: 'America/New_York' }, instant)).toBe(1)
+    expect(daysUntilEvent({ startDate: '11/13/2026 19:00', timezone: 'UTC' }, instant)).toBe(0)
+  })
+  it('reads an ISO instant in the event zone', () => {
+    const event = { startsAt: '2027-01-03T00:30:00Z', startDate: '', timezone: 'America/New_York' }
+    expect(daysUntilEvent(event, new Date(Date.UTC(2027, 0, 2, 15)))).toBe(0)
+  })
+  it('ignores an invalid zone and is null without a readable date', () => {
+    expect(daysUntilEvent({ startDate: '11/14/2026 10:00', timezone: 'Nope/Zone' }, now)).toBe(2)
+    expect(daysUntilEvent({ startDate: '' }, now)).toBeNull()
+    expect(daysUntilEvent(null, now)).toBeNull()
+    expect(daysUntilEvent({ startDate: 'nope' }, now)).toBeNull()
+  })
+})
+
+describe('eventDate', () => {
+  it('returns the wall clock as local fields', () => {
+    const d = eventDate({ startDate: '12/25/2026 18:30' })
+    expect([d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes()]).toEqual([2026, 11, 25, 18, 30])
+  })
+  it('reads a date without time, ISO text and the end', () => {
+    expect(eventDate({ startDate: '01/05/2027' }).getDate()).toBe(5)
+    expect(eventDate({ startDate: '2027-03-04T10:00:00' })).toBeInstanceOf(Date)
+    expect(eventDate({ startDate: '01/05/2027 10:00', endDate: '01/06/2027 01:00' }, 'end').getDate()).toBe(6)
+  })
+  it('converts an instant to the clock of the event zone', () => {
+    const d = eventDate({ startsAt: '2027-01-03T00:30:00Z', timezone: 'America/New_York' })
+    expect([d.getDate(), d.getHours(), d.getMinutes()]).toEqual([2, 19, 30])
+  })
+  it('is null for empty or garbage', () => {
+    expect(eventDate({ startDate: null })).toBeNull()
+    expect(eventDate({ startDate: 'nope' })).toBeNull()
+    expect(eventDate({ startsAt: 'x+99:99', startDate: '' })).toBeNull()
+    expect(eventDate(undefined)).toBeNull()
   })
 })

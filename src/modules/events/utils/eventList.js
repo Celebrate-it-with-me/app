@@ -1,4 +1,4 @@
-import { parseEventDate, daysUntil } from '@/views/internal/dashboard/dashboardLogic'
+import { daysUntilEvent, eventDate } from '@/utils/eventDateTime'
 
 /**
  * Order for the "My events" list: upcoming events first (soonest on top), then the ones that already
@@ -9,9 +9,9 @@ export function sortEvents(events, now = new Date()) {
   const past = []
   const undated = []
   for (const event of events) {
-    const date = parseEventDate(event.startDate)
+    const date = eventDate(event)
     if (!date) undated.push(event)
-    else if (daysUntil(date, now) >= 0) upcoming.push({ event, date })
+    else if (daysUntilEvent(event, now) >= 0) upcoming.push({ event, date })
     else past.push({ event, date })
   }
   upcoming.sort((a, b) => a.date - b.date)
