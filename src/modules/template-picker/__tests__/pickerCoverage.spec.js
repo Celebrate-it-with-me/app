@@ -33,6 +33,16 @@ describe('TemplatePickerService (real API)', () => {
     expect(http.put).toHaveBeenLastCalledWith('/event/5/invitation/template', { template_id: 3, undo: true })
   })
 
+  it('saves the palette in the same call, clears it with null, and leaves it alone when not given', async () => {
+    http.put.mockResolvedValue({ data: { data: { ok: true } } })
+    await TemplatePickerService.apply(5, 3, { preset: 'rosa' })
+    expect(http.put).toHaveBeenLastCalledWith('/event/5/invitation/template', { template_id: 3, preset: 'rosa' })
+    await TemplatePickerService.apply(5, 3, { preset: null, undo: true })
+    expect(http.put).toHaveBeenLastCalledWith('/event/5/invitation/template', { template_id: 3, undo: true, preset: null })
+    await TemplatePickerService.apply(5, 3)
+    expect(http.put).toHaveBeenLastCalledWith('/event/5/invitation/template', { template_id: 3 })
+  })
+
   it('sends only what the preview was given', async () => {
     http.post.mockResolvedValue({ data: { data: { sections: [] } } })
     await TemplatePickerService.preview(5)
