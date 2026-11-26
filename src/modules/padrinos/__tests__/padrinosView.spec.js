@@ -101,6 +101,35 @@ describe('PadrinosView', () => {
     expect(toasts()).toContain('danger:No pudimos cargar los padrinos.')
   })
 
+  it('a late answer of event A, ok or failed, never lands under event B nor raises its error there', async () => {
+    const pinia = await setup()
+    let resolveA
+    let rejectA
+    // A slow read of A (answered after B), then a slow failure of A again.
+    api.list.mockReturnValueOnce(new Promise(r => (resolveA = r)))
+    useEventsStore(pinia).activeEvent = { id: 6, userRole: 'owner', eventName: 'A' }
+    await flushPromises()
+    api.list.mockResolvedValueOnce(listOf([raul({ id: 10, name: 'Madrina Bea' })]))
+    useEventsStore(pinia).activeEvent = { id: 8, userRole: 'owner', eventName: 'B' }
+    await flushPromises()
+    resolveA(listOf([raul({ name: 'Padrino de A' })]))
+    await flushPromises()
+    expect(text()).toContain('Madrina Bea')
+    expect(text()).not.toContain('Padrino de A')
+
+    api.list.mockReturnValueOnce(new Promise((_, r) => (rejectA = r)))
+    useEventsStore(pinia).activeEvent = { id: 6, userRole: 'owner', eventName: 'A' }
+    await flushPromises()
+    api.list.mockResolvedValueOnce(listOf([raul({ id: 10, name: 'Madrina Bea' })]))
+    useEventsStore(pinia).activeEvent = { id: 8, userRole: 'owner', eventName: 'B' }
+    await flushPromises()
+    const before = toasts().length
+    rejectA({ response: { status: 500 } })
+    await flushPromises()
+    expect(text()).toContain('Madrina Bea')
+    expect(toasts()).toHaveLength(before)
+  })
+
   it('shows the summary with the paid share and the cards', async () => {
     await setup()
     expect(text()).toContain('Tío Raúl')

@@ -78,4 +78,27 @@ describe('useBudgetStore', () => {
     await expect(store.fetchSummary(2)).rejects.toThrow('500')
     expect(store.summary).toBeNull()
   })
+
+  it('fetchSummary drops a late answer of the previous event, and a late failure does not wipe the new one', async () => {
+    let resolveA
+    let rejectC
+    api.summary.mockReturnValueOnce(new Promise(r => (resolveA = r)))
+    api.summary.mockResolvedValueOnce(B.summary)
+    const store = useBudgetStore()
+    const first = store.fetchSummary(1)
+    await store.fetchSummary(2)
+    resolveA(A.summary)
+    await first
+    expect(store.summary).toEqual(B.summary)
+    expect(store.eventId).toBe(2)
+
+    api.summary.mockReturnValueOnce(new Promise((_, r) => (rejectC = r)))
+    api.summary.mockResolvedValueOnce(B.summary)
+    const late = store.fetchSummary(3)
+    await store.fetchSummary(2)
+    rejectC(new Error('500'))
+    await expect(late).rejects.toThrow('500')
+    expect(store.summary).toEqual(B.summary)
+    expect(store.eventId).toBe(2)
+  })
 })

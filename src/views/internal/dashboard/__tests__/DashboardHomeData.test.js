@@ -21,6 +21,9 @@ const wiz = vi.hoisted(() => ({ audience: vi.fn(), allRecipients: vi.fn(), allRo
 vi.mock('@/modules/roster/services/SendWizardService', () => ({ default: wiz }))
 
 import Dashboard from '../Dashboard.vue'
+import DashboardNow from '../DashboardNow.vue'
+import DashboardProgram from '../DashboardProgram.vue'
+import DashboardDressCode from '../DashboardDressCode.vue'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useAssistantStore } from '@/modules/assistant/stores/useAssistantStore'
 
@@ -392,5 +395,70 @@ describe('Dashboard "Recordar" (the send wizard\'s own count)', () => {
     await flushPromises()
     expect(w.find('[data-testid=rsvp-remind]').exists()).toBe(false)
     expect(wiz.audience).not.toHaveBeenCalledWith(8, 'invitation')
+  })
+})
+
+describe('Dashboard retries, event switches and teardown', () => {
+  const ALL = [{ key: 'budget', state: 'active' }, { key: 'timeline', state: 'active' }, { key: 'dress_code', state: 'active' }]
+  afterEach(() => delete window.matchMedia)
+
+  it('"Lo que toca ahora" retries the next steps for this event, skipping the cache', async () => {
+    m.next.mockRejectedValueOnce({ response: { status: 500 } })
+    const w = await mountDashboard()
+    m.next.mockResolvedValue({ mode: 'normal', progress: { done: 0, total: 1 }, steps: [] })
+    const calls = m.next.mock.calls.length
+    w.findComponent(DashboardNow).vm.$emit('retry')
+    await flushPromises()
+    expect(m.next.mock.calls.length).toBe(calls + 1)
+    expect(m.next.mock.calls.at(-1)[0]).toBe(7)
+  })
+  it('the program (also when it sits under the confirmations for a viewer) and the dress code retry only their own request', async () => {
+    window.matchMedia = vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() }))
+    m.list.mockRejectedValueOnce({ response: { status: 500 } })
+    m.dress.mockRejectedValueOnce({ response: { status: 500 } })
+    const w = await mountDashboard({ event: { userRole: 'viewer', modules: ALL } })
+    expect(w.get('[data-testid=dashboard-main]').find('[data-testid=dashboard-program]').exists()).toBe(true)
+    const stats = m.loadStats.mock.calls.length
+    w.findComponent(DashboardProgram).vm.$emit('retry')
+    w.findComponent(DashboardDressCode).vm.$emit('retry')
+    await flushPromises()
+    expect(m.list).toHaveBeenCalledTimes(2)
+    expect(m.dress).toHaveBeenCalledTimes(2)
+    expect(m.loadStats.mock.calls.length).toBe(stats)
+  })
+  it('drops a late template answer of the previous event, for editors and for viewers', async () => {
+    let resolveA
+    m.templates.mockReturnValueOnce(new Promise(r => (resolveA = r))).mockResolvedValue([{ id: 2, name: 'Garden', current: true }])
+    const w = await mountDashboard()
+    useEventsStore().initActiveEvent({ id: 8, eventName: 'B', userRole: 'owner', modules: [] })
+    await flushPromises()
+    resolveA([{ id: 1, name: 'Miami Nights', current: true }])
+    await flushPromises()
+    expect(w.get('[data-testid=hero]').attributes('data-template')).toBe('Garden')
+
+    let resolveV
+    m.invitation.mockReturnValueOnce(new Promise(r => (resolveV = r))).mockResolvedValue({ template: { name: 'Clásica' } })
+    const v = await mountDashboard({ event: { userRole: 'viewer' } })
+    useEventsStore().initActiveEvent({ id: 9, eventName: 'C', userRole: 'viewer', modules: [] })
+    await flushPromises()
+    resolveV({ template: { name: 'De A' } })
+    await flushPromises()
+    expect(v.get('[data-testid=hero]').attributes('data-template')).toBe('Clásica')
+  })
+  it('with no active event left (logged out, deleted) it asks nothing more and draws nothing', async () => {
+    const w = await mountDashboard()
+    const before = m.summary.mock.calls.length
+    useEventsStore().activeEvent = null
+    await flushPromises()
+    expect(m.summary.mock.calls.length).toBe(before)
+    expect(w.find('[data-testid=dashboard-columns]').exists()).toBe(false)
+  })
+  it('stops listening to the width when it leaves the screen', async () => {
+    const add = vi.fn()
+    const remove = vi.fn()
+    window.matchMedia = vi.fn(() => ({ matches: false, addEventListener: add, removeEventListener: remove }))
+    const w = await mountDashboard()
+    w.unmount()
+    expect(remove).toHaveBeenCalledWith('change', add.mock.calls[0][1])
   })
 })

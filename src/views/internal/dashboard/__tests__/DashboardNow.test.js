@@ -123,4 +123,30 @@ describe('DashboardNow', () => {
     expect(rows(w)[0].attributes('data-done')).toBe('false')
     expect(useToast().toasts.at(-1).title).toMatch(/organiza el evento/i)
   })
+  it.each([
+    ['an impersonating admin', { response: { status: 403, data: { code: 'impersonation_blocked' } } }, 'impersonation'],
+    ['too many requests', { response: { status: 429 } }, 'tooMany'],
+    ['a role without the permission', { response: { status: 403 } }, 'forbidden'],
+    ['a server or network failure', { response: { status: 500 } }, 'generic'],
+    ['no answer at all', new Error('offline'), 'generic']
+  ])('explains a failed mark for %s with its own message', async (_label, error, key) => {
+    svc.act.mockRejectedValue(error)
+    const w = mountNow()
+    await rows(w)[0].get('[data-testid=now-check]').trigger('click')
+    await flushPromises()
+    expect(useToast().toasts.at(-1).title).toBe(i18n.global.t(`app.assistant.errors.${key}`))
+    expect(rows(w)[0].attributes('data-done')).toBe('false')
+  })
+  it('a double tap while the first mark is on its way sends a single request', async () => {
+    let resolve
+    svc.act.mockReturnValue(new Promise(r => (resolve = r)))
+    const w = mountNow()
+    const box = rows(w)[0].get('[data-testid=now-check]').element
+    box.click()
+    box.click()
+    resolve(step('a', { state: 'done', doneBy: 'user' }))
+    await flushPromises()
+    expect(svc.act).toHaveBeenCalledTimes(1)
+    expect(rows(w)[0].attributes('data-done')).toBe('true')
+  })
 })
