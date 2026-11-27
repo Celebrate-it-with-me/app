@@ -11,6 +11,7 @@ export function useMinWidth(px, fallback = true) {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return matches
   const query = window.matchMedia(`(min-width: ${px}px)`)
   matches.value = query.matches
+  if (typeof query.addEventListener !== 'function') return matches
   const update = e => (matches.value = e.matches)
   query.addEventListener('change', update)
   onBeforeUnmount(() => query.removeEventListener('change', update))
