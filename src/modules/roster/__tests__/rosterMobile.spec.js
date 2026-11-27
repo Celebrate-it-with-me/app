@@ -116,3 +116,24 @@ describe('Roster on phones: guest card language select', () => {
     expect(foot.textContent).toContain('1 persona')
   })
 })
+
+describe('Roster on phones: guest card names', () => {
+  it('lets a companion name wrap onto two lines and keeps its status badge from shrinking', async () => {
+    roster.list.mockResolvedValue({
+      data: [family(1, 'Esteban Roldán', { companions: [{ id: 9, name: 'Camila Torres Fernández', status: 'pending' }] })],
+      meta: { currentPage: 1, lastPage: 1, total: 1 }, counts
+    })
+    await setup()
+    const name = body().querySelector('[data-testid="companion-name"]')
+    expect(name.textContent).toBe('Camila Torres Fernández')
+    expect(name.className).not.toContain('truncate')
+    expect(name.className).toContain('break-words')
+    expect(name.parentElement.className).toContain('items-start')
+    expect(name.nextElementSibling.className).toContain('shrink-0')
+  })
+
+  it('steps the main name down one size at 360px and below', async () => {
+    await setup()
+    expect(body().querySelector('ul li h2').className).toContain('max-[360px]:text-base')
+  })
+})

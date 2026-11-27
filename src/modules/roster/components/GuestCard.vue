@@ -43,7 +43,7 @@ const items = computed(() => {
       <UiAvatar :name="family.name" class="shrink-0" />
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <h2 class="font-heading text-lg text-ink-900">{{ family.name }}</h2>
+          <h2 class="font-heading text-lg text-ink-900 max-[360px]:text-base">{{ family.name }}</h2>
           <UiBadge :tone="STATUS_TONE[family.status]" size="sm" dot>{{ t(`app.roster.status.${family.status}`) }}</UiBadge>
         </div>
         <p v-if="contact" class="truncate text-sm text-ink-500">{{ contact }}</p>
@@ -60,9 +60,9 @@ const items = computed(() => {
           <UiButton v-else-if="delivery.key === 'no_phone' && canEdit" size="sm" variant="link" class="h-auto text-xs" @click="emit('edit', family)">{{ t('app.roster.addPhone') }}</UiButton>
         </div>
         <ul v-if="family.companions.length" class="mt-2 space-y-1">
-          <li v-for="companion in family.companions" :key="companion.id" class="flex items-center justify-between gap-2 text-sm text-ink-700">
-            <span class="truncate">{{ companion.name }}</span>
-            <UiBadge :tone="STATUS_TONE[companion.status]" size="sm">{{ t(`app.roster.status.${companion.status}`) }}</UiBadge>
+          <li v-for="companion in family.companions" :key="companion.id" class="flex items-start justify-between gap-2 text-sm text-ink-700">
+            <span class="min-w-0 flex-1 break-words" data-testid="companion-name">{{ companion.name }}</span>
+            <UiBadge :tone="STATUS_TONE[companion.status]" size="sm" class="shrink-0">{{ t(`app.roster.status.${companion.status}`) }}</UiBadge>
           </li>
         </ul>
         <p v-if="family.notes" class="mt-2 text-sm text-ink-500">{{ family.notes }}</p>
