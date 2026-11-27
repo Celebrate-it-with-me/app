@@ -15,6 +15,8 @@ import { storeToRefs } from 'pinia'
 import { CircleCheck, LifeBuoy, Sparkles } from 'lucide-vue-next'
 import { useToast } from '@/ui'
 import { floatingBarSpace } from '@/composables/useFloatingBarSpace'
+import { useHideOnScroll } from '@/composables/useHideOnScroll'
+import { useMinWidth } from '@/composables/useMinWidth'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import SupportSheet from '@/modules/support/components/SupportSheet.vue'
@@ -125,6 +127,15 @@ const WELCOME_MS = 6000
 const welcome = ref(false)
 let welcomeTimer
 let welcomeHide
+
+const floatingEl = ref(null)
+// On phones (< 768 px) the floating button steps out of the way while she reads down the page and returns on the way up.
+const isWide = useMinWidth(768)
+const focusInside = computed(() => Boolean(focusedElement.value && floatingEl.value?.contains(focusedElement.value)))
+const scrollHidden = useHideOnScroll({
+  enabled: () => !isWide.value,
+  keepVisible: () => ownOpen.value || welcome.value || focusInside.value
+})
 
 /** True when the bubble, drawn above the trigger, would cover something she can press or type in (a CTA, a filter, a field). */
 const welcomeCoversControl = () => {
@@ -307,8 +318,12 @@ const countdown = computed(() => countdownOf(next.value))
       leave-to-class="translate-y-2 opacity-0"
     >
       <div
+        ref="floatingEl"
         v-show="!hidden"
-        class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px)+var(--assistant-lift,0px))] z-40 flex flex-col items-end gap-2 transition-[bottom] duration-200 ease-out motion-reduce:transition-none lg:bottom-[calc(1.5rem+var(--assistant-lift,0px))] lg:right-6"
+        :inert="scrollHidden || undefined"
+        :aria-hidden="scrollHidden ? 'true' : undefined"
+        class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px)+var(--assistant-lift,0px))] z-40 flex flex-col items-end gap-2 transition-[bottom,translate,opacity] duration-200 ease-out motion-reduce:transition-none lg:bottom-[calc(1.5rem+var(--assistant-lift,0px))] lg:right-6"
+        :class="scrollHidden ? 'pointer-events-none translate-y-[calc(100%+6rem)] opacity-0 motion-reduce:translate-y-0' : ''"
         :style="{ '--assistant-lift': `${floatingBarSpace}px` }"
         data-testid="assistant-guide"
         :data-variant="variant"
