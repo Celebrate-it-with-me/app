@@ -22,7 +22,7 @@ const VARIANTS = {
   outline: 'border border-rose-700 bg-white text-rose-700 hover:bg-rose-50 active:bg-rose-100'
 }
 const SIZES = {
-  hero: 'min-h-12 rounded-[14px] px-3 py-2 text-[15px] sm:min-h-[46px] sm:px-5 sm:whitespace-nowrap',
+  hero: 'min-h-12 rounded-[14px] px-3 py-2 text-[15px] whitespace-nowrap sm:min-h-[46px] sm:px-5',
   md: 'min-h-12 rounded-md px-4 py-2 text-sm sm:min-h-11'
 }
 
