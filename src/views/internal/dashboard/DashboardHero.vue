@@ -146,6 +146,8 @@ const previewOpen = ref(false)
           {{ t('app.dashboard.edit') }}
         </DashboardAction>
       </div>
+      <!-- A phone has no thumbnail (so no link beside it): the same destination, as a text link under the buttons. -->
+      <router-link v-if="!wide && canEdit && templateTo" :to="templateTo" :class="[LINK, 'self-start']" data-testid="hero-change-template-mobile">{{ t('app.dashboard.hero.changeTemplate') }}</router-link>
       <p v-if="!published" class="max-w-md text-[13px] text-ink-500" data-testid="hero-draft-hint">{{ t('app.dashboard.hero.draftHint') }}</p>
     </div>
 
