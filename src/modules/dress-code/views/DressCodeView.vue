@@ -164,7 +164,7 @@ async function remove() {
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.dressCode.title')" :subtitle="t('app.dressCode.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-4">

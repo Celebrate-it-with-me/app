@@ -218,7 +218,7 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <UiPage width="form">
+  <UiPage>
     <div v-if="loading" class="flex flex-col gap-4" aria-busy="true">
       <UiSkeleton height="3rem" width="60%" />
       <UiSkeleton height="22rem" />

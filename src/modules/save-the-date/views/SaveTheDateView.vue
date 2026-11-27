@@ -82,7 +82,7 @@ const ask = action => (confirming.value = action)
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.saveTheDate.title')" :subtitle="t('app.saveTheDate.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-4">

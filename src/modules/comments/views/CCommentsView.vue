@@ -62,7 +62,7 @@ onBeforeUnmount(() => media?.removeEventListener('change', syncMedia))
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.comments.title')" :subtitle="t('app.comments.subtitle')">
       <template #actions>
         <UiButton @click="ctrl.openCreate()">

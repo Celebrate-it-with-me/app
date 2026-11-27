@@ -22,7 +22,7 @@ const {
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <div v-if="loading" class="space-y-3">
       <UiSkeleton class="h-16" />
       <UiSkeleton class="h-24" />

@@ -104,7 +104,7 @@ async function submit() {
 </script>
 
 <template>
-  <UiPage width="form">
+  <UiPage>
     <UiPageHeader :title="t('events.create.title')" :subtitle="t('events.create.subtitle')" back="/dashboard/events" :back-label="t('events.edit.back')" />
 
     <UiCard>

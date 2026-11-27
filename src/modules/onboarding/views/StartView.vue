@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Check, ArrowRight, FileSpreadsheet, UserPlus } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiButton, UiBadge, UiSkeleton, useToast } from '@/ui'
+import { UiPage, UiPageHeader, UiCard, UiButton, UiBadge, UiSkeleton, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useUserStore } from '@/stores/useUserStore'
 import GuestImportModal from '@/modules/roster/components/GuestImportModal.vue'
@@ -52,7 +52,7 @@ onMounted(load)
 </script>
 
 <template>
-  <div v-if="event" class="mx-auto max-w-3xl">
+  <UiPage v-if="event">
     <UiPageHeader :title="heading" :subtitle="t('app.start.subtitle', { event: event.eventName })" />
 
     <section class="mt-5 rounded-2xl border border-line bg-white p-4 sm:p-5" :aria-label="t('app.start.progressLabel')">
@@ -155,5 +155,5 @@ onMounted(load)
     </div>
 
     <GuestImportModal v-model:open="importing" :event-id="event.id" @imported="onImported" />
-  </div>
+  </UiPage>
 </template>

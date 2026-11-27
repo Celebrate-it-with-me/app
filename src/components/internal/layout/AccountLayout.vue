@@ -18,7 +18,7 @@ const tabs = computed(() =>
 </script>
 
 <template>
-  <UiPage width="form">
+  <UiPage>
     <UiPageHeader :title="t('account.title')" :subtitle="t('account.subtitle')" />
 
     <UiScrollFade class="-mt-2 mb-6">
