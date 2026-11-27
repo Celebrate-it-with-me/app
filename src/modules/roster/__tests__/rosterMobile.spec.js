@@ -101,3 +101,18 @@ describe('Roster on phones: send button label', () => {
     expect(button.querySelector('span')).toBeNull()
   })
 })
+
+describe('Roster on phones: guest card language select', () => {
+  it('sits in a full-width foot below the avatar row, not inside the narrow name column', async () => {
+    await setup()
+    const card = body().querySelector('ul li')
+    const foot = card.querySelector('[data-testid="guest-card-foot"]')
+    const nameColumn = card.querySelector('h2').closest('.min-w-0')
+    expect(foot).not.toBeNull()
+    expect(nameColumn.contains(foot)).toBe(false)
+    expect(foot.className).toContain('sm:ml-13')
+    expect(foot.querySelector('label').textContent).toBe('Idioma de la invitación')
+    expect(foot.querySelector('[data-effective]').className).toContain('w-full')
+    expect(foot.textContent).toContain('1 persona')
+  })
+})

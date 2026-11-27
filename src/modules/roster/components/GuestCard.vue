@@ -70,8 +70,6 @@ const items = computed(() => {
           <figcaption class="text-xs font-medium text-ink-500">{{ t('app.roster.rsvpNote') }}</figcaption>
           <blockquote class="mt-0.5 whitespace-pre-line break-words text-sm text-ink-700">{{ family.rsvpNote }}</blockquote>
         </figure>
-        <GuestLocaleSelect :family="family" :event-locale="eventLocale" :disabled="!canEdit" @change="emit('locale', family, $event)" />
-        <p class="mt-2 text-xs text-ink-500">{{ t('app.roster.people', { n: peopleIn(family) }, peopleIn(family)) }}</p>
       </div>
       <UiDropdown :items="items">
         <template #trigger>
@@ -80,6 +78,12 @@ const items = computed(() => {
           </UiButton>
         </template>
       </UiDropdown>
+    </div>
+    <!-- Below the name column on phones, so the language select gets the whole card width (it was cut to ~150px
+         between the avatar and the menu); from sm up it lines up with the name column again (avatar 2.5rem + gap 0.75rem). -->
+    <div class="sm:ml-13" data-testid="guest-card-foot">
+      <GuestLocaleSelect :family="family" :event-locale="eventLocale" :disabled="!canEdit" @change="emit('locale', family, $event)" />
+      <p class="mt-2 text-xs text-ink-500">{{ t('app.roster.people', { n: peopleIn(family) }, peopleIn(family)) }}</p>
     </div>
   </UiCard>
 </template>
