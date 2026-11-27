@@ -1797,6 +1797,7 @@ export default {
       counterLimit: '{n} of {limit} people on your plan',
       overLimitChip: '{n} of {limit} · over the limit',
       search: 'Search by name, phone or email',
+      searchShort: 'Search guests',
       add: 'Add guest',
       tabs: { all: 'All', attending: 'Confirmed', pending: 'Pending', 'not-attending': 'Declined' },
       // Phones: four columns share the width, so the labels are the shortest that still read.

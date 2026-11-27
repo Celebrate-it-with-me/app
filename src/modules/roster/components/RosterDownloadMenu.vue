@@ -63,7 +63,7 @@ const items = computed(() => {
 <template>
   <UiDropdown :items="items">
     <template #trigger>
-      <UiButton variant="secondary" :loading="busy" :aria-label="t('app.roster.download.label')">
+      <UiButton variant="secondary" class="w-full md:w-auto" :loading="busy" :aria-label="t('app.roster.download.label')">
         <Download class="h-4 w-4" aria-hidden="true" />
         {{ t('app.roster.download.button') }}
       </UiButton>

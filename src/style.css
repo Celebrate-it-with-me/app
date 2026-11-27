@@ -381,6 +381,7 @@
 /* Scrollable row without the scrollbar (pair it with UiScrollFade so the edge still hints at more). */
 @utility no-scrollbar {
   scrollbar-width: none;
+  -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
   }

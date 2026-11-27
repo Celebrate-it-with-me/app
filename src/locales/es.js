@@ -1797,6 +1797,7 @@ export default {
       counterLimit: '{n} de {limit} personas en tu plan',
       overLimitChip: '{n} de {limit} · pasaste el límite',
       search: 'Buscar por nombre, teléfono o correo',
+      searchShort: 'Buscar invitado',
       add: 'Añadir invitado',
       tabs: { all: 'Todos', attending: 'Confirmados', pending: 'Pendientes', 'not-attending': 'No asisten' },
       // Phones: four columns share the width, so the labels are the shortest that still read.

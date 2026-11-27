@@ -8,6 +8,7 @@ import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { planLimitFrom } from '@/utils/planLimit'
 import { useFloatingBarSpace } from '@/composables/useFloatingBarSpace'
+import { useMinWidth } from '@/composables/useMinWidth'
 import { unlockPath } from '@/components/internal/shell/navModules'
 import RosterService from '../services/RosterService'
 import WhatsappService from '../services/WhatsappService'
@@ -32,6 +33,8 @@ const { success, error: showError } = useToast()
 const eventsStore = useEventsStore()
 
 const event = computed(() => eventsStore.activeEvent)
+// The long search hint is cut on phones; below md the field says just "Buscar invitado" (the accessible name stays the long one).
+const wide = useMinWidth(768)
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 
 const status = ref(TABS.some(tab => tab.value === route.query.status) ? route.query.status : 'all')
@@ -459,7 +462,7 @@ async function copyLink(family) {
           type="search"
           autocomplete="off"
           :aria-label="t('app.roster.search')"
-          :placeholder="t('app.roster.search')"
+          :placeholder="t(wide ? 'app.roster.search' : 'app.roster.searchShort')"
           class="h-11 w-full rounded-xl border border-line-strong bg-white pl-10 pr-3 text-base text-ink-900 placeholder:text-ink-500 focus-visible:outline-2 focus-visible:outline-rose-600"
         />
       </div>
@@ -468,14 +471,14 @@ async function copyLink(family) {
         <UiTabs v-model="status" :tabs="tabs" compact />
       </div>
 
-      <div v-if="chips.length && !emptyList" class="flex flex-wrap items-center gap-2" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">
-        <span class="text-sm font-medium text-ink-500">{{ t('app.roster.filters.delivery') }}</span>
+      <div v-if="chips.length && !emptyList" class="no-scrollbar -mx-0.5 -my-1 flex items-center gap-2 overflow-x-auto px-0.5 py-1 md:m-0 md:flex-wrap md:overflow-visible md:p-0" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">
+        <span class="shrink-0 text-sm font-medium text-ink-500">{{ t('app.roster.filters.delivery') }}</span>
         <button
           v-for="chip in chips"
           :key="chip.value"
           type="button"
           :aria-pressed="delivery === chip.value"
-          class="inline-flex h-10 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+          class="inline-flex h-10 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
           :class="delivery === chip.value ? 'border-ink-900 bg-ink-900 text-white' : chip.value === 'problem' && chip.count ? 'border-danger-500/40 bg-danger-50 text-danger-700 hover:bg-danger-50' : 'border-line-strong bg-white text-ink-700 hover:bg-cream-100'"
           @click="toggleChip(chip.value)"
         >
@@ -485,14 +488,14 @@ async function copyLink(family) {
       </div>
     </div>
 
-    <div v-if="!emptyList && (canEdit || (event?.id && counts.all))" class="mt-4 flex flex-wrap items-center gap-2">
+    <div v-if="!emptyList && (canEdit || (event?.id && counts.all))" class="mt-4 grid grid-cols-2 gap-2 max-md:[&>:only-child]:col-span-2 md:flex md:flex-wrap md:items-center">
       <div v-if="!counts.all && loading && (event?.guestsCount ?? 0) > 0" class="h-11 w-36" aria-hidden="true" data-testid="download-placeholder" />
       <template v-if="canEdit">
-        <UiButton variant="secondary" @click="openForm()">
+        <UiButton variant="secondary" class="col-span-2 w-full md:col-span-1 md:w-auto" @click="openForm()">
           <Plus class="h-4 w-4" aria-hidden="true" />
           {{ t('app.roster.add') }}
         </UiButton>
-        <UiButton variant="secondary" @click="importOpen = true">
+        <UiButton variant="secondary" class="w-full md:w-auto" @click="importOpen = true">
           <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
           {{ t('app.guestImport.button') }}
         </UiButton>

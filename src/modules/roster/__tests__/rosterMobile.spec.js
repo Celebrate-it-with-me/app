@@ -137,3 +137,49 @@ describe('Roster on phones: guest card names', () => {
     expect(body().querySelector('ul li h2').className).toContain('max-[360px]:text-base')
   })
 })
+
+describe('Roster on phones: filters and actions', () => {
+  const phone = () => vi.stubGlobal('matchMedia', query => ({ matches: false, media: query, addEventListener() {}, removeEventListener() {} }))
+
+  it('shortens the search hint below md and keeps the long accessible name', async () => {
+    phone()
+    await setup()
+    const input = body().querySelector('input[type="search"]')
+    expect(input.placeholder).toBe('Buscar invitado')
+    expect(input.getAttribute('aria-label')).toBe('Buscar por nombre, teléfono o correo')
+  })
+
+  it('keeps the long search hint from md up', async () => {
+    await setup()
+    expect(body().querySelector('input[type="search"]').placeholder).toBe('Buscar por nombre, teléfono o correo')
+  })
+
+  it('keeps the Envío chips on one row that scrolls without a bar below md', async () => {
+    await setup()
+    const row = body().querySelector('[data-testid="delivery-chips"]')
+    expect(row.className).toContain('no-scrollbar')
+    expect(row.className).toContain('overflow-x-auto')
+    expect(row.className).not.toMatch(/(^|\s)flex-wrap/)
+    expect(row.className).toContain('md:flex-wrap')
+    for (const chip of row.querySelectorAll('button')) expect(chip.className).toContain('whitespace-nowrap')
+  })
+
+  it('puts "Añadir invitado" on its own row and Importar / Descargar in two equal columns', async () => {
+    await setup()
+    const bar = [...body().querySelectorAll('button')].find(b => b.textContent.trim() === 'Añadir invitado').parentElement
+    expect(bar.className).toContain('grid-cols-2')
+    const [add, imp, down] = [...bar.children]
+    expect(add.className).toContain('col-span-2')
+    expect(add.className).toContain('w-full')
+    expect(imp.textContent.trim()).toBe('Importar')
+    expect(imp.className).toContain('w-full')
+    expect(down.className).toContain('w-full')
+  })
+
+  it('gives a viewer the download button alone, spanning the whole row', async () => {
+    await setup({ role: 'viewer' })
+    const bar = [...body().querySelectorAll('button')].find(b => b.getAttribute('aria-label') === 'Descargar lista')?.parentElement ?? body().querySelector('.grid-cols-2')
+    expect(bar.className).toContain('max-md:[&>:only-child]:col-span-2')
+    expect(bar.children).toHaveLength(1)
+  })
+})
