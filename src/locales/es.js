@@ -2243,7 +2243,9 @@ export default {
         title: 'Actividad reciente',
         emptyTitle: 'Aún no hay actividad',
         emptyText: 'Cuando alguien confirme, abra su invitación o cambie algo del evento, lo verás aquí.',
-        error: 'No pudimos cargar la actividad reciente.'
+        error: 'No pudimos cargar la actividad reciente.',
+        viewAll: 'Ver todo',
+        showLess: 'Ver menos'
       },
       denied: 'No tienes permiso para abrir esa sección de este evento.'
     },

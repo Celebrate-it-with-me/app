@@ -2243,7 +2243,9 @@ export default {
         title: 'Recent activity',
         emptyTitle: 'No activity yet',
         emptyText: 'When someone replies, opens their invitation or changes something in the event, you will see it here.',
-        error: 'We could not load the recent activity.'
+        error: 'We could not load the recent activity.',
+        viewAll: 'View all',
+        showLess: 'Show less'
       },
       denied: 'You do not have permission to open that section of this event.'
     },
