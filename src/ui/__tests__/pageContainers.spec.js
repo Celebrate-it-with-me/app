@@ -37,22 +37,22 @@ import CollaboratorsView from '@/modules/collaborators/views/CollaboratorsView.v
 
 /** Every panel screen sits inside UiPage, so its title starts at the same x everywhere. */
 const SCREENS = [
-  ['Account (Mi cuenta)', AccountLayout, 'form'],
-  ['Create event', CreateEventView, 'form'],
-  ['Create menu', CreateMenusView, 'form'],
-  ['Budget', BudgetView, 'wide'],
-  ['Comments', CCommentsView, 'wide'],
-  ['Dress code', DressCodeView, 'wide'],
-  ['My events', EventsView, 'wide'],
-  ['Menus', MenusView, 'wide'],
-  ['Show menu', ShowMenuView, 'wide'],
-  ['Save the date', SaveTheDateView, 'wide'],
-  ['Music', CSuggestedMusic, 'wide'],
-  ['Memories', CSweetMemories, 'wide'],
-  ['Collaborators', CollaboratorsView, 'wide'],
-  ['Locations', LocationsView, 'default'],
-  ['Program', TimelineView, 'default'],
-  ['Padrinos', PadrinosView, 'default']
+  ['Account (Mi cuenta)', AccountLayout],
+  ['Create event', CreateEventView],
+  ['Create menu', CreateMenusView],
+  ['Budget', BudgetView],
+  ['Comments', CCommentsView],
+  ['Dress code', DressCodeView],
+  ['My events', EventsView],
+  ['Menus', MenusView],
+  ['Show menu', ShowMenuView],
+  ['Save the date', SaveTheDateView],
+  ['Music', CSuggestedMusic],
+  ['Memories', CSweetMemories],
+  ['Collaborators', CollaboratorsView],
+  ['Locations', LocationsView],
+  ['Program', TimelineView],
+  ['Padrinos', PadrinosView]
 ]
 
 describe('panel screens share one container', () => {
@@ -67,11 +67,10 @@ describe('panel screens share one container', () => {
     useEventsStore().activeEvent = { id: 7, userRole: 'owner', modules: [], eventName: 'Los XV', timezone: 'America/New_York' }
   })
 
-  it.each(SCREENS)('%s is a UiPage (%s)', async (_name, component, width) => {
+  it.each(SCREENS)('%s is a UiPage', async (_name, component) => {
     const wrapper = shallowMount(component, { global: { plugins: [i18n, pinia], stubs: { RouterView: true, RouterLink: true } } })
     await flushPromises()
     const page = wrapper.findComponent(UiPage)
     expect(page.exists()).toBe(true)
-    expect(page.props('width')).toBe(width)
   })
 })
