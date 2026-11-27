@@ -6,8 +6,10 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Check } from 'lucide-vue-next'
-import { UiCard, UiSkeleton } from '@/ui'
+import { UiSkeleton } from '@/ui'
 import DashboardBlock from './DashboardBlock.vue'
+import DashboardCard from './DashboardCard.vue'
+import { LINK } from './dashboardUi'
 import { planPercent, routeAvailability, routeMilestones } from './dashboardLogic'
 import { daysUntilEvent, eventDay, formatEventDate, formatClock, hasClock } from '@/utils/eventDateTime'
 
@@ -42,8 +44,8 @@ const summary = computed(() => {
   return days.value !== null && days.value > 0 ? `${head} · ${t('app.dashboard.route.remaining', { n: days.value }, days.value)}` : head
 })
 
-// The day is the title; the clock goes to the line below, so a 4-column route (768 px) never breaks "7:00 / p. m.".
-const eventTitle = computed(() => (hasDate.value ? formatEventDate(props.startDate, 'weekdayDayMonth', locale.value, props.timezone) : t('app.dashboard.route.eventDay')))
+// The day and its clock are the title, like the prototype ("Sáb 2 ene · 7:00 p. m."); the clock never splits in two.
+const eventDayLabel = computed(() => (hasDate.value ? formatEventDate(props.startDate, 'weekdayDayMonth', locale.value, props.timezone) : t('app.dashboard.route.eventDay')))
 const eventClock = computed(() => (hasDate.value && hasClock(props.startDate) ? formatClock(props.startDate, locale.value, props.timezone) : ''))
 
 const cards = computed(() =>
@@ -53,7 +55,7 @@ const cards = computed(() =>
     if (m.key === 'event') {
       const sub =
         days.value === null ? t('app.dashboard.route.eventNoDate') : days.value < 0 ? t('app.dashboard.route.eventPast') : days.value === 0 ? t('app.dashboard.route.eventToday') : t('app.dashboard.route.eventFuture')
-      return { ...base, title: eventTitle.value, sub: eventClock.value ? `${eventClock.value} · ${sub}` : sub }
+      return { ...base, title: eventDayLabel.value, clock: eventClock.value, sub }
     }
     const sub = m.state === 'done' ? t('app.dashboard.route.phaseDone') : m.state === 'empty' ? t('app.dashboard.route.phaseEmpty') : m.pending[0] ?? ''
     const count = m.total > 0 && m.state !== 'done' ? t('app.dashboard.route.phaseCount', { done: m.done, total: m.total }, m.total) : ''
@@ -62,29 +64,29 @@ const cards = computed(() =>
 )
 
 /** Connector colours: filled when the milestone it leads to is reached. */
-const filled = i => (cards.value[i]?.reached ? 'bg-rose-600' : 'bg-cream-300')
+const filled = i => (cards.value[i]?.reached ? 'bg-rose-700' : 'bg-line')
 
 const ringClass = card =>
   ({
-    now: 'border-rose-600 bg-rose-600',
+    now: 'border-rose-700 bg-rose-700',
     done: 'border-success-500 bg-success-500',
-    current: 'border-rose-600 bg-white',
+    current: 'border-rose-700 bg-white',
     event: 'border-gold-500 bg-gold-500'
-  })[card.state] ?? 'border-ink-400 bg-white'
+  })[card.state] ?? 'border-ink-300 bg-white'
 </script>
 
 <template>
-  <UiCard v-if="availability !== 'none' || status !== 'ready'" as="section" data-testid="dashboard-route">
-    <header class="mb-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-      <h2 class="font-heading text-xl text-ink-900 sm:text-2xl">{{ t('app.dashboard.route.title') }}</h2>
-      <p v-if="status === 'ready' && availability === 'ready'" class="text-sm text-ink-500" data-testid="route-summary">{{ summary }}</p>
+  <DashboardCard v-if="availability !== 'none' || status !== 'ready'" :padded="false" class="p-5 lg:px-7 lg:py-6" data-testid="dashboard-route">
+    <header class="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 lg:mb-3.5">
+      <h2 class="font-heading text-xl font-semibold leading-tight text-ink-900 lg:text-[22px]">{{ t('app.dashboard.route.title') }}</h2>
+      <p v-if="status === 'ready' && availability === 'ready'" class="text-[13px] text-ink-500" data-testid="route-summary">{{ summary }}</p>
     </header>
 
     <DashboardBlock :status="status" :error-text="t('app.dashboard.route.error')" @retry="$emit('retry')">
       <template #skeleton>
         <div class="grid gap-4 sm:grid-cols-4" data-testid="route-skeleton">
-          <div v-for="n in 4" :key="n" class="flex gap-4 sm:flex-col sm:gap-3">
-            <UiSkeleton circle width="1.5rem" height="1.5rem" />
+          <div v-for="n in 4" :key="n" class="flex gap-3.5 sm:flex-col sm:gap-2">
+            <UiSkeleton circle width="1.375rem" height="1.375rem" />
             <div class="flex-1"><UiSkeleton :lines="2" /></div>
           </div>
         </div>
@@ -92,35 +94,34 @@ const ringClass = card =>
 
       <p v-if="availability === 'no_date'" class="text-sm text-ink-700" data-testid="route-no-date">
         {{ t('app.dashboard.route.noDate') }}
-        <router-link v-if="canEdit && editTo" :to="editTo" class="inline-flex min-h-11 items-center font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600">{{ t('app.dashboard.hero.setDate') }}</router-link>
+        <router-link v-if="canEdit && editTo" :to="editTo" :class="LINK">{{ t('app.dashboard.hero.setDate') }}</router-link>
       </p>
 
       <ol v-else class="grid sm:grid-cols-4" data-testid="route-list">
         <li
           v-for="(card, i) in cards"
           :key="card.key"
-          class="flex gap-4 sm:flex-col sm:gap-2"
+          class="flex gap-3.5 sm:flex-col sm:gap-2"
           :data-state="card.state"
           :data-testid="`route-${card.key}`"
         >
-          <div class="flex flex-col items-center sm:h-6 sm:flex-row">
+          <div class="flex w-[22px] shrink-0 flex-col items-center sm:h-6 sm:w-auto sm:flex-row">
             <span class="hidden h-[3px] flex-1 sm:block" :class="i === 0 ? 'bg-transparent' : filled(i)" aria-hidden="true"></span>
-            <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-[3px]" :class="ringClass(card)" aria-hidden="true">
-              <Check v-if="card.state === 'done'" class="h-3.5 w-3.5 text-white" stroke-width="4" />
-              <span v-else-if="card.state === 'current'" class="h-2 w-2 rounded-full bg-rose-600"></span>
+            <span class="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-[3px]" :class="ringClass(card)" aria-hidden="true">
+              <Check v-if="card.state === 'done'" class="h-3 w-3 text-white" stroke-width="4" />
             </span>
-            <span class="min-h-5 w-[3px] flex-1 sm:h-[3px] sm:min-h-0 sm:w-auto" :class="i === cards.length - 1 ? 'bg-transparent' : filled(i + 1)" aria-hidden="true"></span>
+            <span class="min-h-[18px] w-[3px] flex-1 sm:h-[3px] sm:min-h-0 sm:w-auto" :class="i === cards.length - 1 ? 'bg-transparent' : filled(i + 1)" aria-hidden="true"></span>
           </div>
-          <div class="min-w-0 flex-1 sm:pb-0 sm:pr-3" :class="i === cards.length - 1 ? 'pb-0' : 'pb-4'">
+          <div class="min-w-0 flex-1 sm:pb-0 sm:pr-3" :class="i === cards.length - 1 ? 'pb-0' : 'pb-3'">
             <p class="text-sm font-semibold text-ink-900 first-letter:uppercase">
-              {{ card.title }}
+              {{ card.title }}<template v-if="card.clock"> · <span class="whitespace-nowrap">{{ card.clock }}</span></template>
               <span class="sr-only"> ({{ t(`app.dashboard.route.state.${card.state}`) }})</span>
             </p>
-            <p class="mt-0.5 line-clamp-3 text-sm leading-snug text-ink-500">{{ card.sub }}</p>
+            <p class="mt-0.5 line-clamp-3 text-[13px] leading-[1.4] text-ink-500">{{ card.sub }}</p>
             <p v-if="card.count" class="mt-1 text-xs text-ink-500">{{ card.count }}</p>
           </div>
         </li>
       </ol>
     </DashboardBlock>
-  </UiCard>
+  </DashboardCard>
 </template>

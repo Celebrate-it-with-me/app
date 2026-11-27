@@ -31,7 +31,7 @@ const label = computed(() =>
 </script>
 
 <template>
-  <div class="relative size-30 shrink-0 sm:size-36" data-testid="rsvp-ring">
+  <div class="relative size-30 shrink-0 @md:size-[150px]" data-testid="rsvp-ring">
     <svg viewBox="0 0 150 150" class="size-full -rotate-90" role="img" :aria-label="label">
       <circle cx="75" cy="75" :r="R" fill="none" class="stroke-cream-300" stroke-width="16" />
       <circle
@@ -49,8 +49,8 @@ const label = computed(() =>
       />
     </svg>
     <div class="absolute inset-0 flex flex-col items-center justify-center" aria-hidden="true">
-      <span class="font-heading text-3xl leading-none text-ink-900 tabular-nums sm:text-4xl">{{ rate }} %</span>
-      <span class="mt-1 text-xs text-ink-500">{{ t('app.dashboard.rsvp.responded') }}</span>
+      <span class="font-heading text-[28px] leading-none text-ink-900 tabular-nums @md:text-[34px]">{{ rate }} %</span>
+      <span class="mt-1 text-[11px] text-ink-500 @md:text-xs">{{ t('app.dashboard.rsvp.responded') }}</span>
     </div>
   </div>
 </template>

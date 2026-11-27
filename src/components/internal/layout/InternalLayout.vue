@@ -13,6 +13,7 @@ import UserMenu from '@/components/internal/shell/UserMenu.vue'
 import AppSidebar from '@/components/internal/shell/AppSidebar.vue'
 import AppBottomNav from '@/components/internal/shell/AppBottomNav.vue'
 import AssistantGuide from '@/modules/assistant/guide/AssistantGuide.vue'
+import { isHelpOnlyRoute } from '@/modules/assistant/guide/guideUtils'
 import AnnouncementBanners from '@/modules/announcements/components/AnnouncementBanners.vue'
 import ImpersonationBanner from '@/modules/impersonation/components/ImpersonationBanner.vue'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
@@ -34,6 +35,8 @@ const router = useRouter()
 // Starts true: the layout loads before it shows a screen. With false the first render mounted the screen, onMounted
 // then unmounted it behind the loader and mounted it again, so every screen fetched its data twice on a full reload.
 const loading = ref(true)
+// The Inicio keeps the help icon in the header instead of floating over its blocks (the guide is help-only there).
+const helpDocked = computed(() => !impersonation.active && isHelpOnlyRoute(route.path))
 
 const shouldShowRouteView = computed(() => {
   if (route.name === 'invitations-processor') return true
@@ -81,6 +84,8 @@ const determinatePostLoginRoute = async () => {
         <!-- Right side: the event you are working on, next to who you are. -->
         <div class="flex min-w-0 flex-1 items-center justify-end gap-3">
           <EventSwitcher />
+          <!-- The help button's place on the Inicio (AssistantGuide teleports it here), so it never covers the page. -->
+          <div v-if="helpDocked" id="shell-help-dock" class="-mx-1.5 flex shrink-0 empty:hidden" data-testid="help-dock"></div>
           <UserMenu />
         </div>
       </div>

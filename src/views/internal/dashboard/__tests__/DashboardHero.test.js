@@ -105,12 +105,20 @@ describe('DashboardHero roles', () => {
     const w = mountHero({ canEdit: false, published: false })
     ;['hero-edit', 'hero-publish', 'hero-view', 'hero-share'].forEach(id => expect(button(w, id).exists()).toBe(false))
   })
-  it('never lets a narrow button squeeze its icon away', () => {
+  it('draws its buttons, date and links without icons, like the prototype (owner decision, 2026-11-26)', () => {
     for (const props of [{}, { published: false }]) {
-      const icons = mountHero(props).findAll('[data-testid^=hero-] svg').filter(svg => !svg.element.closest('[data-testid=hero-countdown]'))
-      expect(icons.length).toBeGreaterThan(1)
-      icons.forEach(svg => expect(svg.classes()).toContain('shrink-0'))
+      expect(mountHero(props).findAll('[data-testid^=hero-] svg')).toHaveLength(0)
     }
+  })
+  it('gives the phone a short date line and keeps the long one from 640 px', () => {
+    const w = mountHero({ startDate: '01/10/2027 19:00' })
+    expect(w.get('[data-testid=hero-date-short]').classes()).toContain('sm:hidden')
+    expect(w.get('[data-testid=hero-date-short]').text()).toMatch(/dom.*10.*ene.*·.*7:00/i)
+    expect(w.get('[data-testid=hero-date]').text()).toMatch(/domingo.*10 de enero de 2027/i)
+  })
+  it('uses the one rose of the Inicio (rose-700) for its main action', () => {
+    expect(button(mountHero(), 'hero-share').classes()).toContain('bg-rose-700')
+    expect(button(mountHero({ published: false }), 'hero-publish').classes()).toContain('bg-rose-700')
   })
   it('shows Edit event for editors', () => {
     expect(button(mountHero(), 'hero-edit').text()).toContain('Editar')
@@ -136,13 +144,17 @@ describe('DashboardHero phone', () => {
 describe('DashboardHero plan progress', () => {
   it('shows the plan as steps, never as "ready"', () => {
     const w = mountHero({ plan: { done: 7, total: 18 } })
-    expect(w.get('[data-testid=hero-plan]').text()).toBe('Plan de organización · 7 de 18 pasos · 39 %')
+    expect(w.get('[data-testid=hero-plan-label]').text()).toBe('7 de 18 pasos · 39 %')
+    expect(w.get('[data-testid=hero-plan-short]').text()).toBe('7 de 18 · 39 %')
     expect(w.get('[role=progressbar]').attributes('aria-valuenow')).toBe('39')
     expect(w.text()).not.toContain('listo')
   })
   it('says it in English', () => {
     setLocale('en')
-    expect(mountHero({ plan: { done: 1, total: 2 } }).get('[data-testid=hero-plan]').text()).toBe('Organization plan · 1 of 2 steps · 50%')
+    const w = mountHero({ plan: { done: 1, total: 2 } })
+    expect(w.get('[data-testid=hero-plan]').text()).toContain('Organization plan')
+    expect(w.get('[data-testid=hero-plan-label]').text()).toBe('1 of 2 steps · 50%')
+    expect(w.get('[data-testid=hero-plan-short]').text()).toBe('1 of 2 · 50%')
   })
   it('hides the figure without assistant data or with an empty plan, instead of 0 % or 100 %', () => {
     expect(mountHero({ plan: null }).find('[data-testid=hero-plan]').exists()).toBe(false)

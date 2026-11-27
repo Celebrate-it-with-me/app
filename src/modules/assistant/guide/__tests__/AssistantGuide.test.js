@@ -31,7 +31,8 @@ const ROUTES = [
 
 let wrapper
 let router
-async function mountGuide({ userRole = 'owner', path = '/dashboard/budget', next = NEXT, slug = 'quinceanera' } = {}) {
+async function mountGuide({ userRole = 'owner', path = '/dashboard/budget', next = NEXT, slug = 'quinceanera', dock = false } = {}) {
+  if (dock) document.body.insertAdjacentHTML('beforeend', '<header><div id="shell-help-dock"></div></header>')
   const pinia = createPinia()
   createApp({}).use(pinia)
   setActivePinia(pinia)
@@ -72,6 +73,22 @@ describe('AssistantGuide on the Inicio', () => {
     expect(trigger().dataset.variant).toBe('help')
     expect(q('guide-dot')).toBeNull()
     expect(trigger().textContent).not.toContain('Tu siguiente paso')
+  })
+  it('sits in the header dock (never floating over the blocks) when the layout offers one', async () => {
+    await mountGuide({ path: '/dashboard', dock: true })
+    expect(trigger().dataset.docked).toBe('true')
+    expect(trigger().parentElement.id).toBe('shell-help-dock')
+    expect(q('assistant-guide')).toBeNull()
+    trigger().click()
+    await flushPromises()
+    expect(document.querySelector('[role=dialog]')).not.toBeNull()
+  })
+  it('floats again once it leaves the Inicio, even with the dock in the page', async () => {
+    await mountGuide({ path: '/dashboard', dock: true })
+    await router.push('/dashboard/budget')
+    await flushPromises()
+    expect(trigger().dataset.docked).toBeUndefined()
+    expect(q('assistant-guide')).not.toBeNull()
   })
   it('comes back as the pill on the other screens', async () => {
     await mountGuide({ path: '/dashboard' })

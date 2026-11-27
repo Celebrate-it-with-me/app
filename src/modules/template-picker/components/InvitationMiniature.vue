@@ -194,7 +194,10 @@ watch(() => props.fallbackImage, () => (imageFailed.value = false))
       data-testid="miniature-frame"
     ></iframe>
 
-    <div v-if="!failed && !shown" class="absolute inset-0 bg-cream-200 motion-safe:animate-pulse" aria-hidden="true" data-testid="miniature-skeleton"></div>
+    <!-- While the live view loads: a plain pulse, or the caller's own drawing (`#skeleton`, e.g. the Inicio's phone). -->
+    <div v-if="!failed && !shown" class="absolute inset-0" aria-hidden="true" data-testid="miniature-skeleton">
+      <slot name="skeleton"><div class="h-full w-full bg-cream-200 motion-safe:animate-pulse"></div></slot>
+    </div>
 
     <img
       v-if="showImage"

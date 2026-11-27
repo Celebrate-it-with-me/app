@@ -52,6 +52,12 @@ const eventId = computed(() => event.value?.id ?? null)
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 const tone = computed(() => toneFor(eventsStore.eventTypes.find(type => type.id === event.value?.eventType)?.slug))
 
+// On the Inicio the help icon is not floating: it sits in the header's dock (`#shell-help-dock`, drawn by the layout on
+// that route), so it never covers the blocks of the page at any width. Without the dock (tests, other shells) it floats.
+const HELP_DOCK_ID = 'shell-help-dock'
+const dockEl = ref(null)
+const findDock = () => (dockEl.value = isHelpOnlyRoute(route.path) ? document.getElementById(HELP_DOCK_ID) : null)
+
 const view = computed(() => {
   // On the Inicio the steps live in "Lo que toca ahora": only the help icon stays.
   if (isHelpOnlyRoute(route.path)) return { kind: 'help' }
@@ -157,6 +163,8 @@ const scheduleWelcome = () => {
 }
 watch([variant, showDot], scheduleWelcome, { immediate: true })
 watch(() => route.fullPath, scheduleWelcome) // skipped over a control: try again on the next screen
+// The layout draws (or removes) the dock with the route: look for it once that render is done.
+watch(() => route.path, () => nextTick(findDock), { flush: 'post' })
 const dismissWelcome = () => {
   welcome.value = false
   clearTimeout(welcomeHide)
@@ -164,6 +172,7 @@ const dismissWelcome = () => {
 
 let observer
 onMounted(() => {
+  findDock()
   lastY = window.scrollY
   window.addEventListener('scroll', onScroll, { passive: true })
   document.addEventListener('focusin', onFocusIn)
@@ -274,7 +283,24 @@ const countdown = computed(() => countdownOf(next.value))
 
 <template>
   <div v-if="!impersonation.active">
+    <Teleport v-if="dockEl" :to="dockEl">
+      <button
+        ref="triggerRef"
+        type="button"
+        data-testid="guide-trigger"
+        data-variant="help"
+        data-docked="true"
+        :aria-label="t('support.open')"
+        :title="t('support.button')"
+        aria-haspopup="dialog"
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-rose-700 transition-colors duration-150 ease-out hover:bg-rose-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700 active:bg-rose-100 motion-reduce:transition-none"
+        @click="onTrigger"
+      >
+        <LifeBuoy class="h-5 w-5 shrink-0" aria-hidden="true" />
+      </button>
+    </Teleport>
     <Transition
+      v-else
       enter-active-class="transition-[opacity,translate] duration-200 ease-out motion-reduce:transition-none"
       leave-active-class="transition-[opacity,translate] duration-150 ease-out motion-reduce:transition-none"
       enter-from-class="translate-y-2 opacity-0"

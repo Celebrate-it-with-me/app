@@ -7,9 +7,12 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Wallet } from 'lucide-vue-next'
-import { UiButton, UiCard, UiEmptyState, UiSkeleton } from '@/ui'
+import { UiEmptyState, UiSkeleton } from '@/ui'
 import { formatMoney } from '@/modules/budget/utils/budget'
 import DashboardBlock from './DashboardBlock.vue'
+import DashboardCard from './DashboardCard.vue'
+import DashboardAction from './DashboardAction.vue'
+import { HEADER_LINK } from './dashboardUi'
 import { budgetBars, budgetFigures } from './dashboardLogic'
 
 const props = defineProps({
@@ -42,12 +45,9 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
 </script>
 
 <template>
-  <UiCard as="section" :title="t('app.dashboard.budget.title')" heading-level="h2" class="@container" data-testid="dashboard-budget">
+  <DashboardCard :title="t('app.dashboard.budget.title')" class="@container" data-testid="dashboard-budget">
     <template #actions>
-      <router-link
-        to="/dashboard/budget"
-        class="inline-flex min-h-11 items-center text-sm font-semibold text-rose-700 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600"
-      >{{ t('app.dashboard.budget.open') }}</router-link>
+      <router-link to="/dashboard/budget" :class="HEADER_LINK">{{ t('app.dashboard.budget.open') }}</router-link>
     </template>
 
     <DashboardBlock :status="status" :error-text="t('app.dashboard.budget.error')" @retry="$emit('retry')">
@@ -64,7 +64,7 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
 
       <UiEmptyState v-if="empty" compact :title="t('app.dashboard.budget.emptyTitle')" :description="t('app.dashboard.budget.emptyText')" data-testid="budget-empty">
         <template #icon><Wallet class="h-6 w-6" aria-hidden="true" /></template>
-        <UiButton v-if="canEdit" to="/dashboard/budget">{{ t('app.dashboard.budget.emptyCta') }}</UiButton>
+        <DashboardAction v-if="canEdit" to="/dashboard/budget">{{ t('app.dashboard.budget.emptyCta') }}</DashboardAction>
       </UiEmptyState>
 
       <template v-else>
@@ -72,7 +72,7 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
           <div
             v-for="tile in tiles"
             :key="tile.key"
-            class="min-w-0 rounded-lg px-3.5 py-3"
+            class="min-w-0 rounded-[14px] px-3.5 py-3"
             :class="tile.warn ? 'bg-danger-50' : 'bg-cream-100'"
             :data-tile="tile.key"
           >
@@ -81,11 +81,11 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
           </div>
         </dl>
 
-        <ul v-if="bars.length" class="mt-5 flex flex-col gap-3.5" data-testid="budget-bars">
+        <ul v-if="bars.length" class="mt-4 flex flex-col gap-3" data-testid="budget-bars">
           <li
             v-for="bar in bars"
             :key="bar.key"
-            class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 @lg:grid-cols-[9.5rem_minmax(0,1fr)_8.5rem]"
+            class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 @lg:grid-cols-[9.375rem_minmax(0,1fr)_7.5rem]"
             :data-bar="bar.key"
             :data-over="bar.over"
           >
@@ -108,8 +108,8 @@ const srOf = bar => t('app.dashboard.budget.barLabel', { paid: money(bar.paid), 
         </ul>
         <p v-else class="mt-5 text-sm text-ink-500" data-testid="budget-no-bars">{{ t('app.dashboard.budget.noItems') }}</p>
 
-        <p v-if="bars.length" class="mt-4 text-xs text-ink-500">{{ t('app.dashboard.budget.legend') }}</p>
+        <p v-if="bars.length" class="mt-4 text-xs leading-snug text-ink-500">{{ t('app.dashboard.budget.legend') }}</p>
       </template>
     </DashboardBlock>
-  </UiCard>
+  </DashboardCard>
 </template>

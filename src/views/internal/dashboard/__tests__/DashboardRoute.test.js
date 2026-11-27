@@ -22,6 +22,14 @@ const node = (w, key) => w.get(`[data-testid=route-${key}]`)
 beforeEach(() => setLocale('es'))
 
 describe('DashboardRoute milestones', () => {
+  it('puts the clock in the event day\'s title, the current milestone as a hollow rose-700 ring', () => {
+    const w = mountRoute()
+    expect(node(w, 'event').find('p').text()).toMatch(/sáb.*2.*ene.*·\s*7:00/i)
+    expect(node(w, 'event').findAll('p')[1].text()).toBe('Tu gran día')
+    const ring = node(w, 'foundation').find('[aria-hidden=true].rounded-full')
+    expect(ring.classes()).toEqual(expect.arrayContaining(['border-rose-700', 'bg-white']))
+    expect(ring.find('span').exists()).toBe(false)
+  })
   it('draws the four milestones in order', () => {
     const w = mountRoute()
     expect(w.findAll('[data-testid=route-list] > li').map(li => li.attributes('data-testid'))).toEqual(['route-today', 'route-foundation', 'route-invitations', 'route-event'])
