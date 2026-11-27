@@ -10,13 +10,14 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { CloudOff, TriangleAlert, WandSparkles } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiEmptyState, UiPage, UiPageHeader, UiSkeleton, useToast } from '@/ui'
+import { useMinWidth } from '@/composables/useMinWidth'
 import { useFloatingBarSpace } from '@/composables/useFloatingBarSpace'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useInvitationEditor } from '../composables/useInvitationEditor'
 import { previewOverrides } from '../utils/editorFields'
 import SaveIndicator from '../components/SaveIndicator.vue'
 import TemplatePickerEntry from '@/modules/template-picker/components/TemplatePickerEntry.vue'
-import EditorPreviewEntry from '../components/EditorPreviewEntry.vue'
+import EditorActionBar from '../components/EditorActionBar.vue'
 import EditorGroup from '../components/EditorGroup.vue'
 import FieldRenderer from '../components/FieldRenderer.vue'
 import SectionsList from '../components/SectionsList.vue'
@@ -48,8 +49,10 @@ function notify(note) {
 const editor = useInvitationEditor(() => eventId.value, { notify })
 const { data, loading, loadError, fields, groups, sections, fieldErrors, saveStatus, sectionState, lastSavedAt } = editor
 
-// The Vista previa / Publicar bar is fixed above the bottom navigation; the assistant's button lifts above it (shared registry).
-const actionBar = ref(null)
+// Below 1280 px the Vista previa / Publicar bar floats near the bottom and the assistant's button lifts above it (shared registry).
+const wide = useMinWidth(1280, false)
+const barRef = ref(null)
+const actionBar = computed(() => barRef.value?.$el ?? null)
 useFloatingBarSpace(actionBar)
 
 const online = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
@@ -183,24 +186,16 @@ function onImageChanged(id, value) {
           </div>
           <SectionsList :sections="sections" :read-only="readOnly" :busy="sectionState === 'saving'" @toggle="editor.toggleSection" @move="editor.shiftSection" />
         </section>
+        <EditorActionBar v-if="!wide" ref="barRef" :event-id="eventId" :overrides="overrides" :disabled="readOnly" :busy="hasPendingWork" />
       </div>
 
       <!-- Wide screens only: the invitation in a phone, sticky beside the form. -->
       <aside class="sticky top-[calc(5rem+var(--imp-banner-h,0px))] hidden flex-col items-center gap-3 xl:flex" data-testid="editor-preview">
         <DashboardPhone :key="miniatureKey" :event-id="eventId" :live="!readOnly" :name="event?.name ?? ''" />
         <p class="text-center text-sm text-ink-500">{{ t('invitationEditor.preview.caption') }}</p>
+        <EditorActionBar v-if="wide" inline :event-id="eventId" :overrides="overrides" :disabled="readOnly" :busy="hasPendingWork" />
       </aside>
 
-      <div
-        ref="actionBar"
-        class="pointer-events-none fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-20 px-4 lg:bottom-0 lg:left-60"
-        data-testid="action-bar"
-      >
-        <div class="pointer-events-auto mx-auto grid max-w-6xl grid-cols-2 gap-2 rounded-xl border border-line bg-cream-50 p-2 shadow-pop sm:ml-auto sm:max-w-md lg:mb-3 lg:mr-6">
-          <EditorPreviewEntry :event-id="eventId" :overrides="overrides" :disabled="readOnly" />
-          <UiButton block :to="{ name: 'edit-event', params: { id: eventId } }" :aria-busy="hasPendingWork || undefined">{{ t('invitationEditor.actions.publish') }}</UiButton>
-        </div>
-      </div>
     </div>
   </UiPage>
 </template>

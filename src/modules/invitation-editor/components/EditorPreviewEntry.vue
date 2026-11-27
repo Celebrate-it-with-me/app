@@ -22,7 +22,7 @@ const open = ref(false)
 
 <template>
   <div>
-    <UiButton variant="secondary" block :disabled="eventId == null || disabled" @click="open = true">
+    <UiButton variant="secondary" block class="whitespace-nowrap! max-[360px]:gap-1 max-[360px]:px-2" :disabled="eventId == null || disabled" @click="open = true">
       <Eye class="h-4 w-4" aria-hidden="true" />
       {{ t('invitationEditor.actions.preview') }}
     </UiButton>

@@ -333,6 +333,7 @@ describe('InvitationEditorView', () => {
     expect(bar.text()).toContain('Vista previa')
     expect(bar.text()).toContain('Publicar')
     expect(wrapper.get('[data-testid=editor]').element.parentElement.className).toContain('pb-16')
+    expect(wrapper.get('[data-section=program]').classes()).toContain('max-xl:pr-14') // the assistant button's column stays free
   })
 
   it('draws the invitation next to the form on wide screens (hidden by CSS below 1280 px) and redraws it after a save', async () => {

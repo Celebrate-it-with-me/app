@@ -22,7 +22,7 @@ const toggleDisabled = section => props.readOnly || section.required || (moduleL
 
 <template>
   <ol class="flex flex-col divide-y divide-line rounded-xl border border-line bg-white" data-testid="sections">
-    <li v-for="section in sections" :key="section.type" class="flex flex-col gap-2 px-4 py-3 max-[360px]:px-3 max-[360px]:py-2" :data-section="section.type">
+    <li v-for="section in sections" :key="section.type" class="flex flex-col gap-2 px-4 py-3 max-[360px]:pl-3 max-[360px]:py-2 max-xl:pr-14" :data-section="section.type">
       <div class="flex min-h-14 items-center gap-2 max-[360px]:min-h-20 max-[360px]:gap-1">
         <div class="min-w-0 flex-1">
           <UiSwitch
