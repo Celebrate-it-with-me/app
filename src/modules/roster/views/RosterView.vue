@@ -541,7 +541,7 @@ async function copyLink(family) {
       </div>
     </UiEmptyState>
 
-    <ul v-else class="mt-5 space-y-3 transition-opacity duration-150" :class="loading && 'opacity-50'" :aria-busy="loading">
+    <ul v-else class="mt-5 space-y-3 transition-opacity duration-150 xl:grid xl:grid-cols-2 xl:items-start xl:gap-4 xl:space-y-0" :class="loading && 'opacity-50'" :aria-busy="loading">
       <li v-for="family in families" :key="family.id">
         <GuestCard
           :family="family"

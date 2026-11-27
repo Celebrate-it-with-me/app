@@ -183,3 +183,13 @@ describe('Roster on phones: filters and actions', () => {
     expect(bar.children).toHaveLength(1)
   })
 })
+
+describe('Roster on wide screens', () => {
+  it('lays the guest cards out in two columns from xl (1280px) up', async () => {
+    await setup()
+    const list = body().querySelector('ul[aria-busy]')
+    for (const cls of ['xl:grid', 'xl:grid-cols-2', 'xl:gap-4', 'xl:space-y-0', 'xl:items-start']) expect(list.className).toContain(cls)
+    expect(list.className).toContain('space-y-3')
+    expect(list.querySelectorAll(':scope > li')).toHaveLength(2)
+  })
+})
