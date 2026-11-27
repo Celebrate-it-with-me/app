@@ -1511,13 +1511,7 @@ export default {
       removeBody: 'Your guests will stop seeing this section in the invitation.',
       removed: 'Dress code removed.',
       cancel: 'Cancel',
-      readOnly: 'Only the event organizers can change the dress code.',
-      previewTitle: 'What your guests will see',
-      previewSubtitle: 'Quick look at the section.',
-      previewEmpty: 'Choose a style to see the preview.',
-      previewReservedQuince: 'Colors reserved for the quinceañera and her court',
-      previewReservedWedding: 'Colors reserved for the couple',
-      previewSuggested: 'Suggested colors'
+      readOnly: 'Only the event organizers can change the dress code.'
     },
     saveTheDate: {
       title: 'Save the date',
@@ -1552,12 +1546,7 @@ export default {
       saved: 'Changes saved.',
       saveError: 'We could not save your changes. Try again.',
       loadError: 'We could not load your Save the date.',
-      cancel: 'Cancel',
-      previewTitle: 'What your guests will see',
-      previewSubtitle: 'Quick look.',
-      previewKicker: 'Save the date',
-      previewCalendar: 'Add to calendar',
-      units: { days: 'days', hours: 'hours', minutes: 'min', seconds: 'sec' }
+      cancel: 'Cancel'
     },
     whatsapp: {
       previewSkip: {

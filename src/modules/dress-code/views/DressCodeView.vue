@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Shirt, ImagePlus, X } from 'lucide-vue-next'
+import { ImagePlus, X } from 'lucide-vue-next'
 import { UiPageHeader, UiCard, UiField, UiTextarea, UiButton, UiSkeleton, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import DressCodeService from '../services/DressCodeService'
@@ -172,7 +172,7 @@ async function remove() {
       <UiSkeleton class="h-56" />
     </div>
 
-    <div v-else class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <div v-else class="mt-6">
       <form class="space-y-6" novalidate @submit.prevent="save">
         <UiCard :title="t('app.dressCode.styleTitle')" heading-level="h2">
           <fieldset :disabled="!canEdit">
@@ -293,26 +293,6 @@ async function remove() {
         <p v-else class="text-sm text-ink-500">{{ t('app.dressCode.readOnly') }}</p>
       </form>
 
-      <aside class="lg:sticky lg:top-6 lg:self-start" :aria-label="t('app.dressCode.previewTitle')">
-        <UiCard :title="t('app.dressCode.previewTitle')" :subtitle="t('app.dressCode.previewSubtitle')" heading-level="h2">
-          <div v-if="form.dressCodeType" class="text-center">
-            <Shirt class="mx-auto h-6 w-6 text-rose-600" aria-hidden="true" />
-            <p class="mt-2 font-heading text-2xl text-ink-900">{{ t(`app.dressCode.types.${form.dressCodeType}.name`) }}</p>
-            <p v-if="form.description" class="mt-2 text-sm text-ink-700">{{ form.description }}</p>
-            <div v-for="group in ['reservedColors', 'suggestedColors']" :key="group">
-              <template v-if="form[group].length">
-                <p class="mt-4 text-xs text-ink-500">
-                  {{ t(group === 'reservedColors' ? (isQuince ? 'app.dressCode.previewReservedQuince' : 'app.dressCode.previewReservedWedding') : 'app.dressCode.previewSuggested') }}
-                </p>
-                <ul class="mt-2 flex flex-wrap justify-center gap-2">
-                  <li v-for="hex in form[group]" :key="hex" class="h-8 w-8 rounded-full ring-1 ring-ink-900/15" :style="{ backgroundColor: hex }" />
-                </ul>
-              </template>
-            </div>
-          </div>
-          <p v-else class="text-sm text-ink-500">{{ t('app.dressCode.previewEmpty') }}</p>
-        </UiCard>
-      </aside>
     </div>
 
     <UiModal v-model:open="confirmDelete" :title="t('app.dressCode.removeTitle')" size="sm">
