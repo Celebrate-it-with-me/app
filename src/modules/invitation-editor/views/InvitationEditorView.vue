@@ -10,6 +10,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { CloudOff, TriangleAlert, WandSparkles } from 'lucide-vue-next'
 import { UiBadge, UiButton, UiEmptyState, UiPage, UiPageHeader, UiSkeleton, useToast } from '@/ui'
+import { useFloatingBarSpace } from '@/composables/useFloatingBarSpace'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useInvitationEditor } from '../composables/useInvitationEditor'
 import { previewOverrides } from '../utils/editorFields'
@@ -19,6 +20,7 @@ import EditorPreviewEntry from '../components/EditorPreviewEntry.vue'
 import EditorGroup from '../components/EditorGroup.vue'
 import FieldRenderer from '../components/FieldRenderer.vue'
 import SectionsList from '../components/SectionsList.vue'
+import DashboardPhone from '@/views/internal/dashboard/DashboardPhone.vue'
 import UnlockBanner from '@/modules/payments/components/UnlockBanner.vue'
 
 const { t, te } = useI18n()
@@ -44,7 +46,11 @@ function notify(note) {
 }
 
 const editor = useInvitationEditor(() => eventId.value, { notify })
-const { data, loading, loadError, fields, groups, sections, fieldErrors, saveStatus, sectionState } = editor
+const { data, loading, loadError, fields, groups, sections, fieldErrors, saveStatus, sectionState, lastSavedAt } = editor
+
+// The Vista previa / Publicar bar is fixed above the bottom navigation; the assistant's button lifts above it (shared registry).
+const actionBar = ref(null)
+useFloatingBarSpace(actionBar)
 
 const online = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
 const setOnline = () => (online.value = navigator.onLine)
@@ -82,6 +88,9 @@ const visibleGroups = computed(() => {
 })
 const problemsIn = entry => entry.fields.filter(f => fieldErrors.value[f.id]).length
 
+// Wide screens: a live miniature next to the form. It draws the SAVED cover, so it is redrawn after every save or template change.
+const miniatureKey = computed(() => `${data.value?.template?.versionId ?? 0}-${lastSavedAt.value ?? 0}`)
+
 const overrides = computed(() => previewOverrides(fields.value, fieldErrors.value))
 const hasPendingWork = computed(() => saveStatus.value === 'saving')
 const hasErrorCode = id => fieldErrors.value[id] ?? null
@@ -95,7 +104,7 @@ function onImageChanged(id, value) {
 </script>
 
 <template>
-  <UiPage class="pb-8">
+  <UiPage class="pb-16">
     <UiPageHeader :title="t('invitationEditor.title')" :eyebrow="event?.name ?? ''" :subtitle="t('invitationEditor.subtitle')" />
 
     <div v-if="showOffline" class="mb-4 flex items-start gap-2 rounded-lg bg-warning-50 p-3 text-sm text-warning-700" role="status" data-testid="offline-banner">
@@ -119,64 +128,78 @@ function onImageChanged(id, value) {
       </UiEmptyState>
     </div>
 
-    <div v-else class="flex flex-col gap-6" data-testid="editor">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <UiBadge v-if="statusView" :tone="statusView.tone" dot>{{ t(`invitationEditor.status.${statusView.key}`) }}</UiBadge>
-        <SaveIndicator :status="saveStatus" @retry="editor.retry()" />
-      </div>
-
-      <UnlockBanner v-if="hasLocks && !readOnly" :event-id="eventId" @unlock="goUnlock" />
-
-      <p v-if="readOnly" class="rounded-lg bg-cream-100 p-3 text-sm text-ink-600" role="note">{{ t('invitationEditor.readOnly') }}</p>
-
-      <!-- After applying or undoing a template the API answers the new editor state: the form is redrawn from it. -->
-      <TemplatePickerEntry
-        :template-locked="Boolean(data.state?.templateLocked)"
-        :unavailable="Boolean(data.template?.fallbackToClassic)"
-        :event-id="eventId"
-        :disabled="readOnly"
-        :stage="data.state?.stage === 'save_the_date' ? 'save_the_date' : 'invitation'"
-        @changed="editor.applyState"
-      />
-
-      <UiEmptyState
-        v-if="!fields.length"
-        class="rounded-xl border border-line bg-white"
-        compact
-        :title="t('invitationEditor.empty.title')"
-        :description="t('invitationEditor.empty.text')"
-        data-testid="editor-empty"
-      >
-        <template #icon><WandSparkles class="h-6 w-6" aria-hidden="true" /></template>
-      </UiEmptyState>
-
-      <div v-else class="flex flex-col gap-3">
-        <EditorGroup v-for="(entry, i) in visibleGroups" :key="entry.group.id" :group="entry.group" :open="i === 0 || problemsIn(entry) > 0" :problems="problemsIn(entry)">
-          <FieldRenderer
-            v-for="field in entry.fields"
-            :key="field.id"
-            :field="field"
-            :error="hasErrorCode(field.id)"
-            :read-only="readOnly"
-            :event-id="eventId"
-            @update="value => editor.setValue(field.id, value)"
-            @reset="editor.resetField(field.id)"
-            @image-changed="value => onImageChanged(field.id, value)"
-          />
-        </EditorGroup>
-      </div>
-
-      <section v-if="sections.length" aria-labelledby="ie-sections-title" class="flex flex-col gap-3">
-        <div>
-          <h2 id="ie-sections-title" class="font-heading text-xl text-ink-900">{{ t('invitationEditor.sections.title') }}</h2>
-          <p class="text-sm text-ink-500">{{ t('invitationEditor.sections.hint') }}</p>
+    <div v-else class="xl:grid xl:grid-cols-[minmax(0,760px)_minmax(220px,1fr)] xl:items-start xl:gap-10" data-testid="editor">
+      <div class="flex min-w-0 flex-col gap-6" data-testid="editor-main">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <UiBadge v-if="statusView" :tone="statusView.tone" dot>{{ t(`invitationEditor.status.${statusView.key}`) }}</UiBadge>
+          <SaveIndicator :status="saveStatus" @retry="editor.retry()" />
         </div>
-        <SectionsList :sections="sections" :read-only="readOnly" :busy="sectionState === 'saving'" @toggle="editor.toggleSection" @move="editor.shiftSection" />
-      </section>
 
-      <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        <EditorPreviewEntry :event-id="eventId" :overrides="overrides" :disabled="readOnly" />
-        <UiButton block :to="{ name: 'edit-event', params: { id: eventId } }" :aria-busy="hasPendingWork || undefined">{{ t('invitationEditor.actions.publish') }}</UiButton>
+        <UnlockBanner v-if="hasLocks && !readOnly" :event-id="eventId" @unlock="goUnlock" />
+
+        <p v-if="readOnly" class="rounded-lg bg-cream-100 p-3 text-sm text-ink-600" role="note">{{ t('invitationEditor.readOnly') }}</p>
+
+        <!-- After applying or undoing a template the API answers the new editor state: the form is redrawn from it. -->
+        <TemplatePickerEntry
+          :template-locked="Boolean(data.state?.templateLocked)"
+          :unavailable="Boolean(data.template?.fallbackToClassic)"
+          :event-id="eventId"
+          :disabled="readOnly"
+          :stage="data.state?.stage === 'save_the_date' ? 'save_the_date' : 'invitation'"
+          @changed="editor.applyState"
+        />
+
+        <UiEmptyState
+          v-if="!fields.length"
+          class="rounded-xl border border-line bg-white"
+          compact
+          :title="t('invitationEditor.empty.title')"
+          :description="t('invitationEditor.empty.text')"
+          data-testid="editor-empty"
+        >
+          <template #icon><WandSparkles class="h-6 w-6" aria-hidden="true" /></template>
+        </UiEmptyState>
+
+        <div v-else class="flex flex-col gap-3">
+          <EditorGroup v-for="(entry, i) in visibleGroups" :key="entry.group.id" :group="entry.group" :open="i === 0 || problemsIn(entry) > 0" :problems="problemsIn(entry)">
+            <FieldRenderer
+              v-for="field in entry.fields"
+              :key="field.id"
+              :field="field"
+              :error="hasErrorCode(field.id)"
+              :read-only="readOnly"
+              :event-id="eventId"
+              @update="value => editor.setValue(field.id, value)"
+              @reset="editor.resetField(field.id)"
+              @image-changed="value => onImageChanged(field.id, value)"
+            />
+          </EditorGroup>
+        </div>
+
+        <section v-if="sections.length" aria-labelledby="ie-sections-title" class="flex flex-col gap-3">
+          <div>
+            <h2 id="ie-sections-title" class="font-heading text-xl text-ink-900">{{ t('invitationEditor.sections.title') }}</h2>
+            <p class="text-sm text-ink-500">{{ t('invitationEditor.sections.hint') }}</p>
+          </div>
+          <SectionsList :sections="sections" :read-only="readOnly" :busy="sectionState === 'saving'" @toggle="editor.toggleSection" @move="editor.shiftSection" />
+        </section>
+      </div>
+
+      <!-- Wide screens only: the invitation in a phone, sticky beside the form. -->
+      <aside class="sticky top-[calc(5rem+var(--imp-banner-h,0px))] hidden flex-col items-center gap-3 xl:flex" data-testid="editor-preview">
+        <DashboardPhone :key="miniatureKey" :event-id="eventId" :live="!readOnly" :name="event?.name ?? ''" />
+        <p class="text-center text-sm text-ink-500">{{ t('invitationEditor.preview.caption') }}</p>
+      </aside>
+
+      <div
+        ref="actionBar"
+        class="pointer-events-none fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] z-20 px-4 lg:bottom-0 lg:left-60"
+        data-testid="action-bar"
+      >
+        <div class="pointer-events-auto mx-auto grid max-w-6xl grid-cols-2 gap-2 rounded-xl border border-line bg-cream-50 p-2 shadow-pop sm:ml-auto sm:max-w-md lg:mb-3 lg:mr-6">
+          <EditorPreviewEntry :event-id="eventId" :overrides="overrides" :disabled="readOnly" />
+          <UiButton block :to="{ name: 'edit-event', params: { id: eventId } }" :aria-busy="hasPendingWork || undefined">{{ t('invitationEditor.actions.publish') }}</UiButton>
+        </div>
       </div>
     </div>
   </UiPage>

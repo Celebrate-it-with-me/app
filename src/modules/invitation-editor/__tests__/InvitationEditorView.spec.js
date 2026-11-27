@@ -325,4 +325,32 @@ describe('InvitationEditorView', () => {
     expect(wrapper.text()).toContain('Sections')
     setLocale('es')
   })
+
+  it('keeps the actions in a fixed bar the assistant button lifts above, and the page has room under the last section', async () => {
+    await setup()
+    const bar = wrapper.get('[data-testid=action-bar]')
+    expect(bar.classes()).toContain('fixed')
+    expect(bar.text()).toContain('Vista previa')
+    expect(bar.text()).toContain('Publicar')
+    expect(wrapper.get('[data-testid=editor]').element.parentElement.className).toContain('pb-16')
+  })
+
+  it('draws the invitation next to the form on wide screens (hidden by CSS below 1280 px) and redraws it after a save', async () => {
+    await setup()
+    const aside = wrapper.get('[data-testid=editor-preview]')
+    expect(aside.classes()).toEqual(expect.arrayContaining(['hidden', 'xl:flex', 'sticky']))
+    expect(aside.find('[data-testid=hero-phone]').exists()).toBe(true)
+    const before = aside.get('[data-testid=hero-phone]').element
+    await wrapper.get('[data-testid=choice-b]').setValue(true)
+    await flushPromises()
+    expect(wrapper.get('[data-testid=editor-preview] [data-testid=hero-phone]').element).not.toBe(before)
+  })
+
+  it('section rows compact below 360 px: stacked arrows, 40 px, uniform minimum height', async () => {
+    await setup()
+    const row = wrapper.get('[data-section=program]')
+    expect(row.get('[data-testid=move-up]').classes()).toEqual(expect.arrayContaining(['max-[360px]:h-10', 'max-[360px]:w-10', 'h-11', 'w-11']))
+    expect(row.get('[data-testid=move-down]').element.parentElement.className).toContain('max-[360px]:flex-col')
+    expect(row.get('[data-testid=section-controls]').element.parentElement.className).toContain('max-[360px]:min-h-20')
+  })
 })
