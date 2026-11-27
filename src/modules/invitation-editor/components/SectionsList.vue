@@ -22,8 +22,8 @@ const toggleDisabled = section => props.readOnly || section.required || (moduleL
 
 <template>
   <ol class="flex flex-col divide-y divide-line rounded-xl border border-line bg-white" data-testid="sections">
-    <li v-for="section in sections" :key="section.type" class="flex flex-col gap-2 px-4 py-3" :data-section="section.type">
-      <div class="flex items-center gap-2">
+    <li v-for="section in sections" :key="section.type" class="flex flex-col gap-2 px-4 py-3 max-[360px]:px-3 max-[360px]:py-2" :data-section="section.type">
+      <div class="flex min-h-14 items-center gap-2 max-[360px]:min-h-20 max-[360px]:gap-1">
         <div class="min-w-0 flex-1">
           <UiSwitch
             :model-value="section.enabled"
@@ -33,7 +33,7 @@ const toggleDisabled = section => props.readOnly || section.required || (moduleL
             @update:model-value="emit('toggle', section.type)"
           />
         </div>
-        <div class="flex shrink-0">
+        <div class="flex shrink-0 items-center max-[360px]:gap-0.5" data-testid="section-controls">
           <UiButton
             v-if="moduleLocked(section)"
             variant="ghost"
@@ -41,33 +41,37 @@ const toggleDisabled = section => props.readOnly || section.required || (moduleL
             icon
             :aria-label="t('invitationEditor.field.lockedAria', { name: name(section) })"
             data-testid="section-locked"
-            class="h-11 w-11"
+            class="h-11 w-11 max-[360px]:h-10 max-[360px]:w-10"
             @click="unlock"
           >
             <Lock class="h-4 w-4 text-gold-700" aria-hidden="true" />
           </UiButton>
-          <UiButton
-            variant="ghost"
-            size="sm"
-            icon
-            :disabled="readOnly || busy || !canMove(sections, section.type, -1)"
-            :aria-label="t('invitationEditor.sections.moveUp', { name: name(section) })"
-            data-testid="move-up"
-            @click="emit('move', section.type, -1)"
-          >
-            <ArrowUp class="h-4 w-4" aria-hidden="true" />
-          </UiButton>
-          <UiButton
-            variant="ghost"
-            size="sm"
-            icon
-            :disabled="readOnly || busy || !canMove(sections, section.type, 1)"
-            :aria-label="t('invitationEditor.sections.moveDown', { name: name(section) })"
-            data-testid="move-down"
-            @click="emit('move', section.type, 1)"
-          >
-            <ArrowDown class="h-4 w-4" aria-hidden="true" />
-          </UiButton>
+          <div class="flex max-[360px]:flex-col">
+            <UiButton
+              variant="ghost"
+              size="md"
+              icon
+              :disabled="readOnly || busy || !canMove(sections, section.type, -1)"
+              :aria-label="t('invitationEditor.sections.moveUp', { name: name(section) })"
+              data-testid="move-up"
+              class="max-[360px]:h-10 max-[360px]:w-10"
+              @click="emit('move', section.type, -1)"
+            >
+              <ArrowUp class="h-4 w-4" aria-hidden="true" />
+            </UiButton>
+            <UiButton
+              variant="ghost"
+              size="md"
+              icon
+              :disabled="readOnly || busy || !canMove(sections, section.type, 1)"
+              :aria-label="t('invitationEditor.sections.moveDown', { name: name(section) })"
+              data-testid="move-down"
+              class="max-[360px]:h-10 max-[360px]:w-10"
+              @click="emit('move', section.type, 1)"
+            >
+              <ArrowDown class="h-4 w-4" aria-hidden="true" />
+            </UiButton>
+          </div>
         </div>
       </div>
       <p v-if="isClosingPinned(section)" class="flex items-center gap-2 text-sm text-ink-600" data-testid="closing-pinned">
