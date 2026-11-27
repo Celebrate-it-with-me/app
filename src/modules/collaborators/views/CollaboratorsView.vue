@@ -129,7 +129,7 @@ const confirmOpen = computed({
 </script>
 
 <template>
-  <UiPage width="wide" v-if="event">
+  <UiPage v-if="event">
     <UiPageHeader :title="t('app.collaborators.title')" :subtitle="t('app.collaborators.subtitle')">
       <template v-if="manage" #actions>
         <UiButton :disabled="locked" @click="openInvite"><UserPlus class="h-5 w-5" aria-hidden="true" />{{ t('app.collaborators.add') }}</UiButton>

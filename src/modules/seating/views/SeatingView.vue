@@ -31,7 +31,7 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.seating.title')" :subtitle="t('app.seating.subtitle')">
       <template #actions>
         <div class="flex flex-wrap gap-2">

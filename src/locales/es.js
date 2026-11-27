@@ -1511,13 +1511,7 @@ export default {
       removeBody: 'Tus invitados dejarán de ver esta sección en la invitación.',
       removed: 'Vestimenta eliminada.',
       cancel: 'Cancelar',
-      readOnly: 'Solo quien organiza el evento puede cambiar la vestimenta.',
-      previewTitle: 'Así lo verán tus invitados',
-      previewSubtitle: 'Vista rápida de la sección.',
-      previewEmpty: 'Elige un estilo para ver la vista previa.',
-      previewReservedQuince: 'Colores reservados para la quinceañera y su corte',
-      previewReservedWedding: 'Colores reservados para los novios',
-      previewSuggested: 'Colores sugeridos'
+      readOnly: 'Solo quien organiza el evento puede cambiar la vestimenta.'
     },
     saveTheDate: {
       title: 'Guarda la fecha',
@@ -1552,12 +1546,7 @@ export default {
       saved: 'Cambios guardados.',
       saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
       loadError: 'No pudimos cargar tu «Guarda la fecha».',
-      cancel: 'Cancelar',
-      previewTitle: 'Así lo verán tus invitados',
-      previewSubtitle: 'Vista rápida.',
-      previewKicker: 'Guarda la fecha',
-      previewCalendar: 'Agregar al calendario',
-      units: { days: 'días', hours: 'horas', minutes: 'min', seconds: 'seg' }
+      cancel: 'Cancelar'
     },
     whatsapp: {
       previewSkip: {

@@ -65,7 +65,7 @@ async function restore(event) {
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('events.title')" :subtitle="t('events.subtitle')">
       <template #actions>
         <UiButton to="/dashboard/events/create">

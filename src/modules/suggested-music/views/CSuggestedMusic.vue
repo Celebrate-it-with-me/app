@@ -54,7 +54,7 @@ const exportItems = computed(() => [
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.music.title')" :subtitle="t('app.music.subtitle')">
       <template #actions>
         <UiDropdown :items="exportItems">

@@ -10,7 +10,7 @@ const title = computed(() => (mode.value === 'edit' ? t('app.menus.editTitle') :
 </script>
 
 <template>
-  <UiPage width="form">
+  <UiPage>
     <UiPageHeader :title="title" :subtitle="t('app.menus.formSubtitle')" back="/dashboard/menus" />
 
     <div v-if="loading" class="mt-6 space-y-3">

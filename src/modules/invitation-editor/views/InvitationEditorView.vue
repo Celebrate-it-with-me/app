@@ -9,7 +9,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { CloudOff, TriangleAlert, WandSparkles } from 'lucide-vue-next'
-import { UiBadge, UiButton, UiEmptyState, UiPageHeader, UiSkeleton, useToast } from '@/ui'
+import { UiBadge, UiButton, UiEmptyState, UiPage, UiPageHeader, UiSkeleton, useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useInvitationEditor } from '../composables/useInvitationEditor'
 import { previewOverrides } from '../utils/editorFields'
@@ -95,7 +95,7 @@ function onImageChanged(id, value) {
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-2xl pb-8">
+  <UiPage class="pb-8">
     <UiPageHeader :title="t('invitationEditor.title')" :eyebrow="event?.name ?? ''" :subtitle="t('invitationEditor.subtitle')" />
 
     <div v-if="showOffline" class="mb-4 flex items-start gap-2 rounded-lg bg-warning-50 p-3 text-sm text-warning-700" role="status" data-testid="offline-banner">
@@ -179,5 +179,5 @@ function onImageChanged(id, value) {
         <UiButton block :to="{ name: 'edit-event', params: { id: eventId } }" :aria-busy="hasPendingWork || undefined">{{ t('invitationEditor.actions.publish') }}</UiButton>
       </div>
     </div>
-  </div>
+  </UiPage>
 </template>

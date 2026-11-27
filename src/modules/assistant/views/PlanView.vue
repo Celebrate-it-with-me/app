@@ -153,7 +153,7 @@ const noteKey = computed(() => ({ compressed: 'compressed', event_past: 'eventPa
 </script>
 
 <template>
-  <UiPage width="wide" v-if="event">
+  <UiPage v-if="event">
     <UiPageHeader :title="t('app.assistant.plan.title')" :subtitle="t('app.assistant.plan.subtitle')" :eyebrow="event.eventName" />
 
     <!-- Loading -->

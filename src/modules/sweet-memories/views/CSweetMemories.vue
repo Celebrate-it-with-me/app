@@ -14,7 +14,7 @@ const c = useMemoriesController()
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.memories.title')" :subtitle="t('app.memories.subtitle')">
       <template #actions>
         <UiButton @click="c.openCreate()">

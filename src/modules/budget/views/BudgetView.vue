@@ -171,7 +171,7 @@ async function download() {
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.budget.title')" :subtitle="t('app.budget.subtitle')">
       <template #actions>
         <UiButton v-if="summary && store.items.length" variant="secondary" @click="download">

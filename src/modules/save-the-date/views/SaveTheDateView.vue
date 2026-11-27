@@ -1,17 +1,15 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { CalendarPlus, Link as LinkIcon } from 'lucide-vue-next'
+import { Link as LinkIcon } from 'lucide-vue-next'
 import { UiPageHeader, UiCard, UiField, UiTextarea, UiSwitch, UiButton, UiBadge, UiSkeleton, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { planLimitFrom } from '@/utils/planLimit'
 import GuestLimitNotice from '@/components/internal/limits/GuestLimitNotice.vue'
 import SaveTheDateService from '../services/SaveTheDateService'
 import { MESSAGE_MAX, emptySettings, settingsFromApi, settingsPayload, stageView } from '../utils/stage'
-import { useEventDateTime } from '@/composables/useEventDateTime'
 
 const { t } = useI18n()
-const { formatEvent } = useEventDateTime()
 const { success, error: showError } = useToast()
 const eventsStore = useEventsStore()
 
@@ -28,7 +26,6 @@ const confirming = ref(null)
 const limitInfo = ref(null)
 
 const dirty = computed(() => JSON.stringify(settingsPayload(form.value)) !== JSON.stringify(settingsPayload(saved.value)))
-const startDate = computed(() => formatEvent(event.value, 'date'))
 
 async function load() {
   if (!event.value?.id) return
@@ -82,7 +79,7 @@ const ask = action => (confirming.value = action)
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.saveTheDate.title')" :subtitle="t('app.saveTheDate.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-4">
@@ -90,7 +87,7 @@ const ask = action => (confirming.value = action)
       <UiSkeleton class="h-56" />
     </div>
 
-    <div v-else-if="event" class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+    <div v-else-if="event" class="mt-6">
       <div class="space-y-6">
         <UiCard :title="t('app.saveTheDate.stateTitle')" heading-level="h2">
           <template #actions>
@@ -130,26 +127,6 @@ const ask = action => (confirming.value = action)
         </UiCard>
       </div>
 
-      <aside class="lg:sticky lg:top-6 lg:self-start" :aria-label="t('app.saveTheDate.previewTitle')">
-        <UiCard :title="t('app.saveTheDate.previewTitle')" :subtitle="t('app.saveTheDate.previewSubtitle')" heading-level="h2">
-          <div class="text-center">
-            <p class="text-sm text-ink-500">{{ t('app.saveTheDate.previewKicker') }}</p>
-            <p class="mt-1 font-heading text-2xl text-ink-900">{{ event?.eventName }}</p>
-            <p v-if="startDate" class="mt-1 text-sm text-ink-700">{{ startDate }}</p>
-            <ul v-if="form.showCountdown" class="mt-4 grid grid-cols-4 gap-2" aria-hidden="true">
-              <li v-for="unit in ['days', 'hours', 'minutes', 'seconds']" :key="unit" class="rounded-lg bg-cream-100 py-2">
-                <span class="block font-heading text-lg text-ink-900">00</span>
-                <span class="block text-[11px] text-ink-500">{{ t(`app.saveTheDate.units.${unit}`) }}</span>
-              </li>
-            </ul>
-            <p v-if="form.message.trim()" class="mt-4 text-sm text-ink-700">{{ form.message }}</p>
-            <p v-if="form.useAddToCalendar" class="mt-4 inline-flex items-center gap-2 rounded-full border border-line-strong px-3 py-1.5 text-sm text-ink-700">
-              <CalendarPlus class="h-4 w-4" aria-hidden="true" />
-              {{ t('app.saveTheDate.previewCalendar') }}
-            </p>
-          </div>
-        </UiCard>
-      </aside>
     </div>
 
     <UiModal

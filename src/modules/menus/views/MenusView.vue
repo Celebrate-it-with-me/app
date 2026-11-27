@@ -11,7 +11,7 @@ const { loading, guestMenuCount, createMenu } = useMenusView()
 </script>
 
 <template>
-  <UiPage width="wide">
+  <UiPage>
     <UiPageHeader :title="t('app.menus.title')" :subtitle="t('app.menus.subtitle')">
       <template #actions>
         <UiButton :disabled="loading" @click="createMenu">
