@@ -411,7 +411,11 @@ async function copyLink(family) {
     <div v-if="canSend" ref="inlineSend" class="mb-4 sm:hidden" data-testid="send-inline">
       <UiButton block @click="openSend">
         <Send class="h-4 w-4" aria-hidden="true" />
-        {{ unsent ? t('app.roster.sendInvitationsCount', { n: unsent }) : t('app.roster.sendInvitations') }}
+        <template v-if="unsent">
+          <span class="max-[360px]:hidden">{{ t('app.roster.sendInvitationsCount', { n: unsent }) }}</span>
+          <span class="min-[361px]:hidden">{{ t('app.roster.sendInvitationsShort', { n: unsent }) }}</span>
+        </template>
+        <template v-else>{{ t('app.roster.sendInvitations') }}</template>
       </UiButton>
     </div>
     <GuestLimitBanner />
@@ -565,7 +569,11 @@ async function copyLink(family) {
     >
       <UiButton block class="pointer-events-auto shadow-pop" @click="openSend">
         <Send class="h-4 w-4" aria-hidden="true" />
-        {{ unsent ? t('app.roster.sendInvitationsCount', { n: unsent }) : t('app.roster.sendInvitations') }}
+        <template v-if="unsent">
+          <span class="max-[360px]:hidden">{{ t('app.roster.sendInvitationsCount', { n: unsent }) }}</span>
+          <span class="min-[361px]:hidden">{{ t('app.roster.sendInvitationsShort', { n: unsent }) }}</span>
+        </template>
+        <template v-else>{{ t('app.roster.sendInvitations') }}</template>
       </UiButton>
     </div>
 

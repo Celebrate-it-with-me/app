@@ -79,3 +79,25 @@ describe('Roster on phones: fixed send bar', () => {
     expect(body().querySelector('[data-testid="send-bar"]')).not.toBeNull()
   })
 })
+
+describe('Roster on phones: send button label', () => {
+  it('carries a short "Enviar (n)" label for narrow phones next to the long one, in the inline button and the fixed bar', async () => {
+    vi.stubGlobal('IntersectionObserver', class { observe() {} disconnect() {} })
+    await setup()
+    for (const root of [body().querySelector('[data-testid="send-inline"]'), body().querySelector('[data-testid="send-bar"]')]) {
+      const [long, short] = root.querySelectorAll('button span')
+      expect(long.textContent).toBe('Enviar invitaciones · 3 sin enviar')
+      expect(long.className).toContain('max-[360px]:hidden')
+      expect(short.textContent).toBe('Enviar (3)')
+      expect(short.className).toContain('min-[361px]:hidden')
+    }
+  })
+
+  it('keeps the plain label when everything has been sent', async () => {
+    roster.list.mockResolvedValue({ data: [family(1, 'Ana Perez')], meta: { currentPage: 1, lastPage: 1, total: 1 }, counts: { ...counts, delivery: { ...delivery, unsent: 0 } } })
+    await setup()
+    const button = body().querySelector('[data-testid="send-inline"] button')
+    expect(button.textContent.trim()).toBe('Enviar invitaciones')
+    expect(button.querySelector('span')).toBeNull()
+  })
+})

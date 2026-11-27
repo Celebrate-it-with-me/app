@@ -1776,6 +1776,8 @@ export default {
       addPhone: 'Añadir teléfono',
       sendInvitations: 'Enviar invitaciones',
       sendInvitationsCount: 'Enviar invitaciones · {n} sin enviar',
+      // Narrow phones (360px or less): the long label would break into two lines.
+      sendInvitationsShort: 'Enviar ({n})',
       activeBatch: 'Enviando invitaciones: {done} de {total}',
       activeBatchView: 'Ver',
       filters: {
