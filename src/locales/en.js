@@ -1797,6 +1797,8 @@ export default {
       search: 'Search by name, phone or email',
       add: 'Add guest',
       tabs: { all: 'All', attending: 'Confirmed', pending: 'Pending', 'not-attending': 'Declined' },
+      // Phones: four columns share the width, so the labels are the shortest that still read.
+      tabsShort: { all: 'All', attending: 'Going', pending: 'Pending', 'not-attending': 'Declined' },
       status: { attending: 'Attending', pending: 'Pending', 'not-attending': 'Declined' },
       answer: { attending: 'Attending', 'not-attending': 'Declined' },
       people: '{n} person | {n} people',

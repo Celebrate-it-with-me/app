@@ -277,7 +277,7 @@ onMounted(() => {
   openFromQuery()
 })
 
-const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), count: counts.value[tab.count] })))
+const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), shortLabel: t(`app.roster.tabsShort.${tab.value}`), count: counts.value[tab.count] })))
 const answered = computed(() => counts.value.attending + counts.value.notAttending)
 const filtered = computed(() => !!search.value.trim() || status.value !== 'all' || !!delivery.value)
 /** Nobody on the list yet (and not because of a filter or an error): import is the main way in, so the toolbar buttons give way to the empty state (ORG-011). */
@@ -461,7 +461,7 @@ async function copyLink(family) {
       </div>
 
       <div v-if="!emptyList" role="group" :aria-label="t('app.roster.filters.answers')">
-        <UiTabs v-model="status" :tabs="tabs" />
+        <UiTabs v-model="status" :tabs="tabs" compact />
       </div>
 
       <div v-if="chips.length && !emptyList" class="flex flex-wrap items-center gap-2" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">

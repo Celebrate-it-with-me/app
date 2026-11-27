@@ -1797,6 +1797,8 @@ export default {
       search: 'Buscar por nombre, teléfono o correo',
       add: 'Añadir invitado',
       tabs: { all: 'Todos', attending: 'Confirmados', pending: 'Pendientes', 'not-attending': 'No asisten' },
+      // Phones: four columns share the width, so the labels are the shortest that still read.
+      tabsShort: { all: 'Todos', attending: 'Asisten', pending: 'Pendientes', 'not-attending': 'No asisten' },
       status: { attending: 'Asiste', pending: 'Pendiente', 'not-attending': 'No asiste' },
       answer: { attending: 'Asiste', 'not-attending': 'No asiste' },
       people: '{n} persona | {n} personas',
