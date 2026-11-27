@@ -182,6 +182,11 @@ describe('phaseSummary', () => {
     const s = phaseSummary(plan([task('A', 'hidden'), task('B', 'not_applicable'), task('C', 'done')], []), 'foundation')
     expect(s).toMatchObject({ total: 1, done: 1, pending: [] })
   })
+  it('leaves module-locked steps out of the count and the pending list', () => {
+    const locked = { ...task('Padrinos', 'next'), moduleLocked: true }
+    const s = phaseSummary(plan([locked, task('Misa', 'done'), task('Corte', 'next')], []), 'foundation')
+    expect(s).toEqual({ key: 'foundation', total: 2, done: 1, pending: ['Corte'] })
+  })
   it('is empty for a missing phase or plan', () => {
     expect(phaseSummary(null, 'foundation')).toEqual({ key: 'foundation', total: 0, done: 0, pending: [] })
     expect(phaseSummary({ phases: [] }, 'invitations').total).toBe(0)
@@ -195,6 +200,10 @@ describe('routePhases', () => {
   })
   it('moves "current" to the invitations once the foundations are done', () => {
     expect(routePhases(plan([task('A', 'done')], [task('B', 'next')])).map(p => p.state)).toEqual(['done', 'current'])
+  })
+  it('marks a phase done when its only pending step is module-locked, and empty when all are locked', () => {
+    const locked = { ...task('Padrinos', 'next'), moduleLocked: true }
+    expect(routePhases(plan([locked, task('A', 'done')], [locked])).map(p => p.state)).toEqual(['done', 'empty'])
   })
   it('marks both done and flags a phase without steps as empty', () => {
     expect(routePhases(plan([task('A', 'done')], [task('B', 'done')])).map(p => p.state)).toEqual(['done', 'done'])

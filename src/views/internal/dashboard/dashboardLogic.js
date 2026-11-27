@@ -138,8 +138,11 @@ export function budgetBars(summary) {
 /** The plan phases that become milestones of "Ruta al evento", in route order. */
 export const ROUTE_PHASES = ['foundation', 'invitations']
 
-/** Tasks the person can still act on count as steps; hidden or not-applicable ones are out of the route. */
-const countsAsStep = task => task && task.state !== 'hidden' && task.state !== 'not_applicable'
+/**
+ * Tasks the person can still act on count as steps; hidden, not-applicable or module-locked ones (module not in the
+ * package) are out of the route, as the API leaves them out of the progress too.
+ */
+const countsAsStep = task => task && task.state !== 'hidden' && task.state !== 'not_applicable' && task.moduleLocked !== true
 
 /**
  * One phase of `assistant/plan` as the route needs it: how many steps it has, how many are done and the titles of the
