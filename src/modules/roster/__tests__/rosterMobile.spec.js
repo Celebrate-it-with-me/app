@@ -64,3 +64,18 @@ describe('Roster on phones: filter tabs', () => {
     expect(labels).toEqual(['All', 'Going', 'Pending', 'Declined'])
   })
 })
+
+describe('Roster on phones: fixed send bar', () => {
+  it('shows the fixed bar only while the inline button is out of the viewport', async () => {
+    let notify
+    vi.stubGlobal('IntersectionObserver', class { constructor(cb) { notify = cb } observe() {} disconnect() {} })
+    await setup()
+    expect(body().querySelector('[data-testid="send-bar"]')).not.toBeNull()
+    notify([{ isIntersecting: true }])
+    await flushPromises()
+    expect(body().querySelector('[data-testid="send-bar"]')).toBeNull()
+    notify([{ isIntersecting: false }])
+    await flushPromises()
+    expect(body().querySelector('[data-testid="send-bar"]')).not.toBeNull()
+  })
+})
