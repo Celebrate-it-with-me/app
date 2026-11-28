@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import i18n, { setLocale } from '@/locales/i18n'
 import DashboardActivity from '../DashboardActivity.vue'
@@ -82,5 +82,29 @@ describe('DashboardActivity', () => {
     expect(error.get('[data-testid=block-error]').text()).toContain('No pudimos cargar la actividad reciente')
     await error.get('[data-testid=block-retry]').trigger('click')
     expect(error.emitted('retry')).toHaveLength(1)
+  })
+})
+
+describe('DashboardActivity on a phone', () => {
+  const original = window.matchMedia
+  beforeEach(() => { window.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {} }) })
+  afterEach(() => { window.matchMedia = original })
+
+  it('shows 3 entries and "Ver todo" opens the rest in place', async () => {
+    const w = mountActivity()
+    expect(items(w)).toHaveLength(3)
+    const toggle = w.get('[data-testid=activity-toggle]')
+    expect(toggle.text()).toBe('Ver todo')
+    expect(toggle.attributes('aria-expanded')).toBe('false')
+    await toggle.trigger('click')
+    expect(items(w)).toHaveLength(5)
+    expect(w.get('[data-testid=activity-toggle]').text()).toBe('Ver menos')
+    await w.get('[data-testid=activity-toggle]').trigger('click')
+    expect(items(w)).toHaveLength(3)
+  })
+  it('has no toggle when 3 or fewer entries exist', () => {
+    const w = mountActivity({ activity: FEED.slice(0, 3) })
+    expect(items(w)).toHaveLength(3)
+    expect(w.find('[data-testid=activity-toggle]').exists()).toBe(false)
   })
 })

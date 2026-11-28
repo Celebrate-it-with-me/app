@@ -38,3 +38,27 @@ describe('EventSwitcher countdown', () => {
     expect(trigger(mountWith(null))).toContain(i18n.global.t('app.noEvent'))
   })
 })
+
+describe('EventSwitcher on a phone', () => {
+  beforeEach(() => setLocale('es'))
+  const mountWith = name => {
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useEventsStore().activeEvent = { id: 7, eventName: name, status: 'published', timezone: 'America/New_York' }
+    return mount(EventSwitcher, { global: { plugins: [i18n, pinia], provide: { [routerKey]: { push: vi.fn() } } } })
+  }
+
+  it('keeps the full name in the title, for when the ellipsis cuts it', () => {
+    const w = mountWith('Los XV de Valentina')
+    expect(w.get('[data-testid=switcher-name]').attributes('title')).toBe('Los XV de Valentina')
+    expect(w.get('[data-testid=switcher-name]').classes()).toContain('truncate')
+  })
+  it('hides the "Evento activo" label and the calendar icon below 640 px', () => {
+    const w = mountWith('Los XV de Valentina')
+    const label = w.findAll('span').find(s => s.text() === 'Evento activo' && s.classes().includes('uppercase'))
+    expect(label.classes()).toContain('max-sm:hidden')
+    expect(w.get('svg').element.parentElement.className).toMatch(/\bhidden\b.*\bsm:flex\b/)
+  })
+})
+
