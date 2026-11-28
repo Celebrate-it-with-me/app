@@ -76,6 +76,13 @@ describe('forms use the spelled-out date field', () => {
     useTimelineStore().timelines = [{ id: 1, title: 'Misa', type: 'ceremony', startTime: '2027-01-02 16:30:00', endTime: '2027-01-02 17:30:00', description: '' }]
     const wrapper = mountIt(TimelineView)
     await flushPromises()
-    expect(wrapper.text().replace(/\s+/g, ' ')).toMatch(/4:30 p\.\s?m\. – 5:30 p\.\s?m\./)
+    const text = wrapper.text().replace(/\s+/g, ' ')
+    // Desktop prints each time with its own a.m./p.m.
+    expect(text).toMatch(/4:30 p\.\s?m\./)
+    expect(text).toMatch(/hasta 5:30 p\.\s?m\./)
+    // Mobile shares the a.m./p.m. across the range ("4:30 – 5:30 p.m.")
+    expect(text).toMatch(/4:30 – 5:30 p\.\s?m\./)
+    // Never 24-hour clock
+    expect(text).not.toMatch(/16:30|17:30/)
   })
 })
