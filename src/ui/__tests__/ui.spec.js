@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import { UiButton, UiSwitch, UiField, UiInput, UiBadge, UiPagination, UiAvatar, UiSelect, useToast } from '@/ui'
+import { UiBottomSheet, UiDropdown, UiButton, UiSwitch, UiField, UiInput, UiBadge, UiPagination, UiAvatar, UiSelect, useToast } from '@/ui'
 import { initials, avatarTone, cx } from '@/ui/utils'
 
 describe('utils', () => {
@@ -256,3 +256,52 @@ describe('UiToaster action', () => {
     ;[...toasts].forEach(t => dismiss(t.id))
   })
 })
+
+describe('UiBottomSheet', () => {
+  it('is a dialog with the title, an optional subtitle and the content; Escape asks to close it', async () => {
+    const wrapper = mount(UiBottomSheet, { props: { open: true, title: 'Ana Perez', subtitle: 'Idioma' }, slots: { default: '<p id="inside">hola</p>' }, attachTo: document.body })
+    await nextTick()
+    const dialog = document.body.querySelector('[data-testid="bottom-sheet"]')
+    expect(dialog.getAttribute('role')).toBe('dialog')
+    expect(dialog.querySelector('h2').textContent).toBe('Ana Perez')
+    expect(dialog.querySelector('[data-testid="bottom-sheet-subtitle"]').textContent).toBe('Idioma')
+    expect(dialog.querySelector('#inside')).not.toBeNull()
+    dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await nextTick()
+    expect(wrapper.emitted('update:open')[0]).toEqual([false])
+    wrapper.unmount()
+    document.body.innerHTML = ''
+  })
+
+  it('renders nothing while closed', () => {
+    const wrapper = mount(UiBottomSheet, { props: { open: false, title: 'x' }, attachTo: document.body })
+    expect(document.body.querySelector('[data-testid="bottom-sheet"]')).toBeNull()
+    wrapper.unmount()
+  })
+})
+
+describe('UiDropdown submenus', () => {
+  const open = async items => {
+    const wrapper = mount(UiDropdown, { props: { items }, slots: { trigger: '<button id="t">menu</button>' }, attachTo: document.body })
+    document.getElementById('t').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    await nextTick()
+    await nextTick()
+    return wrapper
+  }
+
+  it('shows an item with children as a submenu trigger, and radio choices with the current one checked', async () => {
+    const onChange = vi.fn()
+    const wrapper = await open([
+      { label: 'Plain', onSelect: () => {} },
+      { label: 'Language', radio: { value: 'es', options: [{ value: 'es', label: 'Spanish' }, { value: 'en', label: 'English' }], onChange } },
+      { label: 'Download', children: [{ label: 'All', onSelect: () => {} }] }
+    ])
+    const entries = [...document.body.querySelectorAll('[role="menuitem"]')].map(e => e.textContent.trim())
+    expect(entries).toEqual(['Plain', 'Language', 'Download'])
+    const triggers = [...document.body.querySelectorAll('[aria-haspopup="menu"]')].filter(e => e.getAttribute('role') === 'menuitem')
+    expect(triggers).toHaveLength(2)
+    wrapper.unmount()
+    document.body.innerHTML = ''
+  })
+})
+

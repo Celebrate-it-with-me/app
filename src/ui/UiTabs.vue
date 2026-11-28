@@ -37,7 +37,7 @@ const emit = defineEmits(['update:modelValue'])
           :key="tab.value"
           :value="tab.value"
           class="flex items-center justify-center gap-2 whitespace-nowrap px-3 py-3 text-base font-medium text-ink-500 outline-none transition-colors hover:text-ink-900 data-[state=active]:text-ink-900 focus-visible:text-rose-600"
-          :class="compact && 'min-w-0 flex-col gap-1 px-1 py-2.5 text-xs md:flex-row md:gap-2 md:px-3 md:py-3 md:text-base'"
+          :class="compact && 'min-w-0 flex-col gap-0.5 px-0.5 py-2 text-[13px] md:flex-row md:gap-2 md:px-3 md:py-3 md:text-base'"
         >
           <template v-if="compact && tab.shortLabel">
             <span class="md:hidden">{{ tab.shortLabel }}</span>
