@@ -1296,7 +1296,7 @@ export default {
         label: 'Acciones para {name}',
         whatsapp: 'Escribir por WhatsApp',
         commitments: 'Lo que apadrina',
-        edit: 'Editar gasto',
+        edit: 'Editar',
         remove: 'Eliminar'
       },
       whatsappText: 'Hola {name}, te escribo por la fiesta de {event}. ¡Gracias por acompañarnos!',
@@ -2119,7 +2119,7 @@ export default {
       custom: {
         add: 'Agregar tarea',
         empty: 'Anota aquí lo tuyo: cotizar el mariachi, probar el pastel…',
-        edit: 'Editar gasto',
+        edit: 'Editar',
         remove: 'Borrar',
         editTitle: 'Editar tarea',
         modalHint: 'Solo la ven quienes organizan el evento.',
@@ -2307,7 +2307,7 @@ export default {
       },
       dress: {
         title: 'Vestimenta',
-        edit: 'Editar gasto',
+        edit: 'Editar',
         view: 'Ver',
         reserved: 'Colores reservados',
         reservedLabel: 'Colores reservados: {colors}',
