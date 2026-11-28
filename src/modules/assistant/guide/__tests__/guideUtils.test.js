@@ -3,42 +3,16 @@ import {
   countdown,
   guideView,
   hasNewDot,
-  isCompactRoute,
   isHelpOnlyRoute,
   getSeenKey,
   setSeenKey,
   wasWelcomed,
   markWelcomed,
-  isCompactForSession,
-  setCompactForSession,
   percentOf,
   toneFor
 } from '../guideUtils'
 
 const task = key => ({ key, title: key, state: 'next' })
-
-describe('isCompactRoute', () => {
-  it.each([
-    '/dashboard/invitation',
-    '/dashboard/unlock/seating',
-    '/dashboard/events/create',
-    '/dashboard/events/8/edit',
-    '/dashboard/events/8/unlock',
-    '/dashboard/menus/create',
-    '/dashboard/memories',
-    '/dashboard/start',
-    '/dashboard/plan',
-    '/settings/profile',
-    '/settings/security',
-    '/dashboard/guests',
-    '/dashboard/save-the-date'
-  ])('shrinks on %s', path => expect(isCompactRoute(path)).toBe(true))
-
-  it.each(['/dashboard', '/dashboard/budget', '/dashboard/timeline', '/dashboard/events'])(
-    'keeps the pill on %s',
-    path => expect(isCompactRoute(path)).toBe(false)
-  )
-})
 
 describe('guideView', () => {
   it('uses the first step and the two after it', () => {
@@ -89,7 +63,7 @@ describe('browser memory', () => {
     sessionStorage.clear()
     vi.restoreAllMocks()
   })
-  it('remembers the seen task per event, the welcome once, and the session hiding', () => {
+  it('remembers the seen task per event, and the welcome once', () => {
     expect(getSeenKey(8)).toBeNull()
     setSeenKey(8, 'book_venue')
     expect(getSeenKey(8)).toBe('book_venue')
@@ -97,9 +71,6 @@ describe('browser memory', () => {
     expect(wasWelcomed()).toBe(false)
     markWelcomed()
     expect(wasWelcomed()).toBe(true)
-    expect(isCompactForSession()).toBe(false)
-    setCompactForSession(true)
-    expect(isCompactForSession()).toBe(true)
   })
   it('survives blocked storage', () => {
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {

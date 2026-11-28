@@ -90,19 +90,21 @@ describe('AssistantGuide on the Inicio', () => {
     expect(trigger().dataset.docked).toBeUndefined()
     expect(q('assistant-guide')).not.toBeNull()
   })
-  it('comes back as the pill on the other screens', async () => {
+  it('comes back as the 48 px icon on the other screens', async () => {
     await mountGuide({ path: '/dashboard' })
     await router.push('/dashboard/budget')
     await flushPromises()
-    expect(trigger().dataset.variant).toBe('pill')
+    expect(trigger().dataset.variant).toBe('icon')
+    expect(trigger().className).toContain('w-12')
   })
 })
 
-describe('AssistantGuide pill', () => {
-  it('shows the pill with the pink dot for an unseen step', async () => {
+describe('AssistantGuide icon', () => {
+  it('shows the icon with the pink dot for an unseen step', async () => {
     await mountGuide()
-    expect(trigger().dataset.variant).toBe('pill')
-    expect(trigger().textContent).toContain('Tu siguiente paso')
+    expect(trigger().dataset.variant).toBe('icon')
+    expect(trigger().textContent).not.toContain('Tu siguiente paso')
+    expect(trigger().getAttribute('aria-label')).toContain('Tu siguiente paso')
     expect(q('guide-dot')).not.toBeNull()
   })
 
@@ -115,8 +117,8 @@ describe('AssistantGuide pill', () => {
     expect(q('guide-pulse')).toBeNull()
   })
 
-  it('shrinks to an icon on work screens', async () => {
-    await mountGuide({ path: '/dashboard/invitation' })
+  it.each(['/dashboard/invitation', '/dashboard/events', '/dashboard/seating', '/settings/profile'])('is the same icon on %s', async path => {
+    await mountGuide({ path })
     expect(trigger().dataset.variant).toBe('icon')
     expect(trigger().textContent).not.toContain('Tu siguiente paso')
   })
@@ -203,15 +205,6 @@ describe('AssistantGuide sheet', () => {
     expect(q('guide-title').textContent).toContain('Tarea b')
   })
 
-  it('"Ocultar por hoy" shrinks the pill for the session', async () => {
-    await mountGuide()
-    await open()
-    q('guide-hide').click()
-    await flushPromises()
-    expect(trigger().dataset.variant).toBe('icon')
-    expect(sessionStorage.getItem('quinvite:guide:compact')).toBe('1')
-  })
-
   it('"¿Necesitas ayuda?" opens the support sheet and sends the message', async () => {
     await mountGuide()
     await open()
@@ -272,7 +265,7 @@ describe('AssistantGuide lifts above a fixed bottom bar', () => {
     const bar = declareBar(44, { inline: true })
     await nextTick()
     expect(lift()).toBe('-2px')
-    expect(q('guide-trigger').getAttribute('data-variant')).not.toBe('pill')
+    expect(q('guide-trigger').getAttribute('data-variant')).toBe('icon')
     expect(q('guide-trigger').className).toContain('w-12')
     bar.stop()
     await nextTick()

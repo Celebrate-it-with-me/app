@@ -4,33 +4,12 @@
  */
 
 /**
- * Work screens: the pill shrinks to an icon here so it never competes with the screen's own buttons. Edit this list to
- * change where the guide steps aside. Patterns are tested against the route path.
- */
-export const COMPACT_ROUTES = [
-  /^\/dashboard\/invitation(\/|$)/, // editor + template selector
-  /^\/dashboard\/unlock(\/|$)/, // "pass to premium" screens
-  /^\/dashboard\/events\/create(\/|$)/,
-  /^\/dashboard\/events\/[^/]+\/(edit|unlock|invitations)(\/|$)/, // event form, payment, invitation sending
-  /^\/dashboard\/menus\/(create|edit)(\/|$)/, // long forms
-  /^\/dashboard\/memories(\/|$)/, // photo upload
-  /^\/dashboard\/collaborators\/invite(\/|$)/,
-  /^\/dashboard\/start(\/|$)/, // onboarding
-  /^\/dashboard\/plan(\/|$)/, // the full plan: the guide would only repeat it
-  /^\/settings(\/|$)/, // account forms: the pill would sit over the save button
-  /^\/dashboard\/guests(\/|$)/, // at 320 px the full pill covers the Import/Add row (seen in a capture)
-  /^\/dashboard\/save-the-date(\/|$)/ // the pill covered the switches; the icon shares the save bar's row
-]
-
-/**
  * Screens where the next step already has its own place on the page (the Inicio's "Lo que toca ahora"): the guide is
  * only the help icon there. Exact paths, so the rest of /dashboard/* keeps the guide.
  */
 export const HELP_ONLY_ROUTES = [/^\/dashboard\/?$/]
 
 export const isHelpOnlyRoute = path => typeof path === 'string' && HELP_ONLY_ROUTES.some(re => re.test(path))
-
-export const isCompactRoute = path => typeof path === 'string' && COMPACT_ROUTES.some(re => re.test(path))
 
 /** Tone of the copy: weddings are more sober, everything else (quince) is warm and festive. */
 export const toneFor = slug => (slug === 'wedding' ? 'wedding' : 'quince')
@@ -62,7 +41,6 @@ export function countdown(next) {
 
 const SEEN_KEY = eventId => `quinvite:guide:seen:${eventId}`
 export const WELCOMED_KEY = 'quinvite:guide:welcomed'
-export const COMPACT_KEY = 'quinvite:guide:compact'
 
 const read = (storage, key) => {
   try {
@@ -80,7 +58,6 @@ const write = (storage, key, value) => {
   }
 }
 const local = () => (typeof window === 'undefined' ? null : window.localStorage)
-const session = () => (typeof window === 'undefined' ? null : window.sessionStorage)
 
 export const getSeenKey = eventId => read(local(), SEEN_KEY(eventId))
 export const setSeenKey = (eventId, taskKey) => write(local(), SEEN_KEY(eventId), String(taskKey))
@@ -90,6 +67,3 @@ export const hasNewDot = (view, seenKey) => view?.kind === 'task' && view.task.k
 
 export const wasWelcomed = () => read(local(), WELCOMED_KEY) === '1'
 export const markWelcomed = () => write(local(), WELCOMED_KEY, '1')
-
-export const isCompactForSession = () => read(session(), COMPACT_KEY) === '1'
-export const setCompactForSession = on => write(session(), COMPACT_KEY, on ? '1' : '0')

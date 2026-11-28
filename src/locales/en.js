@@ -2877,8 +2877,6 @@ export default {
     after: 'After this',
     seeAll: 'See my whole plan',
     help: 'Need help?',
-    hideToday: 'Hide for today',
-    hiddenToast: 'It is now a small icon. It stays here when you need it.',
     snoozedToast: 'Perfect, we will remind you in a week.',
     close: 'Close',
     overdue: 'Best to do it soon',
