@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiModal, UiField, UiInput, UiRadioGroup, UiButton } from '@/ui'
 import { INVITABLE_ROLES, emailError } from '../utils/collaborators'
+import RoleHelp from './RoleHelp.vue'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -37,8 +38,7 @@ const error = computed(() => {
 const options = computed(() =>
   INVITABLE_ROLES.map(value => ({
     value,
-    label: t(`app.collaborators.roles.${value}`),
-    description: t(`app.collaborators.roleHelp.${value}`)
+    label: t(`app.collaborators.roles.${value}`)
   }))
 )
 
@@ -58,6 +58,7 @@ function submit() {
       <fieldset class="flex flex-col gap-2">
         <legend class="mb-1.5 text-sm font-semibold text-ink-700">{{ t('app.collaborators.invite.role') }}</legend>
         <UiRadioGroup v-model="role" :options="options" cards />
+        <RoleHelp variant="plain" :roles="INVITABLE_ROLES" class="mt-1" />
       </fieldset>
     </form>
     <template #footer>

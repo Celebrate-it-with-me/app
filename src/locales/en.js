@@ -1250,7 +1250,18 @@ export default {
       locked: { title: 'Inviting collaborators is part of the full event', text: 'You can still see who has access, remove people and cancel invitations. To invite more people, change roles or resend, go premium.', cta: 'Go premium' },
       actionsFor: 'Actions for {name}',
       roles: { owner: 'Owner', editor: 'Editor', viewer: 'View only' },
-      roleHelp: { editor: 'Can see and change everything except collaborator invitations and deleting the event.', viewer: 'Can see the event but change nothing.' },
+      roleHelp: {
+        owner: 'Full control: edits everything, manages collaborators and can delete the event.',
+        editor: 'Edits the invitation, guests, schedule and budget. Cannot manage collaborators or delete the event.',
+        viewer: 'Can see the event and the guests, but not the budget, and cannot change anything.'
+      },
+      roleHelpToggle: 'What can each role do?',
+      you: 'You',
+      sections: { members: 'Has access · {n}', invites: 'Invitations sent · {n}' },
+      sentAgo: 'Sent {when}',
+      declinedAgo: 'Declined {when}',
+      resend: 'Resend',
+      resendFor: 'Resend the invitation to {name}',
       status: { active: 'Has access', pending: 'Pending', expired: 'Expired', declined: 'Declined' },
       actions: { resend: 'Resend invitation', cancel: 'Cancel invitation', makeEditor: 'Make editor', makeViewer: 'Make view only', remove: 'Remove access' },
       invite: {

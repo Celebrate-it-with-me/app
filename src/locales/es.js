@@ -1250,7 +1250,18 @@ export default {
       locked: { title: 'Invitar colaboradoras es parte del evento completo', text: 'Aquí sigues viendo a quienes ya tienen acceso y puedes quitarlos o cancelar invitaciones. Para invitar a más personas, cambiar roles o reenviar, pasa a premium.', cta: 'Pasa a premium' },
       actionsFor: 'Acciones para {name}',
       roles: { owner: 'Dueña', editor: 'Editor', viewer: 'Solo lectura' },
-      roleHelp: { editor: 'Puede ver y cambiar todo menos las invitaciones a colaborar y borrar el evento.', viewer: 'Puede ver el evento, sin cambiar nada.' },
+      roleHelp: {
+        owner: 'Control total: lo edita todo, gestiona colaboradores y puede borrar el evento.',
+        editor: 'Edita la invitación, los invitados, el programa y el presupuesto. No gestiona colaboradores ni borra el evento.',
+        viewer: 'Puede ver el evento y los invitados, pero no el presupuesto ni cambiar nada.'
+      },
+      roleHelpToggle: '¿Qué puede hacer cada rol?',
+      you: 'Tú',
+      sections: { members: 'Con acceso · {n}', invites: 'Invitaciones enviadas · {n}' },
+      sentAgo: 'Enviada {when}',
+      declinedAgo: 'Rechazada {when}',
+      resend: 'Reenviar',
+      resendFor: 'Reenviar la invitación a {name}',
       status: { active: 'Con acceso', pending: 'Pendiente', expired: 'Vencida', declined: 'Rechazada' },
       actions: { resend: 'Reenviar invitación', cancel: 'Cancelar invitación', makeEditor: 'Pasar a editor', makeViewer: 'Pasar a solo lectura', remove: 'Quitar acceso' },
       invite: {
