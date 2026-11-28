@@ -11,7 +11,7 @@ export function useMenusView() {
   const menuStore = useMenusStore()
   const loading = ref(true)
 
-  const guestMenuCount = computed(() => menuStore.guestsMeta?.total ?? menuStore.guestsMenu?.length ?? 0)
+  const guestMenuCount = computed(() => menuStore.summary?.total ?? menuStore.guestsMeta?.total ?? menuStore.guestsMenu?.length ?? 0)
 
   const createMenu = async () => {
     await router.push('/dashboard/menus/create')
@@ -20,7 +20,7 @@ export function useMenusView() {
   const loadData = async () => {
     loading.value = true
     try {
-      await Promise.all([menuStore.loadMenus(), menuStore.loadGuestsMenu()])
+      await Promise.all([menuStore.loadMenus(), menuStore.loadGuestsMenu(), menuStore.loadSummary()])
     } catch {
       toast.error(t('app.menus.loadError'))
     } finally {

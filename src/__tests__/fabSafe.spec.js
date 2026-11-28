@@ -42,7 +42,7 @@ describe('assistant button column (fab-safe)', () => {
       'modules/assistant/components/PlanTaskRow.vue',
       'modules/comments/components/CommentRow.vue',
       'modules/menus/components/MenuItem.vue',
-      'modules/menus/components/MenusTable.vue',
+      'modules/menus/components/MenuCards.vue',
       'modules/seating/components/SeatingTablesList.vue',
       'modules/suggested-music/components/SuggestedMusicSongItem.vue',
       'modules/onboarding/views/StartView.vue',
