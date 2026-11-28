@@ -22,6 +22,7 @@ const onInput = value => {
 <template>
   <UiCard :title="t('app.music.search.title')" :subtitle="t('app.music.search.subtitle')" heading-level="h2">
     <UiInput
+      class="fab-safe"
       :model-value="props.searchQuery"
       type="search"
       :aria-label="t('app.music.search.title')"
