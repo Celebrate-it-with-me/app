@@ -31,7 +31,7 @@ const ROUTES = [
 
 let wrapper
 let router
-async function mountGuide({ userRole = 'owner', path = '/dashboard/budget', next = NEXT, slug = 'quinceanera', dock = false } = {}) {
+async function mountGuide({ userRole = 'owner', path = '/dashboard/events', next = NEXT, slug = 'quinceanera', dock = false } = {}) {
   if (dock) document.body.insertAdjacentHTML('beforeend', '<header><div id="shell-help-dock"></div></header>')
   const pinia = createPinia()
   createApp({}).use(pinia)
@@ -85,14 +85,14 @@ describe('AssistantGuide on the Inicio', () => {
   })
   it('floats again once it leaves the Inicio, even with the dock in the page', async () => {
     await mountGuide({ path: '/dashboard', dock: true })
-    await router.push('/dashboard/budget')
+    await router.push('/dashboard/events')
     await flushPromises()
     expect(trigger().dataset.docked).toBeUndefined()
     expect(q('assistant-guide')).not.toBeNull()
   })
   it('comes back as the pill on the other screens', async () => {
     await mountGuide({ path: '/dashboard' })
-    await router.push('/dashboard/budget')
+    await router.push('/dashboard/events')
     await flushPromises()
     expect(trigger().dataset.variant).toBe('pill')
   })

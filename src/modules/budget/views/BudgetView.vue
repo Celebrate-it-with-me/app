@@ -183,17 +183,19 @@ async function download() {
 </script>
 
 <template>
-  <UiPage>
+  <UiPage class="pb-24 lg:pb-0">
     <UiPageHeader :title="t('app.budget.title')" :subtitle="t('app.budget.subtitle')">
       <template #actions>
-        <UiButton v-if="summary && store.items.length" variant="secondary" @click="download">
-          <Download class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.budget.export') }}
-        </UiButton>
-        <UiButton v-if="canEdit" @click="openItem()">
-          <Plus class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.budget.add') }}
-        </UiButton>
+        <div class="flex w-full gap-2 md:w-auto">
+          <UiButton v-if="summary && store.items.length" class="flex-1 whitespace-nowrap md:flex-none" variant="secondary" @click="download">
+            <Download class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.budget.export') }}
+          </UiButton>
+          <UiButton v-if="canEdit" class="flex-1 whitespace-nowrap md:flex-none" @click="openItem()">
+            <Plus class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.budget.add') }}
+          </UiButton>
+        </div>
       </template>
     </UiPageHeader>
 
@@ -226,9 +228,13 @@ async function download() {
             />
           </div>
         </div>
-        <div class="mt-3 overflow-x-auto">
-          <UiTabs v-model="filter" :tabs="tabs" />
+        <div class="mt-3">
+          <UiTabs v-model="filter" :tabs="tabs" compact />
         </div>
+        <p v-if="overpaidOnly" class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-danger-50 px-3.5 py-2.5 text-sm text-danger-700" role="status" data-testid="overpaid-filter">
+          {{ t('app.budget.overpaidFilter') }}
+          <button type="button" class="touch-target relative font-semibold underline underline-offset-4" @click="overpaidOnly = false">{{ t('app.budget.overpaidClear') }}</button>
+        </p>
 
         <p v-if="!visible.length" class="mt-8 text-center text-ink-500">{{ t('app.budget.noResults') }}</p>
 

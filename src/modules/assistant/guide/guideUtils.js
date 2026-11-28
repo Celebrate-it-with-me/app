@@ -22,7 +22,8 @@ export const COMPACT_ROUTES = [
   /^\/dashboard\/save-the-date(\/|$)/, // the pill covered the switches; the icon shares the save bar's row
   /^\/dashboard\/timeline(\/|$)/, // the pill covered the actions column of each moment
   /^\/dashboard\/locations(\/|$)/, // the pill covered the action pills of each place
-  /^\/dashboard\/dress-code(\/|$)/ // the icon shares the save bar's row
+  /^\/dashboard\/dress-code(\/|$)/, // the icon shares the save bar's row
+  /^\/dashboard\/budget(\/|$)/ // the pill covered the amounts and the row buttons
 ]
 
 /**
