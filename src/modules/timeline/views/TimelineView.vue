@@ -124,7 +124,7 @@ function fromSheet(action) {
 </script>
 
 <template>
-  <UiPage class="pb-24 lg:pb-0">
+  <UiPage>
     <UiPageHeader :title="t('app.timeline.title')" :subtitle="t('app.timeline.subtitle')" />
 
     <div v-if="loading" class="mt-6 space-y-3">
@@ -146,7 +146,7 @@ function fromSheet(action) {
       <ol class="mt-6 max-w-[860px] rounded-xl border border-line bg-white py-2 shadow-card" data-testid="timeline-list">
         <li v-for="row in rows" :key="row.moment.id" data-testid="timeline-moment">
           <div
-            class="group grid grid-cols-[36px_minmax(0,1fr)_auto] gap-x-3 pr-3 pl-3.5 md:grid-cols-[92px_44px_minmax(0,1fr)_auto] md:gap-x-3.5 md:px-4"
+            class="group grid grid-cols-[36px_minmax(0,1fr)_auto] gap-x-3 pl-3.5 md:pl-4 lg:pr-4 fab-safe md:grid-cols-[92px_44px_minmax(0,1fr)_auto] md:gap-x-3.5"
           >
             <div class="hidden pt-3 text-right md:block">
               <p class="text-[15px] font-semibold whitespace-nowrap text-ink-900">
@@ -207,7 +207,7 @@ function fromSheet(action) {
 
           <div
             v-if="row.link"
-            class="-mt-3.5 grid grid-cols-[36px_minmax(0,1fr)_auto] gap-x-3 pr-3 pl-3.5 md:grid-cols-[92px_44px_minmax(0,1fr)_auto] md:gap-x-3.5 md:px-4"
+            class="-mt-3.5 grid grid-cols-[36px_minmax(0,1fr)_auto] gap-x-3 pl-3.5 md:pl-4 lg:pr-4 fab-safe md:grid-cols-[92px_44px_minmax(0,1fr)_auto] md:gap-x-3.5"
             data-testid="timeline-link"
             :data-kind="row.link.kind"
           >

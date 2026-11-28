@@ -94,7 +94,7 @@ const emptyAll = computed(() => emptyList.value && menuStore.guestsFilter === 'a
   </UiEmptyState>
 
   <div v-else>
-    <div class="flex flex-wrap items-center gap-2" role="group" :aria-label="t('app.menus.filtersLabel')">
+    <div class="flex flex-wrap items-center gap-2 fab-safe" role="group" :aria-label="t('app.menus.filtersLabel')">
       <button
         v-for="filter in filters"
         :key="filter.value"

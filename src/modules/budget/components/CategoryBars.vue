@@ -37,7 +37,7 @@ function noteOf(bar) {
       <p class="text-xs text-ink-500">{{ t('app.budget.byCategoryHelp') }}</p>
     </header>
     <ul>
-      <li v-for="row in rows" :key="row.id">
+      <li v-for="row in rows" :key="row.id" class="fab-safe">
         <button
           type="button"
           class="grid w-full cursor-pointer grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3.5 gap-y-1.5 rounded-[10px] px-2 py-[9px] text-left hover:bg-cream-50 focus-visible:outline-2 focus-visible:outline-rose-600 md:grid-cols-[170px_minmax(0,1fr)_150px] md:gap-y-0"

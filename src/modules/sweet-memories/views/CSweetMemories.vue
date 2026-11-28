@@ -17,7 +17,7 @@ const GRID = 'grid grid-cols-2 gap-2.5 md:grid-cols-[repeat(auto-fill,minmax(210
 </script>
 
 <template>
-  <UiPage class="pb-28 lg:pb-8">
+  <UiPage>
     <UiPageHeader :title="t('app.memories.title')" :subtitle="t('app.memories.subtitle')">
       <template #actions>
         <UiButton v-if="c.memories.value.length > 0" @click="c.openCreate()">

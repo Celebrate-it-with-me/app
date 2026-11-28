@@ -187,7 +187,7 @@ async function download() {
 </script>
 
 <template>
-  <UiPage class="pb-24 lg:pb-0">
+  <UiPage>
     <UiPageHeader :title="t('app.budget.title')" :subtitle="t('app.budget.subtitle')">
       <template #actions>
         <div class="flex w-full gap-2 md:w-auto">

@@ -46,7 +46,11 @@ describe('assistant button column (fab-safe)', () => {
       'modules/seating/components/SeatingTablesList.vue',
       'modules/suggested-music/components/SuggestedMusicSongItem.vue',
       'modules/onboarding/views/StartView.vue',
-      'modules/account-deletion/components/DeleteAccountSection.vue'
+      'modules/account-deletion/components/DeleteAccountSection.vue',
+      'modules/budget/components/ItemRow.vue',
+      'modules/budget/components/CategoryBars.vue',
+      'modules/locations/components/LocationCard.vue',
+      'modules/collaborators/components/CollaboratorRow.vue'
     ]
     for (const f of files) expect(readFileSync(resolve(__dirname, '..', f), 'utf8'), f).toContain('fab-safe')
   })

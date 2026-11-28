@@ -54,7 +54,7 @@ const menu = computed(() => {
 
 <template>
   <div
-    class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2.5 gap-y-2 p-3.5 md:grid-cols-[minmax(0,1fr)_110px_190px_160px_40px] md:items-center md:gap-4 md:px-4 md:py-3.5"
+    class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2.5 gap-y-2 py-3.5 pl-3.5 md:pl-4 lg:pr-4 fab-safe md:grid-cols-[minmax(0,1fr)_110px_190px_160px_40px] md:items-center md:gap-4 md:py-3.5"
     :data-item="item.id"
   >
     <div class="min-w-0">

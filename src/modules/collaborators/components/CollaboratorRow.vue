@@ -45,7 +45,7 @@ const when = computed(() => {
 </script>
 
 <template>
-  <li class="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3 md:flex-nowrap" :data-testid="`collaborator-${row.key}`">
+  <li class="flex flex-wrap items-center gap-x-3 gap-y-2 py-3 pl-4 lg:pr-4 fab-safe md:flex-nowrap" :data-testid="`collaborator-${row.key}`">
     <UiAvatar v-if="row.type === 'member'" :name="row.name" :src="resolveAvatarUrl(row.avatarUrl)" size="md" />
     <span v-else class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream-200 text-ink-600" aria-hidden="true">
       <Mail class="h-5 w-5" />

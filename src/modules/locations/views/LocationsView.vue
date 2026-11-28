@@ -117,7 +117,7 @@ async function confirmRemove() {
 </script>
 
 <template>
-  <UiPage class="pb-24 lg:pb-0">
+  <UiPage>
     <UiPageHeader :title="t('app.locations.title')" :subtitle="t('app.locations.subtitle')" />
 
     <div v-if="loading" class="mt-6 flex max-w-[860px] flex-col gap-3">

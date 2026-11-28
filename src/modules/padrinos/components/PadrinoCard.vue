@@ -37,7 +37,7 @@ const menu = computed(() => {
 </script>
 
 <template>
-  <UiCard padding="none" class="flex h-full flex-col p-3.5 md:p-[18px]">
+  <UiCard padding="none" class="flex h-full flex-col py-3.5 pl-3.5 md:py-[18px] md:pl-[18px] lg:pr-[18px] fab-safe">
     <div class="flex items-start gap-3">
       <div :class="['hidden h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full text-sm font-semibold min-[420px]:flex md:h-11 md:w-11 md:text-base', avatarTone(index)]" aria-hidden="true" data-avatar>
         {{ initialsOf(padrino.name) }}

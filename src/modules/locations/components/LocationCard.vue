@@ -47,7 +47,7 @@ const SECONDARY = `${PILL} border border-cream-300 bg-white text-ink-900 hover:b
       </div>
     </div>
 
-    <div class="flex min-w-0 flex-col gap-1.5 p-4 sm:px-[18px] sm:py-4">
+    <div class="flex min-w-0 flex-col gap-1.5 py-4 pl-4 sm:pl-[18px] lg:pr-[18px] fab-safe">
       <div class="flex flex-wrap items-center gap-2">
         <h3 class="min-w-0 font-heading text-xl leading-tight text-ink-900">{{ place.name }}</h3>
         <span v-if="schedule" class="inline-flex items-center gap-1 rounded-full bg-cream-100 px-2.5 py-0.5 text-xs font-semibold text-ink-700" data-testid="location-schedule">
@@ -58,7 +58,7 @@ const SECONDARY = `${PILL} border border-cream-300 bg-white text-ink-900 hover:b
           <template #trigger>
             <button
               type="button"
-              class="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-ink-500 transition-colors touch-target hover:bg-black/5 hover:text-ink-900 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-rose-600 max-md:absolute max-md:right-2.5 max-md:top-2.5 max-md:bg-white/90 max-md:text-ink-900 max-md:shadow-sm md:ml-auto"
+              class="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-ink-500 transition-colors touch-target hover:bg-black/5 hover:text-ink-900 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-rose-600 max-md:absolute max-md:left-2.5 max-md:top-2.5 max-md:bg-white/90 max-md:text-ink-900 max-md:shadow-sm md:ml-auto"
               :aria-label="t('app.locations.actionsFor', { name: place.name })"
               data-testid="location-more"
             >

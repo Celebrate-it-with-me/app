@@ -192,7 +192,7 @@ async function remove() {
       <UiSkeleton class="h-56" />
     </div>
 
-    <div v-else class="mt-6 grid items-start gap-6 pb-36 md:pb-0 lg:grid-cols-[minmax(0,1fr)_300px]">
+    <div v-else class="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
       <form class="min-w-0 space-y-6" novalidate @submit.prevent="save">
         <UiCard :title="t('app.dressCode.styleTitle')" heading-level="h2">
           <fieldset :disabled="!canEdit">

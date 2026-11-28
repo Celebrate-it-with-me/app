@@ -156,7 +156,7 @@ const openWhatsapp = padrino =>
 </script>
 
 <template>
-  <UiPage class="pb-24 lg:pb-0">
+  <UiPage>
     <UiPageHeader :title="t('app.padrinos.title')" :subtitle="t('app.padrinos.subtitle')">
       <template #actions>
         <UiButton v-if="canEdit" @click="openForm()">
