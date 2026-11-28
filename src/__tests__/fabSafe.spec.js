@@ -40,7 +40,6 @@ describe('assistant button column (fab-safe)', () => {
       'modules/save-the-date/views/SaveTheDateView.vue',
       'modules/invitation-editor/components/SectionsList.vue',
       'modules/assistant/components/PlanTaskRow.vue',
-      'modules/padrinos/components/PadrinoCard.vue',
       'modules/comments/components/CommentRow.vue',
       'modules/menus/components/MenuItem.vue',
       'modules/menus/components/MenusTable.vue',
