@@ -34,10 +34,14 @@ class MenusService {
     )
   }
 
-  async loadGuestMenu({ eventId, page = 1, perPage = 10 }) {
+  async loadGuestMenu({ eventId, page = 1, perPage = 10, status }) {
     return await CWM_API.get(`event/${eventId}/menus/guests`, {
-      params: { page, per_page: perPage }
+      params: { page, per_page: perPage, ...(status ? { status } : {}) }
     })
+  }
+
+  async loadSummary({ eventId }) {
+    return await CWM_API.get(`event/${eventId}/menus/summary`)
   }
 
   async exportGuestsMenu({ eventId }) {

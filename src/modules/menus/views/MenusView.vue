@@ -2,7 +2,8 @@
 import { useI18n } from 'vue-i18n'
 import { Plus } from 'lucide-vue-next'
 import { UiPageHeader, UiButton, UiBadge, UiPage } from '@/ui'
-import MenusTable from '@/modules/menus/components/MenusTable.vue'
+import MenuCards from '@/modules/menus/components/MenuCards.vue'
+import MenuSummary from '@/modules/menus/components/MenuSummary.vue'
 import GuestsMenu from '@/modules/menus/components/GuestsMenu.vue'
 import { useMenusView } from '@/modules/menus/composables/useMenusView'
 
@@ -23,7 +24,7 @@ const { loading, guestMenuCount, createMenu } = useMenusView()
 
     <section class="mt-6" aria-labelledby="menus-options-title">
       <h2 id="menus-options-title" class="font-heading text-xl text-ink-900">{{ t('app.menus.optionsTitle') }}</h2>
-      <MenusTable class="mt-3" :loading="loading" />
+      <MenuCards class="mt-3" :loading="loading" />
     </section>
 
     <section class="mt-10" aria-labelledby="menus-guests-title">
@@ -31,6 +32,7 @@ const { loading, guestMenuCount, createMenu } = useMenusView()
         <h2 id="menus-guests-title" class="font-heading text-xl text-ink-900">{{ t('app.menus.guestsTitle') }}</h2>
         <UiBadge v-if="guestMenuCount">{{ t('app.menus.guestCount', { n: guestMenuCount }, guestMenuCount) }}</UiBadge>
       </div>
+      <MenuSummary class="mt-3" />
       <GuestsMenu class="mt-3" :loading="loading" />
     </section>
   </UiPage>

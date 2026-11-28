@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useUserStore } from '@/stores/useUserStore'
 import MenusService from '@/modules/menus/services/MenusService'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
-import { normalizeMenus } from '@/modules/menus/utils/menus'
+import { normalizeMenus, statusParam } from '@/modules/menus/utils/menus'
 
 export const useMenusStore = defineStore('menusStore', {
   state: () => ({
@@ -11,6 +11,8 @@ export const useMenusStore = defineStore('menusStore', {
     currentMenu: null,
     guestsMenu: [],
     guestsMeta: null,
+    guestsFilter: 'all',
+    summary: null,
     pageSelected: 1,
     perPage: 10,
     searchValue: ''
@@ -22,13 +24,33 @@ export const useMenusStore = defineStore('menusStore', {
         eventId: userStore.activeEvent
       })
     },
+    /** Totals of ALL the guests (not just the page): the summary card and the filter chips. A failure keeps the page working without it. */
+    async loadSummary() {
+      const userStore = useUserStore()
+      try {
+        const response = await MenusService.loadSummary({ eventId: userStore.activeEvent })
+        this.summary = response.status === 200 ? (response.data ?? null) : null
+      } catch {
+        this.summary = null
+      }
+      return !!this.summary
+    },
+
+    /** Changing the filter always goes back to the first page. */
+    async setGuestsFilter(filter) {
+      this.guestsFilter = filter
+      this.pageSelected = 1
+      return await this.loadGuestsMenu()
+    },
+
     async loadGuestsMenu() {
       const userStore = useUserStore()
       try {
         const response = await MenusService.loadGuestMenu({
           eventId: userStore.activeEvent,
           page: this.pageSelected,
-          perPage: this.perPage
+          perPage: this.perPage,
+          status: statusParam(this.guestsFilter)
         })
 
         if (response.status === 200) {
