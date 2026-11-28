@@ -182,6 +182,38 @@ describe('Memories timeline', () => {
     expect(api.deleteImage).not.toHaveBeenCalled()
   })
 
+  const openMenu = async title => {
+    const trigger = q('button').find(b => b.getAttribute('aria-label') === `Más acciones para ${title}`)
+    trigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))
+    await flushPromises()
+    return [...document.body.querySelectorAll('[role=menuitem]')]
+  }
+
+  it('the ⋯ menu "Editar" opens the form with that memory', async () => {
+    await setup([mem(1, 2020)])
+    ;(await openMenu('M1'))[0].click()
+    await flushPromises()
+    expect(document.body.textContent).toContain('Editar recuerdo')
+  })
+
+  it('the ⋯ menu hides a visible memory and shows a hidden one', async () => {
+    await setup([mem(1, 2020), mem(2, 2021, { visible: 0 })])
+    ;(await openMenu('M1'))[1].click()
+    await flushPromises()
+    expect(api.updateImage.mock.calls[0][0].formData.get('visible')).toBe('0')
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    ;(await openMenu('M2'))[1].click()
+    await flushPromises()
+    expect(api.updateImage.mock.calls.at(-1)[0].formData.get('visible')).toBe('1')
+  })
+
+  it('"Añadir recuerdo" in the header opens the form once there are memories', async () => {
+    await setup([mem(1, 2020)])
+    btn('Añadir recuerdo').click()
+    await flushPromises()
+    expect(document.body.textContent).toContain('Nuevo recuerdo')
+  })
+
   it('has the add tile in the last year and opens the form', async () => {
     await setup(SIX)
     const tile = btn('Añadir recuerdo de cualquier año') || q('button').find(b => b.textContent.includes('de cualquier año'))

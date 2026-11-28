@@ -107,4 +107,13 @@ describe('useHideOnScroll', () => {
     scope.stop()
     expect(remove).toHaveBeenCalledWith('scroll', expect.any(Function))
   })
+
+  it('never hides anything when there is no window to listen to (server side)', () => {
+    vi.stubGlobal('window', undefined)
+    try {
+      expect(setup().value).toBe(false)
+    } finally {
+      vi.unstubAllGlobals()
+    }
+  })
 })
