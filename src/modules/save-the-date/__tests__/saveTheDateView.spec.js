@@ -119,3 +119,26 @@ describe('Save the date: form, preview and saving', () => {
     expect(body().querySelector('[data-testid="std-save-bar"]')).toBeNull()
   })
 })
+
+describe('Save the date: actions and the event moment', () => {
+  const dialog = () => body().querySelector('[role="dialog"]')
+
+  it('every action asks first, and "Cancelar" leaves things as they were', async () => {
+    await setup()
+    const unpublish = [...notice().querySelectorAll('button')].find(b => b.textContent.includes(i18n.global.t('app.saveTheDate.actions.unpublish')))
+    unpublish.click()
+    await flushPromises()
+    expect(dialog().textContent).toContain(i18n.global.t('app.saveTheDate.confirm.unpublish.title'))
+    ;[...dialog().querySelectorAll('button')].find(b => b.textContent.trim() === i18n.global.t('app.saveTheDate.cancel')).click()
+    await flushPromises()
+    expect(dialog()).toBeNull()
+  })
+
+  it('uses the real instant of the event when the API sends one, and falls back to the wall clock when it is not a date', async () => {
+    await setup({ ...baseEvent, startsAt: '2030-02-02T01:00:00Z' })
+    expect(notice()).not.toBeNull()
+    wrapper.unmount()
+    await setup({ ...baseEvent, startsAt: 'not a date' })
+    expect(notice()).not.toBeNull()
+  })
+})

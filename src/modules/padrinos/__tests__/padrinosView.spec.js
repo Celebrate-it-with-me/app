@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createApp, nextTick } from 'vue'
+import { routerKey } from 'vue-router'
 import i18n, { setLocale } from '@/locales/i18n'
 import { useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
@@ -476,5 +477,27 @@ describe('CommitmentsModal', () => {
     box.dispatchEvent(new Event('change'))
     await nextTick()
     expect(document.body.querySelector('#commitments-form input[type=number]').value).toBe('77')
+  })
+})
+
+describe('PadrinosView navigation', () => {
+  let wrapper
+  afterEach(() => {
+    wrapper?.unmount()
+    document.body.innerHTML = ''
+  })
+
+  it('"Revisar" on a card goes to the budget', async () => {
+    const push = vi.fn()
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useEventsStore().activeEvent = { id: 7, userRole: 'owner', eventName: 'XV de Val' }
+    api.list.mockResolvedValue(listOf([raul()]))
+    budget.items.mockResolvedValue(ITEMS)
+    wrapper = mount(PadrinosView, { global: { plugins: [i18n, pinia], provide: { [routerKey]: { push, replace: vi.fn() } } }, attachTo: document.body })
+    await flushPromises()
+    wrapper.findComponent(PadrinoCard).vm.$emit('review')
+    expect(push).toHaveBeenCalledWith({ name: 'budget' })
   })
 })

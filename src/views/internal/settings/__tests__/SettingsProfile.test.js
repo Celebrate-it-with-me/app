@@ -216,3 +216,31 @@ describe('SettingsProfile photo', () => {
     expect(toast.error).toHaveBeenCalledWith('No pudimos actualizar tu foto. Inténtalo de nuevo.')
   })
 })
+
+describe('SettingsProfile photo picker', () => {
+  it('"Cambiar foto" opens the file picker', async () => {
+    await mountProfile()
+    const click = vi.spyOn(wrapper.find('input[type=file]').element, 'click').mockImplementation(() => {})
+    await q('photo-change').trigger('click')
+    expect(click).toHaveBeenCalled()
+  })
+
+  it('closing the picker without a file does nothing', async () => {
+    await mountProfile()
+    const input = q('photo-input')
+    Object.defineProperty(input.element, 'files', { value: [], configurable: true })
+    await input.trigger('change')
+    await flushPromises()
+    expect(dq('photo-preview')).toBeNull()
+    expect(toast.error).not.toHaveBeenCalled()
+  })
+
+  it('closes the crop dialog when it asks to be closed', async () => {
+    await mountProfile()
+    await pick(image('me.jpg', 'image/jpeg'))
+    expect(dq('photo-preview')).not.toBeNull()
+    wrapper.findComponent({ name: 'ProfilePhotoDialog' }).vm.$emit('update:open', false)
+    await flushPromises()
+    expect(wrapper.findComponent({ name: 'ProfilePhotoDialog' }).props('open')).toBe(false)
+  })
+})

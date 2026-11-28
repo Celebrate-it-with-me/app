@@ -115,3 +115,38 @@ describe('SuggestedMusicStats', () => {
     expect(w.text()).toContain('Carnicero')
   })
 })
+
+describe('SuggestedMusicSongItem menu actions', () => {
+  const menu = (props = {}) => {
+    const w = mount(SuggestedMusicSongItem, { props: { song: song(), position: 1, ...props }, global: { plugins: [i18n] } })
+    return { w, items: w.findComponent({ name: 'UiDropdown' }).props('items') }
+  }
+
+  it('plays, shows the details and asks to remove, each with the song', () => {
+    const { w, items } = menu()
+    items.find(i => i.label === 'Reproducir').onSelect()
+    items.find(i => i.danger).onSelect()
+    items.find(i => i.label.includes('detalle') || i.label.includes('Detalle') || i.label.includes('Ver')).onSelect()
+    expect(w.emitted('play')[0][0].id).toBe(7)
+    expect(w.emitted('remove')[0]).toEqual([7])
+    expect(w.emitted('details')[0][0].id).toBe(7)
+  })
+
+  it('opens the song in Spotify in a new tab, and has no such entry without a track id', () => {
+    const open = vi.spyOn(window, 'open').mockImplementation(() => null)
+    const { items } = menu()
+    items.find(i => i.label.includes('Spotify')).onSelect()
+    expect(open).toHaveBeenCalledWith('https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC', '_blank', 'noopener')
+    expect(menu({ song: song({ platformId: null }) }).items.some(i => i.label.includes('Spotify'))).toBe(false)
+  })
+})
+
+describe('SuggestedMusicList filters', () => {
+  it('reports the filter tab chosen', async () => {
+    const w = mount(SuggestedMusicList, { props: { songs: [song()], hasSongs: true, localSearch: '', sortBy: 'newest', filterBy: 'all' }, global: { plugins: [i18n], stubs: { UiDropdown } } })
+    const tabs = w.findAll('[role=tab]')
+    await tabs[1].trigger('mousedown', { button: 0 })
+    expect(w.emitted('update:filterBy')).toHaveLength(1)
+    expect(['admin', 'guests', 'top']).toContain(w.emitted('update:filterBy')[0][0])
+  })
+})
