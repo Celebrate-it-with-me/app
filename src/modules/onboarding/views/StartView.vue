@@ -65,7 +65,7 @@ onMounted(load)
       </template>
     </section>
 
-    <ol class="mt-5 space-y-3" :aria-busy="loading">
+    <ol class="fab-safe mt-5 space-y-3" :aria-busy="loading">
       <li v-for="(card, index) in cards" :key="card.id">
         <UiCard :aria-labelledby="`step-${card.id}`">
           <div class="flex items-start gap-3 sm:gap-4">

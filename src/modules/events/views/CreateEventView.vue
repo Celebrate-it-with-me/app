@@ -108,7 +108,7 @@ async function submit() {
     <UiPageHeader :title="t('events.create.title')" :subtitle="t('events.create.subtitle')" back="/dashboard/events" :back-label="t('events.edit.back')" />
 
     <UiCard>
-      <form class="flex flex-col gap-6" novalidate @submit.prevent="submit">
+      <form class="fab-safe flex flex-col gap-6" novalidate @submit.prevent="submit">
         <UiField :label="t('events.create.type')" :error="errors.eventType" id="event_type" required>
           <UiRadioGroup v-model="form.eventType" :options="typeOptions" orientation="horizontal" cards />
         </UiField>

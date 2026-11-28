@@ -88,16 +88,12 @@ const panel = value => (c.tab.value === value ? 'block' : 'hidden lg:block')
           @create="c.openCreate()"
           @retry="c.load()"
         />
-        <UiButton
-          v-if="c.seatedCount.value > 0"
-          class="mt-4"
-          block
-          variant="ghost"
-          @click="c.showClearAll.value = true"
-        >
-          <Trash2 class="h-4 w-4 text-danger-700" aria-hidden="true" />
-          {{ t('app.seating.clearAll.open') }}
-        </UiButton>
+        <div v-if="c.seatedCount.value > 0" class="fab-safe mt-4">
+          <UiButton block variant="ghost" @click="c.showClearAll.value = true">
+            <Trash2 class="h-4 w-4 text-danger-700" aria-hidden="true" />
+            {{ t('app.seating.clearAll.open') }}
+          </UiButton>
+        </div>
       </section>
 
       <section v-if="c.isDesktop.value" class="lg:sticky lg:top-4">

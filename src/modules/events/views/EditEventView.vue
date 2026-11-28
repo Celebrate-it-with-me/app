@@ -233,7 +233,7 @@ async function confirmDelete() {
       <UiPageHeader :title="t('events.edit.title')" :subtitle="event.eventName" back="/dashboard/events" :back-label="t('events.edit.back')" />
 
       <UiCard>
-        <form class="flex flex-col gap-5" novalidate @submit.prevent="save">
+        <form class="fab-safe flex flex-col gap-5" novalidate @submit.prevent="save">
           <p v-if="typeLabel" class="text-sm text-ink-500">{{ t('events.edit.type') }}: <span class="font-medium text-ink-700">{{ typeLabel }}</span></p>
 
           <UiField :label="t('events.edit.name')" :error="errors.eventName" id="event_name" required>
@@ -272,7 +272,9 @@ async function confirmDelete() {
         </form>
       </UiCard>
 
-      <EventMusicCard class="mt-6" :event-id="event.id" :locked="musicLocked" :read-only="!canEdit" />
+      <div class="fab-safe mt-6">
+        <EventMusicCard :event-id="event.id" :locked="musicLocked" :read-only="!canEdit" />
+      </div>
 
       <UiCard v-if="canEdit" class="mt-6" :title="t('events.publication.title')" heading-level="h2">
         <template #actions><EventStatusBadge :status="event.status" /></template>

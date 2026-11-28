@@ -30,7 +30,7 @@ const menu = computed(() => [
 
 <template>
   <UiCard padding="sm">
-    <div class="flex items-start gap-3">
+    <div class="flex items-start gap-3 fab-safe">
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
           <h3 class="font-heading text-lg text-ink-900">{{ item.title }}</h3>

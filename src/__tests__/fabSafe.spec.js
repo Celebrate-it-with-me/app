@@ -32,4 +32,24 @@ describe('assistant button column (fab-safe)', () => {
     expect(guide).toContain('h-12')
     expect(guide).toContain("'w-12 shrink-0'")
   })
+
+  it('is applied to the rows with controls on their right, page by page', () => {
+    const files = [
+      'modules/roster/utils/roster.js',
+      'modules/roster/components/GuestItem.vue',
+      'modules/save-the-date/views/SaveTheDateView.vue',
+      'modules/invitation-editor/components/SectionsList.vue',
+      'modules/assistant/components/PlanTaskRow.vue',
+      'modules/budget/components/ItemCard.vue',
+      'modules/padrinos/components/PadrinoCard.vue',
+      'modules/comments/components/CommentRow.vue',
+      'modules/menus/components/MenuItem.vue',
+      'modules/menus/components/MenusTable.vue',
+      'modules/seating/components/SeatingTablesList.vue',
+      'modules/suggested-music/components/SuggestedMusicSongItem.vue',
+      'modules/onboarding/views/StartView.vue',
+      'modules/account-deletion/components/DeleteAccountSection.vue'
+    ]
+    for (const f of files) expect(readFileSync(resolve(__dirname, '..', f), 'utf8'), f).toContain('fab-safe')
+  })
 })

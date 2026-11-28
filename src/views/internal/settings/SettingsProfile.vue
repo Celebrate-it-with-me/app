@@ -58,7 +58,7 @@ const onSubmit = handleSubmit(async values => {
 
 <template>
   <UiCard :title="t('account.profile.title')" :subtitle="t('account.profile.text')" heading-level="h2">
-    <form class="flex flex-col gap-5" novalidate @submit="onSubmit">
+    <form class="fab-safe flex flex-col gap-5" novalidate @submit="onSubmit">
       <div class="flex items-center gap-4">
         <UiAvatar :name="avatar.name.value" :src="avatar.src.value" :alt="avatar.alt.value" size="xl" />
         <div class="min-w-0">

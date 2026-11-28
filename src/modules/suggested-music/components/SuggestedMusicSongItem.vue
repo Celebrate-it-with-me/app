@@ -14,7 +14,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <li class="rounded-xl border border-line bg-white p-3 shadow-soft sm:p-4">
+  <li class="rounded-xl border border-line bg-white py-3 pl-3 shadow-soft sm:py-4 sm:pl-4 lg:pr-4 fab-safe">
     <div class="flex items-start gap-3">
       <SongCover :src="props.song.thumbnailUrl" size="h-14 w-14 sm:h-16 sm:w-16" />
 

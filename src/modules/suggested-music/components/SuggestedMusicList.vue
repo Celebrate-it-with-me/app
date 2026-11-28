@@ -28,7 +28,7 @@ const filterTabs = computed(() => FILTER_OPTIONS.map(value => ({ value, label: t
       <span class="text-sm text-ink-500">({{ props.songs.length }})</span>
     </div>
 
-    <div class="mt-3 grid gap-3 sm:grid-cols-[1fr_14rem]">
+    <div class="fab-safe mt-3 grid gap-3 sm:grid-cols-[1fr_14rem]">
       <UiInput
         :model-value="props.localSearch"
         type="search"
@@ -46,7 +46,7 @@ const filterTabs = computed(() => FILTER_OPTIONS.map(value => ({ value, label: t
       />
     </div>
 
-    <UiTabs class="mt-3" :model-value="props.filterBy" :tabs="filterTabs" @update:model-value="val => emit('update:filterBy', val)" />
+    <UiTabs class="fab-safe mt-3" :model-value="props.filterBy" :tabs="filterTabs" @update:model-value="val => emit('update:filterBy', val)" />
 
     <UiEmptyState
       v-if="props.songs.length === 0"

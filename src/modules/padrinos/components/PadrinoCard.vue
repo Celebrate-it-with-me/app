@@ -32,7 +32,7 @@ const menu = computed(() => {
 
 <template>
   <UiCard padding="sm">
-    <div class="flex items-start gap-3">
+    <div class="flex items-start gap-3 fab-safe">
       <div class="min-w-0 flex-1">
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
           <h2 class="font-heading text-lg text-ink-900">{{ padrino.name }}</h2>
@@ -70,7 +70,7 @@ const menu = computed(() => {
       <p v-else class="text-sm text-ink-500">{{ t('app.padrinos.noCommitments') }}</p>
     </div>
 
-    <div class="mt-3 flex flex-wrap items-center gap-2">
+    <div class="mt-3 flex flex-wrap items-center gap-2 fab-safe">
       <UiButton v-if="canEdit" size="sm" :variant="padrino.commitments.length ? 'secondary' : 'primary'" @click="emit('commitments', padrino)">
         <HandHeart class="h-4 w-4" aria-hidden="true" />
         {{ t(padrino.commitments.length ? 'app.padrinos.changeCommitments' : 'app.padrinos.addCommitments') }}
