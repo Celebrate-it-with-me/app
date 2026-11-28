@@ -35,7 +35,7 @@ const items = computed(() =>
 const showStatus = computed(() => props.row.type === 'invite')
 // Pending and declined invitations can be resent from the row itself, not only from the menu.
 const canResend = computed(() => props.manage && showStatus.value && rowActions(props.row).includes('resend'))
-/** "Enviada hace 3 días" / "Rechazada hace 1 día"; empty while the API sends no date. */
+/** "Enviada hace 3 días" / "hace 1 día" (the chip already says Rechazada); empty while the API sends no date. */
 const when = computed(() => {
   const { status, sentAt, declinedAt } = props.row
   const at = status === 'declined' ? declinedAt ?? sentAt : sentAt

@@ -144,7 +144,7 @@ describe('CollaboratorsView', () => {
       expect(pending.get('[data-testid=invite-when]').text()).toBe('Enviada hace 3 días')
       const declined = wrapper.get('[data-testid=collaborator-invite-4]')
       expect(declined.text()).toContain('Rechazada')
-      expect(declined.get('[data-testid=invite-when]').text()).toBe('Rechazada hace 1 día')
+      expect(declined.get('[data-testid=invite-when]').text()).toBe('hace 1 día')
     })
 
     it('shows no date when the API sends none', async () => {

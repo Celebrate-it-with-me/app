@@ -1259,7 +1259,7 @@ export default {
       you: 'Tú',
       sections: { members: 'Con acceso · {n}', invites: 'Invitaciones enviadas · {n}' },
       sentAgo: 'Enviada {when}',
-      declinedAgo: 'Rechazada {when}',
+      declinedAgo: '{when}',
       resend: 'Reenviar',
       resendFor: 'Reenviar la invitación a {name}',
       status: { active: 'Con acceso', pending: 'Pendiente', expired: 'Vencida', declined: 'Rechazada' },
