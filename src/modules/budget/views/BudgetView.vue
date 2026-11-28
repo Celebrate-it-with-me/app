@@ -159,6 +159,14 @@ const addCategory = name => run(() => BudgetService.addCategory(event.value.id, 
 const renameCategory = ({ id, name }) => run(() => BudgetService.renameCategory(event.value.id, id, name), null)
 const removeCategory = category => run(() => BudgetService.removeCategory(event.value.id, category.id), null)
 
+/** Tapping a category scrolls to its expenses (smooth unless the person asked for less motion). */
+function goToGroup(id) {
+  const el = document.getElementById(`budget-group-${id}`)
+  if (!el) return
+  const calm = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' })
+}
+
 async function download() {
   try {
     const blob = await BudgetService.exportCsv(event.value.id)
@@ -203,7 +211,7 @@ async function download() {
       </UiEmptyState>
 
       <template v-else>
-        <CategoryBars class="mt-6" :summary="summary" />
+        <CategoryBars class="mt-6" :summary="summary" @select="goToGroup" />
 
         <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div class="relative flex-1">
@@ -224,7 +232,7 @@ async function download() {
 
         <p v-if="!visible.length" class="mt-8 text-center text-ink-500">{{ t('app.budget.noResults') }}</p>
 
-        <section v-for="group in groups" :key="group.category?.id ?? 'none'" class="mt-6" :aria-label="group.category?.name ?? t('app.budget.uncategorized')">
+        <section v-for="group in groups" :id="`budget-group-${group.category?.id ?? 'none'}`" :key="group.category?.id ?? 'none'" class="mt-[18px] scroll-mt-4" :aria-label="group.category?.name ?? t('app.budget.uncategorized')">
           <h2 class="font-heading text-lg text-ink-900">{{ group.category?.name ?? t('app.budget.uncategorized') }}</h2>
           <ul class="mt-2 space-y-3">
             <li v-for="item in group.items" :key="item.id">
