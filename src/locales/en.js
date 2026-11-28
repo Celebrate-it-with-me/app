@@ -1788,9 +1788,8 @@ export default {
       title: 'Guests',
       addPhone: 'Add phone',
       sendInvitations: 'Send invitations',
-      sendInvitationsCount: 'Send invitations · {n} not sent',
-      // Narrow phones (360px or less): the long label would break into two lines.
-      sendInvitationsShort: 'Send ({n})',
+      // The phones' main button: one line at 320px, so the count goes in brackets.
+      sendInvitationsCount: 'Send invitations ({n})',
       activeBatch: 'Sending invitations: {done} of {total}',
       activeBatchView: 'View',
       filters: {
@@ -1814,7 +1813,9 @@ export default {
       add: 'Add guest',
       tabs: { all: 'All', attending: 'Confirmed', pending: 'Pending', 'not-attending': 'Declined' },
       // Phones: four columns share the width, so the labels are the shortest that still read.
-      tabsShort: { all: 'All', attending: 'Going', pending: 'Pending', 'not-attending': 'Declined' },
+      tabsShort: { all: 'All', attending: 'Going', pending: 'Pending', 'not-attending': 'Not going' },
+      columns: { guest: 'Guest', attendance: 'Attendance', delivery: 'Delivery', people: 'People', actions: 'Actions' },
+      moreActions: 'More actions',
       status: { attending: 'Attending', pending: 'Pending', 'not-attending': 'Declined' },
       answer: { attending: 'Attending', 'not-attending': 'Declined' },
       people: '{n} person | {n} people',
@@ -1840,14 +1841,17 @@ export default {
         es: 'Spanish',
         en: 'English',
         event: 'The event\'s ({lang})',
-        saved: 'Language saved.',
+        saved: 'Language updated.',
+        eventShort: 'The event\'s',
+        help: 'Applies to {name}\'s invitation and their companions.',
+        chip: { es: 'Invitation in Spanish', en: 'Invitation in English' },
         error: 'We could not change the language. It stays as it was.'
       },
       menu: {
         label: 'Actions for {name}',
         send: 'Send invitation',
         copy: 'Copy link',
-        edit: 'Edit',
+        edit: 'Edit guest',
         confirm: 'Confirm by phone',
         revert: 'Back to pending',
         remove: 'Delete'
