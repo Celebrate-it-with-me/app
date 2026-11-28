@@ -139,11 +139,11 @@ describe('GuestLocaleSelect', () => {
 
 describe('RosterView language change', () => {
   const family = () => ({ id: 1, name: 'Ana', status: 'pending', companions: [], locale: null, effectiveLocale: 'es' })
-  // The card is a stub with a button that asks for a language, so the test needs neither the dropdown nor the select.
-  const GuestCard = {
-    props: ['family', 'eventLocale', 'canEdit'],
+  // The list is a stub with a button that asks for a language, so the test needs neither the dropdown nor the select.
+  const GuestList = {
+    props: ['families', 'eventLocale', 'canEdit'],
     emits: ['locale'],
-    template: `<div class="card" :data-locale="family.locale" :data-effective="family.effectiveLocale"><button class="en" @click="$emit('locale', family, 'en')" /></div>`
+    template: `<div class="card" :data-locale="families[0].locale" :data-effective="families[0].effectiveLocale"><button class="en" @click="$emit('locale', families[0], 'en')" /></div>`
   }
 
   async function mountView() {
@@ -156,7 +156,7 @@ describe('RosterView language change', () => {
     const wrapper = mount(RosterView, {
       global: {
         plugins: [i18n],
-        stubs: { GuestCard, GuestLimitBanner: true, GuestFormModal: true, ConfirmModal: true, GuestImportModal: true, RosterDownloadMenu: true, UiModal: true, RouterLink: true }
+        stubs: { GuestList, GuestLimitBanner: true, GuestFormModal: true, ConfirmModal: true, GuestImportModal: true, RosterDownloadMenu: true, UiModal: true, RouterLink: true }
       }
     })
     await flushPromises()

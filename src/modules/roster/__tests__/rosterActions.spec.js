@@ -13,7 +13,7 @@ const wizardService = vi.hoisted(() => ({ audience: vi.fn(), allRecipients: vi.f
 vi.mock('../services/SendWizardService', () => ({ default: wizardService }))
 vi.mock('../services/WhatsappService', () => ({ default: { send: vi.fn(), retry: vi.fn() } }))
 import RosterView from '../views/RosterView.vue'
-import GuestCard from '../components/GuestCard.vue'
+import GuestList from '../components/GuestList.vue'
 import GuestFormModal from '../components/GuestFormModal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import SendWizard from '../components/send/SendWizard.vue'
@@ -27,7 +27,7 @@ let eventsStore
 const body = () => document.body.textContent
 const toasts = () => useToast().toasts.map(x => x.title)
 const button = text => [...document.body.querySelectorAll('button')].find(b => b.textContent.trim().startsWith(text))
-const card = i => wrapper.findAllComponents(GuestCard)[i]
+const card = () => wrapper.findComponent(GuestList)
 
 async function setup({ role = 'owner', modules = [{ key: 'whatsapp', state: 'active' }], query = '/', rows } = {}) {
   const pinia = createPinia()
@@ -183,7 +183,7 @@ describe('RosterView: language of an invitation', () => {
     release({ locale: 'en', effectiveLocale: 'en' })
     await flushPromises()
     expect(roster.setLocale).toHaveBeenCalledWith(7, 1, 'en')
-    expect(toasts()).toContain('Idioma guardado.')
+    expect(toasts()).toContain('Idioma actualizado.')
   })
 
   it('goes back to what it was when the server refuses', async () => {
@@ -349,7 +349,7 @@ describe('RosterView: roles and the send wizard (automatic mode)', () => {
     expect(button('Agregar')).toBeUndefined()
     expect(button('Importar')).toBeUndefined()
     expect(document.body.querySelector('[data-testid="send-header"]')).toBeNull()
-    expect(wrapper.findAllComponents(GuestCard).every(c => c.props('canEdit') === false)).toBe(true)
+    expect(wrapper.findComponent(GuestList).props('canEdit') === false).toBe(true)
   })
 
   it('an editor can edit like an owner', async () => {

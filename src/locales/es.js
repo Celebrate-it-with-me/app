@@ -1775,9 +1775,8 @@ export default {
       title: 'Invitados',
       addPhone: 'Añadir teléfono',
       sendInvitations: 'Enviar invitaciones',
-      sendInvitationsCount: 'Enviar invitaciones · {n} sin enviar',
-      // Narrow phones (360px or less): the long label would break into two lines.
-      sendInvitationsShort: 'Enviar ({n})',
+      // The phones' main button: one line at 320px, so the count goes in brackets.
+      sendInvitationsCount: 'Enviar invitaciones ({n})',
       activeBatch: 'Enviando invitaciones: {done} de {total}',
       activeBatchView: 'Ver',
       filters: {
@@ -1801,7 +1800,9 @@ export default {
       add: 'Añadir invitado',
       tabs: { all: 'Todos', attending: 'Confirmados', pending: 'Pendientes', 'not-attending': 'No asisten' },
       // Phones: four columns share the width, so the labels are the shortest that still read.
-      tabsShort: { all: 'Todos', attending: 'Asisten', pending: 'Pendientes', 'not-attending': 'No asisten' },
+      tabsShort: { all: 'Todos', attending: 'Confirm.', pending: 'Pend.', 'not-attending': 'No van' },
+      columns: { guest: 'Invitado', attendance: 'Asistencia', delivery: 'Envío', people: 'Personas', actions: 'Acciones' },
+      moreActions: 'Más acciones',
       status: { attending: 'Asiste', pending: 'Pendiente', 'not-attending': 'No asiste' },
       answer: { attending: 'Asiste', 'not-attending': 'No asiste' },
       people: '{n} persona | {n} personas',
@@ -1827,14 +1828,17 @@ export default {
         es: 'Español',
         en: 'Inglés',
         event: 'El del evento ({lang})',
-        saved: 'Idioma guardado.',
+        saved: 'Idioma actualizado.',
+        eventShort: 'El del evento',
+        help: 'Se aplica a la invitación de {name} y sus acompañantes.',
+        chip: { es: 'Invitación en español', en: 'Invitación en inglés' },
         error: 'No pudimos cambiar el idioma. Quedó como estaba.'
       },
       menu: {
         label: 'Acciones para {name}',
         send: 'Enviar invitación',
         copy: 'Copiar enlace',
-        edit: 'Editar',
+        edit: 'Editar invitado',
         confirm: 'Confirmar por teléfono',
         revert: 'Volver a pendiente',
         remove: 'Eliminar'
