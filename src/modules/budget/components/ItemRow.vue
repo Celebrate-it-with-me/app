@@ -54,7 +54,7 @@ const menu = computed(() => {
 
 <template>
   <div
-    class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2.5 gap-y-2 py-3.5 pl-3.5 md:pl-4 lg:pr-4 fab-safe md:grid-cols-[minmax(0,1fr)_110px_190px_160px_40px] md:items-center md:gap-4 md:py-3.5"
+    class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-2.5 gap-y-2 py-3.5 pl-3.5 md:pl-4 xl:pr-4 fab-safe xl:grid-cols-[minmax(0,1fr)_110px_190px_160px_40px] xl:items-center xl:gap-4 xl:py-3.5"
     :data-item="item.id"
   >
     <div class="min-w-0">
@@ -77,20 +77,20 @@ const menu = computed(() => {
           variant="ghost"
           size="sm"
           icon
-          class="col-start-2 row-start-1 -mt-1.5 -mr-1.5 h-9 w-9 self-start md:col-start-auto md:row-start-auto md:m-0 md:self-center md:order-last"
+          class="col-start-2 row-start-1 -mt-1.5 -mr-1.5 h-9 w-9 self-start xl:col-start-auto xl:row-start-auto xl:m-0 xl:self-center xl:order-last"
           :aria-label="t('app.budget.item.menu', { name: item.title })"
         >
           <MoreHorizontal class="h-5 w-5" aria-hidden="true" />
         </UiButton>
       </template>
     </UiDropdown>
-    <div v-else class="hidden md:order-last md:block"></div>
+    <div v-else class="hidden xl:order-last xl:block"></div>
 
-    <div class="col-span-2 md:col-span-1">
+    <div class="col-span-2 xl:col-span-1">
       <UiBadge :tone="STATUS_TONE[status]" size="sm" dot data-testid="status-chip">{{ t(`app.budget.status.${status}`) }}</UiBadge>
     </div>
 
-    <div class="col-span-2 min-w-0 md:col-span-1">
+    <div class="col-span-2 min-w-0 xl:col-span-1">
       <p class="text-[13px] tabular-nums text-ink-500"><b class="font-semibold text-ink-900">{{ money(bar.paid) }}</b> {{ t('app.budget.item.paidOf', { total: money(bar.total) }) }}</p>
       <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-cream-200" role="progressbar" :aria-valuenow="Math.round(bar.fill)" aria-valuemin="0" aria-valuemax="100" :aria-label="t('app.budget.item.progress', { name: item.title })">
         <div class="h-full rounded-full" :class="FILL[bar.tone]" :style="{ width: `${bar.fill}%` }" data-testid="item-fill" :data-tone="bar.tone"></div>
@@ -98,13 +98,13 @@ const menu = computed(() => {
       <p class="mt-1 text-[11px] leading-tight" :class="bar.tone === 'over' ? 'font-medium text-danger-700' : 'text-ink-500'" data-testid="item-detail">{{ detail }}</p>
     </div>
 
-    <div class="col-span-2 md:col-span-1">
-      <UiButton v-if="showPay" size="sm" class="h-10 w-full text-[13px] md:h-[34px] md:w-auto md:px-3.5" data-testid="pay-button" @click="emit('pay', item)">
+    <div class="col-span-2 xl:col-span-1">
+      <UiButton v-if="showPay" size="sm" class="h-10 w-full text-[13px] md:w-auto md:px-5 xl:h-[34px] xl:px-3.5" data-testid="pay-button" @click="emit('pay', item)">
         {{ t('app.budget.item.pay') }}
       </UiButton>
     </div>
 
-    <ul v-if="open" class="col-span-2 divide-y divide-line rounded-xl border border-line md:col-span-5" data-testid="payments-list">
+    <ul v-if="open" class="col-span-2 divide-y divide-line rounded-xl border border-line xl:col-span-5" data-testid="payments-list">
       <li v-for="payment in item.payments" :key="payment.id" class="flex items-center justify-between gap-3 px-3 py-2 text-sm">
         <div class="min-w-0">
           <p class="tabular-nums font-medium text-ink-900">{{ money(payment.amount) }}</p>
