@@ -19,7 +19,8 @@ export const COMPACT_ROUTES = [
   /^\/dashboard\/plan(\/|$)/, // the full plan: the guide would only repeat it
   /^\/settings(\/|$)/, // account forms: the pill would sit over the save button
   /^\/dashboard\/guests(\/|$)/, // at 320 px the full pill covers the Import/Add row (seen in a capture)
-  /^\/dashboard\/save-the-date(\/|$)/ // the pill covered the switches; the icon shares the save bar's row
+  /^\/dashboard\/save-the-date(\/|$)/, // the pill covered the switches; the icon shares the save bar's row
+  /^\/dashboard\/timeline(\/|$)/ // the pill covered the actions column of each moment
 ]
 
 /**

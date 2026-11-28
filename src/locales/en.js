@@ -1949,6 +1949,13 @@ export default {
       loadError: 'We could not load the program.',
       optional: 'Optional',
       shared: 'The times in this program are the ones your locations and the invitation use.',
+      until: 'until {time}',
+      free: '{duration} free',
+      overlap: 'Overlaps the previous one by {duration}',
+      editMoment: 'Edit {name}',
+      removeMoment: 'Remove {name}',
+      actionsFor: 'Actions for {name}',
+      delete: 'Delete',
       fields: { type: 'Kind of moment', title: 'Name', startTime: 'Starts', endTime: 'Ends', description: 'Details' },
       errors: { title: 'Enter a name.', startTime: 'Choose the start time.' },
       types: {

@@ -1949,6 +1949,13 @@ export default {
       loadError: 'No pudimos cargar el programa.',
       optional: 'Opcional',
       shared: 'Las horas de este programa son las que usan tus ubicaciones y la invitación.',
+      until: 'hasta {time}',
+      free: '{duration} libre',
+      overlap: 'Se cruza {duration} con el anterior',
+      editMoment: 'Editar {name}',
+      removeMoment: 'Quitar {name}',
+      actionsFor: 'Acciones para {name}',
+      delete: 'Eliminar',
       fields: { type: 'Tipo de momento', title: 'Nombre', startTime: 'Empieza', endTime: 'Termina', description: 'Detalles' },
       errors: { title: 'Escribe un nombre.', startTime: 'Elige la hora de inicio.' },
       types: {
