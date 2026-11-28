@@ -31,7 +31,7 @@ async function copyAddress() {
 }
 
 const PILL =
-  'relative inline-flex h-9 items-center justify-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold transition-colors touch-target focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 max-md:flex-1'
+  'relative inline-flex h-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3.5 text-[13px] font-semibold transition-colors touch-target focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 max-md:flex-1'
 const PRIMARY = `${PILL} bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800`
 const SECONDARY = `${PILL} border border-cream-300 bg-white text-ink-900 hover:bg-cream-100 active:bg-cream-200`
 </script>

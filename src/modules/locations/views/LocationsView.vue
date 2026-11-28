@@ -127,7 +127,7 @@ async function confirmRemove() {
 
     <div v-else class="mt-6 flex max-w-[860px] flex-col gap-5" data-testid="locations-sections">
       <section v-for="type in ['ceremony', 'reception']" :key="type" :data-testid="`section-${type}`">
-        <h2 class="mb-2 text-[11px] font-semibold uppercase tracking-[.06em] text-ink-500">{{ t(`app.locations.types.${type}`) }}</h2>
+        <h2 class="mb-2 font-body text-[11px] font-semibold uppercase tracking-[.06em] text-ink-500">{{ t(`app.locations.types.${type}`) }}</h2>
         <ul v-if="groups[type].length" class="flex flex-col gap-3">
           <li v-for="place in groups[type]" :key="place.id">
             <LocationCard :place="place" :schedule="scheduleFor(place)" :can-edit="canEdit" @edit="openForm($event)" @remove="removing = $event" />
@@ -137,7 +137,7 @@ async function confirmRemove() {
       </section>
 
       <section data-testid="section-other">
-        <h2 class="mb-2 text-[11px] font-semibold uppercase tracking-[.06em] text-ink-500">
+        <h2 class="mb-2 font-body text-[11px] font-semibold uppercase tracking-[.06em] text-ink-500">
           {{ t('app.locations.types.other') }}
           <span class="font-normal normal-case tracking-normal text-ink-500">{{ t('app.locations.otherHint') }}</span>
         </h2>
