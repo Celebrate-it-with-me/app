@@ -86,3 +86,35 @@ describe('PaymentModal: a payment above what is pending', () => {
     expect(w.emitted('save')).toBeUndefined()
   })
 })
+
+describe('PaymentModal: a payment while a padrino still has to give', () => {
+  beforeEach(() => setLocale('es'))
+  afterEach(() => {
+    w?.unmount()
+    document.body.innerHTML = ''
+  })
+  const WITH_PADRINO = { ...ITEM, padrinos: [{ padrinoId: 3, name: 'Tío Raúl', committed: 600, paid: 0 }] }
+
+  it('warns in the same block, without asking to raise the cost, and keeps the normal save button', async () => {
+    await open({ item: WITH_PADRINO }, '700')
+    expect($('over-warning').textContent).toContain('Tío Raúl: aporte pendiente de $600')
+    expect($('over-warning').textContent).toContain('el gasto quedaría $500 pagado de más')
+    expect($('sponsor-warning')).not.toBeNull()
+    expect($('raise-cost')).toBeNull()
+    expect(document.body.textContent).toContain('Guardar pago')
+    await submitForm()
+    expect(w.emitted('save')).toHaveLength(1)
+  })
+
+  it('shows one block, not two, when the payment alone already overpays', async () => {
+    await open({ item: WITH_PADRINO }, '1000')
+    expect(document.querySelectorAll('[data-testid=over-warning]')).toHaveLength(1)
+    expect($('sponsor-warning')).toBeNull()
+    expect($('raise-cost')).not.toBeNull()
+  })
+
+  it('stays quiet when the payment fits together with the padrino contribution', async () => {
+    await open({ item: WITH_PADRINO }, '200')
+    expect($('over-warning')).toBeNull()
+  })
+})

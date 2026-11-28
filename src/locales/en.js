@@ -1284,7 +1284,11 @@ export default {
       noCommitments: 'They have not chosen what to sponsor yet.',
       addCommitments: 'Choose what they sponsor',
       changeCommitments: 'Change what they sponsor',
-      shownInInvitation: 'Shown in the invitation',
+      shownInInvitation: 'Visible in the invitation',
+      hiddenInInvitation: 'Hidden in the invitation',
+      contributedOf: 'given of {total}',
+      whatsappTo: 'Message {name} on WhatsApp',
+      sponsorStatus: { paid: 'Given', pending: 'Pending' },
       summary: {
         label: 'Contributions summary',
         committed: 'Pledged',
@@ -1322,7 +1326,10 @@ export default {
         text: 'Check the budget expenses they will cover and how much they will give for each.',
         empty: 'First add expenses in the Budget so you can assign them.',
         costs: 'Costs {amount}',
-        amount: 'Amount for {name}'
+        amount: 'Amount for {name}',
+        over: 'You already paid {paid} of this expense. The contribution of {name} would leave {excess} overpaid.',
+        reduce: 'Reduce the contribution to {amount}',
+        keep: 'If you keep it, we will ask how to record what was already paid.'
       },
       conflict: {
         title: 'This expense already has payments',
@@ -1337,6 +1344,9 @@ export default {
         additionalNone: 'Not available: this expense is already fully paid, so there is nothing additional left to cover.',
         additionalOver: 'Not available: it would add {amount} and only {remaining} is left to pay. Lower the amount or credit the payments to them.',
         exceeded: 'Only {remaining} is left to pay on this expense. Pick another option or lower the amount.',
+        inline: '“{item}” is already paid in your Budget ({paid} of {total}). If {name} gives {pending}, it would be overpaid.',
+        review: 'Review',
+        summaryLine: '{count} contribution clashes with an expense already paid | {count} contributions clash with expenses already paid',
         exceededNamed: 'On “{item}” only {remaining} is left to pay. Lower the amount or credit the payments already made.',
         confirm: 'Save',
         warning: 'With what the padrinos cover, “{items}” goes over its cost. | With what the padrinos cover, these expenses go over their cost: {items}.'
@@ -1460,6 +1470,8 @@ export default {
         save: 'Save payment',
         removed: 'Payment deleted.',
         overTitle: 'This is {amount} more than what is left to pay',
+        sponsorOverTitle: '{names}: pending contribution of {pending}',
+        sponsorOverText: 'With this payment, the expense would end up {excess} overpaid.',
         overText: 'The expense costs {cost}. You can raise it to {newCost} or record the payment as it is.',
         raise: 'Raise the cost of the expense',
         anyway: 'Record it anyway'

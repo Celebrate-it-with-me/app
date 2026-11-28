@@ -1284,7 +1284,11 @@ export default {
       noCommitments: 'Aún no ha elegido qué apadrinar.',
       addCommitments: 'Elegir qué apadrina',
       changeCommitments: 'Cambiar lo que apadrina',
-      shownInInvitation: 'Aparece en la invitación',
+      shownInInvitation: 'Visible en la invitación',
+      hiddenInInvitation: 'Oculto en la invitación',
+      contributedOf: 'aportado de {total}',
+      whatsappTo: 'Escribir por WhatsApp a {name}',
+      sponsorStatus: { paid: 'Aportado', pending: 'Pendiente' },
       summary: {
         label: 'Resumen de aportes',
         committed: 'Prometido',
@@ -1322,7 +1326,10 @@ export default {
         text: 'Marca los gastos del presupuesto que cubrirá y cuánto aportará en cada uno.',
         empty: 'Primero añade gastos en el Presupuesto para poder asignárselos.',
         costs: 'Cuesta {amount}',
-        amount: 'Monto para {name}'
+        amount: 'Monto para {name}',
+        over: 'Ya pagaste {paid} de este gasto. El aporte de {name} dejaría {excess} pagados de más.',
+        reduce: 'Reducir el aporte a {amount}',
+        keep: 'Si lo mantienes, te preguntaremos cómo registrar lo ya pagado.'
       },
       conflict: {
         title: 'Ya hay pagos en este gasto',
@@ -1337,6 +1344,9 @@ export default {
         additionalNone: 'No disponible: este gasto ya está pagado por completo, no queda nada adicional que cubrir.',
         additionalOver: 'No disponible: aportaría {amount} más y solo faltan {remaining} por pagar. Baja el monto o atribúyele los pagos.',
         exceeded: 'Solo faltan {remaining} por pagar en este gasto. Elige otra opción o baja el monto.',
+        inline: '“{item}” ya está pagado en tu Presupuesto ({paid} de {total}). Si {name} aporta {pending}, quedaría pagado de más.',
+        review: 'Revisar',
+        summaryLine: '{count} aporte choca con un gasto ya pagado | {count} aportes chocan con gastos ya pagados',
         exceededNamed: 'En “{item}” solo faltan {remaining} por pagar. Baja el monto o atribúyele los pagos ya hechos.',
         confirm: 'Guardar',
         warning: 'Con lo que apadrinan los padrinos, “{items}” supera su costo. | Con lo que apadrinan los padrinos, estos gastos superan su costo: {items}.'
@@ -1460,6 +1470,8 @@ export default {
         save: 'Guardar pago',
         removed: 'Pago eliminado.',
         overTitle: 'Esto supera lo pendiente por {amount}',
+        sponsorOverTitle: '{names}: aporte pendiente de {pending}',
+        sponsorOverText: 'Con este pago, el gasto quedaría {excess} pagado de más.',
         overText: 'El gasto cuesta {cost}. Puedes subirlo a {newCost} o registrar el pago tal cual.',
         raise: 'Aumentar el costo del gasto',
         anyway: 'Registrar igualmente'
