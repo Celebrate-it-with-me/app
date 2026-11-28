@@ -32,6 +32,7 @@ describe('isCompactRoute', () => {
     '/settings/security',
     '/dashboard/guests',
     '/dashboard/save-the-date',
+    '/dashboard/dress-code',
     '/dashboard/timeline',
     '/dashboard/locations'
   ])('shrinks on %s', path => expect(isCompactRoute(path)).toBe(true))
