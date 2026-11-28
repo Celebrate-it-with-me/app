@@ -8,7 +8,7 @@ import { formatPaidOn } from '@/modules/padrinos/utils/padrinos'
 import { formatEstimatedEnd } from '@/modules/maintenance/utils/maintenance'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import EventCard from '@/modules/events/components/EventCard.vue'
-import ItemCard from '@/modules/budget/components/ItemCard.vue'
+import ItemRow from '@/modules/budget/components/ItemRow.vue'
 import PlanTaskRow from '@/modules/assistant/components/PlanTaskRow.vue'
 import DashboardHero from '@/views/internal/dashboard/DashboardHero.vue'
 import CommentRow from '@/modules/comments/components/CommentRow.vue'
@@ -81,14 +81,15 @@ describe('event dates in the panel', () => {
     expect(textOf(wrapper)).toContain('sábado, 2 de enero de 2027')
   })
 
-  it('ItemCard writes the due date and the payment dates spelled out', async () => {
+  it('ItemRow writes the due date and the payment dates spelled out', async () => {
     const options = setup()
-    const wrapper = mount(ItemCard, {
+    const wrapper = mount(ItemRow, {
       props: { item: { id: 1, title: 'Salón', dueDate: '2027-01-02', owed: 100, paid: 0, remaining: 100, estimatedCost: 100, agreedCost: null, padrinos: [], payments: [{ id: 1, amount: 10, paidOn: '2027-01-03' }], status: 'unpaid' }, currency: 'USD', canEdit: true },
       global: options.global
     })
     expect(textOf(wrapper)).toContain('2 ene 2027')
-    await wrapper.findAll('button').find(b => b.text().includes('1 pago')).trigger('click')
+    wrapper.vm.open = true
+    await wrapper.vm.$nextTick()
     expect(textOf(wrapper)).toContain('3 ene 2027')
     expect(textOf(wrapper)).not.toMatch(NUMERIC)
   })
