@@ -701,25 +701,33 @@ export default {
     },
     memories: {
       title: 'Memories',
-      subtitle: 'The photo album of your party: upload and look after your best moments.',
+      subtitle: 'Moments from your life you want to share with your guests. Sort them by year and choose which ones show on the invitation.',
       add: 'Add memory',
       loading: 'Loading memories',
-      stats: { total: 'Memories', visible: 'Visible', hidden: 'Hidden' },
+      summary: {
+        total: 'memory | memories',
+        visible: 'visible on the invitation | visible on the invitation',
+        hidden: 'hidden | hidden',
+        showHidden: 'Show only hidden ones'
+      },
+      year: { count: '{n} memory | {n} memories', none: 'No year' },
       filters: {
         search: 'Search',
-        searchPlaceholder: 'Search by title or description',
+        searchPlaceholder: 'Search memories',
         year: 'Year',
-        allYears: 'All years',
+        allYears: 'All',
+        years: 'Filter by year',
+        hiddenOnly: 'Hidden only',
         sort: 'Sort',
-        newest: 'Newest first',
-        oldest: 'Oldest first',
+        newest: '↑ Newest first',
+        oldest: '↓ Oldest first',
         clear: 'Clear filters',
         noResultsTitle: 'No memories found',
         noResultsText: 'Try another search or clear the filters.'
       },
       empty: {
         title: 'No memories yet',
-        text: 'Start the album with your first photo: add a title, the year and a description.',
+        text: 'Upload your first memory: a photo from when you were little, your first day of school…',
         cta: 'Add my first memory'
       },
       card: {
@@ -727,8 +735,15 @@ export default {
         hidden: 'Hidden',
         view: 'View photo of {title}',
         edit: 'Edit {title}',
-        delete: 'Delete {title}'
+        delete: 'Delete {title}',
+        visible: 'Visible',
+        toggleHide: 'Visible on the invitation: tap to hide {title}',
+        toggleShow: 'Hidden on the invitation: tap to show {title}',
+        menu: 'More actions for {title}',
+        show: 'Show on the invitation',
+        hide: 'Hide on the invitation'
       },
+      addTile: { title: 'Add memory', hint: 'from any year' },
       form: {
         createTitle: 'New memory',
         editTitle: 'Edit memory',
@@ -779,7 +794,9 @@ export default {
         loadError: 'We could not load your memories. Please try again.',
         error: 'We could not complete the action. Please try again.',
         fileRejected: 'We could not upload the photo. Make sure it is a JPG, PNG, WEBP or GIF up to 5 MB.',
-        invalid: 'Check the memory details and try again.'
+        invalid: 'Check the memory details and try again.',
+        nowVisible: 'Now shown on the invitation',
+        nowHidden: 'Hidden on the invitation'
       },
       viewer: { noTitle: 'Memory' }
     },

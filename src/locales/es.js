@@ -701,25 +701,33 @@ export default {
     },
     memories: {
       title: 'Recuerdos',
-      subtitle: 'El álbum de fotos de tu fiesta: sube y cuida tus mejores momentos.',
+      subtitle: 'Momentos de tu vida que quieres compartir con tus invitados. Ordénalos por año y elige cuáles se ven en la invitación.',
       add: 'Añadir recuerdo',
       loading: 'Cargando recuerdos',
-      stats: { total: 'Recuerdos', visible: 'Visibles', hidden: 'Ocultos' },
+      summary: {
+        total: 'recuerdo | recuerdos',
+        visible: 'visible en la invitación | visibles en la invitación',
+        hidden: 'oculto | ocultos',
+        showHidden: 'Mostrar solo los ocultos'
+      },
+      year: { count: '{n} recuerdo | {n} recuerdos', none: 'Sin año' },
       filters: {
         search: 'Buscar',
-        searchPlaceholder: 'Busca por título o descripción',
+        searchPlaceholder: 'Buscar recuerdo',
         year: 'Año',
-        allYears: 'Todos los años',
+        allYears: 'Todos',
+        years: 'Filtrar por año',
+        hiddenOnly: 'Solo ocultos',
         sort: 'Orden',
-        newest: 'Más recientes primero',
-        oldest: 'Más antiguos primero',
+        newest: '↑ Más recientes primero',
+        oldest: '↓ Más antiguos primero',
         clear: 'Limpiar filtros',
         noResultsTitle: 'No encontramos recuerdos',
         noResultsText: 'Prueba con otra búsqueda o quita los filtros.'
       },
       empty: {
         title: 'Aún no hay recuerdos',
-        text: 'Empieza el álbum con tu primera foto: agrégale un título, el año y una descripción.',
+        text: 'Sube tu primer recuerdo: una foto de cuando eras pequeña, tu primer día de clases…',
         cta: 'Añadir mi primer recuerdo'
       },
       card: {
@@ -727,8 +735,15 @@ export default {
         hidden: 'Oculto',
         view: 'Ver foto de {title}',
         edit: 'Editar {title}',
-        delete: 'Eliminar {title}'
+        delete: 'Eliminar {title}',
+        visible: 'Visible',
+        toggleHide: 'Visible en la invitación: toca para ocultar {title}',
+        toggleShow: 'Oculto en la invitación: toca para mostrar {title}',
+        menu: 'Más acciones para {title}',
+        show: 'Mostrar en la invitación',
+        hide: 'Ocultar en la invitación'
       },
+      addTile: { title: 'Añadir recuerdo', hint: 'de cualquier año' },
       form: {
         createTitle: 'Nuevo recuerdo',
         editTitle: 'Editar recuerdo',
@@ -779,7 +794,9 @@ export default {
         loadError: 'No pudimos cargar tus recuerdos. Intenta de nuevo.',
         error: 'No pudimos completar la acción. Intenta de nuevo.',
         fileRejected: 'No pudimos subir la foto. Revisa que sea JPG, PNG, WEBP o GIF de hasta 5 MB.',
-        invalid: 'Revisa los datos del recuerdo e intenta de nuevo.'
+        invalid: 'Revisa los datos del recuerdo e intenta de nuevo.',
+        nowVisible: 'Ahora se ve en la invitación',
+        nowHidden: 'Oculto en la invitación'
       },
       viewer: { noTitle: 'Recuerdo' }
     },
