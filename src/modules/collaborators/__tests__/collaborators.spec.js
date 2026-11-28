@@ -320,3 +320,110 @@ describe('CollaboratorsView', () => {
     expect(api.removeCollaborator).toHaveBeenCalledWith({ eventId: 7, userId: 22 })
   })
 })
+
+describe('CollaboratorsView: more flows', () => {
+  let wrapper
+  let router
+  const body = () => document.body
+  const toasts = () => useToast().toasts.map(x => `${x.tone}:${x.title}`)
+
+  async function setup({ path = '/', event = { id: 7, userRole: 'owner', modules: [] } } = {}) {
+    const pinia = createPinia()
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+    useUserStore().userId = 11
+    const events = useEventsStore()
+    events.activeEvent = event
+    events.eventPermissions = []
+    router = createRouter({
+      history: createMemoryHistory(),
+      routes: [{ path: '/', component: { template: '<div />' } }, { path: '/dashboard/collaborators', name: 'collaborators', component: { template: '<div />' } }]
+    })
+    await router.push(path)
+    wrapper = mount(CollaboratorsView, { global: { plugins: [i18n, pinia, router] }, attachTo: document.body })
+    await flushPromises()
+  }
+  const openMenu = async key => {
+    await wrapper.get(`[data-testid=${key}]`).get('button').trigger('click')
+    await flushPromises()
+  }
+  const choose = async text => {
+    const item = [...body().querySelectorAll('[role=menuitem]')].find(i => i.textContent.includes(text))
+    item.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    item.dispatchEvent(new Event('pointerup', { bubbles: true }))
+    await flushPromises()
+  }
+
+  beforeEach(() => {
+    setLocale('es')
+    Object.values(api).forEach(fn => fn.mockReset())
+    api.loadCollaborators.mockResolvedValue({ data: { data: LIST } })
+    useToast().toasts.map(x => x.id).forEach(id => useToast().dismiss(id))
+  })
+  afterEach(() => {
+    wrapper?.unmount()
+    document.body.innerHTML = ''
+  })
+
+  it('loads nothing while there is no active event', async () => {
+    await setup({ event: {} })
+    expect(api.loadCollaborators).not.toHaveBeenCalled()
+  })
+
+  it('opens the invitation form from /invite and goes back to the plain list when it closes', async () => {
+    await setup({ path: '/?invite=1' })
+    expect(body().querySelector('#invite-collaborator')).not.toBeNull()
+    body().querySelector('#invite-collaborator').closest('[role=dialog]').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await flushPromises()
+    expect(body().querySelector('#invite-collaborator')).toBeNull()
+    expect(router.currentRoute.value.name).toBe('collaborators')
+  })
+
+  it('changes a role from the row menu, both ways', async () => {
+    api.changeRole.mockResolvedValue({})
+    await setup()
+    await openMenu('collaborator-member-2')
+    await choose(i18n.global.t('app.collaborators.actions.makeViewer'))
+    expect(api.changeRole).toHaveBeenLastCalledWith({ eventId: 7, userId: 22, role: 'viewer' })
+    expect(toasts()).toContain(`success:${i18n.global.t('app.collaborators.roleChanged')}`)
+  })
+
+  it('promotes a view-only member to editor', async () => {
+    api.changeRole.mockResolvedValue({})
+    api.loadCollaborators.mockResolvedValue({ data: { data: [...LIST, { id: 4, type: 'member', user_id: 44, name: 'Pedro', email: 'pedro@x.com', role: 'viewer' }] } })
+    await setup()
+    await openMenu('collaborator-member-4')
+    await choose(i18n.global.t('app.collaborators.actions.makeEditor'))
+    expect(api.changeRole).toHaveBeenLastCalledWith({ eventId: 7, userId: 44, role: 'editor' })
+  })
+
+  it('shows the server message of a refused action, or a generic one for a server failure', async () => {
+    api.changeRole.mockRejectedValueOnce({ response: { status: 422, data: { message: 'No puedes cambiar ese rol.' } } })
+    await setup()
+    await openMenu('collaborator-member-2')
+    await choose(i18n.global.t('app.collaborators.actions.makeViewer'))
+    expect(toasts()).toContain('danger:No puedes cambiar ese rol.')
+    api.changeRole.mockRejectedValueOnce({ response: { status: 500, data: { message: 'SQLSTATE boom' } } })
+    await openMenu('collaborator-member-2')
+    await choose(i18n.global.t('app.collaborators.actions.makeViewer'))
+    expect(toasts()).toContain(`danger:${i18n.global.t('app.collaborators.actionError')}`)
+    expect(toasts().join()).not.toContain('SQLSTATE')
+  })
+
+  it('"Cancelar" in the confirmation keeps the person, and so does closing it', async () => {
+    await setup()
+    await openMenu('collaborator-member-2')
+    await choose(i18n.global.t('app.collaborators.actions.remove'))
+    expect(body().querySelector('[data-testid=confirm-action]')).not.toBeNull()
+    ;[...body().querySelectorAll('[role=dialog] button')].find(b => b.textContent.trim() === i18n.global.t('app.collaborators.cancel')).click()
+    await flushPromises()
+    expect(body().querySelector('[data-testid=confirm-action]')).toBeNull()
+    await openMenu('collaborator-member-2')
+    await choose(i18n.global.t('app.collaborators.actions.remove'))
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await flushPromises()
+    expect(body().querySelector('[data-testid=confirm-action]')).toBeNull()
+    expect(api.removeCollaborator).not.toHaveBeenCalled()
+  })
+})
