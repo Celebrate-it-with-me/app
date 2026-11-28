@@ -1413,7 +1413,7 @@ export default {
         overBy: 'You paid {amount} too much',
         estimated: 'estimate {amount}',
         dueShort: 'Due {date}',
-        edit: 'Edit',
+        edit: 'Edit expense',
         remove: 'Delete',
         removeTitle: 'Delete this expense?',
         removeBody: '“{name}” and its payments will leave the budget.',
