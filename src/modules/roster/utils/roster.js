@@ -61,7 +61,7 @@ export function saveBlob(blob, filename) {
 }
 
 /** One grid for the table's header, rows and companion rows, so the columns line up (Invitado, Asistencia, Envío, Personas, acciones). */
-export const GUEST_GRID = 'grid grid-cols-[minmax(0,1fr)_130px_130px_80px_48px] items-center gap-x-4 px-4'
+export const GUEST_GRID = 'grid grid-cols-[minmax(0,1fr)_130px_130px_80px_48px] items-center gap-x-4 pl-4 lg:pr-4 fab-safe'
 
 /** The select/radio value of a guest's language: the string 'event' stands for "follow the event" (null in the API). */
 export const localeValue = family => family.locale || 'event'

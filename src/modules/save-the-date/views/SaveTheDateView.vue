@@ -168,14 +168,14 @@ const ask = action => (confirming.value = action)
               </UiField>
               <UiSwitch
                 v-model="form.showCountdown"
-                class="min-h-[48px]"
+                class="min-h-[48px] fab-safe"
                 :disabled="!canEdit"
                 :label="t('app.saveTheDate.countdown')"
                 :description="t('app.saveTheDate.countdownHint')"
               />
               <UiSwitch
                 v-model="form.useAddToCalendar"
-                class="min-h-[48px]"
+                class="min-h-[48px] fab-safe"
                 :disabled="!canEdit"
                 :label="t('app.saveTheDate.calendar')"
                 :description="t('app.saveTheDate.calendarHint')"
