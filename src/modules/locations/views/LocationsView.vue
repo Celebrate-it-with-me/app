@@ -138,7 +138,7 @@ async function confirmRemove() {
 
       <section data-testid="section-other">
         <h2 class="mb-2 font-body text-[11px] font-semibold uppercase tracking-[.06em] text-ink-500">
-          {{ t('app.locations.types.other') }}
+          {{ t('app.locations.otherTitle') }}
           <span class="font-normal normal-case tracking-normal text-ink-500">{{ t('app.locations.otherHint') }}</span>
         </h2>
         <ul v-if="groups.other.length" class="flex flex-col gap-3">
