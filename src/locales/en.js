@@ -1516,6 +1516,19 @@ export default {
     saveTheDate: {
       title: 'Save the date',
       subtitle: 'Announce the date months ahead. Later, the same link becomes your full invitation.',
+      notice: {
+        live: { title: 'Your notice is published', text: 'Your guests see the date, the countdown and your message. Each one uses their own link; you find them in Guests.' },
+        invitation: { title: 'The notice is no longer shown', text: 'Your full invitation is published and uses the same link. You can edit this in case you use it again.' },
+        none: { title: 'You have not published the notice yet', text: 'Once you publish it, your guests will see the date, the countdown and your message.' },
+        archived: { title: 'This event is archived', text: 'Restore it to publish anything.' }
+      },
+      sequence: { label: 'What your guest sees', saveTheDate: 'Save the date', invitation: 'Full invitation' },
+      viewInvitation: 'View invitation',
+      preview: { title: 'Preview', live: 'Updates as you type', open: 'Preview', kicker: 'Save the date', messageEmpty: 'Your message will appear here', inactive: 'Not active · you already published the invitation', days: 'days', hours: 'hours', minutes: 'min', calendar: 'Add to calendar' },
+      messagePlaceholder: 'Save the date, we want to celebrate with you.',
+      allSaved: 'All saved',
+      unsaved: 'Unsaved changes',
+      saveShort: 'Save',
       stateTitle: 'Status',
       state: {
         draft: { badge: 'Not published', text: 'Your guests cannot see it yet. Once published, each one opens their own link and sees the date, the countdown and your message.' },
@@ -1537,7 +1550,7 @@ export default {
       actionError: 'We could not complete the action. Try again.',
       settingsTitle: 'What it shows',
       message: 'Message',
-      messageHint: 'Optional. One or two sentences: “Save the date, we want to celebrate with you”.',
+      messageHint: 'Optional. One or two sentences.',
       countdown: 'Countdown',
       countdownHint: 'The days, hours and minutes left until your event.',
       calendar: 'Add to calendar',

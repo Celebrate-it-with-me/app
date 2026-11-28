@@ -1516,6 +1516,19 @@ export default {
     saveTheDate: {
       title: 'Guarda la fecha',
       subtitle: 'Avisa la fecha con meses de anticipación. Más adelante, el mismo enlace se convierte en tu invitación completa.',
+      notice: {
+        live: { title: 'Tu aviso está publicado', text: 'Tus invitados ven la fecha, la cuenta regresiva y tu mensaje. Cada uno usa su propio enlace; los encuentras en Invitados.' },
+        invitation: { title: 'El aviso ya no se muestra', text: 'Tu invitación completa está publicada y ocupa el mismo enlace. Puedes editar esto por si vuelves a usarlo.' },
+        none: { title: 'Aún no has publicado el aviso', text: 'Cuando lo publiques, tus invitados verán la fecha, la cuenta regresiva y tu mensaje.' },
+        archived: { title: 'Este evento está archivado', text: 'Restáuralo para publicar algo.' }
+      },
+      sequence: { label: 'Qué ve tu invitado', saveTheDate: 'Guarda la fecha', invitation: 'Invitación completa' },
+      viewInvitation: 'Ver invitación',
+      preview: { title: 'Vista previa', live: 'Se actualiza mientras escribes', open: 'Vista previa', kicker: 'Guarda la fecha', messageEmpty: 'Tu mensaje aparecerá aquí', inactive: 'No activo · ya publicaste la invitación', days: 'días', hours: 'horas', minutes: 'min', calendar: 'Agregar al calendario' },
+      messagePlaceholder: 'Guarda la fecha, queremos celebrar contigo.',
+      allSaved: 'Todo guardado',
+      unsaved: 'Cambios sin guardar',
+      saveShort: 'Guardar',
       stateTitle: 'Estado',
       state: {
         draft: { badge: 'Sin publicar', text: 'Tus invitados aún no lo ven. Cuando lo publiques, cada uno abrirá su enlace y verá la fecha, la cuenta regresiva y tu mensaje.' },
@@ -1537,7 +1550,7 @@ export default {
       actionError: 'No pudimos completar la acción. Inténtalo de nuevo.',
       settingsTitle: 'Qué muestra',
       message: 'Mensaje',
-      messageHint: 'Opcional. Una o dos frases: “Guarda la fecha, queremos celebrarlo contigo”.',
+      messageHint: 'Opcional. Una o dos frases.',
       countdown: 'Cuenta regresiva',
       countdownHint: 'Los días, horas y minutos que faltan para tu evento.',
       calendar: 'Agregar al calendario',
