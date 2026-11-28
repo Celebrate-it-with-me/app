@@ -16,7 +16,7 @@ import PaymentModal from '../components/PaymentModal.vue'
 import CapModal from '../components/CapModal.vue'
 import CategoriesModal from '../components/CategoriesModal.vue'
 import ItemSponsorsModal from '../components/ItemSponsorsModal.vue'
-import { FILTERS, filterCounts, filterItems, groupByCategory, itemPayload, paymentPayload } from '../utils/budget'
+import { FILTERS, coverageOf, filterCounts, filterItems, groupByCategory, itemPayload, paymentPayload } from '../utils/budget'
 
 const { t } = useI18n()
 const { success, error: showError, toast } = useToast()
@@ -33,6 +33,7 @@ const loading = ref(true)
 const saving = ref(false)
 const filter = ref('all')
 const search = ref('')
+const overpaidOnly = ref(false)
 
 const itemOpen = ref(false)
 const editingItem = ref(null)
@@ -76,7 +77,10 @@ const tabs = computed(() => {
   const counts = filterCounts(store.items)
   return FILTERS.map(f => ({ value: f.value, label: t(`app.budget.filters.${f.value}`), count: counts[f.value] }))
 })
-const visible = computed(() => filterItems(store.items, filter.value, search.value))
+const visible = computed(() => {
+  const list = filterItems(store.items, filter.value, search.value)
+  return overpaidOnly.value ? list.filter(item => coverageOf(item).overpaid > 0) : list
+})
 const groups = computed(() => groupByCategory(visible.value, categories.value))
 
 /** Runs a write, refreshes from the server (the totals live there) and reports. */
@@ -192,7 +196,7 @@ async function download() {
     </div>
 
     <template v-else-if="summary">
-      <BudgetSummary class="mt-6" :summary="summary" :can-edit="canEdit" @cap="capOpen = true" />
+      <BudgetSummary class="mt-6" :summary="summary" :items="store.items" :can-edit="canEdit" :overpaid-active="overpaidOnly" @cap="capOpen = true" @overpaid="overpaidOnly = !overpaidOnly" />
 
       <UiEmptyState v-if="!store.items.length" class="mt-8" :title="t('app.budget.emptyTitle')" :description="t('app.budget.emptyText')">
         <UiButton v-if="canEdit" @click="openItem()">{{ t('app.budget.addFirst') }}</UiButton>
