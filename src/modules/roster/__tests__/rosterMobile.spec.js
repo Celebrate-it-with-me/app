@@ -260,7 +260,7 @@ describe('Roster on phones: filters and actions', () => {
     const more = bar.querySelector('[data-testid="more-actions"]')
     expect(more.getAttribute('aria-label')).toBe('Más acciones')
     expect(more.className).toContain('md:hidden')
-    const hidden = [...bar.children].filter(c => c.className.includes('hidden md:'))
+    const hidden = [...bar.children].filter(c => c.className.includes('hidden md:block'))
     expect(hidden.map(c => c.textContent.trim())).toEqual(['Importar', 'Descargar'])
   })
 

@@ -501,10 +501,12 @@ async function copyLink(family) {
           <Plus class="h-4 w-4" aria-hidden="true" />
           {{ t('app.roster.add') }}
         </UiButton>
-        <UiButton variant="secondary" class="hidden md:inline-flex" @click="importOpen = true">
-          <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.guestImport.button') }}
-        </UiButton>
+        <div class="hidden md:block">
+          <UiButton variant="secondary" @click="importOpen = true">
+            <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.guestImport.button') }}
+          </UiButton>
+        </div>
       </template>
       <div v-if="event?.id && counts.all" class="hidden md:block">
         <RosterDownloadMenu :event-id="event.id" :status="status" :search="search" />

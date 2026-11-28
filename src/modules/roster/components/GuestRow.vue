@@ -53,10 +53,10 @@ const open = () => props.canEdit && emit('edit', props.family)
           <GuestDeliveryNote :family="family" :delivery="delivery" :can-edit="canEdit" @edit="emit('edit', $event)" @retry="emit('retry', $event)" />
         </div>
       </div>
-      <div role="cell">
+      <div role="cell" class="flex items-center">
         <UiBadge :tone="STATUS_TONE[family.status]" size="sm" dot>{{ t(`app.roster.status.${family.status}`) }}</UiBadge>
       </div>
-      <div role="cell"><GuestDeliveryChip :delivery="delivery" /></div>
+      <div role="cell" class="flex items-center"><GuestDeliveryChip :delivery="delivery" /></div>
       <div role="cell" class="text-right text-sm tabular-nums text-ink-700">{{ peopleIn(family) }}</div>
       <div role="cell" class="flex justify-center">
         <UiDropdown :items="items">
@@ -78,7 +78,7 @@ const open = () => props.canEdit && emit('edit', props.family)
         <CornerDownRight class="h-3.5 w-3.5 shrink-0 text-ink-400" aria-hidden="true" />
         <span class="truncate" :title="companion.name" data-testid="companion-name">{{ companion.name }}</span>
       </div>
-      <div role="cell">
+      <div role="cell" class="flex items-center">
         <UiBadge :tone="STATUS_TONE[companion.status]" size="sm" dot>{{ t(`app.roster.status.${companion.status}`) }}</UiBadge>
       </div>
       <div role="cell" /><div role="cell" /><div role="cell" />
