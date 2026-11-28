@@ -18,7 +18,7 @@ const emit = defineEmits(['update:localSearch', 'update:sortBy', 'update:filterB
 const { t } = useI18n()
 
 const sortOptions = computed(() => SORT_OPTIONS.map(value => ({ value, label: t(`app.music.sort.${value}`) })))
-const filterTabs = computed(() => FILTER_OPTIONS.map(value => ({ value, label: t(`app.music.filter.${value}`) })))
+const filterTabs = computed(() => FILTER_OPTIONS.map(value => ({ value, label: t(`app.music.filter.${value}`), shortLabel: t(`app.music.filterShort.${value}`) })))
 </script>
 
 <template>
@@ -28,7 +28,9 @@ const filterTabs = computed(() => FILTER_OPTIONS.map(value => ({ value, label: t
       <span class="text-sm text-ink-500">({{ props.songs.length }})</span>
     </div>
 
-    <div class="fab-safe mt-3 grid gap-3 sm:grid-cols-[1fr_14rem]">
+    <!-- The filters keep the assistant button's column free on phones (fab-safe); the 4 short tabs still fit in what is left. -->
+    <div class="fab-safe">
+    <div class="mt-3 grid gap-3 sm:grid-cols-[1fr_14rem]">
       <UiInput
         :model-value="props.localSearch"
         type="search"
@@ -46,7 +48,8 @@ const filterTabs = computed(() => FILTER_OPTIONS.map(value => ({ value, label: t
       />
     </div>
 
-    <UiTabs class="fab-safe mt-3" :model-value="props.filterBy" :tabs="filterTabs" @update:model-value="val => emit('update:filterBy', val)" />
+    <UiTabs class="mt-3" compact :model-value="props.filterBy" :tabs="filterTabs" @update:model-value="val => emit('update:filterBy', val)" />
+    </div>
 
     <UiEmptyState
       v-if="props.songs.length === 0"
@@ -57,11 +60,12 @@ const filterTabs = computed(() => FILTER_OPTIONS.map(value => ({ value, label: t
       <template #icon><Music class="h-6 w-6" aria-hidden="true" /></template>
     </UiEmptyState>
 
-    <ul v-else class="mt-4 space-y-3">
+    <ul v-else class="mt-3 overflow-hidden rounded-xl border border-line bg-white shadow-card" data-testid="song-list">
       <SuggestedMusicSongItem
-        v-for="song in props.songs"
+        v-for="(song, index) in props.songs"
         :key="song.id"
         :song="song"
+        :position="index + 1"
         @play="emit('play', $event)"
         @details="emit('details', $event)"
         @remove="emit('remove', $event)"

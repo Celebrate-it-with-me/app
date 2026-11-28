@@ -1024,7 +1024,12 @@ export default {
         net: 'Net {n}',
         play: 'Play',
         details: 'View votes',
-        remove: 'Remove song'
+        remove: 'Remove song',
+        by: 'by {name}',
+        you: 'You',
+        openSpotify: 'Open in Spotify',
+        menu: 'More actions for {title}',
+        votesOf: 'View votes for {title}: {up} up, {down} down'
       },
       sort: {
         recent: 'Most recent',
@@ -1034,9 +1039,15 @@ export default {
       },
       filter: {
         all: 'All',
-        admin: 'Added by you',
+        admin: 'Yours',
         guest: 'From guests',
         topVoted: 'Top voted'
+      },
+      filterShort: {
+        all: 'All',
+        admin: 'Yours',
+        guest: 'Guests',
+        topVoted: 'Top'
       },
       details: {
         title: 'Vote details',

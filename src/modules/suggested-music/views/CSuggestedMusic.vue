@@ -79,15 +79,17 @@ const exportItems = computed(() => [
       <UiSkeleton height="6rem" />
     </div>
 
-    <div v-else class="mt-6 space-y-6">
+    <div v-else class="mt-6 flex flex-col gap-6">
+      <!-- Phones: the search comes first (it is what she came to do); from md the stats lead, as before. -->
       <SuggestedMusicStats
+        class="order-2 md:order-1"
         :total-songs="totalSongs"
         :total-votes="totalVotes"
         :top-song="topSong"
         :guest-suggested="guestSuggested"
       />
 
-      <div ref="searchContainerRef">
+      <div ref="searchContainerRef" class="order-1 md:order-2">
         <SuggestedMusicSearchAdd
           :search-query="searchQuery"
           :search-results="searchResults"
@@ -99,6 +101,7 @@ const exportItems = computed(() => [
       </div>
 
       <SuggestedMusicList
+        class="order-3"
         :has-songs="hasSongs"
         :songs="filteredAndSortedSongs"
         :local-search="localSearch"

@@ -1024,7 +1024,12 @@ export default {
         net: 'Neto {n}',
         play: 'Reproducir',
         details: 'Ver votos',
-        remove: 'Eliminar canción'
+        remove: 'Eliminar canción',
+        by: 'por {name}',
+        you: 'Tú',
+        openSpotify: 'Abrir en Spotify',
+        menu: 'Más acciones de {title}',
+        votesOf: 'Ver votos de {title}: {up} a favor, {down} en contra'
       },
       sort: {
         recent: 'Más recientes',
@@ -1034,9 +1039,15 @@ export default {
       },
       filter: {
         all: 'Todas',
-        admin: 'Del organizador',
+        admin: 'Tuyas',
         guest: 'De invitados',
         topVoted: 'Más votadas'
+      },
+      filterShort: {
+        all: 'Todas',
+        admin: 'Tuyas',
+        guest: 'Invitados',
+        topVoted: 'Top'
       },
       details: {
         title: 'Detalle de votos',

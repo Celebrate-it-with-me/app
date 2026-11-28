@@ -37,7 +37,7 @@ const onInput = value => {
       <li
         v-for="(song, index) in props.searchResults"
         :key="song.platformId || index"
-        class="flex items-center gap-3 p-3"
+        class="fab-safe flex items-center gap-3 py-3 pl-3 lg:pr-3"
       >
         <SongCover :src="song.thumbnailUrl" size="h-12 w-12" />
         <div class="min-w-0 flex-1">
