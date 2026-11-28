@@ -105,7 +105,7 @@ const COURSES = [
       </ul>
 
       <!-- md and up: table -->
-      <UiCard padding="none" class="hidden overflow-hidden md:block">
+      <UiCard padding="none" class="relative hidden overflow-x-auto md:block">
         <table class="w-full text-left">
           <thead class="border-b border-line bg-cream-100 text-sm text-ink-700">
             <tr>

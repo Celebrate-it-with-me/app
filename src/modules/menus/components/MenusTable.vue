@@ -83,7 +83,7 @@ const goToMenu = menu => router.push(`/dashboard/menus/show/${menu.id}`)
     </ul>
 
     <!-- md and up: table -->
-    <UiCard padding="none" class="hidden overflow-hidden md:block">
+    <UiCard padding="none" class="relative hidden overflow-x-auto md:block">
       <table class="w-full text-left">
         <thead class="border-b border-line bg-cream-100 text-sm text-ink-700">
           <tr>
@@ -97,7 +97,7 @@ const goToMenu = menu => router.push(`/dashboard/menus/show/${menu.id}`)
         <tbody class="divide-y divide-line">
           <tr v-for="menu in menuStore.menus" :key="menu.id" class="hover:bg-cream-100">
             <td class="px-5 py-3 font-medium text-ink-900">{{ menu.title }}</td>
-            <td class="max-w-xs truncate px-5 py-3 text-sm text-ink-500">{{ menu.description || t('app.menus.noDescription') }}</td>
+            <td class="px-5 py-3 text-sm text-ink-500"><div class="max-w-xs truncate">{{ menu.description || t('app.menus.noDescription') }}</div></td>
             <td class="px-5 py-3">
               <span class="flex flex-wrap gap-1.5">
                 <UiBadge v-if="menu.allow_multiple_choices" tone="info" size="sm">{{ t('app.menus.multiple') }}</UiBadge>
