@@ -3,6 +3,7 @@
  */
 import { wallClockToIso } from '@/utils/eventDateTime'
 import { normalizeHex, paletteKey } from '@/modules/dress-code/utils/dressCodeForm'
+import { coverageOf } from '@/modules/budget/utils/budget'
 
 /** RSVP numbers from the stats endpoint payload (`response.data` of `GET /rsvp/stats`). People include companions. */
 export function summarizeRsvp(stats) {
@@ -100,10 +101,16 @@ export function budgetFigures(summary) {
   const totals = summary?.totals ?? {}
   const cap = summary?.cap === null || summary?.cap === undefined ? null : amount(summary.cap)
   const items = (summary?.categories ?? []).reduce((n, c) => n + (Number(c?.itemCount) || 0), 0) + (Number(summary?.uncategorized?.itemCount) || 0)
+  // Same reading as the Presupuesto page (`coverageOf`): what is covered never goes past what is owed, and what was paid
+  // past the cost shows as `overpaid`, never as progress.
+  const coverage = coverageOf(totals)
   return {
     currency: summary?.currency || 'USD',
     paid: amount(totals.paid),
     remaining: amount(totals.remaining),
+    covered: coverage.covered,
+    percent: coverage.percent,
+    overpaid: coverage.overpaid,
     cap,
     overCap: cap !== null && !!totals.overCap,
     overBy: cap !== null && totals.overCap ? amount(totals.overBy ?? (Number(totals.overByCents) || 0) / 100) : 0,
