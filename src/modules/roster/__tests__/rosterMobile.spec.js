@@ -180,6 +180,53 @@ describe('Roster on phones: action sheet', () => {
     expect(document.activeElement).toBe(buttonByLabel('Acciones para Ana Perez'))
   })
 
+  // The sheet must give the focus back to the very button that opened it, whichever row it was and however it closed.
+  describe.each(['Beto Ruiz', 'Cami Mora'])('focus goes back to the "⋯" of %s', name => {
+    const label = `Acciones para ${name}`
+    const openFrom = async () => {
+      buttonByLabel(label).focus()
+      buttonByLabel(label).click()
+      await flushPromises()
+    }
+    beforeEach(() => {
+      roster.list.mockResolvedValue({ data: [family(1, 'Ana Perez'), family(2, 'Beto Ruiz'), family(3, 'Cami Mora')], meta: { currentPage: 1, lastPage: 1, total: 3 }, counts })
+    })
+
+    it('after Escape', async () => {
+      await setup()
+      await openFrom()
+      sheet().dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+      await tick(250)
+      expect(sheet()).toBeNull()
+      expect(document.activeElement).toBe(buttonByLabel(label))
+    })
+
+    it('after a tap on the overlay', async () => {
+      await setup()
+      await openFrom()
+      await tick(10) // the dismissable layer starts listening for outside taps a tick after opening
+      const overlay = [...body().querySelectorAll('[data-state="open"]')].find(el => el.className.includes('bg-[rgba(30,20,20,.38)]'))
+      overlay.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'mouse', button: 0 }))
+      overlay.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerType: 'mouse', button: 0 }))
+      overlay.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+      await tick(250)
+      expect(sheet()).toBeNull()
+      expect(document.activeElement).toBe(buttonByLabel(label))
+    })
+
+    it('after choosing a language (the sheet leaves ~180ms later)', async () => {
+      roster.setLocale.mockResolvedValue({ locale: 'en', effectiveLocale: 'en' })
+      await setup()
+      await openFrom()
+      sheet().querySelector('[data-action="locale"]').click()
+      await flushPromises()
+      sheet().querySelector('[data-value="en"]').click()
+      await tick(300)
+      expect(sheet()).toBeNull()
+      expect(document.activeElement).toBe(buttonByLabel(label))
+    })
+  })
+
   it('"Idioma de la invitación" swaps the sheet for three radio rows with the guest as subtitle and a help line', async () => {
     await setup()
     await openSheet()
