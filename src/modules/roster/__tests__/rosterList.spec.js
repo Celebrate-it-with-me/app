@@ -13,7 +13,7 @@ const wizardService = vi.hoisted(() => ({ audience: vi.fn(), allRecipients: vi.f
 vi.mock('../services/SendWizardService', () => ({ default: wizardService }))
 vi.mock('../services/WhatsappService', () => ({ default: { send: vi.fn(), retry: vi.fn() } }))
 import RosterView from '../views/RosterView.vue'
-import GuestCard from '../components/GuestCard.vue'
+import GuestList from '../components/GuestList.vue'
 
 const family = (id, name, extra = {}) => ({ id, name, phone: '+13055550123', email: null, status: 'pending', link: `https://q.test/i/xv/${id}`, companions: [], notes: null, locale: null, delivery: { state: 'none' }, ...extra })
 const delivery = { unsent: 3, queued: 0, sent: 1, delivered: 2, read: 1, failed: 1, noPhone: 0, shared: 0 }
@@ -106,8 +106,8 @@ describe('RosterView list', () => {
   it('has one main action: the header button on desktop and the bar on phones, with the unsent count', async () => {
     await setup()
     expect(document.querySelector('[data-testid="send-header"]').textContent).toContain('Enviar invitaciones')
-    expect(document.querySelector('[data-testid="send-bar"]').textContent).toContain('Enviar invitaciones · 3 sin enviar')
-    button('Enviar invitaciones ·').click()
+    expect(document.querySelector('[data-testid="send-bar"]').textContent).toContain('Enviar invitaciones (3)')
+    button('Enviar invitaciones (').click()
     await flushPromises()
     expect(body()).toContain('Nadie por ahora')
   })
@@ -128,7 +128,7 @@ describe('RosterView list', () => {
 
   it('sends to one family from her menu: the wizard opens with her preselected (automatic)', async () => {
     await setup()
-    wrapper.findAllComponents(GuestCard)[0].vm.$emit('send', family(1, 'Ana Perez'))
+    wrapper.findComponent(GuestList).vm.$emit('send', family(1, 'Ana Perez'))
     await flushPromises()
     const wizardProps = wrapper.findComponent({ name: 'SendWizard' }).props()
     expect(wizardProps.preselectedIds).toEqual([1])
@@ -138,7 +138,7 @@ describe('RosterView list', () => {
 
   it('opens the wizard with one family preselected in manual mode', async () => {
     await setup({ modules: [{ key: 'whatsapp', state: 'locked' }] })
-    wrapper.findAllComponents(GuestCard)[0].vm.$emit('send', family(1, 'Ana Perez'))
+    wrapper.findComponent(GuestList).vm.$emit('send', family(1, 'Ana Perez'))
     await flushPromises()
     expect(body()).toContain('Enviar invitaciones')
     expect(wizardService.audience).toHaveBeenCalledWith(7, 'invitation')
@@ -221,7 +221,7 @@ describe('RosterView list', () => {
     roster.list.mockReturnValueOnce(new Promise(r => { again = r }))
     chip('Sin enviar').click()
     await flushPromises()
-    const list = document.querySelector('ul[aria-busy]')
+    const list = document.querySelector('[data-testid="guest-table"]')
     expect(list.getAttribute('aria-busy')).toBe('true')
     expect(list.className).toContain('opacity-50')
     again(page([]))

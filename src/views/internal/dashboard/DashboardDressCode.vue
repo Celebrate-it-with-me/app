@@ -13,6 +13,7 @@ import DashboardCard from './DashboardCard.vue'
 import DashboardAction from './DashboardAction.vue'
 import { HEADER_LINK } from './dashboardUi'
 import { dressCodeSummary } from './dashboardLogic'
+import { paletteName } from '@/modules/dress-code/utils/dressCodeForm'
 
 const props = defineProps({
   /** `GET dress-code` payload (null until it loads). */
@@ -30,7 +31,7 @@ const typeName = computed(() => {
   const key = `app.dressCode.types.${type}.name`
   return type && te(key) ? t(key) : type
 })
-const colorName = color => (color.key ? t(`app.dressCode.palette.${color.key}`) : color.hex.toUpperCase())
+const colorName = color => (paletteName(color.hex, t) ?? color.hex.toUpperCase())
 const colorsLabel = computed(() => t('app.dashboard.dress.reservedLabel', { colors: summary.value.colors.map(colorName).join(', ') }))
 </script>
 

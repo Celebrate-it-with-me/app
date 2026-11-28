@@ -13,7 +13,7 @@ import PadrinoFormModal from '../components/PadrinoFormModal.vue'
 import CommitmentsModal from '../components/CommitmentsModal.vue'
 import CommitmentConflictDialog from '../components/CommitmentConflictDialog.vue'
 import { useCommitmentSave } from '../composables/useCommitmentSave'
-import { padrinoPayload, warningTitles, whatsappUrl } from '../utils/padrinos'
+import { conflictAnchor, conflictsOf, padrinoPayload, warningTitles, whatsappUrl } from '../utils/padrinos'
 
 const { t, locale } = useI18n()
 const { success, error: showError, toast } = useToast()
@@ -38,6 +38,15 @@ const removing = ref(null)
 
 const money = value => formatMoney(value, currency.value, locale.value)
 const paidShare = computed(() => percent(totals.value.paid, totals.value.committed))
+const conflicts = computed(() => conflictsOf(padrinos.value, items.value))
+
+/** Scrolls to the first contribution that clashes with an expense already paid. */
+function goToConflict() {
+  const first = conflicts.value[0]
+  const el = first ? document.getElementById(conflictAnchor(first)) : null
+  el?.scrollIntoView({ behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' })
+}
+const reviewInBudget = () => router?.push({ name: 'budget' })
 
 /** What is on screen belongs to this event; nothing of another event stays while (or after failing) to read. */
 let shownFor = null
@@ -147,7 +156,7 @@ const openWhatsapp = padrino =>
 </script>
 
 <template>
-  <UiPage>
+  <UiPage class="pb-24 lg:pb-0">
     <UiPageHeader :title="t('app.padrinos.title')" :subtitle="t('app.padrinos.subtitle')">
       <template #actions>
         <UiButton v-if="canEdit" @click="openForm()">
@@ -182,15 +191,22 @@ const openWhatsapp = padrino =>
             <dd class="mt-1 font-heading text-xl tabular-nums text-ink-900 sm:text-3xl">{{ money(totals.remaining) }}</dd>
           </div>
         </dl>
-        <div class="mt-4 h-2.5 overflow-hidden rounded-full bg-cream-100" role="progressbar" :aria-valuenow="paidShare" aria-valuemin="0" aria-valuemax="100" :aria-label="t('app.padrinos.summary.label')">
+        <div class="mt-4 h-2.5 overflow-hidden rounded-full bg-cream-200" role="progressbar" :aria-valuenow="paidShare" aria-valuemin="0" aria-valuemax="100" :aria-label="t('app.padrinos.summary.label')">
           <div class="h-full origin-left rounded-full bg-rose-600 transition-transform duration-500 ease-out" :style="{ transform: `scaleX(${paidShare / 100})` }" />
         </div>
+        <ul class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-700" data-legend>
+          <li class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-rose-600" aria-hidden="true" />{{ t('app.padrinos.summary.paid') }}</li>
+          <li class="flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-sm bg-cream-200 ring-1 ring-line-strong" aria-hidden="true" />{{ t('app.padrinos.summary.remaining') }}</li>
+        </ul>
+        <button v-if="conflicts.length" type="button" class="relative touch-target mt-2 block text-left text-xs text-warning-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600" data-conflicts-line @click="goToConflict">
+          ⚠ {{ t('app.padrinos.conflict.summaryLine', { count: conflicts.length }, conflicts.length) }}
+        </button>
         <p class="mt-2 text-sm text-ink-500">{{ t('app.padrinos.summary.note') }}</p>
       </UiCard>
 
-      <ul class="mt-6 space-y-3">
-        <li v-for="padrino in padrinos" :key="padrino.id">
-          <PadrinoCard :padrino="padrino" :currency="currency" :can-edit="canEdit" @edit="openForm" @commitments="openCommitments" @whatsapp="openWhatsapp" @remove="removing = $event" />
+      <ul class="mt-6 space-y-3 lg:grid lg:grid-cols-[repeat(auto-fill,minmax(420px,1fr))] lg:gap-4 lg:space-y-0">
+        <li v-for="(padrino, index) in padrinos" :key="padrino.id" class="min-w-0">
+          <PadrinoCard :padrino="padrino" :items="items" :index="index" :currency="currency" :can-edit="canEdit" @edit="openForm" @commitments="openCommitments" @whatsapp="openWhatsapp" @remove="removing = $event" @review="reviewInBudget" />
         </li>
       </ul>
     </template>

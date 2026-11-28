@@ -1,34 +1,41 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Pencil, Trash2, Plus, MapPin, Church, GlassWater } from 'lucide-vue-next'
-import { UiPageHeader, UiCard, UiButton, UiBadge, UiSkeleton, UiEmptyState, UiModal, useToast, UiPage } from '@/ui'
+import { Plus } from 'lucide-vue-next'
+import { UiPageHeader, UiButton, UiSkeleton, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
+import { useTimelineStore } from '@/modules/timeline/stores/timelineStore'
 import { useLocationsStore } from '../stores/useLocationsStore'
 import LocationsService from '../services/LocationsService'
 import LocationForm from '../components/LocationForm.vue'
-import { toPayload } from '../utils/locationForm'
+import LocationCard from '../components/LocationCard.vue'
+import LocationEmpty from '../components/LocationEmpty.vue'
+import { formFromLocation, toPayload } from '../utils/locationForm'
+import { groupPlaces, momentOfType, scheduleOf } from '../utils/placeCard'
+import { rangeLabel } from '@/modules/timeline/utils/timeMath'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { success, error: showError } = useToast()
 const eventsStore = useEventsStore()
 const store = useLocationsStore()
+const timeline = useTimelineStore()
 
 const event = computed(() => eventsStore.activeEvent)
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
-const icons = { ceremony: Church, reception: GlassWater, other: MapPin }
 
 const loading = ref(true)
 const saving = ref(false)
 const formOpen = ref(false)
 const editing = ref(null)
+const newType = ref('ceremony')
 const removing = ref(null)
 
 async function load() {
   if (!event.value?.id) return
   loading.value = true
   try {
-    await store.fetch(event.value.id)
+    // The program only adds the hours: if it fails to load, the places still show.
+    await Promise.all([store.fetch(event.value.id), timeline.fetchTimelines(event.value.id).catch(() => {})])
   } catch {
     showError(t('app.locations.loadError'))
   } finally {
@@ -38,9 +45,43 @@ async function load() {
 onMounted(load)
 watch(() => event.value?.id, load)
 
-function openForm(location = null) {
+function openForm(location = null, type = 'ceremony') {
   editing.value = location
+  newType.value = type
   formOpen.value = true
+}
+
+const groups = computed(() => groupPlaces(store.locations))
+const scheduleFor = place => scheduleOf(place, timeline.timelines, locale.value)
+
+/** What a section without places says, from the program: a moment of that kind with no place, or a plain invitation to add one. */
+function emptyFor(type) {
+  const moment = momentOfType(timeline.timelines, type)
+  if (moment) {
+    return {
+      title: t('app.locations.emptyWhere', { moment: moment.title.toLowerCase() }),
+      text: t('app.locations.emptyWhereText', { time: rangeLabel(moment, locale.value).start })
+    }
+  }
+  // An event without a ceremony is not an error: the section stays quiet.
+  if (type === 'ceremony') return { title: t('app.locations.neutralTitle'), text: t('app.locations.neutralText') }
+  return { title: t('app.locations.emptyAddTitle', { kind: t(`app.locations.kinds.${type}`) }), text: t('app.locations.emptyAddText') }
+}
+
+// Offered on the first "other place" while the reception has no place.
+const suggestedId = computed(() => (groups.value.reception.length ? null : (groups.value.other[0]?.id ?? null)))
+
+async function retypeToReception(place) {
+  saving.value = true
+  try {
+    await LocationsService.update(event.value.id, place.id, toPayload({ ...formFromLocation(place), type: 'reception' }))
+    await store.fetch(event.value.id)
+    success(t('app.locations.saved'))
+  } catch {
+    showError(t('app.locations.saveError'))
+  } finally {
+    saving.value = false
+  }
 }
 
 async function save({ form, files, googlePhotos, removedImageIds }) {
@@ -73,66 +114,48 @@ async function confirmRemove() {
     saving.value = false
   }
 }
-
-const line = place => [place.address, [place.city, place.state].filter(Boolean).join(', '), place.zipCode].filter(Boolean).join(' · ')
 </script>
 
 <template>
-  <UiPage>
+  <UiPage class="pb-24 lg:pb-0">
     <UiPageHeader :title="t('app.locations.title')" :subtitle="t('app.locations.subtitle')" />
 
-    <div v-if="loading" class="mt-6 space-y-3">
-      <UiSkeleton class="h-28" />
-      <UiSkeleton class="h-28" />
+    <div v-if="loading" class="mt-6 flex max-w-[860px] flex-col gap-3">
+      <UiSkeleton class="h-36" />
+      <UiSkeleton class="h-36" />
     </div>
 
-    <UiCard v-else-if="!store.locations.length" class="mt-6">
-      <UiEmptyState :title="t('app.locations.emptyTitle')" :description="t('app.locations.emptyText')">
-        <UiButton v-if="canEdit" @click="openForm()">{{ t('app.locations.add') }}</UiButton>
-      </UiEmptyState>
-    </UiCard>
+    <div v-else class="mt-6 flex max-w-[860px] flex-col gap-5" data-testid="locations-sections">
+      <section v-for="type in ['ceremony', 'reception']" :key="type" :data-testid="`section-${type}`">
+        <h2 class="mb-2 font-body text-[11px] font-semibold uppercase tracking-[.06em] text-ink-500">{{ t(`app.locations.types.${type}`) }}</h2>
+        <ul v-if="groups[type].length" class="flex flex-col gap-3">
+          <li v-for="place in groups[type]" :key="place.id">
+            <LocationCard :place="place" :schedule="scheduleFor(place)" :can-edit="canEdit" @edit="openForm($event)" @remove="removing = $event" />
+          </li>
+        </ul>
+        <LocationEmpty v-else v-bind="emptyFor(type)" :action="t('app.locations.addPlace')" :can-edit="canEdit" @add="openForm(null, type)" />
+      </section>
 
-    <template v-else>
-      <ul class="mt-6 space-y-3">
-        <li v-for="place in store.locations" :key="place.id">
-          <UiCard padding="sm">
-            <div class="flex items-start gap-3">
-              <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-600">
-                <component :is="icons[place.type] ?? MapPin" class="h-5 w-5" aria-hidden="true" />
-              </span>
-              <div class="min-w-0 flex-1">
-                <UiBadge>{{ t(`app.locations.types.${place.type}`) }}</UiBadge>
-                <h2 class="mt-1 font-heading text-lg text-ink-900">{{ place.name }}</h2>
-                <p class="text-sm text-ink-700">{{ line(place) }}</p>
-                <p v-if="place.directions" class="mt-1 text-sm text-ink-500">{{ place.directions }}</p>
-                <ul v-if="place.images.length" class="mt-3 flex gap-2 overflow-hidden">
-                  <li v-for="image in place.images.slice(0, 4)" :key="image.id" class="h-14 w-20 shrink-0 overflow-hidden rounded-md bg-cream-100">
-                    <img :src="image.path" alt="" class="h-full w-full object-cover" loading="lazy" />
-                  </li>
-                </ul>
-              </div>
-              <div v-if="canEdit" class="flex shrink-0 gap-1">
-                <UiButton variant="ghost" size="sm" icon :aria-label="t('app.locations.edit')" @click="openForm(place)">
-                  <Pencil class="h-4 w-4" aria-hidden="true" />
-                </UiButton>
-                <UiButton variant="ghost" size="sm" icon :aria-label="t('app.locations.remove')" @click="removing = place">
-                  <Trash2 class="h-4 w-4" aria-hidden="true" />
-                </UiButton>
-              </div>
-            </div>
-          </UiCard>
-        </li>
-      </ul>
-      <div v-if="canEdit" class="mt-5">
-        <UiButton variant="secondary" @click="openForm()">
-          <Plus class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.locations.add') }}
-        </UiButton>
-      </div>
-      <p class="mt-4 text-sm text-ink-500">{{ t('app.locations.timesNote') }}</p>
-    </template>
+      <section data-testid="section-other">
+        <h2 class="mb-2 font-body text-[11px] font-semibold uppercase tracking-[.06em] text-ink-500">
+          {{ t('app.locations.otherTitle') }}
+          <span class="font-normal normal-case tracking-normal text-ink-500">{{ t('app.locations.otherHint') }}</span>
+        </h2>
+        <ul v-if="groups.other.length" class="flex flex-col gap-3">
+          <li v-for="place in groups.other" :key="place.id">
+            <LocationCard :place="place" :can-edit="canEdit" :suggest-reception="place.id === suggestedId" @edit="openForm($event)" @remove="removing = $event" @retype="retypeToReception" />
+          </li>
+        </ul>
+        <div v-if="canEdit" :class="groups.other.length ? 'mt-3' : ''">
+          <UiButton variant="secondary" data-testid="add-other" @click="openForm(null, 'other')">
+            <Plus class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.locations.add') }}
+          </UiButton>
+        </div>
+      </section>
+    </div>
 
-    <LocationForm v-model:open="formOpen" :event-id="event?.id ?? 0" :location="editing" :saving="saving" @save="save" />
+    <LocationForm v-model:open="formOpen" :event-id="event?.id ?? 0" :location="editing" :default-type="newType" :saving="saving" @save="save" />
 
     <UiModal :open="!!removing" :title="t('app.locations.removeTitle')" size="sm" @update:open="removing = null">
       <p class="text-ink-700">{{ t('app.locations.removeBody', { name: removing?.name ?? '' }) }}</p>

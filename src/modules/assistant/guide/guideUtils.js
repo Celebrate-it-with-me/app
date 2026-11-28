@@ -18,7 +18,13 @@ export const COMPACT_ROUTES = [
   /^\/dashboard\/start(\/|$)/, // onboarding
   /^\/dashboard\/plan(\/|$)/, // the full plan: the guide would only repeat it
   /^\/settings(\/|$)/, // account forms: the pill would sit over the save button
-  /^\/dashboard\/guests(\/|$)/ // at 320 px the full pill covers the Import/Add row (seen in a capture)
+  /^\/dashboard\/guests(\/|$)/, // at 320 px the full pill covers the Import/Add row (seen in a capture)
+  /^\/dashboard\/save-the-date(\/|$)/, // the pill covered the switches; the icon shares the save bar's row
+  /^\/dashboard\/timeline(\/|$)/, // the pill covered the actions column of each moment
+  /^\/dashboard\/locations(\/|$)/, // the pill covered the action pills of each place
+  /^\/dashboard\/dress-code(\/|$)/, // the icon shares the save bar's row
+  /^\/dashboard\/padrinos(\/|$)/, // the pill covered the amounts and the footer actions of each card
+  /^\/dashboard\/budget(\/|$)/ // the pill covered the amounts and the row buttons
 ]
 
 /**

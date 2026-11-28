@@ -30,10 +30,16 @@ describe('isCompactRoute', () => {
     '/dashboard/plan',
     '/settings/profile',
     '/settings/security',
-    '/dashboard/guests'
+    '/dashboard/guests',
+    '/dashboard/save-the-date',
+    '/dashboard/dress-code',
+    '/dashboard/timeline',
+    '/dashboard/locations',
+    '/dashboard/budget',
+    '/dashboard/padrinos'
   ])('shrinks on %s', path => expect(isCompactRoute(path)).toBe(true))
 
-  it.each(['/dashboard', '/dashboard/budget', '/dashboard/timeline', '/dashboard/events'])(
+  it.each(['/dashboard', '/dashboard/events'])(
     'keeps the pill on %s',
     path => expect(isCompactRoute(path)).toBe(false)
   )

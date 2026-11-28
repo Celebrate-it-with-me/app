@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import i18n from '@/locales/i18n'
 
-import GuestCard from '../components/GuestCard.vue'
+import GuestRow from '../components/GuestRow.vue'
 import { deliveryOf } from '../utils/delivery'
 import { UiDropdown } from '@/ui'
 
@@ -13,8 +13,8 @@ beforeEach(() => {
   i18n.global.locale.value = 'es'
 })
 
-describe('GuestCard delivery state', () => {
-  const card = props => mount(GuestCard, { props: { family, canEdit: true, ...props }, global: { plugins: [i18n], stubs } })
+describe('GuestRow delivery state', () => {
+  const card = props => mount(GuestRow, { props: { family, canEdit: true, ...props }, global: { plugins: [i18n], stubs } })
   const view = (delivery, phone = family.phone, whatsappOptedOut = false) => deliveryOf({ ...family, phone, whatsappOptedOut, delivery: { state: 'none', ...delivery } })
 
   it('says nothing when the roster did not report delivery', () => {
@@ -61,8 +61,8 @@ describe('GuestCard delivery state', () => {
     const wrapper = card({})
     expect(wrapper.find('[role="checkbox"]').exists()).toBe(false)
     const items = wrapper.findComponent(UiDropdown).props('items')
-    expect(items[0].label).toBe('Enviar invitación')
-    items[0].onSelect()
+    const send = items.find(i => i.label === 'Enviar invitación')
+    send.onSelect()
     expect(wrapper.emitted('send')[0][0]).toEqual(family)
   })
 })

@@ -2,7 +2,9 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { UiModal, UiField, UiInput, UiSelect, UiButton, UiDateTimeField } from '@/ui'
-import { NONE, emptyPayment, paymentErrors, formatMoney } from '../utils/budget'
+import { AlertTriangle } from 'lucide-vue-next'
+import { NONE, emptyPayment, paymentErrors, formatMoney, coverageOf } from '../utils/budget'
+import { sponsorOverpay } from '@/modules/padrinos/utils/padrinos'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
@@ -36,9 +38,30 @@ const payers = computed(() => [
 ])
 const err = key => (errors.value[key] ? t(errors.value[key]) : '')
 
-function submit() {
+const cents = value => Math.round((Number(value) || 0) * 100)
+
+/**
+ * What the payment would leave over the cost: the amount typed against what is still pending (the pending of the item
+ * plus, when editing, the payment being edited). Nothing blocks it: the person chooses to raise the cost or to record it.
+ */
+const over = computed(() => {
+  if (!props.item) return null
+  const c = coverageOf(props.item)
+  const others = cents(c.paid) - (props.payment ? cents(props.payment.amount) : 0)
+  const paidAfter = others + cents(form.value.amount)
+  const excess = paidAfter - Math.max(cents(c.total), others)
+  return excess > 0 ? { excess: excess / 100, cost: c.total, newCost: paidAfter / 100 } : null
+})
+/** A payment of the family while padrinos still have to give: together they would pass the cost (one block with `over`). */
+const sponsorOver = computed(() =>
+  sponsorOverpay(props.item, form.value.amount, { padrinoId: form.value.padrinoId === NONE ? null : form.value.padrinoId, editing: props.payment })
+)
+const money = value => formatMoney(value, props.currency, locale.value)
+
+/** `raise` also raises the cost of the expense to what is paid (the same call as editing the expense). */
+function submit(raise = false) {
   errors.value = paymentErrors(form.value)
-  if (!Object.keys(errors.value).length) emit('save', { ...form.value })
+  if (!Object.keys(errors.value).length) emit('save', { ...form.value }, raise && over.value ? over.value.newCost : null)
 }
 </script>
 
@@ -50,7 +73,7 @@ function submit() {
     size="sm"
     @update:open="emit('update:open', $event)"
   >
-    <form id="budget-payment-form" class="space-y-4" novalidate @submit.prevent="submit">
+    <form id="budget-payment-form" class="space-y-4" novalidate @submit.prevent="submit(false)">
       <UiField :label="t('app.budget.payment.amount')" :error="err('amount')" required>
         <UiInput v-model="form.amount" type="number" inputmode="decimal" min="0" step="0.01" :invalid="!!errors.amount" />
       </UiField>
@@ -63,10 +86,27 @@ function submit() {
       <UiField :label="t('app.budget.payment.note')" :hint="t('app.budget.payment.noteHint')">
         <UiInput v-model="form.note" maxlength="160" autocomplete="off" />
       </UiField>
+      <div v-if="over || sponsorOver" :class="['flex gap-2.5 rounded-xl p-3 text-sm', over ? 'bg-danger-50 text-danger-700' : 'bg-warning-50 text-warning-700']" role="status" data-testid="over-warning">
+        <AlertTriangle class="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+        <div class="min-w-0 space-y-2">
+          <div v-if="over">
+            <p class="font-semibold">{{ t('app.budget.payment.overTitle', { amount: money(over.excess) }) }}</p>
+            <p class="mt-0.5">{{ t('app.budget.payment.overText', { cost: money(over.cost), newCost: money(over.newCost) }) }}</p>
+          </div>
+          <div v-if="sponsorOver" data-testid="sponsor-warning">
+            <p class="font-semibold">{{ t('app.budget.payment.sponsorOverTitle', { names: sponsorOver.names, pending: money(sponsorOver.pending) }) }}</p>
+            <p class="mt-0.5">{{ t('app.budget.payment.sponsorOverText', { excess: money(sponsorOver.excess) }) }}</p>
+          </div>
+        </div>
+      </div>
     </form>
     <template #footer>
       <UiButton variant="ghost" @click="emit('update:open', false)">{{ t('app.budget.cancel') }}</UiButton>
-      <UiButton type="submit" form="budget-payment-form" :loading="saving">{{ t('app.budget.payment.save') }}</UiButton>
+      <template v-if="over">
+        <UiButton variant="secondary" :loading="saving" data-testid="raise-cost" @click="submit(true)">{{ t('app.budget.payment.raise') }}</UiButton>
+        <UiButton type="submit" form="budget-payment-form" :loading="saving" data-testid="pay-anyway">{{ t('app.budget.payment.anyway') }}</UiButton>
+      </template>
+      <UiButton v-else type="submit" form="budget-payment-form" :loading="saving">{{ t('app.budget.payment.save') }}</UiButton>
     </template>
   </UiModal>
 </template>

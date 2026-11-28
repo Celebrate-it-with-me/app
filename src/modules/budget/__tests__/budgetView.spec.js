@@ -7,7 +7,7 @@ import i18n, { setLocale } from '@/locales/i18n'
 import { useToast } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 
-const api = vi.hoisted(() => ({ summary: vi.fn(), items: vi.fn() }))
+const api = vi.hoisted(() => ({ summary: vi.fn(), items: vi.fn(), updateItem: vi.fn(), addPayment: vi.fn(), updatePayment: vi.fn() }))
 vi.mock('../services/BudgetService', () => ({ default: api }))
 const padrinos = vi.hoisted(() => ({ list: vi.fn() }))
 vi.mock('@/modules/padrinos/services/PadrinosService', () => ({ default: padrinos }))
@@ -29,7 +29,7 @@ describe('BudgetView loading', () => {
     setActivePinia(pinia)
     useEventsStore().activeEvent = { id: 7, userRole: role, eventName: 'XV', modules: [] }
     replace = vi.fn()
-    wrapper = shallowMount(BudgetView, { global: { plugins: [i18n, pinia], provide: { [routerKey]: { replace, push: vi.fn() } } } })
+    wrapper = shallowMount(BudgetView, { global: { plugins: [i18n, pinia], stubs: { UiPage: { template: '<div><slot /></div>' } }, provide: { [routerKey]: { replace, push: vi.fn() } } } })
     await flushPromises()
     return pinia
   }
@@ -52,7 +52,7 @@ describe('BudgetView loading', () => {
     expect(useBudgetStore().summary).toBeNull()
     expect(useBudgetStore().items).toEqual([])
     expect(padrinos.list).not.toHaveBeenCalled()
-    expect(wrapper.findComponent({ name: 'ItemCard' }).exists()).toBe(false)
+    expect(wrapper.findComponent({ name: 'ItemRow' }).exists()).toBe(false)
   })
 
   it('any other failure stays on the page and says the budget could not load', async () => {
@@ -74,5 +74,48 @@ describe('BudgetView loading', () => {
     expect(padrinos.list).toHaveBeenCalledWith(7)
     expect(toasts()).toEqual([])
     expect(replace).not.toHaveBeenCalled()
+  })
+
+  describe('a payment above what is pending', () => {
+    const DJ = { id: 4, title: 'DJ', owed: 1200, paid: 400, remaining: 800, status: 'partial', categoryId: null, estimatedCost: 1000, agreedCost: 1200, dueDate: null, vendorName: null, vendorPhone: null, description: null, padrinos: [], payments: [] }
+    const FORM = { amount: '1000', paidOn: '2027-01-01', note: '', padrinoId: 'none' }
+
+    async function openPayment() {
+      api.summary.mockResolvedValue(SUMMARY)
+      api.items.mockResolvedValue([DJ])
+      padrinos.list.mockResolvedValue({ data: [] })
+      api.updateItem.mockResolvedValue({})
+      api.addPayment.mockResolvedValue({})
+      await setup()
+      const modal = wrapper.findComponent({ name: 'PaymentModal' })
+      wrapper.findComponent({ name: 'ItemRow' }).vm.$emit('pay', DJ)
+      await flushPromises()
+      return modal
+    }
+
+    it('"Registrar igualmente" only adds the payment', async () => {
+      const modal = await openPayment()
+      modal.vm.$emit('save', FORM, null)
+      await flushPromises()
+      expect(api.updateItem).not.toHaveBeenCalled()
+      expect(api.addPayment).toHaveBeenCalledWith(7, 4, expect.objectContaining({ amount: 1000 }))
+    })
+
+    it('"Aumentar el costo" raises the cost with the same call as editing the expense, then adds the payment', async () => {
+      const modal = await openPayment()
+      modal.vm.$emit('save', FORM, 1400)
+      await flushPromises()
+      expect(api.updateItem).toHaveBeenCalledWith(7, 4, expect.objectContaining({ title: 'DJ', agreedCost: 1400, estimatedCost: 1000 }))
+      expect(api.addPayment).toHaveBeenCalledWith(7, 4, expect.objectContaining({ amount: 1000 }))
+      expect(api.updateItem.mock.invocationCallOrder[0]).toBeLessThan(api.addPayment.mock.invocationCallOrder[0])
+    })
+
+    it('does not record the payment when raising the cost failed', async () => {
+      const modal = await openPayment()
+      api.updateItem.mockRejectedValue({ response: { status: 500 } })
+      modal.vm.$emit('save', FORM, 1400)
+      await flushPromises()
+      expect(api.addPayment).not.toHaveBeenCalled()
+    })
   })
 })

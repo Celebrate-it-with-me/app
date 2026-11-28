@@ -12,6 +12,7 @@ import {
   UiSwitch,
   UiModal,
   UiDropdown,
+  UiBottomSheet,
   UiTabs,
   UiCard,
   UiBadge,
@@ -36,6 +37,7 @@ const template = ref('clasica')
 const tab = ref('todos')
 const page = ref(3)
 const modalOpen = ref(false)
+const sheetOpen = ref(false)
 
 const eventTypes = [
   { value: 'quince', label: 'Quinceañera' },
@@ -164,6 +166,10 @@ const palette = [
               <UiButton variant="secondary">Menú</UiButton>
             </template>
           </UiDropdown>
+          <UiButton variant="secondary" @click="sheetOpen = true">Hoja inferior</UiButton>
+          <UiBottomSheet v-model:open="sheetOpen" title="Ana Pérez" subtitle="Acciones">
+            <p class="py-3 text-ink-700">Para listas cortas de acciones o elecciones en el móvil.</p>
+          </UiBottomSheet>
         </div>
         <UiButton class="mt-3" block>
           <template #icon><Mail class="h-4 w-4" /></template>

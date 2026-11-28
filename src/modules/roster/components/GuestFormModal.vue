@@ -4,12 +4,15 @@ import { useI18n } from 'vue-i18n'
 import { Plus, X } from 'lucide-vue-next'
 import { UiModal, UiField, UiInput, UiTextarea, UiButton } from '@/ui'
 import { emptyPerson, personErrors } from '../utils/roster'
+import GuestLocaleSelect from './GuestLocaleSelect.vue'
 
 const props = defineProps({
   open: { type: Boolean, default: false },
   /** The family being edited, or null to add one. */
   family: { type: Object, default: null },
-  saving: { type: Boolean, default: false }
+  saving: { type: Boolean, default: false },
+  /** The event's own language, for the "follow the event" choice of the invitation language. */
+  eventLocale: { type: String, default: 'es' }
 })
 const emit = defineEmits(['update:open', 'save'])
 const { t } = useI18n()
@@ -19,6 +22,8 @@ const person = ref(emptyPerson())
 const companions = ref([])
 const removed = ref([])
 const errors = ref({})
+// The invitation language of the guest being edited: `null` follows the event. Saved with the form, through its own call.
+const locale = ref(null)
 const companionError = ref(false)
 
 watch(
@@ -30,6 +35,7 @@ watch(
       : emptyPerson()
     companions.value = (props.family?.companions ?? []).map(c => ({ id: c.id, name: c.name }))
     removed.value = []
+    locale.value = props.family?.locale ?? null
     errors.value = {}
     companionError.value = false
   }
@@ -50,7 +56,9 @@ function submit() {
   errors.value = personErrors(person.value)
   companionError.value = companions.value.some(c => !c.name.trim())
   if (Object.keys(errors.value).length || companionError.value) return
-  emit('save', { person: { ...person.value }, companions: companions.value.map(c => ({ ...c, name: c.name.trim() })), removed: [...removed.value] })
+  const payload = { person: { ...person.value }, companions: companions.value.map(c => ({ ...c, name: c.name.trim() })), removed: [...removed.value] }
+  if (editing.value && locale.value !== (props.family.locale ?? null)) payload.locale = locale.value
+  emit('save', payload)
 }
 </script>
 
@@ -71,6 +79,8 @@ function submit() {
       <UiField :label="t('app.roster.fields.notes')" :hint="t('app.roster.optional')">
         <UiTextarea v-model="person.notes" :rows="2" :maxlength="500" />
       </UiField>
+
+      <GuestLocaleSelect v-if="editing" :family="{ locale }" :event-locale="eventLocale" class="!mt-4" @change="locale = $event" />
 
       <fieldset class="space-y-2">
         <legend class="text-sm font-medium text-ink-900">{{ t('app.roster.companions') }}</legend>

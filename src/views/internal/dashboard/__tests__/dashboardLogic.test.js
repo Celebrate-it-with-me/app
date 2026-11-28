@@ -255,6 +255,13 @@ describe('budgetFigures and budgetBars', () => {
     expect(budgetFigures({ cap: null, totals: { overCap: true, overBy: 9 } })).toMatchObject({ cap: null, overCap: false, overBy: 0 })
     expect(budgetFigures(null)).toMatchObject({ paid: 0, remaining: 0, cap: null, items: 0 })
   })
+
+  it('reads the paid amounts like the Presupuesto page: covered 81 %, overpaid apart, covered + left = total', async () => {
+    const { budgetFigures } = await import('../dashboardLogic')
+    const f = budgetFigures({ cap: 18000, totals: { owed: 18530, paid: 16830, remaining: 3600, overCap: true, overBy: 530 } })
+    expect(f).toMatchObject({ paid: 16830, remaining: 3600, covered: 14930, percent: 81, overpaid: 1900 })
+    expect(f.covered + f.remaining).toBe(18530)
+  })
   it('scales to the largest amount and flags paid over estimated with cents kept', async () => {
     const { budgetBars } = await import('../dashboardLogic')
     const bars = budgetBars({ categories: [{ id: 1, name: 'A', sortOrder: 2, totals: { estimated: 100, paid: 200.1 } }, { id: 2, name: 'B', sortOrder: 1, totals: { estimated: 50, paid: 0 } }] })
