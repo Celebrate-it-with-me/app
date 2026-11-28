@@ -14,7 +14,7 @@ import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { CircleCheck, LifeBuoy, Sparkles } from 'lucide-vue-next'
 import { useToast } from '@/ui'
-import { floatingBarSpace } from '@/composables/useFloatingBarSpace'
+import { floatingBarInline, floatingBarSpace } from '@/composables/useFloatingBarSpace'
 import { useHideOnScroll } from '@/composables/useHideOnScroll'
 import { useMinWidth } from '@/composables/useMinWidth'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
@@ -100,7 +100,8 @@ const compact = computed(() => isCompactRoute(route.path) || compactSession.valu
 const variant = computed(() => {
   if (view.value.kind === 'help') return 'help'
   if (view.value.kind === 'allSet') return 'calm'
-  return compact.value ? 'icon' : 'pill'
+  // Beside a fixed bar (the roster's send button) there is room for the icon only.
+  return compact.value || floatingBarInline.value > 0 ? 'icon' : 'pill'
 })
 
 let lastY = 0

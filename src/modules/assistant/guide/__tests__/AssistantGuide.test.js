@@ -231,12 +231,12 @@ describe('AssistantGuide sheet', () => {
 
 describe('AssistantGuide lifts above a fixed bottom bar', () => {
   const lift = () => q('assistant-guide').style.getPropertyValue('--assistant-lift')
-  const declareBar = height => {
+  const declareBar = (height, options) => {
     const bar = document.createElement('div')
     bar.getBoundingClientRect = () => ({ height })
     const el = ref(null)
     const scope = effectScope()
-    scope.run(() => useFloatingBarSpace(el))
+    scope.run(() => useFloatingBarSpace(el, options))
     el.value = bar
     return { el, stop: () => scope.stop() }
   }
@@ -263,6 +263,18 @@ describe('AssistantGuide lifts above a fixed bottom bar', () => {
     await nextTick()
     expect(lift()).toBe('48px')
     a.stop()
+    await nextTick()
+    expect(lift()).toBe('0px')
+  })
+
+  it('beside an inline bar (the roster send button) it takes its icon form, centred on the bar row and never lifted', async () => {
+    await mountGuide()
+    const bar = declareBar(44, { inline: true })
+    await nextTick()
+    expect(lift()).toBe('-2px')
+    expect(q('guide-trigger').getAttribute('data-variant')).not.toBe('pill')
+    expect(q('guide-trigger').className).toContain('w-12')
+    bar.stop()
     await nextTick()
     expect(lift()).toBe('0px')
   })
