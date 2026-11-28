@@ -16,7 +16,7 @@ import PaymentModal from '../components/PaymentModal.vue'
 import CapModal from '../components/CapModal.vue'
 import CategoriesModal from '../components/CategoriesModal.vue'
 import ItemSponsorsModal from '../components/ItemSponsorsModal.vue'
-import { FILTERS, coverageOf, filterCounts, filterItems, groupByCategory, itemPayload, paymentPayload } from '../utils/budget'
+import { FILTERS, coverageOf, filterCounts, filterItems, formFromItem, groupByCategory, itemPayload, paymentPayload } from '../utils/budget'
 
 const { t } = useI18n()
 const { success, error: showError, toast } = useToast()
@@ -116,12 +116,16 @@ function openPayment(item, payment = null) {
   editingPayment.value = payment
   payOpen.value = true
 }
-async function savePayment(form) {
+async function savePayment(form, newCost = null) {
   const id = event.value.id
   const payload = paymentPayload(form)
-  const ok = await run(() =>
-    editingPayment.value ? BudgetService.updatePayment(id, payItem.value.id, editingPayment.value.id, payload) : BudgetService.addPayment(id, payItem.value.id, payload)
-  )
+  const item = payItem.value
+  const ok = await run(async () => {
+    // "Aumentar el costo": the same call as editing the expense, then the payment, so it never lands past the cost.
+    if (newCost !== null) await BudgetService.updateItem(id, item.id, { ...itemPayload(formFromItem(item)), agreedCost: newCost })
+    if (editingPayment.value) await BudgetService.updatePayment(id, item.id, editingPayment.value.id, payload)
+    else await BudgetService.addPayment(id, item.id, payload)
+  })
   if (ok) payOpen.value = false
 }
 const removePayment = ({ item, payment }) => run(() => BudgetService.removePayment(event.value.id, item.id, payment.id), 'app.budget.payment.removed')
