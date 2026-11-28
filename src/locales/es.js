@@ -1408,7 +1408,7 @@ export default {
         addSponsor: 'Asignar padrino',
         changeSponsor: 'Cambiar padrino',
         viewPayments: 'Ver pagos ({n})',
-        paidOf: '{paid} de {total}',
+        paidOf: 'de {total}',
         complete: 'Completo',
         overBy: 'Pagaste {amount} de más',
         estimated: 'estimado {amount}',

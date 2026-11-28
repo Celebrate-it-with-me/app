@@ -52,7 +52,7 @@ describe('BudgetView loading', () => {
     expect(useBudgetStore().summary).toBeNull()
     expect(useBudgetStore().items).toEqual([])
     expect(padrinos.list).not.toHaveBeenCalled()
-    expect(wrapper.findComponent({ name: 'ItemCard' }).exists()).toBe(false)
+    expect(wrapper.findComponent({ name: 'ItemRow' }).exists()).toBe(false)
   })
 
   it('any other failure stays on the page and says the budget could not load', async () => {

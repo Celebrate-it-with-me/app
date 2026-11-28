@@ -10,7 +10,7 @@ import PadrinosService from '@/modules/padrinos/services/PadrinosService'
 import { useBudgetStore } from '../stores/useBudgetStore'
 import BudgetSummary from '../components/BudgetSummary.vue'
 import CategoryBars from '../components/CategoryBars.vue'
-import ItemCard from '../components/ItemCard.vue'
+import ItemRow from '../components/ItemRow.vue'
 import ItemFormModal from '../components/ItemFormModal.vue'
 import PaymentModal from '../components/PaymentModal.vue'
 import CapModal from '../components/CapModal.vue'
@@ -233,10 +233,10 @@ async function download() {
         <p v-if="!visible.length" class="mt-8 text-center text-ink-500">{{ t('app.budget.noResults') }}</p>
 
         <section v-for="group in groups" :id="`budget-group-${group.category?.id ?? 'none'}`" :key="group.category?.id ?? 'none'" class="mt-[18px] scroll-mt-4" :aria-label="group.category?.name ?? t('app.budget.uncategorized')">
-          <h2 class="font-heading text-lg text-ink-900">{{ group.category?.name ?? t('app.budget.uncategorized') }}</h2>
-          <ul class="mt-2 space-y-3">
-            <li v-for="item in group.items" :key="item.id">
-              <ItemCard
+          <h2 class="text-xs font-semibold uppercase tracking-[.06em] text-ink-500">{{ group.category?.name ?? t('app.budget.uncategorized') }}</h2>
+          <ul class="mt-1.5 overflow-hidden rounded-xl border border-line bg-white shadow-card">
+            <li v-for="item in group.items" :key="item.id" class="border-t border-black/[.06] first:border-t-0">
+              <ItemRow
                 :item="item"
                 :currency="summary.currency"
                 :can-edit="canEdit"

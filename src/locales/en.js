@@ -1408,7 +1408,7 @@ export default {
         addSponsor: 'Assign godparent',
         changeSponsor: 'Change godparent',
         viewPayments: 'View payments ({n})',
-        paidOf: '{paid} of {total}',
+        paidOf: 'of {total}',
         complete: 'Complete',
         overBy: 'You paid {amount} too much',
         estimated: 'estimate {amount}',
