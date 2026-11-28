@@ -2539,6 +2539,9 @@ export default {
     home: 'Back to home'
   },
   invitationEditor: {
+    preview: {
+      caption: 'What is saved so far'
+    },
     title: 'Your invitation',
     subtitle: 'Customize what your guests will see. Everything saves by itself.',
     loading: 'Loading your invitation…',

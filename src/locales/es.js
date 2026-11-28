@@ -2539,6 +2539,9 @@ export default {
     home: 'Volver al inicio'
   },
   invitationEditor: {
+    preview: {
+      caption: 'Así se ve lo guardado'
+    },
     title: 'Tu invitación',
     subtitle: 'Personaliza lo que verán tus invitados. Todo se guarda solo.',
     loading: 'Cargando tu invitación…',
