@@ -22,7 +22,10 @@ export function normalizeCollaborator(raw) {
     email,
     avatarUrl: raw.avatarUrl ?? raw.avatar_url ?? '',
     role,
-    status
+    status,
+    // The list does not send these yet; the row shows a date only when they arrive.
+    sentAt: raw.sentAt ?? raw.sent_at ?? null,
+    declinedAt: raw.declinedAt ?? raw.declined_at ?? null
   }
 }
 
@@ -52,6 +55,9 @@ export function rowActions(row) {
   if (row.type === 'invite') return ['resend', 'cancel']
   return [row.role === 'editor' ? 'makeViewer' : 'makeEditor', 'remove']
 }
+
+/** Open invitations the screen lists in its own section: still waiting, expired or declined. */
+export const isInvite = row => row.type === 'invite'
 
 /** Status of an invitation row worth a badge (members need none). */
 export function statusTone(status) {

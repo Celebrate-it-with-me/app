@@ -12,7 +12,6 @@ import {
   clampContext,
   errorKeyFor,
   isButtonHidden,
-  nextTucked,
   isLongField,
   planOf,
   validateMessage
@@ -123,15 +122,5 @@ describe('support texts', () => {
       expect(es.support.errors[key]).toBeTruthy()
       expect(en.support.errors[key]).toBeTruthy()
     }
-  })
-})
-
-describe('nextTucked', () => {
-  it('tucks when reading down, untucks going up or near the top, ignores jitter', () => {
-    expect(nextTucked({ tucked: false, lastY: 100, y: 200 })).toBe(true)
-    expect(nextTucked({ tucked: true, lastY: 200, y: 150 })).toBe(false)
-    expect(nextTucked({ tucked: true, lastY: 200, y: 203 })).toBe(true)
-    expect(nextTucked({ tucked: false, lastY: 200, y: 198 })).toBe(false)
-    expect(nextTucked({ tucked: true, lastY: 90, y: 20 })).toBe(false)
   })
 })

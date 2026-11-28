@@ -59,3 +59,36 @@ export function saveBlob(blob, filename) {
   link.remove()
   setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
+
+/** One grid for the table's header, rows and companion rows, so the columns line up (Invitado, Asistencia, Envío, Personas, acciones). */
+export const GUEST_GRID = 'grid grid-cols-[minmax(0,1fr)_130px_130px_80px_48px] items-center gap-x-4 pl-4 lg:pr-4 fab-safe'
+
+/** The select/radio value of a guest's language: the string 'event' stands for "follow the event" (null in the API). */
+export const localeValue = family => family.locale || 'event'
+export const localeFromValue = value => (value === 'event' ? null : value)
+
+/** The three choices of the invitation language, as `{ value, label }`. */
+export const localeOptions = (t, eventLocale) => [
+  { value: 'event', label: t('app.roster.locale.event', { lang: t(`app.roster.locale.${eventLocale || 'es'}`) }) },
+  { value: 'es', label: t('app.roster.locale.es') },
+  { value: 'en', label: t('app.roster.locale.en') }
+]
+
+/**
+ * The actions of a guest's "⋯" menu, in order, as `{ key, label, icon?, disabled?, danger?, separator? }`. Both the desktop
+ * menu and the phone sheet are built from this list; `key` is what the screen reacts to.
+ */
+export function guestMenuEntries(family, { canEdit, t }) {
+  const answered = family.status !== 'pending' || family.companions.some(c => c.status !== 'pending')
+  const list = []
+  if (canEdit) {
+    list.push({ key: 'edit', label: t('app.roster.menu.edit') }, { key: 'locale', label: t('app.roster.locale.label') })
+  }
+  list.push({ key: 'send', label: t('app.roster.menu.send'), disabled: !family.link }, { key: 'copy', label: t('app.roster.menu.copy'), disabled: !family.link })
+  if (canEdit) {
+    list.push({ key: 'confirm', label: t('app.roster.menu.confirm') })
+    if (answered) list.push({ key: 'revert', label: t('app.roster.menu.revert') })
+    list.push({ key: 'remove', label: t('app.roster.menu.remove'), danger: true, separator: true })
+  }
+  return list
+}

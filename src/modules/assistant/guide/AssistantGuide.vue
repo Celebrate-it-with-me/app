@@ -5,7 +5,7 @@
  * shell mounts it: never the public invitation, the admin or a support (impersonation) session.
  *
  * Quiet by design: it never opens by itself (one small welcome bubble, once), the pink dot goes out once the step was seen,
- * and on work screens, while reading down the page or when she asks ("Ocultar por hoy") it shrinks to an icon.
+ * and it is always a 48 px icon (the column every page keeps free, `fab-safe`), never a wide pill that could cover a control.
  * Without a usable plan (loading, error, other event types, viewers) it is just the help icon.
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -15,10 +15,12 @@ import { storeToRefs } from 'pinia'
 import { CircleCheck, LifeBuoy, Sparkles } from 'lucide-vue-next'
 import { useToast } from '@/ui'
 import { floatingBarSpace } from '@/composables/useFloatingBarSpace'
+import { useHideOnScroll } from '@/composables/useHideOnScroll'
+import { useMinWidth } from '@/composables/useMinWidth'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
 import SupportSheet from '@/modules/support/components/SupportSheet.vue'
-import { isButtonHidden, nextTucked } from '@/modules/support/utils/supportContext'
+import { isButtonHidden } from '@/modules/support/utils/supportContext'
 import { useAssistantStore } from '../stores/useAssistantStore'
 import { resolveTaskRoute } from '../utils/assistant'
 import AssistantGuideSheet from './AssistantGuideSheet.vue'
@@ -28,11 +30,9 @@ import {
   getSeenKey,
   guideView,
   hasNewDot,
-  isCompactForSession,
-  isCompactRoute,
+  isGuideHiddenRoute,
   isHelpOnlyRoute,
   markWelcomed,
-  setCompactForSession,
   setSeenKey,
   toneFor,
   wasWelcomed
@@ -56,6 +56,7 @@ const tone = computed(() => toneFor(eventsStore.eventTypes.find(type => type.id 
 // that route), so it never covers the blocks of the page at any width. Without the dock (tests, other shells) it floats.
 const HELP_DOCK_ID = 'shell-help-dock'
 const dockEl = ref(null)
+const routeHidden = computed(() => isGuideHiddenRoute(route.path))
 const findDock = () => (dockEl.value = isHelpOnlyRoute(route.path) ? document.getElementById(HELP_DOCK_ID) : null)
 
 const view = computed(() => {
@@ -92,21 +93,15 @@ const showDot = computed(() => hasNewDot(view.value, seenKey.value))
 // ---- how it looks -----------------------------------------------------------------------------------------------
 const guideOpen = ref(false)
 const supportOpen = ref(false)
-const compactSession = ref(isCompactForSession())
-const tucked = ref(false)
-const compact = computed(() => isCompactRoute(route.path) || compactSession.value || tucked.value)
+// Always a 48 px icon (the column the page keeps free, see `fab-safe` in style.css): the help icon, the calm check or the sparkle.
 const variant = computed(() => {
   if (view.value.kind === 'help') return 'help'
   if (view.value.kind === 'allSet') return 'calm'
-  return compact.value ? 'icon' : 'pill'
+  return 'icon'
 })
 
-let lastY = 0
 const onScroll = () => {
   if (welcome.value) dismissWelcome() // reading down the page is an answer: the bubble goes
-  const y = window.scrollY
-  tucked.value = nextTucked({ tucked: tucked.value, lastY, y })
-  lastY = y
 }
 
 // Another modal, or a long field with the focus, makes it step aside (the save button must stay reachable).
@@ -125,6 +120,15 @@ const WELCOME_MS = 6000
 const welcome = ref(false)
 let welcomeTimer
 let welcomeHide
+
+const floatingEl = ref(null)
+// On phones (< 768 px) the floating button steps out of the way while she reads down the page and returns on the way up.
+const isWide = useMinWidth(768)
+const focusInside = computed(() => Boolean(focusedElement.value && floatingEl.value?.contains(focusedElement.value)))
+const scrollHidden = useHideOnScroll({
+  enabled: () => !isWide.value,
+  keepVisible: () => ownOpen.value || welcome.value || focusInside.value
+})
 
 /** True when the bubble, drawn above the trigger, would cover something she can press or type in (a CTA, a filter, a field). */
 const welcomeCoversControl = () => {
@@ -150,10 +154,10 @@ const welcomeCoversText = overlaps => {
   return false
 }
 const scheduleWelcome = () => {
-  if (welcome.value || wasWelcomed() || variant.value !== 'pill' || !showDot.value) return
+  if (routeHidden.value || welcome.value || wasWelcomed() || variant.value !== 'icon' || !showDot.value) return
   clearTimeout(welcomeTimer)
   welcomeTimer = setTimeout(() => {
-    if (variant.value !== 'pill' || ownOpen.value) return
+    if (variant.value !== 'icon' || ownOpen.value) return
     // Over a control it would hide it: not now, and it is not spent, so a calmer screen can still show it.
     if (welcomeCoversControl()) return
     welcome.value = true
@@ -173,7 +177,6 @@ const dismissWelcome = () => {
 let observer
 onMounted(() => {
   findDock()
-  lastY = window.scrollY
   window.addEventListener('scroll', onScroll, { passive: true })
   document.addEventListener('focusin', onFocusIn)
   document.addEventListener('focusout', onFocusOut)
@@ -225,13 +228,6 @@ const openHelp = async () => {
   await nextTick()
   supportOpen.value = true
 }
-const hideToday = () => {
-  compactSession.value = true
-  setCompactForSession(true)
-  guideOpen.value = false
-  success(t('assistantGuide.hiddenToast'))
-  focusTrigger()
-}
 
 // ---- acting -----------------------------------------------------------------------------------------------------
 const busy = computed(() => view.value.kind === 'task' && store.isBusy(view.value.task.key))
@@ -282,7 +278,7 @@ const countdown = computed(() => countdownOf(next.value))
 </script>
 
 <template>
-  <div v-if="!impersonation.active">
+  <div v-if="!impersonation.active && !routeHidden">
     <Teleport v-if="dockEl" :to="dockEl">
       <button
         ref="triggerRef"
@@ -307,8 +303,12 @@ const countdown = computed(() => countdownOf(next.value))
       leave-to-class="translate-y-2 opacity-0"
     >
       <div
+        ref="floatingEl"
         v-show="!hidden"
-        class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px)+var(--assistant-lift,0px))] z-40 flex flex-col items-end gap-2 transition-[bottom] duration-200 ease-out motion-reduce:transition-none lg:bottom-[calc(1.5rem+var(--assistant-lift,0px))] lg:right-6"
+        :inert="scrollHidden || undefined"
+        :aria-hidden="scrollHidden ? 'true' : undefined"
+        class="fixed right-(--assistant-fab-edge) bottom-[calc(5rem+env(safe-area-inset-bottom,0px)+var(--assistant-lift,0px))] z-40 flex flex-col items-end gap-2 transition-[bottom,translate,opacity] duration-200 ease-out motion-reduce:transition-none lg:bottom-[calc(1.5rem+var(--assistant-lift,0px))]"
+        :class="scrollHidden ? 'pointer-events-none translate-y-[calc(100%+6rem)] opacity-0 motion-reduce:translate-y-0' : ''"
         :style="{ '--assistant-lift': `${floatingBarSpace}px` }"
         data-testid="assistant-guide"
         :data-variant="variant"
@@ -342,7 +342,7 @@ const countdown = computed(() => countdownOf(next.value))
           aria-haspopup="dialog"
           class="relative flex h-12 items-center justify-center gap-2 rounded-full border text-sm font-semibold shadow-pop transition-[opacity,translate,background-color] duration-200 ease-out hover:bg-rose-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 active:bg-rose-100 motion-reduce:transition-none"
           :class="[
-            variant === 'pill' ? 'max-w-[calc(100vw-2rem)] border-rose-200 bg-white pl-4 pr-5 text-rose-700' : 'w-12 shrink-0',
+            'w-12 shrink-0',
             variant === 'calm' ? 'border-line bg-cream-50 text-success-700' : variant === 'help' ? 'border-rose-600 bg-rose-600 text-white hover:bg-rose-700 active:bg-rose-800' : 'border-rose-200 bg-white text-rose-700'
           ]"
           @click="onTrigger"
@@ -350,7 +350,6 @@ const countdown = computed(() => countdownOf(next.value))
           <LifeBuoy v-if="variant === 'help'" class="h-5 w-5 shrink-0" aria-hidden="true" />
           <CircleCheck v-else-if="variant === 'calm'" class="h-5 w-5 shrink-0" aria-hidden="true" />
           <Sparkles v-else class="h-5 w-5 shrink-0 text-gold-500" aria-hidden="true" />
-          <span v-if="variant === 'pill'" class="truncate">{{ t('assistantGuide.pill.label') }}</span>
           <span v-if="showDot" class="absolute -right-0.5 -top-0.5 h-3.5 w-3.5" data-testid="guide-dot" aria-hidden="true">
             <!-- A soft ring that grows and fades (transform + opacity only); with reduced motion only the still dot is left. -->
             <span class="guide-pulse absolute inset-0 rounded-full bg-rose-500 motion-reduce:hidden" data-testid="guide-pulse"></span>
@@ -376,7 +375,6 @@ const countdown = computed(() => countdownOf(next.value))
       @done="markDone"
       @snooze="snooze"
       @help="openHelp"
-      @hide="hideToday"
       @close-focus="focusTrigger"
     />
     <SupportSheet v-model:open="supportOpen" />

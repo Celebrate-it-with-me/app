@@ -3,12 +3,13 @@
  * "Actividad reciente": the latest entries of `GET dashboard-logs` (the API sends up to 10; the Inicio draws `max`), each
  * with the initials of who it is about, the sentence in the app's language and "hace…".
  */
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { History } from 'lucide-vue-next'
 import { UiAvatar, UiEmptyState, UiSkeleton } from '@/ui'
 import DashboardBlock from './DashboardBlock.vue'
 import DashboardCard from './DashboardCard.vue'
+import { useMinWidth } from '@/composables/useMinWidth'
 import { activitySentence, activityTime, activityWho, readableActivity } from './dashboardLogic'
 
 const props = defineProps({
@@ -23,9 +24,14 @@ const props = defineProps({
 defineEmits(['retry'])
 
 const { t, locale } = useI18n()
+// A phone shows the first 3 and a "Ver todo" that opens the rest in place (there is no full activity screen).
+const PHONE_LIMIT = 3
+const wide = useMinWidth(640)
+const expanded = ref(false)
+const all = computed(() => readableActivity(props.activity ?? []).slice(0, props.max))
+const collapsible = computed(() => !wide.value && all.value.length > PHONE_LIMIT)
 const items = computed(() =>
-  readableActivity(props.activity ?? [])
-    .slice(0, props.max)
+  (collapsible.value && !expanded.value ? all.value.slice(0, PHONE_LIMIT) : all.value)
     .map(item => ({ id: item.id, who: activityWho(item), text: activitySentence(item, t), when: activityTime(item, locale.value, props.now ?? new Date()), at: item.occurredAt ?? '' }))
 )
 </script>
@@ -58,6 +64,16 @@ const items = computed(() =>
           </div>
         </li>
       </ul>
+      <button
+        v-if="collapsible"
+        type="button"
+        class="mt-2 inline-flex min-h-11 items-center rounded-md px-2 text-sm font-semibold text-rose-700 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-700"
+        :aria-expanded="expanded"
+        data-testid="activity-toggle"
+        @click="expanded = !expanded"
+      >
+        {{ t(expanded ? 'app.dashboard.feed.showLess' : 'app.dashboard.feed.viewAll') }}
+      </button>
     </DashboardBlock>
   </DashboardCard>
 </template>

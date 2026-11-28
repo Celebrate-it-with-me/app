@@ -26,7 +26,7 @@ const props = defineProps({
   busy: { type: Boolean, default: false },
   celebrating: { type: Boolean, default: false }
 })
-const emit = defineEmits(['update:open', 'go', 'done', 'snooze', 'help', 'hide', 'close-focus'])
+const emit = defineEmits(['update:open', 'go', 'done', 'snooze', 'help', 'close-focus'])
 
 const { t } = useI18n()
 const kind = computed(() => props.view.kind)
@@ -173,15 +173,6 @@ const showProgress = computed(() => (kind.value === 'task' || kind.value === 'al
           >
             <LifeBuoy class="h-4 w-4" aria-hidden="true" />
             {{ t('assistantGuide.help') }}
-          </button>
-          <button
-            v-if="kind !== 'help'"
-            type="button"
-            class="inline-flex min-h-11 items-center text-sm text-ink-500 underline-offset-4 hover:text-ink-900 hover:underline"
-            data-testid="guide-hide"
-            @click="emit('hide')"
-          >
-            {{ t('assistantGuide.hideToday') }}
           </button>
         </div>
         <div class="pb-[env(safe-area-inset-bottom,0px)]" />

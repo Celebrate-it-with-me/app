@@ -24,6 +24,46 @@ export const PALETTE = [
   { key: 'champagne', hex: '#ead9b8' }
 ]
 
+const HEX = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i
+
+/**
+ * One spelling for every colour: `#RRGGBB` in capitals. Accepts a missing `#`, `#RGB` and stray spaces; anything that is
+ * not a colour gives null. Saved data reached the API as `#FFFFFF` while the palette holds `#ffffff`, so every comparison
+ * (pressed swatch, name of a chip, the other group) goes through here.
+ */
+export function normalizeHex(value) {
+  const match = HEX.exec(String(value ?? '').trim())
+  if (!match) return null
+  const digits = match[1].toUpperCase()
+  return `#${digits.length === 3 ? [...digits].map(c => c + c).join('') : digits}`
+}
+
+/** Normalised colours of a list: junk dropped, repeats removed, order kept. */
+export function normalizeColors(list) {
+  const seen = new Set()
+  return (Array.isArray(list) ? list : []).map(normalizeHex).filter(hex => hex && !seen.has(hex) && seen.add(hex))
+}
+
+/** Palette key (`white`, `fuchsia`...) of a colour, or null when it is a custom one. */
+export const paletteKey = value => {
+  const hex = normalizeHex(value)
+  return hex ? (PALETTE.find(p => normalizeHex(p.hex) === hex)?.key ?? null) : null
+}
+
+/** Name of a palette colour in the current language, or null for a custom one. `t` is vue-i18n's. */
+export const paletteName = (value, t) => {
+  const key = paletteKey(value)
+  return key ? t(`app.dressCode.palette.${key}`) : null
+}
+
+/** True when white text would not read on this colour (a check mark on it must be dark). */
+export function isLightColor(value) {
+  const hex = normalizeHex(value)
+  if (!hex) return false
+  const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16))
+  return 0.299 * r + 0.587 * g + 0.114 * b > 160
+}
+
 export const emptyForm = () => ({
   dressCodeType: '',
   description: '',
@@ -35,8 +75,8 @@ export function formFromApi(data) {
   return {
     dressCodeType: data?.dressCodeType ?? '',
     description: data?.description ?? '',
-    reservedColors: [...(data?.reservedColors ?? [])],
-    suggestedColors: [...(data?.suggestedColors ?? [])]
+    reservedColors: normalizeColors(data?.reservedColors),
+    suggestedColors: normalizeColors(data?.suggestedColors)
   }
 }
 
@@ -73,8 +113,8 @@ export function buildFormData(form, { keepImageIds = [], bankImages = [], files 
   const body = new FormData()
   body.append('dressCodeType', form.dressCodeType)
   body.append('description', form.description ?? '')
-  form.reservedColors.forEach(color => body.append('reservedColors[]', color))
-  form.suggestedColors.forEach(color => body.append('suggestedColors[]', color))
+  normalizeColors(form.reservedColors).forEach(color => body.append('reservedColors[]', color))
+  normalizeColors(form.suggestedColors).forEach(color => body.append('suggestedColors[]', color))
   keepImageIds.forEach(id => body.append('keepImageIds[]', String(id)))
   bankImages.forEach(key => body.append('bankImages[]', key))
   files.forEach(file => body.append('dressCodeImages[]', file))

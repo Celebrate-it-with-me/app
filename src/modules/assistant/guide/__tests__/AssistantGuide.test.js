@@ -31,7 +31,7 @@ const ROUTES = [
 
 let wrapper
 let router
-async function mountGuide({ userRole = 'owner', path = '/dashboard/budget', next = NEXT, slug = 'quinceanera', dock = false } = {}) {
+async function mountGuide({ userRole = 'owner', path = '/dashboard/events', next = NEXT, slug = 'quinceanera', dock = false } = {}) {
   if (dock) document.body.insertAdjacentHTML('beforeend', '<header><div id="shell-help-dock"></div></header>')
   const pinia = createPinia()
   createApp({}).use(pinia)
@@ -85,24 +85,52 @@ describe('AssistantGuide on the Inicio', () => {
   })
   it('floats again once it leaves the Inicio, even with the dock in the page', async () => {
     await mountGuide({ path: '/dashboard', dock: true })
-    await router.push('/dashboard/budget')
+    await router.push('/dashboard/events')
     await flushPromises()
     expect(trigger().dataset.docked).toBeUndefined()
     expect(q('assistant-guide')).not.toBeNull()
   })
-  it('comes back as the pill on the other screens', async () => {
+  it('comes back as the 48 px icon on the other screens', async () => {
     await mountGuide({ path: '/dashboard' })
-    await router.push('/dashboard/budget')
+    await router.push('/dashboard/events')
     await flushPromises()
-    expect(trigger().dataset.variant).toBe('pill')
+    expect(trigger().dataset.variant).toBe('icon')
+    expect(trigger().className).toContain('w-12')
   })
 })
 
-describe('AssistantGuide pill', () => {
-  it('shows the pill with the pink dot for an unseen step', async () => {
+describe('AssistantGuide in Mi cuenta', () => {
+  it('is not in the DOM on any /settings page: no button, badge, status or welcome bubble', async () => {
+    vi.useFakeTimers()
+    try {
+      await mountGuide({ path: '/settings/profile' })
+      await vi.advanceTimersByTimeAsync(3000)
+      expect(trigger()).toBeNull()
+      expect(q('assistant-guide')).toBeNull()
+      expect(q('guide-dot')).toBeNull()
+      expect(document.body.textContent).not.toContain('Tu siguiente paso')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+  it('comes back when the person leaves Mi cuenta, and goes away again on the way in', async () => {
+    await mountGuide({ path: '/settings/security' })
+    expect(trigger()).toBeNull()
+    await router.push('/dashboard/budget')
+    await flushPromises()
+    expect(trigger()).not.toBeNull()
+    await router.push('/settings/preferences')
+    await flushPromises()
+    expect(trigger()).toBeNull()
+  })
+})
+
+describe('AssistantGuide icon', () => {
+  it('shows the icon with the pink dot for an unseen step', async () => {
     await mountGuide()
-    expect(trigger().dataset.variant).toBe('pill')
-    expect(trigger().textContent).toContain('Tu siguiente paso')
+    expect(trigger().dataset.variant).toBe('icon')
+    expect(trigger().textContent).not.toContain('Tu siguiente paso')
+    expect(trigger().getAttribute('aria-label')).toContain('Tu siguiente paso')
     expect(q('guide-dot')).not.toBeNull()
   })
 
@@ -115,8 +143,8 @@ describe('AssistantGuide pill', () => {
     expect(q('guide-pulse')).toBeNull()
   })
 
-  it('shrinks to an icon on work screens', async () => {
-    await mountGuide({ path: '/dashboard/invitation' })
+  it.each(['/dashboard/invitation', '/dashboard/events', '/dashboard/seating'])('is the same icon on %s', async path => {
+    await mountGuide({ path })
     expect(trigger().dataset.variant).toBe('icon')
     expect(trigger().textContent).not.toContain('Tu siguiente paso')
   })
@@ -203,15 +231,6 @@ describe('AssistantGuide sheet', () => {
     expect(q('guide-title').textContent).toContain('Tarea b')
   })
 
-  it('"Ocultar por hoy" shrinks the pill for the session', async () => {
-    await mountGuide()
-    await open()
-    q('guide-hide').click()
-    await flushPromises()
-    expect(trigger().dataset.variant).toBe('icon')
-    expect(sessionStorage.getItem('quinvite:guide:compact')).toBe('1')
-  })
-
   it('"¿Necesitas ayuda?" opens the support sheet and sends the message', async () => {
     await mountGuide()
     await open()
@@ -231,12 +250,12 @@ describe('AssistantGuide sheet', () => {
 
 describe('AssistantGuide lifts above a fixed bottom bar', () => {
   const lift = () => q('assistant-guide').style.getPropertyValue('--assistant-lift')
-  const declareBar = height => {
+  const declareBar = (height, options) => {
     const bar = document.createElement('div')
     bar.getBoundingClientRect = () => ({ height })
     const el = ref(null)
     const scope = effectScope()
-    scope.run(() => useFloatingBarSpace(el))
+    scope.run(() => useFloatingBarSpace(el, options))
     el.value = bar
     return { el, stop: () => scope.stop() }
   }
@@ -267,10 +286,22 @@ describe('AssistantGuide lifts above a fixed bottom bar', () => {
     expect(lift()).toBe('0px')
   })
 
+  it('beside an inline bar (the roster send button) it takes its icon form, centred on the bar row and never lifted', async () => {
+    await mountGuide()
+    const bar = declareBar(44, { inline: true })
+    await nextTick()
+    expect(lift()).toBe('-2px')
+    expect(q('guide-trigger').getAttribute('data-variant')).toBe('icon')
+    expect(q('guide-trigger').className).toContain('w-12')
+    bar.stop()
+    await nextTick()
+    expect(lift()).toBe('0px')
+  })
+
   it('animates the move and keeps the safe area in its base offset', async () => {
     await mountGuide()
     const cls = q('assistant-guide').className
-    expect(cls).toContain('transition-[bottom]')
+    expect(cls).toContain('transition-[bottom,translate,opacity]')
     expect(cls).toContain('motion-reduce:transition-none')
     expect(cls).toContain('env(safe-area-inset-bottom')
     expect(cls).toContain('var(--assistant-lift')
@@ -294,6 +325,14 @@ describe('AssistantGuide welcome bubble (ORG-027)', () => {
     await settle(5000)
     expect(welcome()).not.toBeNull()
     await settle(1000)
+    expect(welcome()).toBeNull()
+  })
+
+  it('does not appear if she already opened the guide before it was time', async () => {
+    await mountGuide()
+    await settle(500)
+    trigger().click()
+    await settle(1500)
     expect(welcome()).toBeNull()
   })
 
@@ -347,5 +386,64 @@ describe('AssistantGuide welcome bubble (ORG-027)', () => {
     expect(lines).toHaveBeenCalled()
     trigger.mockRestore()
     delete Range.prototype.getClientRects
+  })
+})
+
+describe('AssistantGuide: hides while scrolling down on phones', () => {
+  const phone = wide => {
+    window.matchMedia = vi.fn(() => ({ matches: wide, addEventListener: vi.fn(), removeEventListener: vi.fn() }))
+  }
+  const scrollTo = async y => {
+    Object.defineProperty(window, 'scrollY', { value: y, configurable: true })
+    window.dispatchEvent(new Event('scroll'))
+    await new Promise(r => setTimeout(r, 40))
+    await nextTick()
+  }
+  const box = () => q('assistant-guide')
+  beforeEach(() => {
+    Object.defineProperty(document.documentElement, 'scrollHeight', { value: 5000, configurable: true })
+    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true })
+  })
+  afterEach(() => {
+    delete window.matchMedia
+    Object.defineProperty(window, 'scrollY', { value: 0, configurable: true })
+  })
+
+  it('goes out inert and aria-hidden when scrolling down, and returns scrolling up', async () => {
+    phone(false)
+    await mountGuide()
+    expect(box().hasAttribute('inert')).toBe(false)
+    await scrollTo(400)
+    expect(box().hasAttribute('inert')).toBe(true)
+    expect(box().getAttribute('aria-hidden')).toBe('true')
+    expect(box().className).toContain('opacity-0')
+    expect(box().className).toContain('pointer-events-none')
+    await scrollTo(300)
+    expect(box().hasAttribute('inert')).toBe(false)
+    expect(box().getAttribute('aria-hidden')).toBeNull()
+  })
+
+  it('never hides from 768 px up', async () => {
+    phone(true)
+    await mountGuide()
+    await scrollTo(400)
+    expect(box().hasAttribute('inert')).toBe(false)
+    expect(box().className).not.toContain('opacity-0')
+  })
+
+  it('stays visible while its sheet is open or the focus is inside', async () => {
+    phone(false)
+    await mountGuide()
+    trigger().focus()
+    await scrollTo(400)
+    expect(box().hasAttribute('inert')).toBe(false)
+    trigger().blur()
+    await nextTick()
+    await scrollTo(800)
+    expect(box().hasAttribute('inert')).toBe(true)
+    await scrollTo(700)
+    await open()
+    await scrollTo(1200)
+    expect(box().hasAttribute('inert')).toBe(false)
   })
 })

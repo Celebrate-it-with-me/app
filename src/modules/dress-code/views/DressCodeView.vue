@@ -1,11 +1,13 @@
 <script setup>
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ImagePlus, X } from 'lucide-vue-next'
 import { UiPageHeader, UiCard, UiField, UiTextarea, UiButton, UiSkeleton, UiModal, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import DressCodeService from '../services/DressCodeService'
+import { useFloatingBarSpace } from '@/composables/useFloatingBarSpace'
 import DressCodeColors from '../components/DressCodeColors.vue'
+import DressCodePreview from '../components/DressCodePreview.vue'
 import {
   TYPES,
   MAX_IMAGES,
@@ -15,7 +17,8 @@ import {
   bankFor,
   bankUrl,
   fileProblem,
-  buildFormData
+  buildFormData,
+  normalizeColors
 } from '../utils/dressCodeForm'
 
 const { t } = useI18n()
@@ -58,11 +61,28 @@ const guestImages = computed(() => [
   ...files.value.map((f, i) => ({ id: `f${i}`, url: filePreview(f) }))
 ])
 
+// Phones: the save bar sits above the bottom navigation, with the assistant's icon on its right.
+const saveBar = ref(null)
+useFloatingBarSpace(saveBar, { inline: true })
+
+// The indications grow with their text (no inner scroll).
+const descBox = ref(null)
+function fitDescription() {
+  const el = descBox.value?.querySelector('textarea')
+  if (!el) return
+  el.style.height = 'auto'
+  el.style.height = `${el.scrollHeight + (el.offsetHeight - el.clientHeight)}px`
+}
+watch(() => form.value.description, () => nextTick(fitDescription))
+watch(loading, value => value || nextTick(fitDescription))
+onMounted(() => window.addEventListener('resize', fitDescription))
+onBeforeUnmount(() => window.removeEventListener('resize', fitDescription))
+
+// Dirty = different from what was last saved (colours compared in their normalised spelling).
 const dirty = computed(() => {
   const base = formFromApi(saved.value)
-  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b)
+  const same = (a, b) => JSON.stringify(normalizeColors(a)) === JSON.stringify(normalizeColors(b))
   return (
-    !saved.value?.id ||
     base.dressCodeType !== form.value.dressCodeType ||
     base.description !== form.value.description ||
     !same(base.reservedColors, form.value.reservedColors) ||
@@ -172,27 +192,35 @@ async function remove() {
       <UiSkeleton class="h-56" />
     </div>
 
-    <div v-else class="mt-6">
-      <form class="space-y-6" novalidate @submit.prevent="save">
+    <div v-else class="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+      <form class="min-w-0 space-y-6" novalidate @submit.prevent="save">
         <UiCard :title="t('app.dressCode.styleTitle')" heading-level="h2">
           <fieldset :disabled="!canEdit">
             <legend class="sr-only">{{ t('app.dressCode.styleTitle') }}</legend>
-            <div class="grid gap-3 sm:grid-cols-2">
+            <div class="grid grid-cols-2 gap-2 sm:gap-3">
               <label
                 v-for="type in TYPES"
                 :key="type"
-                class="flex cursor-pointer flex-col rounded-xl border p-3 transition-colors focus-within:ring-2 focus-within:ring-rose-600"
+                class="flex min-h-[52px] cursor-pointer flex-col items-center justify-center rounded-xl border px-2 py-2.5 text-center transition-colors sm:items-start sm:justify-start sm:p-3 sm:text-left focus-within:ring-2 focus-within:ring-rose-600"
                 :class="form.dressCodeType === type ? 'border-rose-600 bg-rose-50' : 'border-line-strong bg-white hover:border-rose-300'"
               >
                 <input v-model="form.dressCodeType" type="radio" name="dress-type" :value="type" class="sr-only" />
                 <span class="font-medium text-ink-900">{{ t(`app.dressCode.types.${type}.name`) }}</span>
-                <span class="mt-0.5 text-sm text-ink-500">{{ t(`app.dressCode.types.${type}.hint`) }}</span>
+                <span class="mt-0.5 hidden text-sm text-ink-500 sm:block">{{ t(`app.dressCode.types.${type}.hint`) }}</span>
               </label>
             </div>
+            <p class="mt-2.5 text-sm text-ink-500 sm:hidden" aria-live="polite" data-testid="dress-type-hint">
+              <template v-if="form.dressCodeType">
+                <b class="text-ink-900">{{ t(`app.dressCode.types.${form.dressCodeType}.name`) }}:</b>
+                {{ t(`app.dressCode.types.${form.dressCodeType}.hint`) }}
+              </template>
+            </p>
             <p v-if="typeError" class="mt-2 text-sm text-danger-700" role="alert">{{ typeError }}</p>
 
             <UiField class="mt-5" :label="t('app.dressCode.description')" :hint="t('app.dressCode.descriptionHint')">
-              <UiTextarea v-model="form.description" :rows="3" :maxlength="DESCRIPTION_MAX" />
+              <div ref="descBox">
+                <UiTextarea v-model="form.description" :rows="3" :maxlength="DESCRIPTION_MAX" class="min-h-[5.5rem] resize-none overflow-hidden pb-7!" />
+              </div>
             </UiField>
           </fieldset>
         </UiCard>
@@ -201,15 +229,21 @@ async function remove() {
           <div class="space-y-6">
             <DressCodeColors
               v-model="form.reservedColors"
+              :other-colors="form.suggestedColors"
               :disabled="!canEdit"
               :label="t('app.dressCode.reserved')"
               :hint="t(isQuince ? 'app.dressCode.reservedHintQuince' : 'app.dressCode.reservedHintWedding')"
+              :sheet-title="t('app.dressCode.addReservedTitle')"
+              :blocked-reason="t('app.dressCode.inSuggested')"
             />
             <DressCodeColors
               v-model="form.suggestedColors"
+              :other-colors="form.reservedColors"
               :disabled="!canEdit"
               :label="t('app.dressCode.suggested')"
               :hint="t('app.dressCode.suggestedHint')"
+              :sheet-title="t('app.dressCode.addSuggestedTitle')"
+              :blocked-reason="t('app.dressCode.inReserved')"
             />
           </div>
         </UiCard>
@@ -284,15 +318,41 @@ async function remove() {
           </div>
         </UiCard>
 
-        <div v-if="canEdit" class="flex flex-wrap items-center gap-3">
-          <UiButton type="submit" :loading="saving" :disabled="!dirty">{{ t('app.dressCode.save') }}</UiButton>
-          <UiButton v-if="saved?.id" variant="ghost" :disabled="saving" @click="confirmDelete = true">
-            {{ t('app.dressCode.remove') }}
-          </UiButton>
+        <div v-if="canEdit" class="hidden items-center gap-3 md:flex" data-testid="dress-save-row">
+          <UiButton v-if="dirty" type="submit" :loading="saving">{{ t('app.dressCode.save') }}</UiButton>
+          <span v-else class="text-sm text-ink-500" data-testid="dress-saved">&#10003; {{ t('app.dressCode.allSaved') }}</span>
         </div>
         <p v-else class="text-sm text-ink-500">{{ t('app.dressCode.readOnly') }}</p>
+
+        <div v-if="canEdit && saved?.id" class="text-center">
+          <button
+            type="button"
+            class="min-h-[44px] px-3 text-[13px] font-semibold text-danger-700 hover:underline focus-visible:outline-2 focus-visible:outline-rose-600 disabled:opacity-60"
+            :disabled="saving"
+            data-testid="dress-remove"
+            @click="confirmDelete = true"
+          >
+            {{ t('app.dressCode.remove') }}
+          </button>
+        </div>
       </form>
 
+      <aside class="sticky top-[88px] hidden lg:block" data-testid="dress-aside">
+        <DressCodePreview :type="form.dressCodeType" :description="form.description" :reserved="form.reservedColors" :suggested="form.suggestedColors" />
+      </aside>
+
+    </div>
+
+    <div
+      v-if="canEdit && !loading"
+      ref="saveBar"
+      class="fixed bottom-[calc(76px+env(safe-area-inset-bottom,0px))] left-4 right-[4.5rem] z-20 flex items-center justify-between gap-3 rounded-[14px] border border-cream-200 bg-white px-3 py-2.5 shadow-card md:hidden"
+      data-testid="dress-save-bar"
+    >
+      <span class="min-w-0 text-[13px] leading-tight" :class="dirty ? 'text-ink-900' : 'text-ink-500'">
+        {{ dirty ? t('app.dressCode.unsaved') : `\u2713 ${t('app.dressCode.allSaved')}` }}
+      </span>
+      <UiButton :loading="saving" :disabled="!dirty" class="h-10 px-[18px]" @click="save">{{ t('app.dressCode.saveShort') }}</UiButton>
     </div>
 
     <UiModal v-model:open="confirmDelete" :title="t('app.dressCode.removeTitle')" size="sm">

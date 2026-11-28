@@ -7,6 +7,8 @@ export const MAX_YEAR = 2100
 /** UiSelect cannot hold an empty-string option, so "all years" travels as this sentinel. */
 export const ALL_YEARS = 'all'
 export const SORTS = ['newest', 'oldest']
+/** Filters show up only once the album is big enough to need them. */
+export const FILTERS_MIN = 6
 
 /** Returns null when the file is fine, otherwise an error code: 'type' | 'size'. */
 export function validateFile(file) {
@@ -84,10 +86,11 @@ export function availableYears(memories) {
   return [...years].sort((a, b) => b - a)
 }
 
-export function filterMemories(memories, { search = '', year = ALL_YEARS } = {}) {
+export function filterMemories(memories, { search = '', year = ALL_YEARS, hiddenOnly = false } = {}) {
   const q = String(search).trim().toLowerCase()
   return memories.filter(m => {
     if (year !== ALL_YEARS && String(m.year) !== String(year)) return false
+    if (hiddenOnly && m.visible) return false
     if (!q) return true
     return (
       String(m.title ?? '').toLowerCase().includes(q) ||
@@ -111,6 +114,18 @@ export function sortMemories(memories, order = 'newest') {
       return a.i - b.i
     })
     .map(x => x.m)
+}
+
+/** Groups an already sorted list into consecutive year sections: [{ year: number|null, items }]. */
+export function groupByYear(memories) {
+  const groups = []
+  for (const m of memories) {
+    const year = Number(m.year) || null
+    const last = groups[groups.length - 1]
+    if (last && last.year === year) last.items.push(m)
+    else groups.push({ year, items: [m] })
+  }
+  return groups
 }
 
 export function memoryStats(memories) {

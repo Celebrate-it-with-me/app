@@ -67,3 +67,36 @@ export function chosenName(value) {
 export function totalPages(meta) {
   return Math.max(1, Number(meta?.last_page) || 1)
 }
+
+/** Filters of the guests list; the API takes `status=pending|chosen` and no `status` at all for everyone. */
+export const GUEST_FILTERS = ['all', 'pending', 'chosen']
+
+/** Query `status` for a filter: `all` sends nothing. */
+export function statusParam(filter) {
+  return filter === 'pending' || filter === 'chosen' ? filter : undefined
+}
+
+/** Counts of the filter chips from the summary (`total` / `pending` / `responded`); null while it is not there. */
+export function filterCount(summary, filter) {
+  if (!summary) return null
+  const key = { all: 'total', pending: 'pending', chosen: 'responded' }[filter]
+  return Number(summary[key]) || 0
+}
+
+/** Share of the guests who already chose, 0-100. */
+export function respondedPercent(summary) {
+  const total = Number(summary?.total) || 0
+  if (!total) return 0
+  return Math.min(100, Math.round(((Number(summary.responded) || 0) / total) * 100))
+}
+
+/** How many guests chose one menu (0 when the summary does not list it); null while the summary is not there. */
+export function menuChosenCount(summary, menuId) {
+  if (!summary) return null
+  return Number(summary.menus?.find(m => +m.menuId === +menuId)?.count) || 0
+}
+
+/** Dishes of one course, most chosen first (the API already sorts them; this keeps it so for any answer). */
+export function courseRows(summary, type) {
+  return [...(summary?.courses?.[type] ?? [])].sort((a, b) => b.count - a.count || String(a.name).localeCompare(String(b.name)))
+}

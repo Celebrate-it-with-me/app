@@ -224,6 +224,42 @@ describe('InvitationEditorView', () => {
     expect(wrapper.get('[data-section=program] [data-testid=move-up]').attributes('disabled')).toBeUndefined()
   })
 
+  it('moves a section up from its arrow', async () => {
+    await setup()
+    await wrapper.get('[data-section=rsvp] [data-testid=move-up]').trigger('click')
+    await flushPromises()
+    expect(svc.saveSections).toHaveBeenCalledWith(7, expect.arrayContaining([{ type: 'rsvp', enabled: true, order: 3 }]))
+  })
+
+  it('draws the new picture of an image field and goes back to the template when it is removed', async () => {
+    await setup()
+    const image = () => wrapper.findAllComponents({ name: 'FieldRenderer' }).find(c => c.props('field').id === 'cover_photo')
+    image().vm.$emit('image-changed', { url: 'https://cdn/x.jpg' })
+    await flushPromises()
+    expect(image().props('field').value).toEqual({ url: 'https://cdn/x.jpg' })
+    expect(image().props('field').isDefault).toBe(false)
+    image().vm.$emit('image-changed', null)
+    await flushPromises()
+    expect(image().props('field').isDefault).toBe(true)
+  })
+
+  it('"Reintentar" in the save indicator tries the save again after the network gave up', async () => {
+    vi.useFakeTimers()
+    await setup()
+    svc.saveFields.mockRejectedValue(new Error('offline'))
+    await wrapper.get('[data-testid=choice-b]').setValue(true)
+    await vi.advanceTimersByTimeAsync(20000)
+    await flushPromises()
+    expect(wrapper.get('[data-testid=save-indicator]').attributes('data-status')).toBe('error')
+    const calls = svc.saveFields.mock.calls.length
+    svc.saveFields.mockResolvedValue({ fields: [], savedAt: 'now' })
+    await wrapper.get('[data-testid=save-indicator] button').trigger('click')
+    await vi.advanceTimersByTimeAsync(2000)
+    await flushPromises()
+    expect(svc.saveFields.mock.calls.length).toBeGreaterThan(calls)
+    expect(wrapper.get('[data-testid=save-indicator]').attributes('data-status')).toBe('saved')
+  })
+
   it('shows the closing pinned to the end, with no way to move it, and a clear message for closing_last', async () => {
     const data = payload()
     data.sections.push({ type: 'closing', enabled: true, order: 5, required: false, title: { es: 'Cierre', en: 'Closing' } })
@@ -324,5 +360,34 @@ describe('InvitationEditorView', () => {
     expect(wrapper.text()).toContain('Cover photo')
     expect(wrapper.text()).toContain('Sections')
     setLocale('es')
+  })
+
+  it('keeps the actions in a fixed bar the assistant button lifts above, and the page has room under the last section', async () => {
+    await setup()
+    const bar = wrapper.get('[data-testid=action-bar]')
+    expect(bar.classes()).toContain('fixed')
+    expect(bar.text()).toContain('Vista previa')
+    expect(bar.text()).toContain('Publicar')
+    expect(wrapper.get('[data-testid=editor]').element.parentElement.className).toContain('pb-16')
+    expect(wrapper.get('[data-section=program]').classes()).toContain('fab-safe') // the assistant button's column stays free
+  })
+
+  it('draws the invitation next to the form on wide screens (hidden by CSS below 1280 px) and redraws it after a save', async () => {
+    await setup()
+    const aside = wrapper.get('[data-testid=editor-preview]')
+    expect(aside.classes()).toEqual(expect.arrayContaining(['hidden', 'xl:flex', 'sticky']))
+    expect(aside.find('[data-testid=hero-phone]').exists()).toBe(true)
+    const before = aside.get('[data-testid=hero-phone]').element
+    await wrapper.get('[data-testid=choice-b]').setValue(true)
+    await flushPromises()
+    expect(wrapper.get('[data-testid=editor-preview] [data-testid=hero-phone]').element).not.toBe(before)
+  })
+
+  it('section rows compact below 360 px: stacked arrows, 40 px, uniform minimum height', async () => {
+    await setup()
+    const row = wrapper.get('[data-section=program]')
+    expect(row.get('[data-testid=move-up]').classes()).toEqual(expect.arrayContaining(['max-[360px]:h-10', 'max-[360px]:w-10', 'h-11', 'w-11']))
+    expect(row.get('[data-testid=move-down]').element.parentElement.className).toContain('max-[360px]:flex-col')
+    expect(row.get('[data-testid=section-controls]').element.parentElement.className).toContain('max-[360px]:min-h-20')
   })
 })

@@ -2,16 +2,17 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { FileSpreadsheet, Plus, Search, Send } from 'lucide-vue-next'
-import { UiPageHeader, UiBadge, UiButton, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast, UiPage } from '@/ui'
+import { Download, FileSpreadsheet, MoreHorizontal, Plus, Search, Send } from 'lucide-vue-next'
+import { UiPageHeader, UiBadge, UiButton, UiDropdown, UiTabs, UiSkeleton, UiEmptyState, UiModal, UiPagination, useToast, UiPage } from '@/ui'
 import { useEventsStore } from '@/modules/events/stores/useEventsStore'
 import GuestLimitBanner from '@/components/internal/limits/GuestLimitBanner.vue'
 import { planLimitFrom } from '@/utils/planLimit'
 import { useFloatingBarSpace } from '@/composables/useFloatingBarSpace'
+import { useMinWidth } from '@/composables/useMinWidth'
 import { unlockPath } from '@/components/internal/shell/navModules'
 import RosterService from '../services/RosterService'
 import WhatsappService from '../services/WhatsappService'
-import GuestCard from '../components/GuestCard.vue'
+import GuestList from '../components/GuestList.vue'
 import GuestFormModal from '../components/GuestFormModal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import GuestImportModal from '../components/GuestImportModal.vue'
@@ -22,6 +23,7 @@ import { whatsappModuleState, retryErrorKey, isUnknownDelivery } from '../utils/
 import { INITIAL_CATEGORIES, batchProgress } from '../utils/sendWizard'
 import { wizardModeOf } from '../services/sendFamilies'
 import { useBatchPolling } from '../composables/useBatchPolling'
+import { useRosterDownload } from '../composables/useRosterDownload'
 import { DELIVERY_FILTERS, deliveryChips, deliveryOf } from '../utils/delivery'
 import { eventMoment, formatEventDate } from '@/utils/eventDateTime'
 
@@ -32,6 +34,8 @@ const { success, error: showError } = useToast()
 const eventsStore = useEventsStore()
 
 const event = computed(() => eventsStore.activeEvent)
+// The long search hint is cut on phones; below md the field says just "Buscar invitado" (the accessible name stays the long one).
+const wide = useMinWidth(768)
 const canEdit = computed(() => ['owner', 'editor'].includes(event.value?.userRole))
 
 const status = ref(TABS.some(tab => tab.value === route.query.status) ? route.query.status : 'all')
@@ -213,8 +217,8 @@ onBeforeUnmount(() => clearTimeout(pollTimer))
 const inlineSend = ref(null)
 const inlineSendVisible = ref(false)
 const sendBar = ref(null)
-// The assistant's "next step" button lifts above this bar (it measures it through the shared registry).
-useFloatingBarSpace(sendBar)
+// The assistant's "next step" button takes the bar's row, beside it (it measures the bar through the shared registry).
+useFloatingBarSpace(sendBar, { inline: true })
 let sendObserver
 // The button exists only once the list has people: observe it when it appears.
 watch(inlineSend, el => {
@@ -277,7 +281,7 @@ onMounted(() => {
   openFromQuery()
 })
 
-const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), count: counts.value[tab.count] })))
+const tabs = computed(() => TABS.map(tab => ({ value: tab.value, label: t(`app.roster.tabs.${tab.value}`), shortLabel: t(`app.roster.tabsShort.${tab.value}`), count: counts.value[tab.count] })))
 const answered = computed(() => counts.value.attending + counts.value.notAttending)
 const filtered = computed(() => !!search.value.trim() || status.value !== 'all' || !!delivery.value)
 /** Nobody on the list yet (and not because of a filter or an error): import is the main way in, so the toolbar buttons give way to the empty state (ORG-011). */
@@ -287,6 +291,12 @@ const overLimit = computed(() => !!counts.value.limit && counts.value.all > coun
 const chips = computed(() => (counts.value.delivery ? deliveryChips(counts.value.delivery, { automatic: waAutomatic.value }) : []))
 const unsent = computed(() => counts.value.delivery?.unsent ?? 0)
 const canSend = computed(() => canEdit.value && counts.value.all > 0)
+const download = useRosterDownload(() => ({ eventId: event.value?.id, status: status.value, search: search.value }))
+/** Phones: Importar and Descargar share one "⋯" button next to "Añadir invitado". */
+const moreItems = computed(() => [
+  { label: t('app.guestImport.button'), icon: FileSpreadsheet, onSelect: () => (importOpen.value = true) },
+  ...(event.value?.id && counts.value.all ? [{ label: t('app.roster.download.button'), icon: Download, children: download.items.value }] : [])
+])
 const toggleChip = value => (delivery.value = delivery.value === value ? null : value)
 const percent = computed(() => (counts.value.all ? Math.round((answered.value / counts.value.all) * 100) : 0))
 const counter = computed(() => (counts.value.limit ? t('app.roster.counterLimit', { n: counts.value.all, limit: counts.value.limit }) : t('app.roster.counter', { n: counts.value.all }, counts.value.all)))
@@ -302,7 +312,7 @@ function openForm(family = null) {
   formOpen.value = true
 }
 
-async function save({ person, companions, removed }) {
+async function save({ person, companions, removed, locale: nextLocale }) {
   saving.value = true
   const eventId = event.value.id
   try {
@@ -313,6 +323,8 @@ async function save({ person, companions, removed }) {
         if (companion.id) await RosterService.update(eventId, companion.id, { name: companion.name })
         else await RosterService.addCompanion(eventId, editing.value.id, { name: companion.name })
       }
+      // The language has its own call (the same one the list uses); it reports its own failure.
+      if (nextLocale !== undefined) await changeLocale(editing.value, nextLocale)
     } else {
       await RosterService.create(eventId, { guest: personPayload(person), companions: companions.map(c => ({ name: c.name })) })
     }
@@ -411,7 +423,8 @@ async function copyLink(family) {
     <div v-if="canSend" ref="inlineSend" class="mb-4 sm:hidden" data-testid="send-inline">
       <UiButton block @click="openSend">
         <Send class="h-4 w-4" aria-hidden="true" />
-        {{ unsent ? t('app.roster.sendInvitationsCount', { n: unsent }) : t('app.roster.sendInvitations') }}
+        <template v-if="unsent">{{ t('app.roster.sendInvitationsCount', { n: unsent }) }}</template>
+        <template v-else>{{ t('app.roster.sendInvitations') }}</template>
       </UiButton>
     </div>
     <GuestLimitBanner />
@@ -455,23 +468,23 @@ async function copyLink(family) {
           type="search"
           autocomplete="off"
           :aria-label="t('app.roster.search')"
-          :placeholder="t('app.roster.search')"
+          :placeholder="t(wide ? 'app.roster.search' : 'app.roster.searchShort')"
           class="h-11 w-full rounded-xl border border-line-strong bg-white pl-10 pr-3 text-base text-ink-900 placeholder:text-ink-500 focus-visible:outline-2 focus-visible:outline-rose-600"
         />
       </div>
 
       <div v-if="!emptyList" role="group" :aria-label="t('app.roster.filters.answers')">
-        <UiTabs v-model="status" :tabs="tabs" />
+        <UiTabs v-model="status" :tabs="tabs" compact />
       </div>
 
-      <div v-if="chips.length && !emptyList" class="flex flex-wrap items-center gap-2" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">
-        <span class="text-sm font-medium text-ink-500">{{ t('app.roster.filters.delivery') }}</span>
+      <div v-if="chips.length && !emptyList" class="no-scrollbar -mx-0.5 -my-1 flex items-center gap-2 overflow-x-auto py-1 pl-0.5 fab-safe md:m-0 md:flex-wrap md:overflow-visible md:p-0" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">
+        <span class="shrink-0 text-sm font-medium text-ink-500">{{ t('app.roster.filters.delivery') }}</span>
         <button
           v-for="chip in chips"
           :key="chip.value"
           type="button"
           :aria-pressed="delivery === chip.value"
-          class="inline-flex h-10 items-center gap-2 rounded-full border px-3.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+          class="inline-flex h-10 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
           :class="delivery === chip.value ? 'border-ink-900 bg-ink-900 text-white' : chip.value === 'problem' && chip.count ? 'border-danger-500/40 bg-danger-50 text-danger-700 hover:bg-danger-50' : 'border-line-strong bg-white text-ink-700 hover:bg-cream-100'"
           @click="toggleChip(chip.value)"
         >
@@ -481,19 +494,30 @@ async function copyLink(family) {
       </div>
     </div>
 
-    <div v-if="!emptyList && (canEdit || (event?.id && counts.all))" class="mt-4 flex flex-wrap items-center gap-2">
+    <div v-if="!emptyList && (canEdit || (event?.id && counts.all))" class="fab-safe mt-4 flex flex-nowrap items-center gap-2 md:flex-wrap">
       <div v-if="!counts.all && loading && (event?.guestsCount ?? 0) > 0" class="h-11 w-36" aria-hidden="true" data-testid="download-placeholder" />
       <template v-if="canEdit">
-        <UiButton variant="secondary" @click="openForm()">
+        <UiButton variant="secondary" class="min-w-0 flex-1 md:flex-none" @click="openForm()">
           <Plus class="h-4 w-4" aria-hidden="true" />
           {{ t('app.roster.add') }}
         </UiButton>
-        <UiButton variant="secondary" @click="importOpen = true">
-          <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.guestImport.button') }}
-        </UiButton>
+        <div class="hidden md:block">
+          <UiButton variant="secondary" @click="importOpen = true">
+            <FileSpreadsheet class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.guestImport.button') }}
+          </UiButton>
+        </div>
       </template>
-      <RosterDownloadMenu v-if="event?.id && counts.all" :event-id="event.id" :status="status" :search="search" />
+      <div v-if="event?.id && counts.all" class="hidden md:block">
+        <RosterDownloadMenu :event-id="event.id" :status="status" :search="search" />
+      </div>
+      <UiDropdown v-if="moreItems.length" :items="moreItems">
+        <template #trigger>
+          <UiButton variant="secondary" icon class="shrink-0 md:hidden" :loading="download.busy.value" :aria-label="t('app.roster.moreActions')" data-testid="more-actions">
+            <MoreHorizontal class="h-5 w-5" aria-hidden="true" />
+          </UiButton>
+        </template>
+      </UiDropdown>
     </div>
 
     <div v-if="loading && !families.length" class="mt-5 space-y-3" data-testid="list-skeleton" aria-hidden="true">
@@ -534,38 +558,37 @@ async function copyLink(family) {
       </div>
     </UiEmptyState>
 
-    <ul v-else class="mt-5 space-y-3 transition-opacity duration-150" :class="loading && 'opacity-50'" :aria-busy="loading">
-      <li v-for="family in families" :key="family.id">
-        <GuestCard
-          :family="family"
-          :can-edit="canEdit"
-          :event-locale="eventLocale"
-          :delivery="deliveryOfRow(family)"
-          @retry="retryMessage"
-          @edit="openForm"
-          @confirm="confirming = $event"
-          @revert="revert"
-          @remove="removing = $event"
-          @send="sendTo"
-          @copy="copyLink"
-          @locale="changeLocale"
-        />
-      </li>
-    </ul>
+    <GuestList
+      v-else
+      :families="families"
+      :can-edit="canEdit"
+      :event-locale="eventLocale"
+      :loading="loading"
+      :delivery-of="deliveryOfRow"
+      @retry="retryMessage"
+      @edit="openForm"
+      @confirm="confirming = $event"
+      @revert="revert"
+      @remove="removing = $event"
+      @send="sendTo"
+      @copy="copyLink"
+      @locale="changeLocale"
+    />
 
     <UiPagination v-if="meta.lastPage > 1" :page="page" :pages="meta.lastPage" class="mt-6" @update:page="page = $event" />
 
     <!-- Phones: once the inline button has scrolled away, the main action stays in reach, right above the bottom navigation.
-         It declares itself through useFloatingBarSpace, so the assistant's "next step" pill lifts above it instead. -->
+         It declares itself (inline) through useFloatingBarSpace, so the assistant's button sits beside it, centred on the row. -->
     <div
       v-if="canSend && !inlineSendVisible"
       ref="sendBar"
       class="pointer-events-none fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-20 px-4 sm:hidden"
       data-testid="send-bar"
     >
-      <UiButton block class="pointer-events-auto shadow-pop" @click="openSend">
-        <Send class="h-4 w-4" aria-hidden="true" />
-        {{ unsent ? t('app.roster.sendInvitationsCount', { n: unsent }) : t('app.roster.sendInvitations') }}
+      <!-- The button is 100% - 88px of the screen (16px margins + 56px for the assistant button); the assistant button sits on this row. -->
+      <UiButton class="pointer-events-auto w-[calc(100%-56px)] whitespace-nowrap px-3 shadow-pop" @click="openSend">
+        <Send class="h-4 w-4 shrink-0" aria-hidden="true" />
+        <span class="truncate">{{ unsent ? t('app.roster.sendInvitationsCount', { n: unsent }) : t('app.roster.sendInvitations') }}</span>
       </UiButton>
     </div>
 
@@ -590,7 +613,7 @@ async function copyLink(family) {
       @edit-guest="editFromWizard"
       @add-guest="wizardOpen = false; openForm()"
     />
-    <GuestFormModal v-model:open="formOpen" :family="editing" :saving="saving" @save="save" />
+    <GuestFormModal v-model:open="formOpen" :family="editing" :saving="saving" :event-locale="eventLocale" @save="save" />
     <ConfirmModal :open="!!confirming" :family="confirming" :saving="saving" @update:open="confirming = null" @save="saveConfirm" />
 
     <UiModal :open="!!retrying" :title="t('app.whatsapp.retryConfirm.title')" size="sm" @update:open="retrying = null">

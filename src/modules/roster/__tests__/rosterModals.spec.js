@@ -4,7 +4,8 @@ import i18n, { setLocale } from '@/locales/i18n'
 import { UiDropdown } from '@/ui'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import GuestFormModal from '../components/GuestFormModal.vue'
-import GuestCard from '../components/GuestCard.vue'
+import GuestLocaleSelect from '../components/GuestLocaleSelect.vue'
+import GuestRow from '../components/GuestRow.vue'
 
 let wrapper
 const body = () => document.body.textContent
@@ -164,6 +165,21 @@ describe('GuestFormModal', () => {
     expect(companions).toEqual([{ id: 12, name: 'Cami' }])
   })
 
+  it('edits the invitation language with the form: reported only when it changed, and not offered when adding', async () => {
+    await open(GuestFormModal, { family: family({ locale: 'es' }), eventLocale: 'en' })
+    expect(wrapper.findComponent(GuestLocaleSelect).props('eventLocale')).toBe('en')
+    await submit()
+    expect(wrapper.emitted('save')[0][0]).not.toHaveProperty('locale')
+    wrapper.findComponent(GuestLocaleSelect).vm.$emit('change', null)
+    await flushPromises()
+    await submit()
+    expect(wrapper.emitted('save')[1][0].locale).toBeNull()
+    wrapper.unmount()
+    document.body.innerHTML = ''
+    await open(GuestFormModal, { family: null })
+    expect(wrapper.findComponent(GuestLocaleSelect).exists()).toBe(false)
+  })
+
   it('fills missing contact data with empty strings and resets when reopened', async () => {
     await open(GuestFormModal, { family: family({ email: null, phone: null, notes: null }) })
     expect(inputOf('Correo').value).toBe('')
@@ -181,13 +197,21 @@ describe('GuestFormModal', () => {
   })
 })
 
-describe('GuestCard menu and details', () => {
-  const card = (props = {}) => mount(GuestCard, { props: { family: family(), canEdit: true, ...props }, global: { plugins: [i18n] } })
+describe('GuestRow menu and details', () => {
+  const card = (props = {}) => mount(GuestRow, { props: { family: family(), canEdit: true, ...props }, global: { plugins: [i18n] } })
   const items = w => w.findComponent(UiDropdown).props('items')
   const labels = w => items(w).map(i => i.label)
 
-  it('an organizer sees every action, without "revert" while nobody has answered', () => {
-    expect(labels(card())).toEqual(['Enviar invitación', 'Copiar enlace', 'Editar', 'Confirmar por teléfono', 'Eliminar'])
+  it('an organizer sees every action in order, without "revert" while nobody has answered', () => {
+    expect(labels(card())).toEqual(['Editar invitado', 'Idioma de la invitación', 'Enviar invitación', 'Copiar enlace', 'Confirmar por teléfono', 'Eliminar'])
+  })
+
+  it('opens the language as a submenu of three choices with the current one marked', () => {
+    const lang = items(card({ family: family({ locale: 'en' }), eventLocale: 'es' }))[1]
+    expect(lang.radio.value).toBe('en')
+    expect(lang.radio.options.map(o => o.value)).toEqual(['event', 'es', 'en'])
+    expect(lang.radio.options[0].label).toBe('El del evento (Español)')
+    expect(items(card())[1].radio.value).toBe('event')
   })
 
   it('offers to go back to pending once the family or a companion answered', () => {
@@ -201,34 +225,55 @@ describe('GuestCard menu and details', () => {
 
   it('without a link, sending and copying are disabled', () => {
     const w = card({ family: family({ link: null }) })
-    expect(items(w).slice(0, 2).map(i => i.disabled)).toEqual([true, true])
+    expect(items(w).filter(i => ['Enviar invitación', 'Copiar enlace'].includes(i.label)).map(i => i.disabled)).toEqual([true, true])
   })
 
-  it('every action emits its event with the family', () => {
+  it('every action emits its event with the family, and the language choice emits "locale"', () => {
     const f = family({ status: 'attending' })
     const w = card({ family: f })
-    for (const item of items(w)) item.onSelect()
+    for (const item of items(w)) item.onSelect?.()
     expect(['send', 'copy', 'edit', 'confirm', 'revert', 'remove'].map(e => w.emitted(e)?.[0]?.[0])).toEqual(Array(6).fill(f))
+    items(w)[1].radio.onChange('en')
+    items(w)[1].radio.onChange('event')
+    expect(w.emitted('locale')).toEqual([[f, 'en'], [f, null]])
   })
 
-  it('shows contact, companions, notes and the note left on the RSVP', () => {
+  it('shows contact, notes, the RSVP note and the number of people; companions get their own rows with a status chip', () => {
     const w = card({ family: { ...withKids(), notes: 'sin gluten', rsvpNote: 'Llegamos tarde' } })
     expect(w.text()).toContain('+13055550123')
-    expect(w.text()).toContain('Beto')
     expect(w.text()).toContain('sin gluten')
     expect(w.text()).toContain('Llegamos tarde')
-    expect(w.text()).toContain('3 personas')
+    const rows = w.findAll('[data-testid="companion-row"]')
+    expect(rows.map(r => r.get('[data-testid="companion-name"]').text())).toEqual(['Beto', 'Cami'])
+    expect(rows[1].text()).toContain('Asiste')
+    expect(w.get('[role="row"] [role="cell"]:nth-child(4)').text()).toBe('3')
   })
 
   it('falls back to the email, and to no contact line at all', () => {
     expect(card({ family: family({ phone: null }) }).text()).toContain('ana@x.com')
-    expect(card({ family: family({ phone: null, email: null }) }).find('p.truncate').exists()).toBe(false)
+    expect(card({ family: family({ phone: null, email: null }) }).text()).not.toContain('@')
   })
 
-  it('relays a language change', () => {
+  it('clicking the row edits the guest, but the menu button does not; viewers cannot edit from the row', async () => {
     const w = card()
-    w.findComponent({ name: 'GuestLocaleSelect' }).vm.$emit('change', 'en')
-    expect(w.emitted('locale')[0]).toEqual([family(), 'en'])
+    await w.get('[data-testid="guest-row"]').trigger('click')
+    expect(w.emitted('edit')).toHaveLength(1)
+    await w.get('button[aria-label="Acciones para Ana Perez"]').trigger('click')
+    expect(w.emitted('edit')).toHaveLength(1)
+    const viewer = card({ canEdit: false })
+    await viewer.get('[data-testid="guest-row"]').trigger('click')
+    expect(viewer.emitted('edit')).toBeUndefined()
+  })
+
+  it('shows the language chip only for a language of her own, with the same status chip (and dot) for companions', () => {
+    expect(card().find('[data-testid="locale-chip"]').exists()).toBe(false)
+    const en = card({ family: family({ locale: 'en' }) }).get('[data-testid="locale-chip"]')
+    expect(en.text()).toContain('EN')
+    expect(en.attributes('title')).toBe('Invitación en inglés')
+    expect(card({ family: family({ locale: 'es' }) }).get('[data-testid="locale-chip"]').attributes('title')).toBe('Invitación en español')
+    const w = card({ family: withKids() })
+    const dots = w.findAll('[data-testid="companion-row"] .h-1\\.5.w-1\\.5')
+    expect(dots).toHaveLength(2)
   })
 })
 

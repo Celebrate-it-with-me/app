@@ -21,7 +21,7 @@ const title = computed(() => (mode.value === 'edit' ? t('app.menus.editTitle') :
 
     <template v-else>
       <UiCard class="mt-6">
-        <form id="menu-form" class="space-y-5" novalidate @submit.prevent="onSubmit">
+        <form id="menu-form" class="fab-safe space-y-5" novalidate @submit.prevent="onSubmit">
           <UiField :label="t('app.menus.fieldTitle')" :error="errors.title" required>
             <template #default="{ id, invalid }">
               <UiInput :id="id" v-model="menuState.title" :invalid="invalid" :placeholder="t('app.menus.fieldTitlePlaceholder')" autocomplete="off" />

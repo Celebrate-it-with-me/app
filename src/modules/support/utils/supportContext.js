@@ -87,14 +87,6 @@ export function isButtonHidden({ foreignDialogOpen, focusedElement }) {
   return Boolean(foreignDialogOpen) || isLongField(focusedElement)
 }
 
-/** Scroll rule of the help button: tuck after reading down past the top, untuck when going up or back near the top. */
-export function nextTucked({ tucked, lastY, y }) {
-  if (y < 80) return false
-  if (y > lastY + 6) return true
-  if (y < lastY - 6) return false
-  return tucked
-}
-
 /** Error key under `support.errors` for a failed request. */
 export function errorKeyFor(error) {
   const status = error?.response?.status

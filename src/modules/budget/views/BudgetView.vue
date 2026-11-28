@@ -10,13 +10,13 @@ import PadrinosService from '@/modules/padrinos/services/PadrinosService'
 import { useBudgetStore } from '../stores/useBudgetStore'
 import BudgetSummary from '../components/BudgetSummary.vue'
 import CategoryBars from '../components/CategoryBars.vue'
-import ItemCard from '../components/ItemCard.vue'
+import ItemRow from '../components/ItemRow.vue'
 import ItemFormModal from '../components/ItemFormModal.vue'
 import PaymentModal from '../components/PaymentModal.vue'
 import CapModal from '../components/CapModal.vue'
 import CategoriesModal from '../components/CategoriesModal.vue'
 import ItemSponsorsModal from '../components/ItemSponsorsModal.vue'
-import { FILTERS, filterCounts, filterItems, groupByCategory, itemPayload, paymentPayload } from '../utils/budget'
+import { FILTERS, coverageOf, filterCounts, filterItems, formFromItem, groupByCategory, itemPayload, paymentPayload } from '../utils/budget'
 
 const { t } = useI18n()
 const { success, error: showError, toast } = useToast()
@@ -33,6 +33,7 @@ const loading = ref(true)
 const saving = ref(false)
 const filter = ref('all')
 const search = ref('')
+const overpaidOnly = ref(false)
 
 const itemOpen = ref(false)
 const editingItem = ref(null)
@@ -76,7 +77,10 @@ const tabs = computed(() => {
   const counts = filterCounts(store.items)
   return FILTERS.map(f => ({ value: f.value, label: t(`app.budget.filters.${f.value}`), count: counts[f.value] }))
 })
-const visible = computed(() => filterItems(store.items, filter.value, search.value))
+const visible = computed(() => {
+  const list = filterItems(store.items, filter.value, search.value)
+  return overpaidOnly.value ? list.filter(item => coverageOf(item).overpaid > 0) : list
+})
 const groups = computed(() => groupByCategory(visible.value, categories.value))
 
 /** Runs a write, refreshes from the server (the totals live there) and reports. */
@@ -112,12 +116,16 @@ function openPayment(item, payment = null) {
   editingPayment.value = payment
   payOpen.value = true
 }
-async function savePayment(form) {
+async function savePayment(form, newCost = null) {
   const id = event.value.id
   const payload = paymentPayload(form)
-  const ok = await run(() =>
-    editingPayment.value ? BudgetService.updatePayment(id, payItem.value.id, editingPayment.value.id, payload) : BudgetService.addPayment(id, payItem.value.id, payload)
-  )
+  const item = payItem.value
+  const ok = await run(async () => {
+    // "Aumentar el costo": the same call as editing the expense, then the payment, so it never lands past the cost.
+    if (newCost !== null) await BudgetService.updateItem(id, item.id, { ...itemPayload(formFromItem(item)), agreedCost: newCost })
+    if (editingPayment.value) await BudgetService.updatePayment(id, item.id, editingPayment.value.id, payload)
+    else await BudgetService.addPayment(id, item.id, payload)
+  })
   if (ok) payOpen.value = false
 }
 const removePayment = ({ item, payment }) => run(() => BudgetService.removePayment(event.value.id, item.id, payment.id), 'app.budget.payment.removed')
@@ -155,6 +163,14 @@ const addCategory = name => run(() => BudgetService.addCategory(event.value.id, 
 const renameCategory = ({ id, name }) => run(() => BudgetService.renameCategory(event.value.id, id, name), null)
 const removeCategory = category => run(() => BudgetService.removeCategory(event.value.id, category.id), null)
 
+/** Tapping a category scrolls to its expenses (smooth unless the person asked for less motion). */
+function goToGroup(id) {
+  const el = document.getElementById(`budget-group-${id}`)
+  if (!el) return
+  const calm = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' })
+}
+
 async function download() {
   try {
     const blob = await BudgetService.exportCsv(event.value.id)
@@ -174,14 +190,16 @@ async function download() {
   <UiPage>
     <UiPageHeader :title="t('app.budget.title')" :subtitle="t('app.budget.subtitle')">
       <template #actions>
-        <UiButton v-if="summary && store.items.length" variant="secondary" @click="download">
-          <Download class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.budget.export') }}
-        </UiButton>
-        <UiButton v-if="canEdit" @click="openItem()">
-          <Plus class="h-4 w-4" aria-hidden="true" />
-          {{ t('app.budget.add') }}
-        </UiButton>
+        <div class="flex w-full gap-2 md:w-auto">
+          <UiButton v-if="summary && store.items.length" class="flex-1 whitespace-nowrap md:flex-none" variant="secondary" @click="download">
+            <Download class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.budget.export') }}
+          </UiButton>
+          <UiButton v-if="canEdit" class="flex-1 whitespace-nowrap md:flex-none" @click="openItem()">
+            <Plus class="h-4 w-4" aria-hidden="true" />
+            {{ t('app.budget.add') }}
+          </UiButton>
+        </div>
       </template>
     </UiPageHeader>
 
@@ -192,14 +210,14 @@ async function download() {
     </div>
 
     <template v-else-if="summary">
-      <BudgetSummary class="mt-6" :summary="summary" :can-edit="canEdit" @cap="capOpen = true" />
+      <BudgetSummary class="mt-6" :summary="summary" :items="store.items" :can-edit="canEdit" :overpaid-active="overpaidOnly" @cap="capOpen = true" @overpaid="overpaidOnly = !overpaidOnly" />
 
       <UiEmptyState v-if="!store.items.length" class="mt-8" :title="t('app.budget.emptyTitle')" :description="t('app.budget.emptyText')">
         <UiButton v-if="canEdit" @click="openItem()">{{ t('app.budget.addFirst') }}</UiButton>
       </UiEmptyState>
 
       <template v-else>
-        <CategoryBars class="mt-6" :summary="summary" />
+        <CategoryBars class="mt-6" :summary="summary" @select="goToGroup" />
 
         <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div class="relative flex-1">
@@ -214,17 +232,21 @@ async function download() {
             />
           </div>
         </div>
-        <div class="mt-3 overflow-x-auto">
-          <UiTabs v-model="filter" :tabs="tabs" />
+        <div class="mt-3">
+          <UiTabs v-model="filter" :tabs="tabs" compact />
         </div>
+        <p v-if="overpaidOnly" class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl bg-danger-50 px-3.5 py-2.5 text-sm text-danger-700" role="status" data-testid="overpaid-filter">
+          {{ t('app.budget.overpaidFilter') }}
+          <button type="button" class="touch-target relative font-semibold underline underline-offset-4" @click="overpaidOnly = false">{{ t('app.budget.overpaidClear') }}</button>
+        </p>
 
         <p v-if="!visible.length" class="mt-8 text-center text-ink-500">{{ t('app.budget.noResults') }}</p>
 
-        <section v-for="group in groups" :key="group.category?.id ?? 'none'" class="mt-6" :aria-label="group.category?.name ?? t('app.budget.uncategorized')">
-          <h2 class="font-heading text-lg text-ink-900">{{ group.category?.name ?? t('app.budget.uncategorized') }}</h2>
-          <ul class="mt-2 space-y-3">
-            <li v-for="item in group.items" :key="item.id">
-              <ItemCard
+        <section v-for="group in groups" :id="`budget-group-${group.category?.id ?? 'none'}`" :key="group.category?.id ?? 'none'" class="mt-[18px] scroll-mt-4" :aria-label="group.category?.name ?? t('app.budget.uncategorized')">
+          <h2 class="text-xs font-semibold uppercase tracking-[.06em] text-ink-500">{{ group.category?.name ?? t('app.budget.uncategorized') }}</h2>
+          <ul class="mt-1.5 overflow-hidden rounded-xl border border-line bg-white shadow-card">
+            <li v-for="item in group.items" :key="item.id" class="border-t border-black/[.06] first:border-t-0">
+              <ItemRow
                 :item="item"
                 :currency="summary.currency"
                 :can-edit="canEdit"

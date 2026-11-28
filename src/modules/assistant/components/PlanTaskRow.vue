@@ -56,7 +56,7 @@ const menu = computed(() => [
 </script>
 
 <template>
-  <li class="rounded-lg border border-line bg-white p-4" :class="[isDone && 'bg-cream-50', blocked && 'bg-cream-50/60']" :data-testid="`task-${task.key}`" :data-state="task.state">
+  <li class="rounded-lg border border-line bg-white py-4 pl-4 lg:pr-4 fab-safe" :class="[isDone && 'bg-cream-50', blocked && 'bg-cream-50/60']" :data-testid="`task-${task.key}`" :data-state="task.state">
     <div class="flex flex-wrap items-start gap-x-3 gap-y-1">
       <h4 class="min-w-0 flex-1 text-base font-semibold text-ink-900" :class="(isDone || blocked) && 'text-ink-600'">
         <Check v-if="isDone" class="mr-1 inline h-4 w-4 text-success-700 align-[-2px]" aria-hidden="true" />

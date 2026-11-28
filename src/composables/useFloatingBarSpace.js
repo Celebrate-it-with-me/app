@@ -7,23 +7,43 @@ import { computed, onScopeDispose, shallowReactive, watch } from 'vue'
  */
 export const BAR_GAP_PX = 8
 
+/** Height of the floating button (h-12): an inline bar centres it on its own row. */
+export const FLOATING_BUTTON_PX = 48
+
 const bars = shallowReactive(new Map())
+const inlineBars = shallowReactive(new Map())
 let nextId = 0
+
+/**
+ * Height of the bar that shares its row with the floating button (declared with `{ inline: true }`), or 0 when none shows.
+ * The button then stays beside the bar (never over it) and takes its icon form.
+ */
+export const floatingBarInline = computed(() => {
+  let tallest = 0
+  for (const height of inlineBars.values()) tallest = Math.max(tallest, height)
+  return tallest
+})
 
 /** Extra bottom offset, in px, the floating buttons need so they clear every declared bar (0 when none is showing). */
 export const floatingBarSpace = computed(() => {
   let tallest = 0
   for (const height of bars.values()) tallest = Math.max(tallest, height)
-  return tallest > 0 ? Math.ceil(tallest) + BAR_GAP_PX : 0
+  if (tallest > 0) return Math.ceil(tallest) + BAR_GAP_PX
+  // An inline bar does not push the button up: it only centres it vertically on the bar's row (may be slightly negative).
+  return floatingBarInline.value > 0 ? (floatingBarInline.value - FLOATING_BUTTON_PX) / 2 : 0
 })
 
-/** Declare a fixed bottom bar. `elRef` is the template ref of the bar element (it may come and go with a v-if). */
-export function useFloatingBarSpace(elRef) {
+/**
+ * Declare a fixed bottom bar. `elRef` is the template ref of the bar element (it may come and go with a v-if).
+ * `inline: true` is for a bar that leaves room at its right for the floating button (same row, centred on it).
+ */
+export function useFloatingBarSpace(elRef, { inline = false } = {}) {
   const id = nextId++
+  const registry = inline ? inlineBars : bars
   let observer = null
   const report = height => {
-    if (height > 0) bars.set(id, height)
-    else bars.delete(id)
+    if (height > 0) registry.set(id, height)
+    else registry.delete(id)
   }
   const stop = () => {
     observer?.disconnect()
