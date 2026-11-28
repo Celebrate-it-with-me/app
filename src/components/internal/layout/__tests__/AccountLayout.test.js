@@ -70,6 +70,11 @@ describe('AccountLayout', () => {
     expect(wrapper.findAll('a')[1].attributes('aria-label')).toBe('Preferences')
   })
 
+  it('releases the assistant column that fab-safe rows keep free elsewhere', async () => {
+    const wrapper = await mountLayout()
+    expect(wrapper.find('[data-testid=account-grid]').element.children[1].className).toContain('[&_.fab-safe]:pr-0')
+  })
+
   it('renders the page next to the navigation', async () => {
     const wrapper = await mountLayout()
     expect(wrapper.find('[data-testid=page]').exists()).toBe(true)

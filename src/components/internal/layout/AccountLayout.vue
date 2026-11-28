@@ -47,7 +47,8 @@ const hasShort = key => key === 'preferences'
         </nav>
       </div>
 
-      <div class="min-w-0">
+      <!-- No assistant button here, so the right-hand column that `fab-safe` rows keep free (src/style.css) is released. -->
+      <div class="min-w-0 [&_.fab-safe]:pr-0">
         <router-view />
       </div>
     </div>
