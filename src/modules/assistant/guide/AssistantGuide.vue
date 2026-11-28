@@ -323,7 +323,7 @@ const countdown = computed(() => countdownOf(next.value))
         v-show="!hidden"
         :inert="scrollHidden || undefined"
         :aria-hidden="scrollHidden ? 'true' : undefined"
-        class="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom,0px)+var(--assistant-lift,0px))] z-40 flex flex-col items-end gap-2 transition-[bottom,translate,opacity] duration-200 ease-out motion-reduce:transition-none lg:bottom-[calc(1.5rem+var(--assistant-lift,0px))] lg:right-6"
+        class="fixed right-(--assistant-fab-edge) bottom-[calc(5rem+env(safe-area-inset-bottom,0px)+var(--assistant-lift,0px))] z-40 flex flex-col items-end gap-2 transition-[bottom,translate,opacity] duration-200 ease-out motion-reduce:transition-none lg:bottom-[calc(1.5rem+var(--assistant-lift,0px))]"
         :class="scrollHidden ? 'pointer-events-none translate-y-[calc(100%+6rem)] opacity-0 motion-reduce:translate-y-0' : ''"
         :style="{ '--assistant-lift': `${floatingBarSpace}px` }"
         data-testid="assistant-guide"

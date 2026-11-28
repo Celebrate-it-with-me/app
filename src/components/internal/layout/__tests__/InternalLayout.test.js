@@ -89,4 +89,17 @@ describe('InternalLayout', () => {
     await flushPromises()
     expect(wrapper.classes()).toContain('app-shell')
   })
+
+  it('keeps the assistant button column free from 1024 px wherever the button floats', async () => {
+    const wrapper = mountLayout()
+    await flushPromises()
+    expect(wrapper.get('[data-testid="shell-content"]').classes().join(' ')).toContain('lg:pr-[calc(var(--assistant-fab-reserve)-1.5rem)]')
+  })
+
+  it('reserves nothing on the Inicio, where the help icon is docked in the header', async () => {
+    currentRoute.path = '/dashboard'
+    const wrapper = mountLayout()
+    await flushPromises()
+    expect(wrapper.get('[data-testid="shell-content"]').classes().join(' ')).not.toContain('assistant-fab')
+  })
 })
