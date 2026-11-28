@@ -11,7 +11,9 @@ const props = defineProps({
   open: { type: Boolean, default: false },
   eventId: { type: [Number, String], required: true },
   location: { type: Object, default: null },
-  saving: { type: Boolean, default: false }
+  saving: { type: Boolean, default: false },
+  /** The kind of place a new one starts as (from the section whose button opened the dialog). */
+  defaultType: { type: String, default: 'ceremony' }
 })
 const emit = defineEmits(['update:open', 'save'])
 const { t } = useI18n()
@@ -46,7 +48,7 @@ watch(
   () => props.open,
   open => {
     if (!open) return
-    form.value = props.location ? formFromLocation(props.location) : emptyForm()
+    form.value = props.location ? formFromLocation(props.location) : { ...emptyForm(), type: props.defaultType }
     saved.value = props.location?.images ?? []
     removedIds.value = []
     files.value = []

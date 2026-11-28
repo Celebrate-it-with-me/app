@@ -32,7 +32,8 @@ describe('isCompactRoute', () => {
     '/settings/security',
     '/dashboard/guests',
     '/dashboard/save-the-date',
-    '/dashboard/timeline'
+    '/dashboard/timeline',
+    '/dashboard/locations'
   ])('shrinks on %s', path => expect(isCompactRoute(path)).toBe(true))
 
   it.each(['/dashboard', '/dashboard/budget', '/dashboard/events'])(
