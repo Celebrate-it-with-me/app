@@ -388,6 +388,34 @@
 }
 
 /*
+ * The assistant's floating button ("Tu siguiente paso", AssistantGuide.vue) owns a column at the right edge of the
+ * screen: content never goes under it. `--assistant-fab-edge` is its distance from the window edge, `--assistant-fab-size`
+ * its width (h-12 round), `--assistant-fab-gap` the air kept between it and the content.
+ *  - `--assistant-fab-reserve`: edge + size + gap, measured from the window edge (the shell reserves it from 1024 px).
+ *  - `fab-safe`: below 1024 px, right padding for a row that sits flush with the page gutter and has controls aligned
+ *    to its right (switches, "⋯" menus, action rows). It is the column without the gutter, so the row still ends
+ *    where the FAB column starts. From 1024 px the shell already keeps the column free and it does nothing.
+ */
+:root {
+  --assistant-fab-edge: 1rem;
+  --assistant-fab-size: 3rem;
+  --assistant-fab-gap: 0.5rem;
+  --assistant-fab-col: calc(var(--assistant-fab-size) + var(--assistant-fab-gap));
+  --assistant-fab-reserve: calc(var(--assistant-fab-edge) + var(--assistant-fab-col));
+}
+@media (min-width: 1024px) {
+  :root {
+    --assistant-fab-edge: 1.5rem;
+  }
+}
+
+@utility fab-safe {
+  @media (max-width: 1023.98px) {
+    padding-right: var(--assistant-fab-col);
+  }
+}
+
+/*
  * Touch target: on touch screens, grow the tappable area of a small control to 44x44 without changing how it looks.
  * The element must be positioned (add `relative`); on a mouse nothing changes.
  */

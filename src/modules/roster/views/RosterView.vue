@@ -477,7 +477,7 @@ async function copyLink(family) {
         <UiTabs v-model="status" :tabs="tabs" compact />
       </div>
 
-      <div v-if="chips.length && !emptyList" class="no-scrollbar -mx-0.5 -my-1 flex items-center gap-2 overflow-x-auto px-0.5 py-1 md:m-0 md:flex-wrap md:overflow-visible md:p-0" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">
+      <div v-if="chips.length && !emptyList" class="no-scrollbar -mx-0.5 -my-1 flex items-center gap-2 overflow-x-auto py-1 pl-0.5 fab-safe md:m-0 md:flex-wrap md:overflow-visible md:p-0" role="group" :aria-label="t('app.roster.filters.delivery')" data-testid="delivery-chips">
         <span class="shrink-0 text-sm font-medium text-ink-500">{{ t('app.roster.filters.delivery') }}</span>
         <button
           v-for="chip in chips"
@@ -494,7 +494,7 @@ async function copyLink(family) {
       </div>
     </div>
 
-    <div v-if="!emptyList && (canEdit || (event?.id && counts.all))" class="mt-4 flex flex-nowrap items-center gap-2 md:flex-wrap">
+    <div v-if="!emptyList && (canEdit || (event?.id && counts.all))" class="fab-safe mt-4 flex flex-nowrap items-center gap-2 md:flex-wrap">
       <div v-if="!counts.all && loading && (event?.guestsCount ?? 0) > 0" class="h-11 w-36" aria-hidden="true" data-testid="download-placeholder" />
       <template v-if="canEdit">
         <UiButton variant="secondary" class="min-w-0 flex-1 md:flex-none" @click="openForm()">

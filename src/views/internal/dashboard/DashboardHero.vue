@@ -130,9 +130,9 @@ const previewOpen = ref(false)
         </DashboardBlock>
       </div>
 
-      <!-- Phone: the main action and "Ver invitación" side by side, "Editar evento" under them; one row from 640 px. -->
-      <div class="mt-1.5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
-        <DashboardAction v-if="published && canViewGuests" to="/dashboard/guests" size="hero" class="only:col-span-2" data-testid="hero-share">
+      <!-- Phone: the main action and "Ver invitación" side by side, "Editar evento" under them; below 360 px all three stack at full width (labels never wrap); one row from 640 px. -->
+      <div class="mt-1.5 grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:flex sm:flex-wrap sm:gap-2.5">
+        <DashboardAction v-if="published && canViewGuests" to="/dashboard/guests" size="hero" class="min-[360px]:only:col-span-2" data-testid="hero-share">
           <span class="xl:hidden">{{ t('app.dashboard.hero.share') }}</span>
           <span class="hidden xl:inline">{{ t('app.dashboard.hero.shareLong') }}</span>
         </DashboardAction>
@@ -142,10 +142,12 @@ const previewOpen = ref(false)
         <DashboardAction v-if="canEdit && eventId != null" variant="secondary" size="hero" data-testid="hero-view" @click="previewOpen = true">
           {{ t('app.dashboard.hero.view') }}
         </DashboardAction>
-        <DashboardAction v-if="canEdit && editTo" :to="editTo" variant="secondary" size="hero" class="col-span-2" data-testid="hero-edit">
+        <DashboardAction v-if="canEdit && editTo" :to="editTo" variant="secondary" size="hero" class="min-[360px]:col-span-2" data-testid="hero-edit">
           {{ t('app.dashboard.edit') }}
         </DashboardAction>
       </div>
+      <!-- A phone has no thumbnail (so no link beside it): the same destination, as a text link under the buttons. -->
+      <router-link v-if="!wide && canEdit && templateTo" :to="templateTo" :class="[LINK, 'self-start']" data-testid="hero-change-template-mobile">{{ t('app.dashboard.hero.changeTemplate') }}</router-link>
       <p v-if="!published" class="max-w-md text-[13px] text-ink-500" data-testid="hero-draft-hint">{{ t('app.dashboard.hero.draftHint') }}</p>
     </div>
 

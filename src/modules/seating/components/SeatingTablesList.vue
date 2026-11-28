@@ -54,7 +54,7 @@ const barClass = table => {
       class="rounded-xl border bg-white transition-colors"
       :class="selectedId === table.id ? 'border-rose-600 ring-1 ring-rose-600' : 'border-line'"
     >
-      <div class="flex items-start gap-1 p-2 pl-0">
+      <div class="flex items-start gap-1 py-2 pl-0 lg:pr-2 fab-safe">
         <button
           type="button"
           class="min-h-11 min-w-0 flex-1 rounded-lg px-4 py-2 text-left outline-none focus-visible:ring-2 focus-visible:ring-rose-600"

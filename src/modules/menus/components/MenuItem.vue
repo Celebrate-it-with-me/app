@@ -41,7 +41,7 @@ const confirmRemoveItem = async () => {
 </script>
 
 <template>
-  <div class="flex items-start gap-3 p-4">
+  <div class="flex items-start gap-3 py-4 pl-4 lg:pr-4 fab-safe">
     <div class="min-w-0 flex-1">
       <div class="flex flex-wrap items-center gap-2">
         <p class="text-base font-medium text-ink-900">{{ item.name }}</p>

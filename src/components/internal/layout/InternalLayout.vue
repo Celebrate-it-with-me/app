@@ -13,7 +13,7 @@ import UserMenu from '@/components/internal/shell/UserMenu.vue'
 import AppSidebar from '@/components/internal/shell/AppSidebar.vue'
 import AppBottomNav from '@/components/internal/shell/AppBottomNav.vue'
 import AssistantGuide from '@/modules/assistant/guide/AssistantGuide.vue'
-import { isHelpOnlyRoute } from '@/modules/assistant/guide/guideUtils'
+import { isGuideHiddenRoute, isHelpOnlyRoute } from '@/modules/assistant/guide/guideUtils'
 import AnnouncementBanners from '@/modules/announcements/components/AnnouncementBanners.vue'
 import ImpersonationBanner from '@/modules/impersonation/components/ImpersonationBanner.vue'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
@@ -37,6 +37,10 @@ const router = useRouter()
 const loading = ref(true)
 // The Inicio keeps the help icon in the header instead of floating over its blocks (the guide is help-only there).
 const helpDocked = computed(() => !impersonation.active && isHelpOnlyRoute(route.path))
+// Where the assistant's button floats (everywhere but the docked Inicio and impersonation), the content keeps its column free
+// from 1024 px (the 1.5rem gutter of <main> counts toward it); below that the rows with controls on their right use `fab-safe` (src/style.css).
+// "Mi cuenta" (/settings) has no assistant at all, so it keeps no column either.
+const fabFloats = computed(() => !impersonation.active && !helpDocked.value && !isGuideHiddenRoute(route.path))
 
 const shouldShowRouteView = computed(() => {
   if (route.name === 'invitations-processor') return true
@@ -101,7 +105,7 @@ const determinatePostLoginRoute = async () => {
         <AppSidebar />
       </aside>
 
-      <div class="flex min-w-0 flex-1 flex-col overflow-x-clip">
+      <div class="flex min-w-0 flex-1 flex-col overflow-x-clip" :class="fabFloats ? 'lg:pr-[calc(var(--assistant-fab-reserve)-1.5rem)]' : ''" data-testid="shell-content">
         <CPageLoaderV2 v-if="loading" />
         <main v-else class="mx-auto w-full max-w-6xl flex-1 overflow-x-clip px-4 pb-[calc(9rem+env(safe-area-inset-bottom,0px))] pt-5 sm:px-6 lg:pb-24 lg:pt-8">
           <UiEmptyState v-if="!shouldShowRouteView" :title="t('app.noEventTitle')" :description="t('app.noEventText')">

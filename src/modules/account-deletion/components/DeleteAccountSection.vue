@@ -10,7 +10,9 @@ const open = ref(false)
 
 <template>
   <UiCard :title="t('accountDeletion.zoneTitle')" :subtitle="t('accountDeletion.zoneText')" heading-level="h2" class="border-danger-500/30">
-    <UiButton variant="danger" class="w-full sm:w-auto" @click="open = true">{{ t('accountDeletion.open') }}</UiButton>
+    <div class="fab-safe">
+      <UiButton variant="danger" class="w-full sm:w-auto" @click="open = true">{{ t('accountDeletion.open') }}</UiButton>
+    </div>
     <DeleteAccountDialog v-model:open="open" />
   </UiCard>
 </template>

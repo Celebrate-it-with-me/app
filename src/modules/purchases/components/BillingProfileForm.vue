@@ -98,7 +98,7 @@ onMounted(load)
       <UiButton variant="secondary" @click="load">{{ t('purchases.retry') }}</UiButton>
     </div>
 
-    <form v-else class="flex flex-col gap-5" novalidate @submit="onSubmit">
+    <form v-else class="fab-safe flex flex-col gap-5" novalidate @submit="onSubmit">
       <UiField :label="t('billing.name')" :hint="t('billing.nameHint')" :error="errors.name" id="billing_name" required>
         <UiInput v-model="name" autocomplete="organization" />
       </UiField>

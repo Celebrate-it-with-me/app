@@ -53,7 +53,7 @@ const goToMenu = menu => router.push(`/dashboard/menus/show/${menu.id}`)
 
   <div v-else>
     <!-- Phones: one card per menu -->
-    <ul class="space-y-3 md:hidden">
+    <ul class="fab-safe space-y-3 md:hidden">
       <li v-for="menu in menuStore.menus" :key="menu.id">
         <UiCard padding="none" class="overflow-hidden">
           <button

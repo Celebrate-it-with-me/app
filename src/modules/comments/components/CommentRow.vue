@@ -30,7 +30,7 @@ const items = computed(() => [
 </script>
 
 <template>
-  <div class="flex items-start gap-1 border-b border-line last:border-0" :class="selected ? 'bg-rose-50' : ''">
+  <div class="fab-safe flex items-start gap-1 border-b border-line last:border-0" :class="selected ? 'bg-rose-50' : ''">
     <button
       type="button"
       class="flex min-h-11 min-w-0 flex-1 items-start gap-3 p-4 text-left focus-visible:outline-2 focus-visible:outline-rose-600"

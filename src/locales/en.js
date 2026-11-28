@@ -1041,7 +1041,12 @@ export default {
         net: 'Net {n}',
         play: 'Play',
         details: 'View votes',
-        remove: 'Remove song'
+        remove: 'Remove song',
+        by: 'by {name}',
+        you: 'You',
+        openSpotify: 'Open in Spotify',
+        menu: 'More actions for {title}',
+        votesOf: 'View votes for {title}: {up} up, {down} down'
       },
       sort: {
         recent: 'Most recent',
@@ -1051,9 +1056,15 @@ export default {
       },
       filter: {
         all: 'All',
-        admin: 'Added by you',
+        admin: 'Yours',
         guest: 'From guests',
         topVoted: 'Top voted'
+      },
+      filterShort: {
+        all: 'All',
+        admin: 'Yours',
+        guest: 'Guests',
+        topVoted: 'Top'
       },
       details: {
         title: 'Vote details',
@@ -2362,7 +2373,9 @@ export default {
         title: 'Recent activity',
         emptyTitle: 'No activity yet',
         emptyText: 'When someone replies, opens their invitation or changes something in the event, you will see it here.',
-        error: 'We could not load the recent activity.'
+        error: 'We could not load the recent activity.',
+        viewAll: 'View all',
+        showLess: 'Show less'
       },
       denied: 'You do not have permission to open that section of this event.'
     },
@@ -2636,6 +2649,9 @@ export default {
     home: 'Back to home'
   },
   invitationEditor: {
+    preview: {
+      caption: 'What is saved so far'
+    },
     title: 'Your invitation',
     subtitle: 'Customize what your guests will see. Everything saves by itself.',
     loading: 'Loading your invitation…',
@@ -2969,8 +2985,6 @@ export default {
     after: 'After this',
     seeAll: 'See my whole plan',
     help: 'Need help?',
-    hideToday: 'Hide for today',
-    hiddenToast: 'It is now a small icon. It stays here when you need it.',
     snoozedToast: 'Perfect, we will remind you in a week.',
     close: 'Close',
     overdue: 'Best to do it soon',
@@ -3206,6 +3220,7 @@ export default {
     subtitle: 'Your details, your preferences and your password.',
     nav: 'Account sections',
     tabs: { profile: 'Profile', preferences: 'Preferences', purchases: 'Purchases', security: 'Security' },
+    tabsShort: { preferences: 'Settings' },
     save: 'Save changes',
     saved: 'Changes saved.',
     saveError: 'We could not save your changes. Please try again.',
@@ -3218,7 +3233,27 @@ export default {
       photoAlt: 'Profile photo of {name}',
       phone: 'Phone',
       phoneHint: 'With country code, for example +1 305 555 0123.',
-      phoneInvalid: 'Enter a valid phone number with country code.'
+      phoneInvalid: 'Enter a valid phone number with country code.',
+      emailSubject: 'Change my email',
+      allSaved: 'All saved',
+      unsaved: 'Unsaved changes',
+      saveShort: 'Save',
+      savedToast: 'Details saved',
+      changePhoto: 'Change photo',
+      removePhoto: 'Remove photo',
+      photo: {
+        title: 'Your profile photo',
+        text: 'It is cropped to a square from the centre and shown as a circle.',
+        preview: 'Preview of your photo',
+        use: 'Use this photo',
+        cancel: 'Cancel',
+        invalidType: 'Choose a JPG, PNG or WebP image.',
+        tooBig: 'That photo is too large. Choose one under {max} MB.',
+        unreadable: 'We could not read that image. Try another one.',
+        saved: 'Photo updated',
+        removed: 'Photo removed',
+        error: 'We could not update your photo. Please try again.'
+      }
     },
     preferences: {
       title: 'Preferences',

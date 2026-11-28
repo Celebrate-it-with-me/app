@@ -101,7 +101,7 @@ onBeforeUnmount(() => media?.removeEventListener('change', syncMedia))
         <UiSelect v-model="sortOrder" :options="sortOptions" :aria-label="t('app.comments.sortLabel')" />
       </div>
 
-      <div class="mt-5 grid items-start gap-6 lg:grid-cols-12">
+      <div class="mt-5 grid grid-cols-1 items-start gap-6 lg:grid-cols-12">
         <div class="lg:col-span-5">
           <UiCard padding="none" class="overflow-hidden">
             <UiEmptyState v-if="!filteredComments.length" compact :title="t('app.comments.noResultsTitle')" :description="t('app.comments.noResultsText')">

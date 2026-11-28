@@ -52,6 +52,16 @@ describe('UiField + UiInput', () => {
     expect(wrapper.get('[role="alert"]').text()).toBe('Obligatorio')
   })
 
+  it('accepts a rich hint (a link) in the hint slot and describes the control with it', async () => {
+    const wrapper = mount({
+      components: { UiField, UiInput },
+      template: `<UiField label="Correo"><UiInput model-value="" /><template #hint>Escribe a <a href="mailto:a@b.c">a@b.c</a></template></UiField>`
+    })
+    await nextTick()
+    expect(wrapper.get('p a').attributes('href')).toBe('mailto:a@b.c')
+    expect(wrapper.get('input').attributes('aria-describedby')).toBe(wrapper.get('p').attributes('id'))
+  })
+
   it('emits update:modelValue on input', async () => {
     const wrapper = mount(UiInput, { props: { modelValue: '' } })
     await wrapper.get('input').setValue('Valentina')

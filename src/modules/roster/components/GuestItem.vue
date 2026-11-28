@@ -18,7 +18,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="px-3.5 py-3" data-testid="guest-item">
+  <div class="py-3 pl-3.5 lg:pr-3.5 fab-safe" data-testid="guest-item">
     <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-2.5">
       <UiAvatar :name="family.name" />
       <div class="min-w-0">

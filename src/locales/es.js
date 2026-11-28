@@ -1041,7 +1041,12 @@ export default {
         net: 'Neto {n}',
         play: 'Reproducir',
         details: 'Ver votos',
-        remove: 'Eliminar canción'
+        remove: 'Eliminar canción',
+        by: 'por {name}',
+        you: 'Tú',
+        openSpotify: 'Abrir en Spotify',
+        menu: 'Más acciones de {title}',
+        votesOf: 'Ver votos de {title}: {up} a favor, {down} en contra'
       },
       sort: {
         recent: 'Más recientes',
@@ -1051,9 +1056,15 @@ export default {
       },
       filter: {
         all: 'Todas',
-        admin: 'Del organizador',
+        admin: 'Tuyas',
         guest: 'De invitados',
         topVoted: 'Más votadas'
+      },
+      filterShort: {
+        all: 'Todas',
+        admin: 'Tuyas',
+        guest: 'Invitados',
+        topVoted: 'Top'
       },
       details: {
         title: 'Detalle de votos',
@@ -2362,7 +2373,9 @@ export default {
         title: 'Actividad reciente',
         emptyTitle: 'Aún no hay actividad',
         emptyText: 'Cuando alguien confirme, abra su invitación o cambie algo del evento, lo verás aquí.',
-        error: 'No pudimos cargar la actividad reciente.'
+        error: 'No pudimos cargar la actividad reciente.',
+        viewAll: 'Ver todo',
+        showLess: 'Ver menos'
       },
       denied: 'No tienes permiso para abrir esa sección de este evento.'
     },
@@ -2636,6 +2649,9 @@ export default {
     home: 'Volver al inicio'
   },
   invitationEditor: {
+    preview: {
+      caption: 'Así se ve lo guardado'
+    },
     title: 'Tu invitación',
     subtitle: 'Personaliza lo que verán tus invitados. Todo se guarda solo.',
     loading: 'Cargando tu invitación…',
@@ -2969,8 +2985,6 @@ export default {
     after: 'Después de esto',
     seeAll: 'Ver todo mi plan',
     help: '¿Necesitas ayuda?',
-    hideToday: 'Ocultar por hoy',
-    hiddenToast: 'Quedó como un iconito. Aquí sigue cuando lo necesites.',
     snoozedToast: 'Perfecto, te lo recordamos en una semana.',
     close: 'Cerrar',
     overdue: 'Conviene hacerlo pronto',
@@ -3206,6 +3220,7 @@ export default {
     subtitle: 'Tus datos, tus preferencias y tu contraseña.',
     nav: 'Secciones de tu cuenta',
     tabs: { profile: 'Perfil', preferences: 'Preferencias', purchases: 'Compras', security: 'Seguridad' },
+    tabsShort: { preferences: 'Ajustes' },
     save: 'Guardar cambios',
     saved: 'Cambios guardados.',
     saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
@@ -3218,7 +3233,27 @@ export default {
       photoAlt: 'Foto de perfil de {name}',
       phone: 'Teléfono',
       phoneHint: 'Con código de país, por ejemplo +1 305 555 0123.',
-      phoneInvalid: 'Escribe un teléfono válido, con código de país.'
+      phoneInvalid: 'Escribe un teléfono válido, con código de país.',
+      emailSubject: 'Cambiar mi correo',
+      allSaved: 'Todo guardado',
+      unsaved: 'Cambios sin guardar',
+      saveShort: 'Guardar',
+      savedToast: 'Datos guardados',
+      changePhoto: 'Cambiar foto',
+      removePhoto: 'Quitar foto',
+      photo: {
+        title: 'Tu foto de perfil',
+        text: 'Se recorta en un cuadrado desde el centro y se muestra en círculo.',
+        preview: 'Vista previa de tu foto',
+        use: 'Usar esta foto',
+        cancel: 'Cancelar',
+        invalidType: 'Elige una imagen JPG, PNG o WebP.',
+        tooBig: 'La foto pesa demasiado. Elige una de menos de {max} MB.',
+        unreadable: 'No pudimos leer esa imagen. Prueba con otra.',
+        saved: 'Foto actualizada',
+        removed: 'Foto quitada',
+        error: 'No pudimos actualizar tu foto. Inténtalo de nuevo.'
+      }
     },
     preferences: {
       title: 'Preferencias',
