@@ -328,6 +328,14 @@ describe('AssistantGuide welcome bubble (ORG-027)', () => {
     expect(welcome()).toBeNull()
   })
 
+  it('does not appear if she already opened the guide before it was time', async () => {
+    await mountGuide()
+    await settle(500)
+    trigger().click()
+    await settle(1500)
+    expect(welcome()).toBeNull()
+  })
+
   it('closes on the first scroll', async () => {
     await mountGuide()
     await settle(1600)
