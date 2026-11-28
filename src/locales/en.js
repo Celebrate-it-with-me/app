@@ -1915,6 +1915,7 @@ export default {
       copied: 'Address copied',
       copyError: 'We could not copy the address. Copy it by hand.',
       actionsFor: 'Actions for {name}',
+      otherTitle: 'Other places',
       otherHint: '· optional (photo shoot, after party…)',
       addPlace: 'Add place',
       kinds: { ceremony: 'ceremony', reception: 'reception' },

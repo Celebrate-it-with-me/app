@@ -1915,6 +1915,7 @@ export default {
       copied: 'Dirección copiada',
       copyError: 'No pudimos copiar la dirección. Cópiala a mano.',
       actionsFor: 'Acciones de {name}',
+      otherTitle: 'Otros lugares',
       otherHint: '· opcional (sesión de fotos, after party…)',
       addPlace: 'Añadir lugar',
       kinds: { ceremony: 'ceremonia', reception: 'recepción' },
