@@ -121,7 +121,7 @@ const ask = action => (confirming.value = action)
       <div class="space-y-6">
         <section class="flex flex-col items-start gap-2 rounded-xl border border-line bg-white px-[18px] py-3.5 shadow-card md:flex-row md:items-center md:gap-4" data-testid="std-notice">
           <div class="min-w-0 flex-1">
-            <h2 class="text-base font-semibold text-ink-900">{{ t(`app.saveTheDate.notice.${view.key === 'archived' ? 'archived' : notice}.title`) }}</h2>
+            <h2 class="font-body text-base font-semibold text-ink-900">{{ t(`app.saveTheDate.notice.${view.key === 'archived' ? 'archived' : notice}.title`) }}</h2>
             <p class="mt-0.5 text-sm text-ink-500">{{ t(`app.saveTheDate.notice.${view.key === 'archived' ? 'archived' : notice}.text`) }}</p>
             <GuestLimitNotice v-if="limitInfo" class="mt-3" :info="limitInfo" variant="publish" with-list-link />
             <div v-if="canEdit && view.actions.length" class="mt-3 flex flex-col gap-2 sm:flex-row">
