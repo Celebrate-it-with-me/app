@@ -102,4 +102,11 @@ describe('InternalLayout', () => {
     await flushPromises()
     expect(wrapper.get('[data-testid="shell-content"]').classes().join(' ')).not.toContain('assistant-fab')
   })
+
+  it('reserves nothing in Mi cuenta either: the assistant is not shown there', async () => {
+    currentRoute.path = '/settings/profile'
+    const wrapper = mountLayout()
+    await flushPromises()
+    expect(wrapper.get('[data-testid="shell-content"]').classes().join(' ')).not.toContain('assistant-fab')
+  })
 })

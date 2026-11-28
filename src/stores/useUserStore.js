@@ -272,8 +272,8 @@ export const useUserStore = defineStore('userStore', {
      * @param {string} profileData.avatar - User avatar URL
      * @returns {Promise} API response
      */
-    async updateProfile({ name, phone, avatar }) {
-      return await UserService.updateProfile({ name, phone, avatar })
+    async updateProfile({ name, phone, avatar, removeAvatar = false }) {
+      return await UserService.updateProfile({ name, phone, avatar, removeAvatar })
     },
 
     /**

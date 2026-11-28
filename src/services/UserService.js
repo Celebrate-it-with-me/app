@@ -61,11 +61,13 @@ class UserService {
     return await CWM_API.get('events')
   }
 
-  async updateProfile({ name, phone, avatar }) {
+  async updateProfile({ name, phone, avatar, removeAvatar = false }) {
     const formData = new FormData()
     formData.append('name', name)
     formData.append('phone', phone ?? '')
     if (avatar instanceof File) formData.append('avatar', avatar)
+    // Asks the API to delete the stored photo (ignored when a new one comes with it).
+    if (removeAvatar && !(avatar instanceof File)) formData.append('remove_avatar', '1')
 
     return await CWM_API.post('user/update-profile', formData, {
       headers: {

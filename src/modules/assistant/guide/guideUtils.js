@@ -11,6 +11,11 @@ export const HELP_ONLY_ROUTES = [/^\/dashboard\/?$/]
 
 export const isHelpOnlyRoute = path => typeof path === 'string' && HELP_ONLY_ROUTES.some(re => re.test(path))
 
+/** Routes without the assistant at all (no button, badge, status or welcome bubble): "Mi cuenta" is about the person, not the event. */
+export const NO_GUIDE_ROUTES = [/^\/settings(\/|$)/]
+
+export const isGuideHiddenRoute = path => typeof path === 'string' && NO_GUIDE_ROUTES.some(re => re.test(path))
+
 /** Tone of the copy: weddings are more sober, everything else (quince) is warm and festive. */
 export const toneFor = slug => (slug === 'wedding' ? 'wedding' : 'quince')
 

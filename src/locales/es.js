@@ -3123,6 +3123,7 @@ export default {
     subtitle: 'Tus datos, tus preferencias y tu contraseña.',
     nav: 'Secciones de tu cuenta',
     tabs: { profile: 'Perfil', preferences: 'Preferencias', purchases: 'Compras', security: 'Seguridad' },
+    tabsShort: { preferences: 'Ajustes' },
     save: 'Guardar cambios',
     saved: 'Cambios guardados.',
     saveError: 'No pudimos guardar los cambios. Inténtalo de nuevo.',
@@ -3135,7 +3136,27 @@ export default {
       photoAlt: 'Foto de perfil de {name}',
       phone: 'Teléfono',
       phoneHint: 'Con código de país, por ejemplo +1 305 555 0123.',
-      phoneInvalid: 'Escribe un teléfono válido, con código de país.'
+      phoneInvalid: 'Escribe un teléfono válido, con código de país.',
+      emailSubject: 'Cambiar mi correo',
+      allSaved: 'Todo guardado',
+      unsaved: 'Cambios sin guardar',
+      saveShort: 'Guardar',
+      savedToast: 'Datos guardados',
+      changePhoto: 'Cambiar foto',
+      removePhoto: 'Quitar foto',
+      photo: {
+        title: 'Tu foto de perfil',
+        text: 'Se recorta en un cuadrado desde el centro y se muestra en círculo.',
+        preview: 'Vista previa de tu foto',
+        use: 'Usar esta foto',
+        cancel: 'Cancelar',
+        invalidType: 'Elige una imagen JPG, PNG o WebP.',
+        tooBig: 'La foto pesa demasiado. Elige una de menos de {max} MB.',
+        unreadable: 'No pudimos leer esa imagen. Prueba con otra.',
+        saved: 'Foto actualizada',
+        removed: 'Foto quitada',
+        error: 'No pudimos actualizar tu foto. Inténtalo de nuevo.'
+      }
     },
     preferences: {
       title: 'Preferencias',

@@ -30,6 +30,7 @@ import {
   getSeenKey,
   guideView,
   hasNewDot,
+  isGuideHiddenRoute,
   isHelpOnlyRoute,
   markWelcomed,
   setSeenKey,
@@ -55,6 +56,7 @@ const tone = computed(() => toneFor(eventsStore.eventTypes.find(type => type.id 
 // that route), so it never covers the blocks of the page at any width. Without the dock (tests, other shells) it floats.
 const HELP_DOCK_ID = 'shell-help-dock'
 const dockEl = ref(null)
+const routeHidden = computed(() => isGuideHiddenRoute(route.path))
 const findDock = () => (dockEl.value = isHelpOnlyRoute(route.path) ? document.getElementById(HELP_DOCK_ID) : null)
 
 const view = computed(() => {
@@ -152,7 +154,7 @@ const welcomeCoversText = overlaps => {
   return false
 }
 const scheduleWelcome = () => {
-  if (welcome.value || wasWelcomed() || variant.value !== 'icon' || !showDot.value) return
+  if (routeHidden.value || welcome.value || wasWelcomed() || variant.value !== 'icon' || !showDot.value) return
   clearTimeout(welcomeTimer)
   welcomeTimer = setTimeout(() => {
     if (variant.value !== 'icon' || ownOpen.value) return
@@ -276,7 +278,7 @@ const countdown = computed(() => countdownOf(next.value))
 </script>
 
 <template>
-  <div v-if="!impersonation.active">
+  <div v-if="!impersonation.active && !routeHidden">
     <Teleport v-if="dockEl" :to="dockEl">
       <button
         ref="triggerRef"

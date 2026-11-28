@@ -3,6 +3,7 @@ import {
   countdown,
   guideView,
   hasNewDot,
+  isGuideHiddenRoute,
   isHelpOnlyRoute,
   getSeenKey,
   setSeenKey,
@@ -93,5 +94,16 @@ describe('isHelpOnlyRoute', () => {
     expect(isHelpOnlyRoute('/dashboard/guests')).toBe(false)
     expect(isHelpOnlyRoute('/dashboards')).toBe(false)
     expect(isHelpOnlyRoute(undefined)).toBe(false)
+  })
+})
+
+describe('isGuideHiddenRoute', () => {
+  it('matches Mi cuenta and nothing else', () => {
+    expect(isGuideHiddenRoute('/settings')).toBe(true)
+    expect(isGuideHiddenRoute('/settings/profile')).toBe(true)
+    expect(isGuideHiddenRoute('/settings/purchases')).toBe(true)
+    expect(isGuideHiddenRoute('/settingsx')).toBe(false)
+    expect(isGuideHiddenRoute('/dashboard/settings')).toBe(false)
+    expect(isGuideHiddenRoute(undefined)).toBe(false)
   })
 })

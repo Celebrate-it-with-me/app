@@ -99,6 +99,32 @@ describe('AssistantGuide on the Inicio', () => {
   })
 })
 
+describe('AssistantGuide in Mi cuenta', () => {
+  it('is not in the DOM on any /settings page: no button, badge, status or welcome bubble', async () => {
+    vi.useFakeTimers()
+    try {
+      await mountGuide({ path: '/settings/profile' })
+      await vi.advanceTimersByTimeAsync(3000)
+      expect(trigger()).toBeNull()
+      expect(q('assistant-guide')).toBeNull()
+      expect(q('guide-dot')).toBeNull()
+      expect(document.body.textContent).not.toContain('Tu siguiente paso')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+  it('comes back when the person leaves Mi cuenta, and goes away again on the way in', async () => {
+    await mountGuide({ path: '/settings/security' })
+    expect(trigger()).toBeNull()
+    await router.push('/dashboard/budget')
+    await flushPromises()
+    expect(trigger()).not.toBeNull()
+    await router.push('/settings/preferences')
+    await flushPromises()
+    expect(trigger()).toBeNull()
+  })
+})
+
 describe('AssistantGuide icon', () => {
   it('shows the icon with the pink dot for an unseen step', async () => {
     await mountGuide()
@@ -117,7 +143,7 @@ describe('AssistantGuide icon', () => {
     expect(q('guide-pulse')).toBeNull()
   })
 
-  it.each(['/dashboard/invitation', '/dashboard/events', '/dashboard/seating', '/settings/profile'])('is the same icon on %s', async path => {
+  it.each(['/dashboard/invitation', '/dashboard/events', '/dashboard/seating'])('is the same icon on %s', async path => {
     await mountGuide({ path })
     expect(trigger().dataset.variant).toBe('icon')
     expect(trigger().textContent).not.toContain('Tu siguiente paso')

@@ -13,7 +13,7 @@ import UserMenu from '@/components/internal/shell/UserMenu.vue'
 import AppSidebar from '@/components/internal/shell/AppSidebar.vue'
 import AppBottomNav from '@/components/internal/shell/AppBottomNav.vue'
 import AssistantGuide from '@/modules/assistant/guide/AssistantGuide.vue'
-import { isHelpOnlyRoute } from '@/modules/assistant/guide/guideUtils'
+import { isGuideHiddenRoute, isHelpOnlyRoute } from '@/modules/assistant/guide/guideUtils'
 import AnnouncementBanners from '@/modules/announcements/components/AnnouncementBanners.vue'
 import ImpersonationBanner from '@/modules/impersonation/components/ImpersonationBanner.vue'
 import { useImpersonationStore } from '@/modules/impersonation/stores/useImpersonationStore'
@@ -39,7 +39,8 @@ const loading = ref(true)
 const helpDocked = computed(() => !impersonation.active && isHelpOnlyRoute(route.path))
 // Where the assistant's button floats (everywhere but the docked Inicio and impersonation), the content keeps its column free
 // from 1024 px (the 1.5rem gutter of <main> counts toward it); below that the rows with controls on their right use `fab-safe` (src/style.css).
-const fabFloats = computed(() => !impersonation.active && !helpDocked.value)
+// "Mi cuenta" (/settings) has no assistant at all, so it keeps no column either.
+const fabFloats = computed(() => !impersonation.active && !helpDocked.value && !isGuideHiddenRoute(route.path))
 
 const shouldShowRouteView = computed(() => {
   if (route.name === 'invitations-processor') return true
